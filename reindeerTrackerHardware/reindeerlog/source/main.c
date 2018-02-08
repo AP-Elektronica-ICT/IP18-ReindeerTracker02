@@ -41,7 +41,7 @@ void UART_receive()
 	{
 		strcpy(receiveData,ringBuffer);
 
-		pc_str_rdy =0;
+		pc_str_rdy =2;
 		memset(ringBuffer,0x00,sizeof(ringBuffer));
 	}
 }
@@ -122,7 +122,7 @@ int main(void) {
   EnableIRQ(UART0_RX_TX_IRQn);
   //EnableIRQ(UART3_RX_TX_IRQn);*/
 
-  char buffer[10];
+  //char buffer[10];
 
   //uint8_t tmp = SMC ->PMCTRL;
 
@@ -134,26 +134,18 @@ int main(void) {
 	  UART_receive();
 
 
-	  if(pc_str_rdy)
+	  if(pc_str_rdy == 2)
 	  {
 
+		  UART_print(receiveData);
 
 
-		  UART_print("sss");
-
-
-		  memset(ringBuffer,0x00,64);
+		  memset(receiveData,0x00,64);
 		  pc_str_rdy = 0;
-		  buf_ptr = 0;
+
 
 	  }
 
-
-	  GPIO_PortToggle(GPIOB,1<<21u);
-	  for(uint32_t p=0;p<1000000;p++)
-	  {
-		  __asm("nop");
-	  }
 
   }
 }
