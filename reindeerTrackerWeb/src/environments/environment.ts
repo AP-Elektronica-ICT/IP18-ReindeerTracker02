@@ -4,5 +4,13 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    apiKey: 'AIzaSyAud_cLzms8_U55nCkSKNmnRUhXei2pLQs',
+    authDomain: 'reindeer-tracker.firebaseapp.com',
+    databaseURL: 'https://reindeer-tracker.firebaseio.com',
+    projectId: 'reindeer-tracker',
+    storageBucket: '',
+    messagingSenderId: '771165411039'
+  }
 };
