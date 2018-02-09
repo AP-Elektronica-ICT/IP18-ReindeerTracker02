@@ -157,8 +157,10 @@ int main(void) {
 	  }
 	  int16_t acc_val = read_acc_axis(Z_AXIS);
 
+	  float acc_float = acc_val*0.244;
 
-	  sprintf(buffer,"X axis %d\r\n",acc_val);
+
+	  sprintf(buffer,"X axis %d\r\n",(int)acc_float);
 	  UART_print(buffer);
 
 	  delay(100000);
