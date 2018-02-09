@@ -155,16 +155,18 @@ int main(void) {
 	  uint16_t x_acc = 0;
 	  uint8_t acc_buf = accReadReg(0x01);
 	  x_acc = acc_buf;
-	  x_acc <<= 6;
+	  x_acc <<= 8;
 	  acc_buf = accReadReg(0x02);
 	  x_acc |= acc_buf;
 	  x_acc >>= 2;
 
 	  int16_t out = 0;
-	  if(x_acc & (uint16_t)(1 << 13))
+
+
+	  if(x_acc & (1 << 13))
 	  {
 		  out = 0 - (x_acc & 0x1fff);
-		  UART_print("suss\n");
+		  //UART_print("suss\n");
 	  }
 	  else
 	  {
@@ -174,7 +176,7 @@ int main(void) {
 	  sprintf(buffer,"X axis %d\r\n",out);
 	  UART_print(buffer);
 
-	  delay(250000);
+	  delay(500000);
 
   }
 }
