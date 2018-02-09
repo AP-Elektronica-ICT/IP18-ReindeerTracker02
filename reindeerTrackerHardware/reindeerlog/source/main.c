@@ -155,7 +155,7 @@ int main(void) {
 		  }
 		  memset(receiveData,0x00,64);
 	  }
-	  uint16_t acc_val = read_acc_axis(Y_AXIS);
+	  int16_t acc_val = read_acc_axis(Z_AXIS);
 
 
 	  sprintf(buffer,"X axis %d\r\n",acc_val);

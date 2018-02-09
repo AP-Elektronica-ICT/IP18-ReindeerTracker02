@@ -12,7 +12,7 @@ void acc_init(){
 
 
 }
-uint16_t read_acc_axis(uint8_t axis) {
+int16_t read_acc_axis(uint8_t axis) {
 
 	switch ( axis ) {
 	case 0:
