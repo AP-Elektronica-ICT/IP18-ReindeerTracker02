@@ -133,7 +133,7 @@ int main(void) {
 
   char buffer[50];
 
-  acc_init();
+  acc_init(); //init accelerometer
 
   while(1)
 
@@ -142,8 +142,6 @@ int main(void) {
 	  if( UART_receive() )
 	  {
 		  UART_print(receiveData); //loopback data
-
-
 		  if(strstr(receiveData,"ac") != NULL)
 
 		  {
@@ -157,7 +155,7 @@ int main(void) {
 	  }
 
 
-	  int16_t acc_val_x = read_acc_axis(X_AXIS);
+	  int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
 	  int16_t acc_val_y = read_acc_axis(Y_AXIS);
 	  int16_t acc_val_z = read_acc_axis(Z_AXIS);
 
@@ -165,7 +163,7 @@ int main(void) {
 
 	  UART_print(buffer);
 
-	  delay(100000);
+	  delay(200000);
 
   }
 }
