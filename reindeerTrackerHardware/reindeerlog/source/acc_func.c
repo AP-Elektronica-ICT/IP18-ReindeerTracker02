@@ -48,7 +48,7 @@ int16_t read_acc_axis(uint8_t axis) {
 	  //MMMM MMMM LLLL LL00
 	  acc_val >>= 2; //shift right 2 bits to right-justify
 
-	  //00MM MMMM MMLL LLLLm
+	  //00MM MMMM MMLL LLLLpaskaa
 
 	  int16_t out = 0;
 
