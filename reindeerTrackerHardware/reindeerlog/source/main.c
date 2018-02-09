@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include "acc_func.h"
 #include "i2c_func.h"
+#include "adc_func.h"
 
 #define RING_BUFFER_SIZE 64
 #define RX_DATA_SIZE     64
@@ -114,6 +115,7 @@ int main(void) {
   InitPcUart();
 
   initI2C();
+  initAdc();
 
   static const gpio_pin_config_t LED_configOutput = {
   kGPIO_DigitalOutput,  /* use as output pin */
@@ -157,11 +159,11 @@ int main(void) {
 	  int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
 	  int16_t acc_val_y = read_acc_axis(Y_AXIS);
 	  int16_t acc_val_z = read_acc_axis(Z_AXIS);
-
+	  uint16_t adc_val = ADC_read16b();
 	  float acc_float = acc_val_x * 0.000244 * 9.81;
 
-	  sprintf(buffer,"X axis %d\r\n Y axis %d\r\n Z axis %d\r\n",(int)acc_float, acc_val_y, acc_val_z);
-
+	 // sprintf(buffer,"X axis %d\r\n Y axis %d\r\n Z axis %d\r\n",(int)acc_float, acc_val_y, acc_val_z);
+	  sprintf(buffer,"X axis %d\r\n", adc_val);
 	  UART_print(buffer);
 
 	  delay(200000);
