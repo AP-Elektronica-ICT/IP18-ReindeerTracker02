@@ -176,7 +176,7 @@ int main(void) {
 	  sprintf(buffer,"X axis %d\r\n",out);
 	  UART_print(buffer);
 
-	  delay(500000);
+	  delay(100000);
 
   }
 }
