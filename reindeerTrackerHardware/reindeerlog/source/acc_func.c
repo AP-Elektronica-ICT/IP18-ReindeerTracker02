@@ -6,6 +6,7 @@
  */
 
 #include <stdint.h>
+#include "i2c_func.h"
 
 void acc_init(){
 	 accWriteReg(0x2a,0x01); //write accelerometer CTRL_REG1 (active mode)
@@ -53,8 +54,9 @@ int16_t read_acc_axis(uint8_t axis) {
 
 	  if(acc_val & (1 << 13)) //test if value is negative by masking 14th bit
 	  {
+		  acc_val = 0xffff - acc_val +1;
 		  out = 0 - (acc_val & 0x1fff);
-		  //UART_print("suss\n");
+
 	  }
 
 	  else
