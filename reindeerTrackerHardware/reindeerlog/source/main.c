@@ -155,10 +155,10 @@ int main(void) {
 		  }
 		  memset(receiveData,0x00,64);
 	  }
+
 	  int16_t acc_val_x = read_acc_axis(X_AXIS);
 	  int16_t acc_val_y = read_acc_axis(Y_AXIS);
 	  int16_t acc_val_z = read_acc_axis(Z_AXIS);
-
 
 	  sprintf(buffer,"X axis %d\r\n Y axis %d\r\n Z axis %d\r\n",acc_val_x, acc_val_y, acc_val_z);
 	  UART_print(buffer);
