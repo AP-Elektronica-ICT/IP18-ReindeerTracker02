@@ -11,11 +11,15 @@
 #include "fsl_common.h"
 #include "fsl_i2c.h"
 #include <stdio.h>
-
+#include "acc_func.h"
 #include "i2c_func.h"
 
 #define RING_BUFFER_SIZE 64
 #define RX_DATA_SIZE     64
+#define X_AXIS 	0
+#define Y_AXIS 	1
+#define Z_AXIS 	2
+
 
 volatile bool txFinished;
 volatile bool rxFinished;
@@ -129,7 +133,7 @@ int main(void) {
 
   char buffer[50];
 
-  accWriteReg(0x2a,0x01);
+  acc_init();
 
   while(1)
 
@@ -151,32 +155,13 @@ int main(void) {
 		  }
 		  memset(receiveData,0x00,64);
 	  }
-
-	  uint16_t x_acc = 0;
-	  uint8_t acc_buf = accReadReg(0x01);
-	  x_acc = acc_buf;
-	  x_acc <<= 8;
-	  acc_buf = accReadReg(0x02);
-	  x_acc |= acc_buf;
-	  x_acc >>= 2;
-
-	  int16_t out = 0;
+	  uint16_t acc_val = read_acc_axis(Y_AXIS);
 
 
-	  if(x_acc & (1 << 13))
-	  {
-		  out = 0 - (x_acc & 0x1fff);
-		  //UART_print("suss\n");
-	  }
-	  else
-	  {
-		  out = x_acc & 0x1fff;
-	  }
-
-	  sprintf(buffer,"X axis %d\r\n",out);
+	  sprintf(buffer,"X axis %d\r\n",acc_val);
 	  UART_print(buffer);
 
-	  delay(500000);
+	  delay(100000);
 
   }
 }
