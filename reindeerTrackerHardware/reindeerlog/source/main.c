@@ -17,7 +17,7 @@
 #include "sdcard_io.h"
 
 
-#include "adc_func.h"
+//#include "adc_func.h"
 
 
 #define RING_BUFFER_SIZE 64
@@ -26,9 +26,6 @@
 #define Y_AXIS 	1
 #define Z_AXIS 	2
 
-
-volatile bool txFinished;
-volatile bool rxFinished;
 char receiveData[RX_DATA_SIZE];
 char rxBuffer[RING_BUFFER_SIZE];
 
@@ -36,7 +33,6 @@ char SimcomRecBuf[RING_BUFFER_SIZE];
 
 volatile uint8_t buf_ptr = 0, simcom_buf_ptr = 0;
 volatile uint8_t pc_str_rdy = 0, simcom_str_rdy = 0, carriages=0;
-
 
 
 void delay(uint32_t del)
@@ -117,12 +113,12 @@ void InitPcUart()
 }
 
 int main(void) {
-  /* Init board hardware. */
+
   BOARD_InitPins();
 
   BOARD_InitDebugConsole();
   initI2C();
-  initAdc();
+  //initAdc();
 
   static const gpio_pin_config_t LED_configOutput = {
   kGPIO_DigitalOutput,  /* use as output pin */
@@ -131,11 +127,7 @@ int main(void) {
 
   GPIO_PinInit(GPIOB, 22u, &LED_configOutput);
   GPIO_PinInit(GPIOB, 21u, &LED_configOutput);
-
   GPIO_ClearPinsOutput(GPIOB, 1<<21u);
-
-  //UART_EnableInterrupts(UART3,kUART_RxDataRegFullInterruptEnable);
-  //EnableIRQ(UART3_RX_TX_IRQn);*/
 
   __enable_irq();
 
@@ -153,14 +145,6 @@ cardInit();
 
 uint8_t tmp = 0;
 
-/*while(tmp != 0xff)
-{
-	//SPIsend(0xff,0,0);
-	tmp = SPIread();
-}*/
-
-
-	//SPIsend(0xff,0,0);
 
 
 	while(tmp != 0x01)
@@ -178,9 +162,6 @@ uint8_t tmp = 0;
 	UART_print("SD korti jyllii\r\n");
 
 	SPIsend_command2(0x08,0x1aa,0x87,0);
-
-
-
 
 	tmp = SPIread();
 
@@ -203,11 +184,7 @@ uint8_t tmp = 0;
 	UART_print(buffer);
 	delay(300000);
 
-
-
-
   while(1)
-
   {
 	  /*int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
 	  int16_t acc_val_y = read_acc_axis(Y_AXIS);
@@ -243,8 +220,6 @@ uint8_t tmp = 0;
 	  SPIsend_command(0x00,0x95,0);
 	  SPIread();*/
 	  delay(200000);
-
-
 
   }
 }
