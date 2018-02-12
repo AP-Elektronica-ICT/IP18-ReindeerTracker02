@@ -118,7 +118,7 @@ int main(void) {
 
   BOARD_InitDebugConsole();
   initI2C();
-  //initAdc();
+  initAdc();
 
   static const gpio_pin_config_t LED_configOutput = {
   kGPIO_DigitalOutput,  /* use as output pin */
@@ -146,7 +146,7 @@ cardInit();
 uint8_t tmp = 0;
 
 
-
+/*
 	while(tmp != 0x01)
 	{
 	SPIsend_command2(0x00,0,0x95,0);
@@ -183,13 +183,20 @@ uint8_t tmp = 0;
 	sprintf(buffer,"read CMD8 4: %x\r\n",tmp);
 	UART_print(buffer);
 	delay(300000);
-
+*/
   while(1)
   {
-	  /*int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
+	  print_ext_acc_axis();
+
+
+	  /*
+	  int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
 	  int16_t acc_val_y = read_acc_axis(Y_AXIS);
 	  int16_t acc_val_z = read_acc_axis(Z_AXIS);
-	  uint16_t adc_val = ADC_read16b();
+
+	  */
+
+	 /*
 	  float acc_float = acc_val_x * 0.000244 * 9.81;
 
 
@@ -207,18 +214,22 @@ uint8_t tmp = 0;
 
 	  }
 
-	 // sprintf(buffer,"X axis %d\r\n Y axis %d\r\n Z axis %d\r\n",(int)acc_float, acc_val_y, acc_val_z);
+	  sprintf(buffer,"X axis %d\r\n Y axis %d\r\n Z axis %d\r\n",(int)acc_float, acc_val_y, acc_val_z);
 	  sprintf(buffer,"X axis %d\r\n", adc_val);
 	  UART_print(buffer);
 
 
-	  sprintf(buffer,"X axis %f Y axis %d Z axis %d\r\n",acc_float, acc_val_y, acc_val_z);*/
+	  sprintf(buffer,"X axis %f Y axis %d Z axis %d\r\n",acc_float, acc_val_y, acc_val_z);
+*/
+	  //UART_print(buffer);
 
-	  	 // UART_print(buffer);
 
-	  /*cardInit();
+	  /*
+	  cardInit();
 	  SPIsend_command(0x00,0x95,0);
-	  SPIread();*/
+	  SPIread();
+*/
+
 	  delay(200000);
 
   }
