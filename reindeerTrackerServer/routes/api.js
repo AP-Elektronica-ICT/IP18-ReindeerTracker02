@@ -13,35 +13,48 @@ var Device = require('../models/device');
 router.post('/device', function (req, res) {
     const deviceKeys = req.body;
     var keyErrors = [];
-    var done = false;
+    var saved = [];
     for (var  i = 0; i < deviceKeys.length; i++) {
         const device = new Device({
             deviceKey:deviceKeys[i]
         });
-        console.log(device);
-        device.save(function (err) {
-            if (err) {
-                keyErrors.push(deviceKeys[i]);
-                console.log(err);
-            }
-            if (i == deviceKeys.length && !done) {
-                done = true;
-                console.log('done');
-                if (keyErrors.length == deviceKeys.length) {
-                    res.status(500).send('could not add keys');
-                } else if (keyErrors.length > 0) {
-                    var message = 'keys: ';
-                    for (var  j = 0; j < keyErrors.length; j++) {
-                        message += keyErrors[i] + ', ';
-                    }
-                    message += 'could not be added';
-                    res.status(500).send(message);
-                } else {
-                    res.status(201).send('keys added');
-                }
-            }
-        });
+        device.save()
+            .then(function () {
+                saved.push(device.deviceKey);
+                devicePostCallback(deviceKeys, keyErrors, saved, res);
+            }).catch(function (err) {
+                keyErrors.push(device.deviceKey);
+                devicePostCallback(deviceKeys, keyErrors, saved, res);
+            })
     }
 });
+
+function devicePostCallback(deviceKeys, keyErrors, saved, res) {
+    if (keyErrors.length + saved.length == deviceKeys.length) {
+        if (keyErrors.length > 0) {
+            res.status(500);
+        } else {
+            res.status(200);
+        }
+        res.json({
+            added: saved,
+            errors: keyErrors
+        })
+    }
+}
+
+router.post('/device/single', function (req, res) {
+    console.log('body: ' + req.body);
+    const device = new Device({
+        deviceKey:req.body
+    });
+    device.save()
+        .then(function () {
+            res.status(201).send('device added');
+        })
+        .catch(function (err) {
+            res.status(500).send('could not add device')
+        })
+})
 
 module.exports = router;
