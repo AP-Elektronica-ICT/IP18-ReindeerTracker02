@@ -71,6 +71,28 @@ router.get('/devices/:deviceKey', function (req, res) {
         })
 });
 
+router.get('/devices/:deviceKey/logs', function (req, res) {
+    const deviceKey = req.params.deviceKey;
+    var start = parseInt(req.query.start);
+    const amount = parseInt(req.query.amount);
+    if (isNaN(start)) {
+        start = 0;
+    }
+    if (isNaN(amount)) {
+        res.status(400).send('amount is not given, bad request');
+    } else {
+        Device.findOne({deviceKey: deviceKey})
+            .then(function (device) {
+                const logs = device.logs;
+                const returnLogs = logs.slice(start, (start + amount));
+                res.status(200).json(returnLogs);
+            })
+            .catch(function (err) {
+                res.status(404).send('could not find device');
+            })
+    }
+});
+
 router.put('/devices/:deviceKey/logs', function (req, res) {
     console.log('put');
     const deviceKey = req.params.deviceKey;
