@@ -8,9 +8,7 @@ var config = require('../config');
 /////////////////////////////////////////////////////////////////
 
 var Device = require('../models/device');
-var Log = require('../models/log');
 
-// POST key array
 router.post('/devices', function (req, res) {
     const deviceKeys = req.body;
     var keyErrors = [];
@@ -115,13 +113,22 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
 
 router.get('/users/:userID/devices', function (req, res) {
     const userID = req.params.userID;
-    Device.find({userID: userID}, function (err, devices) {
+    Device.find({userID: userID}, 'deviceKey logs lastLog' , function (err, devices) {
         if (err) {
             res.status(404).send('could not find devices');
         } else {
-            res.status(200).json(devices);
+            res.status(200).json(getBasicDeviceInfo(devices));
         }
     });
 });
+
+function getBasicDeviceInfo(devices) {
+    const returnDevices = [];
+    for (var  i = 0; i < devices.length; i++) {
+        //TODO: add other fields that need to be displayed in user list
+        returnDevices.push({deviceKey: devices[i].deviceKey, lastLog: devices[i].lastLog});
+    }
+    return returnDevices;
+}
 
 module.exports = router;

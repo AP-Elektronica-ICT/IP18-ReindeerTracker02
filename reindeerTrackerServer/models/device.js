@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-module.exports = mongoose.model('Device', new Schema({
+var deviceSchema = new mongoose.Schema({
     deviceKey: {
         type: String,
         required: true,
@@ -34,5 +34,20 @@ module.exports = mongoose.model('Device', new Schema({
             type: Boolean,
             required: true
         }
-    }]
-}));
+    }]},
+    {
+        toObject: {
+            virtuals: true
+        },
+        toJSON: {
+            virtuals: true
+        }
+    }
+);
+
+deviceSchema.virtual('lastLog').get(function () {
+    const lastLog = this.logs[this.logs.length - 1];
+    return lastLog;
+});
+
+module.exports = mongoose.model('Device', deviceSchema);
