@@ -10,7 +10,7 @@ var config = require('../config');
 var Device = require('../models/device');
 
 // POST key array
-router.post('/device', function (req, res) {
+router.post('/devices', function (req, res) {
     const deviceKeys = req.body;
     var keyErrors = [];
     var saved = [];
@@ -43,7 +43,7 @@ function checkAllDevicesSaved(deviceKeys, keyErrors, saved, res) {
     }
 }
 
-router.post('/device/single', function (req, res) {
+router.post('/devices/single', function (req, res) {
     console.log('body: ' + req.body);
     const device = new Device({
         deviceKey:req.body
@@ -56,6 +56,17 @@ router.post('/device/single', function (req, res) {
             res.status(500).send('could not add device')
         })
 });
+
+router.get('/devices/:deviceKey', function (req, res) {
+    const deviceKey = req.params.deviceKey;
+    Device.findOne({deviceKey: deviceKey}, function (err, device) {
+        if (err) {
+            res.status(404).send('Device not found');
+        } else {
+            res.status(200).json(device);
+        }
+    })
+})
 
 /////////////////////////////////////////////////////////////////
 // USERS
