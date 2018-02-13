@@ -8,6 +8,10 @@
 #include <stdint.h>
 #include "i2c_func.h"
 
+extern void UART_print(char *data);
+
+unsigned char buffer[50];
+
 void acc_init(){
 	 accWriteReg(0x2a,0x01); //write accelerometer CTRL_REG1 (active mode)
 
@@ -64,5 +68,20 @@ int16_t read_acc_axis(uint8_t axis) {
 		  out = acc_val & 0x1fff;
 	  }
 	  return out;
+}
+
+int16_t print_ext_acc_axis(void) {
+
+	uint16_t adc_acc_x = ADC_read16b(1);
+	uint16_t adc_acc_y = ADC_read16b(2);
+	uint16_t adc_acc_z = ADC_read16b(3);
+
+	float temp = 13.37;
+
+	sprintf(buffer, "X: %d	 Y: %d	 Z: %d	 Temp: %f \r\n", adc_acc_x, adc_acc_y, adc_acc_z, temp);
+	UART_print(buffer);
+
+	return 0;
+
 }
 
