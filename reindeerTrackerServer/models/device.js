@@ -12,5 +12,27 @@ module.exports = mongoose.model('Device', new Schema({
         type: Boolean,
         default: false
     },
-    name: String
+    name: String,
+    logs: [{
+        lat: {
+            type: Number,
+            required: true
+        },
+        long: {
+            type: Number,
+            required: true
+        },
+        date: {
+            type: Date,
+            default: Date.now
+        },
+        battery: {
+            type: Number,
+            required: true
+        },
+        isAlive: {
+            type: Boolean,
+            required: true
+        }
+    }]
 }));

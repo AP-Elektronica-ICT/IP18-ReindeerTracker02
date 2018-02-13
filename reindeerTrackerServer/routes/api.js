@@ -8,6 +8,7 @@ var config = require('../config');
 /////////////////////////////////////////////////////////////////
 
 var Device = require('../models/device');
+var Log = require('../models/log');
 
 // POST key array
 router.post('/devices', function (req, res) {
@@ -59,14 +60,32 @@ router.post('/devices/single', function (req, res) {
 
 router.get('/devices/:deviceKey', function (req, res) {
     const deviceKey = req.params.deviceKey;
-    Device.findOne({deviceKey: deviceKey}, function (err, device) {
-        if (err) {
-            res.status(404).send('Device not found');
-        } else {
-            res.status(200).json(device);
-        }
-    })
-})
+    Device.findOne({deviceKey: deviceKey})
+        .then(function (device) {
+            var returnDevice = device;
+            returnDevice.logs = returnDevice.logs.slice(0,5);
+            res.status(200).json(returnDevice);
+        })
+        .catch(function (err) {
+            res.status(404).send('could not find device');
+        })
+});
+
+router.put('/devices/:deviceKey/logs', function (req, res) {
+    console.log('put');
+    const deviceKey = req.params.deviceKey;
+    const log = req.body;
+    Device.update(
+        {deviceKey: deviceKey},
+        {$push: {logs: log}}
+    )
+        .then(function (status) {
+            res.status(200).send('log added');
+        })
+        .catch(function (err) {
+            res.status(500).send('could not add log to device');
+        })
+});
 
 /////////////////////////////////////////////////////////////////
 // USERS
