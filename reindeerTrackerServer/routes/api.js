@@ -21,15 +21,15 @@ router.post('/device', function (req, res) {
         device.save()
             .then(function () {
                 saved.push(device.deviceKey);
-                devicePostCallback(deviceKeys, keyErrors, saved, res);
+                checkAllDevicesSaved(deviceKeys, keyErrors, saved, res);
             }).catch(function (err) {
                 keyErrors.push(device.deviceKey);
-                devicePostCallback(deviceKeys, keyErrors, saved, res);
+                checkAllDevicesSaved(deviceKeys, keyErrors, saved, res);
             })
     }
 });
 
-function devicePostCallback(deviceKeys, keyErrors, saved, res) {
+function checkAllDevicesSaved(deviceKeys, keyErrors, saved, res) {
     if (keyErrors.length + saved.length == deviceKeys.length) {
         if (keyErrors.length > 0) {
             res.status(500);
@@ -55,6 +55,21 @@ router.post('/device/single', function (req, res) {
         .catch(function (err) {
             res.status(500).send('could not add device')
         })
-})
+});
+
+/////////////////////////////////////////////////////////////////
+// USERS
+/////////////////////////////////////////////////////////////////
+
+router.get('/users/:userID/devices', function (req, res) {
+    const userID = req.params.userID;
+    Device.find({userID: userID}, function (err, devices) {
+        if (err) {
+            res.status(404).send('could not find devices');
+        } else {
+            res.status(200).json(devices);
+        }
+    });
+});
 
 module.exports = router;

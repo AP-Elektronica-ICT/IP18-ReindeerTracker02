@@ -7,6 +7,7 @@ module.exports = mongoose.model('Device', new Schema({
         required: true,
         unique: true
     },
+    userID: String,
     activated: {
         type: Boolean,
         default: false
