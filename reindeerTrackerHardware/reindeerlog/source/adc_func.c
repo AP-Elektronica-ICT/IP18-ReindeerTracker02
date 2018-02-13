@@ -15,7 +15,7 @@ void initAdc(){
 	//ADC0_DP1, ADC0_DM1, ADC1_DP
 	//Write ADC0_C1 select channel AD4
 
-	// PTC0, PTC1, PTB2, PTB3 ADC PIN
+	// PTC0 (X-axis), PTC1 (Y-axis), PTB2 (Z-axis), PTB3 (temp) ADC PIN
 
 		CLOCK_EnableClock(kCLOCK_Adc0);
 		CLOCK_EnableClock(kCLOCK_PortC);
