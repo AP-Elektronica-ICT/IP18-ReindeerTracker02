@@ -3,6 +3,8 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var router = express.Router();
 var config = require('../config');
 
+// IMPORTANT: LOGS ARE ADDED AT THE BEGINNING OF THE ARRAY
+
 /////////////////////////////////////////////////////////////////
 // DEVICES
 /////////////////////////////////////////////////////////////////
@@ -58,11 +60,9 @@ router.post('/devices/single', function (req, res) {
 
 router.get('/devices/:deviceKey', function (req, res) {
     const deviceKey = req.params.deviceKey;
-    Device.findOne({deviceKey: deviceKey})
+    Device.findOne({deviceKey: deviceKey}, {logs: { $slice: 5}})
         .then(function (device) {
-            var returnDevice = device;
-            returnDevice.logs = returnDevice.logs.slice(0,5);
-            res.status(200).json(returnDevice);
+            res.status(200).json(device);
         })
         .catch(function (err) {
             res.status(404).send('could not find device');
@@ -79,11 +79,9 @@ router.get('/devices/:deviceKey/logs', function (req, res) {
     if (isNaN(amount)) {
         res.status(400).send('amount is not given, bad request');
     } else {
-        Device.findOne({deviceKey: deviceKey})
+        Device.findOne({deviceKey: deviceKey}, {logs: { $slice: [start, amount]}})
             .then(function (device) {
-                const logs = device.logs;
-                const returnLogs = logs.slice(start, (start + amount));
-                res.status(200).json(returnLogs);
+                res.status(200).json(device.logs);
             })
             .catch(function (err) {
                 res.status(404).send('could not find device');
@@ -97,7 +95,7 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
     const log = req.body;
     Device.update(
         {deviceKey: deviceKey},
-        {$push: {logs: log}}
+        {$push: {logs: { $each: [log], $position: 0}}}
     )
         .then(function (status) {
             res.status(200).send('log added');
@@ -113,20 +111,24 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
 
 router.get('/users/:userID/devices', function (req, res) {
     const userID = req.params.userID;
-    Device.find({userID: userID}, 'deviceKey logs lastLog' , function (err, devices) {
-        if (err) {
+    Device.find({userID: userID})
+        .then(function (devices) {
+            //TODO: add other fields that need to be displayed in user list
+            res.json(getBasicDeviceInfo(devices, ['deviceKey', 'lastLog']))
+        })
+        .catch(function (err) {
             res.status(404).send('could not find devices');
-        } else {
-            res.status(200).json(getBasicDeviceInfo(devices));
-        }
-    });
+        })
 });
 
-function getBasicDeviceInfo(devices) {
+function getBasicDeviceInfo(devices, keys) {
     const returnDevices = [];
     for (var  i = 0; i < devices.length; i++) {
-        //TODO: add other fields that need to be displayed in user list
-        returnDevices.push({deviceKey: devices[i].deviceKey, lastLog: devices[i].lastLog});
+        var newObject = {};
+        for (var  j = 0; j < keys.length; j++) {
+            newObject[keys[j]] = devices[i][keys[j]];
+        }
+        returnDevices.push(newObject);
     }
     return returnDevices;
 }

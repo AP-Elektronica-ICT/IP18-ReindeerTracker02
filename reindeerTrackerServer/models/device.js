@@ -46,7 +46,7 @@ var deviceSchema = new mongoose.Schema({
 );
 
 deviceSchema.virtual('lastLog').get(function () {
-    const lastLog = this.logs[this.logs.length - 1];
+    const lastLog = this.logs[0];
     return lastLog;
 });
 
