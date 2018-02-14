@@ -45,41 +45,7 @@ void delay(uint32_t del) {
 	}
 }
 
-/*
- * UART_receive
- *
- * Check if a string has been received and copy it to receiveData buffer. Return 1, return 0 if string has not been received.
- *
- */
 
-uint8_t UART_receive() {
-	if (pc_str_rdy) {
-		strcpy(receiveData, rxBuffer); //copy rxBuffer content to receiveData
-		pc_str_rdy = 0;
-		memset(rxBuffer, 0x00, sizeof(rxBuffer)); //flush rxBuffer
-		return 1;
-	}
-
-	return 0;
-}
-
-/*
- * UART_print
- *
- * Send a string pointed by *data to UART one character at a time
- *
- */
-
-void UART_print(char *data) {
-	char c;
-	while ((c = *data)) {
-		while (!((UART0->S1) & 0x40)) {
-		}
-		UART0->D = c;
-		data++; //increment pointer *data to send next character
-	}
-
-}
 
 /*
  * InitPcUart
@@ -107,15 +73,11 @@ void InitPcUart() {
 	user_config.enableRx = true;
 	UART_Init(UART0, &user_config, 20971520U); //initialize with default clock speed 20,971520 Mhz
 
-	UART_EnableInterrupts(UART0, kUART_RxDataRegFullInterruptEnable);
+	//UART_EnableInterrupts(UART0, kUART_RxDataRegFullInterruptEnable);
 }
 
 int main(void) {
 
-	BOARD_InitPins();
-	BOARD_InitDebugConsole();
-	initI2C();
-	initAdc();
 	BOARD_InitPins();
 	BOARD_InitDebugConsole();
 	initI2C();
@@ -127,25 +89,30 @@ int main(void) {
 
 	GPIO_PinInit(GPIOB, 22u, &LED_configOutput);
 	GPIO_PinInit(GPIOB, 21u, &LED_configOutput);
-	GPIO_ClearPinsOutput(GPIOB, 1 << 21u);
-
-	__enable_irq();
+	//GPIO_ClearPinsOutput(GPIOB, 1 << 21u);
 
 	 /*
 	  * allocate space from RAM to store logging data block
 	  *
-	  * one log line is SINGLE_ENTRY_SIZE bytes long
+	  * one log line is SINGLE_ENTRY_SIZE bytes long:
+	  *
+	  * X(frdm);Y(frdm);Z(frdm);X(GY61);Y(GY61);Z(GY61)\r\n
+	  *
+	  * one value takes 7 bytes: 6 digit value + ; separator
+	  * \r\n takes 2 bytes
+	  * so one entry line is 43 bytes
+	  *
 	  * ENTRY_HOWMANY is how many lines we want to store at once
 	  *
 	  */
 	char logresult_buffer[SINGLE_ENTRY_SIZE * ENTRY_HOWMANY];
+
 	//flush space with zeros just to be sure
 	memset(logresult_buffer,0,sizeof(logresult_buffer));
 
 	acc_init(); //init accelerometer
 
 	InitPcUart();
-	EnableIRQ(UART0_RX_TX_IRQn);
 	initSPI();
 
 	/*
@@ -153,14 +120,13 @@ int main(void) {
 	 */
 	FRESULT res; //FatFs operation result code object
 	FIL fil; //working file object
-
 	static FATFS fss; //declare a fatfs object
 
     res = f_mount(&fss, "0:", 0); //Mount sd card
     SD_error(res,"mount"); //check for operation error
 
     res = f_mkdir("testi");
-    res = f_open(&fil, "testi/testilog.txt", FA_WRITE | FA_READ | FA_OPEN_APPEND );
+    res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_CREATE_ALWAYS );
     SD_error(res,"file open"); //check for operation error
 
     //FSIZE_t size = f_size(&fil);
@@ -177,10 +143,10 @@ int main(void) {
 
 	while (1) {
 
-		for(uint8_t p = 0; p<200;p++) //Do a 200 cycle logging run
+		for(;;) //Do a 200 cycle logging run
 		{
 
-			for(uint8_t k = 0; k < ENTRY_HOWMANY; k++) //log some values to RAM
+			for(uint8_t k = 0; k < ENTRY_HOWMANY; k++) //Read all 6 values from accelerometers and save to logging buffer for ENTRY_HOWMANY times
 			{
 
 				/*int16_t adc_acc_x = ADC_read16b(1) - 32900;
@@ -196,20 +162,23 @@ int main(void) {
 				uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
 				sprintf(logresult_buffer+buffer_pointer,"%d;%d;%d\r\n",acc_val_x, acc_val_y, acc_val_z);// adc_acc_x, adc_acc_y, adc_acc_z); //write new log value line
 
-				delay(100000);
-
+				delay(150000);
 			}
+
+			GPIO_ClearPinsOutput(GPIOB, 1<<22u);
 
 			/*
 			 * Save log
 			 */
 
-			res = f_open(&fil, "testi/testilog.txt", FA_WRITE | FA_READ | FA_OPEN_APPEND );
+			res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_OPEN_APPEND );
 			SD_error(res,"file open"); //check for operation error
 
 			f_printf(&fil, logresult_buffer);
 			res = f_close(&fil);
 			SD_error(res, "close");
+
+			GPIO_SetPinsOutput(GPIOB, 1<<22u);
 
 			memset(logresult_buffer,0,sizeof(logresult_buffer)); //flush logging buffer
 	}
@@ -224,20 +193,5 @@ int main(void) {
 
 }
 
-void UART0_RX_TX_IRQHandler() {
-	//GPIO_TogglePinsOutput(GPIOB,1<<21u);
 
-	UART_ClearStatusFlags(UART0, kUART_RxDataRegFullFlag);
-	UART_ClearStatusFlags(UART0, kUART_RxActiveEdgeFlag);
-	char ch = UART0->D;
-	rxBuffer[buf_ptr] = ch;
-	buf_ptr++;
-
-	if (ch == 0x0d) {
-		pc_str_rdy = 1;
-		buf_ptr = 0;
-
-	}
-
-}
 

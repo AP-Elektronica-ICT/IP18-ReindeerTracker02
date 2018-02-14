@@ -12,8 +12,6 @@
 #include "sdcard_io.h"
 #include <stdio.h>
 
-extern void UART_print(char *data);
-
 /* Definitions of physical drive number for each drive */
 #define DEV_RAM		3	/* Example: Map Ramdisk to physical drive 0 */
 #define DEV_MMC		0	/* Example: Map MMC/SD card to physical drive 1 */
@@ -37,8 +35,6 @@ DSTATUS disk_status(BYTE pdrv /* Physical drive nmuber to identify the drive */
 
 	case DEV_MMC:
 		//result = MMC_disk_status();
-
-		// translate the reslut code here
 
 		stat = RES_OK;
 
@@ -67,15 +63,11 @@ DSTATUS disk_initialize(BYTE pdrv /* Physical drive nmuber to identify the drive
 	case DEV_RAM:
 		//result = RAM_disk_initialize();
 
-		// translate the reslut code here
-
 		return STA_NOINIT;
 
 	case DEV_MMC:
-		//result = MMC_disk_initialize();
 
 		result = cardInit();
-		// translate the reslut code here
 		if (result == 0) {
 			stat = RES_OK;
 		}
@@ -102,7 +94,6 @@ DWORD sector, /* Start sector in LBA */
 UINT count /* Number of sectors to read */
 ) {
 	DRESULT res;res = RES_ERROR;
-
 
 	switch (pdrv) {
 	case DEV_RAM:
@@ -133,8 +124,6 @@ UINT count /* Number of sectors to read */
 		{
 			return RES_ERROR;
 		}
-
-
 
 	case DEV_USB:
 		// translate the arguments here
@@ -205,8 +194,7 @@ BYTE cmd, /* Control code */
 void *buff /* Buffer to send/receive control data */
 ) {
 
-
-	UART_print("disk_ioctl \r\n");
+	printf("disk_ioctl \r\n");
 	DRESULT res;
 	res = RES_ERROR;
 	BYTE n, csd[16];
@@ -269,7 +257,7 @@ void *buff /* Buffer to send/receive control data */
 
 		case GET_BLOCK_SIZE:
 
-			UART_print("Get blocksz\r\n");
+			printf("Get blocksz\r\n");
 
 			if (SD_getCID_CSD(0x09,csd) == 0) /* Read CSD */
 			{
