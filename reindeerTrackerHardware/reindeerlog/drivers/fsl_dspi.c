@@ -512,6 +512,8 @@ void DSPI_MasterWriteDataBlocking(SPI_Type *base, dspi_command_data_config_t *co
     base->PUSHR = SPI_PUSHR_CONT(command->isPcsContinuous) | SPI_PUSHR_CTAS(command->whichCtar) |
                   SPI_PUSHR_PCS(command->whichPcs) | SPI_PUSHR_EOQ(command->isEndOfQueue) |
                   SPI_PUSHR_CTCNT(command->clearTransferCount) | SPI_PUSHR_TXDATA(data);
+
+
     DSPI_ClearStatusFlags(base, kDSPI_TxFifoFillRequestFlag);
 
     /* Wait till TCF sets */

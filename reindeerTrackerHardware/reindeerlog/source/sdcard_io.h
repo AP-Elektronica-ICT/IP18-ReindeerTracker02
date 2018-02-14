@@ -15,14 +15,21 @@
 
 void initSPI();
 
-void SPIsend_command(uint8_t cmdidx, uint8_t crc, uint8_t cspol);
+uint8_t SD_sendCommand(uint8_t cmdidx, uint32_t arg, uint8_t crc);
+void SPIsend(uint8_t data);
 
-void SPIsend_command2(uint8_t cmdidx, uint32_t arg, uint8_t crc, uint8_t cspol);
-void SPIsend(uint8_t data, uint8_t cspol, uint8_t cs);
+uint8_t SD_readBlock(uint32_t addr, uint8_t *buf);
+uint8_t SD_readMultipleBlock(uint32_t addr, uint8_t *buf, uint8_t count);
+
+uint8_t SD_writeMultipleBlock(uint32_t addr, const uint8_t *buf, uint8_t count);
+uint8_t SD_writeBlock(uint32_t addr, const uint8_t *buf);
 
 uint8_t SPIread();
 
-void cardInit();
 
+uint8_t cardInit();
+uint8_t SD_getCID_CSD(uint8_t cmd,uint8_t *buf);
+
+void SD_error(uint8_t res, char *msg);
 
 #endif /* SOURCE_SDCARD_IO_H_ */

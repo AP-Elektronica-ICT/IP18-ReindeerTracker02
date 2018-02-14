@@ -12,13 +12,14 @@
 #include "fsl_i2c.h"
 #include <stdio.h>
 #include "acc_func.h"
+#include "fsl_dspi.h"
 #include "i2c_func.h"
 
 #include "sdcard_io.h"
+#include "ff.h"
+#include "stdlib.h"
 
-
-//#include "adc_func.h"
-
+#include "adc_func.h"
 
 #define RING_BUFFER_SIZE 64
 #define RX_DATA_SIZE     64
@@ -26,19 +27,19 @@
 #define Y_AXIS 	1
 #define Z_AXIS 	2
 
+#define SINGLE_ENTRY_SIZE 20
+#define ENTRY_HOWMANY 20
+
 char receiveData[RX_DATA_SIZE];
 char rxBuffer[RING_BUFFER_SIZE];
 
 char SimcomRecBuf[RING_BUFFER_SIZE];
 
 volatile uint8_t buf_ptr = 0, simcom_buf_ptr = 0;
-volatile uint8_t pc_str_rdy = 0, simcom_str_rdy = 0, carriages=0;
+volatile uint8_t pc_str_rdy = 0, simcom_str_rdy = 0, carriages = 0;
 
-
-void delay(uint32_t del)
-{
-	for(;del>1;del--)
-	{
+void delay(uint32_t del) {
+	for (; del > 1; del--) {
 		__asm("nop");
 	}
 }
@@ -50,13 +51,11 @@ void delay(uint32_t del)
  *
  */
 
-uint8_t UART_receive()
-{
-	if(pc_str_rdy)
-	{
-		strcpy(receiveData,rxBuffer); //copy rxBuffer content to receiveData
-		pc_str_rdy =0;
-		memset(rxBuffer,0x00,sizeof(rxBuffer));//flush rxBuffer
+uint8_t UART_receive() {
+	if (pc_str_rdy) {
+		strcpy(receiveData, rxBuffer); //copy rxBuffer content to receiveData
+		pc_str_rdy = 0;
+		memset(rxBuffer, 0x00, sizeof(rxBuffer)); //flush rxBuffer
 		return 1;
 	}
 
@@ -70,13 +69,12 @@ uint8_t UART_receive()
  *
  */
 
-void UART_print(char *data)
-{
+void UART_print(char *data) {
 	char c;
-	while ((c=*data))
-	{
-		while(!((UART0 ->S1) & 0x40)){}
-		UART0 ->D = c;
+	while ((c = *data)) {
+		while (!((UART0->S1) & 0x40)) {
+		}
+		UART0->D = c;
 		data++; //increment pointer *data to send next character
 	}
 
@@ -92,13 +90,12 @@ void UART_print(char *data)
  *
  */
 
-void InitPcUart()
-{
+void InitPcUart() {
 	CLOCK_EnableClock(kCLOCK_PortB);
 	CLOCK_EnableClock(kCLOCK_Uart0);
 
-	PORT_SetPinMux(PORTB, 16u, kPORT_MuxAlt3);   /* PORTB16 (pin 62) is configured as UART0_RX */
-	PORT_SetPinMux(PORTB, 17u, kPORT_MuxAlt3);   /* PORTB17 (pin 63) is configured as UART0_TX */
+	PORT_SetPinMux(PORTB, 16u, kPORT_MuxAlt3); /* PORTB16 (pin 62) is configured as UART0_RX */
+	PORT_SetPinMux(PORTB, 17u, kPORT_MuxAlt3); /* PORTB17 (pin 63) is configured as UART0_TX */
 
 	//UART_Deinit(UART0);
 
@@ -107,140 +104,116 @@ void InitPcUart()
 	user_config.baudRate_Bps = 57600U;
 	user_config.enableTx = true;
 	user_config.enableRx = true;
-	UART_Init(UART0,&user_config,20971520U);  //initialize with default clock speed 20,971520 Mhz
+	UART_Init(UART0, &user_config, 20971520U); //initialize with default clock speed 20,971520 Mhz
 
-	UART_EnableInterrupts(UART0,kUART_RxDataRegFullInterruptEnable);
+	UART_EnableInterrupts(UART0, kUART_RxDataRegFullInterruptEnable);
 }
 
 int main(void) {
 
-  BOARD_InitPins();
+	BOARD_InitPins();
+	BOARD_InitDebugConsole();
+	initI2C();
+	//initAdc();
 
-  BOARD_InitDebugConsole();
-  initI2C();
-  //initAdc();
+	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
+	1, /* initial value */
+	};
 
-  static const gpio_pin_config_t LED_configOutput = {
-  kGPIO_DigitalOutput,  /* use as output pin */
-  1,  /* initial value */
-  };
+	GPIO_PinInit(GPIOB, 22u, &LED_configOutput);
+	GPIO_PinInit(GPIOB, 21u, &LED_configOutput);
+	GPIO_ClearPinsOutput(GPIOB, 1 << 21u);
 
-  GPIO_PinInit(GPIOB, 22u, &LED_configOutput);
-  GPIO_PinInit(GPIOB, 21u, &LED_configOutput);
-  GPIO_ClearPinsOutput(GPIOB, 1<<21u);
+	__enable_irq();
 
-  __enable_irq();
+	char logresult_buffer[SINGLE_ENTRY_SIZE * ENTRY_HOWMANY];
 
-  char buffer[50];
+	memset(logresult_buffer,0,sizeof(logresult_buffer));
 
-  acc_init(); //init accelerometer
+	acc_init(); //init accelerometer
 
-  initSPI();
+	InitPcUart();
+	EnableIRQ(UART0_RX_TX_IRQn);
+	initSPI();
+
+	FRESULT res;
+	FIL fil;
+	UINT bw,br;
+	br = 0;
+
+	static FATFS fss; //declare a fatfs object
+
+    res = f_mount(&fss, "0:", 0); //Mount sd card
+    SD_error(res,"mount"); //check for operation error
+
+    res = f_mkdir("testi");
+    res = f_open(&fil, "testi/testilog.txt", FA_WRITE | FA_READ | FA_OPEN_APPEND );
+    SD_error(res,"file open"); //check for operation error
+
+    char text[] = "Restart logging\r\n";
+
+    FSIZE_t size = f_size(&fil); //get size of opened file
+
+    //res = f_lseek(&fil, size); //move file pointer to end of file, so we can append to file without overwriting old
+    //SD_error(res, "seek");
+    f_printf(&fil, text);
 
 
-InitPcUart();
-EnableIRQ(UART0_RX_TX_IRQn);
+    res = f_close(&fil);
+    SD_error(res, "close");
 
-cardInit();
+	uint8_t buffer2[25];
 
-uint8_t tmp = 0;
+	while (1) {
 
+		for(uint8_t k = 0; k < ENTRY_HOWMANY; k++) //log some values to RAM
+		{
 
+			int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
+			int16_t acc_val_y = read_acc_axis(Y_AXIS);
+			int16_t acc_val_z = read_acc_axis(Z_AXIS);
 
-	while(tmp != 0x01)
-	{
-	SPIsend_command2(0x00,0,0x95,0);
+			printf("X axis %d Y axis %d Z axis %d\r\n",acc_val_x, acc_val_y, acc_val_z); //print to console
 
+			uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
+			sprintf(logresult_buffer+buffer_pointer,"%d;%d;%d\n",acc_val_x, acc_val_y, acc_val_z); //write new log value line
 
-	tmp = SPIread();
+			delay(100000);
 
-	sprintf(buffer,"read CMD0: %x\r\n",tmp);
-	UART_print(buffer);
-	delay(300000);
+		}
+
+		/*
+		 * Save log
+		 */
+
+		res = f_open(&fil, "testi/testilog.txt", FA_WRITE | FA_READ | FA_OPEN_APPEND );
+		SD_error(res,"file open"); //check for operation error
+
+		f_printf(&fil, logresult_buffer);
+
+		res = f_close(&fil);
+		SD_error(res, "close");
+
+		memset(logresult_buffer,0,sizeof(logresult_buffer)); //flush logging buffer
+		//delay(200000);
+
 	}
-
-	UART_print("SD korti jyllii\r\n");
-
-	SPIsend_command2(0x08,0x1aa,0x87,0);
-
-	tmp = SPIread();
-
-	sprintf(buffer,"read CMD8 1: %x\r\n",tmp);
-	UART_print(buffer);
-
-	tmp = SPIread();
-
-	sprintf(buffer,"read CMD8 2: %x\r\n",tmp);
-	UART_print(buffer);
-
-	tmp = SPIread();
-
-	sprintf(buffer,"read CMD8 3: %x\r\n",tmp);
-	UART_print(buffer);
-
-	tmp = SPIread();
-
-	sprintf(buffer,"read CMD8 4: %x\r\n",tmp);
-	UART_print(buffer);
-	delay(300000);
-
-  while(1)
-  {
-	  /*int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
-	  int16_t acc_val_y = read_acc_axis(Y_AXIS);
-	  int16_t acc_val_z = read_acc_axis(Z_AXIS);
-	  uint16_t adc_val = ADC_read16b();
-	  float acc_float = acc_val_x * 0.000244 * 9.81;
-
-
-	  char float_charbuf[10];
-
-	  //acc_val_x = (int)acc_float;
-
-	  itoa(acc_val_x,float_charbuf+ptr,10);
-
-	  acc_float -= acc_val_x;
-
-	  for(uint8_t ptr = 0;ptr<3;ptr++)
-	  {
-		  uint32_t buf = (int)(acc_float*10);
-
-	  }
-
-	 // sprintf(buffer,"X axis %d\r\n Y axis %d\r\n Z axis %d\r\n",(int)acc_float, acc_val_y, acc_val_z);
-	  sprintf(buffer,"X axis %d\r\n", adc_val);
-	  UART_print(buffer);
-
-
-	  sprintf(buffer,"X axis %f Y axis %d Z axis %d\r\n",acc_float, acc_val_y, acc_val_z);*/
-
-	  	 // UART_print(buffer);
-
-	  /*cardInit();
-	  SPIsend_command(0x00,0x95,0);
-	  SPIread();*/
-	  delay(200000);
-
-  }
 }
 
-void UART0_RX_TX_IRQHandler()
-{
+void UART0_RX_TX_IRQHandler() {
 	//GPIO_TogglePinsOutput(GPIOB,1<<21u);
 
-	UART_ClearStatusFlags(UART0,kUART_RxDataRegFullFlag);
-	UART_ClearStatusFlags(UART0,kUART_RxActiveEdgeFlag);
-	char ch = UART0 ->D;
+	UART_ClearStatusFlags(UART0, kUART_RxDataRegFullFlag);
+	UART_ClearStatusFlags(UART0, kUART_RxActiveEdgeFlag);
+	char ch = UART0->D;
 	rxBuffer[buf_ptr] = ch;
 	buf_ptr++;
 
-	if(ch == 0x0d)
-	{
+	if (ch == 0x0d) {
 		pc_str_rdy = 1;
 		buf_ptr = 0;
 
 	}
 
 }
-
 
