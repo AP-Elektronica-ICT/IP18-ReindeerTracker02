@@ -17,6 +17,8 @@ void initAdc(){
 
 	// PTC0 (X-axis), PTC1 (Y-axis), PTB2 (Z-axis), PTB3 (temp) ADC PIN
 
+	// -1G 26500 0G 32200 1G 39300
+
 		CLOCK_EnableClock(kCLOCK_Adc0);
 		CLOCK_EnableClock(kCLOCK_PortC);
 		CLOCK_EnableClock(kCLOCK_PortB);

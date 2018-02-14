@@ -72,9 +72,11 @@ int16_t read_acc_axis(uint8_t axis) {
 
 int16_t print_ext_acc_axis(void) {
 
-	uint16_t adc_acc_x = ADC_read16b(1);
-	uint16_t adc_acc_y = ADC_read16b(2);
-	uint16_t adc_acc_z = ADC_read16b(3);
+	int16_t adc_acc_x = ADC_read16b(1) - 32900;
+	int16_t adc_acc_y = ADC_read16b(2) - 32900;
+	int16_t adc_acc_z = ADC_read16b(3) - 32900;
+
+
 
 	float temp = 13.37;
 
