@@ -7,6 +7,7 @@
 
 #ifndef SOURCE_ADC_FUNC_H_
 #define SOURCE_ADC_FUNC_H_
+#include <stdint.h>
 
 void initAdc();
 unsigned short ADC_read16b(uint8_t channel_select);
