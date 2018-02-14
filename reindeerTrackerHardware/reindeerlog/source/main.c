@@ -17,7 +17,7 @@
 #include "sdcard_io.h"
 
 
-//#include "adc_func.h"
+#include "adc_func.h"
 
 
 #define RING_BUFFER_SIZE 64
@@ -188,47 +188,6 @@ uint8_t tmp = 0;
   {
 	  print_ext_acc_axis();
 
-
-	  /*
-	  int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
-	  int16_t acc_val_y = read_acc_axis(Y_AXIS);
-	  int16_t acc_val_z = read_acc_axis(Z_AXIS);
-
-	  */
-
-	 /*
-	  float acc_float = acc_val_x * 0.000244 * 9.81;
-
-
-	  char float_charbuf[10];
-
-	  //acc_val_x = (int)acc_float;
-
-	  itoa(acc_val_x,float_charbuf+ptr,10);
-
-	  acc_float -= acc_val_x;
-
-	  for(uint8_t ptr = 0;ptr<3;ptr++)
-	  {
-		  uint32_t buf = (int)(acc_float*10);
-
-	  }
-
-	  sprintf(buffer,"X axis %d\r\n Y axis %d\r\n Z axis %d\r\n",(int)acc_float, acc_val_y, acc_val_z);
-	  sprintf(buffer,"X axis %d\r\n", adc_val);
-	  UART_print(buffer);
-
-
-	  sprintf(buffer,"X axis %f Y axis %d Z axis %d\r\n",acc_float, acc_val_y, acc_val_z);
-*/
-	  //UART_print(buffer);
-
-
-	  /*
-	  cardInit();
-	  SPIsend_command(0x00,0x95,0);
-	  SPIread();
-*/
 
 	  delay(200000);
 
