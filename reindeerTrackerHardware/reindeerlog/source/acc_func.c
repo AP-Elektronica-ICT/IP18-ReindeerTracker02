@@ -6,11 +6,13 @@
  */
 
 #include <stdint.h>
-#include "i2c_func.h"
 #include <stdio.h>
+#include "i2c_func.h"
 #define X_AXIS 	0
 #define Y_AXIS 	1
 #define Z_AXIS 	2
+
+#include "adc_func.h"
 
 
 extern void UART_print(char *data);
@@ -79,20 +81,15 @@ int16_t print_ext_acc_axis(void) {
 
 
 	int16_t adc_acc_x = ADC_read16b(1) - 32900;
-	int16_t adc_acc_y = ADC_read16b(2) - 32900;
+	int16_t adc_acc_y = ADC_read16b(2) - 32900;		//Accelerometer GY-61
 	int16_t adc_acc_z = ADC_read16b(3) - 32900;
-
-	sprintf(buffer, "X:\t%d Y:\t%d Z:\t%d\r\n", adc_acc_x, adc_acc_y, adc_acc_z);
-	printf(buffer);
-
-/*
 	int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
 	int16_t acc_val_y = read_acc_axis(Y_AXIS);
     int16_t acc_val_z = read_acc_axis(Z_AXIS);
 
-    sprintf(buffer,"X axis %d\r\n Y axis %d\r\n Z axis %d\r\n",acc_val_x, acc_val_y, acc_val_z);
-	printf(buffer);
-*/
+	printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
+	printf("X:%d\tY: %d\tZ: %d\r\n", acc_val_x, acc_val_y, acc_val_z);  //FRDM integrated accelerometer
+
 	return 0;
 
 }
