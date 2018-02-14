@@ -379,6 +379,7 @@ uint8_t SD_writeBlock(uint32_t addr, const uint8_t *buf) {
 	UART_print("SD_writeBlock\r\n");
 
 	uint16_t i, retry;
+	retry = 0;
 	uint8_t temp;
 
 	//addr = addr << 9; //shift for SDHC type card
@@ -422,10 +423,12 @@ uint8_t SD_writeBlock(uint32_t addr, const uint8_t *buf) {
 		return 1;
 	}
 
+
 	while (SPIread() == 0x00) {
 		retry++;
 
-		if (retry > 0xfffe) {
+		if (retry > 0xffffe) {
+			printf("write block retry error\r\n");
 			return 1;
 		}
 	}

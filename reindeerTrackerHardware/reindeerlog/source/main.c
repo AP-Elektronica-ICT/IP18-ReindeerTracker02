@@ -27,8 +27,8 @@
 #define Y_AXIS 	1
 #define Z_AXIS 	2
 
-#define SINGLE_ENTRY_SIZE 20
-#define ENTRY_HOWMANY 20
+#define SINGLE_ENTRY_SIZE 50
+#define ENTRY_HOWMANY 30
 
 char receiveData[RX_DATA_SIZE];
 char rxBuffer[RING_BUFFER_SIZE];
@@ -114,7 +114,11 @@ int main(void) {
 	BOARD_InitPins();
 	BOARD_InitDebugConsole();
 	initI2C();
-	//initAdc();
+	initAdc();
+	BOARD_InitPins();
+	BOARD_InitDebugConsole();
+	initI2C();
+	initAdc();
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
@@ -126,8 +130,15 @@ int main(void) {
 
 	__enable_irq();
 
+	 /*
+	  * allocate space from RAM to store logging data block
+	  *
+	  * one log line is SINGLE_ENTRY_SIZE bytes long
+	  * ENTRY_HOWMANY is how many lines we want to store at once
+	  *
+	  */
 	char logresult_buffer[SINGLE_ENTRY_SIZE * ENTRY_HOWMANY];
-
+	//flush space with zeros just to be sure
 	memset(logresult_buffer,0,sizeof(logresult_buffer));
 
 	acc_init(); //init accelerometer
@@ -136,10 +147,11 @@ int main(void) {
 	EnableIRQ(UART0_RX_TX_IRQn);
 	initSPI();
 
-	FRESULT res;
-	FIL fil;
-	UINT bw,br;
-	br = 0;
+	/*
+	 * Declare FatFs objects
+	 */
+	FRESULT res; //FatFs operation result code object
+	FIL fil; //working file object
 
 	static FATFS fss; //declare a fatfs object
 
@@ -150,54 +162,64 @@ int main(void) {
     res = f_open(&fil, "testi/testilog.txt", FA_WRITE | FA_READ | FA_OPEN_APPEND );
     SD_error(res,"file open"); //check for operation error
 
+    //FSIZE_t size = f_size(&fil);
+    //f_expand(&fil, 20000,1);
+   // res = f_lseek(&fil, size);
+    //SD_error(res, "seek");
+
     char text[] = "Restart logging\r\n";
 
-    FSIZE_t size = f_size(&fil); //get size of opened file
+    f_printf(&fil, text); //print text to file
 
-    //res = f_lseek(&fil, size); //move file pointer to end of file, so we can append to file without overwriting old
-    //SD_error(res, "seek");
-    f_printf(&fil, text);
-
-
-    res = f_close(&fil);
+    res = f_close(&fil); //close file for now
     SD_error(res, "close");
-
-	uint8_t buffer2[25];
 
 	while (1) {
 
-		for(uint8_t k = 0; k < ENTRY_HOWMANY; k++) //log some values to RAM
+		for(uint8_t p = 0; p<200;p++) //Do a 200 cycle logging run
 		{
 
-			int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
-			int16_t acc_val_y = read_acc_axis(Y_AXIS);
-			int16_t acc_val_z = read_acc_axis(Z_AXIS);
+			for(uint8_t k = 0; k < ENTRY_HOWMANY; k++) //log some values to RAM
+			{
 
-			printf("X axis %d Y axis %d Z axis %d\r\n",acc_val_x, acc_val_y, acc_val_z); //print to console
+				/*int16_t adc_acc_x = ADC_read16b(1) - 32900;
+				int16_t adc_acc_y = ADC_read16b(2) - 32900;		//Accelerometer GY-61
+				int16_t adc_acc_z = ADC_read16b(3) - 32900;*/
+				int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
+				int16_t acc_val_y = read_acc_axis(Y_AXIS); //read accelerometer y axis	//FRDM integrated accelerometer
+				int16_t acc_val_z = read_acc_axis(Z_AXIS); //read accelerometer z axis
 
-			uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
-			sprintf(logresult_buffer+buffer_pointer,"%d;%d;%d\n",acc_val_x, acc_val_y, acc_val_z); //write new log value line
+				//printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
+				printf("X:%d\tY: %d\tZ: %d\r\n", acc_val_x, acc_val_y, acc_val_z);  //FRDM integrated accelerometer
 
-			delay(100000);
+				uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
+				sprintf(logresult_buffer+buffer_pointer,"%d;%d;%d\r\n",acc_val_x, acc_val_y, acc_val_z);// adc_acc_x, adc_acc_y, adc_acc_z); //write new log value line
 
-		}
+				delay(100000);
 
-		/*
-		 * Save log
-		 */
+			}
 
-		res = f_open(&fil, "testi/testilog.txt", FA_WRITE | FA_READ | FA_OPEN_APPEND );
-		SD_error(res,"file open"); //check for operation error
+			/*
+			 * Save log
+			 */
 
-		f_printf(&fil, logresult_buffer);
+			res = f_open(&fil, "testi/testilog.txt", FA_WRITE | FA_READ | FA_OPEN_APPEND );
+			SD_error(res,"file open"); //check for operation error
 
-		res = f_close(&fil);
-		SD_error(res, "close");
+			f_printf(&fil, logresult_buffer);
+			res = f_close(&fil);
+			SD_error(res, "close");
 
-		memset(logresult_buffer,0,sizeof(logresult_buffer)); //flush logging buffer
-		//delay(200000);
-
+			memset(logresult_buffer,0,sizeof(logresult_buffer)); //flush logging buffer
 	}
+
+	printf("ready\r\n");
+
+	while(1){ //stop here after logging run
+		;
+	}
+	}
+
 }
 
 void UART0_RX_TX_IRQHandler() {
