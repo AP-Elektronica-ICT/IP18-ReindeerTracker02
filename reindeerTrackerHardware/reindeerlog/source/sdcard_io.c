@@ -84,7 +84,7 @@ uint8_t SD_sendCommand(uint8_t cmdidx, uint32_t arg, uint8_t crc) {
 
 	SPIread();SPIread(); //Cycle some clocks to bus to prepare SD card (maybe not necessary)
 
-	cmdidx |= 0x40;
+	cmdidx |= 0x40; // OR the 6th bit to cmdidx byte. This is the "transmission" bit which is always 1
 
 	DSPI_MasterWriteDataBlocking(SPI1, &config, cmdidx);
 
@@ -189,10 +189,6 @@ uint8_t cardInit() {
 	tmp = SPIread();
 	tmp = SPIread();
 	tmp = SPIread();
-
-	tmp = SD_sendCommand(55, 0x00000000, 0xff); //Send CMD55 (only prepares for ACMD41)
-
-	printf("read CMD55: %x\r\n", tmp);
 
 	tmp = 5;
 

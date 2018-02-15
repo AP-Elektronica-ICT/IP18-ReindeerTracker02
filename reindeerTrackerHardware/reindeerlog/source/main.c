@@ -5,25 +5,23 @@
 #include "board.h"
 #include "pin_mux.h"
 #include "clock_config.h"
+
 #include "fsl_gpio.h"
 #include "fsl_uart.h"
 #include "fsl_port.h"
 #include "fsl_common.h"
 #include "fsl_i2c.h"
-#include <stdio.h>
-#include "acc_func.h"
-#include "fsl_dspi.h"
-#include "i2c_func.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "acc_func.h"
+#include "i2c_func.h"
 #include "sdcard_io.h"
 #include "ff.h"
-#include "stdlib.h"
-
-
 #include "adc_func.h"
 
-#define RING_BUFFER_SIZE 64
-#define RX_DATA_SIZE     64
+
 #define X_AXIS 	0
 #define Y_AXIS 	1
 #define Z_AXIS 	2
@@ -31,21 +29,11 @@
 #define SINGLE_ENTRY_SIZE 50
 #define ENTRY_HOWMANY 30
 
-char receiveData[RX_DATA_SIZE];
-char rxBuffer[RING_BUFFER_SIZE];
-
-char SimcomRecBuf[RING_BUFFER_SIZE];
-
-volatile uint8_t buf_ptr = 0, simcom_buf_ptr = 0;
-volatile uint8_t pc_str_rdy = 0, simcom_str_rdy = 0, carriages = 0;
-
 void delay(uint32_t del) {
 	for (; del > 1; del--) {
 		__asm("nop");
 	}
 }
-
-
 
 /*
  * InitPcUart
@@ -64,8 +52,6 @@ void InitPcUart() {
 	PORT_SetPinMux(PORTB, 16u, kPORT_MuxAlt3); /* PORTB16 (pin 62) is configured as UART0_RX */
 	PORT_SetPinMux(PORTB, 17u, kPORT_MuxAlt3); /* PORTB17 (pin 63) is configured as UART0_TX */
 
-	//UART_Deinit(UART0);
-
 	uart_config_t user_config;
 	UART_GetDefaultConfig(&user_config);
 	user_config.baudRate_Bps = 57600U;
@@ -73,7 +59,6 @@ void InitPcUart() {
 	user_config.enableRx = true;
 	UART_Init(UART0, &user_config, 20971520U); //initialize with default clock speed 20,971520 Mhz
 
-	//UART_EnableInterrupts(UART0, kUART_RxDataRegFullInterruptEnable);
 }
 
 int main(void) {
@@ -105,6 +90,7 @@ int main(void) {
 	  * ENTRY_HOWMANY is how many lines we want to store at once
 	  *
 	  */
+
 	char logresult_buffer[SINGLE_ENTRY_SIZE * ENTRY_HOWMANY];
 
 	//flush space with zeros just to be sure
@@ -149,18 +135,19 @@ int main(void) {
 			for(uint8_t k = 0; k < ENTRY_HOWMANY; k++) //Read all 6 values from accelerometers and save to logging buffer for ENTRY_HOWMANY times
 			{
 
-				/*int16_t adc_acc_x = ADC_read16b(1) - 32900;
+				int16_t adc_acc_x = ADC_read16b(1) - 32900;
 				int16_t adc_acc_y = ADC_read16b(2) - 32900;		//Accelerometer GY-61
-				int16_t adc_acc_z = ADC_read16b(3) - 32900;*/
+				int16_t adc_acc_z = ADC_read16b(3) - 32900;
 				int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
 				int16_t acc_val_y = read_acc_axis(Y_AXIS); //read accelerometer y axis	//FRDM integrated accelerometer
 				int16_t acc_val_z = read_acc_axis(Z_AXIS); //read accelerometer z axis
 
-				//printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
+				printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
 				printf("X:%d\tY: %d\tZ: %d\r\n", acc_val_x, acc_val_y, acc_val_z);  //FRDM integrated accelerometer
 
 				uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
-				sprintf(logresult_buffer+buffer_pointer,"%d;%d;%d\r\n",acc_val_x, acc_val_y, acc_val_z);// adc_acc_x, adc_acc_y, adc_acc_z); //write new log value line
+				sprintf(logresult_buffer+buffer_pointer,"%d;%d;%d;%d;%d;%d\r\n",acc_val_x, acc_val_y, acc_val_z,
+						adc_acc_x, adc_acc_y, adc_acc_z);// adc_acc_x, adc_acc_y, adc_acc_z); //write new log value line
 
 				delay(150000);
 			}
