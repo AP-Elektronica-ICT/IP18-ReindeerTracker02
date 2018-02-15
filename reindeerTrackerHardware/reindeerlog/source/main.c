@@ -27,6 +27,7 @@
 #define X_AXIS 	0
 #define Y_AXIS 	1
 #define Z_AXIS 	2
+#define USE_SD 0
 
 #define SINGLE_ENTRY_SIZE 50
 #define ENTRY_HOWMANY 30
@@ -115,6 +116,7 @@ int main(void) {
 	InitPcUart();
 	initSPI();
 
+#if USE_SD
 	/*
 	 * Declare FatFs objects
 	 */
@@ -141,6 +143,8 @@ int main(void) {
     res = f_close(&fil); //close file for now
     SD_error(res, "close");
 
+#endif
+
 	while (1) {
 
 		for(;;) //Do a 200 cycle logging run
@@ -152,12 +156,22 @@ int main(void) {
 				/*int16_t adc_acc_x = ADC_read16b(1) - 32900;
 				int16_t adc_acc_y = ADC_read16b(2) - 32900;		//Accelerometer GY-61
 				int16_t adc_acc_z = ADC_read16b(3) - 32900;*/
+
+				uint16_t temp = (65535 - ADC_read16b(4) - 22750) / 473;
+				/* 22c temperature, Vout = 1,6V, Vcc = 3,3V,
+				R = 10,69ohm @23.5c
+				R = 3893ohm @50c Vout = 0.925V @50c ADC = 18369
+				R = 135.2K @- 40c Vout = 3.073V     ADC = 61027
+				ADC = 48933 @ 0c
+				ADC = 473 per celsius
+				 */
+
 				int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
 				int16_t acc_val_y = read_acc_axis(Y_AXIS); //read accelerometer y axis	//FRDM integrated accelerometer
 				int16_t acc_val_z = read_acc_axis(Z_AXIS); //read accelerometer z axis
 
 				//printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
-				printf("X:%d\tY: %d\tZ: %d\r\n", acc_val_x, acc_val_y, acc_val_z);  //FRDM integrated accelerometer
+				printf("X:%d\tY: %d\tZ: %d Temp: %d\r\n", acc_val_x, acc_val_y, acc_val_z, temp);  //FRDM integrated accelerometer
 
 				uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
 				sprintf(logresult_buffer+buffer_pointer,"%d;%d;%d\r\n",acc_val_x, acc_val_y, acc_val_z);// adc_acc_x, adc_acc_y, adc_acc_z); //write new log value line
@@ -170,7 +184,7 @@ int main(void) {
 			/*
 			 * Save log
 			 */
-
+#if USE_SD
 			res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_OPEN_APPEND );
 			SD_error(res,"file open"); //check for operation error
 
@@ -179,9 +193,10 @@ int main(void) {
 			SD_error(res, "close");
 
 			GPIO_SetPinsOutput(GPIOB, 1<<22u);
-
+#endif
 			memset(logresult_buffer,0,sizeof(logresult_buffer)); //flush logging buffer
-	}
+
+		}
 
 	printf("ready\r\n");
 

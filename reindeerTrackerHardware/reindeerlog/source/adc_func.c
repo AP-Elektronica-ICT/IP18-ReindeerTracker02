@@ -64,7 +64,7 @@ unsigned short ADC_read16b(uint8_t channel_select) {
 		channel_config.channelNumber = 13;
 		break;
 	default:
-		UART_print("No channel selected");
+		printf("No channel selected");
 		return 0;
 	}
 
