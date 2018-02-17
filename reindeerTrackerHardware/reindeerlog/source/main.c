@@ -26,7 +26,9 @@
 #define Y_AXIS 	1
 #define Z_AXIS 	2
 
-#define SINGLE_ENTRY_SIZE 50
+#define USE_SD 1
+
+#define SINGLE_ENTRY_SIZE 54
 #define ENTRY_HOWMANY 30
 
 void delay(uint32_t del) {
@@ -101,6 +103,7 @@ int main(void) {
 	InitPcUart();
 	initSPI();
 
+#if USE_SD
 	/*
 	 * Declare FatFs objects
 	 */
@@ -112,6 +115,36 @@ int main(void) {
     SD_error(res,"mount"); //check for operation error
 
     res = f_mkdir("testi");
+
+    /*
+     * First open log count file to update number of logs.
+     * This is to catch if the logging has failed and restarted...
+     */
+    res = f_open(&fil, "testi/logcount.txt", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+    SD_error(res,"conf file open");
+
+    //Make a small read buffer for the log count..
+    char readbuf[10];
+    //Read the string from the file. After this, file pointer will point to the end of string
+    f_gets(readbuf, 10, &fil);
+
+    //Convert the log counter number to integer. Log counter number is the 5th char of the string
+    uint8_t log_count = atoi(&readbuf[4]);
+
+    printf("log count %s %d\r\n",readbuf,log_count);
+    delay(7000000);
+
+    //Increment log counter
+    log_count++;
+
+    //Now we need to reset the file pointer so we can overwrite new counter value..
+    fil.fptr = 0;
+    //Overwrite new
+    f_printf(&fil,"LOG:%d\r\n",log_count);
+
+    res = f_close(&fil); //Close count file..
+    SD_error(res, "close");
+
     res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_CREATE_ALWAYS );
     SD_error(res,"file open"); //check for operation error
 
@@ -120,12 +153,14 @@ int main(void) {
    // res = f_lseek(&fil, size);
     //SD_error(res, "seek");
 
-    char text[] = "Restart logging\r\n";
+    char text[] = "Start logging\r\n Int acc X;Int acc Y;Int acc Z;Ext acc X;Ext acc Y;Ext acc Z;Ext temp\r\n";
 
     f_printf(&fil, text); //print text to file
 
     res = f_close(&fil); //close file for now
     SD_error(res, "close");
+
+#endif
 
 	while (1) {
 
@@ -138,16 +173,32 @@ int main(void) {
 				int16_t adc_acc_x = ADC_read16b(1) - 32900;
 				int16_t adc_acc_y = ADC_read16b(2) - 32900;		//Accelerometer GY-61
 				int16_t adc_acc_z = ADC_read16b(3) - 32900;
+
+				int32_t temp = (65535 - ADC_read16b(4)) / 541 -34;
+				//int32_t temp = ADC_read16b(4);
+				/* 22c temperature, Vout = 1,6V, Vcc = 3,3V,
+				R = 10,69ohm @23.5c
+				R = 3893ohm @50c Vout = 0.925V @50c ADC = 18369
+				R = 135.2K @- 40c Vout = 3.073V     ADC = 61027
+
+				measured ADC @3c = 45600
+				measured ADC @64c = 12700
+				541 units per C seems to give good accuracy
+				at 0C temp shows 3c too low
+				at 40c temp shows 3c too high
+				 */
+
 				int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
 				int16_t acc_val_y = read_acc_axis(Y_AXIS); //read accelerometer y axis	//FRDM integrated accelerometer
 				int16_t acc_val_z = read_acc_axis(Z_AXIS); //read accelerometer z axis
 
-				printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
-				printf("X:%d\tY: %d\tZ: %d\r\n", acc_val_x, acc_val_y, acc_val_z);  //FRDM integrated accelerometer
+				//printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
+				printf("X:%d\tY: %d\tZ: %d Temp: %d\r\n", acc_val_x, acc_val_y, acc_val_z, (int)temp);  //FRDM integrated accelerometer
+
 
 				uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
-				sprintf(logresult_buffer+buffer_pointer,"%d;%d;%d;%d;%d;%d\r\n",acc_val_x, acc_val_y, acc_val_z,
-						adc_acc_x, adc_acc_y, adc_acc_z);// adc_acc_x, adc_acc_y, adc_acc_z); //write new log value line
+				sprintf(logresult_buffer+buffer_pointer,"%d;%d;%d;%d;%d;%d;%d\r\n",acc_val_x, acc_val_y, acc_val_z,
+						adc_acc_x, adc_acc_y, adc_acc_z, (int)temp);// adc_acc_x, adc_acc_y, adc_acc_z); //write new log value line
 
 				delay(150000);
 			}
@@ -157,7 +208,7 @@ int main(void) {
 			/*
 			 * Save log
 			 */
-
+#if USE_SD
 			res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_OPEN_APPEND );
 			SD_error(res,"file open"); //check for operation error
 
@@ -166,9 +217,10 @@ int main(void) {
 			SD_error(res, "close");
 
 			GPIO_SetPinsOutput(GPIOB, 1<<22u);
-
+#endif
 			memset(logresult_buffer,0,sizeof(logresult_buffer)); //flush logging buffer
-	}
+
+		}
 
 	printf("ready\r\n");
 
