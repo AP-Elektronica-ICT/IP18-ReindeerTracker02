@@ -86,7 +86,7 @@ int main(void) {
 	  * X(frdm);Y(frdm);Z(frdm);X(GY61);Y(GY61);Z(GY61)\r\n
 	  *
 	  * one value takes 7 bytes: 6 digit value + ; separator
-	  * \r\n takes 2 bytes
+	  * \r\n takes 2 bytes (\ is combined with the letter in compilation)
 	  * so one entry line is 43 bytes
 	  *
 	  * ENTRY_HOWMANY is how many lines we want to store at once
@@ -128,7 +128,7 @@ int main(void) {
     //Read the string from the file. After this, file pointer will point to the end of string
     f_gets(readbuf, 10, &fil);
 
-    //Convert the log counter number to integer. Log counter number is the 5th char of the string
+    //Convert the log counter number to integer using AsciiToInteger(atoi). Log counter number is the 5th char of the string
     uint8_t log_count = atoi(&readbuf[4]);
 
     printf("log count %s %d\r\n",readbuf,log_count);
@@ -145,7 +145,7 @@ int main(void) {
     res = f_close(&fil); //Close count file..
     SD_error(res, "close");
 
-    res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_CREATE_ALWAYS );
+    res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_CREATE_ALWAYS ); //open log file, overwrite old
     SD_error(res,"file open"); //check for operation error
 
     //FSIZE_t size = f_size(&fil);
@@ -164,7 +164,7 @@ int main(void) {
 
 	while (1) {
 
-		for(;;) //Do a 200 cycle logging run
+		for(;;) //This was a 200 cycle loop but changed to infinite for now
 		{
 
 			for(uint8_t k = 0; k < ENTRY_HOWMANY; k++) //Read all 6 values from accelerometers and save to logging buffer for ENTRY_HOWMANY times
@@ -177,7 +177,7 @@ int main(void) {
 				int32_t temp = (65535 - ADC_read16b(4)) / 541 -34;
 				//int32_t temp = ADC_read16b(4);
 				/* 22c temperature, Vout = 1,6V, Vcc = 3,3V,
-				R = 10,69ohm @23.5c
+				R = 10,69kohm @23.5c
 				R = 3893ohm @50c Vout = 0.925V @50c ADC = 18369
 				R = 135.2K @- 40c Vout = 3.073V     ADC = 61027
 
@@ -197,13 +197,14 @@ int main(void) {
 
 
 				uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
+
 				sprintf(logresult_buffer+buffer_pointer,"%d;%d;%d;%d;%d;%d;%d\r\n",acc_val_x, acc_val_y, acc_val_z,
-						adc_acc_x, adc_acc_y, adc_acc_z, (int)temp);// adc_acc_x, adc_acc_y, adc_acc_z); //write new log value line
+						adc_acc_x, adc_acc_y, adc_acc_z, (int)temp); //write new log value line
 
 				delay(150000);
 			}
 
-			GPIO_ClearPinsOutput(GPIOB, 1<<22u);
+			GPIO_ClearPinsOutput(GPIOB, 1<<22u); //light red LED
 
 			/*
 			 * Save log
@@ -216,7 +217,7 @@ int main(void) {
 			res = f_close(&fil);
 			SD_error(res, "close");
 
-			GPIO_SetPinsOutput(GPIOB, 1<<22u);
+			GPIO_SetPinsOutput(GPIOB, 1<<22u); //turn off red LED
 #endif
 			memset(logresult_buffer,0,sizeof(logresult_buffer)); //flush logging buffer
 

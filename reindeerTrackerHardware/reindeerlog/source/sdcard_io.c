@@ -26,7 +26,7 @@ void initSPI() {
 	 * PTE 4: CS
 	 * PTE 6: card detect
 	 *
-	 * SPI1 use Alt1 mux
+	 * SPI1 use Alt2 mux
 	 *
 	 */
 	PORT_SetPinMux(PORTE, 1u, kPORT_MuxAlt7);
@@ -86,19 +86,20 @@ uint8_t SD_sendCommand(uint8_t cmdidx, uint32_t arg, uint8_t crc) {
 
 	cmdidx |= 0x40; // OR the 6th bit to cmdidx byte. This is the "transmission" bit which is always 1
 
-	DSPI_MasterWriteDataBlocking(SPI1, &config, cmdidx);
+	DSPI_MasterWriteDataBlocking(SPI1, &config, cmdidx); //write first byte which is the command index
 
-	DSPI_MasterWriteDataBlocking(SPI1, &config, (uint8_t) (arg  >> 24));
-	DSPI_MasterWriteDataBlocking(SPI1, &config, (uint8_t) (arg >> 16));
+	DSPI_MasterWriteDataBlocking(SPI1, &config, (uint8_t) (arg  >> 24)); //split 32-bit argument word to four 8-bit bytes
+	DSPI_MasterWriteDataBlocking(SPI1, &config, (uint8_t) (arg >> 16)); //and send one at a time
 	DSPI_MasterWriteDataBlocking(SPI1, &config, (uint8_t) (arg >> 8));
 	DSPI_MasterWriteDataBlocking(SPI1, &config, (uint8_t) (arg & 0x000000ff));
 
-	DSPI_MasterWriteDataBlocking(SPI1, &config, crc);
+	DSPI_MasterWriteDataBlocking(SPI1, &config, crc); //last send the crc byte
 
 	uint8_t resp = 0x80;
 	do
 	{
-		resp = SPIread();
+		resp = SPIread(); //cycle the clock bus until we receive a byte where first bit is '0'
+							//this means the card has received the command
 	}
 	while(resp & 0x80);
 
@@ -246,7 +247,7 @@ uint8_t SD_readBlock(uint32_t addr, uint8_t *buf) {
 
 	do
 	{
-		tmp = SD_sendCommand(17, addr, 0x01); //Send CMD17
+		tmp = SD_sendCommand(17, addr, 0x01); //Send CMD17 which is the read command
 
 		if(tmp == 0x40)
 		{
@@ -255,7 +256,7 @@ uint8_t SD_readBlock(uint32_t addr, uint8_t *buf) {
 	}
 	while (tmp != 0);
 
-	while (SPIread() != 0xFE){} //wait for token 0xFE
+	while (SPIread() != 0xFE){} //wait for card to send 0xFE response token which means card will send the data block
 
 	if (tmp == 0)
 	{
@@ -266,6 +267,7 @@ uint8_t SD_readBlock(uint32_t addr, uint8_t *buf) {
 			//printf("%x %x\r\n",i,buf[i]);
 		}
 
+		//receive 2 CRC bytes, but we do not use them
 		tmp = SPIread();
 		//printf("read after read block: %x\r\n",tmp);
 		tmp = SPIread();
@@ -282,7 +284,6 @@ uint8_t SD_readBlock(uint32_t addr, uint8_t *buf) {
 }
 
 uint8_t SD_readMultipleBlock(uint32_t addr, uint8_t *buf, uint8_t count) {
-
 
 	printf("SD_readMultipleBlock\r\n");
 	uint16_t i;

@@ -9,9 +9,7 @@
 #define SOURCE_SDCARD_IO_H_
 
 #include <stdint.h>
-//#include "diskio.h"
 
-//DSTATUS sd_disk_initialize(uint8_t physicalDrive);
 
 void initSPI();
 
