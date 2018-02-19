@@ -20,15 +20,16 @@
 #include "sdcard_io.h"
 #include "ff.h"
 #include "adc_func.h"
-
+#include "fsl_rtc.h"
 
 #define X_AXIS 	0
 #define Y_AXIS 	1
 #define Z_AXIS 	2
+#define ACC_TEMP 3
 
-#define USE_SD 1
+#define USE_SD 0
 
-#define SINGLE_ENTRY_SIZE 54
+#define SINGLE_ENTRY_SIZE 62
 #define ENTRY_HOWMANY 30
 
 void delay(uint32_t del) {
@@ -47,6 +48,8 @@ void delay(uint32_t del) {
  *
  */
 
+
+
 void InitPcUart() {
 	CLOCK_EnableClock(kCLOCK_PortB);
 	CLOCK_EnableClock(kCLOCK_Uart0);
@@ -62,6 +65,16 @@ void InitPcUart() {
 	UART_Init(UART0, &user_config, 20971520U); //initialize with default clock speed 20,971520 Mhz
 
 }
+void initRtc(){
+
+	rtc_config_t rtc_config;
+	RTC_GetDefaultConfig(&rtc_config);
+	rtc_config.supervisorAccess = true;
+	RTC_Init(RTC0, &rtc_config);
+	RTC0->CR |= RTC_CR_OSCE_MASK;
+	RTC0->SR |= 0x00000010;
+
+}
 
 int main(void) {
 
@@ -69,6 +82,10 @@ int main(void) {
 	BOARD_InitDebugConsole();
 	initI2C();
 	initAdc();
+	initRtc();
+	uint32_t seconds = 0;
+	//rtc_datetime_t date_config;
+
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
@@ -99,6 +116,9 @@ int main(void) {
 	memset(logresult_buffer,0,sizeof(logresult_buffer));
 
 	acc_init(); //init accelerometer
+
+
+
 
 	InitPcUart();
 	initSPI();
@@ -161,7 +181,7 @@ int main(void) {
     SD_error(res, "close");
 
 #endif
-
+    delay(7000000);
 	while (1) {
 
 		for(;;) //This was a 200 cycle loop but changed to infinite for now
@@ -173,6 +193,7 @@ int main(void) {
 				int16_t adc_acc_x = ADC_read16b(1) - 32900;
 				int16_t adc_acc_y = ADC_read16b(2) - 32900;		//Accelerometer GY-61
 				int16_t adc_acc_z = ADC_read16b(3) - 32900;
+
 
 				int32_t temp = (65535 - ADC_read16b(4)) / 541 -34;
 				//int32_t temp = ADC_read16b(4);
@@ -191,14 +212,18 @@ int main(void) {
 				int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
 				int16_t acc_val_y = read_acc_axis(Y_AXIS); //read accelerometer y axis	//FRDM integrated accelerometer
 				int16_t acc_val_z = read_acc_axis(Z_AXIS); //read accelerometer z axis
-
+				int16_t acc_temp = read_acc_axis(ACC_TEMP); //read accelerometer temperature.
 				//printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
-				printf("X:%d\tY: %d\tZ: %d Temp: %d\r\n", acc_val_x, acc_val_y, acc_val_z, (int)temp);  //FRDM integrated accelerometer
+				//printf("X:%d\tY: %d\tZ: %d Temp: %d\r\n", acc_val_x, acc_val_y, acc_val_z, (int)temp);  //FRDM integrated accelerometer
+				//seconds = RTC0->TSR;
+				//printf("clock %ld\r\n", seconds);
 
+				printf("clock %d\r\n", acc_temp);
 
+					GPIO_SetPinsOutput(GPIOB, 1<<22u); //turn off red LED
 				uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
 
-				sprintf(logresult_buffer+buffer_pointer,"%d;%d;%d;%d;%d;%d;%d\r\n",acc_val_x, acc_val_y, acc_val_z,
+				sprintf(logresult_buffer+buffer_pointer,"%ld;%d;%d;%d;%d;%d;%d;%d\r\n",seconds,acc_val_x, acc_val_y, acc_val_z,
 						adc_acc_x, adc_acc_y, adc_acc_z, (int)temp); //write new log value line
 
 				delay(150000);
@@ -222,6 +247,9 @@ int main(void) {
 			memset(logresult_buffer,0,sizeof(logresult_buffer)); //flush logging buffer
 
 		}
+
+	  //UART_print(buffer);
+
 
 	printf("ready\r\n");
 

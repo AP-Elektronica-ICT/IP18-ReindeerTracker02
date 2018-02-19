@@ -8,9 +8,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "i2c_func.h"
-#define X_AXIS 	0
-#define Y_AXIS 	1
-#define Z_AXIS 	2
+//#define X_AXIS 	0
+//#define Y_AXIS 	1
+//#define Z_AXIS 	2
 
 #include "adc_func.h"
 
@@ -21,10 +21,11 @@ unsigned char buffer[50];
 
 void acc_init(){
 	 accWriteReg(0x2a,0x01); //write accelerometer CTRL_REG1 (active mode)
-
+	 accWriteReg(0x5B,0x03); //Acc temperature sensor enable
 
 }
 int16_t read_acc_axis(uint8_t axis) {
+	int8_t acc_temp = 0;
 
 	switch ( axis ) {
 	case 0:
@@ -39,11 +40,18 @@ int16_t read_acc_axis(uint8_t axis) {
 		axis = 0x05;
 		break;
 
+	case 3:
+		acc_temp = accReadReg(0x51);
+		return (int16_t)acc_temp;
+		break;
+
 	}
 
 	  uint16_t acc_val = 0; //init a 16-bit variable to store 14-bit acceleration value
 
 	  uint8_t acc_buf = accReadReg(axis); //read MSB bits of acceleration value
+
+
 
 	  acc_val = acc_buf; //read MSB bits to the 16 bit variable
 
@@ -77,20 +85,5 @@ int16_t read_acc_axis(uint8_t axis) {
 	  return out;
 }
 
-int16_t print_ext_acc_axis(void) {
 
-
-	int16_t adc_acc_x = ADC_read16b(1) - 32900;
-	int16_t adc_acc_y = ADC_read16b(2) - 32900;		//Accelerometer GY-61
-	int16_t adc_acc_z = ADC_read16b(3) - 32900;
-	int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
-	int16_t acc_val_y = read_acc_axis(Y_AXIS);
-    int16_t acc_val_z = read_acc_axis(Z_AXIS);
-
-	printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
-	printf("X:%d\tY: %d\tZ: %d\r\n", acc_val_x, acc_val_y, acc_val_z);  //FRDM integrated accelerometer
-
-	return 0;
-
-}
 
