@@ -11,6 +11,7 @@
 #include "fsl_port.h"
 #include "fsl_common.h"
 #include "fsl_i2c.h"
+#include "fsl_dspi.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +32,8 @@
 
 #define SINGLE_ENTRY_SIZE 65
 #define ENTRY_HOWMANY 30
+
+uint32_t uartClkSrcFreq;
 
 void delay(uint32_t del) {
 	for (; del > 1; del--) {
@@ -60,7 +63,7 @@ void InitPcUart() {
 	PORT_SetPinMux(PORTB, 16u, kPORT_MuxAlt3); /* PORTB16 (pin 62) is configured as UART0_RX */
 	PORT_SetPinMux(PORTB, 17u, kPORT_MuxAlt3); /* PORTB17 (pin 63) is configured as UART0_TX */
 
-	uint32_t uartClkSrcFreq = BOARD_DEBUG_UART_CLK_FREQ;
+uartClkSrcFreq= BOARD_DEBUG_UART_CLK_FREQ;
 
 	uart_config_t user_config;
 	UART_GetDefaultConfig(&user_config);
@@ -83,13 +86,15 @@ void initRtc(){
 
 int main(void) {
 
-	CLOCK_BootToBlpiMode(0, kMCG_IrcFast, 0x3);
+	CLOCK_BootToBlpiMode(MCG_SC_FCRDIV(0), kMCG_IrcFast, 0x3);
 	BOARD_InitPins();
 	BOARD_InitDebugConsole();
 	initI2C();
 	initAdc();
 	initRtc();
 	uint32_t seconds = 0;
+
+
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
@@ -121,9 +126,12 @@ int main(void) {
 
 	acc_init(); //init accelerometer
 	InitPcUart();
-	initSPI();
+	initSpiConfig();
+
 
 #if USE_SD
+
+	SD_startComm();
 	/*
 	 * Declare FatFs objects
 	 */
@@ -175,12 +183,12 @@ int main(void) {
     res = f_close(&fil); //close file for now
     SD_error(res, "close");
 
+    DSPI_Deinit(SPI1);
+	SPI_deactivate_pins();
+
 #endif
     //delay(7000000);
 	while (1) {
-
-		for(;;) //This was a 200 cycle loop but changed to infinite for now
-		{
 
 			for(uint8_t k = 0; k < ENTRY_HOWMANY; k++) //Read all 6 values from accelerometers and save to logging buffer for ENTRY_HOWMANY times
 			{
@@ -227,14 +235,18 @@ int main(void) {
 			 * Save log
 			 */
 
-			//CLOCK_BootToFeiMode(kMCG_Dmx32Default, kMCG_DrsMid, &ClockWaitDelay);
 #if USE_SD
+
+			SD_startComm();
 			res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_OPEN_APPEND );
 			SD_error(res,"file open"); //check for operation error
 
 			f_printf(&fil, logresult_buffer);
 			res = f_close(&fil);
 			SD_error(res, "close");
+
+			DSPI_Deinit(SPI1);
+			SPI_deactivate_pins();
 
 #else
 			delay(15000);
@@ -243,13 +255,10 @@ int main(void) {
 
 			GPIO_ClearPinsOutput(GPIOB, 1<<22u); //light red LED
 
-			delay(100);
+			delay(20);
 			memset(logresult_buffer,0,sizeof(logresult_buffer)); //flush logging buffer
 			GPIO_SetPinsOutput(GPIOB, 1<<22u); //turn off red LED
 
-			//CLOCK_BootToBlpiMode(0, kMCG_IrcFast, 0x3);
-
-		}
 
 	}
 

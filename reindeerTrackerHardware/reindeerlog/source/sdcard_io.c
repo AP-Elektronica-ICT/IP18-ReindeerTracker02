@@ -13,9 +13,20 @@
 
 dspi_command_data_config_t config;
 
+dspi_master_config_t spi_config;
+dspi_master_ctar_config_t spi_ctar_config;
+
+extern uint32_t uartClkSrcFreq;
+
 #define SD_DEBUG_MODE 0
 
-void initSPI() {
+/*
+ * initSpiConfig
+ *
+ * This is called just once to fill the config structs for SPI
+ */
+
+void initSpiConfig() {
 
 	//use SPI1 module
 	/*
@@ -24,7 +35,7 @@ void initSPI() {
 	 * PTE 2: SCLK
 	 * PTE 3: MOSI
 	 * PTE 4: CS
-	 * PTE 6: card detect
+	 * PTE 6: card detect(not used)
 	 *
 	 * SPI1 use Alt2 mux
 	 *
@@ -33,34 +44,53 @@ void initSPI() {
 	PORT_SetPinMux(PORTE, 2u, kPORT_MuxAlt2);
 	PORT_SetPinMux(PORTE, 3u, kPORT_MuxAlt7);
 	PORT_SetPinMux(PORTE, 4u, kPORT_MuxAlt2);
-	PORT_SetPinMux(PORTE, 6u, kPORT_MuxAlt2);
 
-	CLOCK_EnableClock(kCLOCK_Spi1);
+	spi_config.ctarConfig = spi_ctar_config;
+	spi_config.enableContinuousSCK = false;
+	spi_config.pcsActiveHighOrLow = kDSPI_PcsActiveLow;
+	spi_config.whichCtar = 0;
+	spi_config.enableModifiedTimingFormat = false;
+	spi_config.enableRxFifoOverWrite = false;
+	spi_config.samplePoint = 0U;
 
-	// Clear all registers
-	SPI1->SR = (SPI_SR_TCF_MASK | SPI_SR_EOQF_MASK | SPI_SR_TFUF_MASK
-			| SPI_SR_TFFF_MASK | SPI_SR_RFOF_MASK | SPI_SR_RFDF_MASK); //clear the status bits (write-1-to-clear)
+	spi_ctar_config.baudRate = 250000;
+	spi_ctar_config.bitsPerFrame = 8;
 
-	SPI1->TCR = 0;
-	SPI1->RSER = 0;
-	SPI1->PUSHR = 0; //Clear out PUSHR register. Since DSPI is halted, nothing should be transmitted
-
-	SPI1->MCR |= 0x80000000; //enable master mode
-	SPI1->MCR &= ~0x00004000; //enable clocks
-
-	SPI1->CTAR[0] = 0;
-	SPI1->CTAR[0] |= 0x38000000; //Set FMSZ (frame size) to 8 bits, so we'll send std bytes
-	SPI1->CTAR[0] |= 0x5; //Set Baud Rate Scaler 64 to have 320KHz SCK frequency
-
-	SPI1 ->MCR &= ~0x1; //Start SPI
-
-	//Baud rate calculation: FCPU / PBR * ( (1+PBR) / BR )
-
-	config.isPcsContinuous = true;
+	config.isPcsContinuous = false;
 	config.clearTransferCount = true;
 	config.isEndOfQueue = false;
 	config.whichCtar = 0;
 	config.whichPcs = 1;
+
+}
+
+/*
+ * SD_startComm
+ *
+ * Wrapper function to start communication with SD card. Set pin mux for SPI and initialize SPI with current settings
+ */
+
+void SD_startComm()
+{
+	PORT_SetPinMux(PORTE, 1u, kPORT_MuxAlt7);
+	PORT_SetPinMux(PORTE, 2u, kPORT_MuxAlt2);
+	PORT_SetPinMux(PORTE, 3u, kPORT_MuxAlt7);
+	PORT_SetPinMux(PORTE, 4u, kPORT_MuxAlt2);
+	DSPI_MasterInit(SPI1, &spi_config, uartClkSrcFreq );
+}
+
+/*
+ * SPI_deactivate_pins
+ *
+ * Deactivate SPI pins back to disabled state to lower power consumption.
+ */
+
+void SPI_deactivate_pins()
+{
+	PORT_SetPinMux(PORTE, 1u, kPORT_PinDisabledOrAnalog);
+	PORT_SetPinMux(PORTE, 2u, kPORT_PinDisabledOrAnalog);
+	PORT_SetPinMux(PORTE, 3u, kPORT_PinDisabledOrAnalog);
+	PORT_SetPinMux(PORTE, 4u, kPORT_PinDisabledOrAnalog);
 }
 
 /*
@@ -103,7 +133,10 @@ uint8_t SD_sendCommand(uint8_t cmdidx, uint32_t arg, uint8_t crc) {
 	}
 	while(resp & 0x80);
 
-	//printf("Got response: %x\r\n",resp);
+
+#if SD_DEBUG_MODE
+	printf("Got response: %x\r\n",resp);
+#endif
 
 	return resp;
 }
@@ -124,8 +157,6 @@ uint8_t SPIread() {
 	printf("SPIread\r\n");
 	#endif
 
-	SPI1->MCR |= 0x00010000; //Chip Select low during transfer
-
 	DSPI_MasterWriteDataBlocking(SPI1, &config, 0xff);
 
 	while (!(SPI1->SR & SPI_SR_RFDF_MASK))
@@ -134,6 +165,7 @@ uint8_t SPIread() {
 	data = SPI1->POPR; //read
 
 	SPI1->SR = SPI_SR_RFDF_MASK; // clear the reception flag (not self-clearing)
+
 
 	return data;
 }
@@ -148,7 +180,6 @@ uint8_t SPIread() {
 void SPIsend(uint8_t data) {
 
 	//printf("SPIsend\r\n");
-	SPI1->MCR |= 0x00010000;
 	DSPI_MasterWriteDataBlocking(SPI1, &config, data);
 
 }
@@ -162,18 +193,29 @@ void SPIsend(uint8_t data) {
 
 uint8_t cardInit() {
 
+	uint8_t tmp = 0; //variable for getting card command success status
+
+	/*Change to slow baudrate for init*/
+
+	spi_ctar_config.baudRate = 250000; //set 250khz baudrate
+	config.isPcsContinuous = true; //keep CS asserted between transfers
+
+	spi_config.ctarConfig = spi_ctar_config; //update spi_config as ctar_config is now changed
+
+	DSPI_MasterInit(SPI1, &spi_config, uartClkSrcFreq ); //Reinit SPI with new settings
+	DSPI_StartTransfer(SPI1);
+
 	/*
 	 * To initialize SD card first set CS high and send MOSI '1' for 80 cycles
 	 */
-
-	uint8_t tmp = 0; //variable for getting card command success status
-
 	for (uint8_t i = 0; i < 10; i++) {
 
 		SPI1->MCR &= ~0x00010000; //put CS high
 		DSPI_MasterWriteDataBlocking(SPI1, &config, 0xff);
 
 	}
+
+	SPI1->MCR |= 0x00010000; //put CS active state to low, now CS works as usually(active low)
 
 	while (tmp != 0x01) //Send CMD0 (card software reset) until card responds with R1 response, with idle state bit(0x01)
 	{
@@ -220,10 +262,14 @@ uint8_t cardInit() {
 
 	}
 
-	SPI1 ->MCR |= 0x1; //Halt SPI
-	SPI1->CTAR[0] &= ~0x5; //Switch to fast baudrate. First clear old setting
-	SPI1->CTAR[0] |= 0x80000000; //Write DBR (double baudrate bit)
-	SPI1 ->MCR &= ~0x1; //Start SPI again
+	/* Now switch to full speed on SPI*/
+
+	spi_ctar_config.baudRate = 2000000;
+	config.isPcsContinuous = false;
+	spi_config.ctarConfig = spi_ctar_config;
+
+	DSPI_MasterInit(SPI1, &spi_config, uartClkSrcFreq );
+	DSPI_StartTransfer(SPI1);
 
 	return 0;
 }

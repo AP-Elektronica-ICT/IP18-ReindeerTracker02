@@ -11,7 +11,8 @@
 #include <stdint.h>
 
 
-void initSPI();
+void initSpiConfig();
+void SD_startComm();
 
 uint8_t SD_sendCommand(uint8_t cmdidx, uint32_t arg, uint8_t crc);
 void SPIsend(uint8_t data);
@@ -24,7 +25,7 @@ uint8_t SD_writeBlock(uint32_t addr, const uint8_t *buf);
 
 uint8_t SPIread();
 
-
+void SPI_deactivate_pins();
 uint8_t cardInit();
 uint8_t SD_getCID_CSD(uint8_t cmd,uint8_t *buf);
 
