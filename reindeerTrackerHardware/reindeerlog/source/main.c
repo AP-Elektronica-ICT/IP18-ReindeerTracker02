@@ -11,6 +11,7 @@
 #include "fsl_port.h"
 #include "fsl_common.h"
 #include "fsl_i2c.h"
+#include "fsl_lptmr.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +28,7 @@
 #define Z_AXIS 	2
 #define ACC_TEMP 3
 
-#define USE_SD 1
+#define USE_SD 0
 
 #define SINGLE_ENTRY_SIZE 65
 #define ENTRY_HOWMANY 30
@@ -81,6 +82,17 @@ void initRtc(){
 
 }
 
+void initTimer() {
+
+	lptmr_config_t lptmr_config;
+
+	LPTMR_GetDefaultConfig(&lptmr_config);
+	lptmr_config.bypassPrescaler = false;
+	lptmr_config.value = kLPTMR_Prescale_Glitch_5;
+	EnableIRQ(LPTMR0_IRQn);
+	LPTMR_Init(LPTMR0, &lptmr_config);
+	LPTMR_SetTimerPeriod(LPTMR0, 1200);
+}
 int main(void) {
 
 	CLOCK_BootToBlpiMode(0, kMCG_IrcFast, 0x3);
@@ -89,6 +101,7 @@ int main(void) {
 	initI2C();
 	initAdc();
 	initRtc();
+	initTimer();
 	uint32_t seconds = 0;
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
@@ -190,6 +203,7 @@ int main(void) {
 				int16_t adc_acc_z = ADC_read16b(3) - 32900;
 
 				int32_t temp = (65535 - ADC_read16b(4)) / 541 -34;
+
 				//int32_t temp = ADC_read16b(4);
 				/* 22c temperature, Vout = 1,6V, Vcc = 3,3V,
 				R = 10,69kohm @23.5c
@@ -219,8 +233,20 @@ int main(void) {
 
 
 				//printf(logresult_buffer+buffer_pointer);
+				// prescaler 64, 62,5KHz clock
 
-				delay(10000);
+				LPTMR0 -> CNR = 0;
+
+				LPTMR_StartTimer(LPTMR0);
+				LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);		//Sets Timer Interrupt Enable bit to 1
+
+
+				//GPIO_PortToggle(GPIOB, 1<<21u);				// Lediä perkele!!
+				delay(100000);
+
+				LPTMR_DisableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);
+				LPTMR_StopTimer(LPTMR0);
+
 			}
 
 			/*
@@ -253,6 +279,13 @@ int main(void) {
 
 	}
 
+
+}
+
+void LPTMR0_IRQHandler() {
+
+	LPTMR0 -> CSR |= LPTMR_CSR_TCF_MASK;		// Clear the interrupt flag
+	GPIO_PortToggle(GPIOB, 1<<21u);				// Lediä perkele!!
 
 }
 
