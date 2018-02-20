@@ -213,18 +213,22 @@ int main(void) {
 				int16_t acc_val_y = read_acc_axis(Y_AXIS); //read accelerometer y axis	//FRDM integrated accelerometer
 				int16_t acc_val_z = read_acc_axis(Z_AXIS); //read accelerometer z axis
 				int16_t acc_temp = read_acc_axis(ACC_TEMP); //read accelerometer temperature.
-				//printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
-				//printf("X:%d\tY: %d\tZ: %d Temp: %d\r\n", acc_val_x, acc_val_y, acc_val_z, (int)temp);  //FRDM integrated accelerometer
-				//seconds = RTC0->TSR;
-				//printf("clock %ld\r\n", seconds);
 
-				printf("clock %d\r\n", acc_temp);
+				//printf("ADC_X: %d\t ADC_Y: %d\t ADC_Z: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
+				//printf("ACC_X: %d\t ACC_Y: %d\t ACC_Z: %d Temp: %d\r\n", acc_val_x, acc_val_y, acc_val_z, (int)temp);  //FRDM integrated accelerometer
+				seconds = RTC0->TSR;
+				//printf("Seconds: %ld\r\n", seconds);
+
+				//printf("Int Temp: %d\r\n", acc_temp);
 
 					GPIO_SetPinsOutput(GPIOB, 1<<22u); //turn off red LED
-				uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
+				//uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
 
-				sprintf(logresult_buffer+buffer_pointer,"%ld;%d;%d;%d;%d;%d;%d;%d\r\n",seconds,acc_val_x, acc_val_y, acc_val_z,
-						adc_acc_x, adc_acc_y, adc_acc_z, (int)temp); //write new log value line
+				printf("%ld;%d;%d;%d;%d;%d;%d;%d;%d\r\n",seconds,acc_val_x, acc_val_y, acc_val_z,
+									adc_acc_x, adc_acc_y, adc_acc_z, (int)temp, acc_temp); //write new log value line
+
+				//sprintf(logresult_buffer+buffer_pointer,"%ld;%d;%d;%d;%d;%d;%d;%d\r\n",seconds,acc_val_x, acc_val_y, acc_val_z,
+					//	adc_acc_x, adc_acc_y, adc_acc_z, (int)temp); //write new log value line
 
 				delay(150000);
 			}
