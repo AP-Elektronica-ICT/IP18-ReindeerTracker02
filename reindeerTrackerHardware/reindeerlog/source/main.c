@@ -207,6 +207,7 @@ int main(void) {
 				int16_t acc_val_y = read_acc_axis(Y_AXIS); //read accelerometer y axis	//FRDM integrated accelerometer
 				int16_t acc_val_z = read_acc_axis(Z_AXIS); //read accelerometer z axis
 				int16_t acc_temp = read_acc_axis(ACC_TEMP); //read accelerometer temperature.
+
 				//printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
 				//printf("X:%d\tY: %d\tZ: %d Temp: %d\r\n", acc_val_x, acc_val_y, acc_val_z, (int)temp);  //FRDM integrated accelerometer
 				seconds = RTC0->TSR;
@@ -215,6 +216,7 @@ int main(void) {
 
 				sprintf(logresult_buffer+buffer_pointer,"%ld;%d;%d;%d;%d;%d;%d;%d;%d\r\n",seconds,acc_val_x, acc_val_y, acc_val_z,
 						adc_acc_x, adc_acc_y, adc_acc_z, (int)temp, acc_temp); //write new log value line
+
 
 				//printf(logresult_buffer+buffer_pointer);
 
