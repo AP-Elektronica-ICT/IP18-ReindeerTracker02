@@ -27,15 +27,20 @@
 #define Z_AXIS 	2
 #define ACC_TEMP 3
 
-#define USE_SD 0
+#define USE_SD 1
 
-#define SINGLE_ENTRY_SIZE 62
+#define SINGLE_ENTRY_SIZE 65
 #define ENTRY_HOWMANY 30
 
 void delay(uint32_t del) {
 	for (; del > 1; del--) {
 		__asm("nop");
 	}
+}
+
+void ClockWaitDelay()
+{
+	delay(1000);
 }
 
 /*
@@ -48,8 +53,6 @@ void delay(uint32_t del) {
  *
  */
 
-
-
 void InitPcUart() {
 	CLOCK_EnableClock(kCLOCK_PortB);
 	CLOCK_EnableClock(kCLOCK_Uart0);
@@ -57,12 +60,14 @@ void InitPcUart() {
 	PORT_SetPinMux(PORTB, 16u, kPORT_MuxAlt3); /* PORTB16 (pin 62) is configured as UART0_RX */
 	PORT_SetPinMux(PORTB, 17u, kPORT_MuxAlt3); /* PORTB17 (pin 63) is configured as UART0_TX */
 
+	uint32_t uartClkSrcFreq = BOARD_DEBUG_UART_CLK_FREQ;
+
 	uart_config_t user_config;
 	UART_GetDefaultConfig(&user_config);
 	user_config.baudRate_Bps = 57600U;
 	user_config.enableTx = true;
 	user_config.enableRx = true;
-	UART_Init(UART0, &user_config, 20971520U); //initialize with default clock speed 20,971520 Mhz
+	UART_Init(UART0, &user_config, uartClkSrcFreq); //initialize with default clock speed 20,971520 Mhz
 
 }
 void initRtc(){
@@ -78,14 +83,13 @@ void initRtc(){
 
 int main(void) {
 
+	CLOCK_BootToBlpiMode(0, kMCG_IrcFast, 0x3);
 	BOARD_InitPins();
 	BOARD_InitDebugConsole();
 	initI2C();
 	initAdc();
 	initRtc();
 	uint32_t seconds = 0;
-	//rtc_datetime_t date_config;
-
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
@@ -116,10 +120,6 @@ int main(void) {
 	memset(logresult_buffer,0,sizeof(logresult_buffer));
 
 	acc_init(); //init accelerometer
-
-
-
-
 	InitPcUart();
 	initSPI();
 
@@ -152,7 +152,7 @@ int main(void) {
     uint8_t log_count = atoi(&readbuf[4]);
 
     printf("log count %s %d\r\n",readbuf,log_count);
-    delay(7000000);
+    //delay(7000000);
 
     //Increment log counter
     log_count++;
@@ -168,12 +168,7 @@ int main(void) {
     res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_CREATE_ALWAYS ); //open log file, overwrite old
     SD_error(res,"file open"); //check for operation error
 
-    //FSIZE_t size = f_size(&fil);
-    //f_expand(&fil, 20000,1);
-   // res = f_lseek(&fil, size);
-    //SD_error(res, "seek");
-
-    char text[] = "Start logging\r\n Int acc X;Int acc Y;Int acc Z;Ext acc X;Ext acc Y;Ext acc Z;Ext temp\r\n";
+    char text[] = "Start logging\r\n Time since start(s);Int acc X;Int acc Y;Int acc Z;Ext acc X;Ext acc Y;Ext acc Z;Ext temp;Int temp\r\n";
 
     f_printf(&fil, text); //print text to file
 
@@ -181,7 +176,7 @@ int main(void) {
     SD_error(res, "close");
 
 #endif
-    delay(7000000);
+    //delay(7000000);
 	while (1) {
 
 		for(;;) //This was a 200 cycle loop but changed to infinite for now
@@ -193,7 +188,6 @@ int main(void) {
 				int16_t adc_acc_x = ADC_read16b(1) - 32900;
 				int16_t adc_acc_y = ADC_read16b(2) - 32900;		//Accelerometer GY-61
 				int16_t adc_acc_z = ADC_read16b(3) - 32900;
-
 
 				int32_t temp = (65535 - ADC_read16b(4)) / 541 -34;
 				//int32_t temp = ADC_read16b(4);
@@ -215,25 +209,23 @@ int main(void) {
 				int16_t acc_temp = read_acc_axis(ACC_TEMP); //read accelerometer temperature.
 				//printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
 				//printf("X:%d\tY: %d\tZ: %d Temp: %d\r\n", acc_val_x, acc_val_y, acc_val_z, (int)temp);  //FRDM integrated accelerometer
-				//seconds = RTC0->TSR;
-				//printf("clock %ld\r\n", seconds);
+				seconds = RTC0->TSR;
 
-				printf("clock %d\r\n", acc_temp);
-
-					GPIO_SetPinsOutput(GPIOB, 1<<22u); //turn off red LED
 				uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
 
-				sprintf(logresult_buffer+buffer_pointer,"%ld;%d;%d;%d;%d;%d;%d;%d\r\n",seconds,acc_val_x, acc_val_y, acc_val_z,
-						adc_acc_x, adc_acc_y, adc_acc_z, (int)temp); //write new log value line
+				sprintf(logresult_buffer+buffer_pointer,"%ld;%d;%d;%d;%d;%d;%d;%d;%d\r\n",seconds,acc_val_x, acc_val_y, acc_val_z,
+						adc_acc_x, adc_acc_y, adc_acc_z, (int)temp, acc_temp); //write new log value line
 
-				delay(150000);
+				//printf(logresult_buffer+buffer_pointer);
+
+				delay(10000);
 			}
-
-			GPIO_ClearPinsOutput(GPIOB, 1<<22u); //light red LED
 
 			/*
 			 * Save log
 			 */
+
+			//CLOCK_BootToFeiMode(kMCG_Dmx32Default, kMCG_DrsMid, &ClockWaitDelay);
 #if USE_SD
 			res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_OPEN_APPEND );
 			SD_error(res,"file open"); //check for operation error
@@ -242,20 +234,21 @@ int main(void) {
 			res = f_close(&fil);
 			SD_error(res, "close");
 
-			GPIO_SetPinsOutput(GPIOB, 1<<22u); //turn off red LED
+#else
+			delay(15000);
+
 #endif
+
+			GPIO_ClearPinsOutput(GPIOB, 1<<22u); //light red LED
+
+			delay(100);
 			memset(logresult_buffer,0,sizeof(logresult_buffer)); //flush logging buffer
+			GPIO_SetPinsOutput(GPIOB, 1<<22u); //turn off red LED
+
+			//CLOCK_BootToBlpiMode(0, kMCG_IrcFast, 0x3);
 
 		}
 
-	  //UART_print(buffer);
-
-
-	printf("ready\r\n");
-
-	while(1){ //stop here after logging run
-		;
-	}
 	}
 
 
