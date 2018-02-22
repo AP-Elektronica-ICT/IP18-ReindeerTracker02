@@ -10,8 +10,6 @@
 #include "fsl_i2c.h"
 #include "fsl_port.h"
 
-
-
 void initI2C()
 {
 
@@ -26,8 +24,7 @@ void initI2C()
     config.baudRate_Bps = 400000;
     config.glitchFilterWidth = 0;
 
-
-	I2C_MasterInit(I2C0, &config, 20971520U);
+	I2C_MasterInit(I2C0, &config, 4000000U);
 
 	PORT_SetPinMux(PORTE, 24u, kPORT_MuxAlt5);
 	PORT_SetPinMux(PORTE, 25u, kPORT_MuxAlt5);
