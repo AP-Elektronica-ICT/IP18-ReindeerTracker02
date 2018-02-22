@@ -9,6 +9,7 @@ import {environment} from '../environments/environment';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { InfoComponent } from './home/info/info.component';
+import { SensorDataComponent } from './sensor-data/sensor-data.component';
 import { NewDeviceComponent } from './manifacturer/new-device/new-device.component';
 import { ManifacturerComponent } from './manifacturer/manifacturer.component';
 import {AppRoutingModule} from "./app-routing.module";
@@ -24,6 +25,7 @@ import {HttpClientModule} from "@angular/common/http";
     NavbarComponent,
     HomeComponent,
     InfoComponent,
+    SensorDataComponent,
     NewDeviceComponent,
     ManifacturerComponent,
     ManifacturerHomeComponent
