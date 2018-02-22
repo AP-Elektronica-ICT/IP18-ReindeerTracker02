@@ -7,11 +7,12 @@ var deviceSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    userID: String,
+    userIDs: [String],
     activated: {
         type: Boolean,
         default: false
     },
+    isAlive: Boolean,
     name: String,
     logs: [{
         lat: {

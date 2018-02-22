@@ -111,7 +111,7 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
 
 router.get('/users/:userID/devices', function (req, res) {
     const userID = req.params.userID;
-    Device.find({userID: userID})
+    Device.find({userIDs: userID})
         .then(function (devices) {
             //TODO: add other fields that need to be displayed in user list
             res.json(getBasicDeviceInfo(devices, ['deviceKey', 'lastLog']))
