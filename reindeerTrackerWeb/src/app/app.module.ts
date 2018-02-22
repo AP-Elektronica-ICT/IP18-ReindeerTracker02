@@ -9,6 +9,7 @@ import {environment} from '../environments/environment';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { InfoComponent } from './home/info/info.component';
+import { SensorDataComponent } from './sensor-data/sensor-data.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { InfoComponent } from './home/info/info.component';
     AppComponent,
     NavbarComponent,
     HomeComponent,
-    InfoComponent
+    InfoComponent,
+    SensorDataComponent
   ],
   imports: [
     BrowserModule,
