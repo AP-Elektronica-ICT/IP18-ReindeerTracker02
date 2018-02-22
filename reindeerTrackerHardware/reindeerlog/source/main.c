@@ -91,7 +91,7 @@ void initTimer() {
 	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_0;
 	EnableIRQ(LPTMR0_IRQn);
 	LPTMR_Init(LPTMR0, &lptmr_config);
-	LPTMR_SetTimerPeriod(LPTMR0, 3000);  // 3000 for 20hz data rate
+	LPTMR_SetTimerPeriod(LPTMR0, 3000);  // 3000 for 20hz data rat
 }
 
 void LPTMR0_IRQHandler() {
