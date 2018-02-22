@@ -9,6 +9,10 @@ import {environment} from '../environments/environment';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { InfoComponent } from './home/info/info.component';
+import { NewDeviceComponent } from './manifacturer/new-device/new-device.component';
+import { ManifacturerComponent } from './manifacturer/manifacturer.component';
+import {AppRoutingModule} from "./app-routing.module";
+import { ManifacturerHomeComponent } from './manifacturer/manifacturer-home/manifacturer-home.component';
 
 
 @NgModule({
@@ -16,13 +20,17 @@ import { InfoComponent } from './home/info/info.component';
     AppComponent,
     NavbarComponent,
     HomeComponent,
-    InfoComponent
+    InfoComponent,
+    NewDeviceComponent,
+    ManifacturerComponent,
+    ManifacturerHomeComponent
   ],
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
