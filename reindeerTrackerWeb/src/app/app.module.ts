@@ -13,6 +13,9 @@ import { NewDeviceComponent } from './manifacturer/new-device/new-device.compone
 import { ManifacturerComponent } from './manifacturer/manifacturer.component';
 import {AppRoutingModule} from "./app-routing.module";
 import { ManifacturerHomeComponent } from './manifacturer/manifacturer-home/manifacturer-home.component';
+import {FormsModule} from "@angular/forms";
+import {HttpModule} from "@angular/http";
+import {HttpClientModule} from "@angular/common/http";
 
 
 @NgModule({
@@ -27,6 +30,8 @@ import { ManifacturerHomeComponent } from './manifacturer/manifacturer-home/mani
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     AngularFireAuthModule,

@@ -1,13 +1,28 @@
 <h1>Register new device</h1>
-<p>A list of device keys can be added.</p>
-<form>
+<div class="alert alert-success" role="alert" *ngIf="showDevicesAddedMessage">
+  all devices added.
+</div>
+<div class="alert alert-danger" role="alert" *ngFor="let error of deviceErrors">
+  Device <b>{{error}}</b> already exists.
+</div>
+<form (submit)="onSubmitKey(keyFrom)" #keyFrom="ngForm">
   <div class="form-group">
-    <label for="key">Key</label>
-    <input type="text" class="form-control" id="key" placeholder="Ex: AAAAA">
+    <label for="key">New device key</label>
+    <input type="number" class="form-control" id="key" placeholder="Ex: 123456" name="key" ngModel required autocomplete="off">
+  </div>
+  <div class="alert alert-danger" role="alert" *ngIf="errorMessage.length > 0">
+    {{errorMessage}}
   </div>
   <button class="btn btn-primary">Add key</button>
 </form>
 <div class="keys">
   <h3>Keys</h3>
-  <p>No keys added yet</p>
+  <p *ngIf="newKeyList.length === 0">No keys to validate.</p>
+  <div *ngFor="let key of newKeyList;let i = index" class="key">
+    <span (click)="removeKey(i)" class="icon">
+      <i class="fas fa-times-circle"></i>
+    </span>
+    {{key}}
+  </div>
+  <button class="btn btn-success" [disabled]="newKeyList.length === 0" (click)="validateKeys()">Validate keys</button>
 </div>
