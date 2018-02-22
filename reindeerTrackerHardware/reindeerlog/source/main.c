@@ -11,6 +11,7 @@
 #include "fsl_port.h"
 #include "fsl_common.h"
 #include "fsl_i2c.h"
+#include "fsl_smc.h"
 
 #include "fsl_lptmr.h"
 
@@ -32,10 +33,10 @@
 #define Z_AXIS 	2
 #define ACC_TEMP 3
 
-#define USE_SD 0
+#define USE_SD 1
 
 #define SINGLE_ENTRY_SIZE 65
-#define ENTRY_HOWMANY 30
+#define ENTRY_HOWMANY 200
 
 uint32_t uartClkSrcFreq;
 
@@ -95,10 +96,24 @@ void initTimer() {
 	LPTMR_GetDefaultConfig(&lptmr_config);
 	lptmr_config.bypassPrescaler = false;
 	lptmr_config.value = kLPTMR_Prescale_Glitch_5;
+	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_0;
 	EnableIRQ(LPTMR0_IRQn);
 	LPTMR_Init(LPTMR0, &lptmr_config);
-	LPTMR_SetTimerPeriod(LPTMR0, 1200);
+	LPTMR_SetTimerPeriod(LPTMR0, 2400);  // 1200 original value
 }
+
+void LPTMR0_IRQHandler() {
+
+	LPTMR0 -> CSR |= LPTMR_CSR_TCF_MASK;		// Clear the interrupt flag
+
+	while ( LPTMR0 -> CSR & LPTMR_CSR_TCF_MASK  ) {
+
+	}
+
+	//GPIO_PortToggle(GPIOB, 1<<21u);				// Lediä perkele!!
+
+}
+
 int main(void) {
 
 	CLOCK_BootToBlpiMode(MCG_SC_FCRDIV(0), kMCG_IrcFast, 0x3);
@@ -109,7 +124,7 @@ int main(void) {
 	initRtc();
 	initTimer();
 	uint32_t seconds = 0;
-
+	LPTMR_StartTimer(LPTMR0);
 
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
@@ -135,7 +150,7 @@ int main(void) {
 	  *
 	  */
 
-	char logresult_buffer[SINGLE_ENTRY_SIZE * ENTRY_HOWMANY];
+	static char logresult_buffer[SINGLE_ENTRY_SIZE * ENTRY_HOWMANY];
 
 	//flush space with zeros just to be sure
 	memset(logresult_buffer,0,sizeof(logresult_buffer));
@@ -203,7 +218,11 @@ int main(void) {
 	SPI_deactivate_pins();
 
 #endif
+
+	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
     //delay(7000000);
+
+
 	while (1) {
 
 			for(uint8_t k = 0; k < ENTRY_HOWMANY; k++) //Read all 6 values from accelerometers and save to logging buffer for ENTRY_HOWMANY times
@@ -246,17 +265,45 @@ int main(void) {
 				//printf(logresult_buffer+buffer_pointer);
 				// prescaler 64, 62,5KHz clock
 
+
+
 				LPTMR0 -> CNR = 0;
 
-				LPTMR_StartTimer(LPTMR0);
+				NVIC_ClearPendingIRQ(LPTMR0_IRQn);
+
+				//__disable_irq();
 				LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);		//Sets Timer Interrupt Enable bit to 1
 
 
-				//GPIO_PortToggle(GPIOB, 1<<21u);				// Lediä perkele!!
-				delay(100000);
+				SMC ->PMPROT |= 0x20;
+				SMC ->PMCTRL |= 0x02;
 
+				uint8_t dummy = SMC ->PMCTRL;
+
+				SCB ->SCR |= 0x04;
+
+				__asm("nop");
+				__asm("nop");
+				__asm("nop");
+				__asm("wfi");
+
+
+
+				/*SMC_PreEnterStopModes();
+				SMC_SetPowerModeStop(SMC, 0);
+				//SMC_SetPowerModeWait(SMC);
+				SMC_PostExitStopModes();
+				//SMC_SetPowerModeRun(SMC);*/
+
+				//delay(80000);
+
+				//GPIO_PortToggle(GPIOB, 1<<21u);				// Lediä perkele!!
+/*
+				uint32_t timerCount = LPTMR_GetCurrentTimerCount(LPTMR0);
+				printf("TimerCount: %ld \r\n", timerCount);
+*/
 				LPTMR_DisableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);
-				LPTMR_StopTimer(LPTMR0);
+				//LPTMR_StopTimer(LPTMR0);
 
 			}
 
@@ -294,12 +341,6 @@ int main(void) {
 
 }
 
-void LPTMR0_IRQHandler() {
-
-	LPTMR0 -> CSR |= LPTMR_CSR_TCF_MASK;		// Clear the interrupt flag
-	GPIO_PortToggle(GPIOB, 1<<21u);				// Lediä perkele!!
-
-}
 
 
 

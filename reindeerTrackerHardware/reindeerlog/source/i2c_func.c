@@ -23,7 +23,7 @@ void initI2C()
 
 	config.enableMaster = true;
     config.enableStopHold = false;
-    config.baudRate_Bps = 100000;
+    config.baudRate_Bps = 400000;
     config.glitchFilterWidth = 0;
 
 

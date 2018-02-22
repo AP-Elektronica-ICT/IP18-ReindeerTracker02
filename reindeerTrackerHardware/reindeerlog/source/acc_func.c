@@ -20,7 +20,7 @@ extern void UART_print(char *data);
 unsigned char buffer[50];
 
 void acc_init(){
-	 accWriteReg(0x2a,0x01); //write accelerometer CTRL_REG1 (active mode)
+	 accWriteReg(0x2a,0x1d); //write accelerometer CTRL_REG1 (active mode)
 	 accWriteReg(0x5B,0x03); //Acc temperature sensor enable
 
 }

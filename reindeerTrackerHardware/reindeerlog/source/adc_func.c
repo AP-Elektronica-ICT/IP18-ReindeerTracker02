@@ -33,7 +33,7 @@ void initAdc(){
 	    adc_config.resolution = kADC16_ResolutionSE16Bit;
 	    adc_config.longSampleMode = kADC16_LongSampleDisabled;
 	    adc_config.enableHighSpeed = false;
-	    adc_config.enableLowPower = false;
+	    adc_config.enableLowPower = true;
 	    adc_config.enableContinuousConversion = false;
 
 	    ADC16_Init(ADC0, &adc_config);
