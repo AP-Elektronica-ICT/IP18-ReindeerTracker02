@@ -23,6 +23,12 @@
 #include "adc_func.h"
 #include "fsl_rtc.h"
 
+void delay(uint32_t del) {
+	for (; del > 1; del--) {
+		__asm("nop");
+	}
+}
+
 /*!
  * @brief Application entry point.
  */
@@ -31,10 +37,33 @@ int main(void) {
   BOARD_InitPins();
   BOARD_BootClockRUN();
   BOARD_InitDebugConsole();
+  initI2C();
+  initAdc();
+  configure_acc();
+  acc_init();
+  EnableIRQ(PORTC_IRQn);
+
+
+  static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
+  	1, /* initial value */
+  	};
+
+  GPIO_PinInit(GPIOB, 21u, &LED_configOutput);
+  GPIO_PinInit(GPIOB, 22u, &LED_configOutput);
+
+  while (true) {
+	  GPIO_ClearPinsOutput(GPIOB, 1<<22u); //light red LED
+	  delay(1000000);
+	  GPIO_SetPinsOutput(GPIOB, 1<<22u); //turn off red LED
+	  delay(1000000);
+  }
 
   /* Add your code here */
 
-  for(;;) { /* Infinite loop to avoid leaving the main function */
-    __asm("NOP"); /* something to use as a breakpoint stop while looping */
-  }
+}
+
+void PORTC_IRQHandler() {
+
+	PORTC -> PCR[13] |= 0x01000000;
+	GPIO_PortToggle(GPIOB, 1<<21u); //light red LED
 }
