@@ -12,11 +12,8 @@
 #include "fsl_common.h"
 #include "fsl_i2c.h"
 #include "fsl_smc.h"
-
 #include "fsl_lptmr.h"
-
 #include "fsl_dspi.h"
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,10 +43,6 @@ void delay(uint32_t del) {
 	}
 }
 
-void ClockWaitDelay()
-{
-	delay(1000);
-}
 
 /*
  * InitPcUart
@@ -92,25 +85,21 @@ void initRtc(){
 void initTimer() {
 
 	lptmr_config_t lptmr_config;
-
 	LPTMR_GetDefaultConfig(&lptmr_config);
 	lptmr_config.bypassPrescaler = false;
 	lptmr_config.value = kLPTMR_Prescale_Glitch_5;
 	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_0;
 	EnableIRQ(LPTMR0_IRQn);
 	LPTMR_Init(LPTMR0, &lptmr_config);
-	LPTMR_SetTimerPeriod(LPTMR0, 2400);  // 1200 original value
+	LPTMR_SetTimerPeriod(LPTMR0, 3000);  // 3000 for 20hz data rat
 }
 
 void LPTMR0_IRQHandler() {
 
 	LPTMR0 -> CSR |= LPTMR_CSR_TCF_MASK;		// Clear the interrupt flag
-
 	while ( LPTMR0 -> CSR & LPTMR_CSR_TCF_MASK  ) {
 
 	}
-
-	//GPIO_PortToggle(GPIOB, 1<<21u);				// Lediä perkele!!
 
 }
 
@@ -123,8 +112,9 @@ int main(void) {
 	initAdc();
 	initRtc();
 	initTimer();
-	uint32_t seconds = 0;
+
 	LPTMR_StartTimer(LPTMR0);
+	uint32_t seconds = 0, buffer_pointer = 0;
 
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
@@ -133,7 +123,6 @@ int main(void) {
 
 	GPIO_PinInit(GPIOB, 22u, &LED_configOutput);
 	GPIO_PinInit(GPIOB, 21u, &LED_configOutput);
-	//GPIO_ClearPinsOutput(GPIOB, 1 << 21u);
 
 	 /*
 	  * allocate space from RAM to store logging data block
@@ -158,7 +147,6 @@ int main(void) {
 	acc_init(); //init accelerometer
 	InitPcUart();
 	initSpiConfig();
-
 
 #if USE_SD
 
@@ -204,7 +192,11 @@ int main(void) {
     res = f_close(&fil); //Close count file..
     SD_error(res, "close");
 
-    res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_CREATE_ALWAYS ); //open log file, overwrite old
+    static char filename[25];
+
+    sprintf(filename,"testi/testilog%d.csv",log_count);
+
+    res = f_open(&fil, filename, FA_WRITE | FA_READ | FA_CREATE_ALWAYS ); //open log file, overwrite old
     SD_error(res,"file open"); //check for operation error
 
     char text[] = "Start logging\r\n Time since start(s);Int acc X;Int acc Y;Int acc Z;Ext acc X;Ext acc Y;Ext acc Z;Ext temp;Int temp\r\n";
@@ -217,24 +209,21 @@ int main(void) {
     DSPI_Deinit(SPI1);
 	SPI_deactivate_pins();
 
+	printf("clk %ld\r\n",uartClkSrcFreq);
+
 #endif
-
-	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
-    //delay(7000000);
-
 
 	while (1) {
 
-			for(uint8_t k = 0; k < ENTRY_HOWMANY; k++) //Read all 6 values from accelerometers and save to logging buffer for ENTRY_HOWMANY times
+			for(uint16_t k = 0; k < ENTRY_HOWMANY; k++) //Read all 6 values from accelerometers and save to logging buffer for ENTRY_HOWMANY times
 			{
 
 				int16_t adc_acc_x = ADC_read16b(1) - 32900;
 				int16_t adc_acc_y = ADC_read16b(2) - 32900;		//Accelerometer GY-61
 				int16_t adc_acc_z = ADC_read16b(3) - 32900;
 
-				int32_t temp = (65535 - ADC_read16b(4)) / 541 -34;
+				int32_t temp = (65535 - ADC_read16b(4)) / 541 -36;
 
-				//int32_t temp = ADC_read16b(4);
 				/* 22c temperature, Vout = 1,6V, Vcc = 3,3V,
 				R = 10,69kohm @23.5c
 				R = 3893ohm @50c Vout = 0.925V @50c ADC = 18369
@@ -242,9 +231,13 @@ int main(void) {
 
 				measured ADC @3c = 45600
 				measured ADC @64c = 12700
-				541 units per C seems to give good accuracy
+				541 units per C seems to give good accuracy, and -34 constant
 				at 0C temp shows 3c too low
 				at 40c temp shows 3c too high
+
+				22.2. changed constant to -36
+				now room temperature matches with FXOS
+				at -17c external sensor showed -15 (with -34 constant) so they should match now too
 				 */
 
 				int16_t acc_val_x = read_acc_axis(X_AXIS); //read accelerometer X axis
@@ -252,29 +245,20 @@ int main(void) {
 				int16_t acc_val_z = read_acc_axis(Z_AXIS); //read accelerometer z axis
 				int16_t acc_temp = read_acc_axis(ACC_TEMP); //read accelerometer temperature.
 
-				//printf("X: %d\tY: %d\tZ: %d\t", adc_acc_x, adc_acc_y, adc_acc_z );  //Accelerometer GY-61
-				//printf("X:%d\tY: %d\tZ: %d Temp: %d\r\n", acc_val_x, acc_val_y, acc_val_z, (int)temp);  //FRDM integrated accelerometer
 				seconds = RTC0->TSR;
 
-				uint32_t buffer_pointer = strlen(logresult_buffer); //get pointer to last value in RAM buffer
-
-				sprintf(logresult_buffer+buffer_pointer,"%ld;%d;%d;%d;%d;%d;%d;%d;%d\r\n",seconds,acc_val_x, acc_val_y, acc_val_z,
+				uint16_t printlen = sprintf(logresult_buffer+buffer_pointer,"%ld;%d;%d;%d;%d;%d;%d;%d;%d\r\n",seconds,acc_val_x, acc_val_y, acc_val_z,
 						adc_acc_x, adc_acc_y, adc_acc_z, (int)temp, acc_temp); //write new log value line
 
 
-				//printf(logresult_buffer+buffer_pointer);
+				//printf("%s\r\n",logresult_buffer+buffer_pointer);
+				buffer_pointer += printlen;
 				// prescaler 64, 62,5KHz clock
 
-
-
 				LPTMR0 -> CNR = 0;
-
 				NVIC_ClearPendingIRQ(LPTMR0_IRQn);
 
-				//__disable_irq();
 				LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);		//Sets Timer Interrupt Enable bit to 1
-
-
 				SMC ->PMPROT |= 0x20;
 				SMC ->PMCTRL |= 0x02;
 
@@ -282,28 +266,11 @@ int main(void) {
 
 				SCB ->SCR |= 0x04;
 
-				__asm("nop");
-				__asm("nop");
-				__asm("nop");
-				__asm("wfi");
+				__DSB();
+				__WFI();
+				__ISB();
 
-
-
-				/*SMC_PreEnterStopModes();
-				SMC_SetPowerModeStop(SMC, 0);
-				//SMC_SetPowerModeWait(SMC);
-				SMC_PostExitStopModes();
-				//SMC_SetPowerModeRun(SMC);*/
-
-				//delay(80000);
-
-				//GPIO_PortToggle(GPIOB, 1<<21u);				// Lediä perkele!!
-/*
-				uint32_t timerCount = LPTMR_GetCurrentTimerCount(LPTMR0);
-				printf("TimerCount: %ld \r\n", timerCount);
-*/
 				LPTMR_DisableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);
-				//LPTMR_StopTimer(LPTMR0);
 
 			}
 
@@ -314,7 +281,7 @@ int main(void) {
 #if USE_SD
 
 			SD_startComm();
-			res = f_open(&fil, "testi/testilog.csv", FA_WRITE | FA_READ | FA_OPEN_APPEND );
+			res = f_open(&fil, filename, FA_WRITE | FA_READ | FA_OPEN_APPEND );
 			SD_error(res,"file open"); //check for operation error
 
 			f_printf(&fil, logresult_buffer);
@@ -330,17 +297,11 @@ int main(void) {
 #endif
 
 			GPIO_ClearPinsOutput(GPIOB, 1<<22u); //light red LED
-
-			delay(20);
-			memset(logresult_buffer,0,sizeof(logresult_buffer)); //flush logging buffer
+			delay(500);
 			GPIO_SetPinsOutput(GPIOB, 1<<22u); //turn off red LED
-
+			buffer_pointer=0;
 
 	}
 
-
 }
-
-
-
 
