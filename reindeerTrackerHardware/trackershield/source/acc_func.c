@@ -13,9 +13,8 @@
 //#define Z_AXIS 	2
 
 #include "adc_func.h"
+#include "acc_func.h"
 
-
-extern void UART_print(char *data);
 
 unsigned char buffer[50];
 
@@ -25,45 +24,29 @@ void acc_init(){
 
 }
 
-/*
- *
- * configure_acc copied from LocatIoT!!!!!!!!!!!
- *
- * Fix errors!!!!!!!!!!!!!!!!!!!!
- */
-
 void configure_acc() {
 
-  uint8_t testi[2];
+  uint8_t tmp = 0;
 
-  acc.readRegs(FXOS8700Q_CTRL_REG4, &testi[1], 1);
-  testi[1] |= 0x84;
-  testi[0] = FXOS8700Q_CTRL_REG4;
-  acc.writeRegs(testi, 2);
-  acc.readRegs(FXOS8700Q_CTRL_REG4, &testi[1], 1);
+  tmp = accReadReg(FXOS8700Q_CTRL_REG4); //read old contents of CTRL REG 4 to tmp
+  tmp |= 0x84; //make changes to it
+  accWriteReg(FXOS8700Q_CTRL_REG4, tmp); //write it back
 
-  acc.readRegs( FXOS8700Q_CTRL_REG5, &testi[1], 1);
-  testi[1] &= ~0x04;
-  testi[0] = FXOS8700Q_CTRL_REG5;
-  acc.writeRegs(testi, 2);
-  acc.readRegs( FXOS8700Q_CTRL_REG5, &testi[1], 1);
+  tmp = accReadReg(FXOS8700Q_CTRL_REG5);
+  tmp &= ~0x04;
+  accWriteReg(FXOS8700Q_CTRL_REG5, tmp);
 
-  acc.readRegs( FXOS8700Q_CTRL_REG3, &testi[1], 1);
-    testi[1] |= 0x08;
-    testi[0] = FXOS8700Q_CTRL_REG3;
-    acc.writeRegs(testi, 2);
-    acc.readRegs( FXOS8700Q_CTRL_REG3, &testi[1], 1);
+  tmp = accReadReg(FXOS8700Q_CTRL_REG3);
+  tmp |= 0x08;
+  accWriteReg(FXOS8700Q_CTRL_REG3, tmp);
 
-  acc.readRegs( FXOS8700Q_A_FFMT_CFG, &testi[1], 1);
-  testi[1] |= 0x78;
-  testi[0] = FXOS8700Q_A_FFMT_CFG;
-  acc.writeRegs(testi, 2);
+  tmp = accReadReg( FXOS8700Q_A_FFMT_CFG);
+  tmp |= 0x78;
+  accWriteReg(FXOS8700Q_A_FFMT_CFG, tmp);
 
-  acc.readRegs( FXOS8700Q_A_FFMT_THS, &testi[1], 1);
-
-  testi[1] |= 0x8F;
-  testi[0] = FXOS8700Q_A_FFMT_THS;
-  acc.writeRegs(testi, 2);
+  tmp = accReadReg( FXOS8700Q_A_FFMT_THS);
+  tmp |= 0x8F;
+  accWriteReg(FXOS8700Q_A_FFMT_THS, tmp);
 
 
 }
