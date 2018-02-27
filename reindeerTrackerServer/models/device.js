@@ -12,7 +12,10 @@ var deviceSchema = new mongoose.Schema({
         default: false
     },
     activationDate: Date,
-    isAlive: Boolean,
+    isAlive: {
+        type: Boolean,
+        default: true
+    },
     name: String,
     birthDate: Date,
     imageUrl: String,

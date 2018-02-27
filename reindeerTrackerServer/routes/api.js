@@ -90,6 +90,7 @@ router.get('/devices/:deviceKey/logs', function (req, res) {
 });
 
 router.put('/devices/:deviceKey/logs', function (req, res) {
+    console.log('put');
     const deviceKey = req.params.deviceKey;
     const log = req.body;
     Device.update(
@@ -206,8 +207,7 @@ router.get('/users/:userID/devices', function (req, res) {
     Device.find({userIDs: userID})
         .then(function (devices) {
             //TODO: add other fields that need to be displayed in user list
-            // res.json(getBasicDeviceInfo(devices, ['deviceKey', "isAlive", 'lastLog']))
-            res.json(devices);
+            res.json(getBasicDeviceInfo(devices, ['deviceKey', "isAlive", 'lastLog', 'activated']))
         })
         .catch(function (err) {
             res.status(404).send('could not find devices');
