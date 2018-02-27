@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormGroup} from "@angular/forms";
 import {KeysService} from "../../shared/keys.service";
+import {DeviceAddResponse} from "../../shared/device-add-response";
 
 @Component({
   selector: 'app-new-device',
@@ -23,7 +24,7 @@ export class NewDeviceComponent implements OnInit {
   onSubmitKey(keyForm: FormGroup) {
     const key = keyForm.controls.key.value.toString();
     if (!this.isKeyAlreadyAdded(key)) {
-      if (this.checkKeyLength(key)) {
+      if (this.keysService.checkKeyLength(key)) {
         this.newKeyList.push(key);
         keyForm.controls.key.setValue('');
         this.errorMessage = '';
@@ -43,15 +44,10 @@ export class NewDeviceComponent implements OnInit {
     return this.newKeyList.indexOf(key) > -1;
   }
 
-  checkKeyLength(key: string): boolean {
-    return key.length === 6;
-  }
-
   validateKeys() {
     this.showDevicesAddedMessage = false;
     this.keysService.addValidKeys(this.newKeyList)
-      .subscribe((res) => {
-        console.log(res);
+      .subscribe((res: DeviceAddResponse) => {
         if (res.added.length === this.newKeyList.length) {
           this.showDevicesAddedMessage = true;
         } else {

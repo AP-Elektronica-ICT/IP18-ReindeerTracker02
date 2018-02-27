@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class KeysService {
@@ -7,8 +8,20 @@ export class KeysService {
 
   constructor(private httpClient: HttpClient) { }
 
-  addValidKeys(keys: string[]) {
+  checkKeyLength(key: string): boolean {
+    return key.length === 6;
+  }
+
+  addValidKeys(keys: string[]): Observable<object> {
     return this.httpClient.post(this.url + '/devices', keys);
+  }
+
+  addKeyToUser(uid: string, deviceKey: string): Observable<object> {
+    return this.httpClient.put(this.url + '/users/' + uid + '/devices', {deviceKey: deviceKey});
+  }
+
+  activateDevice(deviceKey: string): Observable<object> {
+    return this.httpClient.put(this.url + '/devices/' + deviceKey + '/activate', {})
   }
 
 }

@@ -17,6 +17,8 @@ import { ManifacturerHomeComponent } from './manifacturer/manifacturer-home/mani
 import {FormsModule} from "@angular/forms";
 import {HttpModule} from "@angular/http";
 import {HttpClientModule} from "@angular/common/http";
+import { AddDeviceComponent } from './add-device/add-device.component';
+import {AuthService} from "./shared/auth.service";
 
 
 @NgModule({
@@ -28,7 +30,8 @@ import {HttpClientModule} from "@angular/common/http";
     SensorDataComponent,
     NewDeviceComponent,
     ManifacturerComponent,
-    ManifacturerHomeComponent
+    ManifacturerHomeComponent,
+    AddDeviceComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +42,7 @@ import {HttpClientModule} from "@angular/common/http";
     AngularFireAuthModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

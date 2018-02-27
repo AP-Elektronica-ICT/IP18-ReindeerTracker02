@@ -4,9 +4,11 @@ import {NewDeviceComponent} from "./manifacturer/new-device/new-device.component
 import {RouterModule} from "@angular/router";
 import {NgModule} from "@angular/core";
 import {ManifacturerHomeComponent} from "./manifacturer/manifacturer-home/manifacturer-home.component";
+import {AddDeviceComponent} from "./add-device/add-device.component";
 
 const appRoutes = [
   { path: '', component: HomeComponent},
+  { path: 'new-device', component: AddDeviceComponent},
   { path: 'manifacturer', component: ManifacturerComponent, children: [
       { path: '', component: ManifacturerHomeComponent},
       { path: 'new-device', component: NewDeviceComponent}
