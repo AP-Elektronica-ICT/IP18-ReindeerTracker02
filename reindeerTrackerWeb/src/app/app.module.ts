@@ -19,6 +19,7 @@ import {HttpModule} from "@angular/http";
 import {HttpClientModule} from "@angular/common/http";
 import { AddDeviceComponent } from './add-device/add-device.component';
 import {AuthService} from "./shared/auth.service";
+import { DeviceInfoComponent } from './device-info/device-info.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import {AuthService} from "./shared/auth.service";
     NewDeviceComponent,
     ManifacturerComponent,
     ManifacturerHomeComponent,
-    AddDeviceComponent
+    AddDeviceComponent,
+    DeviceInfoComponent
   ],
   imports: [
     BrowserModule,

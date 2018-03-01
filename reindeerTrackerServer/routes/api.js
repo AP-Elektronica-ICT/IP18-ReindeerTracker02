@@ -124,6 +124,17 @@ router.post('/devices/:deviceKey/details', function (req, res) {
         })
 });
 
+router.get('/devices/:deviceKey/details', function (req, res) {
+    const deviceKey = req.params.deviceKey;
+    Device.findOne({deviceKey: deviceKey})
+        .then(function (device) {
+            res.json(selectDeviceInfo([device], ['name', 'birthDate', 'imageUrl', 'gender']));
+        })
+        .catch(function (err) {
+            res.status(404).send('Could not find device');
+        })
+});
+
 router.put('/devices/:deviceKey/details', function (req, res) {
     const deviceKey = req.params.deviceKey;
     const details = req.body;
@@ -207,14 +218,14 @@ router.get('/users/:userID/devices', function (req, res) {
     Device.find({userIDs: userID})
         .then(function (devices) {
             //TODO: add other fields that need to be displayed in user list
-            res.json(getBasicDeviceInfo(devices, ['deviceKey', "isAlive", 'lastLog', 'activated']))
+            res.json(selectDeviceInfo(devices, ['deviceKey', "isAlive", 'lastLog', 'activated']))
         })
         .catch(function (err) {
             res.status(404).send('could not find devices');
         })
 });
 
-function getBasicDeviceInfo(devices, keys) {
+function selectDeviceInfo(devices, keys) {
     const returnDevices = [];
     for (var  i = 0; i < devices.length; i++) {
         var newObject = {};
