@@ -48,7 +48,7 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 SECONDARY_FLASH += \
-trackershield.hex \
+trackershield.bin \
 
 SECONDARY_SIZE += \
 trackershield.siz \
@@ -65,9 +65,9 @@ trackershield.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-trackershield.hex: trackershield.elf
+trackershield.bin: trackershield.elf
 	@echo 'Invoking: Cross ARM GNU Create Flash Image'
-	arm-none-eabi-objcopy -O ihex "trackershield.elf"  "trackershield.hex"
+	arm-none-eabi-objcopy -O binary "trackershield.elf"  "trackershield.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 
