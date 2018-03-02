@@ -59,10 +59,8 @@ void BOARD_InitBootPins(void) {
 
 #define PIN16_IDX                       16u   /*!< Pin number for pin 16 in a port */
 #define PIN17_IDX                       17u   /*!< Pin number for pin 17 in a port */
-#define PIN6_IDX						6u	  /*!< Pin number for pin 13 in a port */
 #define SOPT5_UART0TXSRC_UART_TX      0x00u   /*!< UART 0 transmit data source select: UART0_TX pin */
-#define PIN21_IDX_LED					21u	  /*!< Pin number for pin 21 in a port, LED */
-#define PIN22_IDX_LED					22u	  /*!< Pin number for pin 21 in a port, LED */
+
 /*
  * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 BOARD_InitPins:
@@ -81,26 +79,13 @@ BOARD_InitPins:
  *END**************************************************************************/
 void BOARD_InitPins(void) {
   CLOCK_EnableClock(kCLOCK_PortB);                           /* Port B Clock Gate Control: Clock enabled */
-  CLOCK_EnableClock(kCLOCK_PortC);                           /* Port C Clock Gate Control: Clock enabled */
-<<<<<<< 6d7c3dcfd9fe54eba527e01ae0770de3d62ca105
-  PORT_SetPinMux(PORTC, PIN6_IDX, kPORT_MuxAsGpio);  		 /* PORTC6 (pin 6) is configured as GPIO   */
-=======
-  PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);  		 /* PORTC13 (pin 13) is configured as GPIO   */
->>>>>>> nothing
+
   PORT_SetPinMux(PORTB, PIN16_IDX, kPORT_MuxAlt3);           /* PORTB16 (pin 62) is configured as UART0_RX */
   PORT_SetPinMux(PORTB, PIN17_IDX, kPORT_MuxAlt3);           /* PORTB17 (pin 63) is configured as UART0_TX */
-  PORT_SetPinMux(PORTB, PIN21_IDX_LED, kPORT_MuxAsGpio);
-  PORT_SetPinMux(PORTB, PIN22_IDX_LED, kPORT_MuxAsGpio);
-
   SIM->SOPT5 = ((SIM->SOPT5 &
     (~(SIM_SOPT5_UART0TXSRC_MASK)))                          /* Mask bits to zero which are setting */
       | SIM_SOPT5_UART0TXSRC(SOPT5_UART0TXSRC_UART_TX)       /* UART 0 transmit data source select: UART0_TX pin */
     );
-<<<<<<< 6d7c3dcfd9fe54eba527e01ae0770de3d62ca105
-  //PORTC -> PCR[6] |= 0x000A0000;							 /* Enable pin interrupt on falling-edge */
-=======
-  PORTC -> PCR[6] |= 0x000A0000;							 /* Enable pin interrupt on rising-edge */
->>>>>>> nothing
 }
 
 /*******************************************************************************
