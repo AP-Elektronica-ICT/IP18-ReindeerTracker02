@@ -20,7 +20,7 @@
 
 #include "acc_func.h"
 #include "i2c_func.h"
-#include "adc_func.h"f
+#include "adc_func.h"
 #include "fsl_rtc.h"
 
 lptmr_config_t lptmr_config;
