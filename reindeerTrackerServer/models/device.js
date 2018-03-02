@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 
 var deviceSchema = new mongoose.Schema({
     deviceKey: {
@@ -12,8 +11,15 @@ var deviceSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    isAlive: Boolean,
+    activationDate: Date,
+    isAlive: {
+        type: Boolean,
+        default: true
+    },
     name: String,
+    birthDate: Date,
+    imageUrl: String,
+    gender: String,
     logs: [{
         lat: {
             type: Number,

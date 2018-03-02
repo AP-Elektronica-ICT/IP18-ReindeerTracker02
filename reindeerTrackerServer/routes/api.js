@@ -105,16 +105,109 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
         })
 });
 
+router.post('/devices/:deviceKey/details', function (req, res) {
+    const deviceKey = req.params.deviceKey;
+    const details = req.body;
+    Device.update(
+        {deviceKey: deviceKey},
+        {name: details.name, birthDate: generateBirthDate(details.birthYear, details.birthMonth, details.birthDay), imageUrl: details.imageUrl, gender: details.gender}
+    )
+        .then(function (value) {
+            if (value.n <= 0) {
+                res.status(404).send('device not found')
+            } else {
+                res.status(200).json('data updated');
+            }
+        })
+        .catch(function (reason) {
+            res.status(500).send('could not add data');
+        })
+});
+
+router.put('/devices/:deviceKey/details', function (req, res) {
+    const deviceKey = req.params.deviceKey;
+    const details = req.body;
+    Device.update(
+        {deviceKey: deviceKey},
+        {name: details.name, birthDate: generateBirthDate(details.birthYear, details.birthMonth, details.birthDay), imageUrl: details.imageUrl, gender: details.gender}
+    )
+        .then(function (value) {
+            if (value.n <= 0) {
+                res.status(404).send('device not found')
+            } else {
+                res.status(200).json('data updated');
+            }
+        })
+        .catch(function (reason) {
+            res.status(500).send('could not add data');
+        })
+});
+
+router.put('/devices/:deviceKey/activate', function (req, res) {
+    const deviceKey = req.params.deviceKey;
+    Device.update(
+        {deviceKey: deviceKey},
+        {activated: true, activationDate: Date.now()}
+    )
+        .then(function (value) {
+            if (value.n <= 0) {
+                res.status(404).send('device not found')
+            } else {
+                res.status(200).json('data updated');
+            }
+        })
+        .catch(function (reason) {
+            res.status(500).send('could not add data');
+        })
+});
+
+function generateBirthDate(year, month, day) {
+    if (!month) {
+        month = '01'
+    }
+    else if (month.length < 2) {
+        month = '0' + month;
+    }
+    if (!day) {
+        day = '01';
+    }
+    else if (day.length < 2) {
+        day = '0' + day;
+    }
+    var dateString = year + '-' + month + '-' + day;
+    console.log(dateString);
+    return new Date(dateString);
+}
+
 /////////////////////////////////////////////////////////////////
 // USERS
 /////////////////////////////////////////////////////////////////
+
+router.put('/users/:userID/devices', function (req, res) {
+    const userID = req.params.userID;
+    const deviceKey = req.body.deviceKey;
+    Device.update(
+        {deviceKey: deviceKey},
+        {$push: {userIDs: userID}}
+    )
+        .then(function (value) {
+            if (value.n <= 0) {
+                res.status(404).send('device not found')
+            } else {
+                res.status(200).json('device registered');
+            }
+        })
+        .catch(function (reason) {
+            res.status(500).send('could not register device');
+        });
+});
 
 router.get('/users/:userID/devices', function (req, res) {
     const userID = req.params.userID;
     Device.find({userIDs: userID})
         .then(function (devices) {
             //TODO: add other fields that need to be displayed in user list
-            res.json(getBasicDeviceInfo(devices, ['deviceKey', "isAlive", 'lastLog']))
+            res.json(getBasicDeviceInfo(devices, ['deviceKey', "isAlive", 'lastLog', 'activated']))
         })
         .catch(function (err) {
             res.status(404).send('could not find devices');
