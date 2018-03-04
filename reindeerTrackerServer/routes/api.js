@@ -128,7 +128,7 @@ router.get('/devices/:deviceKey/details', function (req, res) {
     const deviceKey = req.params.deviceKey;
     Device.findOne({deviceKey: deviceKey})
         .then(function (device) {
-            res.json(selectDeviceInfo([device], ['name', 'birthyear', 'imageUrl', 'gender'])[0]);
+            res.json(selectDeviceInfo([device], ['name', 'birthyear', 'imageUrl', 'gender', 'activated'])[0]);
         })
         .catch(function (err) {
             res.status(404).send('Could not find device');

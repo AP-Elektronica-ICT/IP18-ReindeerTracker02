@@ -19,6 +19,7 @@ export class DeviceInfoComponent implements OnInit {
   showChangesSavedMessage = false;
   showDeviceNotFoundMessage = false;
   imageFile = null;
+  showActivateSuccessMessage = false;
 
   constructor(private deviceService: DeviceService, private route: ActivatedRoute, private location: Location, private storage: StorageService) { }
 
@@ -31,6 +32,7 @@ export class DeviceInfoComponent implements OnInit {
         this.deviceService.getDeviceDetails(this.deviceKey)
           .subscribe((res: DeviceDetails) => {
             this.device = res;
+            console.log(this.device);
             this.loaded = true;
             this.initForm();
           }, err => {
@@ -105,6 +107,17 @@ export class DeviceInfoComponent implements OnInit {
 
   onCancel() {
     this.location.back();
+  }
+
+  activateKey() {
+    this.showActivateSuccessMessage = false;
+    this.deviceService.activateDevice(this.deviceKey)
+      .subscribe(res => {
+        this.showActivateSuccessMessage = true;
+        this.device.activated = true;
+      }, err => {
+
+      })
   }
 
 }

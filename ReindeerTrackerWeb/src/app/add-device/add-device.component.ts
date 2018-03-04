@@ -3,6 +3,7 @@ import {AuthService} from "../shared/auth.service";
 import {FormGroup} from "@angular/forms";
 import {KeysService} from "../shared/keys.service";
 import {DeviceService} from "../shared/device.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-add-device',
@@ -16,7 +17,7 @@ export class AddDeviceComponent implements OnInit {
   showSuccessMessage = false;
   showActivateSuccessMessage = false;
 
-  constructor(private auth: AuthService, private keyService: KeysService, private deviceService: DeviceService) { }
+  constructor(private auth: AuthService, private keyService: KeysService, private deviceService: DeviceService, private router: Router) { }
 
   ngOnInit() {
 
@@ -40,6 +41,7 @@ export class AddDeviceComponent implements OnInit {
       .subscribe(res => {
         console.log(res);
         this.showSuccessMessage = true;
+        this.router.navigate(['device-info'], {queryParams: {deviceKey: key}});
       },
         err => {
           console.log(err);
