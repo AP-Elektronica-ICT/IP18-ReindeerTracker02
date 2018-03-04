@@ -17,7 +17,7 @@ var deviceSchema = new mongoose.Schema({
         default: true
     },
     name: String,
-    birthDate: Date,
+    birthyear: String,
     imageUrl: String,
     gender: String,
     logs: [{

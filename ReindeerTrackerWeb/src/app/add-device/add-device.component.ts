@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../shared/auth.service";
 import {FormGroup} from "@angular/forms";
 import {KeysService} from "../shared/keys.service";
+import {DeviceService} from "../shared/device.service";
 
 @Component({
   selector: 'app-add-device',
   templateUrl: './add-device.component.html',
   styleUrls: ['./add-device.component.css'],
-  providers: [KeysService]
+  providers: []
 })
 export class AddDeviceComponent implements OnInit {
   key = '';
@@ -15,7 +16,7 @@ export class AddDeviceComponent implements OnInit {
   showSuccessMessage = false;
   showActivateSuccessMessage = false;
 
-  constructor(private auth: AuthService, private keyService: KeysService) { }
+  constructor(private auth: AuthService, private keyService: KeysService, private deviceService: DeviceService) { }
 
   ngOnInit() {
 
@@ -50,7 +51,7 @@ export class AddDeviceComponent implements OnInit {
 
   activateKey() {
     this.showSuccessMessage = false;
-    this.keyService.activateDevice(this.key)
+    this.deviceService.activateDevice(this.key)
       .subscribe(res => {
         this.showActivateSuccessMessage = true;
       }, err => {

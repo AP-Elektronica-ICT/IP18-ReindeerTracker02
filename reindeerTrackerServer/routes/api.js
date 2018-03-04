@@ -105,7 +105,7 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
         })
 });
 
-router.post('/devices/:deviceKey/details', function (req, res) {
+/*router.post('/devices/:deviceKey/details', function (req, res) {
     const deviceKey = req.params.deviceKey;
     const details = req.body;
     Device.update(
@@ -122,13 +122,13 @@ router.post('/devices/:deviceKey/details', function (req, res) {
         .catch(function (reason) {
             res.status(500).send('could not add data');
         })
-});
+});*/
 
 router.get('/devices/:deviceKey/details', function (req, res) {
     const deviceKey = req.params.deviceKey;
     Device.findOne({deviceKey: deviceKey})
         .then(function (device) {
-            res.json(selectDeviceInfo([device], ['name', 'birthDate', 'imageUrl', 'gender']));
+            res.json(selectDeviceInfo([device], ['name', 'birthyear', 'imageUrl', 'gender'])[0]);
         })
         .catch(function (err) {
             res.status(404).send('Could not find device');
@@ -138,9 +138,10 @@ router.get('/devices/:deviceKey/details', function (req, res) {
 router.put('/devices/:deviceKey/details', function (req, res) {
     const deviceKey = req.params.deviceKey;
     const details = req.body;
+    console.log(details);
     Device.update(
         {deviceKey: deviceKey},
-        {name: details.name, birthDate: generateBirthDate(details.birthYear, details.birthMonth, details.birthDay), imageUrl: details.imageUrl, gender: details.gender}
+        {name: details.name, birthyear: details.birthyear, imageUrl: details.imageUrl, gender: details.gender}
     )
         .then(function (value) {
             if (value.n <= 0) {
