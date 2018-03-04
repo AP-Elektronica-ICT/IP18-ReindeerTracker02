@@ -33,7 +33,7 @@ void configure_acc() {
   accWriteReg(FXOS8700Q_CTRL_REG4, tmp); //write it back
 
   tmp = accReadReg(FXOS8700Q_CTRL_REG5);
-  tmp &= ~0x04;
+  tmp |= 0x04;
   accWriteReg(FXOS8700Q_CTRL_REG5, tmp);
 
   tmp = accReadReg(FXOS8700Q_CTRL_REG3);
