@@ -14,5 +14,30 @@
 
 
 <ion-content padding>
-
+  <ion-list inset>
+    <form class="textForm" #myForm='ngForm'>
+        <ion-item class="textForm">
+            <ion-label floating>name</ion-label>
+            <ion-textarea type="text" [(ngModel)]="subject" name="subject"></ion-textarea>
+        </ion-item>
+        <ion-item class="textForm">
+            <ion-label floating>year of birth</ion-label>
+            <ion-textarea type="text" [(ngModel)]="message" name="message"></ion-textarea>
+        </ion-item>
+        <ion-item class="textForm">
+          <ion-label floating>gender</ion-label>
+          <ion-textarea type="text" [(ngModel)]="message" name="message"></ion-textarea>
+      </ion-item>
+      <ion-item class="textForm">
+        <ion-label floating>device code</ion-label>
+        <ion-textarea type="text" [(ngModel)]="message" name="message"></ion-textarea>
+      </ion-item>
+        <button block (click)="scanQr()">
+            <ion-icon name="qr-scanner" ></ion-icon> Scan Code</button>
+    </form>
+    <br>
+    <br>
+    <br>
+    <button ion-button class="submit-button" (click)="submit()">Sign Up</button>
+</ion-list>
 </ion-content>

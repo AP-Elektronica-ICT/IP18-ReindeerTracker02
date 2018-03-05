@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 /**
  * Generated class for the AddPage page.
@@ -15,11 +16,23 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class AddPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  scannedCode = null;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private barcodeScanner : BarcodeScanner) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad AddPage');
+  }
+
+  scanQr(){
+    this.barcodeScanner.scan().then(barcodeData => {
+      this.scannedCode = barcodeData.text;
+    })
+  }
+
+  submit(){
+
   }
 
 }
