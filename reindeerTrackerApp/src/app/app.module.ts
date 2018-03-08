@@ -13,6 +13,9 @@ import { ProfilePage } from '../pages/profile/profile';
 import { LogInPage } from '../pages/log-in/log-in';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SignUpPage } from '../pages/sign-up/sign-up';
+import { NgxQRCodeModule } from 'ngx-qrcode2';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { MapPage } from '../pages/map/map';
 
 @NgModule({
   declarations: [
@@ -23,12 +26,14 @@ import { SignUpPage } from '../pages/sign-up/sign-up';
     AddPage,
     ProfilePage,
     LogInPage,
-    SignUpPage
+    SignUpPage,
+    MapPage
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgxQRCodeModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -39,12 +44,14 @@ import { SignUpPage } from '../pages/sign-up/sign-up';
     AddPage,
     ProfilePage,
     LogInPage,
-    SignUpPage
+    SignUpPage,
+    MapPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    BarcodeScanner
   ]
 })
 export class AppModule {}
