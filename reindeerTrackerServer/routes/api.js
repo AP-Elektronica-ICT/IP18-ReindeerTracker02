@@ -219,7 +219,7 @@ router.get('/users/:userID/devices', function (req, res) {
     Device.find({userIDs: userID})
         .then(function (devices) {
             //TODO: add other fields that need to be displayed in user list
-            res.json(selectDeviceInfo(devices, ['deviceKey', "isAlive", 'lastLog', 'activated']))
+            res.json(selectDeviceInfo(devices, ['deviceKey', "isAlive", 'lastLog', 'activated', 'name', 'imageUrl', 'gender']))
         })
         .catch(function (err) {
             res.status(404).send('could not find devices');

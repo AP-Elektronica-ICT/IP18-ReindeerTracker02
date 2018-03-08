@@ -23,6 +23,9 @@ import { DeviceInfoComponent } from './device-info/device-info.component';
 import {KeysService} from "./shared/keys.service";
 import {DeviceService} from "./shared/device.service";
 import {StorageService} from "./shared/storage.service";
+import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
 
 
 @NgModule({
@@ -36,7 +39,10 @@ import {StorageService} from "./shared/storage.service";
     ManifacturerComponent,
     ManifacturerHomeComponent,
     AddDeviceComponent,
-    DeviceInfoComponent
+    DeviceInfoComponent,
+    LoginComponent,
+    SignupComponent,
+    PasswordResetComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +54,7 @@ import {StorageService} from "./shared/storage.service";
     AppRoutingModule,
     ReactiveFormsModule
   ],
-  providers: [AuthService, KeysService, DeviceService, StorageService],
+  providers: [AuthService, KeysService, DeviceService, StorageService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

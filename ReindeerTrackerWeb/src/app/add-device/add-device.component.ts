@@ -37,6 +37,7 @@ export class AddDeviceComponent implements OnInit {
     this.showSuccessMessage = false;
     this.showActivateSuccessMessage = false;
     this.errorMessage = '';
+    console.log(this.auth.getCurrentUID());
     this.keyService.addKeyToUser(this.auth.getCurrentUID(), key)
       .subscribe(res => {
         console.log(res);
