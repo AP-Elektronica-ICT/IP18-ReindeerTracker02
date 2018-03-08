@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import {AngularFireModule, FirebaseApp} from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-
 import { AppComponent } from './app.component';
 import {environment} from '../environments/environment';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -23,6 +22,7 @@ import { DeviceInfoComponent } from './device-info/device-info.component';
 import {KeysService} from "./shared/keys.service";
 import {DeviceService} from "./shared/device.service";
 import {StorageService} from "./shared/storage.service";
+import { DetailComponent } from './detail/detail.component';
 
 
 @NgModule({
@@ -36,7 +36,8 @@ import {StorageService} from "./shared/storage.service";
     ManifacturerComponent,
     ManifacturerHomeComponent,
     AddDeviceComponent,
-    DeviceInfoComponent
+    DeviceInfoComponent,
+    DetailComponent
   ],
   imports: [
     BrowserModule,
