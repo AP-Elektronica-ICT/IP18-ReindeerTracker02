@@ -15,6 +15,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SignUpPage } from '../pages/sign-up/sign-up';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { MapPage } from '../pages/map/map';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
     AddPage,
     ProfilePage,
     LogInPage,
-    SignUpPage
+    SignUpPage,
+    MapPage
   ],
   imports: [
     BrowserModule,
@@ -42,7 +44,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
     AddPage,
     ProfilePage,
     LogInPage,
-    SignUpPage
+    SignUpPage,
+    MapPage
   ],
   providers: [
     StatusBar,
