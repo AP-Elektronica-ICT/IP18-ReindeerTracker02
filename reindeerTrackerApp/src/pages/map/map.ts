@@ -37,7 +37,9 @@ export class MapPage {
     //map options
     const options = {
       center: location,
-      zoom : 17
+      zoom : 17,
+      streetViewControl: false,
+      mapTypeId: 'terrain'
     }
 
     this.map = new google.maps.Map(this.mapRef.nativeElement, options);
