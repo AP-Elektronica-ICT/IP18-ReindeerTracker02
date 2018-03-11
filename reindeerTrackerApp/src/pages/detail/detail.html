@@ -13,40 +13,40 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding *ngIf="device">
     <div class="top-div">
-        <img class="circle-pic" src="assets/imgs/NoReindeerImage.png">
+        <img class="circle-pic" [src]="device.imageUrl">
     </div>
   <ion-grid>
       <ion-list>
           <ion-item class="list-styled">
             name:
             <p item-end icon-left>
-              Peeters
+              {{device.name}}
             </p>
           </ion-item>
           <ion-item class="list-styled">
             gender:
             <p item-end icon-left>
-              M
+              {{device.gender}}
             </p>
           </ion-item>
           <ion-item class="list-styled">
             Last signal:
             <p item-end icon-left>
-              15/10/1997
+              {{device.lastLog.date | date: 'dd/MM/yyyy' }}
             </p>
           </ion-item>
           <ion-item class="list-styled">
             Battery:
             <p item-end icon-left>
-              20%
+              {{device.lastLog.battery}}%
             </p>
           </ion-item>
           <ion-item class="list-styled">
             Alive/Death:
             <p item-end icon-left>
-              Alive
+              {{device.isAlive}}
             </p>
           </ion-item>
           <ion-item class="list-styled">

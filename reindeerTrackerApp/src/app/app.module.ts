@@ -16,6 +16,8 @@ import { SignUpPage } from '../pages/sign-up/sign-up';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { MapPage } from '../pages/map/map';
+import { DeviceProvider } from '../providers/device/device';
+import {HttpClient, HttpClientModule, HttpHandler} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import { MapPage } from '../pages/map/map';
     BrowserModule,
     IonicModule.forRoot(MyApp),
     BrowserAnimationsModule,
-    NgxQRCodeModule
+    NgxQRCodeModule,
+    HttpClientModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -51,7 +54,8 @@ import { MapPage } from '../pages/map/map';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    BarcodeScanner
+    BarcodeScanner,
+    DeviceProvider
   ]
 })
 export class AppModule {}
