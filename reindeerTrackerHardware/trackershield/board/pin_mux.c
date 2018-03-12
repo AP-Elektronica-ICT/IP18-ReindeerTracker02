@@ -86,7 +86,7 @@ void BOARD_InitPins(void) {
 
   PORT_SetPinMux(PORTB, 21u, kPORT_MuxAsGpio);
   PORT_SetPinMux(PORTB, 22u, kPORT_MuxAsGpio);
-  PORT_SetPinMux(PORTB, 6u, kPORT_MuxAsGpio);
+  PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);
 
   SIM->SOPT5 = ((SIM->SOPT5 &
     (~(SIM_SOPT5_UART0TXSRC_MASK)))                          /* Mask bits to zero which are setting */
