@@ -76,9 +76,6 @@ int main(void) {
   acc_init();
   initTimer();
 
-
-
-
   SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeVlls);
   smc_power_mode_vlls_config.subMode = kSMC_StopSub1; 			/*!< Stop submode 1, for VLLS1/LLS1. */
 
@@ -103,7 +100,7 @@ int main(void) {
   GPIO_PinInit(GPIOB, 21u, &LED_configOutput);
   GPIO_PinInit(GPIOB, 22u, &LED_configOutput);
 
-  GPIO_ClearPinsOutput(GPIOB, 1<<22u); //light red to indicate interrupt LED
+  GPIO_ClearPinsOutput(GPIOB, 1<<22u); //light red to indicate interrupt LEDd
   delay(100000);
   GPIO_SetPinsOutput(GPIOB, 1<<22u); //light red to indicate interrupt LED
 
