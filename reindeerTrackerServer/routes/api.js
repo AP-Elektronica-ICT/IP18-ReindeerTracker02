@@ -105,7 +105,7 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
         })
 });
 
-router.post('/devices/:deviceKey/details', function (req, res) {
+/*router.post('/devices/:deviceKey/details', function (req, res) {
     const deviceKey = req.params.deviceKey;
     const details = req.body;
     Device.update(
@@ -122,14 +122,26 @@ router.post('/devices/:deviceKey/details', function (req, res) {
         .catch(function (reason) {
             res.status(500).send('could not add data');
         })
+});*/
+
+router.get('/devices/:deviceKey/details', function (req, res) {
+    const deviceKey = req.params.deviceKey;
+    Device.findOne({deviceKey: deviceKey})
+        .then(function (device) {
+            res.json(selectDeviceInfo([device], ['name', 'birthyear', 'imageUrl', 'gender', 'activated'])[0]);
+        })
+        .catch(function (err) {
+            res.status(404).send('Could not find device');
+        })
 });
 
 router.put('/devices/:deviceKey/details', function (req, res) {
     const deviceKey = req.params.deviceKey;
     const details = req.body;
+    console.log(details);
     Device.update(
         {deviceKey: deviceKey},
-        {name: details.name, birthDate: generateBirthDate(details.birthYear, details.birthMonth, details.birthDay), imageUrl: details.imageUrl, gender: details.gender}
+        {name: details.name, birthyear: details.birthyear, imageUrl: details.imageUrl, gender: details.gender}
     )
         .then(function (value) {
             if (value.n <= 0) {
@@ -207,14 +219,14 @@ router.get('/users/:userID/devices', function (req, res) {
     Device.find({userIDs: userID})
         .then(function (devices) {
             //TODO: add other fields that need to be displayed in user list
-            res.json(getBasicDeviceInfo(devices, ['deviceKey', "isAlive", 'lastLog', 'activated']))
+            res.json(selectDeviceInfo(devices, ['deviceKey', "isAlive", 'lastLog', 'activated', 'name', 'imageUrl', 'gender']))
         })
         .catch(function (err) {
             res.status(404).send('could not find devices');
         })
 });
 
-function getBasicDeviceInfo(devices, keys) {
+function selectDeviceInfo(devices, keys) {
     const returnDevices = [];
     for (var  i = 0; i < devices.length; i++) {
         var newObject = {};

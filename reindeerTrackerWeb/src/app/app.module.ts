@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AngularFireModule } from 'angularfire2';
+import {AngularFireModule, FirebaseApp} from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 
@@ -14,11 +14,18 @@ import { NewDeviceComponent } from './manifacturer/new-device/new-device.compone
 import { ManifacturerComponent } from './manifacturer/manifacturer.component';
 import {AppRoutingModule} from "./app-routing.module";
 import { ManifacturerHomeComponent } from './manifacturer/manifacturer-home/manifacturer-home.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpModule} from "@angular/http";
 import {HttpClientModule} from "@angular/common/http";
 import { AddDeviceComponent } from './add-device/add-device.component';
 import {AuthService} from "./shared/auth.service";
+import { DeviceInfoComponent } from './device-info/device-info.component';
+import {KeysService} from "./shared/keys.service";
+import {DeviceService} from "./shared/device.service";
+import {StorageService} from "./shared/storage.service";
+import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
 
 
 @NgModule({
@@ -31,7 +38,11 @@ import {AuthService} from "./shared/auth.service";
     NewDeviceComponent,
     ManifacturerComponent,
     ManifacturerHomeComponent,
-    AddDeviceComponent
+    AddDeviceComponent,
+    DeviceInfoComponent,
+    LoginComponent,
+    SignupComponent,
+    PasswordResetComponent
   ],
   imports: [
     BrowserModule,
@@ -40,9 +51,10 @@ import {AuthService} from "./shared/auth.service";
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
-  providers: [AuthService],
+  providers: [AuthService, KeysService, DeviceService, StorageService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

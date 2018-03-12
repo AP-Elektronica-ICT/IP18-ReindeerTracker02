@@ -3,14 +3,14 @@
   <div class="alert alert-success" role="alert" *ngIf="showActivateSuccessMessage">
     Your device has been activated
   </div>
-  <div *ngIf="showSuccessMessage">
+  <!--<div *ngIf="showSuccessMessage">
     <div class="alert alert-success" role="alert">
       Your key has been added!
     </div>
     <p>Would you like to activate your device now?</p>
     <button class="btn btn-success" (click)="activateKey()">Yes</button>
     <button class="btn btn-danger" (click)="dissmissActivation()">Activate later</button>
-  </div>
+  </div>-->
   <form (submit)="onSubmitKey(keyFrom)" #keyFrom="ngForm">
     <div class="form-group">
       <label for="key">New device key</label>
@@ -19,7 +19,7 @@
     <div class="alert alert-danger" role="alert" *ngIf="errorMessage.length > 0">
       {{errorMessage}}
     </div>
-    <button class="btn btn-primary">Add key</button>
+    <button class="btn btn-primary" type="submit">Add key</button>
   </form>
 
 </div>

@@ -8,7 +8,7 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-list-header>
+    <ion-list-header class="header-item-styled">
         <ion-avatar item-start>
             <img src="assets/imgs/icons8-heart-outline-half-50.png">
           </ion-avatar>
@@ -19,50 +19,17 @@
       </div>
     </ion-list-header>
 
-    <button ion-item (click)="loadDetail()">
+    <button ion-item (click)="loadDetail(device.deviceKey)" class="list-item-styled" *ngFor="let device of devices">
       <ion-avatar item-start>
         <img src="assets/imgs/icons8-heart-outline-50.png">
       </ion-avatar>
       <div class="row">
-        <div class="col col-50">01556</div>
-        <div class="col col-50">15/10/1997</div>
-        <div class="col col-50">20%</div>
+        <div class="col col-50">{{device.deviceKey}}</div>
+        <div class="col col-50">{{device.lastLog.date | date: 'dd/MM/yyyy'}}</div>
+        <div class="col col-50">{{device.lastLog.battery}}</div>
       </div>
     </button>
 
-    <button ion-item (click)="loadDetail()">
-      <ion-avatar item-start>
-        <img src="assets/imgs/icons8-heart-outline-50.png">
-      </ion-avatar>
-      <div class="row">
-        <div class="col col-50">01556</div>
-          <div class="col col-50">15/10/1997</div>
-          <div class="col col-50">20%</div>
-      </div>
-    </button>
-    
-    <button ion-item (click)="loadDetail()">
-      <ion-avatar item-start>
-        <img src="assets/imgs/icons8-heart-outline-50.png">
-      </ion-avatar>
-      <div class="row">
-        <div class="col col-50">01556</div>
-          <div class="col col-50">15/10/1997</div>
-          <div class="col col-50">20%</div>
-      </div>
-    </button>
-    
-    <button ion-item (click)="loadDetail()">
-      <ion-avatar item-start>
-        <img src="assets/imgs/icons8-heart-outline-filled-50.png">
-      </ion-avatar>
-      <div class="row">
-        <div class="col col-50">01556</div>
-        <div class="col col-50">15/10/1997</div>
-        <div class="col col-50">20%</div>
-      </div>
-    </button>
-        
   </ion-list>
 
   <ion-fab right bottom>

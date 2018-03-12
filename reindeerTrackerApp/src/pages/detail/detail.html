@@ -13,6 +13,43 @@
 </ion-header>
 
 
-<ion-content padding>
-
-</ion-content>
+<ion-content padding *ngIf="device">
+    <div class="top-div">
+        <img class="circle-pic" [src]="device.imageUrl">
+    </div>
+  <ion-grid>
+      <ion-list>
+          <ion-item class="list-styled">
+            name:
+            <p item-end icon-left>
+              {{device.name}}
+            </p>
+          </ion-item>
+          <ion-item class="list-styled">
+            gender:
+            <p item-end icon-left>
+              {{device.gender}}
+            </p>
+          </ion-item>
+          <ion-item class="list-styled">
+            Last signal:
+            <p item-end icon-left>
+              {{device.lastLog.date | date: 'dd/MM/yyyy' }}
+            </p>
+          </ion-item>
+          <ion-item class="list-styled">
+            Battery:
+            <p item-end icon-left>
+              {{device.lastLog.battery}}%
+            </p>
+          </ion-item>
+          <ion-item class="list-styled">
+            Alive/Death:
+            <p item-end icon-left>
+              {{device.isAlive}}
+            </p>
+          </ion-item>
+          <ion-item class="list-styled">
+              <button ion-button class="map-button" (click)="goToMap()">map</button>
+            </ion-item>
+        </ion-list>

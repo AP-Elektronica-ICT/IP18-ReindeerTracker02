@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
+import {AppSettings} from "./AppSettings";
 
 @Injectable()
 export class KeysService {
-  url = "http://localhost:3000/api";
+  url = AppSettings.API_ENDPOINT;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -19,9 +20,4 @@ export class KeysService {
   addKeyToUser(uid: string, deviceKey: string): Observable<object> {
     return this.httpClient.put(this.url + '/users/' + uid + '/devices', {deviceKey: deviceKey});
   }
-
-  activateDevice(deviceKey: string): Observable<object> {
-    return this.httpClient.put(this.url + '/devices/' + deviceKey + '/activate', {})
-  }
-
 }
