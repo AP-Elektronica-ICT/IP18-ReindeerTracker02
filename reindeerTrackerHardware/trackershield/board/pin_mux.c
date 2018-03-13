@@ -88,6 +88,9 @@ void BOARD_InitPins(void) {
   PORT_SetPinMux(PORTB, 22u, kPORT_MuxAsGpio);
   PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);
 
+  PORT_SetPinMux(PORTC, 16u, kPORT_MuxAlt3);				// UART PIN RX
+  PORT_SetPinMux(PORTC, 17u, kPORT_MuxAlt3);				// UART PIN TX
+
   SIM->SOPT5 = ((SIM->SOPT5 &
     (~(SIM_SOPT5_UART0TXSRC_MASK)))                          /* Mask bits to zero which are setting */
       | SIM_SOPT5_UART0TXSRC(SOPT5_UART0TXSRC_UART_TX)       /* UART 0 transmit data source select: UART0_TX pin */

@@ -17,14 +17,15 @@ void initI2C()
 	CLOCK_EnableClock(kCLOCK_PortE);
 	i2c_master_config_t config;
 
+	uint32_t ClkSrcFreq = CLOCK_GetCoreSysClkFreq();
 	I2C_MasterGetDefaultConfig(&config);
 
 	config.enableMaster = true;
     config.enableStopHold = false;
-    config.baudRate_Bps = 400000;
+    config.baudRate_Bps = 200000;
     config.glitchFilterWidth = 0;
 
-	I2C_MasterInit(I2C0, &config, 4000000U);
+	I2C_MasterInit(I2C0, &config, ClkSrcFreq);
 
 	PORT_SetPinMux(PORTE, 24u, kPORT_MuxAlt5);
 	PORT_SetPinMux(PORTE, 25u, kPORT_MuxAlt5);
