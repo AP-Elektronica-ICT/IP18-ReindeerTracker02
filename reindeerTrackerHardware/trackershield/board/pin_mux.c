@@ -74,7 +74,7 @@ BOARD_InitPins:
 /*FUNCTION**********************************************************************
  *
  * Function Name : BOARD_InitPins
- * Description   : Configures pin routing and optionally pin electrical features.
+ * Description   : Configures pin routing and optionally pin electrical features
  *
  *END**************************************************************************/
 void BOARD_InitPins(void) {
