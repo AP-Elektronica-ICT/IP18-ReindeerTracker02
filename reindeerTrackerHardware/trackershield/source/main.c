@@ -22,7 +22,7 @@
 #include "i2c_func.h"
 #include "adc_func.h"
 #include "fsl_rtc.h"
-// jeesus tulee
+
 lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 
