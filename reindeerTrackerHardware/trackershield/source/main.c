@@ -14,6 +14,7 @@
 #include "fsl_smc.h"
 #include "fsl_lptmr.h"
 #include "fsl_dspi.h"
+#include "at_func.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,11 +23,17 @@
 #include "i2c_func.h"
 #include "adc_func.h"
 #include "fsl_rtc.h"
-// jeesus tuleee
+
 lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
+uart_config_t uart_config;
 
 volatile uint8_t wake = 0;
+volatile uint8_t UART3_strReady = 0;
+volatile uint8_t UART3_bufPtr = 0;
+
+char UART3_recBuf[50];
+
 
 void delay(uint32_t del) {
 	for (; del > 1; del--) {
@@ -42,6 +49,38 @@ void initTimer() {
 	//EnableIRQ(LPTMR0_IRQn);
 	LPTMR_Init(LPTMR0, &lptmr_config);
 	LPTMR_SetTimerPeriod(LPTMR0, 5000);  // 3000 for 20hz data rat
+}
+
+void initUART() {
+
+	uint32_t uartClkSrcFreq = BOARD_DEBUG_UART_CLK_FREQ;
+	UART_GetDefaultConfig(&uart_config);
+	uart_config.baudRate_Bps = 9600;
+	uart_config.enableTx = true;
+	uart_config.enableRx = true;
+	UART_Init(UART3, &uart_config, uartClkSrcFreq);
+	UART_EnableInterrupts(UART3,kUART_RxDataRegFullInterruptEnable);
+	EnableIRQ(UART3_RX_TX_IRQn);
+
+}
+
+void UART3_send(char *data) {
+
+	char c = *data++;
+	while (c) {
+		while(!((UART3->S1) & 0x80)) {}
+		UART3->D = c;
+
+		c = *data++;
+	}
+}
+
+void UART3_receive() {
+	if (UART3_strReady) {
+		printf(UART3_recBuf);
+		memset(UART3_recBuf, 0, strlen(UART3_recBuf));
+		UART3_strReady = 0;
+	}
 }
 
 /*
@@ -72,9 +111,11 @@ int main(void) {
 
   initI2C();
   initAdc();
+  initUART();
   configure_acc();
   acc_init();
   initTimer();
+
 
   SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeVlls);
   smc_power_mode_vlls_config.subMode = kSMC_StopSub1; 			/*!< Stop submode 1, for VLLS1/LLS1. */
@@ -95,7 +136,7 @@ int main(void) {
   	};
 
 
-  printf("Wakeup by LLWU: %x \r\n", wake);  // 1 = LPTMR interrupt, 2 = Accel interrupt, 0 = No interrupts
+  //printf("Wakeup by LLWU: %x \r\n", wake);  // 1 = LPTMR interrupt, 2 = Accel interrupt, 0 = No interrupts
 
   GPIO_PinInit(GPIOB, 21u, &LED_configOutput);
   GPIO_PinInit(GPIOB, 22u, &LED_configOutput);
@@ -104,8 +145,25 @@ int main(void) {
   delay(100000);
   GPIO_SetPinsOutput(GPIOB, 1<<22u); //light red to indicate interrupt LED
 
+ // AT_send(AT_CPIN);
+  	//NB_setPin("666");
+  //NB_init();
+
+
+
   while (true) {
 
+	  AT_send(AT_CMEE, "\"jeesus\"");
+
+	  delay(234444);
+
+	  AT_send(AT_NPIN, "9");
+
+	  delay(234444);
+
+	  //UART3_receive();
+
+	  /*
 	  LPTMR0 -> CNR = 0;				// Prints the timer value, write anything on counter before reading it
 	  printf("Timer value: %ld \r\n", LPTMR0 -> CNR);
 
@@ -114,8 +172,10 @@ int main(void) {
 	  SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
 
 	  SMC_PostExitStopModes();
+	  */
 
   }
+
 }
 /*
 void PORTC_IRQHandler() {
@@ -137,7 +197,6 @@ void PORTC_IRQHandler() {
 
 void LLWU_IRQHandler() {
 
-
 	if ( LLWU -> F3 & 0x01 ) {
 		wake = 1;
 		CLOCK_EnableClock(kCLOCK_Lptmr0);
@@ -150,3 +209,21 @@ void LLWU_IRQHandler() {
 	LLWU -> F2 = 0x04;
 }
 
+void UART3_RX_TX_IRQHandler() {
+
+	UART_ClearStatusFlags(UART3,kUART_RxDataRegFullFlag);
+	GPIO_PortToggle(GPIOB, 1 << 21u);
+
+	uint8_t uartData = UART3 -> D;
+
+	UART3_recBuf[UART3_bufPtr] = uartData;
+	UART3_bufPtr++;
+
+	if ( uartData == 0x0A ) {
+
+		UART3_strReady = 1;
+		UART3_bufPtr = 0;
+
+	}
+
+}
