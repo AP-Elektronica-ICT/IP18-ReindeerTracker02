@@ -76,9 +76,26 @@ void UART3_send(char *data) {
 }
 
 void UART3_receive() {
+	char* token;
+	const char s[2] = ",";
+
+
 	if (UART3_strReady) {
-		printf(UART3_recBuf);
-		memset(UART3_recBuf, 0, strlen(UART3_recBuf));
+
+		printf("Received raw buffer: %s", UART3_recBuf);
+
+		if (strstr(UART3_recBuf, "$GPGLL") != NULL) {
+
+			token = strtok(UART3_recBuf, s);
+
+			while( token != NULL ) {
+				  printf( " %s\r\n", token );
+			      token = strtok(NULL, s);
+			}
+			memset(UART3_recBuf, 0, strlen(UART3_recBuf));
+		}
+
+
 		UART3_strReady = 0;
 	}
 }
@@ -149,19 +166,16 @@ int main(void) {
   	//NB_setPin("666");
   //NB_init();
 
-
+  	  AT_send(AT_CGPS, "1");
 
   while (true) {
-
-	  AT_send(AT_CMEE, "\"jeesus\"");
-
-	  delay(234444);
-
-	  AT_send(AT_NPIN, "9");
+/*
+	  AT_send(AT_CMEE, "2");
 
 	  delay(234444);
+*/
 
-	  //UART3_receive();
+	  UART3_receive();
 
 	  /*
 	  LPTMR0 -> CNR = 0;				// Prints the timer value, write anything on counter before reading it

@@ -25,6 +25,7 @@ extern char AT_CIPSTATUS[];
 extern char AT_CIPSTART[];
 extern char AT_CIFSR[];
 extern char AT_CIPSEND[];
+extern char AT_CGPS[];
 
 void AT_send(char* AT_cmd, char* AT_parameter);
 void NB_setPin(char* pinCode);

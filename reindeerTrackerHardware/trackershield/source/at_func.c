@@ -28,6 +28,7 @@ char AT_CIFSR[] = "CIFSR";
 char AT_CIPSTATUS[] = "CIPSTATUS";
 char AT_CIPSTART[] = "CIPSTART=\"TCP\",\"139.59.155.145\",1883";
 char AT_CIPSEND[] = "CIPSEND=";
+char AT_CGPS[] = "CGPS=";
 
 void NB_init() {
 	char cmd_buf[50];
