@@ -105,25 +105,6 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
         })
 });
 
-/*router.post('/devices/:deviceKey/details', function (req, res) {
-    const deviceKey = req.params.deviceKey;
-    const details = req.body;
-    Device.update(
-        {deviceKey: deviceKey},
-        {name: details.name, birthDate: generateBirthDate(details.birthYear, details.birthMonth, details.birthDay), imageUrl: details.imageUrl, gender: details.gender}
-    )
-        .then(function (value) {
-            if (value.n <= 0) {
-                res.status(404).send('device not found')
-            } else {
-                res.status(200).json('data updated');
-            }
-        })
-        .catch(function (reason) {
-            res.status(500).send('could not add data');
-        })
-});*/
-
 router.get('/devices/:deviceKey/details', function (req, res) {
     const deviceKey = req.params.deviceKey;
     Device.findOne({deviceKey: deviceKey})
@@ -194,6 +175,40 @@ function generateBirthDate(year, month, day) {
 /////////////////////////////////////////////////////////////////
 // USERS
 /////////////////////////////////////////////////////////////////
+var User = require('../models/user');
+
+router.post('/users', function (req, res) {
+    const newUser = new User({
+        uid: req.body.uid,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        birthdate: new Date(req.body.birthdate),
+        phoneNumber: req.body.phoneNumber,
+        location: req.body.location
+    });
+    newUser.save()
+        .then(function (value) {
+            res.status(201).send('user added');
+        })
+        .catch(function (reason) {
+            res.status(500).json(reason);
+        })
+});
+
+router.get('/users/:userID', function (req, res) {
+    const userID = req.params.userID;
+    User.findOne({uid: userID})
+        .then(function (user) {
+            if (user) {
+                res.status(200).json(user);
+            } else {
+                res.status(500).json('could not find user');
+            }
+        })
+        .catch(function (reason) {
+            res.status(500).json(reason);
+        })
+});
 
 router.put('/users/:userID/devices', function (req, res) {
     const userID = req.params.userID;
@@ -225,6 +240,8 @@ router.get('/users/:userID/devices', function (req, res) {
             res.status(404).send('could not find devices');
         })
 });
+
+
 
 function selectDeviceInfo(devices, keys) {
     const returnDevices = [];

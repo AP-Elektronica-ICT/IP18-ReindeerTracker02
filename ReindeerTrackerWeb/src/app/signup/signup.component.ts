@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormGroup} from "@angular/forms";
 import {AuthService} from "../shared/auth.service";
+import {Userdata} from "../shared/userdata";
 
 @Component({
   selector: 'app-signup',
@@ -9,8 +10,11 @@ import {AuthService} from "../shared/auth.service";
 })
 export class SignupComponent implements OnInit {
   errorMessage = null;
+  locationArr = ["Käsivarsi", "Kemin-Sompio", "Kiiminki", "Kolari", "Kollaja", "Kuivasalmi", "Kuukas", "Kyrö", "Lappi", "Lohijärvi", "Muddusjärvi", "Muonio", "Muotkatunturi", "Näätämö", "Näkkälä", "Näljänkä", "Narkaus", "Niemelä", "Oijärvi", "Oivanki", "Orajärvi", "Oraniemi", "Paatsjoki", "Paistunturi", "Palojärvi", "Pintamo", "Pohjois-Salla", "Poikajärvi", "Posion", "Livo", "Pudasjärven", "Livo", "Pudasjärvi", "Pyhä-Kallio", "Salla", "Sallivaara", "Sattasniemi", "Syväjärvi", "Taivalkoski", "Timisjärvi", "Tolva", "Vanttaus", "Vätsäri"]
 
-  constructor(private auth: AuthService) { }
+  constructor(private auth: AuthService) {
+
+  }
 
   ngOnInit() {
   }
@@ -20,16 +24,25 @@ export class SignupComponent implements OnInit {
     const email = form.controls.email.value;
     const password =  form.controls.password.value;
     const passwordrpt = form.controls.passwordrpt.value;
+    const userdata = {
+      firstName: form.controls.firstName.value,
+      lastName: form.controls.lastName.value,
+      birthdate: new Date(form.controls.birthyear.value, form.controls.birthmonth.value, form.controls.birthday.value),
+      phoneNumber: '+358' + form.controls.phoneNumber.value,
+      location: form.controls.location.value
+    };
     if (password === passwordrpt && form.valid) {
-      this.auth.signupWithEmailPassword(email, password)
-        .then(result => {
-          console.log(result);
-        })
-        .catch(err => {
+      this.auth.signupWithEmailPassword(email, password, userdata as Userdata)
+        .subscribe(res => {
+          //TODO: go to other page
+          console.log(res);
+        }, err => {
           this.errorMessage = 'There is already an account with this email address';
         })
     } else if (password !== passwordrpt) {
       this.errorMessage = 'The passwords do not match.';
+    } else if (!form.valid) {
+      this.errorMessage = 'Please fill in all the required fields';
     }
   }
 
