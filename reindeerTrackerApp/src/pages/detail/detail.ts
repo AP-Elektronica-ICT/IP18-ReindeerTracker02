@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { MapPage } from '../map/map';
+import {DeviceDetails} from "../../classes/deviceDetails";
+import {DeviceProvider} from "../../providers/device/device";
+import {Device} from "../../classes/device";
 
 /**
  * Generated class for the DetailPage page.
@@ -15,12 +18,23 @@ import { MapPage } from '../map/map';
   templateUrl: 'detail.html',
 })
 export class DetailPage {
+  device: Device = null;
+  deviceKey = '123457';
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private deviceProvider: DeviceProvider) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad DetailPage');
+    this.deviceKey = this.navParams.data;
+    this.getDevice();
+  }
+
+  getDevice() {
+    //TODO get deviceKey
+    this.deviceProvider.getDevice(this.deviceKey)
+      .subscribe((details: Device) => {
+        this.device = details;
+      })
   }
 
   goToMap(){

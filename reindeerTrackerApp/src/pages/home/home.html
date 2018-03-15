@@ -19,53 +19,20 @@
       </div>
     </ion-list-header>
 
-    <button ion-item (click)="loadDetail()" class="list-item-styled">
+    <button ion-item (click)="loadDetail(device.deviceKey)" class="list-item-styled" *ngFor="let device of devices">
       <ion-avatar item-start>
         <img src="assets/imgs/icons8-heart-outline-50.png">
       </ion-avatar>
       <div class="row">
-        <div class="col col-50">01556</div>
-        <div class="col col-50">15/10/1997</div>
-        <div class="col col-50">20%</div>
+        <div class="col col-50">{{device.deviceKey}}</div>
+        <div class="col col-50">{{device.lastLog.date | date: 'dd/MM/yyyy'}}</div>
+        <div class="col col-50">{{device.lastLog.battery}}</div>
       </div>
     </button>
 
-    <button ion-item (click)="loadDetail()" class="list-item-styled">
-      <ion-avatar item-start>
-        <img src="assets/imgs/icons8-heart-outline-50.png">
-      </ion-avatar>
-      <div class="row">
-        <div class="col col-50">01556</div>
-          <div class="col col-50">15/10/1997</div>
-          <div class="col col-50">20%</div>
-      </div>
-    </button>
-    
-    <button ion-item (click)="loadDetail()" class="list-item-styled">
-      <ion-avatar item-start>
-        <img src="assets/imgs/icons8-heart-outline-50.png">
-      </ion-avatar>
-      <div class="row">
-        <div class="col col-50">01556</div>
-          <div class="col col-50">15/10/1997</div>
-          <div class="col col-50">20%</div>
-      </div>
-    </button>
-    
-    <button ion-item (click)="loadDetail()" class="list-item-styled">
-      <ion-avatar item-start>
-        <img src="assets/imgs/icons8-heart-outline-filled-50.png">
-      </ion-avatar>
-      <div class="row">
-        <div class="col col-50">01556</div>
-        <div class="col col-50">15/10/1997</div>
-        <div class="col col-50">20%</div>
-      </div>
-    </button>
-        
   </ion-list>
 
-  <ion-fab right bottom> 
+  <ion-fab right bottom>
     <button ion-fab color="light"><ion-icon name="arrow-dropleft"></ion-icon></button>
     <ion-fab-list side="left">
       <button ion-fab (click)="loadAdd()"><ion-icon name="add"></ion-icon></button>

@@ -22,7 +22,13 @@ import { DeviceInfoComponent } from './device-info/device-info.component';
 import {KeysService} from "./shared/keys.service";
 import {DeviceService} from "./shared/device.service";
 import {StorageService} from "./shared/storage.service";
+<<<<<<< HEAD
 import { DetailComponent } from './detail/detail.component';
+=======
+import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
+>>>>>>> master
 
 
 @NgModule({
@@ -37,7 +43,13 @@ import { DetailComponent } from './detail/detail.component';
     ManifacturerHomeComponent,
     AddDeviceComponent,
     DeviceInfoComponent,
+<<<<<<< HEAD
     DetailComponent
+=======
+    LoginComponent,
+    SignupComponent,
+    PasswordResetComponent
+>>>>>>> master
   ],
   imports: [
     BrowserModule,
@@ -49,7 +61,7 @@ import { DetailComponent } from './detail/detail.component';
     AppRoutingModule,
     ReactiveFormsModule
   ],
-  providers: [AuthService, KeysService, DeviceService, StorageService],
+  providers: [AuthService, KeysService, DeviceService, StorageService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
