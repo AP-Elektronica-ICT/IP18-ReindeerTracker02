@@ -78,23 +78,50 @@ void UART3_send(char *data) {
 void UART3_receive() {
 	char* token;
 	const char s[2] = ",";
+	uint8_t counter = 0;
 
+	char GLL_ID[10];	// GLL Message ID $GPGLL
+	char latitude[15];
+	char northSouth[2];	// Indicates North / South, N = north, S = south
+	char longitude[15];
+	char eastWest[2];	// Indicates East / West, E = east, W = west
+	char time[10];		// UTC Time
+	char status[2];	// Status indicates data validity V = Data invalid or receiver warning, A = data valid
+	char posMode[2];	// Positioning mode according to NMEA protocol
+	char checkSum[10];
+
+	char* GPS_dataPtrs[9] = {GLL_ID, latitude, northSouth, longitude, eastWest, time, status, posMode, checkSum };
 
 	if (UART3_strReady) {
 
-		printf("Received raw buffer: %s", UART3_recBuf);
+		printf("Received raw buffer: %s\r\n", UART3_recBuf);
 
 		if (strstr(UART3_recBuf, "$GPGLL") != NULL) {
 
 			token = strtok(UART3_recBuf, s);
 
 			while( token != NULL ) {
-				  printf( " %s\r\n", token );
-			      token = strtok(NULL, s);
-			}
-			memset(UART3_recBuf, 0, strlen(UART3_recBuf));
-		}
 
+					GPS_dataPtrs[counter] = token;
+					token = strtok(NULL, s);
+					counter++;
+
+			}
+
+			if ( strstr(GPS_dataPtrs[6], "V" ) != NULL ) {
+				printf("Data invalid, waiting for valid data\r\n");
+			}
+
+			else {
+
+				for ( uint8_t cnr = 0 ; cnr <= 8 ; cnr++ ) {
+					printf ("%s\r\n", GPS_dataPtrs[cnr]);
+				}
+			}
+
+			memset(UART3_recBuf, 0, strlen(UART3_recBuf));
+
+		}
 
 		UART3_strReady = 0;
 	}
@@ -162,31 +189,23 @@ int main(void) {
   delay(100000);
   GPIO_SetPinsOutput(GPIOB, 1<<22u); //light red to indicate interrupt LED
 
- // AT_send(AT_CPIN);
-  	//NB_setPin("666");
-  //NB_init();
-
   	  AT_send(AT_CGPS, "1");
 
   while (true) {
-/*
-	  AT_send(AT_CMEE, "2");
-
-	  delay(234444);
-*/
 
 	  UART3_receive();
 
-	  /*
+
 	  LPTMR0 -> CNR = 0;				// Prints the timer value, write anything on counter before reading it
-	  printf("Timer value: %ld \r\n", LPTMR0 -> CNR);
+
+	  //printf("Timer value: %ld \r\n", LPTMR0 -> CNR);
 
 	  SMC_PreEnterStopModes();
 
 	  SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
 
 	  SMC_PostExitStopModes();
-	  */
+
 
   }
 
@@ -211,11 +230,12 @@ void PORTC_IRQHandler() {
 
 void LLWU_IRQHandler() {
 
-	if ( LLWU -> F3 & 0x01 ) {
+	if ( LLWU -> F3 & 0x01 ) {	// 1 = LPTMR interrupt, 2 = Accel interrupt, 0 = No interrupts
 		wake = 1;
 		CLOCK_EnableClock(kCLOCK_Lptmr0);
 		LPTMR0 -> CSR |= LPTMR_CSR_TCF_MASK;
 	}
+
 	else if ( LLWU -> F2 & 0x04) {
 		wake = 2;
 	}
