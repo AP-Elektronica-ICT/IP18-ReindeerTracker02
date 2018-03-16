@@ -23,6 +23,7 @@
 #include "i2c_func.h"
 #include "adc_func.h"
 #include "fsl_rtc.h"
+#include "gps_func.h"
 
 lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
@@ -75,56 +76,16 @@ void UART3_send(char *data) {
 	}
 }
 
-void UART3_receive() {
-	char* token;
-	const char s[2] = ",";
-	uint8_t counter = 0;
-
-	char GLL_ID[10];	// GLL Message ID $GPGLL
-	char latitude[15];
-	char northSouth[2];	// Indicates North / South, N = north, S = south
-	char longitude[15];
-	char eastWest[2];	// Indicates East / West, E = east, W = west
-	char time[10];		// UTC Time
-	char status[2];	// Status indicates data validity V = Data invalid or receiver warning, A = data valid
-	char posMode[2];	// Positioning mode according to NMEA protocol
-	char checkSum[10];
-
-	char* GPS_dataPtrs[9] = {GLL_ID, latitude, northSouth, longitude, eastWest, time, status, posMode, checkSum };
+uint8_t UART3_receive() {
 
 	if (UART3_strReady) {
 
 		printf("Received raw buffer: %s\r\n", UART3_recBuf);
 
-		if (strstr(UART3_recBuf, "$GPGLL") != NULL) {
-
-			token = strtok(UART3_recBuf, s);
-
-			while( token != NULL ) {
-
-					GPS_dataPtrs[counter] = token;
-					token = strtok(NULL, s);
-					counter++;
-
-			}
-
-			if ( strstr(GPS_dataPtrs[6], "V" ) != NULL ) {
-				printf("Data invalid, waiting for valid data\r\n");
-			}
-
-			else {
-
-				for ( uint8_t cnr = 0 ; cnr <= 8 ; cnr++ ) {
-					printf ("%s\r\n", GPS_dataPtrs[cnr]);
-				}
-			}
-
-			memset(UART3_recBuf, 0, strlen(UART3_recBuf));
-
-		}
-
 		UART3_strReady = 0;
+		return 1;
 	}
+	return 0;
 }
 
 /*
@@ -189,12 +150,19 @@ int main(void) {
   delay(100000);
   GPIO_SetPinsOutput(GPIOB, 1<<22u); //light red to indicate interrupt LED
 
-  	  AT_send(AT_CGPS, "1");
+  //AT_send(AT_CGPS, "1");
+
+  printf("waked IN MAIN HAHA %d\r\n", wake);
 
   while (true) {
 
-	  UART3_receive();
+	  printf("waked lul %d\r\n", wake);
 
+	  if ( wake == 1 ) {
+		  wake = 0;
+		  activateGPS();
+		  printf("Got GPS\r\n");
+	  }
 
 	  LPTMR0 -> CNR = 0;				// Prints the timer value, write anything on counter before reading it
 
@@ -238,6 +206,7 @@ void LLWU_IRQHandler() {
 
 	else if ( LLWU -> F2 & 0x04) {
 		wake = 2;
+		LLWU -> F2 |= 0x04;
 	}
 
 	LLWU -> F2 = 0x04;
