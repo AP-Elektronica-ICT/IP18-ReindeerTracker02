@@ -12,7 +12,7 @@
 #include "gps_func.h"
 #include "at_func.h"
 
-void activateGPS() {
+void getGPS() {
 
 	char* token;
 	const char s[2] = ",";
@@ -31,7 +31,7 @@ void activateGPS() {
 	char* GPS_dataPtrs[9] = { GLL_ID, latitude, northSouth, longitude, eastWest,
 			time, status, posMode, checkSum };
 
-	AT_send(AT_CGPS, "1");
+	//AT_send(AT_CGPS, "1");
 
 	while (strstr(GPS_dataPtrs[6], "A") == NULL) {		// Loop until string contains A status, A = Data valid
 
@@ -40,7 +40,7 @@ void activateGPS() {
 		}
 
 
-		if (strstr(UART3_recBuf, "$GPGLL") != NULL) {		// Check if received message is GPGLL message
+		if (strstr(UART3_recBuf, "$GNGLL") != NULL) {		// Check if received message is GPGLL message
 
 			token = strtok(UART3_recBuf, s);				// Strtok splices the string to different variables, using "," separator
 
@@ -69,4 +69,38 @@ void activateGPS() {
 
 		UART3_strReady = 0;
 	}
+	parseData(GPS_dataPtrs[1], GPS_dataPtrs[3]);
+}
+
+void parseData(char* latStr, char* lonStr) {
+
+	uint8_t d_ptr = 0;
+
+	latStr[4] = latStr[3];
+	latStr[3] = latStr[2];
+	latStr[2] = '.';
+
+	lonStr[5] = lonStr[4];
+	lonStr[4] = lonStr[3];
+	lonStr[3] = '.';
+
+	while ( latStr[d_ptr] == '0' ) {
+		d_ptr++;
+	}
+
+	strcpy(parsedLat, latStr+d_ptr);
+
+	d_ptr = 0;
+
+	while ( lonStr[d_ptr] == '0' ) {
+		d_ptr++;
+	}
+
+	strcpy(parsedLon, lonStr+d_ptr);
+
+	printf("Latitude: %s", latStr);
+	printf("Longitude: %s", lonStr);
+
+	printf("Parsed latitude: %s", parsedLon);
+	printf("Parsed longitude: %s", parsedLat);
 }

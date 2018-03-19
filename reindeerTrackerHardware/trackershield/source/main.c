@@ -34,6 +34,8 @@ volatile uint8_t UART3_strReady = 0;
 volatile uint8_t UART3_bufPtr = 0;
 
 char UART3_recBuf[50];
+char parsedLat[15];
+char parsedLon[15];
 
 
 void delay(uint32_t del) {
@@ -49,7 +51,7 @@ void initTimer() {
 	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_1;
 	//EnableIRQ(LPTMR0_IRQn);
 	LPTMR_Init(LPTMR0, &lptmr_config);
-	LPTMR_SetTimerPeriod(LPTMR0, 5000);  // 3000 for 20hz data rat
+	LPTMR_SetTimerPeriod(LPTMR0, 2000);  // 3000 for 20hz data rat
 }
 
 void initUART() {
@@ -80,7 +82,7 @@ uint8_t UART3_receive() {
 
 	if (UART3_strReady) {
 
-		printf("Received raw buffer: %s\r\n", UART3_recBuf);
+		//printf("Received raw buffer: %s\r\n", UART3_recBuf);
 
 		UART3_strReady = 0;
 		return 1;
@@ -140,9 +142,6 @@ int main(void) {
   	1, /* initial value */
   	};
 
-
-  //printf("Wakeup by LLWU: %x \r\n", wake);  // 1 = LPTMR interrupt, 2 = Accel interrupt, 0 = No interrupts
-
   GPIO_PinInit(GPIOB, 21u, &LED_configOutput);
   GPIO_PinInit(GPIOB, 22u, &LED_configOutput);
 
@@ -152,15 +151,11 @@ int main(void) {
 
   //AT_send(AT_CGPS, "1");
 
-  printf("waked IN MAIN HAHA %d\r\n", wake);
-
   while (true) {
-
-	  printf("waked lul %d\r\n", wake);
 
 	  if ( wake == 1 ) {
 		  wake = 0;
-		  activateGPS();
+		  getGPS();
 		  printf("Got GPS\r\n");
 	  }
 
