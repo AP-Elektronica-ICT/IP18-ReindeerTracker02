@@ -74,18 +74,23 @@ BOARD_InitPins:
 /*FUNCTION**********************************************************************
  *
  * Function Name : BOARD_InitPins
- * Description   : Configures pin routing and optionally pin electrical features.
+ * Description   : Configures pin routing and optionally pin electrical features
  *
  *END**************************************************************************/
 void BOARD_InitPins(void) {
   CLOCK_EnableClock(kCLOCK_PortB);                           /* Port B Clock Gate Control: Clock enabled */
-CLOCK_EnableClock(kCLOCK_PortC);
+  CLOCK_EnableClock(kCLOCK_PortC);
+
   PORT_SetPinMux(PORTB, PIN16_IDX, kPORT_MuxAlt3);           /* PORTB16 (pin 62) is configured as UART0_RX */
   PORT_SetPinMux(PORTB, PIN17_IDX, kPORT_MuxAlt3);           /* PORTB17 (pin 63) is configured as UART0_TX */
 
   PORT_SetPinMux(PORTB, 21u, kPORT_MuxAsGpio);
   PORT_SetPinMux(PORTB, 22u, kPORT_MuxAsGpio);
   PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);
+
+  PORT_SetPinMux(PORTC, 16u, kPORT_MuxAlt3);				// UART PIN RX
+  PORT_SetPinMux(PORTC, 17u, kPORT_MuxAlt3);				// UART PIN TX
+
   SIM->SOPT5 = ((SIM->SOPT5 &
     (~(SIM_SOPT5_UART0TXSRC_MASK)))                          /* Mask bits to zero which are setting */
       | SIM_SOPT5_UART0TXSRC(SOPT5_UART0TXSRC_UART_TX)       /* UART 0 transmit data source select: UART0_TX pin */
