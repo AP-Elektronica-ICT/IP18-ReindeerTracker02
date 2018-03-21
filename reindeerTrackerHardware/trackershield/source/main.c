@@ -37,12 +37,39 @@ char UART3_recBuf[50];
 char parsedLat[15];
 char parsedLon[15];
 
+char PMC_set[] = { 0XB5, 0X62, 0X06, 0X86, 0X00, 0X08, 0X00, 0X03, 0X00, 0X00, 0X00, 0X00, 0X00, 0X00};
+char ubx_cfg_prt[] = {0XB5, 0X62, 0X06, 0X00, 0X00, 0X01, 0X01 };
 
 void delay(uint32_t del) {
 	for (; del > 1; del--) {
 		__asm("nop");
 	}
 }
+
+uint8_t fletcher8(char *crc, uint8_t len) {
+
+	uint8_t CK_A = 0;
+	uint8_t CK_B = 0;
+	uint8_t i = 0;
+
+	for ( i = 2 ; i <= len ; i++ ) {
+
+		CK_A = CK_A + crc[i];
+		CK_B = CK_B + CK_A;
+	}
+
+	crc[len] = CK_A;
+	crc[len+1] = CK_B;
+
+	printf("Printing UBX-msg\r\n");
+
+	for ( i = 0; i < len+2 ; i++ ) {
+		printf("%02x", (unsigned char)crc[i]);
+	}
+
+	printf("\r\n");
+}
+
 void initTimer() {
 
 	LPTMR_GetDefaultConfig(&lptmr_config);
@@ -150,6 +177,9 @@ int main(void) {
   GPIO_SetPinsOutput(GPIOB, 1<<22u); //light red to indicate interrupt LED
 
   //AT_send(AT_CGPS, "1");
+
+ // fletcher8(PMC_set, 14);
+  fletcher8(ubx_cfg_prt, 7);
 
   while (true) {
 
