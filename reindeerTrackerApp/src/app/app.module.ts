@@ -17,7 +17,23 @@ import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { MapPage } from '../pages/map/map';
 import { DeviceProvider } from '../providers/device/device';
-import {HttpClient, HttpClientModule, HttpHandler} from "@angular/common/http";
+import {HttpClientModule} from "@angular/common/http";
+import {ImagePicker} from "@ionic-native/image-picker";
+import {AndroidPermissions} from "@ionic-native/android-permissions";
+import {AngularFireModule} from "angularfire2";
+import { StorageProvider } from '../providers/storage/storage';
+import { ImageProvider } from '../providers/image/image';
+import { PreloaderProvider } from '../providers/preloader/preloader';
+import {Camera} from "@ionic-native/camera";
+
+export const firebaseConfig = {
+  apiKey: "AIzaSyAud_cLzms8_U55nCkSKNmnRUhXei2pLQs",
+  authDomain: "reindeer-tracker.firebaseapp.com",
+  databaseURL: "https://reindeer-tracker.firebaseio.com/",
+  projectId: "reindeer-tracker",
+  storageBucket: "reindeer-tracker.appspot.com",
+  messagingSenderId: "771165411039"
+};
 
 @NgModule({
   declarations: [
@@ -36,7 +52,8 @@ import {HttpClient, HttpClientModule, HttpHandler} from "@angular/common/http";
     IonicModule.forRoot(MyApp),
     BrowserAnimationsModule,
     NgxQRCodeModule,
-    HttpClientModule
+    HttpClientModule,
+    AngularFireModule.initializeApp(firebaseConfig)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -55,7 +72,13 @@ import {HttpClient, HttpClientModule, HttpHandler} from "@angular/common/http";
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     BarcodeScanner,
-    DeviceProvider
+    DeviceProvider,
+    ImagePicker,
+    AndroidPermissions,
+    StorageProvider,
+    ImageProvider,
+    PreloaderProvider,
+    Camera
   ]
 })
 export class AppModule {}

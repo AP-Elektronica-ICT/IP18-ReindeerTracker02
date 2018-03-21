@@ -5,17 +5,86 @@
         {{errorMessage}}
       </div>
       <form (submit)="signup(signupForm)" #signupForm="ngForm">
-        <div class="form-group">
-          <label for="email">Email address</label>
-          <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required ngModel name="email" email>
+        <div class="row">
+          <div class="col">
+            <label for="firstname">First name</label>
+            <input type="text" class="form-control" placeholder="First name" id="firstname" ngModel name="firstName" required>
+          </div>
+          <div class="col">
+            <label for="lastname">Last name</label>
+            <input type="text" class="form-control" placeholder="Last name" id="lastname" ngModel name="lastName" required>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" class="form-control" id="password" placeholder="Password" required ngModel name="password">
+        <br>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required ngModel name="email" email>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="passwordrpt">Repeat password</label>
-          <input type="password" class="form-control" id="passwordrpt" placeholder="Password" required ngModel name="passwordrpt">
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" placeholder="Password" required ngModel name="password">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="passwordrpt">Repeat password</label>
+              <input type="password" class="form-control" id="passwordrpt" placeholder="Password" required ngModel name="passwordrpt">
+            </div>
+          </div>
+        </div>
+        <label>Birthday</label>
+        <div class="row">
+          <div class="col">
+            <input type="number" class="form-control" placeholder="DD" min="1" max="31" ngModel name="birthday" required>
+          </div>
+          <div class="col">
+            <select class="form-control" ngModel name="birthmonth" required>
+              <option selected value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+          </div>
+          <div class="col">
+            <input type="number" class="form-control" placeholder="YYYY" ngModel name="birthyear" required>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col">
+            <label for="phonenumber">Telephone number</label>
+            <div class="input-group mb-2" id="phonenumber">
+              <div class="input-group-prepend">
+                <div class="input-group-text">+358</div>
+              </div>
+              <input type="tel" class="form-control" ngModel name="phoneNumber" required>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col">
+            <label for="location">Location</label>
+            <select class="form-control" id="location" ngModel name="location" required>
+              <option *ngFor="let location of locationArr; let i = index;" [value]="location" [selected]="i==0">{{location}}</option>
+            </select>
+          </div>
         </div>
         <br>
         <br>

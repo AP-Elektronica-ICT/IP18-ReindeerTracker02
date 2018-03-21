@@ -29,6 +29,7 @@ export class DeviceInfoComponent implements OnInit {
       .queryParams
       .subscribe(params => {
         this.deviceKey = params.deviceKey;
+        console.log(this.deviceKey);
         this.deviceService.getDeviceDetails(this.deviceKey)
           .subscribe((res: DeviceDetails) => {
             this.device = res;

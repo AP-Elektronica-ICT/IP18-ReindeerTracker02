@@ -6,7 +6,10 @@ var deviceSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    userIDs: [String],
+    userIDs: [{
+        type: String,
+        unique: true
+    }],
     activated: {
         type: Boolean,
         default: false

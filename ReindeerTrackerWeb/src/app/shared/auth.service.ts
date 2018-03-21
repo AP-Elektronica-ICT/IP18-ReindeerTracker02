@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import {AngularFireAuth} from "angularfire2/auth";
+import {Userdata} from "./userdata";
+import {HttpClient} from "@angular/common/http";
+import {AppSettings} from "./AppSettings";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class AuthService {
+  url = AppSettings.API_ENDPOINT;
 
-  constructor(private af: AngularFireAuth) { }
+  constructor(private af: AngularFireAuth, private http: HttpClient) { }
 
   getCurrentUID(): string {
-    //TODO get uid from firebase login
     return this.af.auth.currentUser.uid;
   }
 
@@ -19,8 +23,30 @@ export class AuthService {
     return this.af.auth.signInWithEmailAndPassword(email, password)
   }
 
-  signupWithEmailPassword(email: string, password: string): Promise<any> {
-    return this.af.auth.createUserWithEmailAndPassword(email, password);
+  signupWithEmailPassword(email: string, password: string, data: Userdata): Observable<any> {
+    const observable = new Observable(observer => {
+      this.af.auth.createUserWithEmailAndPassword(email, password)
+        .then(res => {
+          data.uid = res.uid;
+          console.log(res.uid);
+          this.http.post(this.url + '/users', data)
+            .subscribe(ress => {
+              observer.next(ress);
+              console.log(ress);
+            }, err => {
+              if (err.status >= 200 && err.status < 300) {
+                observer.next();
+              } else {
+                observer.error(err);
+              }
+              console.log(err);
+            })
+        })
+        .catch(err => {
+          observer.error(err);
+        })
+    });
+    return observable;
   }
 
   resetPassword(email: string): Promise<any> {
