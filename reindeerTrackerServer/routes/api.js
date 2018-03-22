@@ -181,6 +181,7 @@ var User = require('../models/user');
 router.post('/users', function (req, res) {
     const newUser = new User({
         uid: req.body.uid,
+        email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         birthdate: new Date(req.body.birthdate),
