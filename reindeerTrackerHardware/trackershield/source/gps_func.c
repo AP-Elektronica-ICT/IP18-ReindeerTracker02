@@ -31,7 +31,6 @@ void getGPS() {
 	char* GPS_dataPtrs[9] = { GLL_ID, latitude, northSouth, longitude, eastWest,
 			time, status, posMode, checkSum };
 
-	//AT_send(AT_CGPS, "1");
 
 	while (strstr(GPS_dataPtrs[6], "A") == NULL) {		// Loop until string contains A status, A = Data valid
 

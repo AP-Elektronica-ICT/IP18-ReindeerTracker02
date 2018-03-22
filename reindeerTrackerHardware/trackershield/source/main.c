@@ -32,11 +32,16 @@ uart_config_t uart_config;
 
 volatile uint8_t wake = 0;
 volatile uint8_t UART3_strReady = 0;
-volatile uint8_t UART3_bufPtr = 0;
+volatile uint16_t UART3_bufPtr = 0;
+
+char UART3_recBuf[1000];
+char UART3_strBuf[1000];
+
 
 char UART3_recBuf[50];
 char parsedLat[15];
 char parsedLon[15];
+
 
 char testLon[11] = ("00833.91565");
 char testLat[11] = ("4717.11364");
@@ -94,6 +99,9 @@ uint8_t UART3_receive() {
 		//printf("Received raw buffer: %s\r\n", UART3_recBuf);
 
 		UART3_strReady = 0;
+
+		memset(UART3_recBuf, 0, strlen(UART3_recBuf));
+
 		return 1;
 	}
 	return 0;
@@ -115,7 +123,7 @@ void LPTMR0_IRQHandler() {
 
 int main(void) {
 
-
+	 uint8_t res;
 	//uint8_t temp = LLWU -> F3;
 	PMC ->REGSC |= 0x08;
 	EnableIRQ(LLWU_IRQn);
@@ -133,7 +141,7 @@ int main(void) {
   initTimer();
 
 
-  SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeVlls);
+ SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeVlls);
   smc_power_mode_vlls_config.subMode = kSMC_StopSub1; 			/*!< Stop submode 1, for VLLS1/LLS1. */
 
   LLWU -> ME |= 0x01; 											// Enable wakeup module for LPTMR
@@ -158,15 +166,56 @@ int main(void) {
   delay(100000);
   GPIO_SetPinsOutput(GPIOB, 1<<22u); //light red to indicate interrupt LED
 
-  //AT_send(AT_CGPS, "1");
+
 
   //fletcher8(PMC_set, 14);
   //fletcher8(ubx_cfg_prt, 7);
   ubx_send(ubx_cfg_prt);
 
+
+  //printf("waked IN MAIN HAHA %d\r\n", wake);
+
+
+	res = AT_send(AT_NRB, "", "+UFOTAS");
+			if (res == 0) {
+				printf("rebooted\r\n");
+			} else if (res == 1) {
+				printf("error\r\n");
+			}
+			else if (res == 2) {
+							printf("timeout error\r\n");
+						}
+
+
+ 	  res =  NB_setPin();
+
+ 	  if(res == 0){
+ 		  printf("ack\r\n");
+ 	  }
+ 	  else if(res == 1){
+ 		  printf("error\r\n");
+ 	  }
+ 	 // delay(20200020);
+ 	  NB_connectStatus();
+
+
+
+
+
+
+
   //parseData(testLat, testLon);
 
+
   while (true) {
+
+	  printf("Roger\r\n");
+	  delay(20020020);
+
+
+	  /*
+	  printf("waked lul %d\r\n", wake);
+
 
 	  if ( wake == 1 ) {
 		  wake = 0;
@@ -184,7 +233,7 @@ int main(void) {
 
 	  SMC_PostExitStopModes();
 
-
+*/
   }
 
 }
@@ -228,15 +277,18 @@ void UART3_RX_TX_IRQHandler() {
 	GPIO_PortToggle(GPIOB, 1 << 21u);
 
 	uint8_t uartData = UART3 -> D;
-
+	if(uartData != 0){
 	UART3_recBuf[UART3_bufPtr] = uartData;
 	UART3_bufPtr++;
 
-	if ( uartData == 0x0A ) {
+
+	if ( uartData == 0x0A) {
 
 		UART3_strReady = 1;
-		UART3_bufPtr = 0;
+
+		//UART3_bufPtr = 0;
 
 	}
+}
 
 }
