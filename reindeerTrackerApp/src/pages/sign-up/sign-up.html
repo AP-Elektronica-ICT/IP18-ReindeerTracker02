@@ -14,5 +14,36 @@
 
 
 <ion-content padding>
-
+  <ion-list inset>
+    <form class="textForm" #myForm='ngForm'>
+        <div id="image">
+            <img src="assets/imgs/NoReindeerImage.png">
+            <button ion-button class="submit-button">Select image</button>
+          </div>
+        <ion-item class="textForm">
+            <ion-label floating>email</ion-label>
+            <ion-textarea type="text" [(ngModel)]="subject" name="subject"></ion-textarea>
+        </ion-item>
+        <ion-item class="textForm">
+            <ion-label floating>phone number</ion-label>
+            <ion-textarea type="text" [(ngModel)]="subject" name="subject"></ion-textarea>
+        </ion-item>
+        <ion-item class="textForm">
+            <ion-label floating>name</ion-label>
+            <ion-textarea type="text" [(ngModel)]="subject" name="subject"></ion-textarea>
+        </ion-item>
+        <ion-item class="textForm">
+            <ion-label floating>birthdate</ion-label>
+            <ion-textarea type="text" [(ngModel)]="message" name="message"></ion-textarea>
+        </ion-item>
+        <ion-item class="textForm">
+          <ion-label floating>gender</ion-label>
+          <ion-textarea type="text" [(ngModel)]="message" name="message"></ion-textarea>
+      </ion-item>
+    </form>
+    <br>
+    <br>
+    <br>
+    <button ion-button class="submit-button" (click)="submit()">Sign Up</button>
+</ion-list>
 </ion-content>
