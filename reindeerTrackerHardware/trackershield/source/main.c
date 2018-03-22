@@ -37,8 +37,12 @@ char UART3_recBuf[50];
 char parsedLat[15];
 char parsedLon[15];
 
-char PMC_set[] = { 0XB5, 0X62, 0X06, 0X86, 0X00, 0X08, 0X00, 0X03, 0X00, 0X00, 0X00, 0X00, 0X00, 0X00};
-char ubx_cfg_prt[] = {0XB5, 0X62, 0X06, 0X00, 0X00, 0X01, 0X01 };
+char PMC_set[] = { 0XB5, 0X62, 0X06, 0X86, 0X08, 0X00, 0X00, 0X01, 0X00, 0X00, 0X00, 0X00, 0X00, 0X00};
+char ubx_cfg_prt[] = {0XB5, 0X62, 0X06, 0X00, 0X01, 0X00, 0X01 };
+
+char testLon[11] = ("00833.91565");
+char testLat[11] = ("4717.11364");
+
 
 void delay(uint32_t del) {
 	for (; del > 1; del--) {
@@ -52,7 +56,7 @@ uint8_t fletcher8(char *crc, uint8_t len) {
 	uint8_t CK_B = 0;
 	uint8_t i = 0;
 
-	for ( i = 2 ; i <= len ; i++ ) {
+	for ( i = 2 ; i < len ; i++ ) {
 
 		CK_A = CK_A + crc[i];
 		CK_B = CK_B + CK_A;
@@ -178,8 +182,10 @@ int main(void) {
 
   //AT_send(AT_CGPS, "1");
 
- // fletcher8(PMC_set, 14);
-  fletcher8(ubx_cfg_prt, 7);
+  //fletcher8(PMC_set, 14);
+  //fletcher8(ubx_cfg_prt, 7);
+
+  parseData(testLat, testLon);
 
   while (true) {
 

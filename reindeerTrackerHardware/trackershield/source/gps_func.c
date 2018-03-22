@@ -76,6 +76,10 @@ void parseData(char* latStr, char* lonStr) {
 
 	uint8_t d_ptr = 0;
 
+	const char s = '.';
+
+	char* delPtr;
+
 	latStr[4] = latStr[3];
 	latStr[3] = latStr[2];
 	latStr[2] = '.';
@@ -84,13 +88,20 @@ void parseData(char* latStr, char* lonStr) {
 	lonStr[4] = lonStr[3];
 	lonStr[3] = '.';
 
-	while ( latStr[d_ptr] == '0' ) {
+	while ( latStr[d_ptr] == '0' ) {		// Skip all zeroes from beginning of string
 		d_ptr++;
 	}
 
-	strcpy(parsedLat, latStr+d_ptr);
+	strcpy(parsedLat, latStr+d_ptr);		// Copy string without zeroes to new string
 
 	d_ptr = 0;
+
+	delPtr = strchr(parsedLat, s);
+
+	uint32_t latMinutes = atol(delPtr+1);
+	latMinutes = latMinutes/6;
+
+	sprintf(delPtr+1, "%ld\r\n", latMinutes);
 
 	while ( lonStr[d_ptr] == '0' ) {
 		d_ptr++;
@@ -98,8 +109,12 @@ void parseData(char* latStr, char* lonStr) {
 
 	strcpy(parsedLon, lonStr+d_ptr);
 
-	printf("Latitude: %s", latStr);
-	printf("Longitude: %s", lonStr);
+	delPtr = strchr(parsedLon, s);
+
+	uint32_t lonMinutes = atol(delPtr+1);
+	lonMinutes = lonMinutes/6;
+
+	sprintf(delPtr+1, "%ld\r\n", lonMinutes);
 
 	printf("Parsed latitude: %s", parsedLon);
 	printf("Parsed longitude: %s", parsedLat);
