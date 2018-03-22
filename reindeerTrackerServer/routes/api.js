@@ -93,6 +93,7 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
     console.log('put');
     const deviceKey = req.params.deviceKey;
     const log = req.body;
+    log.initialLog = false;
     Device.update(
         {deviceKey: deviceKey},
         {$push: {logs: { $each: [log], $position: 0}}, isAlive: log.isAlive}
@@ -213,9 +214,14 @@ router.get('/users/:userID', function (req, res) {
 router.put('/users/:userID/devices', function (req, res) {
     const userID = req.params.userID;
     const deviceKey = req.body.deviceKey;
+    const newLog = {
+        battery: 100,
+        isAlive: true,
+        initialLog: true
+    }
     Device.update(
         {deviceKey: deviceKey},
-        {$push: {userIDs: userID}}
+        {$push: {userIDs: userID, logs: newLog}}
     )
         .then(function (value) {
             if (value.n <= 0) {
