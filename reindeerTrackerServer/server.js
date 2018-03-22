@@ -22,10 +22,7 @@ app.use(bodyParser.json());
 app.use(cors({
     origin: ['http://localhost:4200', 'http://localhost:8100'],
     credentials: true
-    }, {
-    origin: 'http://localhost:8100',
-    credentials: true
-}));
+    }));
 
 app.use('/api', require('./routes/api'));
 
