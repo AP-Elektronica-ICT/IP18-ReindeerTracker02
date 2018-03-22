@@ -38,7 +38,7 @@ char UART3_recBuf[1000];
 char UART3_strBuf[1000];
 
 
-char UART3_recBuf[50];
+
 char parsedLat[15];
 char parsedLon[15];
 

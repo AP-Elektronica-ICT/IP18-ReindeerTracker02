@@ -10,7 +10,7 @@
 
 
 void getGPS();
-extern char UART3_recBuf[50];
+
 
 void activateGPS();
 extern char UART3_recBuf[1000];
