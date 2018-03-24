@@ -86,6 +86,7 @@ void BOARD_InitPins(void) {
 
   PORT_SetPinMux(PORTB, 21u, kPORT_MuxAsGpio);
   PORT_SetPinMux(PORTB, 22u, kPORT_MuxAsGpio);
+  PORT_SetPinMux(PORTB, 11u, kPORT_MuxAsGpio);	//boostreg enable pin
   PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);
 
   PORT_SetPinMux(PORTC, 16u, kPORT_MuxAlt3);				// UART PIN RX
