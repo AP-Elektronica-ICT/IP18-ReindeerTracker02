@@ -40,6 +40,19 @@ void NB_init()
 }
 
 /*
+ * Small function to check if NBiot receive buffer contains OK
+ * we can use this to break from response waiting loop if we already got OK answer
+ */
+uint8_t breakIfAtOk()
+{
+	if(strstr(UART3_recBuf,"OK") != NULL)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+/*
  * Check AT command return result and print related ok message or error message.
  *
  * res = AT command return code. 0 = command succeeded, 1 = module responded with ERROR, 2 = there was no answer from module

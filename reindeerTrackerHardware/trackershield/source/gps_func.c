@@ -12,6 +12,47 @@
 #include "gps_func.h"
 #include "at_func.h"
 
+
+void printUbxResponseHex(char* data, uint8_t dataLength)
+{
+
+	for(uint8_t n = 0;n<dataLength;n++)
+	{
+		printf("%02x ", (uint8_t)(*(data+n)));
+	}
+
+}
+
+uint8_t calcUbxCrc(char *data)
+{
+
+	uint8_t ck_a = 0, ck_b = 0, n = 0;
+	while(data[n] != 0x0d)
+	{
+
+		n++;
+	}
+
+	uint8_t dataLength = n;
+
+	for(n=0; n<dataLength; n++)
+	{
+		ck_a = ck_a + data[n];
+		ck_b = ck_b + ck_a;
+	}
+
+	data[n] = ck_a;
+	data[n+1] = ck_b;
+	data[n+2] = 0;
+
+	for(n = 0;n<(dataLength+2);n++)
+	{
+		printf("%02x ", (uint8_t)data[n]);
+	}
+
+	return dataLength+4;
+}
+
 void getGPS() {
 
 	char* token;

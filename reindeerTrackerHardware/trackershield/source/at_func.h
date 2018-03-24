@@ -35,6 +35,8 @@ void NB_init();
 uint8_t NB_selectOp();
 uint8_t NB_connectStatus();
 
+uint8_t breakIfAtOk();
+
 #endif /* AT_COMMANDS_H_ */
 
 /*int *GPS_comm_table[] =
