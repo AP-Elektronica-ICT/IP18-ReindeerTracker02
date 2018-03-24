@@ -147,9 +147,7 @@ uint8_t UART3_receive()
 
 	if (UART3_strReady)
 	{
-
 		//printf("Received raw buffer: %s\r\n", UART3_recBuf);
-
 		UART3_strReady = 0;
 		memset(UART3_recBuf, 0, strlen(UART3_recBuf));
 
@@ -158,6 +156,13 @@ uint8_t UART3_receive()
 	return 0;
 }
 
+
+/*
+ * Send byte array to GPS module. This works different than other send functions
+ * This will not handle input data as string, but as a byte array, so it will not stop sending to 0x00 character
+ * It will send len.number of bytes instead
+ *
+ */
 void UART2_send(char *data, uint8_t len)
 {
 
@@ -253,6 +258,9 @@ int main(void)
 	while (1)
 	{
 
+		/*
+		 * Check if a string has arrived from PC (with CR line end)
+		 */
 		if (PC_strReady)
 		{
 
@@ -269,11 +277,11 @@ int main(void)
 			{
 				streamGps = 0;
 			}
-			else if(strstr(PC_recBuf, "\xb5\x62") != NULL)
+			else if(strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
 			{
 				printf("send to gps\r\n");
-				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf+2);
-				UART2_send(PC_recBuf, ubxMsgLen);
+				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf+2); //Calculate UBX checksum and add it to the message
+				UART2_send(PC_recBuf, ubxMsgLen); //Send UBX message to module
 			}
 			else
 			{
