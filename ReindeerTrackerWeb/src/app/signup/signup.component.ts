@@ -25,6 +25,7 @@ export class SignupComponent implements OnInit {
     const password =  form.controls.password.value;
     const passwordrpt = form.controls.passwordrpt.value;
     const userdata = {
+      email: email,
       firstName: form.controls.firstName.value,
       lastName: form.controls.lastName.value,
       birthdate: new Date(form.controls.birthyear.value, form.controls.birthmonth.value, form.controls.birthday.value),
@@ -32,6 +33,7 @@ export class SignupComponent implements OnInit {
       location: form.controls.location.value
     };
     if (password === passwordrpt && form.valid) {
+      console.log(userdata);
       this.auth.signupWithEmailPassword(email, password, userdata as Userdata)
         .subscribe(res => {
           //TODO: go to other page

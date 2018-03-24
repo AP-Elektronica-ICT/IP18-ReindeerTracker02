@@ -1,5 +1,6 @@
 export interface Userdata {
   uid: string,
+  email: string,
   firstName: string,
   lastName: string,
   birthdate: Date,
