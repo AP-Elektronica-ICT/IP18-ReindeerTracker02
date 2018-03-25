@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { MapPage } from '../map/map';
-import {DeviceDetails} from "../../classes/deviceDetails";
 import {DeviceProvider} from "../../providers/device/device";
 import {Device} from "../../classes/device";
+import { AddPage } from '../add/add';
 
 /**
  * Generated class for the DetailPage page.
@@ -19,7 +19,7 @@ import {Device} from "../../classes/device";
 })
 export class DetailPage {
   device: Device = null;
-  deviceKey = '123457';
+  deviceKey = '';
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private deviceProvider: DeviceProvider) {
   }
@@ -30,7 +30,6 @@ export class DetailPage {
   }
 
   getDevice() {
-    //TODO get deviceKey
     this.deviceProvider.getDevice(this.deviceKey)
       .subscribe((details: Device) => {
         this.device = details;
@@ -41,4 +40,9 @@ export class DetailPage {
     this.navCtrl.push(MapPage);
   }
 
+  goToEdit(){
+    {
+      this.navCtrl.push(AddPage, {deviceKey: this.deviceKey});
+    }
+  }
 }

@@ -51,7 +51,7 @@ router.post('/devices/single', function (req, res) {
     });
     device.save()
         .then(function () {
-            res.status(201).send('device added');
+            res.status(201).json('device added');
         })
         .catch(function (err) {
             res.status(500).send('could not add device')
@@ -93,36 +93,18 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
     console.log('put');
     const deviceKey = req.params.deviceKey;
     const log = req.body;
+    log.initialLog = false;
     Device.update(
         {deviceKey: deviceKey},
         {$push: {logs: { $each: [log], $position: 0}}, isAlive: log.isAlive}
     )
         .then(function (status) {
-            res.status(200).send('log added');
+            res.status(200).json('log added');
         })
         .catch(function (err) {
             res.status(500).send('could not add log to device');
         })
 });
-
-/*router.post('/devices/:deviceKey/details', function (req, res) {
-    const deviceKey = req.params.deviceKey;
-    const details = req.body;
-    Device.update(
-        {deviceKey: deviceKey},
-        {name: details.name, birthDate: generateBirthDate(details.birthYear, details.birthMonth, details.birthDay), imageUrl: details.imageUrl, gender: details.gender}
-    )
-        .then(function (value) {
-            if (value.n <= 0) {
-                res.status(404).send('device not found')
-            } else {
-                res.status(200).json('data updated');
-            }
-        })
-        .catch(function (reason) {
-            res.status(500).send('could not add data');
-        })
-});*/
 
 router.get('/devices/:deviceKey/details', function (req, res) {
     const deviceKey = req.params.deviceKey;
@@ -194,23 +176,76 @@ function generateBirthDate(year, month, day) {
 /////////////////////////////////////////////////////////////////
 // USERS
 /////////////////////////////////////////////////////////////////
+var User = require('../models/user');
+
+router.post('/users', function (req, res) {
+    const newUser = new User({
+        uid: req.body.uid,
+        email: req.body.email,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        birthdate: new Date(req.body.birthdate),
+        phoneNumber: req.body.phoneNumber,
+        location: req.body.location
+    });
+    newUser.save()
+        .then(function (value) {
+            res.status(201).json('user added');
+        })
+        .catch(function (reason) {
+            res.status(500).json(reason);
+        })
+});
+
+router.get('/users/:userID', function (req, res) {
+    const userID = req.params.userID;
+    User.findOne({uid: userID})
+        .then(function (user) {
+            if (user) {
+                res.status(200).json(user);
+            } else {
+                res.status(500).json('could not find user');
+            }
+        })
+        .catch(function (reason) {
+            res.status(500).json(reason);
+        })
+});
 
 router.put('/users/:userID/devices', function (req, res) {
     const userID = req.params.userID;
     const deviceKey = req.body.deviceKey;
-    Device.update(
-        {deviceKey: deviceKey},
-        {$push: {userIDs: userID}}
-    )
-        .then(function (value) {
-            if (value.n <= 0) {
-                res.status(404).send('device not found')
-            } else {
-                res.status(200).json('device registered');
+    Device.findOne({deviceKey: deviceKey})
+        .then(function (device) {
+            if (device.logs.length <= 0) {
+                const newLog = {
+                    battery: 100,
+                    isAlive: true,
+                    initialLog: true
+                };
+                Device.update(
+                    {deviceKey: deviceKey},
+                    {$push: {userIDs: userID, logs: newLog}}
+                )
+                    .then(function (value) {
+                        res.status(200).json('device registered');
+                    })
+                    .catch(function (reason) {
+                        res.status(500).send('could not register device');
+                    });
             }
-        })
-        .catch(function (reason) {
-            res.status(500).send('could not register device');
+            else {
+                Device.update(
+                    {deviceKey: deviceKey},
+                    {$push: {userIDs: userID}}
+                )
+                    .then(function (value) {
+                        res.status(200).json('device registered');
+                    })
+                    .catch(function (reason) {
+                        res.status(500).send('could not register device');
+                    });
+            }
         });
 });
 
@@ -223,6 +258,18 @@ router.get('/users/:userID/devices', function (req, res) {
         })
         .catch(function (err) {
             res.status(404).send('could not find devices');
+        })
+});
+
+router.delete('/users/:userID/devices', function (req, res) {
+    const userID = req.params.userID;
+    const deviceKey = req.query.deviceKey;
+    Device.update( {deviceKey: deviceKey}, {$pullAll: {userIDs: [userID]}})
+        .then(function (value) {
+            res.status(200).json('deleted');
+        })
+        .catch(function (reason) {
+            res.status(500).send('could not delete');
         })
 });
 

@@ -6,7 +6,10 @@ var deviceSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    userIDs: [String],
+    userIDs: [{
+        type: String,
+        unique: true
+    }],
     activated: {
         type: Boolean,
         default: false
@@ -23,11 +26,9 @@ var deviceSchema = new mongoose.Schema({
     logs: [{
         lat: {
             type: Number,
-            required: true
         },
         long: {
             type: Number,
-            required: true
         },
         date: {
             type: Date,
@@ -40,7 +41,8 @@ var deviceSchema = new mongoose.Schema({
         isAlive: {
             type: Boolean,
             required: true
-        }
+        },
+        initialLog: Boolean
     }]},
     {
         toObject: {
