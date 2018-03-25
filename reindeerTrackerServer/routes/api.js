@@ -51,7 +51,7 @@ router.post('/devices/single', function (req, res) {
     });
     device.save()
         .then(function () {
-            res.status(201).send('device added');
+            res.status(201).json('device added');
         })
         .catch(function (err) {
             res.status(500).send('could not add device')
@@ -99,7 +99,7 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
         {$push: {logs: { $each: [log], $position: 0}}, isAlive: log.isAlive}
     )
         .then(function (status) {
-            res.status(200).send('log added');
+            res.status(200).json('log added');
         })
         .catch(function (err) {
             res.status(500).send('could not add log to device');
@@ -190,7 +190,7 @@ router.post('/users', function (req, res) {
     });
     newUser.save()
         .then(function (value) {
-            res.status(201).send('user added');
+            res.status(201).json('user added');
         })
         .catch(function (reason) {
             res.status(500).json(reason);
@@ -248,7 +248,17 @@ router.get('/users/:userID/devices', function (req, res) {
         })
 });
 
-
+router.delete('/users/:userID/devices', function (req, res) {
+    const userID = req.params.userID;
+    const deviceKey = req.query.deviceKey;
+    Device.update( {deviceKey: deviceKey}, {$pullAll: {userIDs: [userID]}})
+        .then(function (value) {
+            res.status(200).json('deleted');
+        })
+        .catch(function (reason) {
+            res.status(500).send('could not delete');
+        })
+});
 
 function selectDeviceInfo(devices, keys) {
     const returnDevices = [];
