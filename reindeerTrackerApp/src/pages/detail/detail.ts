@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { MapPage } from '../map/map';
 import {DeviceProvider} from "../../providers/device/device";
 import {Device} from "../../classes/device";
+import { AddPage } from '../add/add';
 
 /**
  * Generated class for the DetailPage page.
@@ -37,5 +38,11 @@ export class DetailPage {
 
   goToMap(){
     this.navCtrl.push(MapPage);
+  }
+
+  goToEdit(){
+    {
+      this.navCtrl.push(AddPage, {deviceKey: this.deviceKey});
+    }
   }
 }
