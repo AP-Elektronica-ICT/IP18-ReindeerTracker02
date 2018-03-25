@@ -1,7 +1,7 @@
-<div class="card card-body">
-  <h4 class="card-title">You chose reindeer 1!</h4>
-</div>   
-<div class="row">
+<div class="card card-body" *ngIf="device">
+  <h4 class="card-title">{{device.name}}</h4>
+</div>
+<div class="row" *ngIf="device">
   <div class="col">
     <div class="card card-body">
       <h4 class="card-title">Battery percentage:</h4>
@@ -10,11 +10,11 @@
         <div class="col">
           <div class="card">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">89%</li>
+                <li class="list-group-item">{{device.lastLog.battery}}%</li>
             </ul>
            </div>
-        </div>    
-    </div> 
+        </div>
+    </div>
   </div>
   <div class="col">
     <div class="card card-body">
@@ -24,11 +24,11 @@
         <div class="col">
           <div class="card">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">alive</li>
+                <li class="list-group-item">{{getAliveStatus()}}</li>
             </ul>
            </div>
-        </div>    
-    </div> 
+        </div>
+    </div>
   </div>
   <div class="col">
     <div class="card card-body">
@@ -51,6 +51,6 @@
                 </li>
             </ul>
            </div>
-        </div>    
-    </div> 
+        </div>
+    </div>
   </div>

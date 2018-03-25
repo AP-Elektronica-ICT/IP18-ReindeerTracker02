@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {DeviceService} from "../shared/device.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-detail',
@@ -17,9 +19,33 @@ ft(){
   return "terrain";
 }
 // AGM static -----
-  constructor() { }
+  device = null;
+
+  constructor(private deviceService: DeviceService, private route: ActivatedRoute) {
+    this.route.queryParams
+      .subscribe(params => {
+        this.getDeviceDetails(params.deviceKey);
+      })
+  }
+
+  getDeviceDetails(deviceKey: string) {
+    this.deviceService.getDeviceFull(deviceKey)
+      .subscribe(res => {
+        this.device = res;
+        console.log(res)
+      })
+  }
+
+  getAliveStatus() {
+    if (this.device.isAlive) {
+      return 'alive';
+    } else {
+      return 'dead';
+    }
+  }
 
   ngOnInit() {
+
   }
 
 }
