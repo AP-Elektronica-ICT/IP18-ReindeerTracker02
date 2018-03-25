@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SensorDataService } from './sensor-data.service';
 import { HttpClient } from 'selenium-webdriver/http';
 import { element } from 'protractor';
+import {AuthService} from "../shared/auth.service";
 
 @Component({
   selector: 'app-sensor-data',
@@ -14,6 +15,6 @@ naam : string;
   constructor(private server: SensorDataService) { }
 
   ngOnInit() {
-    this.server.getSensorData().subscribe(response => this.naam = response.firstName);
+    //this.
   }
 }

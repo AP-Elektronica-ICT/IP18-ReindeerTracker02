@@ -1,18 +1,16 @@
 <div class="card card-body">
-  <h4 class="card-title">U koos rendier 1!</h4>
+  <h4 class="card-title">You chose reindeer 1!</h4>
 </div>   
 <div class="row">
   <div class="col">
     <div class="card card-body">
-      <h4 class="card-title">Hier kan u het batterijpercentage zien.</h4>
+      <h4 class="card-title">Battery percentage:</h4>
     </div>
       <div class="row">
         <div class="col">
           <div class="card">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">Cras justo odio</li>
-                <li class="list-group-item">Dapibus ac facilisis in</li>
-                <li class="list-group-item">Vestibulum at eros</li>
+                <li class="list-group-item">89%</li>
             </ul>
            </div>
         </div>    
@@ -20,15 +18,13 @@
   </div>
   <div class="col">
     <div class="card card-body">
-      <h4 class="card-title">Hier kan u zien of het rendier nog leeft.</h4>
+      <h4 class="card-title">Status of your reindeer:</h4>
     </div>
       <div class="row">
         <div class="col">
           <div class="card">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">Cras justo odio</li>
-                <li class="list-group-item">Dapibus ac facilisis in</li>
-                <li class="list-group-item">Vestibulum at eros</li>
+                <li class="list-group-item">alive</li>
             </ul>
            </div>
         </div>    
@@ -36,15 +32,23 @@
   </div>
   <div class="col">
     <div class="card card-body">
-      <h4 class="card-title">Hier kan u zien waar het rendier was laatste 24h.</h4>
+      <h4 class="card-title">Where was the reindeer last 24h:</h4>
     </div>
       <div class="row">
         <div class="col">
           <div class="card">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">Cras justo odio</li>
-                <li class="list-group-item">Dapibus ac facilisis in</li>
-                <li class="list-group-item">Vestibulum at eros</li>
+                <li class="list-group-item">
+                  <button (click)="ft()">terrain</button>
+                  <button>satelite</button>
+                  <button>hybrid</button>
+                  <br>
+                  <br>
+                  <agm-map [latitude]="lat" [longitude]="lng" [mapTypeId]="'hybrid'" [zoom]="14" style="width:550px; height:500px;">
+                    <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+                    <agm-circle [latitude]="lat" [longitude]="lng" [radius]="rad" [fillColor]="col" [fillOpacity]="op"></agm-circle>
+                  </agm-map>
+                </li>
             </ul>
            </div>
         </div>    
