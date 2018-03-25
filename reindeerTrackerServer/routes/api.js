@@ -215,24 +215,37 @@ router.get('/users/:userID', function (req, res) {
 router.put('/users/:userID/devices', function (req, res) {
     const userID = req.params.userID;
     const deviceKey = req.body.deviceKey;
-    const newLog = {
-        battery: 100,
-        isAlive: true,
-        initialLog: true
-    }
-    Device.update(
-        {deviceKey: deviceKey},
-        {$push: {userIDs: userID, logs: newLog}}
-    )
-        .then(function (value) {
-            if (value.n <= 0) {
-                res.status(404).send('device not found')
-            } else {
-                res.status(200).json('device registered');
+    Device.findOne({deviceKey: deviceKey})
+        .then(function (device) {
+            if (device.logs.length <= 0) {
+                const newLog = {
+                    battery: 100,
+                    isAlive: true,
+                    initialLog: true
+                };
+                Device.update(
+                    {deviceKey: deviceKey},
+                    {$push: {userIDs: userID, logs: newLog}}
+                )
+                    .then(function (value) {
+                        res.status(200).json('device registered');
+                    })
+                    .catch(function (reason) {
+                        res.status(500).send('could not register device');
+                    });
             }
-        })
-        .catch(function (reason) {
-            res.status(500).send('could not register device');
+            else {
+                Device.update(
+                    {deviceKey: deviceKey},
+                    {$push: {userIDs: userID}}
+                )
+                    .then(function (value) {
+                        res.status(200).json('device registered');
+                    })
+                    .catch(function (reason) {
+                        res.status(500).send('could not register device');
+                    });
+            }
         });
 });
 

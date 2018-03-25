@@ -19,6 +19,14 @@ export class AuthService {
     return this.af.auth.currentUser.getIdToken();
   }
 
+  isAuthenticated(): boolean {
+    if (this.af.auth.currentUser) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   loginWithEmailPassword(email: string, password: string): Promise<any> {
     return this.af.auth.signInWithEmailAndPassword(email, password)
   }
@@ -51,6 +59,10 @@ export class AuthService {
 
   resetPassword(email: string): Promise<any> {
     return this.af.auth.sendPasswordResetEmail(email);
+  }
+
+  signOut(): Promise<any> {
+    return this.af.auth.signOut();
   }
 
 }
