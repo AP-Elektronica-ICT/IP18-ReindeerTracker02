@@ -12,40 +12,43 @@
 #include "gps_func.h"
 #include "at_func.h"
 
+/*
+ *
+ * Print UBX response message as hex numbers
+ * cannot print it normally by printf because it contains 0x00 as data
+ */
 
 void printUbxResponseHex(char* data, uint8_t dataLength)
 {
-
 	for(uint8_t n = 0;n<dataLength;n++)
 	{
 		printf("%02x ", (uint8_t)(*(data+n)));
 	}
-
 }
 
 uint8_t calcUbxCrc(char *data)
 {
 
 	uint8_t ck_a = 0, ck_b = 0, n = 0;
-	while(data[n] != 0x0d)
-	{
 
+	while(data[n] != 0x0d) //figure out length of input message by finding CR line end char
+	{
 		n++;
 	}
 
 	uint8_t dataLength = n;
 
-	for(n=0; n<dataLength; n++)
+	for(n=0; n<dataLength; n++)	//calculate checksum for dataLength bytes
 	{
 		ck_a = ck_a + data[n];
 		ck_b = ck_b + ck_a;
 	}
 
-	data[n] = ck_a;
+	data[n] = ck_a; //add checksum to end of data string
 	data[n+1] = ck_b;
-	data[n+2] = 0;
+	data[n+2] = 0;	//add a zero to terminate string
 
-	for(n = 0;n<(dataLength+2);n++)
+	for(n = 0;n<(dataLength+2);n++) //debug print our complete message
 	{
 		printf("%02x ", (uint8_t)data[n]);
 	}
