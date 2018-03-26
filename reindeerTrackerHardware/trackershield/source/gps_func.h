@@ -20,6 +20,10 @@ void parseData(char* latStr, char* lonStr);
 extern char parsedLat[15];
 extern char parsedLon[15];
 
+uint8_t calcUbxCrc(char *data);
+
+void printUbxResponseHex(char* data, uint8_t dataLength);
+
 
 
 #endif /* SOURCE_GPS_FUNC_H_ */

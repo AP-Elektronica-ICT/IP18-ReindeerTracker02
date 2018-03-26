@@ -9,11 +9,15 @@ import {DeviceInfoComponent} from "./device-info/device-info.component";
 import {LoginComponent} from "./login/login.component";
 import {SignupComponent} from "./signup/signup.component";
 import {PasswordResetComponent} from "./password-reset/password-reset.component";
+import {SensorDataComponent} from "./sensor-data/sensor-data.component";
+import {DetailComponent} from "./detail/detail.component";
 
 const appRoutes = [
   { path: '', component: HomeComponent},
   { path: 'new-device', component: AddDeviceComponent},
   { path: 'device-info', component: DeviceInfoComponent},
+  { path: 'user', component: SensorDataComponent},
+  { path: 'detail', component: DetailComponent},
   { path: 'login', component: LoginComponent},
   { path: 'signup', component: SignupComponent},
   { path: 'reset-password', component: PasswordResetComponent},
