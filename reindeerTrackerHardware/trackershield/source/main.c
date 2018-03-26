@@ -65,6 +65,19 @@ extern const char ubx_ack[];
 volatile uint32_t moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE; //timeout variable for waiting all data from module
 
 uint32_t ms_ticks; //millisecond ticks value for the delay_ms function
+/*
+void delay_ms(uint32_t del)
+{
+    for (; del > 0; del--)
+    {
+        for(uint32_t t = 0; t<ms_ticks;t++)
+        {
+            __asm("nop");
+        }
+    }
+}
+*/
+
 
 void initTimer() {
 
@@ -181,6 +194,12 @@ int main(void) {
 	BOARD_InitPins();	//init all physical pins
 	//BOARD_BootClockRUN();  //by uncommenting this we can use FRDM 50Mhz external clock, but will not work with modified board
 	BOARD_InitDebugConsole();
+
+	/*
+     * Calculate how many processor ticks are in 1 ms to make accurate delay_ms function
+     * first take MCU clock frequency, divide by 1000ms and divide by 7 because our delay_ms loop takes 7 machine cycles
+     */
+    ms_ticks = BOARD_DEBUG_UART_CLK_FREQ / 1000 / 7;
 
 	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay functions(see timing.h)
 
