@@ -32,6 +32,12 @@ export class DeviceProvider {
     return this.http.put(this.api + '/users/' + uid + '/devices', {deviceKey: deviceKey});
   }
 
+  removeDeviceFromUser(deviceKey: string): Observable<any> {
+    //TODO: get user id from firebase login
+    const uid = 'DDQ4cy9jMeYkVpHvqVoiUNJ76GI3';
+    return this.http.delete(this.api + '/users/' + uid + '/devices?deviceKey=' + deviceKey);
+  }
+
   setDeviceDetails(deviceKey: string, details: DeviceDetails): Observable<any> {
     return this.http.put(this.api + '/devices/' + deviceKey + '/details', details);
   }

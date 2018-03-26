@@ -100,7 +100,7 @@ export class AddPage {
           this.deviceDetails.imageUrl = newImageUrl;
           this.deviceProvider.setDeviceDetails(this.deviceKey, this.deviceDetails)
             .subscribe(res => {
-              this.navCtrl.popAll();
+              this.navCtrl.pop();
             })
         })
         .catch(err => {
@@ -110,7 +110,7 @@ export class AddPage {
       this.deviceProvider.setDeviceDetails(this.deviceKey, this.deviceDetails)
         .subscribe(res => {
           console.log(res);
-          this.navCtrl.popAll();
+          this.navCtrl.pop();
         })
     }
   }

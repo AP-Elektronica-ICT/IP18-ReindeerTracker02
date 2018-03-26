@@ -17,6 +17,10 @@ export class HomePage {
   message = '';
 
   constructor(public navCtrl: NavController, private deviceProvider: DeviceProvider, private alert: AlertController, public barcodeScanner: BarcodeScanner) {
+
+  }
+
+  ionViewWillEnter() {
     this.getDevices();
   }
 

@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import {AngularFireModule, FirebaseApp} from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-
 import { AppComponent } from './app.component';
 import {environment} from '../environments/environment';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -23,9 +22,13 @@ import { DeviceInfoComponent } from './device-info/device-info.component';
 import {KeysService} from "./shared/keys.service";
 import {DeviceService} from "./shared/device.service";
 import {StorageService} from "./shared/storage.service";
+import { Http, Response } from "@angular/http";
+import { DetailComponent } from './detail/detail.component';
+import { AgmCoreModule } from '@agm/core';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+
 
 
 @NgModule({
@@ -40,6 +43,7 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
     ManifacturerHomeComponent,
     AddDeviceComponent,
     DeviceInfoComponent,
+    DetailComponent,
     LoginComponent,
     SignupComponent,
     PasswordResetComponent
@@ -52,9 +56,12 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyCUwftTaruBNv0xSVOsRaAZRdIsJ6WQhSQ'
+    })
   ],
-  providers: [AuthService, KeysService, DeviceService, StorageService, AuthService],
+  providers: [AuthService, KeysService, DeviceService, StorageService, AuthService, Http],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
