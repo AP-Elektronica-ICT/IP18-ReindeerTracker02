@@ -64,12 +64,9 @@ uint32_t ms_ticks; //millisecond ticks value for the delay_ms function
 /*
  * Small delay_ms function
  */
-void delay_ms(uint32_t del)
-{
-	for (; del > 0; del--)
-	{
-		for(uint32_t t = 0; t<ms_ticks;t++)
-		{
+void delay_ms(uint32_t del) {
+	for (; del > 0; del--) {
+		for (uint32_t t = 0; t < ms_ticks; t++) {
 			__asm("nop");
 		}
 	}
@@ -77,10 +74,10 @@ void delay_ms(uint32_t del)
 
 void initTimer() {
 
-/*
- * Init dead reindeer timer. LPTIMER interrupt will wake up MCU after a certain time, IF accelerometer interrupt
- * has not waked it earlier (and reset the timer)
- */
+	/*
+	 * Init dead reindeer timer. LPTIMER interrupt will wake up MCU after a certain time, IF accelerometer interrupt
+	 * has not waked it earlier (and reset the timer)
+	 */
 
 	LPTMR_GetDefaultConfig(&lptmr_config);
 	lptmr_config.bypassPrescaler = true;
@@ -96,8 +93,7 @@ void initTimer() {
  * Init all needed UART buses. UART3 for NB-IoT, UART0 for PC, UART2 for GPS
  */
 
-void initUART()
-{
+void initUART() {
 
 	uint32_t uartClkSrcFreq = BOARD_DEBUG_UART_CLK_FREQ; //get MCU clock frequency for setting correct baudrate
 
@@ -128,28 +124,22 @@ void initUART()
  *
  */
 
-void UART3_send(char *data)
-{
-
+void UART3_send(char *data) {
 
 	char c = *data++; //assign c a character from the string and post-increment string pointer
 
-	while (c)
-	{ //loop until c is zero which means string has ended and no more chars has to be sent
+	while (c) { //loop until c is zero which means string has ended and no more chars has to be sent
 
-		while (!((UART3->S1) & 0x80))
-		{
+		while (!((UART3->S1) & 0x80)) {
 		} //wait until UART3 Transmission Complete flag rises, so we can send new char
 		UART3->D = c; //write new character to transmit buffer
 		c = *data++; //assign next character to c and post-increment string pointer
 	}
 }
 
-uint8_t UART3_receive()
-{
+uint8_t UART3_receive() {
 
-	if (UART3_strReady)
-	{
+	if (UART3_strReady) {
 		//printf("Received raw buffer: %s\r\n", UART3_recBuf);
 		UART3_strReady = 0;
 		memset(UART3_recBuf, 0, strlen(UART3_recBuf));
@@ -159,38 +149,32 @@ uint8_t UART3_receive()
 	return 0;
 }
 
-void UART2_send(char *data, uint8_t len)
-{
+void UART2_send(char *data, uint8_t len) {
 
 	char c = *data++; //assign c a character from the string and post-increment string pointer
 
-	for(;len>0;len--)
-	{ //loop until c is zero which means string has ended and no more chars has to be sent
+	for (; len > 0; len--) { //loop until c is zero which means string has ended and no more chars has to be sent
 
-		while (!((UART2->S1) & 0x80))
-		{
+		while (!((UART2->S1) & 0x80)) {
 		} //wait until UART3 Transmission Complete flag rises, so we can send new char
 		UART2->D = c; //write new character to transmit buffer
 		c = *data++; //assign next character to c and post-increment string pointer
 	}
 }
 
- void LPTMR0_IRQHandler() {
+void LPTMR0_IRQHandler() {
 
- LPTMR0 -> CSR |= LPTMR_CSR_TCF_MASK;		// Clear the interrupt flag
- while ( LPTMR0 -> CSR & LPTMR_CSR_TCF_MASK  ) {
+	LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;		// Clear the interrupt flag
+	while ( LPTMR0->CSR & LPTMR_CSR_TCF_MASK) {
 
- }
+	}
 
- PMC ->REGSC |= 0x08;
+	PMC->REGSC |= 0x08;
 
+	GPIO_PortToggle(GPIOB, 1 << 21u); //light blue LED
+}
 
- GPIO_PortToggle(GPIOB, 1<<21u); //light blue LED
- }
-
-
-int main(void)
-{
+int main(void) {
 
 	uint8_t res;
 	PMC->REGSC |= 0x08;	//acknowledge wake up to voltage regulator module, this is needed with LLWU wake up
@@ -233,7 +217,6 @@ int main(void)
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
 	LPTMR_StartTimer(LPTMR0);
 
-
 	GPIO_PinInit(GPIOB, 21u, &LED_configOutput);	//red led as output
 	GPIO_PinInit(GPIOB, 22u, &LED_configOutput);	//blue led as output
 
@@ -250,56 +233,45 @@ int main(void)
 
 	printf(
 			"Reindeer IoT has started\r\nCommand \"iot\" to start executing reindeer track cycle\r\n"
-			"Command \"gpsinfo=1\" or \"gpsinfo=0\" to switch GPS data on/off\r\n");
-	printf("Or enter normal AT commands here for SARA-N2\r\nModules powered on and booting now!\r\n");
+					"Command \"gpsinfo=1\" or \"gpsinfo=0\" to switch GPS data on/off\r\n");
+	printf(
+			"Or enter normal AT commands here for SARA-N2\r\nModules powered on and booting now!\r\n");
 
-	while (1)
-	{
+	while (1) {
 
 		/*
 		 * Check if a string has arrived from PC (with CR line end)
 		 */
-		if (PC_strReady)
-		{
+		if (PC_strReady) {
 
-			if (strstr(PC_recBuf, "iot") != NULL)
-			{
+			if (strstr(PC_recBuf, "iot") != NULL) {
 				printf("Starting Reindeer IoT cycle\r\n");
 				break;
-			}
-			else if(strstr(PC_recBuf, "gpsinfo=1") != NULL)
-			{
+			} else if (strstr(PC_recBuf, "gpsinfo=1") != NULL) {
 				streamGps = 1;
-			}
-			else if(strstr(PC_recBuf, "gpsinfo=0") != NULL)
-			{
+			} else if (strstr(PC_recBuf, "gpsinfo=0") != NULL) {
 				streamGps = 0;
-			}
-			else if(strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
+			} else if (strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
 			{
 				printf("send to gps\r\n");
-				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf+2); //Calculate UBX checksum and add it to the message
+				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf + 2); //Calculate UBX checksum and add it to the message
 				UART2_send(PC_recBuf, ubxMsgLen); //Send UBX message to module
-			}
-			else
-			{
+			} else {
 				UART3_send(PC_recBuf);
+			}
 
+			GPIO_ClearPinsOutput(GPIOB, 1 << 22u); //light red to indicate interrupt LEDd
+			delay_ms(100000);
+			GPIO_SetPinsOutput(GPIOB, 1 << 22u); //light red to indicate interrupt LED
 
-	GPIO_ClearPinsOutput(GPIOB, 1 << 22u); //light red to indicate interrupt LEDd
-	delay_ms(100000);
-	GPIO_SetPinsOutput(GPIOB, 1 << 22u); //light red to indicate interrupt LED
-
-
-	while (true) {
+			while (true) {
 
 			}
 			memset(PC_recBuf, 0, strlen(PC_recBuf));
-				PC_strReady = 0;
-				PC_bufPtr = 0;
+			PC_strReady = 0;
+			PC_bufPtr = 0;
 		}
-		if (UART3_strReady)
-		{
+		if (UART3_strReady) {
 			moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial value
 
 			while (moduleResponseTimeout--)	//if module will still send some more data, wait for it.
@@ -320,29 +292,27 @@ int main(void)
 		/*
 		 * If GPS string is ready and GPS data streaming is enabled, enter here to process GPS data buffer
 		 */
-		if(GPS_strReady && streamGps)
-		{
+		if (GPS_strReady && streamGps) {
 
 			printf(GPS_recBuf); //First print out whole buffer
 
-			char* ubxResponseStartPtr = strstr(GPS_recBuf,"\xb5\x62"); //Find pointer to UBX header. If there is no UBX response, pointer
-																	 	 //will be NULL
+			char* ubxResponseStartPtr = strstr(GPS_recBuf, "\xb5\x62"); //Find pointer to UBX header. If there is no UBX response, pointer
+																		//will be NULL
 
-
-			if( ubxResponseStartPtr != NULL) //If pointer is not null, it means UBX response header is found
+			if (ubxResponseStartPtr != NULL) //If pointer is not null, it means UBX response header is found
 			{
 				printf("Found UBX response\r\n");
 
-				uint8_t responseLength = *(ubxResponseStartPtr+4); //Find out UBX response length, it is always the 5th byte
-																	//from beginning of the packet. * means dereferencing pointer
-																//dereferencing means "accessing the value where pointer points"
+				uint8_t responseLength = *(ubxResponseStartPtr + 4); //Find out UBX response length, it is always the 5th byte
+																	 //from beginning of the packet. * means dereferencing pointer
+				//dereferencing means "accessing the value where pointer points"
 
 				printf("UBX response length: %02x\r\n", responseLength);
 
-				printUbxResponseHex(ubxResponseStartPtr,responseLength+6+2); //Print UBX response message. Function wants to know
-																		//how many chars to print. We must add 6+2 to print header and crc too
+				printUbxResponseHex(ubxResponseStartPtr,
+						responseLength + 6 + 2); //Print UBX response message. Function wants to know
+				//how many chars to print. We must add 6+2 to print header and crc too
 			}
-
 
 			memset(GPS_recBuf, 0, 500);
 			GPS_bufPtr = 0;
@@ -352,27 +322,19 @@ int main(void)
 	}
 
 	res = AT_send(AT_NRB, "", "+UFOTAS");
-	if (res == 0)
-	{
+	if (res == 0) {
 		printf("rebooted\r\n");
-	}
-	else if (res == 1)
-	{
+	} else if (res == 1) {
 		printf("error\r\n");
-	}
-	else if (res == 2)
-	{
+	} else if (res == 2) {
 		printf("timeout error\r\n");
 	}
 
 	res = NB_setPin();
 
-	if (res == 0)
-	{
+	if (res == 0) {
 		printf("ack\r\n");
-	}
-	else if (res == 1)
-	{
+	} else if (res == 1) {
 		printf("error\r\n");
 	}
 	// delay_ms(20200020);
@@ -380,120 +342,104 @@ int main(void)
 
 	//parseData(testLat, testLon);
 
-	}
+}
 }
 
- void PORTC_IRQHandler() {
+void PORTC_IRQHandler() {
 
- PORTC -> PCR[6] |= 0x01000000;
+PORTC->PCR[6] |= 0x01000000;
 
- while ( PORTC -> PCR[6] & 0x01000000 ) {
-
- }
-
- LPTMR_Deinit(LPTMR0);			// Deinitiate timer to reset timer counte
- LPTMR_Init(LPTMR0, &lptmr_config);
- LPTMR_SetTimerPeriod(LPTMR0, 5000);  // 3000 for 20hz data rat
- LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
- LPTMR_StartTimer(LPTMR0);
-
- }
-
-
-void LLWU_IRQHandler()
-{
-
-	if ( LLWU->F3 & 0x01)
-	{	// 1 = LPTMR interrupt, 2 = Accel interrupt, 0 = No interrupts
-		wake = 1;
-		CLOCK_EnableClock(kCLOCK_Lptmr0);
-		LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
-	}
-
-	else if ( LLWU->F2 & 0x04)
-	{
-		wake = 2;
-		LLWU->F2 |= 0x04;
-	}
-
-	LLWU->F2 = 0x04;
-}
-
-void UART3_RX_TX_IRQHandler()
-{
-
-	UART_ClearStatusFlags(UART3, kUART_RxDataRegFullFlag);
-
-	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from NB Iiootee module
-
-	uint8_t uartData = UART3->D;
-	if (uartData != 0)
-	{
-
-		UART3_recBuf[UART3_bufPtr] = uartData;
-		UART3_bufPtr++;
-
-		if (uartData == 0x0d)
-		{
-			UART3_strReady = 1;
-			//UART3_bufPtr = 0;
-		}
-		moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE;
-	}
+while ( PORTC->PCR[6] & 0x01000000) {
 
 }
 
-void UART2_RX_TX_IRQHandler()
-{
-
-	UART_ClearStatusFlags(UART2, kUART_RxDataRegFullFlag);
-	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from GPS module
-
-	uint8_t uartData = UART2->D;
-
-	/*
-	 * Here we use different method for collecting GPS data. because there can be other data than characters,
-	 * like 0x00 in UBX messages, normal string functions would fail (mistaken null terminator)
-	 * so we must collect every byte from the gps module
-	 * so fill buffer to almost full with GPS data, then put GPS_strReady high and stop filling.
-	 * Start filling again when data has been read and GPS_strReady is low.
-	 *
-	 */
-	if(GPS_strReady == 0)
-	{
-		GPS_recBuf[GPS_bufPtr] = uartData; //put new byte to buffer
-		GPS_bufPtr++;
-	}
-
-
-	/*
-	 * When buffer is almost full, put strReady high and stop filling it
-	 */
-	if(GPS_bufPtr > 400)
-	{
-		GPS_strReady = 1;
-	}
+LPTMR_Deinit(LPTMR0);			// Deinitiate timer to reset timer counte
+LPTMR_Init(LPTMR0, &lptmr_config);
+LPTMR_SetTimerPeriod(LPTMR0, 5000);  // 3000 for 20hz data rat
+LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
+LPTMR_StartTimer(LPTMR0);
 
 }
 
+void LLWU_IRQHandler() {
 
-void UART0_RX_TX_IRQHandler()
-{
+if ( LLWU->F3 & 0x01) {	// 1 = LPTMR interrupt, 2 = Accel interrupt, 0 = No interrupts
+	wake = 1;
+	CLOCK_EnableClock(kCLOCK_Lptmr0);
+	LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
+}
 
-	UART_ClearStatusFlags(UART0, kUART_RxDataRegFullFlag);
-	GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
+else if ( LLWU->F2 & 0x04) {
+	wake = 2;
+	LLWU->F2 |= 0x04;
+}
 
-	uint8_t uartData = UART0->D;
+LLWU->F2 = 0x04;
+}
 
+void UART3_RX_TX_IRQHandler() {
 
-		PC_recBuf[PC_bufPtr] = uartData;
-		PC_bufPtr++;
+UART_ClearStatusFlags(UART3, kUART_RxDataRegFullFlag);
 
-		if (uartData == 0x0d)
-		{
-			PC_strReady = 1;
+GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from NB Iiootee module
 
-		}
+uint8_t uartData = UART3->D;
+if (uartData != 0) {
 
+	UART3_recBuf[UART3_bufPtr] = uartData;
+	UART3_bufPtr++;
+
+	if (uartData == 0x0d) {
+		UART3_strReady = 1;
+		//UART3_bufPtr = 0;
+	}
+	moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE;
+}
+
+}
+
+void UART2_RX_TX_IRQHandler() {
+
+UART_ClearStatusFlags(UART2, kUART_RxDataRegFullFlag);
+GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from GPS module
+
+uint8_t uartData = UART2->D;
+
+/*
+ * Here we use different method for collecting GPS data. because there can be other data than characters,
+ * like 0x00 in UBX messages, normal string functions would fail (mistaken null terminator)
+ * so we must collect every byte from the gps module
+ * so fill buffer to almost full with GPS data, then put GPS_strReady high and stop filling.
+ * Start filling again when data has been read and GPS_strReady is low.
+ *
+ */
+if (GPS_strReady == 0) {
+	GPS_recBuf[GPS_bufPtr] = uartData; //put new byte to buffer
+	GPS_bufPtr++;
+}
+
+/*
+ * When buffer is almost full, put strReady high and stop filling it
+ */
+if (GPS_bufPtr > 400) {
+	GPS_strReady = 1;
+}
+
+}
+
+void UART0_RX_TX_IRQHandler() {
+
+UART_ClearStatusFlags(UART0, kUART_RxDataRegFullFlag);
+GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
+
+uint8_t uartData = UART0->D;
+
+PC_recBuf[PC_bufPtr] = uartData;
+PC_bufPtr++;
+
+if (uartData == 0x0d) {
+	PC_strReady = 1;
+
+}
 
 }

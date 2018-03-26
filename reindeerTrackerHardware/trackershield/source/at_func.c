@@ -193,30 +193,6 @@ uint8_t NB_connectStatus()
 
 	res = AT_send(AT_NSOCR, "", "OK");     //Create UDP socket
 
-<<<<<<< HEAD
-	if (res == 0) {
-		printf("Socket ready\r\n");
-	} else if (res == 1) {
-		printf("error\r\n");
-	}
-
-	delay(20000000);
-	res = AT_send(AT_NSOST, "", "OK");     //Send message to server
-
-	if (res == 0) {
-		printf("msg sent\r\n");
-	} else if (res == 1) {
-		printf("error\r\n");
-	}
-	delay(20000000);
-	res = AT_send(AT_NSORF, "", "OK");     //read echo data
-
-	if (res == 0) {
-		printf("echo\r\n");
-	} else if (res == 1) {
-		printf("error\r\n");
-	}
-=======
 	AT_checkResult(res, "Create socket");
 
 	delay_ms(1000);
@@ -228,8 +204,6 @@ uint8_t NB_connectStatus()
 	res = AT_send(AT_NSORF, "", "OK");     //read echo data
 
 	AT_checkResult(res, "Read echo");
-
->>>>>>> 4deff0ee02916f1afc30955ec12fb20a83cd7cd4
 
 	return 0;
 }
