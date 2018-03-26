@@ -25,6 +25,8 @@
 #include "fsl_rtc.h"
 #include "gps_func.h"
 #include "ubx_func.h"
+#include "nbiot_func.h"
+#include "timing.h"
 
 #define RESPONSE_TIMEOUT_NORMAL_VALUE 2000
 
@@ -50,8 +52,11 @@ uint8_t streamGps = 0;
 char parsedLat[15];
 char parsedLon[15];
 
-char testLon[11] = ("00833.91565");
-char testLat[11] = ("4717.11364");
+//char testLon[11] = ("00833.91565");
+//char testLat[11] = ("4717.11364");
+
+char testLon[11] = ("33.91565");
+char testLat[11] = ("17.11364");
 
 extern char ubx_cfg_prt[];
 extern char PMC_set[];
@@ -61,19 +66,6 @@ volatile uint32_t moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE; //timeo
 
 uint32_t ms_ticks; //millisecond ticks value for the delay_ms function
 
-/*
- * Small delay_ms function
- */
-void delay_ms(uint32_t del)
-{
-	for (; del > 0; del--)
-	{
-		for(uint32_t t = 0; t<ms_ticks;t++)
-		{
-			__asm("nop");
-		}
-	}
-}
 
 /*
  * Init dead reindeer timer. LPTIMER interrupt will wake up MCU after a certain time, IF accelerometer interrupt
@@ -117,6 +109,8 @@ void initUART()
 
 	UART_EnableInterrupts(UART0, kUART_RxDataRegFullInterruptEnable); //enable UART0 receive interrupt to receive data from PC
 	EnableIRQ(UART0_RX_TX_IRQn);
+
+
 
 }
 
@@ -202,15 +196,14 @@ int main(void)
 	EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode, it means that next MCU
 						 //will jump to the LLWU interrupt vector
 
+	struct reindeerData_t reindeerData; //create struct for our reindeer data that will be sent
+	char udpMessage[350];
+
 	BOARD_InitPins();	//init all physical pins
 	//BOARD_BootClockRUN();  //by uncommenting this we can use FRDM 50Mhz external clock, but will not work with modified board
 	BOARD_InitDebugConsole();
 
-	/*
-	 * Calculate how many processor ticks are in 1 ms to make accurate delay_ms function
-	 * first take MCU clock frequency, divide by 1000ms and divide by 7 because our delay_ms loop takes 7 machine cycles
-	 */
-	ms_ticks = BOARD_DEBUG_UART_CLK_FREQ / 1000 / 7;
+	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay functions(see timing.h)
 
 	initI2C();
 	initAdc();
@@ -255,8 +248,27 @@ int main(void)
 			"Command \"gpsinfo=1\" or \"gpsinfo=0\" to switch GPS data on/off\r\n");
 	printf("Or enter normal AT commands here for SARA-N2\r\nModules powered on and booting now!\r\n");
 
+	/*
+	 * Copy all reindeer variables to struct before starting network operations
+	 */
+
+	strcpy(reindeerData.serialNum, "11111");
+	strcpy(reindeerData.latitude, testLat);
+	strcpy(reindeerData.longitude, testLon);
+	strcpy(reindeerData.dead, "true");
+	reindeerData.batteryLevel = 45;
+
+
+	/*
+	 * Assemble data to json format and then to POST message
+	 */
+
+	assemblePacket(&reindeerData, udpMessage);
+
 	while (1)
 	{
+		//int16_t acc_val = read_acc_axis(0);
+		//printf("Accelereometer %d\r\n",acc_val);
 
 		/*
 		 * Check if a string has arrived from PC (with CR line end)
@@ -285,9 +297,8 @@ int main(void)
 			}
 			else
 			{
+
 				UART3_send(PC_recBuf);
-
-
 
 			}
 			memset(PC_recBuf, 0, strlen(PC_recBuf));
@@ -296,18 +307,22 @@ int main(void)
 		}
 		if (UART3_strReady)
 		{
-			moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial value
+			moduleResponseTimeout = millis()+RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial value
 
-			while (moduleResponseTimeout--)	//if module will still send some more data, wait for it.
-											//receive interrupt will reset moduleResponseTimeout to the initial value if new data comes
+			while (millis() < moduleResponseTimeout)
+
 			{
-				delay_ms(1);
-				//if(breakIfAtOk()) break;
+
+				if(breakIfAtOk())
+				{
+					break;
+				}
+
 			}
 
 			//now the timeout has expired since last character had arrived, so we can process data
 
-			printf(UART3_recBuf);
+			printf(UART3_recBuf);printf("\r\n");
 			memset(UART3_recBuf, 0, 1000);
 			UART3_bufPtr = 0;
 			UART3_strReady = 0;
@@ -319,7 +334,7 @@ int main(void)
 		if(GPS_strReady && streamGps)
 		{
 
-			printf(GPS_recBuf); //First print out whole buffer
+			printf(GPS_recBuf);printf("\r\n"); //First print out whole buffer
 
 			char* ubxResponseStartPtr = strstr(GPS_recBuf,"\xb5\x62"); //Find pointer to UBX header. If there is no UBX response, pointer
 																	 	 //will be NULL
@@ -346,6 +361,9 @@ int main(void)
 		}
 
 	}
+
+
+
 
 	res = AT_send(AT_NRB, "", "+UFOTAS");
 	if (res == 0)
@@ -461,7 +479,7 @@ void UART3_RX_TX_IRQHandler()
 			UART3_strReady = 1;
 			//UART3_bufPtr = 0;
 		}
-		moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE;
+
 	}
 
 }
