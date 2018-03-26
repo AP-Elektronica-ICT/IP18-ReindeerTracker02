@@ -27,7 +27,7 @@ char AT_CGDCONT[] = "CGDCONT=1,\"IP\",\"\",\"\"";
 char AT_CGACT[] = "CGACT";
 char AT_CSQ[] = "CSQ";  //Signal quality
 char AT_CGPADDR[] = "CGPADDR";        //shows module ip address
-char AT_NSOCR[] = "NSOCR=\"DGRAM\",17,42000,1";     //create UDP socket, port 420000
+char AT_NSOCR[] = "NSOCR=\"DGRAM\",17,42000,1"; //create UDP socket, port 420000
 char AT_NSOST[] = "NSOST=0,\"195.34.89.241\",7,2,\"F8F8\"";
 char AT_CMEE[] = "CMEE=";
 
@@ -170,28 +170,28 @@ uint8_t NB_connectStatus() {
 	delay(2000000);
 	res = AT_send(AT_NSOCR, "", "OK");     //Create UDP socket
 
-		if (res == 0) {
-			printf("Socket ready\r\n");
-		} else if (res == 1) {
-			printf("error\r\n");
-		}
+	if (res == 0) {
+		printf("Socket ready\r\n");
+	} else if (res == 1) {
+		printf("error\r\n");
+	}
 
-			delay(20000000);
-		res = AT_send(AT_NSOST, "", "OK");     //Send message to server
+	delay(20000000);
+	res = AT_send(AT_NSOST, "", "OK");     //Send message to server
 
-			if (res == 0) {
-				printf("msg sent\r\n");
-			} else if (res == 1) {
-				printf("error\r\n");
-			}
-			delay(20000000);
-			res = AT_send(AT_NSORF, "", "OK");     //read echo data
+	if (res == 0) {
+		printf("msg sent\r\n");
+	} else if (res == 1) {
+		printf("error\r\n");
+	}
+	delay(20000000);
+	res = AT_send(AT_NSORF, "", "OK");     //read echo data
 
-						if (res == 0) {
-							printf("echo\r\n");
-						} else if (res == 1) {
-							printf("error\r\n");
-						}
+	if (res == 0) {
+		printf("echo\r\n");
+	} else if (res == 1) {
+		printf("error\r\n");
+	}
 
 	return 0;
 }
