@@ -13,7 +13,7 @@ void getGPS();
 
 
 void activateGPS();
-extern char UART3_recBuf[1000];
+extern char GPS_recBuf[500];
 extern uint8_t UART3_receive();
 extern volatile uint8_t UART3_strReady;
 void parseData(char* latStr, char* lonStr);

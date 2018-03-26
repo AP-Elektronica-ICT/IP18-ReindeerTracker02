@@ -44,7 +44,7 @@ static char PC_recBuf[500];	//buffer for receiving from PC terminal
 volatile uint16_t PC_bufPtr = 0;
 volatile uint8_t PC_strReady = 0;
 
-static char GPS_recBuf[500];	//buffer for receiving from PC terminal
+char GPS_recBuf[500];	//buffer for receiving from PC terminal
 volatile uint16_t GPS_bufPtr = 0;
 volatile uint8_t GPS_strReady = 0;
 uint8_t streamGps = 0;
@@ -244,7 +244,7 @@ int main(void) {
 	 * Assemble data to json format and then to POST message
 	 */
 
-	assemblePacket(&reindeerData, udpMessage);
+	//assemblePacket(&reindeerData, udpMessage);
 
 	while (1) {
 		//int16_t acc_val = read_acc_axis(0);
@@ -305,6 +305,8 @@ int main(void) {
 
 			printf(GPS_recBuf);
 			printf("\r\n"); //First print out whole buffer
+
+			getGPS();
 
 			char* ubxResponseStartPtr = strstr(GPS_recBuf, "\xb5\x62"); //Find pointer to UBX header. If there is no UBX response, pointer
 																		//will be NULL

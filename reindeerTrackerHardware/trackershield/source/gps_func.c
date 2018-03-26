@@ -59,7 +59,7 @@ uint8_t calcUbxCrc(char *data)
 void getGPS() {
 
 	char* token;
-	const char s[2] = ",";
+	char* s = ",";
 	uint8_t counter = 0;
 
 	char GLL_ID[10];	// GLL Message ID $GPGLL
@@ -76,43 +76,49 @@ void getGPS() {
 			time, status, posMode, checkSum };
 
 
-	while (strstr(GPS_dataPtrs[6], "A") == NULL) {		// Loop until string contains A status, A = Data valid
-
+	//while (strstr(GPS_dataPtrs[6], "A") == NULL) {		// Loop until string contains A status, A = Data valid
+/*
 		while (UART3_receive() == 0) { 	// Wait for a string from GPS module
 
 		}
+*/
 
 
-		if (strstr(UART3_recBuf, "$GNGLL") != NULL) {		// Check if received message is GPGLL message
+	char* gllStart = strstr(GPS_recBuf, "$GNGLL");
 
-			token = strtok(UART3_recBuf, s);				// Strtok splices the string to different variables, using "," separator
+		if (gllStart != NULL) {		// Check if received message is GPGLL message
+
+			char* gllEnd = strstr(gllStart, "\r\n");
+
+			*(gllEnd+2) = 0;
+
+			printf("%s\r\n", gllStart);
+
+			token = strtok(gllStart, s);				// Strtok splices the string to different variables, using "," separator
 
 			while (token != NULL) {
-
+				printf("%d\r\n", counter);
 				GPS_dataPtrs[counter] = token;				// Save the splices contents to different variables
 				token = strtok(NULL, s);
 				counter++;
 
 			}
 
-			if (strstr(GPS_dataPtrs[6], "V") != NULL) {
-				printf("Data invalid, waiting for valid data\r\n");
+			if (strstr(GPS_dataPtrs[6], "A") != NULL) {
+				printf("Got GPS\r\n");
+				parseData(GPS_dataPtrs[1], GPS_dataPtrs[3]);
 			}
 
-			else {
+			else if (strstr(GPS_dataPtrs[6], "V") != NULL) {
+				printf("Data invalid, waiting for valid data\r\n");
+			}
 
 				for (uint8_t cnr = 0; cnr <= 8; cnr++) {
 					printf("%s\r\n", GPS_dataPtrs[cnr]);
 				}
-			}
-
-			memset(UART3_recBuf, 0, strlen(UART3_recBuf));
 
 		}
-
-		UART3_strReady = 0;
-	}
-	parseData(GPS_dataPtrs[1], GPS_dataPtrs[3]);
+	//}
 }
 
 void parseData(char* latStr, char* lonStr) {
