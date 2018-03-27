@@ -6,7 +6,10 @@
 #include <string.h>
 
 extern void UART3_send(char* data);
+extern uint8_t UART3_receive();
+
 extern void delay_ms();
+
 extern volatile uint8_t UART3_strReady;
 
 extern char UART3_recBuf[1000];
@@ -24,19 +27,28 @@ char AT_CGACT[] = "CGACT";
 char AT_CSQ[] = "CSQ";  //Signal quality
 char AT_CGPADDR[] = "CGPADDR";        //shows module ip address
 char AT_NSOCR[] = "NSOCR=\"DGRAM\",17,42000,1"; //create UDP socket, port 420000
-char AT_NSOST[] = "NSOST=0,\"195.34.89.241\",7,2,\"F8F8\"";
-char AT_CMEE[] = "CMEE=";
+//char AT_NSOST[] = "NSOST=0,\"195.34.89.241\",7,2,\"f8f8\"";
+char AT_NSOST[] = "NSOST=0,\"167.99.207.133\",1884,186,\"103300044d51545404c2000a000f72"
+"65696e64656572747261636b657200"
+"087265696e64656572000c7265696e"
+"646565723132333430820100087265"
+"696e646565727b0d0a0d0a20202020"
+"2273657269616c6e756d626572223a"
+"223131313131222c0d0a2020202022"
+"6c6174223a2236362e36222c0d0a20"
+"202020226c6f6e67223a2236362e36"
+"222c0d0a2020202022737461747573"
+"223a2274727565222c0d0a20202020"
+"2262617474657279223a223530220d"
+"0a0d0a7d0d0a\"";
 
-char AT_NSORF[] = "NSORF=0,2";    //show received data, =<socker>, <data_lenght>
+
+char AT_NSORF[] = "NSORF=0,2";    //show received data, =<socket>, <data_length>
+char AT_CMEE[] = "CMEE=";
 char AT_CFUN[] = "CFUN"; // sets functionality mode, edit this to change power mode
+
 char AT_CCLK[] = "CCLK"; // sets and reads rtc example: AT+CCLK="14/07/01,15:00:00+01"
 
-void NB_init()
-{
-	char cmd_buf[50];
-	sprintf(cmd_buf, "AT+%s\r\n", AT_CMEE);
-	printf(cmd_buf);
-}
 
 /*
  * Small function to check if NBiot receive buffer contains OK
@@ -88,13 +100,14 @@ void AT_checkResult(uint8_t res, char *subject)
 uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer)
 {
 
-	char cmd_buf[100];
-
+	char cmd_buf[500];
+	uint32_t timeout = 0;
 	uint8_t result = 2;
 	uint32_t time_limit = 1000000;
+
 	UART3_bufPtr = 0;
-	memset(UART3_recBuf, 0, strlen(UART3_recBuf));
-	memset(cmd_buf, 0, 100);
+	memset(UART3_recBuf, 0, 1000);
+	memset(cmd_buf, 0, 500);
 
 	sprintf(cmd_buf, "AT+%s%s\r\n", AT_cmd, AT_parameter);
 	UART3_send(cmd_buf);
@@ -107,7 +120,6 @@ uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer)
 
 	while (time_limit--)
 	{
-
 		if (UART3_strReady)
 		{
 			//UART3_strReady = 0;
@@ -127,31 +139,18 @@ uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer)
 		}
 	}
 	UART3_bufPtr = 0;
-	memset(UART3_recBuf, 0, strlen(UART3_recBuf));
+	memset(UART3_recBuf, 0, 1000);
 
 	return result;
 }
 
-uint8_t NB_setPin()
-{
-
-	return AT_send(AT_NPIN, "", "+NPIN: \"OK\"");
-
-}
-uint8_t NB_connectStatus()
-{
+/*
+uint8_t NB_connectStatus() {
 
 	uint8_t res;
 
-	/*
-	 res = AT_send(AT_COPS, "=?", "OK");
-	 if (res == 0) {
-	 printf("OP scan ok\r\n");
-	 } else if (res == 1) {
-	 printf("error\r\n");
-	 }
-	 */
-	delay_ms(1000);  //viivettä pitää olla
+	delay(2200000);  //viivettä pitää olla
+>>>>>>> iot
 	res = AT_send(AT_COPS, "=0", "OK");
 
 	AT_checkResult(res, "Start operator search");
@@ -204,6 +203,8 @@ uint8_t NB_connectStatus()
 
 	AT_checkResult(res, "Read echo");
 
+
 	return 0;
 }
+*/
 

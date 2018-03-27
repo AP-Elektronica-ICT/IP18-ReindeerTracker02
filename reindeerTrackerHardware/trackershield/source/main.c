@@ -180,7 +180,7 @@ void LPTMR0_IRQHandler() {
 
 int main(void) {
 
-	uint8_t res;
+
 	PMC->REGSC |= 0x08;	//acknowledge wake up to voltage regulator module, this is needed with LLWU wake up
 	EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode, it means that next MCU
 						 //will jump to the LLWU interrupt vector
@@ -265,7 +265,7 @@ int main(void) {
 	while (1) {
 		//int16_t acc_val = read_acc_axis(0);
 		//printf("Accelereometer %d\r\n",acc_val);
-
+		break;
 		/*
 		 * Check if a string has arrived from PC (with CR line end)
 		 */
@@ -355,25 +355,13 @@ int main(void) {
 
 	}
 
-	res = AT_send(AT_NRB, "", "+UFOTAS");
-	if (res == 0) {
-		printf("rebooted\r\n");
-	} else if (res == 1) {
-		printf("error\r\n");
-	} else if (res == 2) {
-		printf("timeout error\r\n");
-	}
 
-	res = NB_setPin();
 
-	if (res == 0) {
-		printf("ack\r\n");
-	} else if (res == 1) {
-		printf("error\r\n");
-	}
-	// delay_ms(20200020);
-	NB_connectStatus();
 
+
+
+
+	NB_create_pdp_send();
 	//parseData(testLat, testLon);
 
 }
