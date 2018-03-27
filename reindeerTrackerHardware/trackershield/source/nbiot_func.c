@@ -31,7 +31,7 @@ const char topic[] = "reindeer";
 const char username[] = "reindeer";
 const char passwd[] = "reindeer1234";
 
-void assembleMqtt(reindeerData_t *reindeerData, char *udpMessage)
+uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage)
 {
 
 	uint8_t clientid_lt = strlen(client_id);
@@ -43,6 +43,8 @@ void assembleMqtt(reindeerData_t *reindeerData, char *udpMessage)
 			0x54, 0x54, 0x04, 0xc2, 0x00, 0x0a, 0x00, clientid_lt };
 
 	uint8_t packet_ptr = 0;
+
+	char udpMessage[350];
 
 	memmove(udpMessage, connect_command, sizeof(connect_command)); //move connect command header to the beginning of udpMessage
 	packet_ptr += sizeof(connect_command); //increment packet pointer by the added data length so we know where to write to the packet next
@@ -118,10 +120,12 @@ void assembleMqtt(reindeerData_t *reindeerData, char *udpMessage)
 
 	uint8_t packet_len = packet_ptr;
 
+	char *messagePtr = mqttMessage;
+
 	for (packet_ptr = 0; packet_ptr < packet_len; packet_ptr++) //print the packet as hex dump for debugging
 	{
 
-		printf("%02x", (uint8_t)udpMessage[packet_ptr]);
+		messagePtr += sprintf(messagePtr,"%02x", (uint8_t)udpMessage[packet_ptr]);
 
 		//if ((packet_ptr + 1) > 0 && ((packet_ptr + 1) % 15 == 0))
 			//printf("\n"); //this just changes line after 16 bytes printed
@@ -129,6 +133,8 @@ void assembleMqtt(reindeerData_t *reindeerData, char *udpMessage)
 	}
 
 	printf("packet length %d\r\n",packet_len);
+
+	return packet_len;
 }
 
 void assemblePacket(reindeerData_t *reindeerData, char *udpMessage)
@@ -204,7 +210,7 @@ while(time_limit--){
 	memset(UART3_recBuf, 0, strlen(UART3_recBuf));
 }
 
-void NB_create_pdp_send(){
+void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen){
 
 	 NB_reboot();
 	  NB_setPin();
@@ -224,7 +230,7 @@ void NB_create_pdp_send(){
 	  delay_ms(1000);
 	  while(1){
 
-	  NB_send_msg();
+	  NB_send_msg(mqttMessage, msgLen);
 	  delay_ms(1000);
 	  }
 	  //NB_received_data();
@@ -329,9 +335,15 @@ void NB_create_socket() {
 		printf("error\r\n");
 	}
 }
-void NB_send_msg() {
+void NB_send_msg(char *mqttMessage, uint8_t msgLen) {
 
-	res = AT_send(AT_NSOST, "", "OK");     //Send message to server
+	char nsost_command[500];
+
+	sprintf(nsost_command,"0,\"167.99.207.133\",1884,%d,\"%s\"", msgLen, mqttMessage);
+
+	printf("%s\r\n",nsost_command);
+
+	res = AT_send(AT_NSOST, nsost_command, "OK");     //Send message to server
 
 	if (res == 0) {
 		printf("sent");

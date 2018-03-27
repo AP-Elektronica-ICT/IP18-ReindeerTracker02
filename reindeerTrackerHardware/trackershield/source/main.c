@@ -186,7 +186,7 @@ int main(void) {
 						 //will jump to the LLWU interrupt vector
 
 	struct reindeerData_t reindeerData; //create struct for our reindeer data that will be sent
-	char udpMessage[350];
+	char mqttMessage[450];
 
 	BOARD_InitPins();	//init all physical pins
 	//BOARD_BootClockRUN();  //by uncommenting this we can use FRDM 50Mhz external clock, but will not work with modified board
@@ -256,16 +256,11 @@ int main(void) {
 	strcpy(reindeerData.dead, "true");
 	reindeerData.batteryLevel = 45;
 
-	/*
-	 * Assemble data to json format and then to POST message
-	 */
-
-	assembleMqtt(&reindeerData, udpMessage);
 
 	while (1) {
 		//int16_t acc_val = read_acc_axis(0);
 		//printf("Accelereometer %d\r\n",acc_val);
-		break;
+		//break;
 		/*
 		 * Check if a string has arrived from PC (with CR line end)
 		 */
@@ -355,7 +350,15 @@ int main(void) {
 
 	}
 
-	NB_create_pdp_send();
+	/*
+	 * Assemble data to json format and then to POST message
+	 */
+
+	uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
+
+	//NB_send_msg(mqttMessage, msgLen);
+
+	NB_create_pdp_send(mqttMessage, msgLen);
 	//parseData(testLat, testLon);
 
 }
