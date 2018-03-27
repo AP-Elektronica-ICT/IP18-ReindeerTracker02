@@ -113,14 +113,14 @@ void assembleMqtt(reindeerData_t *reindeerData, char *udpMessage)
 	for (packet_ptr = 0; packet_ptr < packet_len; packet_ptr++) //print the packet as hex dump for debugging
 	{
 
-		printf("%02x", udpMessage[packet_ptr]);
+		printf("%02x", (uint8_t)udpMessage[packet_ptr]);
 
 		//if ((packet_ptr + 1) > 0 && ((packet_ptr + 1) % 15 == 0))
 			//printf("\n"); //this just changes line after 16 bytes printed
 
 	}
 
-	printf("\r\n");
+	printf("packet length %d\r\n",packet_len);
 }
 
 void assemblePacket(reindeerData_t *reindeerData, char *udpMessage)
