@@ -38,7 +38,7 @@ volatile uint8_t wake = 0;
 volatile uint8_t UART3_strReady = 0;
 volatile uint16_t UART3_bufPtr = 0;
 
-char UART3_recBuf[1000]; 	//buffer for receiving NB IoT module data
+char UART3_recBuf[500]; 	//buffer for receiving NB IoT module data
 
 static char PC_recBuf[500];	//buffer for receiving from PC terminal
 volatile uint16_t PC_bufPtr = 0;
@@ -54,10 +54,6 @@ char parsedLon[15];
 
 char testLon[11] = ("33.91565");
 char testLat[11] = ("17.11364");
-
-extern char ubx_cfg_prt[];
-extern char PMC_set[];
-extern const char ubx_ack[];
 
 volatile uint32_t moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE; //timeout variable for waiting all data from module
 
@@ -304,7 +300,7 @@ int main(void) {
 
 			printf(UART3_recBuf);
 			printf("\r\n");
-			memset(UART3_recBuf, 0, 1000);
+			memset(UART3_recBuf, 0, 500);
 			UART3_bufPtr = 0;
 			UART3_strReady = 0;
 		}
@@ -360,7 +356,6 @@ int main(void) {
 
 	NB_create_pdp_send(mqttMessage, msgLen);
 	//parseData(testLat, testLon);
-
 }
 
 void PORTC_IRQHandler() {

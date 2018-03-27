@@ -8,13 +8,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "nbiot_func.h"
 #include "at_func.h"
-extern void delay_ms();
+#include "timing.h"
+
+
 extern volatile uint8_t UART3_strReady;
 
-extern char UART3_recBuf[1000];
+extern char UART3_recBuf[];
 extern char UART3_bufPtr;
 
 uint8_t res;
@@ -26,10 +27,10 @@ const char postHeader[] =
 				"Content-Type: application/json\r\n"
 				"Cache-Control: no-cache\r\n\r\n";
 
-const char client_id[] = "reindeertracker";
-const char topic[] = "reindeer";
-const char username[] = "reindeer";
-const char passwd[] = "reindeer1234";
+const char* client_id = "reindeertracker";
+const char* topic = "reindeer";
+const char* username = "reindeer";
+const char* passwd = "reindeer1234";
 
 uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage)
 {
@@ -49,7 +50,7 @@ uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage)
 	memmove(udpMessage, connect_command, sizeof(connect_command)); //move connect command header to the beginning of udpMessage
 	packet_ptr += sizeof(connect_command); //increment packet pointer by the added data length so we know where to write to the packet next
 
-	memmove(udpMessage + packet_ptr, client_id, sizeof(client_id)); //add client id next
+	memmove(udpMessage + packet_ptr, client_id, clientid_lt); //add client id next
 	packet_ptr += clientid_lt;
 
 	uint8_t w_buf[5] =
