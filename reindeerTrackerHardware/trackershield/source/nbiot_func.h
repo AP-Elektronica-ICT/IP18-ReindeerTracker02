@@ -8,6 +8,23 @@
 #ifndef SOURCE_NBIOT_FUNC_H_
 #define SOURCE_NBIOT_FUNC_H_
 
+extern uint8_t res;
+
+void NB_setPin();
+void NB_reboot();
+void NB_cops_register();
+void NB_cops_deRegister();
+void NB_cops_readRegister();
+void NB_network_status();
+void NB_define_pdp();
+void NB_active_pdp();
+void NB_show_ip();
+void NB_create_socket();
+void NB_send_msg();
+void NB_read_msg();
+void NB_create_pdp_send();
+void NB_received_data();
+
 extern const char postHeader[];
 
 typedef struct reindeerData_t {
