@@ -63,18 +63,17 @@ volatile uint32_t moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE; //timeo
 
 uint32_t ms_ticks; //millisecond ticks value for the delay_ms function
 /*
-void delay_ms(uint32_t del)
-{
-    for (; del > 0; del--)
-    {
-        for(uint32_t t = 0; t<ms_ticks;t++)
-        {
-            __asm("nop");
-        }
-    }
-}
-*/
-
+ void delay_ms(uint32_t del)
+ {
+ for (; del > 0; del--)
+ {
+ for(uint32_t t = 0; t<ms_ticks;t++)
+ {
+ __asm("nop");
+ }
+ }
+ }
+ */
 
 void initTimer() {
 
@@ -193,10 +192,10 @@ int main(void) {
 	BOARD_InitDebugConsole();
 
 	/*
-     * Calculate how many processor ticks are in 1 ms to make accurate delay_ms function
-     * first take MCU clock frequency, divide by 1000ms and divide by 7 because our delay_ms loop takes 7 machine cycles
-     */
-    ms_ticks = BOARD_DEBUG_UART_CLK_FREQ / 1000 / 7;
+	 * Calculate how many processor ticks are in 1 ms to make accurate delay_ms function
+	 * first take MCU clock frequency, divide by 1000ms and divide by 7 because our delay_ms loop takes 7 machine cycles
+	 */
+	ms_ticks = BOARD_DEBUG_UART_CLK_FREQ / 1000 / 7;
 
 	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay functions(see timing.h)
 
@@ -253,7 +252,7 @@ int main(void) {
 	strcpy(reindeerData.serialNum, "11111");
 	strcpy(reindeerData.latitude, testLat);
 	strcpy(reindeerData.longitude, testLon);
-	strcpy(reindeerData.dead, "true");
+	strcpy(reindeerData.dead, "false");
 	reindeerData.batteryLevel = 45;
 
 	/*
@@ -292,6 +291,16 @@ int main(void) {
 			PC_strReady = 0;
 			PC_bufPtr = 0;
 		}
+
+		if (wake == 1) {
+			strcpy(reindeerData.dead, "true");
+			printf("Woken by LPTMR, reindeer is !!!DEAD!!!");
+		}
+
+		if (wake == 2) {
+			printf("Woken by ACCEL, reindeer is !!!ALIVE!!!");
+		}
+
 		if (UART3_strReady) {
 			moduleResponseTimeout = millis() + RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial value
 
@@ -400,6 +409,7 @@ void LLWU_IRQHandler() {
 		wake = 1;
 		CLOCK_EnableClock(kCLOCK_Lptmr0);
 		LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
+
 	}
 
 	else if ( LLWU->F2 & 0x04) {
@@ -410,68 +420,68 @@ void LLWU_IRQHandler() {
 	LLWU->F2 = 0x04;
 }
 
-	void UART3_RX_TX_IRQHandler() {
+void UART3_RX_TX_IRQHandler() {
 
-		UART_ClearStatusFlags(UART3, kUART_RxDataRegFullFlag);
-		GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from NB Iiootee module
+	UART_ClearStatusFlags(UART3, kUART_RxDataRegFullFlag);
+	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from NB Iiootee module
 
-		uint8_t uartData = UART3->D;
-		if (uartData != 0) {
+	uint8_t uartData = UART3->D;
+	if (uartData != 0) {
 
-			UART3_recBuf[UART3_bufPtr] = uartData;
-			UART3_bufPtr++;
-
-			if (uartData == 0x0d) {
-				UART3_strReady = 1;
-				//UART3_bufPtr = 0;
-			}
-
-		}
-
-	}
-
-	void UART2_RX_TX_IRQHandler() {
-
-		UART_ClearStatusFlags(UART2, kUART_RxDataRegFullFlag);
-		GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from GPS module
-
-		uint8_t uartData = UART2->D;
-
-		/*
-		 * Here we use different method for collecting GPS data. because there can be other data than characters,
-		 * like 0x00 in UBX messages, normal string functions would fail (mistaken null terminator)
-		 * so we must collect every byte from the gps module
-		 * so fill buffer to almost full with GPS data, then put GPS_strReady high and stop filling.
-		 * Start filling again when data has been read and GPS_strReady is low.
-		 *
-		 */
-		if (GPS_strReady == 0) {
-			GPS_recBuf[GPS_bufPtr] = uartData; //put new byte to buffer
-			GPS_bufPtr++;
-		}
-
-		/*
-		 * When buffer is almost full, put strReady high and stop filling it
-		 */
-		if (GPS_bufPtr > 499) {
-			GPS_strReady = 1;
-		}
-
-	}
-
-	void UART0_RX_TX_IRQHandler() {
-
-		UART_ClearStatusFlags(UART0, kUART_RxDataRegFullFlag);
-		GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
-
-		uint8_t uartData = UART0->D;
-
-		PC_recBuf[PC_bufPtr] = uartData;
-		PC_bufPtr++;
+		UART3_recBuf[UART3_bufPtr] = uartData;
+		UART3_bufPtr++;
 
 		if (uartData == 0x0d) {
-			PC_strReady = 1;
-
+			UART3_strReady = 1;
+			//UART3_bufPtr = 0;
 		}
 
 	}
+
+}
+
+void UART2_RX_TX_IRQHandler() {
+
+	UART_ClearStatusFlags(UART2, kUART_RxDataRegFullFlag);
+	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from GPS module
+
+	uint8_t uartData = UART2->D;
+
+	/*
+	 * Here we use different method for collecting GPS data. because there can be other data than characters,
+	 * like 0x00 in UBX messages, normal string functions would fail (mistaken null terminator)
+	 * so we must collect every byte from the gps module
+	 * so fill buffer to almost full with GPS data, then put GPS_strReady high and stop filling.
+	 * Start filling again when data has been read and GPS_strReady is low.
+	 *
+	 */
+	if (GPS_strReady == 0) {
+		GPS_recBuf[GPS_bufPtr] = uartData; //put new byte to buffer
+		GPS_bufPtr++;
+	}
+
+	/*
+	 * When buffer is almost full, put strReady high and stop filling it
+	 */
+	if (GPS_bufPtr > 499) {
+		GPS_strReady = 1;
+	}
+
+}
+
+void UART0_RX_TX_IRQHandler() {
+
+	UART_ClearStatusFlags(UART0, kUART_RxDataRegFullFlag);
+	GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
+
+	uint8_t uartData = UART0->D;
+
+	PC_recBuf[PC_bufPtr] = uartData;
+	PC_bufPtr++;
+
+	if (uartData == 0x0d) {
+		PC_strReady = 1;
+
+	}
+
+}
