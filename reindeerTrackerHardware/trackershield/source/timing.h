@@ -12,7 +12,7 @@
 
 volatile uint32_t ticks = 0;
 
-inline uint32_t millis()
+uint32_t millis()
 {
 	return ticks;
 }

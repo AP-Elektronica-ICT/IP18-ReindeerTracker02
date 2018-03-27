@@ -6,7 +6,6 @@
 #include <string.h>
 
 extern void UART3_send(char* data);
-extern uint8_t UART3_receive();
 extern void delay_ms();
 extern volatile uint8_t UART3_strReady;
 

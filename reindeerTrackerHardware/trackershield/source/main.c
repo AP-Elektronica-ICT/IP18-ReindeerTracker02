@@ -44,7 +44,7 @@ static char PC_recBuf[500];	//buffer for receiving from PC terminal
 volatile uint16_t PC_bufPtr = 0;
 volatile uint8_t PC_strReady = 0;
 
-char GPS_recBuf[500];	//buffer for receiving from PC terminal
+char GPS_recBuf[600];	//buffer for receiving from PC terminal
 volatile uint16_t GPS_bufPtr = 0;
 volatile uint8_t GPS_strReady = 0;
 uint8_t streamGps = 0;
@@ -263,7 +263,7 @@ int main(void) {
 	 * Assemble data to json format and then to POST message
 	 */
 
-	//assemblePacket(&reindeerData, udpMessage);
+	assembleMqtt(&reindeerData, udpMessage);
 
 	while (1) {
 		//int16_t acc_val = read_acc_axis(0);
@@ -322,8 +322,8 @@ int main(void) {
 		 */
 		if (GPS_strReady && streamGps) {
 
-			printf(GPS_recBuf);
-			printf("\r\n"); //First print out whole buffer
+			//printf(GPS_recBuf);
+			//printf("\r\n"); //First print out whole buffer
 
 			getGPS();
 
@@ -345,7 +345,7 @@ int main(void) {
 				//how many chars to print. We must add 6+2 to print header and crc too
 			}
 
-			memset(GPS_recBuf, 0, 500);
+			memset(GPS_recBuf, 0, 600);
 			GPS_bufPtr = 0;
 			GPS_strReady = 0;
 		}
@@ -450,7 +450,7 @@ void LLWU_IRQHandler() {
 		/*
 		 * When buffer is almost full, put strReady high and stop filling it
 		 */
-		if (GPS_bufPtr > 400) {
+		if (GPS_bufPtr > 499) {
 			GPS_strReady = 1;
 		}
 

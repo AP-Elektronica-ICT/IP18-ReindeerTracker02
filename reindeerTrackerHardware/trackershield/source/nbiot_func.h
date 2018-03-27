@@ -20,6 +20,6 @@ typedef struct reindeerData_t {
 } reindeerData_t;
 
 void assemblePacket(reindeerData_t *reindeerData, char *udpMessage);
-
+void assembleMqtt(reindeerData_t *reindeerData, char *udpMessage);
 
 #endif /* SOURCE_NBIOT_FUNC_H_ */
