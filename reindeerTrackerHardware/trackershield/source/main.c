@@ -355,12 +355,6 @@ int main(void) {
 
 	}
 
-
-
-
-
-
-
 	NB_create_pdp_send();
 	//parseData(testLat, testLon);
 
