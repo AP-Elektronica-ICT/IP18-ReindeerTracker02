@@ -12,6 +12,8 @@
 #include "gps_func.h"
 #include "at_func.h"
 
+
+
 /*
  *
  * Print UBX response message as hex numbers
@@ -59,8 +61,6 @@ uint8_t calcUbxCrc(char *data)
 void getGPS()
 {
 
-	char* token;
-	char* s = ",";
 	uint8_t counter = 0;
 
 	char GLL_ID[10];	// GLL Message ID $GPGLL
@@ -195,6 +195,6 @@ void parseData(char* latStr, char* lonStr)
 
 	sprintf(delPtr + 1, "%ld\r\n", lonMinutes);
 
-	printf("Parsed latitude: %s", parsedLon);
-	printf("Parsed longitude: %s", parsedLat);
+	//printf("Parsed latitude: %s", parsedLon);
+	//printf("Parsed longitude: %s", parsedLat);
 }

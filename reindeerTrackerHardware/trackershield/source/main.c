@@ -52,9 +52,6 @@ uint8_t streamGps = 0;
 char parsedLat[15];
 char parsedLon[15];
 
-//char testLon[11] = ("00833.91565");
-//char testLat[11] = ("4717.11364");
-
 char testLon[11] = ("33.91565");
 char testLat[11] = ("17.11364");
 
@@ -326,6 +323,12 @@ int main(void) {
 			//printf("\r\n"); //First print out whole buffer
 
 			getGPS();
+
+			strcpy(reindeerData.latitude, parsedLat);
+			strcpy(reindeerData.longitude, parsedLon);
+
+			printf("Parsed latitude: %s\r\n", reindeerData.latitude);
+			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
 
 			char* ubxResponseStartPtr = strstr(GPS_recBuf, "\xb5\x62"); //Find pointer to UBX header. If there is no UBX response, pointer
 																		//will be NULL
