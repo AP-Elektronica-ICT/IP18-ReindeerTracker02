@@ -58,7 +58,7 @@ uint8_t calcUbxCrc(char *data)
 	return dataLength + 4;
 }
 
-void getGPS()
+uint8_t getGPS()
 {
 
 	uint8_t counter = 0;
@@ -119,6 +119,7 @@ void getGPS()
 		{
 			printf("Got GPS\r\n");
 			parseData(GPS_dataPtrs[1], GPS_dataPtrs[3]);
+			return 1;
 		}
 
 		else if (strstr(GPS_dataPtrs[6], "V") != NULL)
@@ -145,6 +146,8 @@ void getGPS()
 
 		}
 	}
+
+	return 0;
 	//}
 }
 
@@ -157,6 +160,10 @@ void parseData(char* latStr, char* lonStr)
 
 	char* delPtr;
 
+	/*
+	 * swap comma from ddmm.mmm to dd.mmmmm
+	 */
+
 	latStr[4] = latStr[3];
 	latStr[3] = latStr[2];
 	latStr[2] = '.';
@@ -164,6 +171,8 @@ void parseData(char* latStr, char* lonStr)
 	lonStr[5] = lonStr[4];
 	lonStr[4] = lonStr[3];
 	lonStr[3] = '.';
+
+	printf("latstr %s lonstr %s\r\n",latStr,lonStr);
 
 	while (latStr[d_ptr] == '0')
 	{		// Skip all zeroes from beginning of string
@@ -175,11 +184,16 @@ void parseData(char* latStr, char* lonStr)
 	d_ptr = 0;
 
 	delPtr = strchr(parsedLat, s);
+	delPtr++;
+	while(*delPtr == '0'){	delPtr++;} //LOOP2: If there is zeroes in minutes part, skip them
 
-	uint32_t latMinutes = atol(delPtr + 1);
-	latMinutes = latMinutes / 6;
+	uint32_t latMinutes = atol(delPtr);
+	latMinutes = latMinutes / 6; //Convert minutes to decimal degrees
 
-	sprintf(delPtr + 1, "%ld\r\n", latMinutes);
+	sprintf(delPtr, "%ld\r\n", latMinutes); //here because of LOOP2 delPtr points after the original zeroes(if there were any)
+											//and decimal problem is fixed
+
+	printf("latmin: %ld\r\n",latMinutes);
 
 	while (lonStr[d_ptr] == '0')
 	{
@@ -189,11 +203,14 @@ void parseData(char* latStr, char* lonStr)
 	strcpy(parsedLon, lonStr + d_ptr);
 
 	delPtr = strchr(parsedLon, s);
+	delPtr++;
+	while(*delPtr == '0'){	delPtr++;} //LOOP3: If there is zeroes in minutes part, skip them
 
-	uint32_t lonMinutes = atol(delPtr + 1);
+	uint32_t lonMinutes = atol(delPtr);
 	lonMinutes = lonMinutes / 6;
 
-	sprintf(delPtr + 1, "%ld\r\n", lonMinutes);
+	sprintf(delPtr, "%ld\r\n", lonMinutes);//here because of LOOP3 delPtr points after the original zeroes(if there were any)
+											//and decimal problem is fixed
 
 	//printf("Parsed latitude: %s", parsedLon);
 	//printf("Parsed longitude: %s", parsedLat);

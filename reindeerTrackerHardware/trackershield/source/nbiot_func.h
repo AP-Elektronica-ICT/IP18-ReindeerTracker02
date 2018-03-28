@@ -20,9 +20,9 @@ void NB_define_pdp();
 void NB_active_pdp();
 void NB_show_ip();
 void NB_create_socket();
-void NB_send_msg();
+void NB_send_msg(char *mqttMessage, uint8_t msgLen);
 void NB_read_msg();
-void NB_create_pdp_send();
+void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen);
 void NB_received_data();
 
 extern const char postHeader[];
@@ -30,13 +30,13 @@ extern const char postHeader[];
 typedef struct reindeerData_t {
 
 	char serialNum[6];
-	char latitude[9];
-	char longitude[9];
+	char latitude[12];
+	char longitude[12];
 	char dead[6];
 	uint8_t batteryLevel;
 } reindeerData_t;
 
 void assemblePacket(reindeerData_t *reindeerData, char *udpMessage);
-void assembleMqtt(reindeerData_t *reindeerData, char *udpMessage);
+uint8_t assembleMqtt(reindeerData_t *reindeerData, char *udpMessage);
 
 #endif /* SOURCE_NBIOT_FUNC_H_ */

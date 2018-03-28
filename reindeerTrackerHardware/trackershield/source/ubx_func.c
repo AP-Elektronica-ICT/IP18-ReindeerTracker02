@@ -20,24 +20,6 @@ extern volatile uint8_t UART3_strReady;
 extern char UART3_recBuf[];
 extern void UART3_send(char *data);
 
-uint8_t fletcher8(char *crc, uint8_t len) {
-
-	uint8_t CK_A = 0;
-	uint8_t CK_B = 0;
-	uint8_t i = 0;
-
-	for (i = 2; i < len; i++) {
-
-		CK_A = CK_A + crc[i];
-		CK_B = CK_B + CK_A;
-	}
-
-	crc[len] = CK_A;
-	crc[len + 1] = CK_B;
-
-
-}
-
 void ubx_send(char* ubx_cmd, uint8_t len) {
 
 	uint32_t timeout = 10000000;
