@@ -38,7 +38,7 @@ volatile uint8_t wake = 0;
 volatile uint8_t UART3_strReady = 0;
 volatile uint16_t UART3_bufPtr = 0;
 
-char UART3_recBuf[1000]; 	//buffer for receiving NB IoT module data
+char UART3_recBuf[500]; 	//buffer for receiving NB IoT module data
 
 static char PC_recBuf[500];	//buffer for receiving from PC terminal
 volatile uint16_t PC_bufPtr = 0;
@@ -52,12 +52,8 @@ uint8_t streamGps = 0;
 char parsedLat[15];
 char parsedLon[15];
 
-char testLon[11] = ("33.91565");
-char testLat[11] = ("17.11364");
 
-extern char ubx_cfg_prt[];
-extern char PMC_set[];
-extern const char ubx_ack[];
+
 
 volatile uint32_t moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE; //timeout variable for waiting all data from module
 
@@ -179,13 +175,13 @@ void LPTMR0_IRQHandler() {
 
 int main(void) {
 
-	uint8_t res;
+
 	PMC->REGSC |= 0x08;	//acknowledge wake up to voltage regulator module, this is needed with LLWU wake up
 	EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode, it means that next MCU
 						 //will jump to the LLWU interrupt vector
 
 	struct reindeerData_t reindeerData; //create struct for our reindeer data that will be sent
-	char udpMessage[350];
+	char mqttMessage[450];
 
 	BOARD_InitPins();	//init all physical pins
 	//BOARD_BootClockRUN();  //by uncommenting this we can use FRDM 50Mhz external clock, but will not work with modified board
@@ -202,8 +198,8 @@ int main(void) {
 	initI2C();
 	initAdc();
 	initUART();
-	configure_acc();
-	acc_init();
+	//configure_acc();
+	//acc_init();
 	initTimer();
 
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
@@ -248,23 +244,19 @@ int main(void) {
 	/*
 	 * Copy all reindeer variables to struct before starting network operations
 	 */
-
+char testLat[11] = ("6500.53");
+char testLon[11] = ("02534.554");
 	strcpy(reindeerData.serialNum, "11111");
 	strcpy(reindeerData.latitude, testLat);
 	strcpy(reindeerData.longitude, testLon);
 	strcpy(reindeerData.dead, "false");
 	reindeerData.batteryLevel = 45;
 
-	/*
-	 * Assemble data to json format and then to POST message
-	 */
-
-	assembleMqtt(&reindeerData, udpMessage);
 
 	while (1) {
 		//int16_t acc_val = read_acc_axis(0);
 		//printf("Accelereometer %d\r\n",acc_val);
-
+		//break;
 		/*
 		 * Check if a string has arrived from PC (with CR line end)
 		 */
@@ -277,7 +269,14 @@ int main(void) {
 				streamGps = 1;
 			} else if (strstr(PC_recBuf, "gpsinfo=0") != NULL) {
 				streamGps = 0;
-			} else if (strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
+			}
+			else if (strstr(PC_recBuf, "rfoff") != NULL) {
+				GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
+			}
+			else if (strstr(PC_recBuf, "rfon") != NULL) {
+				GPIO_SetPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
+			}
+			else if (strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
 			{
 				printf("send to gps\r\n");
 				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf + 2); //Calculate UBX checksum and add it to the message
@@ -318,7 +317,7 @@ int main(void) {
 
 			printf(UART3_recBuf);
 			printf("\r\n");
-			memset(UART3_recBuf, 0, 1000);
+			memset(UART3_recBuf, 0, 500);
 			UART3_bufPtr = 0;
 			UART3_strReady = 0;
 		}
@@ -331,10 +330,17 @@ int main(void) {
 			//printf(GPS_recBuf);
 			//printf("\r\n"); //First print out whole buffer
 
-			getGPS();
+			if(getGPS())
+				{
+			//char testLat[12] = ("6500.02359");
+			//char testLon[12] = ("02530.56951");
+
+			//parseData(testLat,testLon);
 
 			strcpy(reindeerData.latitude, parsedLat);
 			strcpy(reindeerData.longitude, parsedLon);
+			break;
+				}
 
 			printf("Parsed latitude: %s\r\n", reindeerData.latitude);
 			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
@@ -364,27 +370,16 @@ int main(void) {
 
 	}
 
-	res = AT_send(AT_NRB, "", "+UFOTAS");
-	if (res == 0) {
-		printf("rebooted\r\n");
-	} else if (res == 1) {
-		printf("error\r\n");
-	} else if (res == 2) {
-		printf("timeout error\r\n");
-	}
+	/*
+	 * Assemble data to json format and then to POST message
+	 */
 
-	res = NB_setPin();
+	uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
 
-	if (res == 0) {
-		printf("ack\r\n");
-	} else if (res == 1) {
-		printf("error\r\n");
-	}
-	// delay_ms(20200020);
-	NB_connectStatus();
+	//NB_send_msg(mqttMessage, msgLen);
 
+	NB_create_pdp_send(mqttMessage, msgLen);
 	//parseData(testLat, testLon);
-
 }
 
 void PORTC_IRQHandler() {

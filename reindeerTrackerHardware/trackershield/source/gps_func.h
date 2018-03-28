@@ -9,7 +9,7 @@
 #define SOURCE_GPS_FUNC_H_
 
 
-void getGPS();
+uint8_t getGPS();
 
 
 void activateGPS();

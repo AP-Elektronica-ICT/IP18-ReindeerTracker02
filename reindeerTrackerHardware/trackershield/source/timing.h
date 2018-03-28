@@ -10,35 +10,16 @@
 
 #include <stdint.h>
 
-volatile uint32_t ticks = 0;
 
-uint32_t millis()
-{
-	return ticks;
-}
+uint32_t millis();
 
-void SysTick_Handler()
-{
-
-	ticks++;
-}
+void SysTick_Handler();
 
 
 /*
  * Small delay_ms function
  */
-void delay_ms(uint32_t del)
-{
-
-	uint32_t otime = millis()+del;
-
-	while(millis() < otime)
-	{
-
-	}
-}
-
-
+void delay_ms(uint32_t del);
 
 
 #endif /* SOURCE_TIMING_H_ */
