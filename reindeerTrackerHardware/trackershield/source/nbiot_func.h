@@ -30,8 +30,8 @@ extern const char postHeader[];
 typedef struct reindeerData_t {
 
 	char serialNum[6];
-	char latitude[9];
-	char longitude[9];
+	char latitude[12];
+	char longitude[12];
 	char dead[6];
 	uint8_t batteryLevel;
 } reindeerData_t;

@@ -52,8 +52,8 @@ uint8_t streamGps = 0;
 char parsedLat[15];
 char parsedLon[15];
 
-char testLon[11] = ("33.91565");
-char testLat[11] = ("17.11364");
+
+
 
 volatile uint32_t moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE; //timeout variable for waiting all data from module
 
@@ -245,7 +245,8 @@ int main(void) {
 	/*
 	 * Copy all reindeer variables to struct before starting network operations
 	 */
-
+char testLat[11] = ("6500.53");
+char testLon[11] = ("02534.554");
 	strcpy(reindeerData.serialNum, "11111");
 	strcpy(reindeerData.latitude, testLat);
 	strcpy(reindeerData.longitude, testLon);
@@ -320,10 +321,17 @@ int main(void) {
 			//printf(GPS_recBuf);
 			//printf("\r\n"); //First print out whole buffer
 
-			getGPS();
+			if(getGPS())
+				{
+			//char testLat[12] = ("6500.02359");
+			//char testLon[12] = ("02530.56951");
+
+			//parseData(testLat,testLon);
 
 			strcpy(reindeerData.latitude, parsedLat);
 			strcpy(reindeerData.longitude, parsedLon);
+			break;
+				}
 
 			printf("Parsed latitude: %s\r\n", reindeerData.latitude);
 			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
