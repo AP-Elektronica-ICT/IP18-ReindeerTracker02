@@ -199,8 +199,8 @@ int main(void) {
 	initI2C();
 	initAdc();
 	initUART();
-	configure_acc();
-	acc_init();
+	//configure_acc();
+	//acc_init();
 	initTimer();
 
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
@@ -269,7 +269,14 @@ int main(void) {
 				streamGps = 1;
 			} else if (strstr(PC_recBuf, "gpsinfo=0") != NULL) {
 				streamGps = 0;
-			} else if (strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
+			}
+			else if (strstr(PC_recBuf, "rfoff") != NULL) {
+				GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
+			}
+			else if (strstr(PC_recBuf, "rfon") != NULL) {
+				GPIO_SetPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
+			}
+			else if (strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
 			{
 				printf("send to gps\r\n");
 				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf + 2); //Calculate UBX checksum and add it to the message
