@@ -82,14 +82,19 @@ void BOARD_InitPins(void) {
   CLOCK_EnableClock(kCLOCK_PortC);
   CLOCK_EnableClock(kCLOCK_PortD);
 
+  //PORT_SetPinInterruptConfig(PORTC, 6u, kPORT_InterruptRisingEdge);
+
   PORT_SetPinMux(PORTB, PIN16_IDX, kPORT_MuxAlt3);           /* PORTB16 (pin 62) is configured as UART0_RX */
   PORT_SetPinMux(PORTB, PIN17_IDX, kPORT_MuxAlt3);           /* PORTB17 (pin 63) is configured as UART0_TX */
 
   PORT_SetPinMux(PORTB, 21u, kPORT_MuxAsGpio);
   PORT_SetPinMux(PORTB, 22u, kPORT_MuxAsGpio);
   PORT_SetPinMux(PORTB, 11u, kPORT_MuxAsGpio);	//boostreg enable pin
-  PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);
 
+  //PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);	// wakeup pin for stock frdm
+
+
+  PORT_SetPinMux(PORTC, 4u, kPORT_MuxAsGpio);
   PORT_SetPinMux(PORTC, 16u, kPORT_MuxAlt3);				// UART3 PIN RX (nbiot)
   PORT_SetPinMux(PORTC, 17u, kPORT_MuxAlt3);				// UART3 PIN TX (nbiot)
 
