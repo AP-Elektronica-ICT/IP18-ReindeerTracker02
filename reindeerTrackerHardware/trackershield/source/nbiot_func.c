@@ -221,6 +221,7 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen){
 	  delay_ms(1000);
 	  NB_define_pdp();
 	  delay_ms(1000);
+
 	 NB_cops_deRegister();
 	  delay_ms(2200);
 	  NB_active_pdp();
@@ -229,11 +230,10 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen){
 	  delay_ms(1000);
 	 NB_create_socket();
 	  delay_ms(1000);
-	  while(1){
 
 	  NB_send_msg(mqttMessage, msgLen);
-	  delay_ms(1000);
-	  }
+
+
 	  //NB_received_data();
 	  delay_ms(4000);
 	  NB_read_msg();
@@ -336,9 +336,10 @@ void NB_create_socket() {
 		printf("error\r\n");
 	}
 }
-void NB_send_msg(char *mqttMessage, uint8_t msgLen) {
+uint8_t NB_send_msg(char *mqttMessage, uint8_t msgLen) {
 
 	char nsost_command[500];
+	uint8_t reSend_msg = 0;
 
 	sprintf(nsost_command,"0,\"167.99.207.133\",1884,%d,\"%s\"", msgLen, mqttMessage);
 
@@ -350,6 +351,8 @@ void NB_send_msg(char *mqttMessage, uint8_t msgLen) {
 		printf("sent");
 	} else if (res == 1) {
 		printf("error\r\n");
+		reSend_msg = 1;
+		return reSend_msg;
 	}
 }
 void NB_read_msg() {

@@ -83,7 +83,7 @@ void initTimer() {
 	lptmr_config.bypassPrescaler = true;
 	lptmr_config.value = kLPTMR_Prescale_Glitch_0;
 	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_1;
-	//EnableIRQ(LPTMR0_IRQn);
+	EnableIRQ(LPTMR0_IRQn);
 	LPTMR_Init(LPTMR0, &lptmr_config);
 	LPTMR_SetTimerPeriod(LPTMR0, 2000);  // 3000 for 20hz data rat
 }
@@ -199,12 +199,10 @@ int main(void) {
 	initI2C();
 	initAdc();
 	initUART();
-	//configure_acc();
-	//acc_init();
-	initTimer();
+	configure_acc();
+	acc_init();
 
-	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
-	LPTMR_StartTimer(LPTMR0);
+	initTimer();
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
@@ -217,7 +215,7 @@ int main(void) {
 	LLWU->PE3 |= 0x20; // enable LLWU wakeup source from accelerometer interrupt pin
 	LLWU->FILT1 |= 0x4A;	// set pin wakeup from rising edge
 
-	//EnableIRQ(PORTC_IRQn);
+	EnableIRQ(PORTC_IRQn);
 
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
 	LPTMR_StartTimer(LPTMR0);
@@ -245,6 +243,7 @@ int main(void) {
 	/*
 	 * Copy all reindeer variables to struct before starting network operations
 	 */
+
 char testLat[11] = ("6500.53");
 char testLon[11] = ("02534.554");
 	strcpy(reindeerData.serialNum, "11111");
@@ -253,11 +252,17 @@ char testLon[11] = ("02534.554");
 	strcpy(reindeerData.dead, "true");
 	reindeerData.batteryLevel = 45;
 
+	while(1){
+		int16_t acc_val = read_acc_axis(0);
+			printf("Accelereometer %d\r\n",acc_val);
+			delay_ms(500);
+	}
+
 
 	while (1) {
 		//int16_t acc_val = read_acc_axis(0);
 		//printf("Accelereometer %d\r\n",acc_val);
-		//break;
+		break;
 		/*
 		 * Check if a string has arrived from PC (with CR line end)
 		 */
@@ -365,11 +370,11 @@ char testLon[11] = ("02534.554");
 	 * Assemble data to json format and then to POST message
 	 */
 
-	uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
+	//uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
 
 	//NB_send_msg(mqttMessage, msgLen);
-
-	NB_create_pdp_send(mqttMessage, msgLen);
+printf("kuusi on puu\r\n");
+	//NB_create_pdp_send(mqttMessage, msgLen);
 	//parseData(testLat, testLon);
 }
 
