@@ -28,7 +28,7 @@ void initI2C()
 
 	config.enableMaster = true;
     config.enableStopHold = false;
-    config.baudRate_Bps = 200000;
+    config.baudRate_Bps = 100000;
     config.glitchFilterWidth = 0;
 
 	I2C_MasterInit(I2C0, &config, ClkSrcFreq);

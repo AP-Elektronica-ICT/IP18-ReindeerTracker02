@@ -90,6 +90,8 @@ void BOARD_InitPins(void) {
   PORT_SetPinMux(PORTB, 11u, kPORT_MuxAsGpio);	//boostreg enable pin
   PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);
 
+  //PORTC ->PCR[4] |= 0x00090000;
+
   PORT_SetPinMux(PORTC, 16u, kPORT_MuxAlt3);				// UART3 PIN RX (nbiot)
   PORT_SetPinMux(PORTC, 17u, kPORT_MuxAlt3);				// UART3 PIN TX (nbiot)
 

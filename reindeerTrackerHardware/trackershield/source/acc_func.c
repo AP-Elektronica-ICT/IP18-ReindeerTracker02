@@ -19,6 +19,7 @@
 unsigned char buffer[50];
 
 void acc_init(){
+	 accWriteReg(0x2a,0x1c); //write accelerometer CTRL_REG1 (active mode)
 	 accWriteReg(0x2a,0x1d); //write accelerometer CTRL_REG1 (active mode)
 	 accWriteReg(0x5B,0x03); //Acc temperature sensor enable
 
@@ -45,8 +46,12 @@ void configure_acc() {
   accWriteReg(FXOS8700Q_A_FFMT_CFG, tmp);
 
   tmp = accReadReg( FXOS8700Q_A_FFMT_THS);
-  tmp |= 0x8F;
+  printf("ths reg %x\r\n",tmp);
+  tmp |= 0x81;
   accWriteReg(FXOS8700Q_A_FFMT_THS, tmp);
+
+
+  //accWriteReg(0x0f, 0x20);
 
 
 }

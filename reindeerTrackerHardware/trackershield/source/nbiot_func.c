@@ -232,7 +232,7 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen){
 	  while(1){
 
 	  NB_send_msg(mqttMessage, msgLen);
-	  delay_ms(1000);
+	  delay_ms(5000);
 	  }
 	  //NB_received_data();
 	  delay_ms(4000);

@@ -199,8 +199,8 @@ int main(void) {
 	initI2C();
 	initAdc();
 	initUART();
-	//configure_acc();
-	//acc_init();
+	configure_acc();
+	acc_init();
 	initTimer();
 
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
@@ -217,7 +217,7 @@ int main(void) {
 	LLWU->PE3 |= 0x20; // enable LLWU wakeup source from accelerometer interrupt pin
 	LLWU->FILT1 |= 0x4A;	// set pin wakeup from rising edge
 
-	//EnableIRQ(PORTC_IRQn);
+	EnableIRQ(PORTC_IRQn);
 
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
 	LPTMR_StartTimer(LPTMR0);
@@ -230,7 +230,7 @@ int main(void) {
 	 */
 	GPIO_PinInit(GPIOB, 11u, &LED_configOutput);
 
-	GPIO_SetPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
+	GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
 
 	//fletcher8(PMC_set, 14);
 	//fletcher8(ubx_cfg_prt, 7);
@@ -247,7 +247,7 @@ int main(void) {
 	 */
 char testLat[11] = ("6500.53");
 char testLon[11] = ("02534.554");
-	strcpy(reindeerData.serialNum, "11111");
+	strcpy(reindeerData.serialNum, "66666");
 	strcpy(reindeerData.latitude, testLat);
 	strcpy(reindeerData.longitude, testLon);
 	strcpy(reindeerData.dead, "true");
@@ -318,8 +318,8 @@ char testLon[11] = ("02534.554");
 		 */
 		if (GPS_strReady && streamGps) {
 
-			//printf(GPS_recBuf);
-			//printf("\r\n"); //First print out whole buffer
+			printf(GPS_recBuf);
+			printf("\r\n"); //First print out whole buffer
 
 			if(getGPS())
 				{
@@ -381,11 +381,18 @@ void PORTC_IRQHandler() {
 
 	}
 
+			GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
+
+
+	/*
+
 	LPTMR_Deinit(LPTMR0);			// Deinitiate timer to reset timer counte
 	LPTMR_Init(LPTMR0, &lptmr_config);
 	LPTMR_SetTimerPeriod(LPTMR0, 5000);  // 3000 for 20hz data rat
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
 	LPTMR_StartTimer(LPTMR0);
+
+	*/
 
 }
 
@@ -440,17 +447,27 @@ void LLWU_IRQHandler() {
 		 * Start filling again when data has been read and GPS_strReady is low.
 		 *
 		 */
-		if (GPS_strReady == 0) {
+		if(GPS_strReady == 0)
+		{
+
 			GPS_recBuf[GPS_bufPtr] = uartData; //put new byte to buffer
 			GPS_bufPtr++;
+		}
+
+		if(GPS_bufPtr > 500)
+		{
+			if(uartData == 0x0a)
+			{
+				GPS_strReady = 1;
+			}
 		}
 
 		/*
 		 * When buffer is almost full, put strReady high and stop filling it
 		 */
-		if (GPS_bufPtr > 499) {
+		/*if (GPS_bufPtr > 499) {
 			GPS_strReady = 1;
-		}
+		}*/
 
 	}
 
