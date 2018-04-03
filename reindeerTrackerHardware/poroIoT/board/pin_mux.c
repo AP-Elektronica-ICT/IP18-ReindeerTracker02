@@ -78,6 +78,31 @@ BOARD_InitPins:
  *
  *END**************************************************************************/
 void BOARD_InitPins(void) {
+
+	  CLOCK_EnableClock(kCLOCK_PortB);                           /* Port B Clock Gate Control: Clock enabled */
+	  CLOCK_EnableClock(kCLOCK_PortC);
+	  CLOCK_EnableClock(kCLOCK_PortD);
+	  CLOCK_EnableClock(kCLOCK_PortA);
+	  CLOCK_EnableClock(kCLOCK_PortE);
+
+	  //PORT_SetPinInterruptConfig(PORTC, 6u, kPORT_InterruptRisingEdge);
+
+	  PORT_SetPinMux(PORTC, 3u, kPORT_MuxAlt3);           /*LPUAR1 RX  */
+	  PORT_SetPinMux(PORTC, 4u, kPORT_MuxAlt3);           /* LPUAR1 TX   */
+
+	  PORT_SetPinMux(PORTA, 4u, kPORT_MuxAsGpio);
+
+	  PORT_SetPinMux(PORTA, 1u, kPORT_MuxAsGpio);	//boostreg enable pin
+
+	  //PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);	// wakeup pin for stock frdm
+
+
+	  PORT_SetPinMux(PORTB, 0u, kPORT_MuxAsGpio);
+	  PORT_SetPinMux(PORTD, 6u, kPORT_MuxAlt3);				// UART3 PIN RX (nbiot)
+	  PORT_SetPinMux(PORTD, 7u, kPORT_MuxAlt3);				// UART3 PIN TX (nbiot)
+
+	  PORT_SetPinMux(PORTE, 17u, kPORT_MuxAlt3);				// UART2 PIN RX (gps)
+	  PORT_SetPinMux(PORTE, 16u, kPORT_MuxAlt3);				// UART2 PIN TX (gps)
   // CLOCK_EnableClock(kCLOCK_PortB);                           /* Port B Clock Gate Control: Clock enabled */
 
   // PORT_SetPinMux(PORTB, PIN16_IDX, kPORT_MuxAlt3);           /* PORTB16 (pin 62) is configured as UART0_RX */
