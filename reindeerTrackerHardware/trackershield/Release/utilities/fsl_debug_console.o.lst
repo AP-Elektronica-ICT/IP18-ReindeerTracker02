@@ -1,0 +1,838 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_debug_console.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DbgConsole_RelocateLog,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	DbgConsole_RelocateLog:
+  25              	.LFB154:
+  26              		.file 1 "../utilities/fsl_debug_console.c"
+   1:../utilities/fsl_debug_console.c **** /*
+   2:../utilities/fsl_debug_console.c ****  * This is a modified version of the file printf.c, which was distributed
+   3:../utilities/fsl_debug_console.c ****  * by Motorola as part of the M5407C3BOOT.zip package used to initialize
+   4:../utilities/fsl_debug_console.c ****  * the M5407C3 evaluation board.
+   5:../utilities/fsl_debug_console.c ****  *
+   6:../utilities/fsl_debug_console.c ****  * Copyright:
+   7:../utilities/fsl_debug_console.c ****  *      1999-2000 MOTOROLA, INC. All Rights Reserved.
+   8:../utilities/fsl_debug_console.c ****  *  You are hereby granted a copyright license to use, modify, and
+   9:../utilities/fsl_debug_console.c ****  *  distribute the SOFTWARE so long as this entire notice is
+  10:../utilities/fsl_debug_console.c ****  *  retained without alteration in any modified and/or redistributed
+  11:../utilities/fsl_debug_console.c ****  *  versions, and that such modified versions are clearly identified
+  12:../utilities/fsl_debug_console.c ****  *  as such. No licenses are granted by implication, estoppel or
+  13:../utilities/fsl_debug_console.c ****  *  otherwise under any patents or trademarks of Motorola, Inc. This
+  14:../utilities/fsl_debug_console.c ****  *  software is provided on an "AS IS" basis and without warranty.
+  15:../utilities/fsl_debug_console.c ****  *
+  16:../utilities/fsl_debug_console.c ****  *  To the maximum extent permitted by applicable law, MOTOROLA
+  17:../utilities/fsl_debug_console.c ****  *  DISCLAIMS ALL WARRANTIES WHETHER EXPRESS OR IMPLIED, INCLUDING
+  18:../utilities/fsl_debug_console.c ****  *  IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR
+  19:../utilities/fsl_debug_console.c ****  *  PURPOSE AND ANY WARRANTY AGAINST INFRINGEMENT WITH REGARD TO THE
+  20:../utilities/fsl_debug_console.c ****  *  SOFTWARE (INCLUDING ANY MODIFIED VERSIONS THEREOF) AND ANY
+  21:../utilities/fsl_debug_console.c ****  *  ACCOMPANYING WRITTEN MATERIALS.
+  22:../utilities/fsl_debug_console.c ****  *
+  23:../utilities/fsl_debug_console.c ****  *  To the maximum extent permitted by applicable law, IN NO EVENT
+  24:../utilities/fsl_debug_console.c ****  *  SHALL MOTOROLA BE LIABLE FOR ANY DAMAGES WHATSOEVER (INCLUDING
+  25:../utilities/fsl_debug_console.c ****  *  WITHOUT LIMITATION, DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS
+  26:../utilities/fsl_debug_console.c ****  *  INTERRUPTION, LOSS OF BUSINESS INFORMATION, OR OTHER PECUNIARY
+  27:../utilities/fsl_debug_console.c ****  *  LOSS) ARISING OF THE USE OR INABILITY TO USE THE SOFTWARE.
+  28:../utilities/fsl_debug_console.c ****  *
+  29:../utilities/fsl_debug_console.c ****  *  Motorola assumes no responsibility for the maintenance and support
+  30:../utilities/fsl_debug_console.c ****  *  of this software
+  31:../utilities/fsl_debug_console.c **** 
+  32:../utilities/fsl_debug_console.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+  33:../utilities/fsl_debug_console.c ****  * Copyright 2016-2017 NXP
+  34:../utilities/fsl_debug_console.c ****  *
+  35:../utilities/fsl_debug_console.c ****  * Redistribution and use in source and binary forms, with or without modification,
+  36:../utilities/fsl_debug_console.c ****  * are permitted provided that the following conditions are met:
+  37:../utilities/fsl_debug_console.c ****  *
+  38:../utilities/fsl_debug_console.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  39:../utilities/fsl_debug_console.c ****  *   of conditions and the following disclaimer.
+  40:../utilities/fsl_debug_console.c ****  *
+  41:../utilities/fsl_debug_console.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  42:../utilities/fsl_debug_console.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  43:../utilities/fsl_debug_console.c ****  *   other materials provided with the distribution.
+  44:../utilities/fsl_debug_console.c ****  *
+  45:../utilities/fsl_debug_console.c ****  * o Neither the name of the copyright holder nor the names of its
+  46:../utilities/fsl_debug_console.c ****  *   contributors may be used to endorse or promote products derived from this
+  47:../utilities/fsl_debug_console.c ****  *   software without specific prior written permission.
+  48:../utilities/fsl_debug_console.c ****  *
+  49:../utilities/fsl_debug_console.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  50:../utilities/fsl_debug_console.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  51:../utilities/fsl_debug_console.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  52:../utilities/fsl_debug_console.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  53:../utilities/fsl_debug_console.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  54:../utilities/fsl_debug_console.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  55:../utilities/fsl_debug_console.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  56:../utilities/fsl_debug_console.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  57:../utilities/fsl_debug_console.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  58:../utilities/fsl_debug_console.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  59:../utilities/fsl_debug_console.c ****  */
+  60:../utilities/fsl_debug_console.c **** 
+  61:../utilities/fsl_debug_console.c **** #include <stdarg.h>
+  62:../utilities/fsl_debug_console.c **** #include <stdlib.h>
+  63:../utilities/fsl_debug_console.c **** #if defined(__CC_ARM)
+  64:../utilities/fsl_debug_console.c **** #include <stdio.h>
+  65:../utilities/fsl_debug_console.c **** #endif
+  66:../utilities/fsl_debug_console.c **** 
+  67:../utilities/fsl_debug_console.c **** #include "fsl_debug_console.h"
+  68:../utilities/fsl_debug_console.c **** #include "fsl_debug_console_conf.h"
+  69:../utilities/fsl_debug_console.c **** #include "fsl_log.h"
+  70:../utilities/fsl_debug_console.c **** #include "fsl_str.h"
+  71:../utilities/fsl_debug_console.c **** 
+  72:../utilities/fsl_debug_console.c **** /*******************************************************************************
+  73:../utilities/fsl_debug_console.c ****  * Definitions
+  74:../utilities/fsl_debug_console.c ****  ******************************************************************************/
+  75:../utilities/fsl_debug_console.c **** 
+  76:../utilities/fsl_debug_console.c **** /*******************************************************************************
+  77:../utilities/fsl_debug_console.c ****  * Variables
+  78:../utilities/fsl_debug_console.c ****  ******************************************************************************/
+  79:../utilities/fsl_debug_console.c **** 
+  80:../utilities/fsl_debug_console.c **** /*******************************************************************************
+  81:../utilities/fsl_debug_console.c ****  * Prototypes
+  82:../utilities/fsl_debug_console.c ****  ******************************************************************************/
+  83:../utilities/fsl_debug_console.c **** /*!
+  84:../utilities/fsl_debug_console.c ****  * @brief This is a printf call back function which is used to relocate the log to buffer
+  85:../utilities/fsl_debug_console.c ****  * or print the log immediately when the local buffer is full.
+  86:../utilities/fsl_debug_console.c ****  *
+  87:../utilities/fsl_debug_console.c ****  * @param[in] buf   Buffer to store log.
+  88:../utilities/fsl_debug_console.c ****  * @param[in] indicator Buffer index.
+  89:../utilities/fsl_debug_console.c ****  * @param[in] val Target character to store.
+  90:../utilities/fsl_debug_console.c ****  * @param[in] len length of the character
+  91:../utilities/fsl_debug_console.c ****  *
+  92:../utilities/fsl_debug_console.c ****  */
+  93:../utilities/fsl_debug_console.c **** #if SDK_DEBUGCONSOLE
+  94:../utilities/fsl_debug_console.c **** static void DbgConsole_RelocateLog(char *buf, int32_t *indicator, char val, int len);
+  95:../utilities/fsl_debug_console.c **** #endif
+  96:../utilities/fsl_debug_console.c **** /*******************************************************************************
+  97:../utilities/fsl_debug_console.c ****  * Code
+  98:../utilities/fsl_debug_console.c ****  ******************************************************************************/
+  99:../utilities/fsl_debug_console.c **** 
+ 100:../utilities/fsl_debug_console.c **** /*************Code for DbgConsole Init, Deinit, Printf, Scanf *******************************/
+ 101:../utilities/fsl_debug_console.c **** 
+ 102:../utilities/fsl_debug_console.c **** /* See fsl_debug_console.h for documentation of this function. */
+ 103:../utilities/fsl_debug_console.c **** status_t DbgConsole_Init(uint32_t baseAddr, uint32_t baudRate, uint8_t device, uint32_t clkSrcFreq)
+ 104:../utilities/fsl_debug_console.c **** {
+ 105:../utilities/fsl_debug_console.c ****     assert(device != DEBUG_CONSOLE_DEVICE_TYPE_NONE);
+ 106:../utilities/fsl_debug_console.c **** 
+ 107:../utilities/fsl_debug_console.c ****     return LOG_Init(baseAddr, device, baudRate, clkSrcFreq);
+ 108:../utilities/fsl_debug_console.c **** }
+ 109:../utilities/fsl_debug_console.c **** 
+ 110:../utilities/fsl_debug_console.c **** /* See fsl_debug_console.h for documentation of this function. */
+ 111:../utilities/fsl_debug_console.c **** status_t DbgConsole_Deinit(void)
+ 112:../utilities/fsl_debug_console.c **** {
+ 113:../utilities/fsl_debug_console.c ****     /* LOG deinit */
+ 114:../utilities/fsl_debug_console.c ****     LOG_Deinit();
+ 115:../utilities/fsl_debug_console.c **** 
+ 116:../utilities/fsl_debug_console.c ****     return kStatus_Success;
+ 117:../utilities/fsl_debug_console.c **** }
+ 118:../utilities/fsl_debug_console.c **** 
+ 119:../utilities/fsl_debug_console.c **** status_t DbgConsole_Flush(void)
+ 120:../utilities/fsl_debug_console.c **** {
+ 121:../utilities/fsl_debug_console.c ****     /* wait log and io idle */
+ 122:../utilities/fsl_debug_console.c ****     return LOG_WaitIdle();
+ 123:../utilities/fsl_debug_console.c **** }
+ 124:../utilities/fsl_debug_console.c **** 
+ 125:../utilities/fsl_debug_console.c **** #if SDK_DEBUGCONSOLE
+ 126:../utilities/fsl_debug_console.c **** /* See fsl_debug_console.h for documentation of this function. */
+ 127:../utilities/fsl_debug_console.c **** int DbgConsole_Printf(const char *fmt_s, ...)
+ 128:../utilities/fsl_debug_console.c **** {
+ 129:../utilities/fsl_debug_console.c ****     va_list ap;
+ 130:../utilities/fsl_debug_console.c ****     int logLength = 0U, result = 0U;
+ 131:../utilities/fsl_debug_console.c ****     char printBuf[DEBUG_CONSOLE_PRINTF_MAX_LOG_LEN] = {0U};
+ 132:../utilities/fsl_debug_console.c **** 
+ 133:../utilities/fsl_debug_console.c ****     va_start(ap, fmt_s);
+ 134:../utilities/fsl_debug_console.c ****     /* format print log first */
+ 135:../utilities/fsl_debug_console.c ****     logLength = StrFormatPrintf(fmt_s, ap, printBuf, DbgConsole_RelocateLog);
+ 136:../utilities/fsl_debug_console.c ****     /* print log */
+ 137:../utilities/fsl_debug_console.c ****     result = LOG_Push((uint8_t *)printBuf, logLength);
+ 138:../utilities/fsl_debug_console.c **** 
+ 139:../utilities/fsl_debug_console.c ****     va_end(ap);
+ 140:../utilities/fsl_debug_console.c **** 
+ 141:../utilities/fsl_debug_console.c ****     return result;
+ 142:../utilities/fsl_debug_console.c **** }
+ 143:../utilities/fsl_debug_console.c **** 
+ 144:../utilities/fsl_debug_console.c **** /* See fsl_debug_console.h for documentation of this function. */
+ 145:../utilities/fsl_debug_console.c **** int DbgConsole_Putchar(int ch)
+ 146:../utilities/fsl_debug_console.c **** {
+ 147:../utilities/fsl_debug_console.c ****     /* print char */
+ 148:../utilities/fsl_debug_console.c ****     return LOG_Push((uint8_t *)&ch, 1U);
+ 149:../utilities/fsl_debug_console.c **** }
+ 150:../utilities/fsl_debug_console.c **** 
+ 151:../utilities/fsl_debug_console.c **** /* See fsl_debug_console.h for documentation of this function. */
+ 152:../utilities/fsl_debug_console.c **** int DbgConsole_Scanf(char *fmt_ptr, ...)
+ 153:../utilities/fsl_debug_console.c **** {
+ 154:../utilities/fsl_debug_console.c ****     va_list ap;
+ 155:../utilities/fsl_debug_console.c ****     int result;
+ 156:../utilities/fsl_debug_console.c ****     char scanfBuf[DEBUG_CONSOLE_SCANF_MAX_LOG_LEN + 1U] = {0U};
+ 157:../utilities/fsl_debug_console.c **** 
+ 158:../utilities/fsl_debug_console.c ****     /* scanf log */
+ 159:../utilities/fsl_debug_console.c ****     LOG_ReadLine((uint8_t *)scanfBuf, DEBUG_CONSOLE_SCANF_MAX_LOG_LEN);
+ 160:../utilities/fsl_debug_console.c ****     /* get va_list */
+ 161:../utilities/fsl_debug_console.c ****     va_start(ap, fmt_ptr);
+ 162:../utilities/fsl_debug_console.c ****     /* format scanf log */
+ 163:../utilities/fsl_debug_console.c ****     result = StrFormatScanf(scanfBuf, fmt_ptr, ap);
+ 164:../utilities/fsl_debug_console.c **** 
+ 165:../utilities/fsl_debug_console.c ****     va_end(ap);
+ 166:../utilities/fsl_debug_console.c **** 
+ 167:../utilities/fsl_debug_console.c ****     return result;
+ 168:../utilities/fsl_debug_console.c **** }
+ 169:../utilities/fsl_debug_console.c **** 
+ 170:../utilities/fsl_debug_console.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 171:../utilities/fsl_debug_console.c **** status_t DbgConsole_TryGetchar(char *ch)
+ 172:../utilities/fsl_debug_console.c **** {
+ 173:../utilities/fsl_debug_console.c ****     if (NULL != ch)
+ 174:../utilities/fsl_debug_console.c ****     {
+ 175:../utilities/fsl_debug_console.c ****         return LOG_TryReadCharacter((uint8_t *)ch);
+ 176:../utilities/fsl_debug_console.c ****     }
+ 177:../utilities/fsl_debug_console.c **** 
+ 178:../utilities/fsl_debug_console.c ****     return kStatus_Fail;
+ 179:../utilities/fsl_debug_console.c **** }
+ 180:../utilities/fsl_debug_console.c **** #endif
+ 181:../utilities/fsl_debug_console.c **** 
+ 182:../utilities/fsl_debug_console.c **** /* See fsl_debug_console.h for documentation of this function. */
+ 183:../utilities/fsl_debug_console.c **** int DbgConsole_Getchar(void)
+ 184:../utilities/fsl_debug_console.c **** {
+ 185:../utilities/fsl_debug_console.c ****     uint8_t ch;
+ 186:../utilities/fsl_debug_console.c **** 
+ 187:../utilities/fsl_debug_console.c ****     /* Get char */
+ 188:../utilities/fsl_debug_console.c ****     LOG_ReadCharacter(&ch);
+ 189:../utilities/fsl_debug_console.c **** 
+ 190:../utilities/fsl_debug_console.c ****     return ch;
+ 191:../utilities/fsl_debug_console.c **** }
+ 192:../utilities/fsl_debug_console.c **** 
+ 193:../utilities/fsl_debug_console.c **** static void DbgConsole_RelocateLog(char *buf, int32_t *indicator, char val, int len)
+ 194:../utilities/fsl_debug_console.c **** {
+  27              		.loc 1 194 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+  33              		.cfi_def_cfa_offset 32
+  34              		.cfi_offset 3, -32
+  35              		.cfi_offset 4, -28
+  36              		.cfi_offset 5, -24
+  37              		.cfi_offset 6, -20
+  38              		.cfi_offset 7, -16
+  39              		.cfi_offset 8, -12
+  40              		.cfi_offset 9, -8
+  41              		.cfi_offset 14, -4
+ 195:../utilities/fsl_debug_console.c ****     int i = 0;
+ 196:../utilities/fsl_debug_console.c **** 
+ 197:../utilities/fsl_debug_console.c ****     for (i = 0; i < len; i++)
+  42              		.loc 1 197 0
+  43 0004 0025     		movs	r5, #0
+ 194:../utilities/fsl_debug_console.c ****     int i = 0;
+  44              		.loc 1 194 0
+  45 0006 0646     		mov	r6, r0
+  46 0008 0C46     		mov	r4, r1
+  47 000a 9046     		mov	r8, r2
+  48 000c 1F46     		mov	r7, r3
+ 198:../utilities/fsl_debug_console.c ****     {
+ 199:../utilities/fsl_debug_console.c ****         if ((*indicator + 1) >= DEBUG_CONSOLE_PRINTF_MAX_LOG_LEN)
+ 200:../utilities/fsl_debug_console.c ****         {
+ 201:../utilities/fsl_debug_console.c ****             LOG_Push((uint8_t *)buf, *indicator);
+ 202:../utilities/fsl_debug_console.c ****             *indicator = 0U;
+  49              		.loc 1 202 0
+  50 000e A946     		mov	r9, r5
+  51              	.LVL1:
+  52              	.L2:
+ 197:../utilities/fsl_debug_console.c ****     {
+  53              		.loc 1 197 0 discriminator 1
+  54 0010 BD42     		cmp	r5, r7
+  55 0012 01DB     		blt	.L4
+ 203:../utilities/fsl_debug_console.c ****         }
+ 204:../utilities/fsl_debug_console.c **** 
+ 205:../utilities/fsl_debug_console.c ****         buf[*indicator] = val;
+ 206:../utilities/fsl_debug_console.c ****         (*indicator)++;
+ 207:../utilities/fsl_debug_console.c ****     }
+ 208:../utilities/fsl_debug_console.c **** }
+  56              		.loc 1 208 0
+  57 0014 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+  58              	.LVL2:
+  59              	.L4:
+ 199:../utilities/fsl_debug_console.c ****         {
+  60              		.loc 1 199 0
+  61 0018 2168     		ldr	r1, [r4]
+  62 001a 4B1C     		adds	r3, r1, #1
+  63 001c 7F2B     		cmp	r3, #127
+  64 001e 04D9     		bls	.L3
+ 201:../utilities/fsl_debug_console.c ****             *indicator = 0U;
+  65              		.loc 1 201 0
+  66 0020 3046     		mov	r0, r6
+  67 0022 FFF7FEFF 		bl	LOG_Push
+  68              	.LVL3:
+ 202:../utilities/fsl_debug_console.c ****         }
+  69              		.loc 1 202 0
+  70 0026 C4F80090 		str	r9, [r4]
+  71              	.L3:
+ 205:../utilities/fsl_debug_console.c ****         (*indicator)++;
+  72              		.loc 1 205 0 discriminator 2
+  73 002a 2368     		ldr	r3, [r4]
+  74 002c 06F80380 		strb	r8, [r6, r3]
+ 206:../utilities/fsl_debug_console.c ****     }
+  75              		.loc 1 206 0 discriminator 2
+  76 0030 2168     		ldr	r1, [r4]
+  77 0032 0131     		adds	r1, r1, #1
+  78 0034 2160     		str	r1, [r4]
+ 197:../utilities/fsl_debug_console.c ****     {
+  79              		.loc 1 197 0 discriminator 2
+  80 0036 0135     		adds	r5, r5, #1
+  81              	.LVL4:
+  82 0038 EAE7     		b	.L2
+  83              		.cfi_endproc
+  84              	.LFE154:
+  86              		.section	.text.DbgConsole_Init,"ax",%progbits
+  87              		.align	1
+  88              		.global	DbgConsole_Init
+  89              		.syntax unified
+  90              		.thumb
+  91              		.thumb_func
+  92              		.fpu fpv4-sp-d16
+  94              	DbgConsole_Init:
+  95              	.LFB147:
+ 104:../utilities/fsl_debug_console.c ****     assert(device != DEBUG_CONSOLE_DEVICE_TYPE_NONE);
+  96              		.loc 1 104 0
+  97              		.cfi_startproc
+  98              		@ args = 0, pretend = 0, frame = 0
+  99              		@ frame_needed = 0, uses_anonymous_args = 0
+ 100              		@ link register save eliminated.
+ 101              	.LVL5:
+ 102 0000 10B4     		push	{r4}
+ 103              		.cfi_def_cfa_offset 4
+ 104              		.cfi_offset 4, -4
+ 104:../utilities/fsl_debug_console.c ****     assert(device != DEBUG_CONSOLE_DEVICE_TYPE_NONE);
+ 105              		.loc 1 104 0
+ 106 0002 1446     		mov	r4, r2
+ 107:../utilities/fsl_debug_console.c **** }
+ 107              		.loc 1 107 0
+ 108 0004 0A46     		mov	r2, r1
+ 109              	.LVL6:
+ 110 0006 2146     		mov	r1, r4
+ 111              	.LVL7:
+ 108:../utilities/fsl_debug_console.c **** 
+ 112              		.loc 1 108 0
+ 113 0008 5DF8044B 		ldr	r4, [sp], #4
+ 114              		.cfi_restore 4
+ 115              		.cfi_def_cfa_offset 0
+ 107:../utilities/fsl_debug_console.c **** }
+ 116              		.loc 1 107 0
+ 117 000c FFF7FEBF 		b	LOG_Init
+ 118              	.LVL8:
+ 119              		.cfi_endproc
+ 120              	.LFE147:
+ 122              		.section	.text.DbgConsole_Deinit,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	DbgConsole_Deinit
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 128              		.fpu fpv4-sp-d16
+ 130              	DbgConsole_Deinit:
+ 131              	.LFB148:
+ 112:../utilities/fsl_debug_console.c ****     /* LOG deinit */
+ 132              		.loc 1 112 0
+ 133              		.cfi_startproc
+ 134              		@ args = 0, pretend = 0, frame = 0
+ 135              		@ frame_needed = 0, uses_anonymous_args = 0
+ 136 0000 08B5     		push	{r3, lr}
+ 137              		.cfi_def_cfa_offset 8
+ 138              		.cfi_offset 3, -8
+ 139              		.cfi_offset 14, -4
+ 114:../utilities/fsl_debug_console.c **** 
+ 140              		.loc 1 114 0
+ 141 0002 FFF7FEFF 		bl	LOG_Deinit
+ 142              	.LVL9:
+ 117:../utilities/fsl_debug_console.c **** 
+ 143              		.loc 1 117 0
+ 144 0006 0020     		movs	r0, #0
+ 145 0008 08BD     		pop	{r3, pc}
+ 146              		.cfi_endproc
+ 147              	.LFE148:
+ 149              		.section	.text.DbgConsole_Flush,"ax",%progbits
+ 150              		.align	1
+ 151              		.global	DbgConsole_Flush
+ 152              		.syntax unified
+ 153              		.thumb
+ 154              		.thumb_func
+ 155              		.fpu fpv4-sp-d16
+ 157              	DbgConsole_Flush:
+ 158              	.LFB149:
+ 120:../utilities/fsl_debug_console.c ****     /* wait log and io idle */
+ 159              		.loc 1 120 0
+ 160              		.cfi_startproc
+ 161              		@ args = 0, pretend = 0, frame = 0
+ 162              		@ frame_needed = 0, uses_anonymous_args = 0
+ 163              		@ link register save eliminated.
+ 122:../utilities/fsl_debug_console.c **** }
+ 164              		.loc 1 122 0
+ 165 0000 FFF7FEBF 		b	LOG_WaitIdle
+ 166              	.LVL10:
+ 167              		.cfi_endproc
+ 168              	.LFE149:
+ 170              		.section	.text.DbgConsole_Printf,"ax",%progbits
+ 171              		.align	1
+ 172              		.global	DbgConsole_Printf
+ 173              		.syntax unified
+ 174              		.thumb
+ 175              		.thumb_func
+ 176              		.fpu fpv4-sp-d16
+ 178              	DbgConsole_Printf:
+ 179              	.LFB150:
+ 128:../utilities/fsl_debug_console.c ****     va_list ap;
+ 180              		.loc 1 128 0
+ 181              		.cfi_startproc
+ 182              		@ args = 4, pretend = 16, frame = 136
+ 183              		@ frame_needed = 0, uses_anonymous_args = 1
+ 184              	.LVL11:
+ 185 0000 0FB4     		push	{r0, r1, r2, r3}
+ 186              		.cfi_def_cfa_offset 16
+ 187              		.cfi_offset 0, -16
+ 188              		.cfi_offset 1, -12
+ 189              		.cfi_offset 2, -8
+ 190              		.cfi_offset 3, -4
+ 191 0002 30B5     		push	{r4, r5, lr}
+ 192              		.cfi_def_cfa_offset 28
+ 193              		.cfi_offset 4, -28
+ 194              		.cfi_offset 5, -24
+ 195              		.cfi_offset 14, -20
+ 196 0004 A3B0     		sub	sp, sp, #140
+ 197              		.cfi_def_cfa_offset 168
+ 128:../utilities/fsl_debug_console.c ****     va_list ap;
+ 198              		.loc 1 128 0
+ 199 0006 26AC     		add	r4, sp, #152
+ 131:../utilities/fsl_debug_console.c **** 
+ 200              		.loc 1 131 0
+ 201 0008 8022     		movs	r2, #128
+ 128:../utilities/fsl_debug_console.c ****     va_list ap;
+ 202              		.loc 1 128 0
+ 203 000a 54F8045B 		ldr	r5, [r4], #4
+ 131:../utilities/fsl_debug_console.c **** 
+ 204              		.loc 1 131 0
+ 205 000e 0021     		movs	r1, #0
+ 206 0010 02A8     		add	r0, sp, #8
+ 207 0012 FFF7FEFF 		bl	memset
+ 208              	.LVL12:
+ 135:../utilities/fsl_debug_console.c ****     /* print log */
+ 209              		.loc 1 135 0
+ 210 0016 084B     		ldr	r3, .L9
+ 133:../utilities/fsl_debug_console.c ****     /* format print log first */
+ 211              		.loc 1 133 0
+ 212 0018 0194     		str	r4, [sp, #4]
+ 135:../utilities/fsl_debug_console.c ****     /* print log */
+ 213              		.loc 1 135 0
+ 214 001a 02AA     		add	r2, sp, #8
+ 215 001c 2146     		mov	r1, r4
+ 216 001e 2846     		mov	r0, r5
+ 217 0020 FFF7FEFF 		bl	StrFormatPrintf
+ 218              	.LVL13:
+ 137:../utilities/fsl_debug_console.c **** 
+ 219              		.loc 1 137 0
+ 220 0024 0146     		mov	r1, r0
+ 221 0026 02A8     		add	r0, sp, #8
+ 222              	.LVL14:
+ 223 0028 FFF7FEFF 		bl	LOG_Push
+ 224              	.LVL15:
+ 142:../utilities/fsl_debug_console.c **** 
+ 225              		.loc 1 142 0
+ 226 002c 23B0     		add	sp, sp, #140
+ 227              		.cfi_def_cfa_offset 28
+ 228              		@ sp needed
+ 229 002e BDE83040 		pop	{r4, r5, lr}
+ 230              		.cfi_restore 14
+ 231              		.cfi_restore 5
+ 232              		.cfi_restore 4
+ 233              		.cfi_def_cfa_offset 16
+ 234 0032 04B0     		add	sp, sp, #16
+ 235              		.cfi_restore 3
+ 236              		.cfi_restore 2
+ 237              		.cfi_restore 1
+ 238              		.cfi_restore 0
+ 239              		.cfi_def_cfa_offset 0
+ 240 0034 7047     		bx	lr
+ 241              	.L10:
+ 242 0036 00BF     		.align	2
+ 243              	.L9:
+ 244 0038 00000000 		.word	DbgConsole_RelocateLog
+ 245              		.cfi_endproc
+ 246              	.LFE150:
+ 248              		.section	.text.DbgConsole_Putchar,"ax",%progbits
+ 249              		.align	1
+ 250              		.global	DbgConsole_Putchar
+ 251              		.syntax unified
+ 252              		.thumb
+ 253              		.thumb_func
+ 254              		.fpu fpv4-sp-d16
+ 256              	DbgConsole_Putchar:
+ 257              	.LFB151:
+ 146:../utilities/fsl_debug_console.c ****     /* print char */
+ 258              		.loc 1 146 0
+ 259              		.cfi_startproc
+ 260              		@ args = 0, pretend = 0, frame = 8
+ 261              		@ frame_needed = 0, uses_anonymous_args = 0
+ 262              	.LVL16:
+ 263 0000 07B5     		push	{r0, r1, r2, lr}
+ 264              		.cfi_def_cfa_offset 16
+ 265              		.cfi_offset 14, -4
+ 146:../utilities/fsl_debug_console.c ****     /* print char */
+ 266              		.loc 1 146 0
+ 267 0002 02AB     		add	r3, sp, #8
+ 148:../utilities/fsl_debug_console.c **** }
+ 268              		.loc 1 148 0
+ 269 0004 0121     		movs	r1, #1
+ 146:../utilities/fsl_debug_console.c ****     /* print char */
+ 270              		.loc 1 146 0
+ 271 0006 43F8040D 		str	r0, [r3, #-4]!
+ 148:../utilities/fsl_debug_console.c **** }
+ 272              		.loc 1 148 0
+ 273 000a 1846     		mov	r0, r3
+ 274              	.LVL17:
+ 275 000c FFF7FEFF 		bl	LOG_Push
+ 276              	.LVL18:
+ 149:../utilities/fsl_debug_console.c **** 
+ 277              		.loc 1 149 0
+ 278 0010 03B0     		add	sp, sp, #12
+ 279              		.cfi_def_cfa_offset 4
+ 280              		@ sp needed
+ 281 0012 5DF804FB 		ldr	pc, [sp], #4
+ 282              		.cfi_endproc
+ 283              	.LFE151:
+ 285              		.section	.text.DbgConsole_Scanf,"ax",%progbits
+ 286              		.align	1
+ 287              		.global	DbgConsole_Scanf
+ 288              		.syntax unified
+ 289              		.thumb
+ 290              		.thumb_func
+ 291              		.fpu fpv4-sp-d16
+ 293              	DbgConsole_Scanf:
+ 294              	.LFB152:
+ 153:../utilities/fsl_debug_console.c ****     va_list ap;
+ 295              		.loc 1 153 0
+ 296              		.cfi_startproc
+ 297              		@ args = 4, pretend = 16, frame = 32
+ 298              		@ frame_needed = 0, uses_anonymous_args = 1
+ 299              	.LVL19:
+ 300 0000 0FB4     		push	{r0, r1, r2, r3}
+ 301              		.cfi_def_cfa_offset 16
+ 302              		.cfi_offset 0, -16
+ 303              		.cfi_offset 1, -12
+ 304              		.cfi_offset 2, -8
+ 305              		.cfi_offset 3, -4
+ 306 0002 30B5     		push	{r4, r5, lr}
+ 307              		.cfi_def_cfa_offset 28
+ 308              		.cfi_offset 4, -28
+ 309              		.cfi_offset 5, -24
+ 310              		.cfi_offset 14, -20
+ 311 0004 89B0     		sub	sp, sp, #36
+ 312              		.cfi_def_cfa_offset 64
+ 153:../utilities/fsl_debug_console.c ****     va_list ap;
+ 313              		.loc 1 153 0
+ 314 0006 0CAC     		add	r4, sp, #48
+ 156:../utilities/fsl_debug_console.c **** 
+ 315              		.loc 1 156 0
+ 316 0008 1522     		movs	r2, #21
+ 153:../utilities/fsl_debug_console.c ****     va_list ap;
+ 317              		.loc 1 153 0
+ 318 000a 54F8045B 		ldr	r5, [r4], #4
+ 156:../utilities/fsl_debug_console.c **** 
+ 319              		.loc 1 156 0
+ 320 000e 0021     		movs	r1, #0
+ 321 0010 02A8     		add	r0, sp, #8
+ 322 0012 FFF7FEFF 		bl	memset
+ 323              	.LVL20:
+ 159:../utilities/fsl_debug_console.c ****     /* get va_list */
+ 324              		.loc 1 159 0
+ 325 0016 1421     		movs	r1, #20
+ 326 0018 02A8     		add	r0, sp, #8
+ 327 001a FFF7FEFF 		bl	LOG_ReadLine
+ 328              	.LVL21:
+ 163:../utilities/fsl_debug_console.c **** 
+ 329              		.loc 1 163 0
+ 330 001e 2246     		mov	r2, r4
+ 331 0020 2946     		mov	r1, r5
+ 332 0022 02A8     		add	r0, sp, #8
+ 161:../utilities/fsl_debug_console.c ****     /* format scanf log */
+ 333              		.loc 1 161 0
+ 334 0024 0194     		str	r4, [sp, #4]
+ 163:../utilities/fsl_debug_console.c **** 
+ 335              		.loc 1 163 0
+ 336 0026 FFF7FEFF 		bl	StrFormatScanf
+ 337              	.LVL22:
+ 168:../utilities/fsl_debug_console.c **** 
+ 338              		.loc 1 168 0
+ 339 002a 09B0     		add	sp, sp, #36
+ 340              		.cfi_def_cfa_offset 28
+ 341              		@ sp needed
+ 342 002c BDE83040 		pop	{r4, r5, lr}
+ 343              		.cfi_restore 14
+ 344              		.cfi_restore 5
+ 345              		.cfi_restore 4
+ 346              		.cfi_def_cfa_offset 16
+ 347 0030 04B0     		add	sp, sp, #16
+ 348              		.cfi_restore 3
+ 349              		.cfi_restore 2
+ 350              		.cfi_restore 1
+ 351              		.cfi_restore 0
+ 352              		.cfi_def_cfa_offset 0
+ 353 0032 7047     		bx	lr
+ 354              		.cfi_endproc
+ 355              	.LFE152:
+ 357              		.section	.text.DbgConsole_Getchar,"ax",%progbits
+ 358              		.align	1
+ 359              		.global	DbgConsole_Getchar
+ 360              		.syntax unified
+ 361              		.thumb
+ 362              		.thumb_func
+ 363              		.fpu fpv4-sp-d16
+ 365              	DbgConsole_Getchar:
+ 366              	.LFB153:
+ 184:../utilities/fsl_debug_console.c ****     uint8_t ch;
+ 367              		.loc 1 184 0
+ 368              		.cfi_startproc
+ 369              		@ args = 0, pretend = 0, frame = 8
+ 370              		@ frame_needed = 0, uses_anonymous_args = 0
+ 371 0000 07B5     		push	{r0, r1, r2, lr}
+ 372              		.cfi_def_cfa_offset 16
+ 373              		.cfi_offset 14, -4
+ 188:../utilities/fsl_debug_console.c **** 
+ 374              		.loc 1 188 0
+ 375 0002 0DF10700 		add	r0, sp, #7
+ 376 0006 FFF7FEFF 		bl	LOG_ReadCharacter
+ 377              	.LVL23:
+ 191:../utilities/fsl_debug_console.c **** 
+ 378              		.loc 1 191 0
+ 379 000a 9DF80700 		ldrb	r0, [sp, #7]	@ zero_extendqisi2
+ 380 000e 03B0     		add	sp, sp, #12
+ 381              		.cfi_def_cfa_offset 4
+ 382              		@ sp needed
+ 383 0010 5DF804FB 		ldr	pc, [sp], #4
+ 384              		.cfi_endproc
+ 385              	.LFE153:
+ 387              		.section	.text._write,"ax",%progbits
+ 388              		.align	1
+ 389              		.weak	_write
+ 390              		.syntax unified
+ 391              		.thumb
+ 392              		.thumb_func
+ 393              		.fpu fpv4-sp-d16
+ 395              	_write:
+ 396              	.LFB155:
+ 209:../utilities/fsl_debug_console.c **** 
+ 210:../utilities/fsl_debug_console.c **** #endif /* SDK_DEBUGCONSOLE */
+ 211:../utilities/fsl_debug_console.c **** /*************Code to support toolchain's printf, scanf *******************************/
+ 212:../utilities/fsl_debug_console.c **** /* These function __write and __read is used to support IAR toolchain to printf and scanf*/
+ 213:../utilities/fsl_debug_console.c **** #if (defined(__ICCARM__))
+ 214:../utilities/fsl_debug_console.c **** #pragma weak __write
+ 215:../utilities/fsl_debug_console.c **** size_t __write(int handle, const unsigned char *buffer, size_t size)
+ 216:../utilities/fsl_debug_console.c **** {
+ 217:../utilities/fsl_debug_console.c ****     if (buffer == 0)
+ 218:../utilities/fsl_debug_console.c ****     {
+ 219:../utilities/fsl_debug_console.c ****         /*
+ 220:../utilities/fsl_debug_console.c ****          * This means that we should flush internal buffers.  Since we don't we just return.
+ 221:../utilities/fsl_debug_console.c ****          * (Remember, "handle" == -1 means that all handles should be flushed.)
+ 222:../utilities/fsl_debug_console.c ****          */
+ 223:../utilities/fsl_debug_console.c ****         return 0;
+ 224:../utilities/fsl_debug_console.c ****     }
+ 225:../utilities/fsl_debug_console.c **** 
+ 226:../utilities/fsl_debug_console.c ****     /* This function only writes to "standard out" and "standard err" for all other file handles it
+ 227:../utilities/fsl_debug_console.c ****     if ((handle != 1) && (handle != 2))
+ 228:../utilities/fsl_debug_console.c ****     {
+ 229:../utilities/fsl_debug_console.c ****         return ((size_t)-1);
+ 230:../utilities/fsl_debug_console.c ****     }
+ 231:../utilities/fsl_debug_console.c **** 
+ 232:../utilities/fsl_debug_console.c ****     /* Send data. */
+ 233:../utilities/fsl_debug_console.c ****     LOG_Push((uint8_t *)buffer, 1U);
+ 234:../utilities/fsl_debug_console.c **** 
+ 235:../utilities/fsl_debug_console.c ****     return size;
+ 236:../utilities/fsl_debug_console.c **** }
+ 237:../utilities/fsl_debug_console.c **** 
+ 238:../utilities/fsl_debug_console.c **** #pragma weak __read
+ 239:../utilities/fsl_debug_console.c **** size_t __read(int handle, unsigned char *buffer, size_t size)
+ 240:../utilities/fsl_debug_console.c **** {
+ 241:../utilities/fsl_debug_console.c ****     /* This function only reads from "standard in", for all other file  handles it returns failure.
+ 242:../utilities/fsl_debug_console.c ****     if (handle != 0)
+ 243:../utilities/fsl_debug_console.c ****     {
+ 244:../utilities/fsl_debug_console.c ****         return ((size_t)-1);
+ 245:../utilities/fsl_debug_console.c ****     }
+ 246:../utilities/fsl_debug_console.c **** 
+ 247:../utilities/fsl_debug_console.c ****     /* Receive data.*/
+ 248:../utilities/fsl_debug_console.c ****     LOG_ReadLine(buffer, size);
+ 249:../utilities/fsl_debug_console.c **** 
+ 250:../utilities/fsl_debug_console.c ****     return size;
+ 251:../utilities/fsl_debug_console.c **** }
+ 252:../utilities/fsl_debug_console.c **** 
+ 253:../utilities/fsl_debug_console.c **** /* support LPC Xpresso with RedLib */
+ 254:../utilities/fsl_debug_console.c **** #elif(defined(__REDLIB__))
+ 255:../utilities/fsl_debug_console.c **** 
+ 256:../utilities/fsl_debug_console.c **** #if (!SDK_DEBUGCONSOLE) && (defined(SDK_DEBUGCONSOLE_UART))
+ 257:../utilities/fsl_debug_console.c **** int __attribute__((weak)) __sys_write(int handle, char *buffer, int size)
+ 258:../utilities/fsl_debug_console.c **** {
+ 259:../utilities/fsl_debug_console.c ****     if (buffer == 0)
+ 260:../utilities/fsl_debug_console.c ****     {
+ 261:../utilities/fsl_debug_console.c ****         /* return -1 if error. */
+ 262:../utilities/fsl_debug_console.c ****         return -1;
+ 263:../utilities/fsl_debug_console.c ****     }
+ 264:../utilities/fsl_debug_console.c **** 
+ 265:../utilities/fsl_debug_console.c ****     /* This function only writes to "standard out" and "standard err" for all other file handles it
+ 266:../utilities/fsl_debug_console.c ****     if ((handle != 1) && (handle != 2))
+ 267:../utilities/fsl_debug_console.c ****     {
+ 268:../utilities/fsl_debug_console.c ****         return -1;
+ 269:../utilities/fsl_debug_console.c ****     }
+ 270:../utilities/fsl_debug_console.c **** 
+ 271:../utilities/fsl_debug_console.c ****     /* Send data. */
+ 272:../utilities/fsl_debug_console.c ****     LOG_Push((uint8_t *)buffer, size);
+ 273:../utilities/fsl_debug_console.c **** 
+ 274:../utilities/fsl_debug_console.c ****     return 0;
+ 275:../utilities/fsl_debug_console.c **** }
+ 276:../utilities/fsl_debug_console.c **** 
+ 277:../utilities/fsl_debug_console.c **** int __attribute__((weak)) __sys_readc(void)
+ 278:../utilities/fsl_debug_console.c **** {
+ 279:../utilities/fsl_debug_console.c ****     char tmp;
+ 280:../utilities/fsl_debug_console.c **** 
+ 281:../utilities/fsl_debug_console.c ****     /* Receive data. */
+ 282:../utilities/fsl_debug_console.c ****     LOG_ReadCharacter((uint8_t *)&tmp);
+ 283:../utilities/fsl_debug_console.c **** 
+ 284:../utilities/fsl_debug_console.c ****     return tmp;
+ 285:../utilities/fsl_debug_console.c **** }
+ 286:../utilities/fsl_debug_console.c **** #endif
+ 287:../utilities/fsl_debug_console.c **** 
+ 288:../utilities/fsl_debug_console.c **** /* These function __write and __read is used to support ARM_GCC, KDS, Atollic toolchains to printf 
+ 289:../utilities/fsl_debug_console.c **** #elif(defined(__GNUC__))
+ 290:../utilities/fsl_debug_console.c **** 
+ 291:../utilities/fsl_debug_console.c **** #if ((defined(__GNUC__) && (!defined(__MCUXPRESSO))) || \
+ 292:../utilities/fsl_debug_console.c ****      (defined(__MCUXPRESSO) && (!SDK_DEBUGCONSOLE) && (defined(SDK_DEBUGCONSOLE_UART))))
+ 293:../utilities/fsl_debug_console.c **** 
+ 294:../utilities/fsl_debug_console.c **** int __attribute__((weak)) _write(int handle, char *buffer, int size)
+ 295:../utilities/fsl_debug_console.c **** {
+ 397              		.loc 1 295 0
+ 398              		.cfi_startproc
+ 399              		@ args = 0, pretend = 0, frame = 0
+ 400              		@ frame_needed = 0, uses_anonymous_args = 0
+ 401              	.LVL24:
+ 402 0000 10B5     		push	{r4, lr}
+ 403              		.cfi_def_cfa_offset 8
+ 404              		.cfi_offset 4, -8
+ 405              		.cfi_offset 14, -4
+ 406              		.loc 1 295 0
+ 407 0002 0346     		mov	r3, r0
+ 408 0004 1446     		mov	r4, r2
+ 296:../utilities/fsl_debug_console.c ****     if (buffer == 0)
+ 409              		.loc 1 296 0
+ 410 0006 0846     		mov	r0, r1
+ 411              	.LVL25:
+ 412 0008 39B1     		cbz	r1, .L17
+ 297:../utilities/fsl_debug_console.c ****     {
+ 298:../utilities/fsl_debug_console.c ****         /* return -1 if error. */
+ 299:../utilities/fsl_debug_console.c ****         return -1;
+ 300:../utilities/fsl_debug_console.c ****     }
+ 301:../utilities/fsl_debug_console.c **** 
+ 302:../utilities/fsl_debug_console.c ****     /* This function only writes to "standard out" and "standard err" for all other file handles it
+ 303:../utilities/fsl_debug_console.c ****     if ((handle != 1) && (handle != 2))
+ 413              		.loc 1 303 0
+ 414 000a 013B     		subs	r3, r3, #1
+ 415              	.LVL26:
+ 416 000c 012B     		cmp	r3, #1
+ 417 000e 04D8     		bhi	.L17
+ 304:../utilities/fsl_debug_console.c ****     {
+ 305:../utilities/fsl_debug_console.c ****         return -1;
+ 306:../utilities/fsl_debug_console.c ****     }
+ 307:../utilities/fsl_debug_console.c **** 
+ 308:../utilities/fsl_debug_console.c ****     /* Send data. */
+ 309:../utilities/fsl_debug_console.c ****     LOG_Push((uint8_t *)buffer, size);
+ 418              		.loc 1 309 0
+ 419 0010 1146     		mov	r1, r2
+ 420              	.LVL27:
+ 421 0012 FFF7FEFF 		bl	LOG_Push
+ 422              	.LVL28:
+ 423              	.L15:
+ 310:../utilities/fsl_debug_console.c **** 
+ 311:../utilities/fsl_debug_console.c ****     return size;
+ 312:../utilities/fsl_debug_console.c **** }
+ 424              		.loc 1 312 0
+ 425 0016 2046     		mov	r0, r4
+ 426 0018 10BD     		pop	{r4, pc}
+ 427              	.LVL29:
+ 428              	.L17:
+ 299:../utilities/fsl_debug_console.c ****     }
+ 429              		.loc 1 299 0
+ 430 001a 4FF0FF34 		mov	r4, #-1
+ 431 001e FAE7     		b	.L15
+ 432              		.cfi_endproc
+ 433              	.LFE155:
+ 435              		.section	.text._read,"ax",%progbits
+ 436              		.align	1
+ 437              		.weak	_read
+ 438              		.syntax unified
+ 439              		.thumb
+ 440              		.thumb_func
+ 441              		.fpu fpv4-sp-d16
+ 443              	_read:
+ 444              	.LFB156:
+ 313:../utilities/fsl_debug_console.c **** 
+ 314:../utilities/fsl_debug_console.c **** int __attribute__((weak)) _read(int handle, char *buffer, int size)
+ 315:../utilities/fsl_debug_console.c **** {
+ 445              		.loc 1 315 0
+ 446              		.cfi_startproc
+ 447              		@ args = 0, pretend = 0, frame = 0
+ 448              		@ frame_needed = 0, uses_anonymous_args = 0
+ 449              		@ link register save eliminated.
+ 450              	.LVL30:
+ 451              		.loc 1 315 0
+ 452 0000 0B46     		mov	r3, r1
+ 316:../utilities/fsl_debug_console.c ****     /* This function only reads from "standard in", for all other file handles it returns failure. 
+ 317:../utilities/fsl_debug_console.c ****     if (handle != 0)
+ 453              		.loc 1 317 0
+ 454 0002 18B9     		cbnz	r0, .L19
+ 318:../utilities/fsl_debug_console.c ****     {
+ 319:../utilities/fsl_debug_console.c ****         return -1;
+ 320:../utilities/fsl_debug_console.c ****     }
+ 321:../utilities/fsl_debug_console.c **** 
+ 322:../utilities/fsl_debug_console.c ****     /* Receive data. */
+ 323:../utilities/fsl_debug_console.c ****     return LOG_ReadLine((uint8_t *)buffer, size);
+ 455              		.loc 1 323 0
+ 456 0004 1146     		mov	r1, r2
+ 457              	.LVL31:
+ 458 0006 1846     		mov	r0, r3
+ 459              	.LVL32:
+ 460 0008 FFF7FEBF 		b	LOG_ReadLine
+ 461              	.LVL33:
+ 462              	.L19:
+ 324:../utilities/fsl_debug_console.c **** }
+ 463              		.loc 1 324 0
+ 464 000c 4FF0FF30 		mov	r0, #-1
+ 465              	.LVL34:
+ 466 0010 7047     		bx	lr
+ 467              		.cfi_endproc
+ 468              	.LFE156:
+ 470              		.text
+ 471              	.Letext0:
+ 472              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stdarg.h"
+ 473              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 474              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 475              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 476              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 477              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 478              		.file 8 "<built-in>"
+ 479              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 480              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 481              		.file 11 "../CMSIS/core_cm4.h"
+ 482              		.file 12 "../CMSIS/system_MK64F12.h"
+ 483              		.file 13 "../drivers/fsl_common.h"
+ 484              		.file 14 "../drivers/fsl_clock.h"
+ 485              		.file 15 "../utilities/fsl_log.h"
+ 486              		.file 16 "../utilities/fsl_str.h"

@@ -1,0 +1,571 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_gpio.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.GPIO_PinInit,"ax",%progbits
+  18              		.align	1
+  19              		.global	GPIO_PinInit
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	GPIO_PinInit:
+  26              	.LFB160:
+  27              		.file 1 "../drivers/fsl_gpio.c"
+   1:../drivers/fsl_gpio.c **** /*
+   2:../drivers/fsl_gpio.c ****  * The Clear BSD License
+   3:../drivers/fsl_gpio.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_gpio.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_gpio.c ****  * All rights reserved.
+   6:../drivers/fsl_gpio.c ****  *
+   7:../drivers/fsl_gpio.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_gpio.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_gpio.c ****  * that the following conditions are met:
+  10:../drivers/fsl_gpio.c ****  *
+  11:../drivers/fsl_gpio.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_gpio.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_gpio.c ****  *
+  14:../drivers/fsl_gpio.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_gpio.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_gpio.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_gpio.c ****  *
+  18:../drivers/fsl_gpio.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_gpio.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_gpio.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_gpio.c ****  *
+  22:../drivers/fsl_gpio.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_gpio.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_gpio.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_gpio.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_gpio.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_gpio.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_gpio.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_gpio.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_gpio.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_gpio.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_gpio.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_gpio.c ****  */
+  34:../drivers/fsl_gpio.c **** 
+  35:../drivers/fsl_gpio.c **** #include "fsl_gpio.h"
+  36:../drivers/fsl_gpio.c **** 
+  37:../drivers/fsl_gpio.c **** /*******************************************************************************
+  38:../drivers/fsl_gpio.c ****  * Variables
+  39:../drivers/fsl_gpio.c ****  ******************************************************************************/
+  40:../drivers/fsl_gpio.c **** 
+  41:../drivers/fsl_gpio.c **** #if !(defined(FSL_FEATURE_GPIO_HAS_NO_PORTINTERRUPT) && FSL_FEATURE_GPIO_HAS_NO_PORTINTERRUPT)
+  42:../drivers/fsl_gpio.c **** static PORT_Type *const s_portBases[] = PORT_BASE_PTRS;
+  43:../drivers/fsl_gpio.c **** static GPIO_Type *const s_gpioBases[] = GPIO_BASE_PTRS;
+  44:../drivers/fsl_gpio.c **** #endif
+  45:../drivers/fsl_gpio.c **** 
+  46:../drivers/fsl_gpio.c **** #if defined(FSL_FEATURE_SOC_FGPIO_COUNT) && FSL_FEATURE_SOC_FGPIO_COUNT
+  47:../drivers/fsl_gpio.c **** 
+  48:../drivers/fsl_gpio.c **** #if defined(FSL_FEATURE_PCC_HAS_FGPIO_CLOCK_GATE_CONTROL) && FSL_FEATURE_PCC_HAS_FGPIO_CLOCK_GATE_C
+  49:../drivers/fsl_gpio.c **** 
+  50:../drivers/fsl_gpio.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+  51:../drivers/fsl_gpio.c **** /*! @brief Array to map FGPIO instance number to clock name. */
+  52:../drivers/fsl_gpio.c **** static const clock_ip_name_t s_fgpioClockName[] = FGPIO_CLOCKS;
+  53:../drivers/fsl_gpio.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+  54:../drivers/fsl_gpio.c **** 
+  55:../drivers/fsl_gpio.c **** #endif /* FSL_FEATURE_PCC_HAS_FGPIO_CLOCK_GATE_CONTROL */
+  56:../drivers/fsl_gpio.c **** 
+  57:../drivers/fsl_gpio.c **** #endif /* FSL_FEATURE_SOC_FGPIO_COUNT */
+  58:../drivers/fsl_gpio.c **** 
+  59:../drivers/fsl_gpio.c **** /*******************************************************************************
+  60:../drivers/fsl_gpio.c **** * Prototypes
+  61:../drivers/fsl_gpio.c **** ******************************************************************************/
+  62:../drivers/fsl_gpio.c **** #if !(defined(FSL_FEATURE_GPIO_HAS_NO_PORTINTERRUPT) && FSL_FEATURE_GPIO_HAS_NO_PORTINTERRUPT)
+  63:../drivers/fsl_gpio.c **** /*!
+  64:../drivers/fsl_gpio.c **** * @brief Gets the GPIO instance according to the GPIO base
+  65:../drivers/fsl_gpio.c **** *
+  66:../drivers/fsl_gpio.c **** * @param base    GPIO peripheral base pointer(PTA, PTB, PTC, etc.)
+  67:../drivers/fsl_gpio.c **** * @retval GPIO instance
+  68:../drivers/fsl_gpio.c **** */
+  69:../drivers/fsl_gpio.c **** static uint32_t GPIO_GetInstance(GPIO_Type *base);
+  70:../drivers/fsl_gpio.c **** #endif
+  71:../drivers/fsl_gpio.c **** /*******************************************************************************
+  72:../drivers/fsl_gpio.c ****  * Code
+  73:../drivers/fsl_gpio.c ****  ******************************************************************************/
+  74:../drivers/fsl_gpio.c **** #if !(defined(FSL_FEATURE_GPIO_HAS_NO_PORTINTERRUPT) && FSL_FEATURE_GPIO_HAS_NO_PORTINTERRUPT)
+  75:../drivers/fsl_gpio.c **** static uint32_t GPIO_GetInstance(GPIO_Type *base)
+  76:../drivers/fsl_gpio.c **** {
+  77:../drivers/fsl_gpio.c ****     uint32_t instance;
+  78:../drivers/fsl_gpio.c **** 
+  79:../drivers/fsl_gpio.c ****     /* Find the instance index from base address mappings. */
+  80:../drivers/fsl_gpio.c ****     for (instance = 0; instance < ARRAY_SIZE(s_gpioBases); instance++)
+  81:../drivers/fsl_gpio.c ****     {
+  82:../drivers/fsl_gpio.c ****         if (s_gpioBases[instance] == base)
+  83:../drivers/fsl_gpio.c ****         {
+  84:../drivers/fsl_gpio.c ****             break;
+  85:../drivers/fsl_gpio.c ****         }
+  86:../drivers/fsl_gpio.c ****     }
+  87:../drivers/fsl_gpio.c **** 
+  88:../drivers/fsl_gpio.c ****     assert(instance < ARRAY_SIZE(s_gpioBases));
+  89:../drivers/fsl_gpio.c **** 
+  90:../drivers/fsl_gpio.c ****     return instance;
+  91:../drivers/fsl_gpio.c **** }
+  92:../drivers/fsl_gpio.c **** #endif
+  93:../drivers/fsl_gpio.c **** void GPIO_PinInit(GPIO_Type *base, uint32_t pin, const gpio_pin_config_t *config)
+  94:../drivers/fsl_gpio.c **** {
+  28              		.loc 1 94 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+  34 0000 0123     		movs	r3, #1
+  35 0002 03FA01F1 		lsl	r1, r3, r1
+  36              	.LVL1:
+  95:../drivers/fsl_gpio.c ****     assert(config);
+  96:../drivers/fsl_gpio.c **** 
+  97:../drivers/fsl_gpio.c ****     if (config->pinDirection == kGPIO_DigitalInput)
+  37              		.loc 1 97 0
+  38 0006 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  39 0008 23B9     		cbnz	r3, .L2
+  98:../drivers/fsl_gpio.c ****     {
+  99:../drivers/fsl_gpio.c ****         base->PDDR &= ~(1U << pin);
+  40              		.loc 1 99 0
+  41 000a 4369     		ldr	r3, [r0, #20]
+  42 000c 23EA0101 		bic	r1, r3, r1
+  43              	.L6:
+ 100:../drivers/fsl_gpio.c ****     }
+ 101:../drivers/fsl_gpio.c ****     else
+ 102:../drivers/fsl_gpio.c ****     {
+ 103:../drivers/fsl_gpio.c ****         GPIO_WritePinOutput(base, pin, config->outputLogic);
+ 104:../drivers/fsl_gpio.c ****         base->PDDR |= (1U << pin);
+  44              		.loc 1 104 0
+  45 0010 4161     		str	r1, [r0, #20]
+ 105:../drivers/fsl_gpio.c ****     }
+ 106:../drivers/fsl_gpio.c **** }
+  46              		.loc 1 106 0
+  47 0012 7047     		bx	lr
+  48              	.L2:
+  49              	.LVL2:
+  50              	.LBB8:
+  51              	.LBB9:
+  52              	.LBB10:
+  53              		.file 2 "../drivers/fsl_gpio.h"
+   1:../drivers/fsl_gpio.h **** /*
+   2:../drivers/fsl_gpio.h ****  * The Clear BSD License
+   3:../drivers/fsl_gpio.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_gpio.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_gpio.h ****  * All rights reserved.
+   6:../drivers/fsl_gpio.h ****  *
+   7:../drivers/fsl_gpio.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_gpio.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_gpio.h ****  * that the following conditions are met:
+  10:../drivers/fsl_gpio.h ****  *
+  11:../drivers/fsl_gpio.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_gpio.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_gpio.h ****  *
+  14:../drivers/fsl_gpio.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_gpio.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_gpio.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_gpio.h ****  *
+  18:../drivers/fsl_gpio.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_gpio.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_gpio.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_gpio.h ****  *
+  22:../drivers/fsl_gpio.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_gpio.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_gpio.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_gpio.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_gpio.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_gpio.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_gpio.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_gpio.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_gpio.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_gpio.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_gpio.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_gpio.h ****  */
+  34:../drivers/fsl_gpio.h **** 
+  35:../drivers/fsl_gpio.h **** #ifndef _FSL_GPIO_H_
+  36:../drivers/fsl_gpio.h **** #define _FSL_GPIO_H_
+  37:../drivers/fsl_gpio.h **** 
+  38:../drivers/fsl_gpio.h **** #include "fsl_common.h"
+  39:../drivers/fsl_gpio.h **** 
+  40:../drivers/fsl_gpio.h **** /*!
+  41:../drivers/fsl_gpio.h ****  * @addtogroup gpio
+  42:../drivers/fsl_gpio.h ****  * @{
+  43:../drivers/fsl_gpio.h ****  */
+  44:../drivers/fsl_gpio.h **** 
+  45:../drivers/fsl_gpio.h **** /*******************************************************************************
+  46:../drivers/fsl_gpio.h ****  * Definitions
+  47:../drivers/fsl_gpio.h ****  ******************************************************************************/
+  48:../drivers/fsl_gpio.h **** 
+  49:../drivers/fsl_gpio.h **** /*! @name Driver version */
+  50:../drivers/fsl_gpio.h **** /*@{*/
+  51:../drivers/fsl_gpio.h **** /*! @brief GPIO driver version 2.2.1. */
+  52:../drivers/fsl_gpio.h **** #define FSL_GPIO_DRIVER_VERSION (MAKE_VERSION(2, 2, 1))
+  53:../drivers/fsl_gpio.h **** /*@}*/
+  54:../drivers/fsl_gpio.h **** 
+  55:../drivers/fsl_gpio.h **** /*! @brief GPIO direction definition */
+  56:../drivers/fsl_gpio.h **** typedef enum _gpio_pin_direction
+  57:../drivers/fsl_gpio.h **** {
+  58:../drivers/fsl_gpio.h ****     kGPIO_DigitalInput = 0U,  /*!< Set current pin as digital input*/
+  59:../drivers/fsl_gpio.h ****     kGPIO_DigitalOutput = 1U, /*!< Set current pin as digital output*/
+  60:../drivers/fsl_gpio.h **** } gpio_pin_direction_t;
+  61:../drivers/fsl_gpio.h **** 
+  62:../drivers/fsl_gpio.h **** #if defined(FSL_FEATURE_GPIO_HAS_ATTRIBUTE_CHECKER) && FSL_FEATURE_GPIO_HAS_ATTRIBUTE_CHECKER
+  63:../drivers/fsl_gpio.h **** /*! @brief GPIO checker attribute */
+  64:../drivers/fsl_gpio.h **** typedef enum _gpio_checker_attribute
+  65:../drivers/fsl_gpio.h **** {
+  66:../drivers/fsl_gpio.h ****     kGPIO_UsernonsecureRWUsersecureRWPrivilegedsecureRW =
+  67:../drivers/fsl_gpio.h ****         0x00U, /*!< User nonsecure:Read+Write; User Secure:Read+Write; Privileged Secure:Read+Write
+  68:../drivers/fsl_gpio.h ****     kGPIO_UsernonsecureRUsersecureRWPrivilegedsecureRW =
+  69:../drivers/fsl_gpio.h ****         0x01U, /*!< User nonsecure:Read;       User Secure:Read+Write; Privileged Secure:Read+Write
+  70:../drivers/fsl_gpio.h ****     kGPIO_UsernonsecureNUsersecureRWPrivilegedsecureRW =
+  71:../drivers/fsl_gpio.h ****         0x02U, /*!< User nonsecure:None;       User Secure:Read+Write; Privileged Secure:Read+Write
+  72:../drivers/fsl_gpio.h ****     kGPIO_UsernonsecureRUsersecureRPrivilegedsecureRW =
+  73:../drivers/fsl_gpio.h ****         0x03U, /*!< User nonsecure:Read;       User Secure:Read;       Privileged Secure:Read+Write
+  74:../drivers/fsl_gpio.h ****     kGPIO_UsernonsecureNUsersecureRPrivilegedsecureRW =
+  75:../drivers/fsl_gpio.h ****         0x04U, /*!< User nonsecure:None;       User Secure:Read;       Privileged Secure:Read+Write
+  76:../drivers/fsl_gpio.h ****     kGPIO_UsernonsecureNUsersecureNPrivilegedsecureRW =
+  77:../drivers/fsl_gpio.h ****         0x05U, /*!< User nonsecure:None;       User Secure:None;       Privileged Secure:Read+Write
+  78:../drivers/fsl_gpio.h ****     kGPIO_UsernonsecureNUsersecureNPrivilegedsecureR =
+  79:../drivers/fsl_gpio.h ****         0x06U, /*!< User nonsecure:None;       User Secure:None;       Privileged Secure:Read */
+  80:../drivers/fsl_gpio.h ****     kGPIO_UsernonsecureNUsersecureNPrivilegedsecureN =
+  81:../drivers/fsl_gpio.h ****         0x07U, /*!< User nonsecure:None;       User Secure:None;       Privileged Secure:None */
+  82:../drivers/fsl_gpio.h ****     kGPIO_IgnoreAttributeCheck = 0x80U, /*!< Ignores the attribute check */
+  83:../drivers/fsl_gpio.h **** } gpio_checker_attribute_t;
+  84:../drivers/fsl_gpio.h **** #endif
+  85:../drivers/fsl_gpio.h **** 
+  86:../drivers/fsl_gpio.h **** /*!
+  87:../drivers/fsl_gpio.h ****  * @brief The GPIO pin configuration structure.
+  88:../drivers/fsl_gpio.h ****  *
+  89:../drivers/fsl_gpio.h ****  * Each pin can only be configured as either an output pin or an input pin at a time.
+  90:../drivers/fsl_gpio.h ****  * If configured as an input pin, leave the outputConfig unused.
+  91:../drivers/fsl_gpio.h ****  * Note that in some use cases, the corresponding port property should be configured in advance
+  92:../drivers/fsl_gpio.h ****  *        with the PORT_SetPinConfig().
+  93:../drivers/fsl_gpio.h ****  */
+  94:../drivers/fsl_gpio.h **** typedef struct _gpio_pin_config
+  95:../drivers/fsl_gpio.h **** {
+  96:../drivers/fsl_gpio.h ****     gpio_pin_direction_t pinDirection; /*!< GPIO direction, input or output */
+  97:../drivers/fsl_gpio.h ****     /* Output configurations; ignore if configured as an input pin */
+  98:../drivers/fsl_gpio.h ****     uint8_t outputLogic; /*!< Set a default output logic, which has no use in input */
+  99:../drivers/fsl_gpio.h **** } gpio_pin_config_t;
+ 100:../drivers/fsl_gpio.h **** 
+ 101:../drivers/fsl_gpio.h **** /*! @} */
+ 102:../drivers/fsl_gpio.h **** 
+ 103:../drivers/fsl_gpio.h **** /*******************************************************************************
+ 104:../drivers/fsl_gpio.h ****  * API
+ 105:../drivers/fsl_gpio.h ****  ******************************************************************************/
+ 106:../drivers/fsl_gpio.h **** 
+ 107:../drivers/fsl_gpio.h **** #if defined(__cplusplus)
+ 108:../drivers/fsl_gpio.h **** extern "C" {
+ 109:../drivers/fsl_gpio.h **** #endif
+ 110:../drivers/fsl_gpio.h **** 
+ 111:../drivers/fsl_gpio.h **** /*!
+ 112:../drivers/fsl_gpio.h ****  * @addtogroup gpio_driver
+ 113:../drivers/fsl_gpio.h ****  * @{
+ 114:../drivers/fsl_gpio.h ****  */
+ 115:../drivers/fsl_gpio.h **** 
+ 116:../drivers/fsl_gpio.h **** /*! @name GPIO Configuration */
+ 117:../drivers/fsl_gpio.h **** /*@{*/
+ 118:../drivers/fsl_gpio.h **** 
+ 119:../drivers/fsl_gpio.h **** /*!
+ 120:../drivers/fsl_gpio.h ****  * @brief Initializes a GPIO pin used by the board.
+ 121:../drivers/fsl_gpio.h ****  *
+ 122:../drivers/fsl_gpio.h ****  * To initialize the GPIO, define a pin configuration, as either input or output, in the user file.
+ 123:../drivers/fsl_gpio.h ****  * Then, call the GPIO_PinInit() function.
+ 124:../drivers/fsl_gpio.h ****  *
+ 125:../drivers/fsl_gpio.h ****  * This is an example to define an input pin or an output pin configuration.
+ 126:../drivers/fsl_gpio.h ****  * @code
+ 127:../drivers/fsl_gpio.h ****  * // Define a digital input pin configuration,
+ 128:../drivers/fsl_gpio.h ****  * gpio_pin_config_t config =
+ 129:../drivers/fsl_gpio.h ****  * {
+ 130:../drivers/fsl_gpio.h ****  *   kGPIO_DigitalInput,
+ 131:../drivers/fsl_gpio.h ****  *   0,
+ 132:../drivers/fsl_gpio.h ****  * }
+ 133:../drivers/fsl_gpio.h ****  * //Define a digital output pin configuration,
+ 134:../drivers/fsl_gpio.h ****  * gpio_pin_config_t config =
+ 135:../drivers/fsl_gpio.h ****  * {
+ 136:../drivers/fsl_gpio.h ****  *   kGPIO_DigitalOutput,
+ 137:../drivers/fsl_gpio.h ****  *   0,
+ 138:../drivers/fsl_gpio.h ****  * }
+ 139:../drivers/fsl_gpio.h ****  * @endcode
+ 140:../drivers/fsl_gpio.h ****  *
+ 141:../drivers/fsl_gpio.h ****  * @param base   GPIO peripheral base pointer (GPIOA, GPIOB, GPIOC, and so on.)
+ 142:../drivers/fsl_gpio.h ****  * @param pin    GPIO port pin number
+ 143:../drivers/fsl_gpio.h ****  * @param config GPIO pin configuration pointer
+ 144:../drivers/fsl_gpio.h ****  */
+ 145:../drivers/fsl_gpio.h **** void GPIO_PinInit(GPIO_Type *base, uint32_t pin, const gpio_pin_config_t *config);
+ 146:../drivers/fsl_gpio.h **** 
+ 147:../drivers/fsl_gpio.h **** /*@}*/
+ 148:../drivers/fsl_gpio.h **** 
+ 149:../drivers/fsl_gpio.h **** /*! @name GPIO Output Operations */
+ 150:../drivers/fsl_gpio.h **** /*@{*/
+ 151:../drivers/fsl_gpio.h **** 
+ 152:../drivers/fsl_gpio.h **** /*!
+ 153:../drivers/fsl_gpio.h ****  * @brief Sets the output level of the multiple GPIO pins to the logic 1 or 0.
+ 154:../drivers/fsl_gpio.h ****  *
+ 155:../drivers/fsl_gpio.h ****  * @param base    GPIO peripheral base pointer (GPIOA, GPIOB, GPIOC, and so on.)
+ 156:../drivers/fsl_gpio.h ****  * @param pin     GPIO pin number
+ 157:../drivers/fsl_gpio.h ****  * @param output  GPIO pin output logic level.
+ 158:../drivers/fsl_gpio.h ****  *        - 0: corresponding pin output low-logic level.
+ 159:../drivers/fsl_gpio.h ****  *        - 1: corresponding pin output high-logic level.
+ 160:../drivers/fsl_gpio.h ****  */
+ 161:../drivers/fsl_gpio.h **** static inline void GPIO_PinWrite(GPIO_Type *base, uint32_t pin, uint8_t output)
+ 162:../drivers/fsl_gpio.h **** {
+ 163:../drivers/fsl_gpio.h ****     if (output == 0U)
+  54              		.loc 2 163 0
+  55 0014 5378     		ldrb	r3, [r2, #1]	@ zero_extendqisi2
+  56 0016 1BB9     		cbnz	r3, .L4
+ 164:../drivers/fsl_gpio.h ****     {
+ 165:../drivers/fsl_gpio.h ****         base->PCOR = 1U << pin;
+  57              		.loc 2 165 0
+  58 0018 8160     		str	r1, [r0, #8]
+  59              	.LVL3:
+  60              	.L5:
+  61              	.LBE10:
+  62              	.LBE9:
+  63              	.LBE8:
+ 104:../drivers/fsl_gpio.c ****     }
+  64              		.loc 1 104 0
+  65 001a 4369     		ldr	r3, [r0, #20]
+  66 001c 1943     		orrs	r1, r1, r3
+  67 001e F7E7     		b	.L6
+  68              	.LVL4:
+  69              	.L4:
+  70              	.LBB13:
+  71              	.LBB12:
+  72              	.LBB11:
+ 166:../drivers/fsl_gpio.h ****     }
+ 167:../drivers/fsl_gpio.h ****     else
+ 168:../drivers/fsl_gpio.h ****     {
+ 169:../drivers/fsl_gpio.h ****         base->PSOR = 1U << pin;
+  73              		.loc 2 169 0
+  74 0020 4160     		str	r1, [r0, #4]
+  75              	.LVL5:
+  76 0022 FAE7     		b	.L5
+  77              	.LBE11:
+  78              	.LBE12:
+  79              	.LBE13:
+  80              		.cfi_endproc
+  81              	.LFE160:
+  83              		.section	.text.GPIO_PortGetInterruptFlags,"ax",%progbits
+  84              		.align	1
+  85              		.global	GPIO_PortGetInterruptFlags
+  86              		.syntax unified
+  87              		.thumb
+  88              		.thumb_func
+  89              		.fpu fpv4-sp-d16
+  91              	GPIO_PortGetInterruptFlags:
+  92              	.LFB161:
+ 107:../drivers/fsl_gpio.c **** 
+ 108:../drivers/fsl_gpio.c **** #if !(defined(FSL_FEATURE_GPIO_HAS_NO_PORTINTERRUPT) && FSL_FEATURE_GPIO_HAS_NO_PORTINTERRUPT)
+ 109:../drivers/fsl_gpio.c **** uint32_t GPIO_PortGetInterruptFlags(GPIO_Type *base)
+ 110:../drivers/fsl_gpio.c **** {
+  93              		.loc 1 110 0
+  94              		.cfi_startproc
+  95              		@ args = 0, pretend = 0, frame = 0
+  96              		@ frame_needed = 0, uses_anonymous_args = 0
+  97              		@ link register save eliminated.
+  98              	.LVL6:
+  99              	.LBB16:
+ 100              	.LBB17:
+  82:../drivers/fsl_gpio.c ****         {
+ 101              		.loc 1 82 0
+ 102 0000 0F4B     		ldr	r3, .L14
+ 103 0002 9842     		cmp	r0, r3
+ 104 0004 13D0     		beq	.L9
+ 105              	.LVL7:
+ 106 0006 4033     		adds	r3, r3, #64
+ 107 0008 9842     		cmp	r0, r3
+ 108 000a 12D0     		beq	.L10
+ 109              	.LVL8:
+ 110 000c 4033     		adds	r3, r3, #64
+ 111 000e 9842     		cmp	r0, r3
+ 112 0010 11D0     		beq	.L11
+ 113              	.LVL9:
+ 114 0012 4033     		adds	r3, r3, #64
+ 115 0014 9842     		cmp	r0, r3
+ 116 0016 10D0     		beq	.L12
+ 117              	.LVL10:
+  80:../drivers/fsl_gpio.c ****     {
+ 118              		.loc 1 80 0
+ 119 0018 4033     		adds	r3, r3, #64
+ 120 001a 9842     		cmp	r0, r3
+ 121 001c 0CBF     		ite	eq
+ 122 001e 0420     		moveq	r0, #4
+ 123 0020 0520     		movne	r0, #5
+ 124              	.LVL11:
+ 125              	.L8:
+ 126              	.LBE17:
+ 127              	.LBE16:
+ 111:../drivers/fsl_gpio.c ****     uint8_t instance;
+ 112:../drivers/fsl_gpio.c ****     PORT_Type *portBase;
+ 113:../drivers/fsl_gpio.c ****     instance = GPIO_GetInstance(base);
+ 114:../drivers/fsl_gpio.c ****     portBase = s_portBases[instance];
+ 128              		.loc 1 114 0
+ 129 0022 084B     		ldr	r3, .L14+4
+ 130 0024 53F82030 		ldr	r3, [r3, r0, lsl #2]
+ 131              	.LVL12:
+ 115:../drivers/fsl_gpio.c ****     return portBase->ISFR;
+ 132              		.loc 1 115 0
+ 133 0028 D3F8A000 		ldr	r0, [r3, #160]
+ 116:../drivers/fsl_gpio.c **** }
+ 134              		.loc 1 116 0
+ 135 002c 7047     		bx	lr
+ 136              	.LVL13:
+ 137              	.L9:
+ 138              	.LBB19:
+ 139              	.LBB18:
+  80:../drivers/fsl_gpio.c ****     {
+ 140              		.loc 1 80 0
+ 141 002e 0020     		movs	r0, #0
+ 142              	.LVL14:
+ 143 0030 F7E7     		b	.L8
+ 144              	.LVL15:
+ 145              	.L10:
+ 146 0032 0120     		movs	r0, #1
+ 147              	.LVL16:
+ 148 0034 F5E7     		b	.L8
+ 149              	.LVL17:
+ 150              	.L11:
+ 151 0036 0220     		movs	r0, #2
+ 152              	.LVL18:
+ 153 0038 F3E7     		b	.L8
+ 154              	.LVL19:
+ 155              	.L12:
+ 156 003a 0320     		movs	r0, #3
+ 157              	.LVL20:
+ 158 003c F1E7     		b	.L8
+ 159              	.L15:
+ 160 003e 00BF     		.align	2
+ 161              	.L14:
+ 162 0040 00F00F40 		.word	1074786304
+ 163 0044 00000000 		.word	.LANCHOR0
+ 164              	.LBE18:
+ 165              	.LBE19:
+ 166              		.cfi_endproc
+ 167              	.LFE161:
+ 169              		.section	.text.GPIO_PortClearInterruptFlags,"ax",%progbits
+ 170              		.align	1
+ 171              		.global	GPIO_PortClearInterruptFlags
+ 172              		.syntax unified
+ 173              		.thumb
+ 174              		.thumb_func
+ 175              		.fpu fpv4-sp-d16
+ 177              	GPIO_PortClearInterruptFlags:
+ 178              	.LFB162:
+ 117:../drivers/fsl_gpio.c **** 
+ 118:../drivers/fsl_gpio.c **** void GPIO_PortClearInterruptFlags(GPIO_Type *base, uint32_t mask)
+ 119:../drivers/fsl_gpio.c **** {
+ 179              		.loc 1 119 0
+ 180              		.cfi_startproc
+ 181              		@ args = 0, pretend = 0, frame = 0
+ 182              		@ frame_needed = 0, uses_anonymous_args = 0
+ 183              		@ link register save eliminated.
+ 184              	.LVL21:
+ 185              	.LBB22:
+ 186              	.LBB23:
+  82:../drivers/fsl_gpio.c ****         {
+ 187              		.loc 1 82 0
+ 188 0000 0F4B     		ldr	r3, .L23
+ 189 0002 9842     		cmp	r0, r3
+ 190 0004 13D0     		beq	.L18
+ 191              	.LVL22:
+ 192 0006 4033     		adds	r3, r3, #64
+ 193 0008 9842     		cmp	r0, r3
+ 194 000a 12D0     		beq	.L19
+ 195              	.LVL23:
+ 196 000c 4033     		adds	r3, r3, #64
+ 197 000e 9842     		cmp	r0, r3
+ 198 0010 11D0     		beq	.L20
+ 199              	.LVL24:
+ 200 0012 4033     		adds	r3, r3, #64
+ 201 0014 9842     		cmp	r0, r3
+ 202 0016 10D0     		beq	.L21
+ 203              	.LVL25:
+  80:../drivers/fsl_gpio.c ****     {
+ 204              		.loc 1 80 0
+ 205 0018 4033     		adds	r3, r3, #64
+ 206 001a 9842     		cmp	r0, r3
+ 207 001c 0CBF     		ite	eq
+ 208 001e 0420     		moveq	r0, #4
+ 209 0020 0520     		movne	r0, #5
+ 210              	.LVL26:
+ 211              	.L17:
+ 212              	.LBE23:
+ 213              	.LBE22:
+ 120:../drivers/fsl_gpio.c ****     uint8_t instance;
+ 121:../drivers/fsl_gpio.c ****     PORT_Type *portBase;
+ 122:../drivers/fsl_gpio.c ****     instance = GPIO_GetInstance(base);
+ 123:../drivers/fsl_gpio.c ****     portBase = s_portBases[instance];
+ 214              		.loc 1 123 0
+ 215 0022 084B     		ldr	r3, .L23+4
+ 216 0024 53F82030 		ldr	r3, [r3, r0, lsl #2]
+ 217              	.LVL27:
+ 124:../drivers/fsl_gpio.c ****     portBase->ISFR = mask;
+ 218              		.loc 1 124 0
+ 219 0028 C3F8A010 		str	r1, [r3, #160]
+ 125:../drivers/fsl_gpio.c **** }
+ 220              		.loc 1 125 0
+ 221 002c 7047     		bx	lr
+ 222              	.LVL28:
+ 223              	.L18:
+ 224              	.LBB25:
+ 225              	.LBB24:
+  80:../drivers/fsl_gpio.c ****     {
+ 226              		.loc 1 80 0
+ 227 002e 0020     		movs	r0, #0
+ 228              	.LVL29:
+ 229 0030 F7E7     		b	.L17
+ 230              	.LVL30:
+ 231              	.L19:
+ 232 0032 0120     		movs	r0, #1
+ 233              	.LVL31:
+ 234 0034 F5E7     		b	.L17
+ 235              	.LVL32:
+ 236              	.L20:
+ 237 0036 0220     		movs	r0, #2
+ 238              	.LVL33:
+ 239 0038 F3E7     		b	.L17
+ 240              	.LVL34:
+ 241              	.L21:
+ 242 003a 0320     		movs	r0, #3
+ 243              	.LVL35:
+ 244 003c F1E7     		b	.L17
+ 245              	.L24:
+ 246 003e 00BF     		.align	2
+ 247              	.L23:
+ 248 0040 00F00F40 		.word	1074786304
+ 249 0044 00000000 		.word	.LANCHOR0
+ 250              	.LBE24:
+ 251              	.LBE25:
+ 252              		.cfi_endproc
+ 253              	.LFE162:
+ 255              		.section	.rodata.s_portBases,"a",%progbits
+ 256              		.align	2
+ 257              		.set	.LANCHOR0,. + 0
+ 260              	s_portBases:
+ 261 0000 00900440 		.word	1074040832
+ 262 0004 00A00440 		.word	1074044928
+ 263 0008 00B00440 		.word	1074049024
+ 264 000c 00C00440 		.word	1074053120
+ 265 0010 00D00440 		.word	1074057216
+ 266              		.text
+ 267              	.Letext0:
+ 268              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 269              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 270              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 271              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 272              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 273              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 274              		.file 9 "../CMSIS/core_cm4.h"
+ 275              		.file 10 "../CMSIS/system_MK64F12.h"
+ 276              		.file 11 "../CMSIS/MK64F12.h"
+ 277              		.file 12 "../drivers/fsl_clock.h"
+ 278              		.file 13 "../drivers/fsl_common.h"

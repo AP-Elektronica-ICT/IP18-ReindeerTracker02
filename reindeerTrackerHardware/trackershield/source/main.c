@@ -289,6 +289,7 @@ int main(void) {
 					GPS_bufPtr = 0;
 					GPS_strReady = 0;
 				}
+
 			}
 			printf("Parsed latitude: %s\r\n", reindeerData.latitude);
 			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
