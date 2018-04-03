@@ -1,0 +1,2721 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_str.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.ScanIgnoreWhiteSpace,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	ScanIgnoreWhiteSpace:
+  25              	.LFB147:
+  26              		.file 1 "../utilities/fsl_str.c"
+   1:../utilities/fsl_str.c **** /*
+   2:../utilities/fsl_str.c ****  * The Clear BSD License
+   3:../utilities/fsl_str.c ****  * Copyright 2017 NXP
+   4:../utilities/fsl_str.c ****  * All rights reserved.
+   5:../utilities/fsl_str.c ****  *
+   6:../utilities/fsl_str.c ****  *
+   7:../utilities/fsl_str.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../utilities/fsl_str.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../utilities/fsl_str.c ****  * that the following conditions are met:
+  10:../utilities/fsl_str.c ****  *
+  11:../utilities/fsl_str.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../utilities/fsl_str.c ****  *   of conditions and the following disclaimer.
+  13:../utilities/fsl_str.c ****  *
+  14:../utilities/fsl_str.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../utilities/fsl_str.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../utilities/fsl_str.c ****  *   other materials provided with the distribution.
+  17:../utilities/fsl_str.c ****  *
+  18:../utilities/fsl_str.c ****  * o Neither the name of Freescale Semiconductor, Inc. nor the names of its
+  19:../utilities/fsl_str.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../utilities/fsl_str.c ****  *   software without specific prior written permission.
+  21:../utilities/fsl_str.c ****  *
+  22:../utilities/fsl_str.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../utilities/fsl_str.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../utilities/fsl_str.c ****  * ANY EPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../utilities/fsl_str.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../utilities/fsl_str.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../utilities/fsl_str.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../utilities/fsl_str.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../utilities/fsl_str.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../utilities/fsl_str.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../utilities/fsl_str.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../utilities/fsl_str.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../utilities/fsl_str.c ****  *
+  34:../utilities/fsl_str.c ****  */
+  35:../utilities/fsl_str.c **** #include <math.h>
+  36:../utilities/fsl_str.c **** #include <stdarg.h>
+  37:../utilities/fsl_str.c **** #include <stdlib.h>
+  38:../utilities/fsl_str.c **** #include "fsl_str.h"
+  39:../utilities/fsl_str.c **** #include "fsl_debug_console_conf.h"
+  40:../utilities/fsl_str.c **** 
+  41:../utilities/fsl_str.c **** /*******************************************************************************
+  42:../utilities/fsl_str.c ****  * Definitions
+  43:../utilities/fsl_str.c ****  ******************************************************************************/
+  44:../utilities/fsl_str.c **** 
+  45:../utilities/fsl_str.c **** /*! @brief The overflow value.*/
+  46:../utilities/fsl_str.c **** #ifndef HUGE_VAL
+  47:../utilities/fsl_str.c **** #define HUGE_VAL (99.e99)
+  48:../utilities/fsl_str.c **** #endif /* HUGE_VAL */
+  49:../utilities/fsl_str.c **** 
+  50:../utilities/fsl_str.c **** #if SCANF_FLOAT_ENABLE
+  51:../utilities/fsl_str.c **** static double fnum = 0.0;
+  52:../utilities/fsl_str.c **** #endif /* SCANF_FLOAT_ENABLE */
+  53:../utilities/fsl_str.c **** 
+  54:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+  55:../utilities/fsl_str.c **** /*! @brief Specification modifier flags for printf. */
+  56:../utilities/fsl_str.c **** enum _debugconsole_printf_flag
+  57:../utilities/fsl_str.c **** {
+  58:../utilities/fsl_str.c ****     kPRINTF_Minus = 0x01U,              /*!< Minus FLag. */
+  59:../utilities/fsl_str.c ****     kPRINTF_Plus = 0x02U,               /*!< Plus Flag. */
+  60:../utilities/fsl_str.c ****     kPRINTF_Space = 0x04U,              /*!< Space Flag. */
+  61:../utilities/fsl_str.c ****     kPRINTF_Zero = 0x08U,               /*!< Zero Flag. */
+  62:../utilities/fsl_str.c ****     kPRINTF_Pound = 0x10U,              /*!< Pound Flag. */
+  63:../utilities/fsl_str.c ****     kPRINTF_LengthChar = 0x20U,         /*!< Length: Char Flag. */
+  64:../utilities/fsl_str.c ****     kPRINTF_LengthShortInt = 0x40U,     /*!< Length: Short Int Flag. */
+  65:../utilities/fsl_str.c ****     kPRINTF_LengthLongInt = 0x80U,      /*!< Length: Long Int Flag. */
+  66:../utilities/fsl_str.c ****     kPRINTF_LengthLongLongInt = 0x100U, /*!< Length: Long Long Int Flag. */
+  67:../utilities/fsl_str.c **** };
+  68:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+  69:../utilities/fsl_str.c **** 
+  70:../utilities/fsl_str.c **** /*! @brief Specification modifier flags for scanf. */
+  71:../utilities/fsl_str.c **** enum _debugconsole_scanf_flag
+  72:../utilities/fsl_str.c **** {
+  73:../utilities/fsl_str.c ****     kSCANF_Suppress = 0x2U,      /*!< Suppress Flag. */
+  74:../utilities/fsl_str.c ****     kSCANF_DestMask = 0x7cU,     /*!< Destination Mask. */
+  75:../utilities/fsl_str.c ****     kSCANF_DestChar = 0x4U,      /*!< Destination Char Flag. */
+  76:../utilities/fsl_str.c ****     kSCANF_DestString = 0x8U,    /*!< Destination String FLag. */
+  77:../utilities/fsl_str.c ****     kSCANF_DestSet = 0x10U,      /*!< Destination Set Flag. */
+  78:../utilities/fsl_str.c ****     kSCANF_DestInt = 0x20U,      /*!< Destination Int Flag. */
+  79:../utilities/fsl_str.c ****     kSCANF_DestFloat = 0x30U,    /*!< Destination Float Flag. */
+  80:../utilities/fsl_str.c ****     kSCANF_LengthMask = 0x1f00U, /*!< Length Mask Flag. */
+  81:../utilities/fsl_str.c **** #if SCANF_ADVANCED_ENABLE
+  82:../utilities/fsl_str.c ****     kSCANF_LengthChar = 0x100U,        /*!< Length Char Flag. */
+  83:../utilities/fsl_str.c ****     kSCANF_LengthShortInt = 0x200U,    /*!< Length ShortInt Flag. */
+  84:../utilities/fsl_str.c ****     kSCANF_LengthLongInt = 0x400U,     /*!< Length LongInt Flag. */
+  85:../utilities/fsl_str.c ****     kSCANF_LengthLongLongInt = 0x800U, /*!< Length LongLongInt Flag. */
+  86:../utilities/fsl_str.c **** #endif                                 /* SCANF_ADVANCED_ENABLE */
+  87:../utilities/fsl_str.c **** #if PRINTF_FLOAT_ENABLE
+  88:../utilities/fsl_str.c ****     kSCANF_LengthLongLongDouble = 0x1000U, /*!< Length LongLongDuoble Flag. */
+  89:../utilities/fsl_str.c **** #endif                                     /*PRINTF_FLOAT_ENABLE */
+  90:../utilities/fsl_str.c ****     kSCANF_TypeSinged = 0x2000U,           /*!< TypeSinged Flag. */
+  91:../utilities/fsl_str.c **** };
+  92:../utilities/fsl_str.c **** 
+  93:../utilities/fsl_str.c **** /*! @brief Keil: suppress ellipsis warning in va_arg usage below. */
+  94:../utilities/fsl_str.c **** #if defined(__CC_ARM)
+  95:../utilities/fsl_str.c **** #pragma diag_suppress 1256
+  96:../utilities/fsl_str.c **** #endif /* __CC_ARM */
+  97:../utilities/fsl_str.c **** 
+  98:../utilities/fsl_str.c **** /*******************************************************************************
+  99:../utilities/fsl_str.c ****  * Prototypes
+ 100:../utilities/fsl_str.c ****  ******************************************************************************/
+ 101:../utilities/fsl_str.c **** /*!
+ 102:../utilities/fsl_str.c ****  * @brief Scanline function which ignores white spaces.
+ 103:../utilities/fsl_str.c ****  *
+ 104:../utilities/fsl_str.c ****  * @param[in]   s The address of the string pointer to update.
+ 105:../utilities/fsl_str.c ****  * @return      String without white spaces.
+ 106:../utilities/fsl_str.c ****  */
+ 107:../utilities/fsl_str.c **** static uint32_t ScanIgnoreWhiteSpace(const char **s);
+ 108:../utilities/fsl_str.c **** 
+ 109:../utilities/fsl_str.c **** /*!
+ 110:../utilities/fsl_str.c ****  * @brief Converts a radix number to a string and return its length.
+ 111:../utilities/fsl_str.c ****  *
+ 112:../utilities/fsl_str.c ****  * @param[in] numstr    Converted string of the number.
+ 113:../utilities/fsl_str.c ****  * @param[in] nump      Pointer to the number.
+ 114:../utilities/fsl_str.c ****  * @param[in] neg       Polarity of the number.
+ 115:../utilities/fsl_str.c ****  * @param[in] radix     The radix to be converted to.
+ 116:../utilities/fsl_str.c ****  * @param[in] use_caps  Used to identify %x/X output format.
+ 117:../utilities/fsl_str.c **** 
+ 118:../utilities/fsl_str.c ****  * @return Length of the converted string.
+ 119:../utilities/fsl_str.c ****  */
+ 120:../utilities/fsl_str.c **** static int32_t ConvertRadixNumToString(char *numstr, void *nump, int32_t neg, int32_t radix, bool u
+ 121:../utilities/fsl_str.c **** 
+ 122:../utilities/fsl_str.c **** #if PRINTF_FLOAT_ENABLE
+ 123:../utilities/fsl_str.c **** /*!
+ 124:../utilities/fsl_str.c ****  * @brief Converts a floating radix number to a string and return its length.
+ 125:../utilities/fsl_str.c ****  *
+ 126:../utilities/fsl_str.c ****  * @param[in] numstr            Converted string of the number.
+ 127:../utilities/fsl_str.c ****  * @param[in] nump              Pointer to the number.
+ 128:../utilities/fsl_str.c ****  * @param[in] radix             The radix to be converted to.
+ 129:../utilities/fsl_str.c ****  * @param[in] precision_width   Specify the precision width.
+ 130:../utilities/fsl_str.c **** 
+ 131:../utilities/fsl_str.c ****  * @return Length of the converted string.
+ 132:../utilities/fsl_str.c ****  */
+ 133:../utilities/fsl_str.c **** static int32_t ConvertFloatRadixNumToString(char *numstr, void *nump, int32_t radix, uint32_t preci
+ 134:../utilities/fsl_str.c **** #endif /* PRINTF_FLOAT_ENABLE */
+ 135:../utilities/fsl_str.c **** 
+ 136:../utilities/fsl_str.c **** /*!
+ 137:../utilities/fsl_str.c **** *
+ 138:../utilities/fsl_str.c ****  */
+ 139:../utilities/fsl_str.c **** double modf(double input_dbl, double *intpart_ptr);
+ 140:../utilities/fsl_str.c **** 
+ 141:../utilities/fsl_str.c **** /*************Code for process formatted data*******************************/
+ 142:../utilities/fsl_str.c **** 
+ 143:../utilities/fsl_str.c **** static uint32_t ScanIgnoreWhiteSpace(const char **s)
+ 144:../utilities/fsl_str.c **** {
+  27              		.loc 1 144 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  32              	.LVL0:
+ 145:../utilities/fsl_str.c ****     uint8_t count = 0;
+ 146:../utilities/fsl_str.c ****     uint8_t c;
+ 147:../utilities/fsl_str.c **** 
+ 148:../utilities/fsl_str.c ****     c = **s;
+  33              		.loc 1 148 0
+  34 0000 0368     		ldr	r3, [r0]
+  35 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  36              	.LVL1:
+ 149:../utilities/fsl_str.c ****     while ((c == ' ') || (c == '\t') || (c == '\n') || (c == '\r') || (c == '\v') || (c == '\f'))
+  37              		.loc 1 149 0
+  38 0004 0022     		movs	r2, #0
+  39              	.LVL2:
+  40              	.L2:
+  41 0006 202B     		cmp	r3, #32
+  42 0008 04D0     		beq	.L3
+  43              		.loc 1 149 0 is_stmt 0 discriminator 1
+  44 000a 093B     		subs	r3, r3, #9
+  45              	.LVL3:
+  46 000c 042B     		cmp	r3, #4
+  47 000e 01D9     		bls	.L3
+ 150:../utilities/fsl_str.c ****     {
+ 151:../utilities/fsl_str.c ****         count++;
+ 152:../utilities/fsl_str.c ****         (*s)++;
+ 153:../utilities/fsl_str.c ****         c = **s;
+ 154:../utilities/fsl_str.c ****     }
+ 155:../utilities/fsl_str.c ****     return count;
+ 156:../utilities/fsl_str.c **** }
+  48              		.loc 1 156 0 is_stmt 1
+  49 0010 D0B2     		uxtb	r0, r2
+  50              	.LVL4:
+  51 0012 7047     		bx	lr
+  52              	.LVL5:
+  53              	.L3:
+ 152:../utilities/fsl_str.c ****         c = **s;
+  54              		.loc 1 152 0
+  55 0014 0368     		ldr	r3, [r0]
+  56 0016 591C     		adds	r1, r3, #1
+  57 0018 0160     		str	r1, [r0]
+ 153:../utilities/fsl_str.c ****     }
+  58              		.loc 1 153 0
+  59 001a 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+  60              	.LVL6:
+  61 001c 0132     		adds	r2, r2, #1
+  62              	.LVL7:
+  63 001e F2E7     		b	.L2
+  64              		.cfi_endproc
+  65              	.LFE147:
+  67              		.section	.text.StrFormatPrintf,"ax",%progbits
+  68              		.align	1
+  69              		.global	StrFormatPrintf
+  70              		.syntax unified
+  71              		.thumb
+  72              		.thumb_func
+  73              		.fpu fpv4-sp-d16
+  75              	StrFormatPrintf:
+  76              	.LFB149:
+ 157:../utilities/fsl_str.c **** 
+ 158:../utilities/fsl_str.c **** static int32_t ConvertRadixNumToString(char *numstr, void *nump, int32_t neg, int32_t radix, bool u
+ 159:../utilities/fsl_str.c **** {
+ 160:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 161:../utilities/fsl_str.c ****     int64_t a;
+ 162:../utilities/fsl_str.c ****     int64_t b;
+ 163:../utilities/fsl_str.c ****     int64_t c;
+ 164:../utilities/fsl_str.c **** 
+ 165:../utilities/fsl_str.c ****     uint64_t ua;
+ 166:../utilities/fsl_str.c ****     uint64_t ub;
+ 167:../utilities/fsl_str.c ****     uint64_t uc;
+ 168:../utilities/fsl_str.c **** #else
+ 169:../utilities/fsl_str.c ****     int32_t a;
+ 170:../utilities/fsl_str.c ****     int32_t b;
+ 171:../utilities/fsl_str.c ****     int32_t c;
+ 172:../utilities/fsl_str.c **** 
+ 173:../utilities/fsl_str.c ****     uint32_t ua;
+ 174:../utilities/fsl_str.c ****     uint32_t ub;
+ 175:../utilities/fsl_str.c ****     uint32_t uc;
+ 176:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 177:../utilities/fsl_str.c **** 
+ 178:../utilities/fsl_str.c ****     int32_t nlen;
+ 179:../utilities/fsl_str.c ****     char *nstrp;
+ 180:../utilities/fsl_str.c **** 
+ 181:../utilities/fsl_str.c ****     nlen = 0;
+ 182:../utilities/fsl_str.c ****     nstrp = numstr;
+ 183:../utilities/fsl_str.c ****     *nstrp++ = '\0';
+ 184:../utilities/fsl_str.c **** 
+ 185:../utilities/fsl_str.c ****     if (neg)
+ 186:../utilities/fsl_str.c ****     {
+ 187:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 188:../utilities/fsl_str.c ****         a = *(int64_t *)nump;
+ 189:../utilities/fsl_str.c **** #else
+ 190:../utilities/fsl_str.c ****         a = *(int32_t *)nump;
+ 191:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 192:../utilities/fsl_str.c ****         if (a == 0)
+ 193:../utilities/fsl_str.c ****         {
+ 194:../utilities/fsl_str.c ****             *nstrp = '0';
+ 195:../utilities/fsl_str.c ****             ++nlen;
+ 196:../utilities/fsl_str.c ****             return nlen;
+ 197:../utilities/fsl_str.c ****         }
+ 198:../utilities/fsl_str.c ****         while (a != 0)
+ 199:../utilities/fsl_str.c ****         {
+ 200:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 201:../utilities/fsl_str.c ****             b = (int64_t)a / (int64_t)radix;
+ 202:../utilities/fsl_str.c ****             c = (int64_t)a - ((int64_t)b * (int64_t)radix);
+ 203:../utilities/fsl_str.c ****             if (c < 0)
+ 204:../utilities/fsl_str.c ****             {
+ 205:../utilities/fsl_str.c ****                 uc = (uint64_t)c;
+ 206:../utilities/fsl_str.c ****                 c = (int64_t)(~uc) + 1 + '0';
+ 207:../utilities/fsl_str.c ****             }
+ 208:../utilities/fsl_str.c **** #else
+ 209:../utilities/fsl_str.c ****             b = a / radix;
+ 210:../utilities/fsl_str.c ****             c = a - (b * radix);
+ 211:../utilities/fsl_str.c ****             if (c < 0)
+ 212:../utilities/fsl_str.c ****             {
+ 213:../utilities/fsl_str.c ****                 uc = (uint32_t)c;
+ 214:../utilities/fsl_str.c ****                 c = (uint32_t)(~uc) + 1 + '0';
+ 215:../utilities/fsl_str.c ****             }
+ 216:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 217:../utilities/fsl_str.c ****             else
+ 218:../utilities/fsl_str.c ****             {
+ 219:../utilities/fsl_str.c ****                 c = c + '0';
+ 220:../utilities/fsl_str.c ****             }
+ 221:../utilities/fsl_str.c ****             a = b;
+ 222:../utilities/fsl_str.c ****             *nstrp++ = (char)c;
+ 223:../utilities/fsl_str.c ****             ++nlen;
+ 224:../utilities/fsl_str.c ****         }
+ 225:../utilities/fsl_str.c ****     }
+ 226:../utilities/fsl_str.c ****     else
+ 227:../utilities/fsl_str.c ****     {
+ 228:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 229:../utilities/fsl_str.c ****         ua = *(uint64_t *)nump;
+ 230:../utilities/fsl_str.c **** #else
+ 231:../utilities/fsl_str.c ****         ua = *(uint32_t *)nump;
+ 232:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 233:../utilities/fsl_str.c ****         if (ua == 0)
+ 234:../utilities/fsl_str.c ****         {
+ 235:../utilities/fsl_str.c ****             *nstrp = '0';
+ 236:../utilities/fsl_str.c ****             ++nlen;
+ 237:../utilities/fsl_str.c ****             return nlen;
+ 238:../utilities/fsl_str.c ****         }
+ 239:../utilities/fsl_str.c ****         while (ua != 0)
+ 240:../utilities/fsl_str.c ****         {
+ 241:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 242:../utilities/fsl_str.c ****             ub = (uint64_t)ua / (uint64_t)radix;
+ 243:../utilities/fsl_str.c ****             uc = (uint64_t)ua - ((uint64_t)ub * (uint64_t)radix);
+ 244:../utilities/fsl_str.c **** #else
+ 245:../utilities/fsl_str.c ****             ub = ua / (uint32_t)radix;
+ 246:../utilities/fsl_str.c ****             uc = ua - (ub * (uint32_t)radix);
+ 247:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 248:../utilities/fsl_str.c **** 
+ 249:../utilities/fsl_str.c ****             if (uc < 10)
+ 250:../utilities/fsl_str.c ****             {
+ 251:../utilities/fsl_str.c ****                 uc = uc + '0';
+ 252:../utilities/fsl_str.c ****             }
+ 253:../utilities/fsl_str.c ****             else
+ 254:../utilities/fsl_str.c ****             {
+ 255:../utilities/fsl_str.c ****                 uc = uc - 10 + (use_caps ? 'A' : 'a');
+ 256:../utilities/fsl_str.c ****             }
+ 257:../utilities/fsl_str.c ****             ua = ub;
+ 258:../utilities/fsl_str.c ****             *nstrp++ = (char)uc;
+ 259:../utilities/fsl_str.c ****             ++nlen;
+ 260:../utilities/fsl_str.c ****         }
+ 261:../utilities/fsl_str.c ****     }
+ 262:../utilities/fsl_str.c ****     return nlen;
+ 263:../utilities/fsl_str.c **** }
+ 264:../utilities/fsl_str.c **** 
+ 265:../utilities/fsl_str.c **** #if PRINTF_FLOAT_ENABLE
+ 266:../utilities/fsl_str.c **** static int32_t ConvertFloatRadixNumToString(char *numstr, void *nump, int32_t radix, uint32_t preci
+ 267:../utilities/fsl_str.c **** {
+ 268:../utilities/fsl_str.c ****     int32_t a;
+ 269:../utilities/fsl_str.c ****     int32_t b;
+ 270:../utilities/fsl_str.c ****     int32_t c;
+ 271:../utilities/fsl_str.c ****     int32_t i;
+ 272:../utilities/fsl_str.c ****     uint32_t uc;
+ 273:../utilities/fsl_str.c ****     double fa;
+ 274:../utilities/fsl_str.c ****     double dc;
+ 275:../utilities/fsl_str.c ****     double fb;
+ 276:../utilities/fsl_str.c ****     double r;
+ 277:../utilities/fsl_str.c ****     double fractpart;
+ 278:../utilities/fsl_str.c ****     double intpart;
+ 279:../utilities/fsl_str.c **** 
+ 280:../utilities/fsl_str.c ****     int32_t nlen;
+ 281:../utilities/fsl_str.c ****     char *nstrp;
+ 282:../utilities/fsl_str.c ****     nlen = 0;
+ 283:../utilities/fsl_str.c ****     nstrp = numstr;
+ 284:../utilities/fsl_str.c ****     *nstrp++ = '\0';
+ 285:../utilities/fsl_str.c ****     r = *(double *)nump;
+ 286:../utilities/fsl_str.c ****     if (!r)
+ 287:../utilities/fsl_str.c ****     {
+ 288:../utilities/fsl_str.c ****         *nstrp = '0';
+ 289:../utilities/fsl_str.c ****         ++nlen;
+ 290:../utilities/fsl_str.c ****         return nlen;
+ 291:../utilities/fsl_str.c ****     }
+ 292:../utilities/fsl_str.c ****     fractpart = modf((double)r, (double *)&intpart);
+ 293:../utilities/fsl_str.c ****     /* Process fractional part. */
+ 294:../utilities/fsl_str.c ****     for (i = 0; i < precision_width; i++)
+ 295:../utilities/fsl_str.c ****     {
+ 296:../utilities/fsl_str.c ****         fractpart *= radix;
+ 297:../utilities/fsl_str.c ****     }
+ 298:../utilities/fsl_str.c ****     if (r >= 0)
+ 299:../utilities/fsl_str.c ****     {
+ 300:../utilities/fsl_str.c ****         fa = fractpart + (double)0.5;
+ 301:../utilities/fsl_str.c ****         if (fa >= pow(10, precision_width))
+ 302:../utilities/fsl_str.c ****         {
+ 303:../utilities/fsl_str.c ****             intpart++;
+ 304:../utilities/fsl_str.c ****         }
+ 305:../utilities/fsl_str.c ****     }
+ 306:../utilities/fsl_str.c ****     else
+ 307:../utilities/fsl_str.c ****     {
+ 308:../utilities/fsl_str.c ****         fa = fractpart - (double)0.5;
+ 309:../utilities/fsl_str.c ****         if (fa <= -pow(10, precision_width))
+ 310:../utilities/fsl_str.c ****         {
+ 311:../utilities/fsl_str.c ****             intpart--;
+ 312:../utilities/fsl_str.c ****         }
+ 313:../utilities/fsl_str.c ****     }
+ 314:../utilities/fsl_str.c ****     for (i = 0; i < precision_width; i++)
+ 315:../utilities/fsl_str.c ****     {
+ 316:../utilities/fsl_str.c ****         fb = fa / (int32_t)radix;
+ 317:../utilities/fsl_str.c ****         dc = (fa - (int64_t)fb * (int32_t)radix);
+ 318:../utilities/fsl_str.c ****         c = (int32_t)dc;
+ 319:../utilities/fsl_str.c ****         if (c < 0)
+ 320:../utilities/fsl_str.c ****         {
+ 321:../utilities/fsl_str.c ****             uc = (uint32_t)c;
+ 322:../utilities/fsl_str.c ****             c = (int32_t)(~uc) + 1 + '0';
+ 323:../utilities/fsl_str.c ****         }
+ 324:../utilities/fsl_str.c ****         else
+ 325:../utilities/fsl_str.c ****         {
+ 326:../utilities/fsl_str.c ****             c = c + '0';
+ 327:../utilities/fsl_str.c ****         }
+ 328:../utilities/fsl_str.c ****         fa = fb;
+ 329:../utilities/fsl_str.c ****         *nstrp++ = (char)c;
+ 330:../utilities/fsl_str.c ****         ++nlen;
+ 331:../utilities/fsl_str.c ****     }
+ 332:../utilities/fsl_str.c ****     *nstrp++ = (char)'.';
+ 333:../utilities/fsl_str.c ****     ++nlen;
+ 334:../utilities/fsl_str.c ****     a = (int32_t)intpart;
+ 335:../utilities/fsl_str.c ****     if (a == 0)
+ 336:../utilities/fsl_str.c ****     {
+ 337:../utilities/fsl_str.c ****         *nstrp++ = '0';
+ 338:../utilities/fsl_str.c ****         ++nlen;
+ 339:../utilities/fsl_str.c ****     }
+ 340:../utilities/fsl_str.c ****     else
+ 341:../utilities/fsl_str.c ****     {
+ 342:../utilities/fsl_str.c ****         while (a != 0)
+ 343:../utilities/fsl_str.c ****         {
+ 344:../utilities/fsl_str.c ****             b = (int32_t)a / (int32_t)radix;
+ 345:../utilities/fsl_str.c ****             c = (int32_t)a - ((int32_t)b * (int32_t)radix);
+ 346:../utilities/fsl_str.c ****             if (c < 0)
+ 347:../utilities/fsl_str.c ****             {
+ 348:../utilities/fsl_str.c ****                 uc = (uint32_t)c;
+ 349:../utilities/fsl_str.c ****                 c = (int32_t)(~uc) + 1 + '0';
+ 350:../utilities/fsl_str.c ****             }
+ 351:../utilities/fsl_str.c ****             else
+ 352:../utilities/fsl_str.c ****             {
+ 353:../utilities/fsl_str.c ****                 c = c + '0';
+ 354:../utilities/fsl_str.c ****             }
+ 355:../utilities/fsl_str.c ****             a = b;
+ 356:../utilities/fsl_str.c ****             *nstrp++ = (char)c;
+ 357:../utilities/fsl_str.c ****             ++nlen;
+ 358:../utilities/fsl_str.c ****         }
+ 359:../utilities/fsl_str.c ****     }
+ 360:../utilities/fsl_str.c ****     return nlen;
+ 361:../utilities/fsl_str.c **** }
+ 362:../utilities/fsl_str.c **** #endif /* PRINTF_FLOAT_ENABLE */
+ 363:../utilities/fsl_str.c **** 
+ 364:../utilities/fsl_str.c **** int StrFormatPrintf(const char *fmt, va_list ap, char *buf, printfCb cb)
+ 365:../utilities/fsl_str.c **** {
+  77              		.loc 1 365 0
+  78              		.cfi_startproc
+  79              		@ args = 0, pretend = 0, frame = 48
+  80              		@ frame_needed = 0, uses_anonymous_args = 0
+  81              	.LVL8:
+  82 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  83              		.cfi_def_cfa_offset 36
+  84              		.cfi_offset 4, -36
+  85              		.cfi_offset 5, -32
+  86              		.cfi_offset 6, -28
+  87              		.cfi_offset 7, -24
+  88              		.cfi_offset 8, -20
+  89              		.cfi_offset 9, -16
+  90              		.cfi_offset 10, -12
+  91              		.cfi_offset 11, -8
+  92              		.cfi_offset 14, -4
+  93 0004 8DB0     		sub	sp, sp, #52
+  94              		.cfi_def_cfa_offset 88
+ 366:../utilities/fsl_str.c ****     /* va_list ap; */
+ 367:../utilities/fsl_str.c ****     char *p;
+ 368:../utilities/fsl_str.c ****     int32_t c;
+ 369:../utilities/fsl_str.c **** 
+ 370:../utilities/fsl_str.c ****     char vstr[33];
+ 371:../utilities/fsl_str.c ****     char *vstrp = NULL;
+ 372:../utilities/fsl_str.c ****     int32_t vlen = 0;
+ 373:../utilities/fsl_str.c **** 
+ 374:../utilities/fsl_str.c ****     int32_t done;
+ 375:../utilities/fsl_str.c ****     int32_t count = 0;
+  95              		.loc 1 375 0
+  96 0006 0025     		movs	r5, #0
+ 365:../utilities/fsl_str.c ****     /* va_list ap; */
+  97              		.loc 1 365 0
+  98 0008 8346     		mov	fp, r0
+  99 000a 9046     		mov	r8, r2
+ 100 000c 9946     		mov	r9, r3
+ 101 000e 8A46     		mov	r10, r1
+ 102              	.LVL9:
+ 103              		.loc 1 375 0
+ 104 0010 0295     		str	r5, [sp, #8]
+ 105              	.LVL10:
+ 372:../utilities/fsl_str.c **** 
+ 106              		.loc 1 372 0
+ 107 0012 2E46     		mov	r6, r5
+ 371:../utilities/fsl_str.c ****     int32_t vlen = 0;
+ 108              		.loc 1 371 0
+ 109 0014 2C46     		mov	r4, r5
+ 110              	.LVL11:
+ 111              	.L8:
+ 376:../utilities/fsl_str.c **** 
+ 377:../utilities/fsl_str.c ****     uint32_t field_width;
+ 378:../utilities/fsl_str.c ****     uint32_t precision_width;
+ 379:../utilities/fsl_str.c ****     char *sval;
+ 380:../utilities/fsl_str.c ****     int32_t cval;
+ 381:../utilities/fsl_str.c ****     bool use_caps;
+ 382:../utilities/fsl_str.c ****     uint8_t radix = 0;
+ 383:../utilities/fsl_str.c **** 
+ 384:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 385:../utilities/fsl_str.c ****     uint32_t flags_used;
+ 386:../utilities/fsl_str.c ****     int32_t schar, dschar;
+ 387:../utilities/fsl_str.c ****     int64_t ival;
+ 388:../utilities/fsl_str.c ****     uint64_t uval = 0;
+ 389:../utilities/fsl_str.c ****     bool valid_precision_width;
+ 390:../utilities/fsl_str.c **** #else
+ 391:../utilities/fsl_str.c ****     int32_t ival;
+ 392:../utilities/fsl_str.c ****     uint32_t uval = 0;
+ 393:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 394:../utilities/fsl_str.c **** 
+ 395:../utilities/fsl_str.c **** #if PRINTF_FLOAT_ENABLE
+ 396:../utilities/fsl_str.c ****     double fval;
+ 397:../utilities/fsl_str.c **** #endif /* PRINTF_FLOAT_ENABLE */
+ 398:../utilities/fsl_str.c **** 
+ 399:../utilities/fsl_str.c ****     /* Start parsing apart the format string and display appropriate formats and data. */
+ 400:../utilities/fsl_str.c ****     for (p = (char *)fmt; (c = *p) != 0; p++)
+ 112              		.loc 1 400 0 discriminator 1
+ 113 0016 9BF90020 		ldrsb	r2, [fp]
+ 114              	.LVL12:
+ 115 001a 1AB9     		cbnz	r2, .L47
+ 116              	.LVL13:
+ 401:../utilities/fsl_str.c ****     {
+ 402:../utilities/fsl_str.c ****         /*
+ 403:../utilities/fsl_str.c ****          * All formats begin with a '%' marker.  Special chars like
+ 404:../utilities/fsl_str.c ****          * '\n' or '\t' are normally converted to the appropriate
+ 405:../utilities/fsl_str.c ****          * character by the __compiler__.  Thus, no need for this
+ 406:../utilities/fsl_str.c ****          * routine to account for the '\' character.
+ 407:../utilities/fsl_str.c ****          */
+ 408:../utilities/fsl_str.c ****         if (c != '%')
+ 409:../utilities/fsl_str.c ****         {
+ 410:../utilities/fsl_str.c ****             cb(buf, &count, c, 1);
+ 411:../utilities/fsl_str.c ****             /* By using 'continue', the next iteration of the loop is used, skipping the code that 
+ 412:../utilities/fsl_str.c ****             continue;
+ 413:../utilities/fsl_str.c ****         }
+ 414:../utilities/fsl_str.c **** 
+ 415:../utilities/fsl_str.c ****         use_caps = true;
+ 416:../utilities/fsl_str.c **** 
+ 417:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 418:../utilities/fsl_str.c ****         /* First check for specification modifier flags. */
+ 419:../utilities/fsl_str.c ****         flags_used = 0;
+ 420:../utilities/fsl_str.c ****         done = false;
+ 421:../utilities/fsl_str.c ****         while (!done)
+ 422:../utilities/fsl_str.c ****         {
+ 423:../utilities/fsl_str.c ****             switch (*++p)
+ 424:../utilities/fsl_str.c ****             {
+ 425:../utilities/fsl_str.c ****                 case '-':
+ 426:../utilities/fsl_str.c ****                     flags_used |= kPRINTF_Minus;
+ 427:../utilities/fsl_str.c ****                     break;
+ 428:../utilities/fsl_str.c ****                 case '+':
+ 429:../utilities/fsl_str.c ****                     flags_used |= kPRINTF_Plus;
+ 430:../utilities/fsl_str.c ****                     break;
+ 431:../utilities/fsl_str.c ****                 case ' ':
+ 432:../utilities/fsl_str.c ****                     flags_used |= kPRINTF_Space;
+ 433:../utilities/fsl_str.c ****                     break;
+ 434:../utilities/fsl_str.c ****                 case '0':
+ 435:../utilities/fsl_str.c ****                     flags_used |= kPRINTF_Zero;
+ 436:../utilities/fsl_str.c ****                     break;
+ 437:../utilities/fsl_str.c ****                 case '#':
+ 438:../utilities/fsl_str.c ****                     flags_used |= kPRINTF_Pound;
+ 439:../utilities/fsl_str.c ****                     break;
+ 440:../utilities/fsl_str.c ****                 default:
+ 441:../utilities/fsl_str.c ****                     /* We've gone one char too far. */
+ 442:../utilities/fsl_str.c ****                     --p;
+ 443:../utilities/fsl_str.c ****                     done = true;
+ 444:../utilities/fsl_str.c ****                     break;
+ 445:../utilities/fsl_str.c ****             }
+ 446:../utilities/fsl_str.c ****         }
+ 447:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 448:../utilities/fsl_str.c **** 
+ 449:../utilities/fsl_str.c ****         /* Next check for minimum field width. */
+ 450:../utilities/fsl_str.c ****         field_width = 0;
+ 451:../utilities/fsl_str.c ****         done = false;
+ 452:../utilities/fsl_str.c ****         while (!done)
+ 453:../utilities/fsl_str.c ****         {
+ 454:../utilities/fsl_str.c ****             c = *++p;
+ 455:../utilities/fsl_str.c ****             if ((c >= '0') && (c <= '9'))
+ 456:../utilities/fsl_str.c ****             {
+ 457:../utilities/fsl_str.c ****                 field_width = (field_width * 10) + (c - '0');
+ 458:../utilities/fsl_str.c ****             }
+ 459:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 460:../utilities/fsl_str.c ****             else if (c == '*')
+ 461:../utilities/fsl_str.c ****             {
+ 462:../utilities/fsl_str.c ****                 field_width = (uint32_t)va_arg(ap, uint32_t);
+ 463:../utilities/fsl_str.c ****             }
+ 464:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 465:../utilities/fsl_str.c ****             else
+ 466:../utilities/fsl_str.c ****             {
+ 467:../utilities/fsl_str.c ****                 /* We've gone one char too far. */
+ 468:../utilities/fsl_str.c ****                 --p;
+ 469:../utilities/fsl_str.c ****                 done = true;
+ 470:../utilities/fsl_str.c ****             }
+ 471:../utilities/fsl_str.c ****         }
+ 472:../utilities/fsl_str.c ****         /* Next check for the width and precision field separator. */
+ 473:../utilities/fsl_str.c ****         precision_width = 6;
+ 474:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 475:../utilities/fsl_str.c ****         valid_precision_width = false;
+ 476:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 477:../utilities/fsl_str.c ****         if (*++p == '.')
+ 478:../utilities/fsl_str.c ****         {
+ 479:../utilities/fsl_str.c ****             /* Must get precision field width, if present. */
+ 480:../utilities/fsl_str.c ****             precision_width = 0;
+ 481:../utilities/fsl_str.c ****             done = false;
+ 482:../utilities/fsl_str.c ****             while (!done)
+ 483:../utilities/fsl_str.c ****             {
+ 484:../utilities/fsl_str.c ****                 c = *++p;
+ 485:../utilities/fsl_str.c ****                 if ((c >= '0') && (c <= '9'))
+ 486:../utilities/fsl_str.c ****                 {
+ 487:../utilities/fsl_str.c ****                     precision_width = (precision_width * 10) + (c - '0');
+ 488:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 489:../utilities/fsl_str.c ****                     valid_precision_width = true;
+ 490:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 491:../utilities/fsl_str.c ****                 }
+ 492:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 493:../utilities/fsl_str.c ****                 else if (c == '*')
+ 494:../utilities/fsl_str.c ****                 {
+ 495:../utilities/fsl_str.c ****                     precision_width = (uint32_t)va_arg(ap, uint32_t);
+ 496:../utilities/fsl_str.c ****                     valid_precision_width = true;
+ 497:../utilities/fsl_str.c ****                 }
+ 498:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 499:../utilities/fsl_str.c ****                 else
+ 500:../utilities/fsl_str.c ****                 {
+ 501:../utilities/fsl_str.c ****                     /* We've gone one char too far. */
+ 502:../utilities/fsl_str.c ****                     --p;
+ 503:../utilities/fsl_str.c ****                     done = true;
+ 504:../utilities/fsl_str.c ****                 }
+ 505:../utilities/fsl_str.c ****             }
+ 506:../utilities/fsl_str.c ****         }
+ 507:../utilities/fsl_str.c ****         else
+ 508:../utilities/fsl_str.c ****         {
+ 509:../utilities/fsl_str.c ****             /* We've gone one char too far. */
+ 510:../utilities/fsl_str.c ****             --p;
+ 511:../utilities/fsl_str.c ****         }
+ 512:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 513:../utilities/fsl_str.c ****         /*
+ 514:../utilities/fsl_str.c ****          * Check for the length modifier.
+ 515:../utilities/fsl_str.c ****          */
+ 516:../utilities/fsl_str.c ****         switch (/* c = */ *++p)
+ 517:../utilities/fsl_str.c ****         {
+ 518:../utilities/fsl_str.c ****             case 'h':
+ 519:../utilities/fsl_str.c ****                 if (*++p != 'h')
+ 520:../utilities/fsl_str.c ****                 {
+ 521:../utilities/fsl_str.c ****                     flags_used |= kPRINTF_LengthShortInt;
+ 522:../utilities/fsl_str.c ****                     --p;
+ 523:../utilities/fsl_str.c ****                 }
+ 524:../utilities/fsl_str.c ****                 else
+ 525:../utilities/fsl_str.c ****                 {
+ 526:../utilities/fsl_str.c ****                     flags_used |= kPRINTF_LengthChar;
+ 527:../utilities/fsl_str.c ****                 }
+ 528:../utilities/fsl_str.c ****                 break;
+ 529:../utilities/fsl_str.c ****             case 'l':
+ 530:../utilities/fsl_str.c ****                 if (*++p != 'l')
+ 531:../utilities/fsl_str.c ****                 {
+ 532:../utilities/fsl_str.c ****                     flags_used |= kPRINTF_LengthLongInt;
+ 533:../utilities/fsl_str.c ****                     --p;
+ 534:../utilities/fsl_str.c ****                 }
+ 535:../utilities/fsl_str.c ****                 else
+ 536:../utilities/fsl_str.c ****                 {
+ 537:../utilities/fsl_str.c ****                     flags_used |= kPRINTF_LengthLongLongInt;
+ 538:../utilities/fsl_str.c ****                 }
+ 539:../utilities/fsl_str.c ****                 break;
+ 540:../utilities/fsl_str.c ****             default:
+ 541:../utilities/fsl_str.c ****                 /* we've gone one char too far */
+ 542:../utilities/fsl_str.c ****                 --p;
+ 543:../utilities/fsl_str.c ****                 break;
+ 544:../utilities/fsl_str.c ****         }
+ 545:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 546:../utilities/fsl_str.c ****         /* Now we're ready to examine the format. */
+ 547:../utilities/fsl_str.c ****         c = *++p;
+ 548:../utilities/fsl_str.c ****         {
+ 549:../utilities/fsl_str.c ****             if ((c == 'd') || (c == 'i') || (c == 'f') || (c == 'F') || (c == 'x') || (c == 'X') ||
+ 550:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
+ 551:../utilities/fsl_str.c ****             {
+ 552:../utilities/fsl_str.c ****                 if ((c == 'd') || (c == 'i'))
+ 553:../utilities/fsl_str.c ****                 {
+ 554:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 555:../utilities/fsl_str.c ****                     if (flags_used & kPRINTF_LengthLongLongInt)
+ 556:../utilities/fsl_str.c ****                     {
+ 557:../utilities/fsl_str.c ****                         ival = (int64_t)va_arg(ap, int64_t);
+ 558:../utilities/fsl_str.c ****                     }
+ 559:../utilities/fsl_str.c ****                     else
+ 560:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 561:../utilities/fsl_str.c ****                     {
+ 562:../utilities/fsl_str.c ****                         ival = (int32_t)va_arg(ap, int32_t);
+ 563:../utilities/fsl_str.c ****                     }
+ 564:../utilities/fsl_str.c ****                     vlen = ConvertRadixNumToString(vstr, &ival, true, 10, use_caps);
+ 565:../utilities/fsl_str.c ****                     vstrp = &vstr[vlen];
+ 566:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 567:../utilities/fsl_str.c ****                     if (ival < 0)
+ 568:../utilities/fsl_str.c ****                     {
+ 569:../utilities/fsl_str.c ****                         schar = '-';
+ 570:../utilities/fsl_str.c ****                         ++vlen;
+ 571:../utilities/fsl_str.c ****                     }
+ 572:../utilities/fsl_str.c ****                     else
+ 573:../utilities/fsl_str.c ****                     {
+ 574:../utilities/fsl_str.c ****                         if (flags_used & kPRINTF_Plus)
+ 575:../utilities/fsl_str.c ****                         {
+ 576:../utilities/fsl_str.c ****                             schar = '+';
+ 577:../utilities/fsl_str.c ****                             ++vlen;
+ 578:../utilities/fsl_str.c ****                         }
+ 579:../utilities/fsl_str.c ****                         else
+ 580:../utilities/fsl_str.c ****                         {
+ 581:../utilities/fsl_str.c ****                             if (flags_used & kPRINTF_Space)
+ 582:../utilities/fsl_str.c ****                             {
+ 583:../utilities/fsl_str.c ****                                 schar = ' ';
+ 584:../utilities/fsl_str.c ****                                 ++vlen;
+ 585:../utilities/fsl_str.c ****                             }
+ 586:../utilities/fsl_str.c ****                             else
+ 587:../utilities/fsl_str.c ****                             {
+ 588:../utilities/fsl_str.c ****                                 schar = 0;
+ 589:../utilities/fsl_str.c ****                             }
+ 590:../utilities/fsl_str.c ****                         }
+ 591:../utilities/fsl_str.c ****                     }
+ 592:../utilities/fsl_str.c ****                     dschar = false;
+ 593:../utilities/fsl_str.c ****                     /* Do the ZERO pad. */
+ 594:../utilities/fsl_str.c ****                     if (flags_used & kPRINTF_Zero)
+ 595:../utilities/fsl_str.c ****                     {
+ 596:../utilities/fsl_str.c ****                         if (schar)
+ 597:../utilities/fsl_str.c ****                         {
+ 598:../utilities/fsl_str.c ****                             cb(buf, &count, schar, 1);
+ 599:../utilities/fsl_str.c ****                         }
+ 600:../utilities/fsl_str.c ****                         dschar = true;
+ 601:../utilities/fsl_str.c **** 
+ 602:../utilities/fsl_str.c ****                         cb(buf, &count, '0', field_width - vlen);
+ 603:../utilities/fsl_str.c ****                         vlen = field_width;
+ 604:../utilities/fsl_str.c ****                     }
+ 605:../utilities/fsl_str.c ****                     else
+ 606:../utilities/fsl_str.c ****                     {
+ 607:../utilities/fsl_str.c ****                         if (!(flags_used & kPRINTF_Minus))
+ 608:../utilities/fsl_str.c ****                         {
+ 609:../utilities/fsl_str.c ****                             cb(buf, &count, ' ', field_width - vlen);
+ 610:../utilities/fsl_str.c ****                             if (schar)
+ 611:../utilities/fsl_str.c ****                             {
+ 612:../utilities/fsl_str.c ****                                 cb(buf, &count, schar, 1);
+ 613:../utilities/fsl_str.c ****                             }
+ 614:../utilities/fsl_str.c ****                             dschar = true;
+ 615:../utilities/fsl_str.c ****                         }
+ 616:../utilities/fsl_str.c ****                     }
+ 617:../utilities/fsl_str.c ****                     /* The string was built in reverse order, now display in correct order. */
+ 618:../utilities/fsl_str.c ****                     if ((!dschar) && schar)
+ 619:../utilities/fsl_str.c ****                     {
+ 620:../utilities/fsl_str.c ****                         cb(buf, &count, schar, 1);
+ 621:../utilities/fsl_str.c ****                     }
+ 622:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 623:../utilities/fsl_str.c ****                 }
+ 624:../utilities/fsl_str.c **** 
+ 625:../utilities/fsl_str.c **** #if PRINTF_FLOAT_ENABLE
+ 626:../utilities/fsl_str.c ****                 if ((c == 'f') || (c == 'F'))
+ 627:../utilities/fsl_str.c ****                 {
+ 628:../utilities/fsl_str.c ****                     fval = (double)va_arg(ap, double);
+ 629:../utilities/fsl_str.c ****                     vlen = ConvertFloatRadixNumToString(vstr, &fval, 10, precision_width);
+ 630:../utilities/fsl_str.c ****                     vstrp = &vstr[vlen];
+ 631:../utilities/fsl_str.c **** 
+ 632:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 633:../utilities/fsl_str.c ****                     if (fval < 0)
+ 634:../utilities/fsl_str.c ****                     {
+ 635:../utilities/fsl_str.c ****                         schar = '-';
+ 636:../utilities/fsl_str.c ****                         ++vlen;
+ 637:../utilities/fsl_str.c ****                     }
+ 638:../utilities/fsl_str.c ****                     else
+ 639:../utilities/fsl_str.c ****                     {
+ 640:../utilities/fsl_str.c ****                         if (flags_used & kPRINTF_Plus)
+ 641:../utilities/fsl_str.c ****                         {
+ 642:../utilities/fsl_str.c ****                             schar = '+';
+ 643:../utilities/fsl_str.c ****                             ++vlen;
+ 644:../utilities/fsl_str.c ****                         }
+ 645:../utilities/fsl_str.c ****                         else
+ 646:../utilities/fsl_str.c ****                         {
+ 647:../utilities/fsl_str.c ****                             if (flags_used & kPRINTF_Space)
+ 648:../utilities/fsl_str.c ****                             {
+ 649:../utilities/fsl_str.c ****                                 schar = ' ';
+ 650:../utilities/fsl_str.c ****                                 ++vlen;
+ 651:../utilities/fsl_str.c ****                             }
+ 652:../utilities/fsl_str.c ****                             else
+ 653:../utilities/fsl_str.c ****                             {
+ 654:../utilities/fsl_str.c ****                                 schar = 0;
+ 655:../utilities/fsl_str.c ****                             }
+ 656:../utilities/fsl_str.c ****                         }
+ 657:../utilities/fsl_str.c ****                     }
+ 658:../utilities/fsl_str.c ****                     dschar = false;
+ 659:../utilities/fsl_str.c ****                     if (flags_used & kPRINTF_Zero)
+ 660:../utilities/fsl_str.c ****                     {
+ 661:../utilities/fsl_str.c ****                         if (schar)
+ 662:../utilities/fsl_str.c ****                         {
+ 663:../utilities/fsl_str.c ****                             cb(buf, &count, schar, 1);
+ 664:../utilities/fsl_str.c ****                         }
+ 665:../utilities/fsl_str.c ****                         dschar = true;
+ 666:../utilities/fsl_str.c ****                         cb(buf, &count, '0', field_width - vlen);
+ 667:../utilities/fsl_str.c ****                         vlen = field_width;
+ 668:../utilities/fsl_str.c ****                     }
+ 669:../utilities/fsl_str.c ****                     else
+ 670:../utilities/fsl_str.c ****                     {
+ 671:../utilities/fsl_str.c ****                         if (!(flags_used & kPRINTF_Minus))
+ 672:../utilities/fsl_str.c ****                         {
+ 673:../utilities/fsl_str.c ****                             cb(buf, &count, ' ', field_width - vlen);
+ 674:../utilities/fsl_str.c ****                             if (schar)
+ 675:../utilities/fsl_str.c ****                             {
+ 676:../utilities/fsl_str.c ****                                 cb(buf, &count, schar, 1);
+ 677:../utilities/fsl_str.c ****                             }
+ 678:../utilities/fsl_str.c ****                             dschar = true;
+ 679:../utilities/fsl_str.c ****                         }
+ 680:../utilities/fsl_str.c ****                     }
+ 681:../utilities/fsl_str.c ****                     if ((!dschar) && schar)
+ 682:../utilities/fsl_str.c ****                     {
+ 683:../utilities/fsl_str.c ****                         cb(buf, &count, schar, 1);
+ 684:../utilities/fsl_str.c ****                     }
+ 685:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 686:../utilities/fsl_str.c ****                 }
+ 687:../utilities/fsl_str.c **** #endif /* PRINTF_FLOAT_ENABLE */
+ 688:../utilities/fsl_str.c ****                 if ((c == 'X') || (c == 'x'))
+ 689:../utilities/fsl_str.c ****                 {
+ 690:../utilities/fsl_str.c ****                     if (c == 'x')
+ 691:../utilities/fsl_str.c ****                     {
+ 692:../utilities/fsl_str.c ****                         use_caps = false;
+ 693:../utilities/fsl_str.c ****                     }
+ 694:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 695:../utilities/fsl_str.c ****                     if (flags_used & kPRINTF_LengthLongLongInt)
+ 696:../utilities/fsl_str.c ****                     {
+ 697:../utilities/fsl_str.c ****                         uval = (uint64_t)va_arg(ap, uint64_t);
+ 698:../utilities/fsl_str.c ****                     }
+ 699:../utilities/fsl_str.c ****                     else
+ 700:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 701:../utilities/fsl_str.c ****                     {
+ 702:../utilities/fsl_str.c ****                         uval = (uint32_t)va_arg(ap, uint32_t);
+ 703:../utilities/fsl_str.c ****                     }
+ 704:../utilities/fsl_str.c ****                     vlen = ConvertRadixNumToString(vstr, &uval, false, 16, use_caps);
+ 705:../utilities/fsl_str.c ****                     vstrp = &vstr[vlen];
+ 706:../utilities/fsl_str.c **** 
+ 707:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 708:../utilities/fsl_str.c ****                     dschar = false;
+ 709:../utilities/fsl_str.c ****                     if (flags_used & kPRINTF_Zero)
+ 710:../utilities/fsl_str.c ****                     {
+ 711:../utilities/fsl_str.c ****                         if (flags_used & kPRINTF_Pound)
+ 712:../utilities/fsl_str.c ****                         {
+ 713:../utilities/fsl_str.c ****                             cb(buf, &count, '0', 1);
+ 714:../utilities/fsl_str.c ****                             cb(buf, &count, (use_caps ? 'X' : 'x'), 1);
+ 715:../utilities/fsl_str.c ****                             dschar = true;
+ 716:../utilities/fsl_str.c ****                         }
+ 717:../utilities/fsl_str.c ****                         cb(buf, &count, '0', field_width - vlen);
+ 718:../utilities/fsl_str.c ****                         vlen = field_width;
+ 719:../utilities/fsl_str.c ****                     }
+ 720:../utilities/fsl_str.c ****                     else
+ 721:../utilities/fsl_str.c ****                     {
+ 722:../utilities/fsl_str.c ****                         if (!(flags_used & kPRINTF_Minus))
+ 723:../utilities/fsl_str.c ****                         {
+ 724:../utilities/fsl_str.c ****                             if (flags_used & kPRINTF_Pound)
+ 725:../utilities/fsl_str.c ****                             {
+ 726:../utilities/fsl_str.c ****                                 vlen += 2;
+ 727:../utilities/fsl_str.c ****                             }
+ 728:../utilities/fsl_str.c ****                             cb(buf, &count, ' ', field_width - vlen);
+ 729:../utilities/fsl_str.c ****                             if (flags_used & kPRINTF_Pound)
+ 730:../utilities/fsl_str.c ****                             {
+ 731:../utilities/fsl_str.c ****                                 cb(buf, &count, '0', 1);
+ 732:../utilities/fsl_str.c ****                                 cb(buf, &count, (use_caps ? 'X' : 'x'), 1);
+ 733:../utilities/fsl_str.c ****                                 dschar = true;
+ 734:../utilities/fsl_str.c ****                             }
+ 735:../utilities/fsl_str.c ****                         }
+ 736:../utilities/fsl_str.c ****                     }
+ 737:../utilities/fsl_str.c **** 
+ 738:../utilities/fsl_str.c ****                     if ((flags_used & kPRINTF_Pound) && (!dschar))
+ 739:../utilities/fsl_str.c ****                     {
+ 740:../utilities/fsl_str.c ****                         cb(buf, &count, '0', 1);
+ 741:../utilities/fsl_str.c ****                         cb(buf, &count, (use_caps ? 'X' : 'x'), 1);
+ 742:../utilities/fsl_str.c ****                         vlen += 2;
+ 743:../utilities/fsl_str.c ****                     }
+ 744:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 745:../utilities/fsl_str.c ****                 }
+ 746:../utilities/fsl_str.c ****                 if ((c == 'o') || (c == 'b') || (c == 'p') || (c == 'u'))
+ 747:../utilities/fsl_str.c ****                 {
+ 748:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 749:../utilities/fsl_str.c ****                     if (flags_used & kPRINTF_LengthLongLongInt)
+ 750:../utilities/fsl_str.c ****                     {
+ 751:../utilities/fsl_str.c ****                         uval = (uint64_t)va_arg(ap, uint64_t);
+ 752:../utilities/fsl_str.c ****                     }
+ 753:../utilities/fsl_str.c ****                     else
+ 754:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 755:../utilities/fsl_str.c ****                     {
+ 756:../utilities/fsl_str.c ****                         uval = (uint32_t)va_arg(ap, uint32_t);
+ 757:../utilities/fsl_str.c ****                     }
+ 758:../utilities/fsl_str.c ****                     switch (c)
+ 759:../utilities/fsl_str.c ****                     {
+ 760:../utilities/fsl_str.c ****                         case 'o':
+ 761:../utilities/fsl_str.c ****                             radix = 8;
+ 762:../utilities/fsl_str.c ****                             break;
+ 763:../utilities/fsl_str.c ****                         case 'b':
+ 764:../utilities/fsl_str.c ****                             radix = 2;
+ 765:../utilities/fsl_str.c ****                             break;
+ 766:../utilities/fsl_str.c ****                         case 'p':
+ 767:../utilities/fsl_str.c ****                             radix = 16;
+ 768:../utilities/fsl_str.c ****                             break;
+ 769:../utilities/fsl_str.c ****                         case 'u':
+ 770:../utilities/fsl_str.c ****                             radix = 10;
+ 771:../utilities/fsl_str.c ****                             break;
+ 772:../utilities/fsl_str.c ****                     }
+ 773:../utilities/fsl_str.c ****                     vlen = ConvertRadixNumToString(vstr, &uval, false, radix, use_caps);
+ 774:../utilities/fsl_str.c ****                     vstrp = &vstr[vlen];
+ 775:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 776:../utilities/fsl_str.c ****                     if (flags_used & kPRINTF_Zero)
+ 777:../utilities/fsl_str.c ****                     {
+ 778:../utilities/fsl_str.c ****                         cb(buf, &count, '0', field_width - vlen);
+ 779:../utilities/fsl_str.c ****                         vlen = field_width;
+ 780:../utilities/fsl_str.c ****                     }
+ 781:../utilities/fsl_str.c ****                     else
+ 782:../utilities/fsl_str.c ****                     {
+ 783:../utilities/fsl_str.c ****                         if (!(flags_used & kPRINTF_Minus))
+ 784:../utilities/fsl_str.c ****                         {
+ 785:../utilities/fsl_str.c ****                             cb(buf, &count, ' ', field_width - vlen);
+ 786:../utilities/fsl_str.c ****                         }
+ 787:../utilities/fsl_str.c ****                     }
+ 788:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 789:../utilities/fsl_str.c ****                 }
+ 790:../utilities/fsl_str.c **** #if !PRINTF_ADVANCED_ENABLE
+ 791:../utilities/fsl_str.c ****                 cb(buf, &count, ' ', field_width - vlen);
+ 792:../utilities/fsl_str.c **** #endif /* !PRINTF_ADVANCED_ENABLE */
+ 793:../utilities/fsl_str.c ****                 if (vstrp != NULL)
+ 794:../utilities/fsl_str.c ****                 {
+ 795:../utilities/fsl_str.c ****                     while (*vstrp)
+ 796:../utilities/fsl_str.c ****                     {
+ 797:../utilities/fsl_str.c ****                         cb(buf, &count, *vstrp--, 1);
+ 798:../utilities/fsl_str.c ****                     }
+ 799:../utilities/fsl_str.c ****                 }
+ 800:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 801:../utilities/fsl_str.c ****                 if (flags_used & kPRINTF_Minus)
+ 802:../utilities/fsl_str.c ****                 {
+ 803:../utilities/fsl_str.c ****                     cb(buf, &count, ' ', field_width - vlen);
+ 804:../utilities/fsl_str.c ****                 }
+ 805:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 806:../utilities/fsl_str.c ****             }
+ 807:../utilities/fsl_str.c ****             else if (c == 'c')
+ 808:../utilities/fsl_str.c ****             {
+ 809:../utilities/fsl_str.c ****                 cval = (char)va_arg(ap, uint32_t);
+ 810:../utilities/fsl_str.c ****                 cb(buf, &count, cval, 1);
+ 811:../utilities/fsl_str.c ****             }
+ 812:../utilities/fsl_str.c ****             else if (c == 's')
+ 813:../utilities/fsl_str.c ****             {
+ 814:../utilities/fsl_str.c ****                 sval = (char *)va_arg(ap, char *);
+ 815:../utilities/fsl_str.c ****                 if (sval)
+ 816:../utilities/fsl_str.c ****                 {
+ 817:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 818:../utilities/fsl_str.c ****                     if (valid_precision_width)
+ 819:../utilities/fsl_str.c ****                     {
+ 820:../utilities/fsl_str.c ****                         vlen = precision_width;
+ 821:../utilities/fsl_str.c ****                     }
+ 822:../utilities/fsl_str.c ****                     else
+ 823:../utilities/fsl_str.c ****                     {
+ 824:../utilities/fsl_str.c ****                         vlen = strlen(sval);
+ 825:../utilities/fsl_str.c ****                     }
+ 826:../utilities/fsl_str.c **** #else
+ 827:../utilities/fsl_str.c ****                     vlen = strlen(sval);
+ 828:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 829:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 830:../utilities/fsl_str.c ****                     if (!(flags_used & kPRINTF_Minus))
+ 831:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 832:../utilities/fsl_str.c ****                     {
+ 833:../utilities/fsl_str.c ****                         cb(buf, &count, ' ', field_width - vlen);
+ 834:../utilities/fsl_str.c ****                     }
+ 835:../utilities/fsl_str.c **** 
+ 836:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 837:../utilities/fsl_str.c ****                     if (valid_precision_width)
+ 838:../utilities/fsl_str.c ****                     {
+ 839:../utilities/fsl_str.c ****                         while ((*sval) && (vlen > 0))
+ 840:../utilities/fsl_str.c ****                         {
+ 841:../utilities/fsl_str.c ****                             cb(buf, &count, *sval++, 1);
+ 842:../utilities/fsl_str.c ****                             vlen--;
+ 843:../utilities/fsl_str.c ****                         }
+ 844:../utilities/fsl_str.c ****                         /* In case that vlen sval is shorter than vlen */
+ 845:../utilities/fsl_str.c ****                         vlen = precision_width - vlen;
+ 846:../utilities/fsl_str.c ****                     }
+ 847:../utilities/fsl_str.c ****                     else
+ 848:../utilities/fsl_str.c ****                     {
+ 849:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 850:../utilities/fsl_str.c ****                         while (*sval)
+ 851:../utilities/fsl_str.c ****                         {
+ 852:../utilities/fsl_str.c ****                             cb(buf, &count, *sval++, 1);
+ 853:../utilities/fsl_str.c ****                         }
+ 854:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 855:../utilities/fsl_str.c ****                     }
+ 856:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 857:../utilities/fsl_str.c **** 
+ 858:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 859:../utilities/fsl_str.c ****                     if (flags_used & kPRINTF_Minus)
+ 860:../utilities/fsl_str.c ****                     {
+ 861:../utilities/fsl_str.c ****                         cb(buf, &count, ' ', field_width - vlen);
+ 862:../utilities/fsl_str.c ****                     }
+ 863:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 864:../utilities/fsl_str.c ****                 }
+ 865:../utilities/fsl_str.c ****             }
+ 866:../utilities/fsl_str.c ****             else
+ 867:../utilities/fsl_str.c ****             {
+ 868:../utilities/fsl_str.c ****                 cb(buf, &count, c, 1);
+ 869:../utilities/fsl_str.c ****             }
+ 870:../utilities/fsl_str.c ****         }
+ 871:../utilities/fsl_str.c ****     }
+ 872:../utilities/fsl_str.c **** 
+ 873:../utilities/fsl_str.c ****     return count;
+ 874:../utilities/fsl_str.c **** }
+ 117              		.loc 1 874 0
+ 118 001c 0298     		ldr	r0, [sp, #8]
+ 119 001e 0DB0     		add	sp, sp, #52
+ 120              		.cfi_remember_state
+ 121              		.cfi_def_cfa_offset 36
+ 122              		@ sp needed
+ 123 0020 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 124              	.LVL14:
+ 125              	.L47:
+ 126              		.cfi_restore_state
+ 408:../utilities/fsl_str.c ****         {
+ 127              		.loc 1 408 0
+ 128 0024 252A     		cmp	r2, #37
+ 129 0026 00F09280 		beq	.L48
+ 410:../utilities/fsl_str.c ****             /* By using 'continue', the next iteration of the loop is used, skipping the code that 
+ 130              		.loc 1 410 0
+ 131 002a 0123     		movs	r3, #1
+ 132 002c 02A9     		add	r1, sp, #8
+ 133              	.LVL15:
+ 134 002e 4046     		mov	r0, r8
+ 135 0030 C847     		blx	r9
+ 136              	.LVL16:
+ 412:../utilities/fsl_str.c ****         }
+ 137              		.loc 1 412 0
+ 138 0032 5746     		mov	r7, r10
+ 139 0034 CDF800B0 		str	fp, [sp]
+ 140              	.LVL17:
+ 141              	.L10:
+ 400:../utilities/fsl_str.c ****     {
+ 142              		.loc 1 400 0 discriminator 2
+ 143 0038 009B     		ldr	r3, [sp]
+ 144 003a BA46     		mov	r10, r7
+ 145 003c 03F1010B 		add	fp, r3, #1
+ 146              	.LVL18:
+ 147 0040 E9E7     		b	.L8
+ 148              	.LVL19:
+ 149              	.L11:
+ 150 0042 07FB0313 		mla	r3, r7, r3, r1
+ 151              	.LVL20:
+ 457:../utilities/fsl_str.c ****             }
+ 152              		.loc 1 457 0
+ 153 0046 303B     		subs	r3, r3, #48
+ 154              	.LVL21:
+ 155 0048 9346     		mov	fp, r2
+ 156              	.LVL22:
+ 157              	.L9:
+ 454:../utilities/fsl_str.c ****             if ((c >= '0') && (c <= '9'))
+ 158              		.loc 1 454 0
+ 159 004a 9BF90110 		ldrsb	r1, [fp, #1]
+ 160              	.LVL23:
+ 455:../utilities/fsl_str.c ****             {
+ 161              		.loc 1 455 0
+ 162 004e A1F13000 		sub	r0, r1, #48
+ 163 0052 0928     		cmp	r0, #9
+ 454:../utilities/fsl_str.c ****             if ((c >= '0') && (c <= '9'))
+ 164              		.loc 1 454 0
+ 165 0054 0BF10102 		add	r2, fp, #1
+ 166              	.LVL24:
+ 455:../utilities/fsl_str.c ****             {
+ 167              		.loc 1 455 0
+ 168 0058 F3D9     		bls	.L11
+ 169              	.LVL25:
+ 477:../utilities/fsl_str.c ****         {
+ 170              		.loc 1 477 0
+ 171 005a 2E29     		cmp	r1, #46
+ 172 005c 07D1     		bne	.L12
+ 173              	.LVL26:
+ 174              	.L13:
+ 485:../utilities/fsl_str.c ****                 {
+ 175              		.loc 1 485 0
+ 176 005e 92F90110 		ldrsb	r1, [r2, #1]
+ 177 0062 3039     		subs	r1, r1, #48
+ 178 0064 0929     		cmp	r1, #9
+ 484:../utilities/fsl_str.c ****                 if ((c >= '0') && (c <= '9'))
+ 179              		.loc 1 484 0
+ 180 0066 02F10100 		add	r0, r2, #1
+ 181              	.LVL27:
+ 485:../utilities/fsl_str.c ****                 {
+ 182              		.loc 1 485 0
+ 183 006a 73D9     		bls	.L49
+ 184 006c 9346     		mov	fp, r2
+ 185              	.LVL28:
+ 186              	.L12:
+ 547:../utilities/fsl_str.c ****         {
+ 187              		.loc 1 547 0
+ 188 006e 0BF10102 		add	r2, fp, #1
+ 189 0072 0092     		str	r2, [sp]
+ 190              	.LVL29:
+ 191 0074 9BF90120 		ldrsb	r2, [fp, #1]
+ 192              	.LVL30:
+ 193 0078 A2F16200 		sub	r0, r2, #98
+ 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
+ 194              		.loc 1 549 0
+ 195 007c 642A     		cmp	r2, #100
+ 196 007e C0B2     		uxtb	r0, r0
+ 197 0080 0FD0     		beq	.L14
+ 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
+ 198              		.loc 1 549 0 is_stmt 0 discriminator 3
+ 199 0082 22F02001 		bic	r1, r2, #32
+ 200 0086 4629     		cmp	r1, #70
+ 201 0088 09D0     		beq	.L15
+ 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
+ 202              		.loc 1 549 0 discriminator 5
+ 203 008a 5829     		cmp	r1, #88
+ 204 008c 07D0     		beq	.L15
+ 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
+ 205              		.loc 1 549 0 discriminator 6
+ 206 008e 1328     		cmp	r0, #19
+ 207 0090 00F2BC80 		bhi	.L16
+ 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
+ 208              		.loc 1 549 0 discriminator 7
+ 209 0094 7649     		ldr	r1, .L73
+ 210 0096 C140     		lsrs	r1, r1, r0
+ 211 0098 CF07     		lsls	r7, r1, #31
+ 212 009a 40F1B780 		bpl	.L16
+ 213              	.L15:
+ 552:../utilities/fsl_str.c ****                 {
+ 214              		.loc 1 552 0 is_stmt 1 discriminator 1
+ 215 009e 692A     		cmp	r2, #105
+ 216 00a0 70D1     		bne	.L50
+ 217              	.L14:
+ 218              	.LBB8:
+ 219              	.LBB9:
+ 183:../utilities/fsl_str.c **** 
+ 220              		.loc 1 183 0
+ 221 00a2 0CAC     		add	r4, sp, #48
+ 222              	.LVL31:
+ 223              	.LBE9:
+ 224              	.LBE8:
+ 562:../utilities/fsl_str.c ****                     }
+ 225              		.loc 1 562 0
+ 226 00a4 DAF80010 		ldr	r1, [r10]
+ 227              	.LBB13:
+ 228              	.LBB10:
+ 183:../utilities/fsl_str.c **** 
+ 229              		.loc 1 183 0
+ 230 00a8 4FF00006 		mov	r6, #0
+ 231              	.LVL32:
+ 232              	.LBE10:
+ 233              	.LBE13:
+ 562:../utilities/fsl_str.c ****                     }
+ 234              		.loc 1 562 0
+ 235 00ac 0AF10407 		add	r7, r10, #4
+ 236              	.LVL33:
+ 237              	.LBB14:
+ 238              	.LBB11:
+ 183:../utilities/fsl_str.c **** 
+ 239              		.loc 1 183 0
+ 240 00b0 04F8246D 		strb	r6, [r4, #-36]!
+ 192:../utilities/fsl_str.c ****         {
+ 241              		.loc 1 192 0
+ 242 00b4 0029     		cmp	r1, #0
+ 243 00b6 4FD1     		bne	.L51
+ 194:../utilities/fsl_str.c ****             ++nlen;
+ 244              		.loc 1 194 0
+ 245 00b8 3021     		movs	r1, #48
+ 246 00ba 8DF80D10 		strb	r1, [sp, #13]
+ 247              	.LVL34:
+ 196:../utilities/fsl_str.c ****         }
+ 248              		.loc 1 196 0
+ 249 00be 0126     		movs	r6, #1
+ 250              	.LVL35:
+ 251              	.L19:
+ 252              	.LBE11:
+ 253              	.LBE14:
+ 565:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 254              		.loc 1 565 0
+ 255 00c0 3444     		add	r4, r4, r6
+ 256              	.LVL36:
+ 257              	.L17:
+ 688:../utilities/fsl_str.c ****                 {
+ 258              		.loc 1 688 0
+ 259 00c2 582A     		cmp	r2, #88
+ 260 00c4 60D0     		beq	.L52
+ 688:../utilities/fsl_str.c ****                 {
+ 261              		.loc 1 688 0 is_stmt 0 discriminator 1
+ 262 00c6 782A     		cmp	r2, #120
+ 263 00c8 7BD1     		bne	.L53
+ 692:../utilities/fsl_str.c ****                     }
+ 264              		.loc 1 692 0 is_stmt 1
+ 265 00ca 4FF0000C 		mov	ip, #0
+ 266              	.L22:
+ 267              	.LVL37:
+ 702:../utilities/fsl_str.c ****                     }
+ 268              		.loc 1 702 0
+ 269 00ce 3968     		ldr	r1, [r7]
+ 270              	.LBB15:
+ 271              	.LBB16:
+ 183:../utilities/fsl_str.c **** 
+ 272              		.loc 1 183 0
+ 273 00d0 4FF00004 		mov	r4, #0
+ 274              	.LVL38:
+ 275              	.LBE16:
+ 276              	.LBE15:
+ 702:../utilities/fsl_str.c ****                     }
+ 277              		.loc 1 702 0
+ 278 00d4 07F1040E 		add	lr, r7, #4
+ 279              	.LVL39:
+ 280              	.LBB19:
+ 281              	.LBB17:
+ 183:../utilities/fsl_str.c **** 
+ 282              		.loc 1 183 0
+ 283 00d8 8DF80C40 		strb	r4, [sp, #12]
+ 233:../utilities/fsl_str.c ****         {
+ 284              		.loc 1 233 0
+ 285 00dc 0029     		cmp	r1, #0
+ 286 00de 56D1     		bne	.L24
+ 235:../utilities/fsl_str.c ****             ++nlen;
+ 287              		.loc 1 235 0
+ 288 00e0 3021     		movs	r1, #48
+ 289 00e2 8DF80D10 		strb	r1, [sp, #13]
+ 290              	.LVL40:
+ 237:../utilities/fsl_str.c ****         }
+ 291              		.loc 1 237 0
+ 292 00e6 0126     		movs	r6, #1
+ 293              	.LVL41:
+ 294              	.L25:
+ 295              	.LBE17:
+ 296              	.LBE19:
+ 705:../utilities/fsl_str.c **** 
+ 297              		.loc 1 705 0
+ 298 00e8 03A9     		add	r1, sp, #12
+ 299 00ea 8C19     		adds	r4, r1, r6
+ 300              	.LVL42:
+ 702:../utilities/fsl_str.c ****                     }
+ 301              		.loc 1 702 0
+ 302 00ec 7746     		mov	r7, lr
+ 303              	.LVL43:
+ 304              	.L23:
+ 746:../utilities/fsl_str.c ****                 {
+ 305              		.loc 1 746 0
+ 306 00ee 1328     		cmp	r0, #19
+ 307 00f0 1AD8     		bhi	.L29
+ 746:../utilities/fsl_str.c ****                 {
+ 308              		.loc 1 746 0 is_stmt 0 discriminator 1
+ 309 00f2 6049     		ldr	r1, .L73+4
+ 310 00f4 21FA00F0 		lsr	r0, r1, r0
+ 311 00f8 C107     		lsls	r1, r0, #31
+ 312 00fa 15D5     		bpl	.L29
+ 758:../utilities/fsl_str.c ****                     {
+ 313              		.loc 1 758 0 is_stmt 1
+ 314 00fc 6F2A     		cmp	r2, #111
+ 756:../utilities/fsl_str.c ****                     }
+ 315              		.loc 1 756 0
+ 316 00fe 07F10400 		add	r0, r7, #4
+ 317              	.LVL44:
+ 318 0102 3968     		ldr	r1, [r7]
+ 758:../utilities/fsl_str.c ****                     {
+ 319              		.loc 1 758 0
+ 320 0104 68D0     		beq	.L54
+ 321 0106 5FDC     		bgt	.L32
+ 764:../utilities/fsl_str.c ****                             break;
+ 322              		.loc 1 764 0
+ 323 0108 622A     		cmp	r2, #98
+ 324 010a 08BF     		it	eq
+ 325 010c 0225     		moveq	r5, #2
+ 326              	.LVL45:
+ 327              	.L31:
+ 328              	.LBB20:
+ 329              	.LBB21:
+ 183:../utilities/fsl_str.c **** 
+ 330              		.loc 1 183 0
+ 331 010e 0CAC     		add	r4, sp, #48
+ 332              	.LVL46:
+ 333 0110 4FF00002 		mov	r2, #0
+ 334              	.LVL47:
+ 335 0114 04F8242D 		strb	r2, [r4, #-36]!
+ 233:../utilities/fsl_str.c ****         {
+ 336              		.loc 1 233 0
+ 337 0118 0029     		cmp	r1, #0
+ 338 011a 5FD1     		bne	.L36
+ 235:../utilities/fsl_str.c ****             ++nlen;
+ 339              		.loc 1 235 0
+ 340 011c 3022     		movs	r2, #48
+ 341 011e 8DF80D20 		strb	r2, [sp, #13]
+ 342              	.LVL48:
+ 237:../utilities/fsl_str.c ****         }
+ 343              		.loc 1 237 0
+ 344 0122 0126     		movs	r6, #1
+ 345              	.LVL49:
+ 346              	.L37:
+ 347              	.LBE21:
+ 348              	.LBE20:
+ 774:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 349              		.loc 1 774 0
+ 350 0124 3444     		add	r4, r4, r6
+ 351              	.LVL50:
+ 756:../utilities/fsl_str.c ****                     }
+ 352              		.loc 1 756 0
+ 353 0126 0746     		mov	r7, r0
+ 354              	.LVL51:
+ 355              	.L29:
+ 791:../utilities/fsl_str.c **** #endif /* !PRINTF_ADVANCED_ENABLE */
+ 356              		.loc 1 791 0
+ 357 0128 9B1B     		subs	r3, r3, r6
+ 358              	.LVL52:
+ 359 012a 2022     		movs	r2, #32
+ 360 012c 02A9     		add	r1, sp, #8
+ 361 012e 4046     		mov	r0, r8
+ 362 0130 C847     		blx	r9
+ 363              	.LVL53:
+ 793:../utilities/fsl_str.c ****                 {
+ 364              		.loc 1 793 0
+ 365 0132 002C     		cmp	r4, #0
+ 366 0134 80D0     		beq	.L10
+ 367 0136 A246     		mov	r10, r4
+ 368              	.LVL54:
+ 369              	.L41:
+ 370 0138 5446     		mov	r4, r10
+ 371              	.LVL55:
+ 795:../utilities/fsl_str.c ****                     {
+ 372              		.loc 1 795 0
+ 373 013a 1AF90129 		ldrsb	r2, [r10], #-1
+ 374 013e 002A     		cmp	r2, #0
+ 375 0140 3FF47AAF 		beq	.L10
+ 376              	.LVL56:
+ 797:../utilities/fsl_str.c ****                     }
+ 377              		.loc 1 797 0
+ 378 0144 0123     		movs	r3, #1
+ 379 0146 02A9     		add	r1, sp, #8
+ 380 0148 4046     		mov	r0, r8
+ 381 014a C847     		blx	r9
+ 382              	.LVL57:
+ 383 014c F4E7     		b	.L41
+ 384              	.LVL58:
+ 385              	.L48:
+ 450:../utilities/fsl_str.c ****         done = false;
+ 386              		.loc 1 450 0
+ 387 014e 0023     		movs	r3, #0
+ 457:../utilities/fsl_str.c ****             }
+ 388              		.loc 1 457 0
+ 389 0150 0A27     		movs	r7, #10
+ 390 0152 7AE7     		b	.L9
+ 391              	.LVL59:
+ 392              	.L49:
+ 393 0154 0246     		mov	r2, r0
+ 394 0156 82E7     		b	.L13
+ 395              	.LVL60:
+ 396              	.L51:
+ 397              	.LBB23:
+ 398              	.LBB12:
+ 192:../utilities/fsl_str.c ****         {
+ 399              		.loc 1 192 0
+ 400 0158 4FF0010C 		mov	ip, #1
+ 209:../utilities/fsl_str.c ****             c = a - (b * radix);
+ 401              		.loc 1 209 0
+ 402 015c 4FF00A0A 		mov	r10, #10
+ 403              	.LVL61:
+ 404              	.L18:
+ 405 0160 91FBFAFE 		sdiv	lr, r1, r10
+ 406              	.LVL62:
+ 407 0164 0AFB1E11 		mls	r1, r10, lr, r1
+ 408              	.LVL63:
+ 211:../utilities/fsl_str.c ****             {
+ 409              		.loc 1 211 0
+ 410 0168 0029     		cmp	r1, #0
+ 411              	.LVL64:
+ 214:../utilities/fsl_str.c ****             }
+ 412              		.loc 1 214 0
+ 413 016a B4BF     		ite	lt
+ 414 016c C1F13001 		rsblt	r1, r1, #48
+ 415              	.LVL65:
+ 219:../utilities/fsl_str.c ****             }
+ 416              		.loc 1 219 0
+ 417 0170 3031     		addge	r1, r1, #48
+ 418              	.LVL66:
+ 222:../utilities/fsl_str.c ****             ++nlen;
+ 419              		.loc 1 222 0
+ 420 0172 04F80C10 		strb	r1, [r4, ip]
+ 198:../utilities/fsl_str.c ****         {
+ 421              		.loc 1 198 0
+ 422 0176 7146     		mov	r1, lr
+ 423              	.LVL67:
+ 223:../utilities/fsl_str.c ****         }
+ 424              		.loc 1 223 0
+ 425 0178 6646     		mov	r6, ip
+ 426              	.LVL68:
+ 427 017a 0CF1010C 		add	ip, ip, #1
+ 428              	.LVL69:
+ 198:../utilities/fsl_str.c ****         {
+ 429              		.loc 1 198 0
+ 430 017e 0029     		cmp	r1, #0
+ 431 0180 EED1     		bne	.L18
+ 432 0182 9DE7     		b	.L19
+ 433              	.LVL70:
+ 434              	.L50:
+ 435              	.LBE12:
+ 436              	.LBE23:
+ 437 0184 5746     		mov	r7, r10
+ 438 0186 9CE7     		b	.L17
+ 439              	.LVL71:
+ 440              	.L52:
+ 415:../utilities/fsl_str.c **** 
+ 441              		.loc 1 415 0
+ 442 0188 4FF0010C 		mov	ip, #1
+ 443 018c 9FE7     		b	.L22
+ 444              	.LVL72:
+ 445              	.L24:
+ 446 018e BCF1000F 		cmp	ip, #0
+ 447              	.LBB24:
+ 448              	.LBB18:
+ 233:../utilities/fsl_str.c ****         {
+ 449              		.loc 1 233 0
+ 450 0192 4FF00104 		mov	r4, #1
+ 255:../utilities/fsl_str.c ****             }
+ 451              		.loc 1 255 0
+ 452 0196 14BF     		ite	ne
+ 453 0198 4FF0370B 		movne	fp, #55
+ 454 019c 4FF0570B 		moveq	fp, #87
+ 258:../utilities/fsl_str.c ****             ++nlen;
+ 455              		.loc 1 258 0
+ 456 01a0 0DF10C0A 		add	r10, sp, #12
+ 457              	.LVL73:
+ 458              	.L28:
+ 245:../utilities/fsl_str.c ****             uc = ua - (ub * (uint32_t)radix);
+ 459              		.loc 1 245 0
+ 460 01a4 0F09     		lsrs	r7, r1, #4
+ 461              	.LVL74:
+ 462 01a6 01F00F01 		and	r1, r1, #15
+ 463              	.LVL75:
+ 249:../utilities/fsl_str.c ****             {
+ 464              		.loc 1 249 0
+ 465 01aa 0929     		cmp	r1, #9
+ 251:../utilities/fsl_str.c ****             }
+ 466              		.loc 1 251 0
+ 467 01ac 94BF     		ite	ls
+ 468 01ae 3031     		addls	r1, r1, #48
+ 469              	.LVL76:
+ 255:../utilities/fsl_str.c ****             }
+ 470              		.loc 1 255 0
+ 471 01b0 5944     		addhi	r1, r1, fp
+ 472              	.LVL77:
+ 258:../utilities/fsl_str.c ****             ++nlen;
+ 473              		.loc 1 258 0
+ 474 01b2 04F80A10 		strb	r1, [r4, r10]
+ 259:../utilities/fsl_str.c ****         }
+ 475              		.loc 1 259 0
+ 476 01b6 2646     		mov	r6, r4
+ 477              	.LVL78:
+ 239:../utilities/fsl_str.c ****         {
+ 478              		.loc 1 239 0
+ 479 01b8 3946     		mov	r1, r7
+ 480              	.LVL79:
+ 481 01ba 0134     		adds	r4, r4, #1
+ 482              	.LVL80:
+ 483 01bc 002F     		cmp	r7, #0
+ 484 01be F1D1     		bne	.L28
+ 485 01c0 92E7     		b	.L25
+ 486              	.LVL81:
+ 487              	.L53:
+ 488              	.LBE18:
+ 489              	.LBE24:
+ 415:../utilities/fsl_str.c **** 
+ 490              		.loc 1 415 0
+ 491 01c2 4FF0010C 		mov	ip, #1
+ 492 01c6 92E7     		b	.L23
+ 493              	.LVL82:
+ 494              	.L32:
+ 758:../utilities/fsl_str.c ****                     {
+ 495              		.loc 1 758 0
+ 496 01c8 702A     		cmp	r2, #112
+ 497 01ca 03D0     		beq	.L34
+ 770:../utilities/fsl_str.c ****                             break;
+ 498              		.loc 1 770 0
+ 499 01cc 752A     		cmp	r2, #117
+ 500 01ce 08BF     		it	eq
+ 501 01d0 0A25     		moveq	r5, #10
+ 502              	.LVL83:
+ 503 01d2 9CE7     		b	.L31
+ 504              	.LVL84:
+ 505              	.L34:
+ 767:../utilities/fsl_str.c ****                             break;
+ 506              		.loc 1 767 0
+ 507 01d4 1025     		movs	r5, #16
+ 768:../utilities/fsl_str.c ****                         case 'u':
+ 508              		.loc 1 768 0
+ 509 01d6 9AE7     		b	.L31
+ 510              	.LVL85:
+ 511              	.L54:
+ 761:../utilities/fsl_str.c ****                             break;
+ 512              		.loc 1 761 0
+ 513 01d8 0825     		movs	r5, #8
+ 514              	.LVL86:
+ 515 01da 98E7     		b	.L31
+ 516              	.LVL87:
+ 517              	.L36:
+ 518 01dc BCF1000F 		cmp	ip, #0
+ 519              	.LBB25:
+ 520              	.LBB22:
+ 233:../utilities/fsl_str.c ****         {
+ 521              		.loc 1 233 0
+ 522 01e0 4FF00102 		mov	r2, #1
+ 255:../utilities/fsl_str.c ****             }
+ 523              		.loc 1 255 0
+ 524 01e4 14BF     		ite	ne
+ 525 01e6 4FF0370C 		movne	ip, #55
+ 526              	.LVL88:
+ 527 01ea 4FF0570C 		moveq	ip, #87
+ 528              	.LVL89:
+ 529              	.L40:
+ 245:../utilities/fsl_str.c ****             uc = ua - (ub * (uint32_t)radix);
+ 530              		.loc 1 245 0
+ 531 01ee B1FBF5F7 		udiv	r7, r1, r5
+ 532              	.LVL90:
+ 533 01f2 05FB1711 		mls	r1, r5, r7, r1
+ 534              	.LVL91:
+ 249:../utilities/fsl_str.c ****             {
+ 535              		.loc 1 249 0
+ 536 01f6 0929     		cmp	r1, #9
+ 251:../utilities/fsl_str.c ****             }
+ 537              		.loc 1 251 0
+ 538 01f8 94BF     		ite	ls
+ 539 01fa 3031     		addls	r1, r1, #48
+ 540              	.LVL92:
+ 255:../utilities/fsl_str.c ****             }
+ 541              		.loc 1 255 0
+ 542 01fc 6144     		addhi	r1, r1, ip
+ 543              	.LVL93:
+ 258:../utilities/fsl_str.c ****             ++nlen;
+ 544              		.loc 1 258 0
+ 545 01fe A154     		strb	r1, [r4, r2]
+ 259:../utilities/fsl_str.c ****         }
+ 546              		.loc 1 259 0
+ 547 0200 1646     		mov	r6, r2
+ 548              	.LVL94:
+ 239:../utilities/fsl_str.c ****         {
+ 549              		.loc 1 239 0
+ 550 0202 3946     		mov	r1, r7
+ 551              	.LVL95:
+ 552 0204 0132     		adds	r2, r2, #1
+ 553              	.LVL96:
+ 554 0206 002F     		cmp	r7, #0
+ 555 0208 F1D1     		bne	.L40
+ 556 020a 8BE7     		b	.L37
+ 557              	.LVL97:
+ 558              	.L16:
+ 559              	.LBE22:
+ 560              	.LBE25:
+ 807:../utilities/fsl_str.c ****             {
+ 561              		.loc 1 807 0
+ 562 020c 632A     		cmp	r2, #99
+ 563 020e 08D1     		bne	.L43
+ 810:../utilities/fsl_str.c ****             }
+ 564              		.loc 1 810 0
+ 565 0210 0123     		movs	r3, #1
+ 566              	.LVL98:
+ 567 0212 9AF90020 		ldrsb	r2, [r10]
+ 568              	.LVL99:
+ 569 0216 02A9     		add	r1, sp, #8
+ 570 0218 4046     		mov	r0, r8
+ 809:../utilities/fsl_str.c ****                 cb(buf, &count, cval, 1);
+ 571              		.loc 1 809 0
+ 572 021a 0AF10407 		add	r7, r10, #4
+ 573              	.LVL100:
+ 810:../utilities/fsl_str.c ****             }
+ 574              		.loc 1 810 0
+ 575 021e C847     		blx	r9
+ 576              	.LVL101:
+ 577 0220 0AE7     		b	.L10
+ 578              	.LVL102:
+ 579              	.L43:
+ 812:../utilities/fsl_str.c ****             {
+ 580              		.loc 1 812 0
+ 581 0222 732A     		cmp	r2, #115
+ 582 0224 1ED1     		bne	.L44
+ 814:../utilities/fsl_str.c ****                 if (sval)
+ 583              		.loc 1 814 0
+ 584 0226 0AF10407 		add	r7, r10, #4
+ 585              	.LVL103:
+ 586 022a DAF800A0 		ldr	r10, [r10]
+ 587 022e 0193     		str	r3, [sp, #4]
+ 815:../utilities/fsl_str.c ****                 {
+ 588              		.loc 1 815 0
+ 589 0230 BAF1000F 		cmp	r10, #0
+ 590 0234 3FF400AF 		beq	.L10
+ 827:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 591              		.loc 1 827 0
+ 592 0238 5046     		mov	r0, r10
+ 593 023a FFF7FEFF 		bl	strlen
+ 594              	.LVL104:
+ 833:../utilities/fsl_str.c ****                     }
+ 595              		.loc 1 833 0
+ 596 023e 019B     		ldr	r3, [sp, #4]
+ 827:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
+ 597              		.loc 1 827 0
+ 598 0240 0646     		mov	r6, r0
+ 599              	.LVL105:
+ 833:../utilities/fsl_str.c ****                     }
+ 600              		.loc 1 833 0
+ 601 0242 1B1A     		subs	r3, r3, r0
+ 602 0244 2022     		movs	r2, #32
+ 603 0246 02A9     		add	r1, sp, #8
+ 604 0248 4046     		mov	r0, r8
+ 605              	.LVL106:
+ 606 024a C847     		blx	r9
+ 607              	.LVL107:
+ 608 024c 0AF1FF3A 		add	r10, r10, #-1
+ 609              	.L45:
+ 610              	.LVL108:
+ 850:../utilities/fsl_str.c ****                         {
+ 611              		.loc 1 850 0
+ 612 0250 1AF9012F 		ldrsb	r2, [r10, #1]!
+ 613              	.LVL109:
+ 614 0254 002A     		cmp	r2, #0
+ 615 0256 3FF4EFAE 		beq	.L10
+ 616              	.LVL110:
+ 852:../utilities/fsl_str.c ****                         }
+ 617              		.loc 1 852 0
+ 618 025a 0123     		movs	r3, #1
+ 619 025c 02A9     		add	r1, sp, #8
+ 620 025e 4046     		mov	r0, r8
+ 621 0260 C847     		blx	r9
+ 622              	.LVL111:
+ 623 0262 F5E7     		b	.L45
+ 624              	.LVL112:
+ 625              	.L44:
+ 868:../utilities/fsl_str.c ****             }
+ 626              		.loc 1 868 0
+ 627 0264 0123     		movs	r3, #1
+ 628              	.LVL113:
+ 629 0266 02A9     		add	r1, sp, #8
+ 630 0268 4046     		mov	r0, r8
+ 631 026a C847     		blx	r9
+ 632              	.LVL114:
+ 633 026c 5746     		mov	r7, r10
+ 634 026e E3E6     		b	.L10
+ 635              	.L74:
+ 636              		.align	2
+ 637              	.L73:
+ 638 0270 81600800 		.word	548993
+ 639 0274 01600800 		.word	548865
+ 640              		.cfi_endproc
+ 641              	.LFE149:
+ 643              		.section	.text.StrFormatScanf,"ax",%progbits
+ 644              		.align	1
+ 645              		.global	StrFormatScanf
+ 646              		.syntax unified
+ 647              		.thumb
+ 648              		.thumb_func
+ 649              		.fpu fpv4-sp-d16
+ 651              	StrFormatScanf:
+ 652              	.LFB150:
+ 875:../utilities/fsl_str.c **** 
+ 876:../utilities/fsl_str.c **** int StrFormatScanf(const char *line_ptr, char *format, va_list args_ptr)
+ 877:../utilities/fsl_str.c **** {
+ 653              		.loc 1 877 0
+ 654              		.cfi_startproc
+ 655              		@ args = 0, pretend = 0, frame = 8
+ 656              		@ frame_needed = 0, uses_anonymous_args = 0
+ 657              	.LVL115:
+ 658 0000 2DE9F743 		push	{r0, r1, r2, r4, r5, r6, r7, r8, r9, lr}
+ 659              		.cfi_def_cfa_offset 40
+ 660              		.cfi_offset 4, -28
+ 661              		.cfi_offset 5, -24
+ 662              		.cfi_offset 6, -20
+ 663              		.cfi_offset 7, -16
+ 664              		.cfi_offset 8, -12
+ 665              		.cfi_offset 9, -8
+ 666              		.cfi_offset 14, -4
+ 667              	.LVL116:
+ 878:../utilities/fsl_str.c ****     uint8_t base;
+ 879:../utilities/fsl_str.c ****     int8_t neg;
+ 880:../utilities/fsl_str.c ****     /* Identifier for the format string. */
+ 881:../utilities/fsl_str.c ****     char *c = format;
+ 882:../utilities/fsl_str.c ****     char temp;
+ 883:../utilities/fsl_str.c ****     char *buf;
+ 884:../utilities/fsl_str.c ****     /* Flag telling the conversion specification. */
+ 885:../utilities/fsl_str.c ****     uint32_t flag = 0;
+ 886:../utilities/fsl_str.c ****     /* Filed width for the matching input streams. */
+ 887:../utilities/fsl_str.c ****     uint32_t field_width;
+ 888:../utilities/fsl_str.c ****     /* How many arguments are assigned except the suppress. */
+ 889:../utilities/fsl_str.c ****     uint32_t nassigned = 0;
+ 890:../utilities/fsl_str.c ****     /* How many characters are read from the input streams. */
+ 891:../utilities/fsl_str.c ****     uint32_t n_decode = 0;
+ 892:../utilities/fsl_str.c **** 
+ 893:../utilities/fsl_str.c ****     int32_t val;
+ 894:../utilities/fsl_str.c **** 
+ 895:../utilities/fsl_str.c ****     const char *s;
+ 896:../utilities/fsl_str.c ****     /* Identifier for the input string. */
+ 897:../utilities/fsl_str.c ****     const char *p = line_ptr;
+ 898:../utilities/fsl_str.c **** 
+ 899:../utilities/fsl_str.c ****     /* Return EOF error before any conversion. */
+ 900:../utilities/fsl_str.c ****     if (*p == '\0')
+ 668              		.loc 1 900 0
+ 669 0004 90F90030 		ldrsb	r3, [r0]
+ 670              	.LVL117:
+ 877:../utilities/fsl_str.c ****     uint8_t base;
+ 671              		.loc 1 877 0
+ 672 0008 1746     		mov	r7, r2
+ 673              	.LVL118:
+ 897:../utilities/fsl_str.c **** 
+ 674              		.loc 1 897 0
+ 675 000a CDE90010 		strd	r1, r0, [sp]
+ 676              		.loc 1 900 0
+ 677 000e 002B     		cmp	r3, #0
+ 678 0010 00F03381 		beq	.L131
+ 889:../utilities/fsl_str.c ****     /* How many characters are read from the input streams. */
+ 679              		.loc 1 889 0
+ 680 0014 0026     		movs	r6, #0
+ 901:../utilities/fsl_str.c ****     {
+ 902:../utilities/fsl_str.c ****         return -1;
+ 903:../utilities/fsl_str.c ****     }
+ 904:../utilities/fsl_str.c **** 
+ 905:../utilities/fsl_str.c ****     /* Decode directives. */
+ 906:../utilities/fsl_str.c ****     while ((*c) && (*p))
+ 907:../utilities/fsl_str.c ****     {
+ 908:../utilities/fsl_str.c ****         /* Ignore all white-spaces in the format strings. */
+ 909:../utilities/fsl_str.c ****         if (ScanIgnoreWhiteSpace((const char **)&c))
+ 910:../utilities/fsl_str.c ****         {
+ 911:../utilities/fsl_str.c ****             n_decode += ScanIgnoreWhiteSpace(&p);
+ 912:../utilities/fsl_str.c ****         }
+ 913:../utilities/fsl_str.c ****         else if ((*c != '%') || ((*c == '%') && (*(c + 1) == '%')))
+ 914:../utilities/fsl_str.c ****         {
+ 915:../utilities/fsl_str.c ****             /* Ordinary characters. */
+ 916:../utilities/fsl_str.c ****             c++;
+ 917:../utilities/fsl_str.c ****             if (*p == *c)
+ 918:../utilities/fsl_str.c ****             {
+ 919:../utilities/fsl_str.c ****                 n_decode++;
+ 920:../utilities/fsl_str.c ****                 p++;
+ 921:../utilities/fsl_str.c ****                 c++;
+ 922:../utilities/fsl_str.c ****             }
+ 923:../utilities/fsl_str.c ****             else
+ 924:../utilities/fsl_str.c ****             {
+ 925:../utilities/fsl_str.c ****                 /* Match failure. Misalignment with C99, the unmatched characters need to be pushed
+ 926:../utilities/fsl_str.c ****                  * However, it is deserted now. */
+ 927:../utilities/fsl_str.c ****                 break;
+ 928:../utilities/fsl_str.c ****             }
+ 929:../utilities/fsl_str.c ****         }
+ 930:../utilities/fsl_str.c ****         else
+ 931:../utilities/fsl_str.c ****         {
+ 932:../utilities/fsl_str.c ****             /* convernsion specification */
+ 933:../utilities/fsl_str.c ****             c++;
+ 934:../utilities/fsl_str.c ****             /* Reset. */
+ 935:../utilities/fsl_str.c ****             flag = 0;
+ 936:../utilities/fsl_str.c ****             field_width = 0;
+ 937:../utilities/fsl_str.c ****             base = 0;
+ 938:../utilities/fsl_str.c **** 
+ 939:../utilities/fsl_str.c ****             /* Loop to get full conversion specification. */
+ 940:../utilities/fsl_str.c ****             while ((*c) && (!(flag & kSCANF_DestMask)))
+ 941:../utilities/fsl_str.c ****             {
+ 942:../utilities/fsl_str.c ****                 switch (*c)
+ 943:../utilities/fsl_str.c ****                 {
+ 944:../utilities/fsl_str.c **** #if SCANF_ADVANCED_ENABLE
+ 945:../utilities/fsl_str.c ****                     case '*':
+ 946:../utilities/fsl_str.c ****                         if (flag & kSCANF_Suppress)
+ 947:../utilities/fsl_str.c ****                         {
+ 948:../utilities/fsl_str.c ****                             /* Match failure. */
+ 949:../utilities/fsl_str.c ****                             return nassigned;
+ 950:../utilities/fsl_str.c ****                         }
+ 951:../utilities/fsl_str.c ****                         flag |= kSCANF_Suppress;
+ 952:../utilities/fsl_str.c ****                         c++;
+ 953:../utilities/fsl_str.c ****                         break;
+ 954:../utilities/fsl_str.c ****                     case 'h':
+ 955:../utilities/fsl_str.c ****                         if (flag & kSCANF_LengthMask)
+ 956:../utilities/fsl_str.c ****                         {
+ 957:../utilities/fsl_str.c ****                             /* Match failure. */
+ 958:../utilities/fsl_str.c ****                             return nassigned;
+ 959:../utilities/fsl_str.c ****                         }
+ 960:../utilities/fsl_str.c **** 
+ 961:../utilities/fsl_str.c ****                         if (c[1] == 'h')
+ 962:../utilities/fsl_str.c ****                         {
+ 963:../utilities/fsl_str.c ****                             flag |= kSCANF_LengthChar;
+ 964:../utilities/fsl_str.c ****                             c++;
+ 965:../utilities/fsl_str.c ****                         }
+ 966:../utilities/fsl_str.c ****                         else
+ 967:../utilities/fsl_str.c ****                         {
+ 968:../utilities/fsl_str.c ****                             flag |= kSCANF_LengthShortInt;
+ 969:../utilities/fsl_str.c ****                         }
+ 970:../utilities/fsl_str.c ****                         c++;
+ 971:../utilities/fsl_str.c ****                         break;
+ 972:../utilities/fsl_str.c ****                     case 'l':
+ 973:../utilities/fsl_str.c ****                         if (flag & kSCANF_LengthMask)
+ 974:../utilities/fsl_str.c ****                         {
+ 975:../utilities/fsl_str.c ****                             /* Match failure. */
+ 976:../utilities/fsl_str.c ****                             return nassigned;
+ 977:../utilities/fsl_str.c ****                         }
+ 978:../utilities/fsl_str.c **** 
+ 979:../utilities/fsl_str.c ****                         if (c[1] == 'l')
+ 980:../utilities/fsl_str.c ****                         {
+ 981:../utilities/fsl_str.c ****                             flag |= kSCANF_LengthLongLongInt;
+ 982:../utilities/fsl_str.c ****                             c++;
+ 983:../utilities/fsl_str.c ****                         }
+ 984:../utilities/fsl_str.c ****                         else
+ 985:../utilities/fsl_str.c ****                         {
+ 986:../utilities/fsl_str.c ****                             flag |= kSCANF_LengthLongInt;
+ 987:../utilities/fsl_str.c ****                         }
+ 988:../utilities/fsl_str.c ****                         c++;
+ 989:../utilities/fsl_str.c ****                         break;
+ 990:../utilities/fsl_str.c **** #endif /* SCANF_ADVANCED_ENABLE */
+ 991:../utilities/fsl_str.c **** #if SCANF_FLOAT_ENABLE
+ 992:../utilities/fsl_str.c ****                     case 'L':
+ 993:../utilities/fsl_str.c ****                         if (flag & kSCANF_LengthMask)
+ 994:../utilities/fsl_str.c ****                         {
+ 995:../utilities/fsl_str.c ****                             /* Match failure. */
+ 996:../utilities/fsl_str.c ****                             return nassigned;
+ 997:../utilities/fsl_str.c ****                         }
+ 998:../utilities/fsl_str.c ****                         flag |= kSCANF_LengthLongLongDouble;
+ 999:../utilities/fsl_str.c ****                         c++;
+1000:../utilities/fsl_str.c ****                         break;
+1001:../utilities/fsl_str.c **** #endif /* SCANF_FLOAT_ENABLE */
+1002:../utilities/fsl_str.c ****                     case '0':
+1003:../utilities/fsl_str.c ****                     case '1':
+1004:../utilities/fsl_str.c ****                     case '2':
+1005:../utilities/fsl_str.c ****                     case '3':
+1006:../utilities/fsl_str.c ****                     case '4':
+1007:../utilities/fsl_str.c ****                     case '5':
+1008:../utilities/fsl_str.c ****                     case '6':
+1009:../utilities/fsl_str.c ****                     case '7':
+1010:../utilities/fsl_str.c ****                     case '8':
+1011:../utilities/fsl_str.c ****                     case '9':
+1012:../utilities/fsl_str.c ****                         if (field_width)
+1013:../utilities/fsl_str.c ****                         {
+1014:../utilities/fsl_str.c ****                             /* Match failure. */
+1015:../utilities/fsl_str.c ****                             return nassigned;
+1016:../utilities/fsl_str.c ****                         }
+1017:../utilities/fsl_str.c ****                         do
+1018:../utilities/fsl_str.c ****                         {
+1019:../utilities/fsl_str.c ****                             field_width = field_width * 10 + *c - '0';
+1020:../utilities/fsl_str.c ****                             c++;
+1021:../utilities/fsl_str.c ****                         } while ((*c >= '0') && (*c <= '9'));
+1022:../utilities/fsl_str.c ****                         break;
+1023:../utilities/fsl_str.c ****                     case 'd':
+1024:../utilities/fsl_str.c ****                         base = 10;
+1025:../utilities/fsl_str.c ****                         flag |= kSCANF_TypeSinged;
+1026:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
+ 681              		.loc 1 1026 0
+ 682 0016 42F22005 		movw	r5, #8224
+ 683              	.LVL119:
+ 684              	.L77:
+ 906:../utilities/fsl_str.c ****     {
+ 685              		.loc 1 906 0
+ 686 001a 009B     		ldr	r3, [sp]
+ 687 001c 93F90030 		ldrsb	r3, [r3]
+ 688 0020 002B     		cmp	r3, #0
+ 689 0022 00F09E80 		beq	.L75
+ 906:../utilities/fsl_str.c ****     {
+ 690              		.loc 1 906 0 is_stmt 0 discriminator 1
+ 691 0026 019B     		ldr	r3, [sp, #4]
+ 692 0028 93F90030 		ldrsb	r3, [r3]
+ 693 002c 002B     		cmp	r3, #0
+ 694 002e 00F09880 		beq	.L75
+ 909:../utilities/fsl_str.c ****         {
+ 695              		.loc 1 909 0 is_stmt 1
+ 696 0032 6846     		mov	r0, sp
+ 697 0034 FFF7FEFF 		bl	ScanIgnoreWhiteSpace
+ 698              	.LVL120:
+ 699 0038 0446     		mov	r4, r0
+ 700 003a 28B1     		cbz	r0, .L78
+ 911:../utilities/fsl_str.c ****         }
+ 701              		.loc 1 911 0
+ 702 003c 01A8     		add	r0, sp, #4
+ 703 003e FFF7FEFF 		bl	ScanIgnoreWhiteSpace
+ 704              	.LVL121:
+ 705              	.L162:
+ 917:../utilities/fsl_str.c ****             {
+ 706              		.loc 1 917 0
+ 707 0042 3B46     		mov	r3, r7
+ 708              	.LVL122:
+ 709              	.L79:
+ 710 0044 1F46     		mov	r7, r3
+ 711 0046 E8E7     		b	.L77
+ 712              	.LVL123:
+ 713              	.L78:
+ 913:../utilities/fsl_str.c ****         {
+ 714              		.loc 1 913 0
+ 715 0048 009B     		ldr	r3, [sp]
+ 716 004a 93F90010 		ldrsb	r1, [r3]
+ 717 004e 2529     		cmp	r1, #37
+ 718 0050 03F10102 		add	r2, r3, #1
+ 719 0054 03D1     		bne	.L80
+ 913:../utilities/fsl_str.c ****         {
+ 720              		.loc 1 913 0 is_stmt 0 discriminator 1
+ 721 0056 93F90110 		ldrsb	r1, [r3, #1]
+ 722 005a 2529     		cmp	r1, #37
+ 723 005c 0CD1     		bne	.L81
+ 724              	.L80:
+ 916:../utilities/fsl_str.c ****             if (*p == *c)
+ 725              		.loc 1 916 0 is_stmt 1
+ 726 005e 0092     		str	r2, [sp]
+ 917:../utilities/fsl_str.c ****             {
+ 727              		.loc 1 917 0
+ 728 0060 019A     		ldr	r2, [sp, #4]
+ 729 0062 93F90110 		ldrsb	r1, [r3, #1]
+ 730 0066 92F90000 		ldrsb	r0, [r2]
+ 731 006a 8842     		cmp	r0, r1
+ 732 006c 79D1     		bne	.L75
+ 920:../utilities/fsl_str.c ****                 c++;
+ 733              		.loc 1 920 0
+ 734 006e 0132     		adds	r2, r2, #1
+ 921:../utilities/fsl_str.c ****             }
+ 735              		.loc 1 921 0
+ 736 0070 0233     		adds	r3, r3, #2
+ 920:../utilities/fsl_str.c ****                 c++;
+ 737              		.loc 1 920 0
+ 738 0072 0192     		str	r2, [sp, #4]
+ 921:../utilities/fsl_str.c ****             }
+ 739              		.loc 1 921 0
+ 740 0074 0093     		str	r3, [sp]
+ 741 0076 E4E7     		b	.L162
+ 742              	.L81:
+ 933:../utilities/fsl_str.c ****             /* Reset. */
+ 743              		.loc 1 933 0
+ 744 0078 0092     		str	r2, [sp]
+ 745              	.LVL124:
+ 935:../utilities/fsl_str.c ****             field_width = 0;
+ 746              		.loc 1 935 0
+ 747 007a 8046     		mov	r8, r0
+ 937:../utilities/fsl_str.c **** 
+ 748              		.loc 1 937 0
+ 749 007c 8146     		mov	r9, r0
+1019:../utilities/fsl_str.c ****                             c++;
+ 750              		.loc 1 1019 0
+ 751 007e 0A22     		movs	r2, #10
+ 752              	.LVL125:
+ 753              	.L83:
+ 940:../utilities/fsl_str.c ****             {
+ 754              		.loc 1 940 0
+ 755 0080 009B     		ldr	r3, [sp]
+ 756 0082 93F90010 		ldrsb	r1, [r3]
+ 757 0086 08F07C00 		and	r0, r8, #124
+ 758 008a 0029     		cmp	r1, #0
+ 759 008c 5ED1     		bne	.L99
+1027:../utilities/fsl_str.c ****                         c++;
+1028:../utilities/fsl_str.c ****                         break;
+1029:../utilities/fsl_str.c ****                     case 'u':
+1030:../utilities/fsl_str.c ****                         base = 10;
+1031:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
+1032:../utilities/fsl_str.c ****                         c++;
+1033:../utilities/fsl_str.c ****                         break;
+1034:../utilities/fsl_str.c ****                     case 'o':
+1035:../utilities/fsl_str.c ****                         base = 8;
+1036:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
+1037:../utilities/fsl_str.c ****                         c++;
+1038:../utilities/fsl_str.c ****                         break;
+1039:../utilities/fsl_str.c ****                     case 'x':
+1040:../utilities/fsl_str.c ****                     case 'X':
+1041:../utilities/fsl_str.c ****                         base = 16;
+1042:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
+1043:../utilities/fsl_str.c ****                         c++;
+1044:../utilities/fsl_str.c ****                         break;
+1045:../utilities/fsl_str.c ****                     case 'i':
+1046:../utilities/fsl_str.c ****                         base = 0;
+1047:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
+1048:../utilities/fsl_str.c ****                         c++;
+1049:../utilities/fsl_str.c ****                         break;
+1050:../utilities/fsl_str.c **** #if SCANF_FLOAT_ENABLE
+1051:../utilities/fsl_str.c ****                     case 'a':
+1052:../utilities/fsl_str.c ****                     case 'A':
+1053:../utilities/fsl_str.c ****                     case 'e':
+1054:../utilities/fsl_str.c ****                     case 'E':
+1055:../utilities/fsl_str.c ****                     case 'f':
+1056:../utilities/fsl_str.c ****                     case 'F':
+1057:../utilities/fsl_str.c ****                     case 'g':
+1058:../utilities/fsl_str.c ****                     case 'G':
+1059:../utilities/fsl_str.c ****                         flag |= kSCANF_DestFloat;
+1060:../utilities/fsl_str.c ****                         c++;
+1061:../utilities/fsl_str.c ****                         break;
+1062:../utilities/fsl_str.c **** #endif /* SCANF_FLOAT_ENABLE */
+1063:../utilities/fsl_str.c ****                     case 'c':
+1064:../utilities/fsl_str.c ****                         flag |= kSCANF_DestChar;
+1065:../utilities/fsl_str.c ****                         if (!field_width)
+1066:../utilities/fsl_str.c ****                         {
+1067:../utilities/fsl_str.c ****                             field_width = 1;
+1068:../utilities/fsl_str.c ****                         }
+1069:../utilities/fsl_str.c ****                         c++;
+1070:../utilities/fsl_str.c ****                         break;
+1071:../utilities/fsl_str.c ****                     case 's':
+1072:../utilities/fsl_str.c ****                         flag |= kSCANF_DestString;
+1073:../utilities/fsl_str.c ****                         c++;
+1074:../utilities/fsl_str.c ****                         break;
+1075:../utilities/fsl_str.c ****                     default:
+1076:../utilities/fsl_str.c ****                         return nassigned;
+1077:../utilities/fsl_str.c ****                 }
+1078:../utilities/fsl_str.c ****             }
+1079:../utilities/fsl_str.c **** 
+1080:../utilities/fsl_str.c ****             if (!(flag & kSCANF_DestMask))
+ 760              		.loc 1 1080 0
+ 761 008e 0028     		cmp	r0, #0
+ 762 0090 67D0     		beq	.L75
+ 763              	.L101:
+1081:../utilities/fsl_str.c ****             {
+1082:../utilities/fsl_str.c ****                 /* Format strings are exhausted. */
+1083:../utilities/fsl_str.c ****                 return nassigned;
+1084:../utilities/fsl_str.c ****             }
+1085:../utilities/fsl_str.c **** 
+1086:../utilities/fsl_str.c ****             if (!field_width)
+1087:../utilities/fsl_str.c ****             {
+1088:../utilities/fsl_str.c ****                 /* Large than length of a line. */
+1089:../utilities/fsl_str.c ****                 field_width = 99;
+ 764              		.loc 1 1089 0
+ 765 0092 002C     		cmp	r4, #0
+ 766 0094 08BF     		it	eq
+ 767 0096 6324     		moveq	r4, #99
+1090:../utilities/fsl_str.c ****             }
+1091:../utilities/fsl_str.c **** 
+1092:../utilities/fsl_str.c ****             /* Matching strings in input streams and assign to argument. */
+1093:../utilities/fsl_str.c ****             switch (flag & kSCANF_DestMask)
+ 768              		.loc 1 1093 0
+ 769 0098 0828     		cmp	r0, #8
+ 770 009a 6DD0     		beq	.L105
+ 771 009c 2028     		cmp	r0, #32
+ 772 009e 00F08C80 		beq	.L106
+ 773 00a2 0428     		cmp	r0, #4
+ 774 00a4 5DD1     		bne	.L75
+1094:../utilities/fsl_str.c ****             {
+1095:../utilities/fsl_str.c ****                 case kSCANF_DestChar:
+1096:../utilities/fsl_str.c ****                     s = (const char *)p;
+1097:../utilities/fsl_str.c ****                     buf = va_arg(args_ptr, char *);
+ 775              		.loc 1 1097 0
+ 776 00a6 3968     		ldr	r1, [r7]
+1096:../utilities/fsl_str.c ****                     buf = va_arg(args_ptr, char *);
+ 777              		.loc 1 1096 0
+ 778 00a8 0198     		ldr	r0, [sp, #4]
+ 779              	.LVL126:
+ 780              		.loc 1 1097 0
+ 781 00aa 3B1D     		adds	r3, r7, #4
+ 782              	.LVL127:
+ 783 00ac 0C44     		add	r4, r4, r1
+ 784              	.L108:
+ 785              	.LVL128:
+1098:../utilities/fsl_str.c ****                     while ((field_width--) && (*p))
+ 786              		.loc 1 1098 0
+ 787 00ae A142     		cmp	r1, r4
+ 788 00b0 019A     		ldr	r2, [sp, #4]
+ 789 00b2 03D0     		beq	.L109
+ 790              		.loc 1 1098 0 is_stmt 0 discriminator 1
+ 791 00b4 92F90070 		ldrsb	r7, [r2]
+ 792 00b8 002F     		cmp	r7, #0
+ 793 00ba 56D1     		bne	.L110
+ 794              	.L109:
+1099:../utilities/fsl_str.c ****                     {
+1100:../utilities/fsl_str.c ****                         if (!(flag & kSCANF_Suppress))
+1101:../utilities/fsl_str.c ****                         {
+1102:../utilities/fsl_str.c ****                             *buf++ = *p++;
+1103:../utilities/fsl_str.c ****                         }
+1104:../utilities/fsl_str.c ****                         else
+1105:../utilities/fsl_str.c ****                         {
+1106:../utilities/fsl_str.c ****                             p++;
+1107:../utilities/fsl_str.c ****                         }
+1108:../utilities/fsl_str.c ****                         n_decode++;
+1109:../utilities/fsl_str.c ****                     }
+1110:../utilities/fsl_str.c **** 
+1111:../utilities/fsl_str.c ****                     if ((!(flag & kSCANF_Suppress)) && (s != p))
+ 795              		.loc 1 1111 0 is_stmt 1 discriminator 1
+ 796 00bc 9042     		cmp	r0, r2
+ 797 00be C1D0     		beq	.L79
+ 798              	.LVL129:
+ 799              	.L128:
+1112:../utilities/fsl_str.c ****                     {
+1113:../utilities/fsl_str.c ****                         nassigned++;
+1114:../utilities/fsl_str.c ****                     }
+1115:../utilities/fsl_str.c ****                     break;
+1116:../utilities/fsl_str.c ****                 case kSCANF_DestString:
+1117:../utilities/fsl_str.c ****                     n_decode += ScanIgnoreWhiteSpace(&p);
+1118:../utilities/fsl_str.c ****                     s = p;
+1119:../utilities/fsl_str.c ****                     buf = va_arg(args_ptr, char *);
+1120:../utilities/fsl_str.c ****                     while ((field_width--) && (*p != '\0') && (*p != ' ') && (*p != '\t') && (*p !=
+1121:../utilities/fsl_str.c ****                            (*p != '\r') && (*p != '\v') && (*p != '\f'))
+1122:../utilities/fsl_str.c ****                     {
+1123:../utilities/fsl_str.c ****                         if (flag & kSCANF_Suppress)
+1124:../utilities/fsl_str.c ****                         {
+1125:../utilities/fsl_str.c ****                             p++;
+1126:../utilities/fsl_str.c ****                         }
+1127:../utilities/fsl_str.c ****                         else
+1128:../utilities/fsl_str.c ****                         {
+1129:../utilities/fsl_str.c ****                             *buf++ = *p++;
+1130:../utilities/fsl_str.c ****                         }
+1131:../utilities/fsl_str.c ****                         n_decode++;
+1132:../utilities/fsl_str.c ****                     }
+1133:../utilities/fsl_str.c **** 
+1134:../utilities/fsl_str.c ****                     if ((!(flag & kSCANF_Suppress)) && (s != p))
+1135:../utilities/fsl_str.c ****                     {
+1136:../utilities/fsl_str.c ****                         /* Add NULL to end of string. */
+1137:../utilities/fsl_str.c ****                         *buf = '\0';
+1138:../utilities/fsl_str.c ****                         nassigned++;
+1139:../utilities/fsl_str.c ****                     }
+1140:../utilities/fsl_str.c ****                     break;
+1141:../utilities/fsl_str.c ****                 case kSCANF_DestInt:
+1142:../utilities/fsl_str.c ****                     n_decode += ScanIgnoreWhiteSpace(&p);
+1143:../utilities/fsl_str.c ****                     s = p;
+1144:../utilities/fsl_str.c ****                     val = 0;
+1145:../utilities/fsl_str.c ****                     if ((base == 0) || (base == 16))
+1146:../utilities/fsl_str.c ****                     {
+1147:../utilities/fsl_str.c ****                         if ((s[0] == '0') && ((s[1] == 'x') || (s[1] == 'X')))
+1148:../utilities/fsl_str.c ****                         {
+1149:../utilities/fsl_str.c ****                             base = 16;
+1150:../utilities/fsl_str.c ****                             if (field_width >= 1)
+1151:../utilities/fsl_str.c ****                             {
+1152:../utilities/fsl_str.c ****                                 p += 2;
+1153:../utilities/fsl_str.c ****                                 n_decode += 2;
+1154:../utilities/fsl_str.c ****                                 field_width -= 2;
+1155:../utilities/fsl_str.c ****                             }
+1156:../utilities/fsl_str.c ****                         }
+1157:../utilities/fsl_str.c ****                     }
+1158:../utilities/fsl_str.c **** 
+1159:../utilities/fsl_str.c ****                     if (base == 0)
+1160:../utilities/fsl_str.c ****                     {
+1161:../utilities/fsl_str.c ****                         if (s[0] == '0')
+1162:../utilities/fsl_str.c ****                         {
+1163:../utilities/fsl_str.c ****                             base = 8;
+1164:../utilities/fsl_str.c ****                         }
+1165:../utilities/fsl_str.c ****                         else
+1166:../utilities/fsl_str.c ****                         {
+1167:../utilities/fsl_str.c ****                             base = 10;
+1168:../utilities/fsl_str.c ****                         }
+1169:../utilities/fsl_str.c ****                     }
+1170:../utilities/fsl_str.c **** 
+1171:../utilities/fsl_str.c ****                     neg = 1;
+1172:../utilities/fsl_str.c ****                     switch (*p)
+1173:../utilities/fsl_str.c ****                     {
+1174:../utilities/fsl_str.c ****                         case '-':
+1175:../utilities/fsl_str.c ****                             neg = -1;
+1176:../utilities/fsl_str.c ****                             n_decode++;
+1177:../utilities/fsl_str.c ****                             p++;
+1178:../utilities/fsl_str.c ****                             field_width--;
+1179:../utilities/fsl_str.c ****                             break;
+1180:../utilities/fsl_str.c ****                         case '+':
+1181:../utilities/fsl_str.c ****                             neg = 1;
+1182:../utilities/fsl_str.c ****                             n_decode++;
+1183:../utilities/fsl_str.c ****                             p++;
+1184:../utilities/fsl_str.c ****                             field_width--;
+1185:../utilities/fsl_str.c ****                             break;
+1186:../utilities/fsl_str.c ****                         default:
+1187:../utilities/fsl_str.c ****                             break;
+1188:../utilities/fsl_str.c ****                     }
+1189:../utilities/fsl_str.c **** 
+1190:../utilities/fsl_str.c ****                     while ((*p) && (field_width--))
+1191:../utilities/fsl_str.c ****                     {
+1192:../utilities/fsl_str.c ****                         if ((*p <= '9') && (*p >= '0'))
+1193:../utilities/fsl_str.c ****                         {
+1194:../utilities/fsl_str.c ****                             temp = *p - '0';
+1195:../utilities/fsl_str.c ****                         }
+1196:../utilities/fsl_str.c ****                         else if ((*p <= 'f') && (*p >= 'a'))
+1197:../utilities/fsl_str.c ****                         {
+1198:../utilities/fsl_str.c ****                             temp = *p - 'a' + 10;
+1199:../utilities/fsl_str.c ****                         }
+1200:../utilities/fsl_str.c ****                         else if ((*p <= 'F') && (*p >= 'A'))
+1201:../utilities/fsl_str.c ****                         {
+1202:../utilities/fsl_str.c ****                             temp = *p - 'A' + 10;
+1203:../utilities/fsl_str.c ****                         }
+1204:../utilities/fsl_str.c ****                         else
+1205:../utilities/fsl_str.c ****                         {
+1206:../utilities/fsl_str.c ****                             temp = base;
+1207:../utilities/fsl_str.c ****                         }
+1208:../utilities/fsl_str.c **** 
+1209:../utilities/fsl_str.c ****                         if (temp >= base)
+1210:../utilities/fsl_str.c ****                         {
+1211:../utilities/fsl_str.c ****                             break;
+1212:../utilities/fsl_str.c ****                         }
+1213:../utilities/fsl_str.c ****                         else
+1214:../utilities/fsl_str.c ****                         {
+1215:../utilities/fsl_str.c ****                             val = base * val + temp;
+1216:../utilities/fsl_str.c ****                         }
+1217:../utilities/fsl_str.c ****                         p++;
+1218:../utilities/fsl_str.c ****                         n_decode++;
+1219:../utilities/fsl_str.c ****                     }
+1220:../utilities/fsl_str.c ****                     val *= neg;
+1221:../utilities/fsl_str.c ****                     if (!(flag & kSCANF_Suppress))
+1222:../utilities/fsl_str.c ****                     {
+1223:../utilities/fsl_str.c **** #if SCANF_ADVANCED_ENABLE
+1224:../utilities/fsl_str.c ****                         switch (flag & kSCANF_LengthMask)
+1225:../utilities/fsl_str.c ****                         {
+1226:../utilities/fsl_str.c ****                             case kSCANF_LengthChar:
+1227:../utilities/fsl_str.c ****                                 if (flag & kSCANF_TypeSinged)
+1228:../utilities/fsl_str.c ****                                 {
+1229:../utilities/fsl_str.c ****                                     *va_arg(args_ptr, signed char *) = (signed char)val;
+1230:../utilities/fsl_str.c ****                                 }
+1231:../utilities/fsl_str.c ****                                 else
+1232:../utilities/fsl_str.c ****                                 {
+1233:../utilities/fsl_str.c ****                                     *va_arg(args_ptr, unsigned char *) = (unsigned char)val;
+1234:../utilities/fsl_str.c ****                                 }
+1235:../utilities/fsl_str.c ****                                 break;
+1236:../utilities/fsl_str.c ****                             case kSCANF_LengthShortInt:
+1237:../utilities/fsl_str.c ****                                 if (flag & kSCANF_TypeSinged)
+1238:../utilities/fsl_str.c ****                                 {
+1239:../utilities/fsl_str.c ****                                     *va_arg(args_ptr, signed short *) = (signed short)val;
+1240:../utilities/fsl_str.c ****                                 }
+1241:../utilities/fsl_str.c ****                                 else
+1242:../utilities/fsl_str.c ****                                 {
+1243:../utilities/fsl_str.c ****                                     *va_arg(args_ptr, unsigned short *) = (unsigned short)val;
+1244:../utilities/fsl_str.c ****                                 }
+1245:../utilities/fsl_str.c ****                                 break;
+1246:../utilities/fsl_str.c ****                             case kSCANF_LengthLongInt:
+1247:../utilities/fsl_str.c ****                                 if (flag & kSCANF_TypeSinged)
+1248:../utilities/fsl_str.c ****                                 {
+1249:../utilities/fsl_str.c ****                                     *va_arg(args_ptr, signed long int *) = (signed long int)val;
+1250:../utilities/fsl_str.c ****                                 }
+1251:../utilities/fsl_str.c ****                                 else
+1252:../utilities/fsl_str.c ****                                 {
+1253:../utilities/fsl_str.c ****                                     *va_arg(args_ptr, unsigned long int *) = (unsigned long int)val
+1254:../utilities/fsl_str.c ****                                 }
+1255:../utilities/fsl_str.c ****                                 break;
+1256:../utilities/fsl_str.c ****                             case kSCANF_LengthLongLongInt:
+1257:../utilities/fsl_str.c ****                                 if (flag & kSCANF_TypeSinged)
+1258:../utilities/fsl_str.c ****                                 {
+1259:../utilities/fsl_str.c ****                                     *va_arg(args_ptr, signed long long int *) = (signed long long i
+1260:../utilities/fsl_str.c ****                                 }
+1261:../utilities/fsl_str.c ****                                 else
+1262:../utilities/fsl_str.c ****                                 {
+1263:../utilities/fsl_str.c ****                                     *va_arg(args_ptr, unsigned long long int *) = (unsigned long lo
+1264:../utilities/fsl_str.c ****                                 }
+1265:../utilities/fsl_str.c ****                                 break;
+1266:../utilities/fsl_str.c ****                             default:
+1267:../utilities/fsl_str.c ****                                 /* The default type is the type int. */
+1268:../utilities/fsl_str.c ****                                 if (flag & kSCANF_TypeSinged)
+1269:../utilities/fsl_str.c ****                                 {
+1270:../utilities/fsl_str.c ****                                     *va_arg(args_ptr, signed int *) = (signed int)val;
+1271:../utilities/fsl_str.c ****                                 }
+1272:../utilities/fsl_str.c ****                                 else
+1273:../utilities/fsl_str.c ****                                 {
+1274:../utilities/fsl_str.c ****                                     *va_arg(args_ptr, unsigned int *) = (unsigned int)val;
+1275:../utilities/fsl_str.c ****                                 }
+1276:../utilities/fsl_str.c ****                                 break;
+1277:../utilities/fsl_str.c ****                         }
+1278:../utilities/fsl_str.c **** #else
+1279:../utilities/fsl_str.c ****                         /* The default type is the type int. */
+1280:../utilities/fsl_str.c ****                         if (flag & kSCANF_TypeSinged)
+1281:../utilities/fsl_str.c ****                         {
+1282:../utilities/fsl_str.c ****                             *va_arg(args_ptr, signed int *) = (signed int)val;
+1283:../utilities/fsl_str.c ****                         }
+1284:../utilities/fsl_str.c ****                         else
+1285:../utilities/fsl_str.c ****                         {
+1286:../utilities/fsl_str.c ****                             *va_arg(args_ptr, unsigned int *) = (unsigned int)val;
+1287:../utilities/fsl_str.c ****                         }
+1288:../utilities/fsl_str.c **** #endif /* SCANF_ADVANCED_ENABLE */
+1289:../utilities/fsl_str.c ****                         nassigned++;
+ 800              		.loc 1 1289 0
+ 801 00c0 0136     		adds	r6, r6, #1
+ 802              	.LVL130:
+ 803 00c2 BFE7     		b	.L79
+ 804              	.LVL131:
+ 805              	.L88:
+ 942:../utilities/fsl_str.c ****                 {
+ 806              		.loc 1 942 0
+ 807 00c4 6329     		cmp	r1, #99
+ 808 00c6 4CD1     		bne	.L75
+1067:../utilities/fsl_str.c ****                         }
+ 809              		.loc 1 1067 0
+ 810 00c8 002C     		cmp	r4, #0
+1064:../utilities/fsl_str.c ****                         if (!field_width)
+ 811              		.loc 1 1064 0
+ 812 00ca 48F00408 		orr	r8, r8, #4
+ 813              	.LVL132:
+1067:../utilities/fsl_str.c ****                         }
+ 814              		.loc 1 1067 0
+ 815 00ce 08BF     		it	eq
+ 816 00d0 0124     		moveq	r4, #1
+ 817              	.LVL133:
+ 818              	.L159:
+1073:../utilities/fsl_str.c ****                         break;
+ 819              		.loc 1 1073 0
+ 820 00d2 0133     		adds	r3, r3, #1
+ 821 00d4 0093     		str	r3, [sp]
+1074:../utilities/fsl_str.c ****                     default:
+ 822              		.loc 1 1074 0
+ 823 00d6 D3E7     		b	.L83
+ 824              	.L86:
+ 942:../utilities/fsl_str.c ****                 {
+ 825              		.loc 1 942 0
+ 826 00d8 7329     		cmp	r1, #115
+ 827 00da 34D0     		beq	.L91
+ 828 00dc 0ADC     		bgt	.L92
+ 829 00de 6929     		cmp	r1, #105
+ 830 00e0 2BD0     		beq	.L93
+ 831 00e2 6F29     		cmp	r1, #111
+ 832 00e4 3DD1     		bne	.L75
+ 833              	.LVL134:
+1037:../utilities/fsl_str.c ****                         break;
+ 834              		.loc 1 1037 0
+ 835 00e6 0133     		adds	r3, r3, #1
+1036:../utilities/fsl_str.c ****                         c++;
+ 836              		.loc 1 1036 0
+ 837 00e8 48F02008 		orr	r8, r8, #32
+ 838              	.LVL135:
+1037:../utilities/fsl_str.c ****                         break;
+ 839              		.loc 1 1037 0
+ 840 00ec 0093     		str	r3, [sp]
+1035:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
+ 841              		.loc 1 1035 0
+ 842 00ee 4FF00809 		mov	r9, #8
+1038:../utilities/fsl_str.c ****                     case 'x':
+ 843              		.loc 1 1038 0
+ 844 00f2 C5E7     		b	.L83
+ 845              	.LVL136:
+ 846              	.L92:
+ 942:../utilities/fsl_str.c ****                 {
+ 847              		.loc 1 942 0
+ 848 00f4 7529     		cmp	r1, #117
+ 849 00f6 1DD0     		beq	.L95
+ 850 00f8 7829     		cmp	r1, #120
+ 851 00fa 32D1     		bne	.L75
+ 852              	.L87:
+ 853              	.LVL137:
+1043:../utilities/fsl_str.c ****                         break;
+ 854              		.loc 1 1043 0
+ 855 00fc 0133     		adds	r3, r3, #1
+1042:../utilities/fsl_str.c ****                         c++;
+ 856              		.loc 1 1042 0
+ 857 00fe 48F02008 		orr	r8, r8, #32
+ 858              	.LVL138:
+1043:../utilities/fsl_str.c ****                         break;
+ 859              		.loc 1 1043 0
+ 860 0102 0093     		str	r3, [sp]
+1041:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
+ 861              		.loc 1 1041 0
+ 862 0104 4FF01009 		mov	r9, #16
+1044:../utilities/fsl_str.c ****                     case 'i':
+ 863              		.loc 1 1044 0
+ 864 0108 BAE7     		b	.L83
+ 865              	.LVL139:
+ 866              	.L156:
+1012:../utilities/fsl_str.c ****                         {
+ 867              		.loc 1 1012 0
+ 868 010a 54BB     		cbnz	r4, .L75
+ 869              	.L96:
+1019:../utilities/fsl_str.c ****                             c++;
+ 870              		.loc 1 1019 0 discriminator 1
+ 871 010c 0099     		ldr	r1, [sp]
+ 872 010e 0B46     		mov	r3, r1
+ 873 0110 5443     		muls	r4, r2, r4
+ 874 0112 13F9010B 		ldrsb	r0, [r3], #1
+1020:../utilities/fsl_str.c ****                         } while ((*c >= '0') && (*c <= '9'));
+ 875              		.loc 1 1020 0 discriminator 1
+ 876 0116 0093     		str	r3, [sp]
+1021:../utilities/fsl_str.c ****                         break;
+ 877              		.loc 1 1021 0 discriminator 1
+ 878 0118 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
+ 879 011a 303B     		subs	r3, r3, #48
+ 880 011c 303C     		subs	r4, r4, #48
+ 881              	.LVL140:
+ 882 011e 092B     		cmp	r3, #9
+1019:../utilities/fsl_str.c ****                             c++;
+ 883              		.loc 1 1019 0 discriminator 1
+ 884 0120 0444     		add	r4, r4, r0
+ 885              	.LVL141:
+1021:../utilities/fsl_str.c ****                         break;
+ 886              		.loc 1 1021 0 discriminator 1
+ 887 0122 F3D9     		bls	.L96
+ 888 0124 ACE7     		b	.L83
+ 889              	.LVL142:
+ 890              	.L85:
+1026:../utilities/fsl_str.c ****                         c++;
+ 891              		.loc 1 1026 0
+ 892 0126 48EA0508 		orr	r8, r8, r5
+ 893              	.LVL143:
+ 894              	.L160:
+1032:../utilities/fsl_str.c ****                         break;
+ 895              		.loc 1 1032 0
+ 896 012a 0133     		adds	r3, r3, #1
+ 897 012c 0093     		str	r3, [sp]
+1030:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
+ 898              		.loc 1 1030 0
+ 899 012e 4FF00A09 		mov	r9, #10
+1033:../utilities/fsl_str.c ****                     case 'o':
+ 900              		.loc 1 1033 0
+ 901 0132 A5E7     		b	.L83
+ 902              	.LVL144:
+ 903              	.L95:
+1031:../utilities/fsl_str.c ****                         c++;
+ 904              		.loc 1 1031 0
+ 905 0134 48F02008 		orr	r8, r8, #32
+ 906              	.LVL145:
+ 907 0138 F7E7     		b	.L160
+ 908              	.LVL146:
+ 909              	.L93:
+1048:../utilities/fsl_str.c ****                         break;
+ 910              		.loc 1 1048 0
+ 911 013a 0133     		adds	r3, r3, #1
+1047:../utilities/fsl_str.c ****                         c++;
+ 912              		.loc 1 1047 0
+ 913 013c 48F02008 		orr	r8, r8, #32
+ 914              	.LVL147:
+1048:../utilities/fsl_str.c ****                         break;
+ 915              		.loc 1 1048 0
+ 916 0140 0093     		str	r3, [sp]
+1046:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
+ 917              		.loc 1 1046 0
+ 918 0142 8146     		mov	r9, r0
+1049:../utilities/fsl_str.c **** #if SCANF_FLOAT_ENABLE
+ 919              		.loc 1 1049 0
+ 920 0144 9CE7     		b	.L83
+ 921              	.LVL148:
+ 922              	.L91:
+1072:../utilities/fsl_str.c ****                         c++;
+ 923              		.loc 1 1072 0
+ 924 0146 48F00808 		orr	r8, r8, #8
+ 925              	.LVL149:
+ 926 014a C2E7     		b	.L159
+ 927              	.LVL150:
+ 928              	.L99:
+ 940:../utilities/fsl_str.c ****             {
+ 929              		.loc 1 940 0 discriminator 1
+ 930 014c 0028     		cmp	r0, #0
+ 931 014e A0D1     		bne	.L101
+ 942:../utilities/fsl_str.c ****                 {
+ 932              		.loc 1 942 0
+ 933 0150 6429     		cmp	r1, #100
+ 934 0152 E8D0     		beq	.L85
+ 935 0154 C0DC     		bgt	.L86
+ 936 0156 5829     		cmp	r1, #88
+ 937 0158 D0D0     		beq	.L87
+ 938 015a B3DC     		bgt	.L88
+ 939 015c 3039     		subs	r1, r1, #48
+ 940 015e 0929     		cmp	r1, #9
+ 941 0160 D3D9     		bls	.L156
+ 942              	.LVL151:
+ 943              	.L75:
+1290:../utilities/fsl_str.c ****                     }
+1291:../utilities/fsl_str.c ****                     break;
+1292:../utilities/fsl_str.c **** #if SCANF_FLOAT_ENABLE
+1293:../utilities/fsl_str.c ****                 case kSCANF_DestFloat:
+1294:../utilities/fsl_str.c ****                     n_decode += ScanIgnoreWhiteSpace(&p);
+1295:../utilities/fsl_str.c ****                     fnum = strtod(p, (char **)&s);
+1296:../utilities/fsl_str.c **** 
+1297:../utilities/fsl_str.c ****                     if ((fnum >= HUGE_VAL) || (fnum <= -HUGE_VAL))
+1298:../utilities/fsl_str.c ****                     {
+1299:../utilities/fsl_str.c ****                         break;
+1300:../utilities/fsl_str.c ****                     }
+1301:../utilities/fsl_str.c **** 
+1302:../utilities/fsl_str.c ****                     n_decode += (int)(s) - (int)(p);
+1303:../utilities/fsl_str.c ****                     p = s;
+1304:../utilities/fsl_str.c ****                     if (!(flag & kSCANF_Suppress))
+1305:../utilities/fsl_str.c ****                     {
+1306:../utilities/fsl_str.c ****                         if (flag & kSCANF_LengthLongLongDouble)
+1307:../utilities/fsl_str.c ****                         {
+1308:../utilities/fsl_str.c ****                             *va_arg(args_ptr, double *) = fnum;
+1309:../utilities/fsl_str.c ****                         }
+1310:../utilities/fsl_str.c ****                         else
+1311:../utilities/fsl_str.c ****                         {
+1312:../utilities/fsl_str.c ****                             *va_arg(args_ptr, float *) = (float)fnum;
+1313:../utilities/fsl_str.c ****                         }
+1314:../utilities/fsl_str.c ****                         nassigned++;
+1315:../utilities/fsl_str.c ****                     }
+1316:../utilities/fsl_str.c ****                     break;
+1317:../utilities/fsl_str.c **** #endif /* SCANF_FLOAT_ENABLE */
+1318:../utilities/fsl_str.c ****                 default:
+1319:../utilities/fsl_str.c ****                     return nassigned;
+1320:../utilities/fsl_str.c ****             }
+1321:../utilities/fsl_str.c ****         }
+1322:../utilities/fsl_str.c ****     }
+1323:../utilities/fsl_str.c ****     return nassigned;
+1324:../utilities/fsl_str.c **** }
+ 944              		.loc 1 1324 0
+ 945 0162 3046     		mov	r0, r6
+ 946 0164 03B0     		add	sp, sp, #12
+ 947              		.cfi_remember_state
+ 948              		.cfi_def_cfa_offset 28
+ 949              		@ sp needed
+ 950 0166 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 951              	.LVL152:
+ 952              	.L110:
+ 953              		.cfi_restore_state
+1102:../utilities/fsl_str.c ****                         }
+ 954              		.loc 1 1102 0
+ 955 016a 571C     		adds	r7, r2, #1
+ 956 016c 0197     		str	r7, [sp, #4]
+ 957 016e 92F90020 		ldrsb	r2, [r2]
+ 958 0172 01F8012B 		strb	r2, [r1], #1
+ 959              	.LVL153:
+ 960 0176 9AE7     		b	.L108
+ 961              	.LVL154:
+ 962              	.L105:
+1117:../utilities/fsl_str.c ****                     s = p;
+ 963              		.loc 1 1117 0
+ 964 0178 01A8     		add	r0, sp, #4
+ 965 017a FFF7FEFF 		bl	ScanIgnoreWhiteSpace
+ 966              	.LVL155:
+1119:../utilities/fsl_str.c ****                     while ((field_width--) && (*p != '\0') && (*p != ' ') && (*p != '\t') && (*p !=
+ 967              		.loc 1 1119 0
+ 968 017e 3968     		ldr	r1, [r7]
+1118:../utilities/fsl_str.c ****                     buf = va_arg(args_ptr, char *);
+ 969              		.loc 1 1118 0
+ 970 0180 DDF804C0 		ldr	ip, [sp, #4]
+ 971              	.LVL156:
+1119:../utilities/fsl_str.c ****                     while ((field_width--) && (*p != '\0') && (*p != ' ') && (*p != '\t') && (*p !=
+ 972              		.loc 1 1119 0
+ 973 0184 3B1D     		adds	r3, r7, #4
+ 974              	.LVL157:
+ 975 0186 0C44     		add	r4, r4, r1
+ 976              	.L111:
+ 977              	.LVL158:
+1120:../utilities/fsl_str.c ****                            (*p != '\r') && (*p != '\v') && (*p != '\f'))
+ 978              		.loc 1 1120 0
+ 979 0188 A142     		cmp	r1, r4
+ 980 018a 0198     		ldr	r0, [sp, #4]
+ 981 018c 08D0     		beq	.L112
+1120:../utilities/fsl_str.c ****                            (*p != '\r') && (*p != '\v') && (*p != '\f'))
+ 982              		.loc 1 1120 0 is_stmt 0 discriminator 1
+ 983 018e 90F90020 		ldrsb	r2, [r0]
+ 984 0192 32F02007 		bics	r7, r2, #32
+ 985 0196 03D0     		beq	.L112
+1120:../utilities/fsl_str.c ****                            (*p != '\r') && (*p != '\v') && (*p != '\f'))
+ 986              		.loc 1 1120 0 discriminator 3
+ 987 0198 093A     		subs	r2, r2, #9
+ 988 019a D2B2     		uxtb	r2, r2
+ 989 019c 042A     		cmp	r2, #4
+ 990 019e 05D8     		bhi	.L113
+ 991              	.L112:
+1134:../utilities/fsl_str.c ****                     {
+ 992              		.loc 1 1134 0 is_stmt 1 discriminator 1
+ 993 01a0 8445     		cmp	ip, r0
+ 994 01a2 3FF44FAF 		beq	.L79
+1137:../utilities/fsl_str.c ****                         nassigned++;
+ 995              		.loc 1 1137 0
+ 996 01a6 0022     		movs	r2, #0
+ 997 01a8 0A70     		strb	r2, [r1]
+ 998 01aa 89E7     		b	.L128
+ 999              	.L113:
+1129:../utilities/fsl_str.c ****                         }
+ 1000              		.loc 1 1129 0
+ 1001 01ac 421C     		adds	r2, r0, #1
+ 1002 01ae 0192     		str	r2, [sp, #4]
+ 1003 01b0 90F90020 		ldrsb	r2, [r0]
+ 1004 01b4 01F8012B 		strb	r2, [r1], #1
+ 1005              	.LVL159:
+ 1006 01b8 E6E7     		b	.L111
+ 1007              	.LVL160:
+ 1008              	.L106:
+1142:../utilities/fsl_str.c ****                     s = p;
+ 1009              		.loc 1 1142 0
+ 1010 01ba 01A8     		add	r0, sp, #4
+ 1011 01bc FFF7FEFF 		bl	ScanIgnoreWhiteSpace
+ 1012              	.LVL161:
+1145:../utilities/fsl_str.c ****                     {
+ 1013              		.loc 1 1145 0
+ 1014 01c0 19F0EF0F 		tst	r9, #239
+ 1015 01c4 0FD1     		bne	.L114
+1143:../utilities/fsl_str.c ****                     val = 0;
+ 1016              		.loc 1 1143 0
+ 1017 01c6 019B     		ldr	r3, [sp, #4]
+1147:../utilities/fsl_str.c ****                         {
+ 1018              		.loc 1 1147 0
+ 1019 01c8 93F90020 		ldrsb	r2, [r3]
+ 1020 01cc 302A     		cmp	r2, #48
+ 1021 01ce 57D1     		bne	.L115
+1147:../utilities/fsl_str.c ****                         {
+ 1022              		.loc 1 1147 0 is_stmt 0 discriminator 1
+ 1023 01d0 93F90120 		ldrsb	r2, [r3, #1]
+ 1024 01d4 22F02002 		bic	r2, r2, #32
+ 1025 01d8 582A     		cmp	r2, #88
+ 1026 01da 14D1     		bne	.L116
+ 1027              	.LVL162:
+1152:../utilities/fsl_str.c ****                                 n_decode += 2;
+ 1028              		.loc 1 1152 0 is_stmt 1
+ 1029 01dc 0233     		adds	r3, r3, #2
+ 1030 01de 0193     		str	r3, [sp, #4]
+ 1031              	.LVL163:
+1154:../utilities/fsl_str.c ****                             }
+ 1032              		.loc 1 1154 0
+ 1033 01e0 023C     		subs	r4, r4, #2
+ 1034              	.LVL164:
+1149:../utilities/fsl_str.c ****                             if (field_width >= 1)
+ 1035              		.loc 1 1149 0
+ 1036 01e2 4FF01009 		mov	r9, #16
+ 1037              	.LVL165:
+ 1038              	.L114:
+1172:../utilities/fsl_str.c ****                     {
+ 1039              		.loc 1 1172 0
+ 1040 01e6 019B     		ldr	r3, [sp, #4]
+ 1041 01e8 93F90020 		ldrsb	r2, [r3]
+ 1042 01ec 2B2A     		cmp	r2, #43
+ 1043 01ee 10D0     		beq	.L118
+ 1044 01f0 2D2A     		cmp	r2, #45
+ 1045 01f2 11D1     		bne	.L158
+ 1046              	.LVL166:
+1177:../utilities/fsl_str.c ****                             field_width--;
+ 1047              		.loc 1 1177 0
+ 1048 01f4 0133     		adds	r3, r3, #1
+ 1049 01f6 0193     		str	r3, [sp, #4]
+ 1050              	.LVL167:
+1178:../utilities/fsl_str.c ****                             break;
+ 1051              		.loc 1 1178 0
+ 1052 01f8 013C     		subs	r4, r4, #1
+ 1053              	.LVL168:
+1175:../utilities/fsl_str.c ****                             n_decode++;
+ 1054              		.loc 1 1175 0
+ 1055 01fa 4FF0FF30 		mov	r0, #-1
+ 1056              	.LVL169:
+ 1057              	.L117:
+1175:../utilities/fsl_str.c ****                             n_decode++;
+ 1058              		.loc 1 1175 0 is_stmt 0 discriminator 1
+ 1059 01fe 0022     		movs	r2, #0
+1206:../utilities/fsl_str.c ****                         }
+ 1060              		.loc 1 1206 0 is_stmt 1 discriminator 1
+ 1061 0200 4FFA89FC 		sxtb	ip, r9
+ 1062 0204 1CE0     		b	.L125
+ 1063              	.LVL170:
+ 1064              	.L116:
+1163:../utilities/fsl_str.c ****                         }
+ 1065              		.loc 1 1163 0
+ 1066 0206 B9F1000F 		cmp	r9, #0
+ 1067 020a 08BF     		it	eq
+ 1068 020c 4FF00809 		moveq	r9, #8
+ 1069              	.LVL171:
+ 1070 0210 E9E7     		b	.L114
+ 1071              	.LVL172:
+ 1072              	.L118:
+1183:../utilities/fsl_str.c ****                             field_width--;
+ 1073              		.loc 1 1183 0
+ 1074 0212 0133     		adds	r3, r3, #1
+ 1075 0214 0193     		str	r3, [sp, #4]
+ 1076              	.LVL173:
+1184:../utilities/fsl_str.c ****                             break;
+ 1077              		.loc 1 1184 0
+ 1078 0216 013C     		subs	r4, r4, #1
+ 1079              	.LVL174:
+ 1080              	.L158:
+1171:../utilities/fsl_str.c ****                     switch (*p)
+ 1081              		.loc 1 1171 0
+ 1082 0218 0120     		movs	r0, #1
+ 1083 021a F0E7     		b	.L117
+ 1084              	.LVL175:
+ 1085              	.L126:
+1192:../utilities/fsl_str.c ****                         {
+ 1086              		.loc 1 1192 0
+ 1087 021c DBB2     		uxtb	r3, r3
+ 1088 021e A3F1300E 		sub	lr, r3, #48
+ 1089 0222 5FFA8EFE 		uxtb	lr, lr
+ 1090 0226 BEF1090F 		cmp	lr, #9
+ 1091 022a 15D8     		bhi	.L120
+1194:../utilities/fsl_str.c ****                         }
+ 1092              		.loc 1 1194 0
+ 1093 022c 4FFA8EF3 		sxtb	r3, lr
+ 1094              	.LVL176:
+ 1095              	.L121:
+1209:../utilities/fsl_str.c ****                         {
+ 1096              		.loc 1 1209 0
+ 1097 0230 4B45     		cmp	r3, r9
+ 1098 0232 04F1FF34 		add	r4, r4, #-1
+ 1099              	.LVL177:
+ 1100 0236 09DA     		bge	.L124
+1217:../utilities/fsl_str.c ****                         n_decode++;
+ 1101              		.loc 1 1217 0
+ 1102 0238 0131     		adds	r1, r1, #1
+1215:../utilities/fsl_str.c ****                         }
+ 1103              		.loc 1 1215 0
+ 1104 023a 02FB0932 		mla	r2, r2, r9, r3
+ 1105              	.LVL178:
+1217:../utilities/fsl_str.c ****                         n_decode++;
+ 1106              		.loc 1 1217 0
+ 1107 023e 0191     		str	r1, [sp, #4]
+ 1108              	.LVL179:
+ 1109              	.L125:
+1190:../utilities/fsl_str.c ****                     {
+ 1110              		.loc 1 1190 0 discriminator 1
+ 1111 0240 0199     		ldr	r1, [sp, #4]
+ 1112 0242 91F90030 		ldrsb	r3, [r1]
+ 1113 0246 0BB1     		cbz	r3, .L124
+1190:../utilities/fsl_str.c ****                     {
+ 1114              		.loc 1 1190 0 is_stmt 0 discriminator 2
+ 1115 0248 002C     		cmp	r4, #0
+ 1116 024a E7D1     		bne	.L126
+ 1117              	.L124:
+ 1118 024c 3B46     		mov	r3, r7
+1220:../utilities/fsl_str.c ****                     if (!(flag & kSCANF_Suppress))
+ 1119              		.loc 1 1220 0 is_stmt 1
+ 1120 024e 4243     		muls	r2, r0, r2
+ 1121              	.LVL180:
+ 1122 0250 53F8041B 		ldr	r1, [r3], #4
+1282:../utilities/fsl_str.c ****                         }
+ 1123              		.loc 1 1282 0
+ 1124 0254 0A60     		str	r2, [r1]
+ 1125 0256 33E7     		b	.L128
+ 1126              	.L120:
+1196:../utilities/fsl_str.c ****                         {
+ 1127              		.loc 1 1196 0
+ 1128 0258 A3F1610E 		sub	lr, r3, #97
+ 1129 025c BEF1050F 		cmp	lr, #5
+ 1130 0260 02D8     		bhi	.L122
+1198:../utilities/fsl_str.c ****                         }
+ 1131              		.loc 1 1198 0
+ 1132 0262 573B     		subs	r3, r3, #87
+ 1133              	.L161:
+1202:../utilities/fsl_str.c ****                         }
+ 1134              		.loc 1 1202 0
+ 1135 0264 5BB2     		sxtb	r3, r3
+ 1136              	.LVL181:
+ 1137 0266 E3E7     		b	.L121
+ 1138              	.LVL182:
+ 1139              	.L122:
+1200:../utilities/fsl_str.c ****                         {
+ 1140              		.loc 1 1200 0
+ 1141 0268 A3F1410E 		sub	lr, r3, #65
+ 1142 026c BEF1050F 		cmp	lr, #5
+ 1143 0270 01D8     		bhi	.L123
+1202:../utilities/fsl_str.c ****                         }
+ 1144              		.loc 1 1202 0
+ 1145 0272 373B     		subs	r3, r3, #55
+ 1146 0274 F6E7     		b	.L161
+ 1147              	.L123:
+1206:../utilities/fsl_str.c ****                         }
+ 1148              		.loc 1 1206 0
+ 1149 0276 6346     		mov	r3, ip
+ 1150              	.LVL183:
+ 1151 0278 DAE7     		b	.L121
+ 1152              	.LVL184:
+ 1153              	.L131:
+ 902:../utilities/fsl_str.c ****     }
+ 1154              		.loc 1 902 0
+ 1155 027a 4FF0FF36 		mov	r6, #-1
+ 1156 027e 70E7     		b	.L75
+ 1157              	.LVL185:
+ 1158              	.L115:
+1167:../utilities/fsl_str.c ****                         }
+ 1159              		.loc 1 1167 0
+ 1160 0280 B9F1000F 		cmp	r9, #0
+ 1161 0284 08BF     		it	eq
+ 1162 0286 4FF00A09 		moveq	r9, #10
+ 1163              	.LVL186:
+ 1164 028a ACE7     		b	.L114
+ 1165              		.cfi_endproc
+ 1166              	.LFE150:
+ 1168              		.text
+ 1169              	.Letext0:
+ 1170              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1171              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1172              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1173              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1174              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1175              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/math.h"
+ 1176              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stdarg.h"
+ 1177              		.file 9 "<built-in>"
+ 1178              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 1179              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1180              		.file 12 "../CMSIS/core_cm4.h"
+ 1181              		.file 13 "../CMSIS/system_MK64F12.h"
+ 1182              		.file 14 "../drivers/fsl_clock.h"
+ 1183              		.file 15 "../utilities/fsl_str.h"
+ 1184              		.file 16 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"

@@ -34,7 +34,7 @@ lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
-volatile uint8_t wake = 0;
+volatile uint8_t wake = 2;
 volatile uint8_t UART3_strReady = 0;
 volatile uint16_t UART3_bufPtr = 0;
 
@@ -52,25 +52,21 @@ uint8_t streamGps = 0;
 char parsedLat[15];
 char parsedLon[15];
 
-
-
-
 volatile uint32_t moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE; //timeout variable for waiting all data from module
 
 uint32_t ms_ticks; //millisecond ticks value for the delay_ms function
 /*
-void delay_ms(uint32_t del)
-{
-    for (; del > 0; del--)
-    {
-        for(uint32_t t = 0; t<ms_ticks;t++)
-        {
-            __asm("nop");
-        }
-    }
-}
-*/
-
+ void delay_ms(uint32_t del)
+ {
+ for (; del > 0; del--)
+ {
+ for(uint32_t t = 0; t<ms_ticks;t++)
+ {
+ __asm("nop");
+ }
+ }
+ }
+ */
 
 void initTimer() {
 
@@ -83,9 +79,9 @@ void initTimer() {
 	lptmr_config.bypassPrescaler = true;
 	lptmr_config.value = kLPTMR_Prescale_Glitch_0;
 	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_1;
-	//EnableIRQ(LPTMR0_IRQn);
+	EnableIRQ(LPTMR0_IRQn);
 	LPTMR_Init(LPTMR0, &lptmr_config);
-	LPTMR_SetTimerPeriod(LPTMR0, 2000);  // 3000 for 20hz data rat
+	LPTMR_SetTimerPeriod(LPTMR0, 7000);  // 3000 for 20hz data rat
 }
 
 /*
@@ -162,20 +158,7 @@ void UART2_send(char *data, uint8_t len) {
 	}
 }
 
-void LPTMR0_IRQHandler() {
-
-	LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;		// Clear the interrupt flag
-	while ( LPTMR0->CSR & LPTMR_CSR_TCF_MASK) {
-
-	}
-
-	PMC->REGSC |= 0x08;
-
-	GPIO_PortToggle(GPIOB, 1 << 21u); //light blue LED
-}
-
 int main(void) {
-
 
 	PMC->REGSC |= 0x08;	//acknowledge wake up to voltage regulator module, this is needed with LLWU wake up
 	EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode, it means that next MCU
@@ -189,10 +172,10 @@ int main(void) {
 	BOARD_InitDebugConsole();
 
 	/*
-     * Calculate how many processor ticks are in 1 ms to make accurate delay_ms function
-     * first take MCU clock frequency, divide by 1000ms and divide by 7 because our delay_ms loop takes 7 machine cycles
-     */
-    ms_ticks = BOARD_DEBUG_UART_CLK_FREQ / 1000 / 7;
+	 * Calculate how many processor ticks are in 1 ms to make accurate delay_ms function
+	 * first take MCU clock frequency, divide by 1000ms and divide by 7 because our delay_ms loop takes 7 machine cycles
+	 */
+	ms_ticks = BOARD_DEBUG_UART_CLK_FREQ / 1000 / 7;
 
 	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay functions(see timing.h)
 
@@ -203,9 +186,6 @@ int main(void) {
 	acc_init();
 	initTimer();
 
-	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
-	LPTMR_StartTimer(LPTMR0);
-
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
 	};
@@ -214,16 +194,17 @@ int main(void) {
 	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; /*!< Stop submode 1, for VLLS1/LLS1. */
 
 	LLWU->ME |= 0x01; 		// enable LLWU wakeup source from LPTMR module
-	LLWU->PE3 |= 0x20; // enable LLWU wakeup source from accelerometer interrupt pin
-	LLWU->FILT1 |= 0x4A;	// set pin wakeup from rising edge
+	LLWU->PE3 |= 0x01; // enable LLWU wakeup source from accelerometer interrupt pin
+					   // 0x20 for stock frdm pin enable,
+	LLWU->FILT1 |= 0x28;	// set pin wakeup from rising edge, 0x2A for frdm
 
 	EnableIRQ(PORTC_IRQn);
 
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
 	LPTMR_StartTimer(LPTMR0);
 
-	GPIO_PinInit(GPIOB, 21u, &LED_configOutput);	//red led as output
-	GPIO_PinInit(GPIOB, 22u, &LED_configOutput);	//blue led as output
+	GPIO_PinInit(GPIOB, 21u, &LED_configOutput);	//blue led as output
+	GPIO_PinInit(GPIOB, 22u, &LED_configOutput);	//red led as output
 
 	/*
 	 * set boost regulator enable pin as output. This pin will control the power to RF modules
@@ -245,22 +226,78 @@ int main(void) {
 	/*
 	 * Copy all reindeer variables to struct before starting network operations
 	 */
+
 char testLat[11] = ("6500.53");
 char testLon[11] = ("02534.554");
 	strcpy(reindeerData.serialNum, "66666");
+
 	strcpy(reindeerData.latitude, testLat);
 	strcpy(reindeerData.longitude, testLon);
-	strcpy(reindeerData.dead, "true");
+	strcpy(reindeerData.dead, "false");
 	reindeerData.batteryLevel = 45;
+	/*
+	 while (true) {
 
+	 int16_t acc_val_x = read_acc_axis(0);
+	 int16_t acc_val_y = read_acc_axis(1);
+	 int16_t acc_val_z = read_acc_axis(2);
+	 printf("Akseloreometer x: %d y: %d z: %d\r\n", acc_val_x, acc_val_y, acc_val_z);
+	 delay_ms(500);
+	 }
+	 */
+	if (wake == 2) {
+		printf("Woken by ACCEL, reindeer is !!!ALIVE!!!\r\n");
+		SMC_PreEnterStopModes();
+		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
+	}
 
 	while (1) {
+
 		//int16_t acc_val = read_acc_axis(0);
 		//printf("Accelereometer %d\r\n",acc_val);
 		//break;
 		/*
 		 * Check if a string has arrived from PC (with CR line end)
 		 */
+
+		if (wake == 1) {
+			strcpy(reindeerData.dead, "true");
+			printf("Woken by LPTMR, reindeer is !!!%s!!\r\n",
+					reindeerData.dead);
+
+			while (true) {
+				if (GPS_strReady) {
+					printf(GPS_recBuf);
+					printf("\r\n"); //First print out whole buffer
+
+					char testLat[12] = ("6500.02359");
+					char testLon[12] = ("02530.56951");
+
+					strcpy(reindeerData.latitude, testLat);
+					strcpy(reindeerData.longitude, testLon);
+					break;
+
+					if (getGPS()) {
+						//char testLat[12] = ("6500.02359");
+						//char testLon[12] = ("02530.56951");
+
+						//parseData(testLat,testLon);
+
+						strcpy(reindeerData.latitude, parsedLat);
+						strcpy(reindeerData.longitude, parsedLon);
+						break;
+					}
+					memset(GPS_recBuf, 0, 600);
+					GPS_bufPtr = 0;
+					GPS_strReady = 0;
+				}
+
+			}
+			printf("Parsed latitude: %s\r\n", reindeerData.latitude);
+			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
+			break;
+		}
+
 		if (PC_strReady) {
 
 			if (strstr(PC_recBuf, "iot") != NULL) {
@@ -270,14 +307,11 @@ char testLon[11] = ("02534.554");
 				streamGps = 1;
 			} else if (strstr(PC_recBuf, "gpsinfo=0") != NULL) {
 				streamGps = 0;
-			}
-			else if (strstr(PC_recBuf, "rfoff") != NULL) {
+			} else if (strstr(PC_recBuf, "rfoff") != NULL) {
 				GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
-			}
-			else if (strstr(PC_recBuf, "rfon") != NULL) {
+			} else if (strstr(PC_recBuf, "rfon") != NULL) {
 				GPIO_SetPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
-			}
-			else if (strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
+			} else if (strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
 			{
 				printf("send to gps\r\n");
 				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf + 2); //Calculate UBX checksum and add it to the message
@@ -291,6 +325,7 @@ char testLon[11] = ("02534.554");
 			PC_strReady = 0;
 			PC_bufPtr = 0;
 		}
+
 		if (UART3_strReady) {
 			moduleResponseTimeout = millis() + RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial value
 
@@ -321,17 +356,16 @@ char testLon[11] = ("02534.554");
 			printf(GPS_recBuf);
 			printf("\r\n"); //First print out whole buffer
 
-			if(getGPS())
-				{
-			//char testLat[12] = ("6500.02359");
-			//char testLon[12] = ("02530.56951");
+			if (getGPS()) {
+				//char testLat[12] = ("6500.02359");
+				//char testLon[12] = ("02530.56951");
 
-			//parseData(testLat,testLon);
+				//parseData(testLat,testLon);
 
-			strcpy(reindeerData.latitude, parsedLat);
-			strcpy(reindeerData.longitude, parsedLon);
-			break;
-				}
+				strcpy(reindeerData.latitude, parsedLat);
+				strcpy(reindeerData.longitude, parsedLon);
+				break;
+			}
 
 			printf("Parsed latitude: %s\r\n", reindeerData.latitude);
 			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
@@ -370,21 +404,22 @@ char testLon[11] = ("02534.554");
 	//NB_send_msg(mqttMessage, msgLen);
 
 	NB_create_pdp_send(mqttMessage, msgLen);
+	printf("Roger\r\n");
 	//parseData(testLat, testLon);
 }
+/*
+ void PORTC_IRQHandler() {
 
-void PORTC_IRQHandler() {
+ PORTC->PCR[6] |= 0x01000000;
 
-	PORTC->PCR[6] |= 0x01000000;
+ while ( PORTC->PCR[6] & 0x01000000) {
 
-	while ( PORTC->PCR[6] & 0x01000000) {
-
-	}
+ }
 
 			GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
 
 
-	/*
+
 
 	LPTMR_Deinit(LPTMR0);			// Deinitiate timer to reset timer counte
 	LPTMR_Init(LPTMR0, &lptmr_config);
@@ -392,9 +427,14 @@ void PORTC_IRQHandler() {
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
 	LPTMR_StartTimer(LPTMR0);
 
-	*/
+
 
 }
+
+
+ }
+
+ */
 
 void LLWU_IRQHandler() {
 
@@ -402,43 +442,55 @@ void LLWU_IRQHandler() {
 		wake = 1;
 		CLOCK_EnableClock(kCLOCK_Lptmr0);
 		LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
+
 	}
 
-	else if ( LLWU->F2 & 0x04) {
+	else if ( LLWU->F2 & 0x01) {// 0x04 for stock frdm acc wakeup reg, 0x01 for customized
 		wake = 2;
-		LLWU->F2 |= 0x04;
+		LLWU->F2 |= 0x01;
 	}
 
-	LLWU->F2 = 0x04;
+	LLWU->F2 = 0x01;
 }
 
-	void UART3_RX_TX_IRQHandler() {
+void LPTMR0_IRQHandler() {
 
-		UART_ClearStatusFlags(UART3, kUART_RxDataRegFullFlag);
-		GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from NB Iiootee module
+	LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;		// Clear the interrupt flag
+	while ( LPTMR0->CSR & LPTMR_CSR_TCF_MASK) {
 
-		uint8_t uartData = UART3->D;
-		if (uartData != 0) {
+	}
 
-			UART3_recBuf[UART3_bufPtr] = uartData;
-			UART3_bufPtr++;
+	PMC->REGSC |= 0x08;
 
-			if (uartData == 0x0d) {
-				UART3_strReady = 1;
-				//UART3_bufPtr = 0;
-			}
+	GPIO_PortToggle(GPIOB, 1 << 21u); //light blue LED
+}
 
+void UART3_RX_TX_IRQHandler() {
+
+	UART_ClearStatusFlags(UART3, kUART_RxDataRegFullFlag);
+	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from NB Iiootee module
+
+	uint8_t uartData = UART3->D;
+	if (uartData != 0) {
+
+		UART3_recBuf[UART3_bufPtr] = uartData;
+		UART3_bufPtr++;
+
+		if (uartData == 0x0d) {
+			UART3_strReady = 1;
+			//UART3_bufPtr = 0;
 		}
 
 	}
 
-	void UART2_RX_TX_IRQHandler() {
+}
 
-		UART_ClearStatusFlags(UART2, kUART_RxDataRegFullFlag);
-		GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from GPS module
+void UART2_RX_TX_IRQHandler() {
+
+	UART_ClearStatusFlags(UART2, kUART_RxDataRegFullFlag);
+	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from GPS module
 
 		uint8_t uartData = UART2->D;
-
 		/*
 		 * Here we use different method for collecting GPS data. because there can be other data than characters,
 		 * like 0x00 in UBX messages, normal string functions would fail (mistaken null terminator)
@@ -469,21 +521,22 @@ void LLWU_IRQHandler() {
 			GPS_strReady = 1;
 		}*/
 
+
+}
+
+void UART0_RX_TX_IRQHandler() {
+
+	UART_ClearStatusFlags(UART0, kUART_RxDataRegFullFlag);
+	GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
+
+	uint8_t uartData = UART0->D;
+
+	PC_recBuf[PC_bufPtr] = uartData;
+	PC_bufPtr++;
+
+	if (uartData == 0x0d) {
+		PC_strReady = 1;
+
 	}
 
-	void UART0_RX_TX_IRQHandler() {
-
-		UART_ClearStatusFlags(UART0, kUART_RxDataRegFullFlag);
-		GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
-
-		uint8_t uartData = UART0->D;
-
-		PC_recBuf[PC_bufPtr] = uartData;
-		PC_bufPtr++;
-
-		if (uartData == 0x0d) {
-			PC_strReady = 1;
-
-		}
-
-	}
+}

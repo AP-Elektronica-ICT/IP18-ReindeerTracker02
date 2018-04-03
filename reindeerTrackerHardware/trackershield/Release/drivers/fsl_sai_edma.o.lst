@@ -1,0 +1,2392 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_sai_edma.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.SAI_TxEDMACallback,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	SAI_TxEDMACallback:
+  25              	.LFB171:
+  26              		.file 1 "../drivers/fsl_sai_edma.c"
+   1:../drivers/fsl_sai_edma.c **** /*
+   2:../drivers/fsl_sai_edma.c ****  * The Clear BSD License
+   3:../drivers/fsl_sai_edma.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_sai_edma.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_sai_edma.c ****  * All rights reserved.
+   6:../drivers/fsl_sai_edma.c ****  *
+   7:../drivers/fsl_sai_edma.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_sai_edma.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_sai_edma.c ****  * that the following conditions are met:
+  10:../drivers/fsl_sai_edma.c ****  *
+  11:../drivers/fsl_sai_edma.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_sai_edma.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_sai_edma.c ****  *
+  14:../drivers/fsl_sai_edma.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_sai_edma.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_sai_edma.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_sai_edma.c ****  *
+  18:../drivers/fsl_sai_edma.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_sai_edma.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_sai_edma.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_sai_edma.c ****  *
+  22:../drivers/fsl_sai_edma.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_sai_edma.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_sai_edma.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_sai_edma.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_sai_edma.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_sai_edma.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_sai_edma.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_sai_edma.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_sai_edma.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_sai_edma.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_sai_edma.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_sai_edma.c ****  */
+  34:../drivers/fsl_sai_edma.c **** 
+  35:../drivers/fsl_sai_edma.c **** #include "fsl_sai_edma.h"
+  36:../drivers/fsl_sai_edma.c **** 
+  37:../drivers/fsl_sai_edma.c **** /*******************************************************************************
+  38:../drivers/fsl_sai_edma.c ****  * Definitations
+  39:../drivers/fsl_sai_edma.c ****  ******************************************************************************/
+  40:../drivers/fsl_sai_edma.c **** /* Used for 32byte aligned */
+  41:../drivers/fsl_sai_edma.c **** #define STCD_ADDR(address) (edma_tcd_t *)(((uint32_t)address + 32) & ~0x1FU)
+  42:../drivers/fsl_sai_edma.c **** 
+  43:../drivers/fsl_sai_edma.c **** /*<! Structure definition for uart_edma_private_handle_t. The structure is private. */
+  44:../drivers/fsl_sai_edma.c **** typedef struct _sai_edma_private_handle
+  45:../drivers/fsl_sai_edma.c **** {
+  46:../drivers/fsl_sai_edma.c ****     I2S_Type *base;
+  47:../drivers/fsl_sai_edma.c ****     sai_edma_handle_t *handle;
+  48:../drivers/fsl_sai_edma.c **** } sai_edma_private_handle_t;
+  49:../drivers/fsl_sai_edma.c **** 
+  50:../drivers/fsl_sai_edma.c **** enum _sai_edma_transfer_state
+  51:../drivers/fsl_sai_edma.c **** {
+  52:../drivers/fsl_sai_edma.c ****     kSAI_Busy = 0x0U, /*!< SAI is busy */
+  53:../drivers/fsl_sai_edma.c ****     kSAI_Idle,        /*!< Transfer is done. */
+  54:../drivers/fsl_sai_edma.c **** };
+  55:../drivers/fsl_sai_edma.c **** 
+  56:../drivers/fsl_sai_edma.c **** /*<! Private handle only used for internally. */
+  57:../drivers/fsl_sai_edma.c **** static sai_edma_private_handle_t s_edmaPrivateHandle[FSL_FEATURE_SOC_I2S_COUNT][2];
+  58:../drivers/fsl_sai_edma.c **** 
+  59:../drivers/fsl_sai_edma.c **** /*******************************************************************************
+  60:../drivers/fsl_sai_edma.c ****  * Prototypes
+  61:../drivers/fsl_sai_edma.c ****  ******************************************************************************/
+  62:../drivers/fsl_sai_edma.c **** /*!
+  63:../drivers/fsl_sai_edma.c ****  * @brief Get the instance number for SAI.
+  64:../drivers/fsl_sai_edma.c ****  *
+  65:../drivers/fsl_sai_edma.c ****  * @param base SAI base pointer.
+  66:../drivers/fsl_sai_edma.c ****  */
+  67:../drivers/fsl_sai_edma.c **** extern uint32_t SAI_GetInstance(I2S_Type *base);
+  68:../drivers/fsl_sai_edma.c **** 
+  69:../drivers/fsl_sai_edma.c **** /*!
+  70:../drivers/fsl_sai_edma.c ****  * @brief SAI EDMA callback for send.
+  71:../drivers/fsl_sai_edma.c ****  *
+  72:../drivers/fsl_sai_edma.c ****  * @param handle pointer to sai_edma_handle_t structure which stores the transfer state.
+  73:../drivers/fsl_sai_edma.c ****  * @param userData Parameter for user callback.
+  74:../drivers/fsl_sai_edma.c ****  * @param done If the DMA transfer finished.
+  75:../drivers/fsl_sai_edma.c ****  * @param tcds The TCD index.
+  76:../drivers/fsl_sai_edma.c ****  */
+  77:../drivers/fsl_sai_edma.c **** static void SAI_TxEDMACallback(edma_handle_t *handle, void *userData, bool done, uint32_t tcds);
+  78:../drivers/fsl_sai_edma.c **** 
+  79:../drivers/fsl_sai_edma.c **** /*!
+  80:../drivers/fsl_sai_edma.c ****  * @brief SAI EDMA callback for receive.
+  81:../drivers/fsl_sai_edma.c ****  *
+  82:../drivers/fsl_sai_edma.c ****  * @param handle pointer to sai_edma_handle_t structure which stores the transfer state.
+  83:../drivers/fsl_sai_edma.c ****  * @param userData Parameter for user callback.
+  84:../drivers/fsl_sai_edma.c ****  * @param done If the DMA transfer finished.
+  85:../drivers/fsl_sai_edma.c ****  * @param tcds The TCD index.
+  86:../drivers/fsl_sai_edma.c ****  */
+  87:../drivers/fsl_sai_edma.c **** static void SAI_RxEDMACallback(edma_handle_t *handle, void *userData, bool done, uint32_t tcds);
+  88:../drivers/fsl_sai_edma.c **** 
+  89:../drivers/fsl_sai_edma.c **** /*******************************************************************************
+  90:../drivers/fsl_sai_edma.c **** * Code
+  91:../drivers/fsl_sai_edma.c **** ******************************************************************************/
+  92:../drivers/fsl_sai_edma.c **** static void SAI_TxEDMACallback(edma_handle_t *handle, void *userData, bool done, uint32_t tcds)
+  93:../drivers/fsl_sai_edma.c **** {
+  27              		.loc 1 93 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  33              		.cfi_def_cfa_offset 24
+  34              		.cfi_offset 3, -24
+  35              		.cfi_offset 4, -20
+  36              		.cfi_offset 5, -16
+  37              		.cfi_offset 6, -12
+  38              		.cfi_offset 7, -8
+  39              		.cfi_offset 14, -4
+  94:../drivers/fsl_sai_edma.c ****     sai_edma_private_handle_t *privHandle = (sai_edma_private_handle_t *)userData;
+  95:../drivers/fsl_sai_edma.c ****     sai_edma_handle_t *saiHandle = privHandle->handle;
+  40              		.loc 1 95 0
+  41 0002 4C68     		ldr	r4, [r1, #4]
+  42              	.LVL1:
+  96:../drivers/fsl_sai_edma.c **** 
+  97:../drivers/fsl_sai_edma.c ****     /* If finished a blcok, call the callback function */
+  98:../drivers/fsl_sai_edma.c ****     memset(&saiHandle->saiQueue[saiHandle->queueDriver], 0, sizeof(sai_transfer_t));
+  43              		.loc 1 98 0
+  44 0004 94F8E530 		ldrb	r3, [r4, #229]	@ zero_extendqisi2
+  45              	.LVL2:
+  46 0008 DB00     		lsls	r3, r3, #3
+  47 000a B433     		adds	r3, r3, #180
+  48 000c 0022     		movs	r2, #0
+  49              	.LVL3:
+  93:../drivers/fsl_sai_edma.c ****     sai_edma_private_handle_t *privHandle = (sai_edma_private_handle_t *)userData;
+  50              		.loc 1 93 0
+  51 000e 0E46     		mov	r6, r1
+  52              		.loc 1 98 0
+  53 0010 E118     		adds	r1, r4, r3
+  54              	.LVL4:
+  55 0012 E250     		str	r2, [r4, r3]	@ unaligned
+  56 0014 4A60     		str	r2, [r1, #4]	@ unaligned
+  99:../drivers/fsl_sai_edma.c ****     saiHandle->queueDriver = (saiHandle->queueDriver + 1) % SAI_XFER_QUEUE_SIZE;
+  57              		.loc 1 99 0
+  58 0016 94F8E530 		ldrb	r3, [r4, #229]	@ zero_extendqisi2
+ 100:../drivers/fsl_sai_edma.c ****     if (saiHandle->callback)
+  59              		.loc 1 100 0
+  60 001a E768     		ldr	r7, [r4, #12]
+  99:../drivers/fsl_sai_edma.c ****     saiHandle->queueDriver = (saiHandle->queueDriver + 1) % SAI_XFER_QUEUE_SIZE;
+  61              		.loc 1 99 0
+  62 001c 0133     		adds	r3, r3, #1
+  63 001e 03F00303 		and	r3, r3, #3
+  93:../drivers/fsl_sai_edma.c ****     sai_edma_private_handle_t *privHandle = (sai_edma_private_handle_t *)userData;
+  64              		.loc 1 93 0
+  65 0022 0546     		mov	r5, r0
+  99:../drivers/fsl_sai_edma.c ****     saiHandle->queueDriver = (saiHandle->queueDriver + 1) % SAI_XFER_QUEUE_SIZE;
+  66              		.loc 1 99 0
+  67 0024 84F8E530 		strb	r3, [r4, #229]
+  68              		.loc 1 100 0
+  69 0028 2FB1     		cbz	r7, .L2
+ 101:../drivers/fsl_sai_edma.c ****     {
+ 102:../drivers/fsl_sai_edma.c ****         (saiHandle->callback)(privHandle->base, saiHandle, kStatus_SAI_TxIdle, saiHandle->userData)
+  70              		.loc 1 102 0
+  71 002a 2369     		ldr	r3, [r4, #16]
+  72 002c 3068     		ldr	r0, [r6]
+  73              	.LVL5:
+  74 002e 40F27172 		movw	r2, #1905
+  75 0032 2146     		mov	r1, r4
+  76 0034 B847     		blx	r7
+  77              	.LVL6:
+  78              	.L2:
+ 103:../drivers/fsl_sai_edma.c ****     }
+ 104:../drivers/fsl_sai_edma.c **** 
+ 105:../drivers/fsl_sai_edma.c ****     /* If all data finished, just stop the transfer */
+ 106:../drivers/fsl_sai_edma.c ****     if (saiHandle->saiQueue[saiHandle->queueDriver].data == NULL)
+  79              		.loc 1 106 0
+  80 0036 94F8E530 		ldrb	r3, [r4, #229]	@ zero_extendqisi2
+  81 003a 04EBC304 		add	r4, r4, r3, lsl #3
+  82              	.LVL7:
+  83 003e D4F8B430 		ldr	r3, [r4, #180]
+  84 0042 5BB9     		cbnz	r3, .L1
+  85              	.LVL8:
+  86              	.LBB28:
+  87              	.LBB29:
+ 107:../drivers/fsl_sai_edma.c ****     {
+ 108:../drivers/fsl_sai_edma.c ****         /* Disable DMA enable bit */
+ 109:../drivers/fsl_sai_edma.c ****         SAI_TxEnableDMA(privHandle->base, kSAI_FIFORequestDMAEnable, false);
+  88              		.loc 1 109 0
+  89 0044 3268     		ldr	r2, [r6]
+  90              	.LVL9:
+  91              	.LBB30:
+  92              	.LBB31:
+  93              	.LBB32:
+  94              		.file 2 "../drivers/fsl_sai.h"
+   1:../drivers/fsl_sai.h **** /*
+   2:../drivers/fsl_sai.h ****  * The Clear BSD License
+   3:../drivers/fsl_sai.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_sai.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_sai.h ****  * All rights reserved.
+   6:../drivers/fsl_sai.h ****  *
+   7:../drivers/fsl_sai.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_sai.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_sai.h ****  * that the following conditions are met:
+  10:../drivers/fsl_sai.h ****  *
+  11:../drivers/fsl_sai.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_sai.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_sai.h ****  *
+  14:../drivers/fsl_sai.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_sai.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_sai.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_sai.h ****  *
+  18:../drivers/fsl_sai.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_sai.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_sai.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_sai.h ****  *
+  22:../drivers/fsl_sai.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_sai.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_sai.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_sai.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_sai.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_sai.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_sai.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_sai.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_sai.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_sai.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_sai.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_sai.h ****  */
+  34:../drivers/fsl_sai.h **** 
+  35:../drivers/fsl_sai.h **** #ifndef _FSL_SAI_H_
+  36:../drivers/fsl_sai.h **** #define _FSL_SAI_H_
+  37:../drivers/fsl_sai.h **** 
+  38:../drivers/fsl_sai.h **** #include "fsl_common.h"
+  39:../drivers/fsl_sai.h **** 
+  40:../drivers/fsl_sai.h **** /*!
+  41:../drivers/fsl_sai.h ****  * @addtogroup sai
+  42:../drivers/fsl_sai.h ****  * @{
+  43:../drivers/fsl_sai.h ****  */
+  44:../drivers/fsl_sai.h **** 
+  45:../drivers/fsl_sai.h **** /*******************************************************************************
+  46:../drivers/fsl_sai.h ****  * Definitions
+  47:../drivers/fsl_sai.h ****  ******************************************************************************/
+  48:../drivers/fsl_sai.h **** 
+  49:../drivers/fsl_sai.h **** /*! @name Driver version */
+  50:../drivers/fsl_sai.h **** /*@{*/
+  51:../drivers/fsl_sai.h **** #define FSL_SAI_DRIVER_VERSION (MAKE_VERSION(2, 1, 3)) /*!< Version 2.1.3 */
+  52:../drivers/fsl_sai.h **** /*@}*/
+  53:../drivers/fsl_sai.h **** 
+  54:../drivers/fsl_sai.h **** /*! @brief SAI return status*/
+  55:../drivers/fsl_sai.h **** enum _sai_status_t
+  56:../drivers/fsl_sai.h **** {
+  57:../drivers/fsl_sai.h ****     kStatus_SAI_TxBusy = MAKE_STATUS(kStatusGroup_SAI, 0),    /*!< SAI Tx is busy. */
+  58:../drivers/fsl_sai.h ****     kStatus_SAI_RxBusy = MAKE_STATUS(kStatusGroup_SAI, 1),    /*!< SAI Rx is busy. */
+  59:../drivers/fsl_sai.h ****     kStatus_SAI_TxError = MAKE_STATUS(kStatusGroup_SAI, 2),   /*!< SAI Tx FIFO error. */
+  60:../drivers/fsl_sai.h ****     kStatus_SAI_RxError = MAKE_STATUS(kStatusGroup_SAI, 3),   /*!< SAI Rx FIFO error. */
+  61:../drivers/fsl_sai.h ****     kStatus_SAI_QueueFull = MAKE_STATUS(kStatusGroup_SAI, 4), /*!< SAI transfer queue is full. */
+  62:../drivers/fsl_sai.h ****     kStatus_SAI_TxIdle = MAKE_STATUS(kStatusGroup_SAI, 5),    /*!< SAI Tx is idle */
+  63:../drivers/fsl_sai.h ****     kStatus_SAI_RxIdle = MAKE_STATUS(kStatusGroup_SAI, 6)     /*!< SAI Rx is idle */
+  64:../drivers/fsl_sai.h **** };
+  65:../drivers/fsl_sai.h **** 
+  66:../drivers/fsl_sai.h **** /*! @brief Define the SAI bus type */
+  67:../drivers/fsl_sai.h **** typedef enum _sai_protocol
+  68:../drivers/fsl_sai.h **** {
+  69:../drivers/fsl_sai.h ****     kSAI_BusLeftJustified = 0x0U, /*!< Uses left justified format.*/
+  70:../drivers/fsl_sai.h ****     kSAI_BusRightJustified,       /*!< Uses right justified format. */
+  71:../drivers/fsl_sai.h ****     kSAI_BusI2S,                  /*!< Uses I2S format. */
+  72:../drivers/fsl_sai.h ****     kSAI_BusPCMA,                 /*!< Uses I2S PCM A format.*/
+  73:../drivers/fsl_sai.h ****     kSAI_BusPCMB                  /*!< Uses I2S PCM B format. */
+  74:../drivers/fsl_sai.h **** } sai_protocol_t;
+  75:../drivers/fsl_sai.h **** 
+  76:../drivers/fsl_sai.h **** /*! @brief Master or slave mode */
+  77:../drivers/fsl_sai.h **** typedef enum _sai_master_slave
+  78:../drivers/fsl_sai.h **** {
+  79:../drivers/fsl_sai.h ****     kSAI_Master = 0x0U, /*!< Master mode */
+  80:../drivers/fsl_sai.h ****     kSAI_Slave = 0x1U   /*!< Slave mode */
+  81:../drivers/fsl_sai.h **** } sai_master_slave_t;
+  82:../drivers/fsl_sai.h **** 
+  83:../drivers/fsl_sai.h **** /*! @brief Mono or stereo audio format */
+  84:../drivers/fsl_sai.h **** typedef enum _sai_mono_stereo
+  85:../drivers/fsl_sai.h **** {
+  86:../drivers/fsl_sai.h ****     kSAI_Stereo = 0x0U, /*!< Stereo sound. */
+  87:../drivers/fsl_sai.h ****     kSAI_MonoRight,     /*!< Only Right channel have sound. */
+  88:../drivers/fsl_sai.h ****     kSAI_MonoLeft       /*!< Only left channel have sound. */
+  89:../drivers/fsl_sai.h **** } sai_mono_stereo_t;
+  90:../drivers/fsl_sai.h **** 
+  91:../drivers/fsl_sai.h **** /*! @brief Synchronous or asynchronous mode */
+  92:../drivers/fsl_sai.h **** typedef enum _sai_sync_mode
+  93:../drivers/fsl_sai.h **** {
+  94:../drivers/fsl_sai.h ****     kSAI_ModeAsync = 0x0U,    /*!< Asynchronous mode */
+  95:../drivers/fsl_sai.h ****     kSAI_ModeSync,            /*!< Synchronous mode (with receiver or transmit) */
+  96:../drivers/fsl_sai.h ****     kSAI_ModeSyncWithOtherTx, /*!< Synchronous with another SAI transmit */
+  97:../drivers/fsl_sai.h ****     kSAI_ModeSyncWithOtherRx  /*!< Synchronous with another SAI receiver */
+  98:../drivers/fsl_sai.h **** } sai_sync_mode_t;
+  99:../drivers/fsl_sai.h **** 
+ 100:../drivers/fsl_sai.h **** /*! @brief Mater clock source */
+ 101:../drivers/fsl_sai.h **** typedef enum _sai_mclk_source
+ 102:../drivers/fsl_sai.h **** {
+ 103:../drivers/fsl_sai.h ****     kSAI_MclkSourceSysclk = 0x0U, /*!< Master clock from the system clock */
+ 104:../drivers/fsl_sai.h ****     kSAI_MclkSourceSelect1,       /*!< Master clock from source 1 */
+ 105:../drivers/fsl_sai.h ****     kSAI_MclkSourceSelect2,       /*!< Master clock from source 2 */
+ 106:../drivers/fsl_sai.h ****     kSAI_MclkSourceSelect3        /*!< Master clock from source 3 */
+ 107:../drivers/fsl_sai.h **** } sai_mclk_source_t;
+ 108:../drivers/fsl_sai.h **** 
+ 109:../drivers/fsl_sai.h **** /*! @brief Bit clock source */
+ 110:../drivers/fsl_sai.h **** typedef enum _sai_bclk_source
+ 111:../drivers/fsl_sai.h **** {
+ 112:../drivers/fsl_sai.h ****     kSAI_BclkSourceBusclk = 0x0U, /*!< Bit clock using bus clock */
+ 113:../drivers/fsl_sai.h ****     kSAI_BclkSourceMclkDiv,       /*!< Bit clock using master clock divider */
+ 114:../drivers/fsl_sai.h ****     kSAI_BclkSourceOtherSai0,     /*!< Bit clock from other SAI device  */
+ 115:../drivers/fsl_sai.h ****     kSAI_BclkSourceOtherSai1      /*!< Bit clock from other SAI device */
+ 116:../drivers/fsl_sai.h **** } sai_bclk_source_t;
+ 117:../drivers/fsl_sai.h **** 
+ 118:../drivers/fsl_sai.h **** /*! @brief The SAI interrupt enable flag */
+ 119:../drivers/fsl_sai.h **** enum _sai_interrupt_enable_t
+ 120:../drivers/fsl_sai.h **** {
+ 121:../drivers/fsl_sai.h ****     kSAI_WordStartInterruptEnable =
+ 122:../drivers/fsl_sai.h ****         I2S_TCSR_WSIE_MASK, /*!< Word start flag, means the first word in a frame detected */
+ 123:../drivers/fsl_sai.h ****     kSAI_SyncErrorInterruptEnable = I2S_TCSR_SEIE_MASK,   /*!< Sync error flag, means the sync erro
+ 124:../drivers/fsl_sai.h ****     kSAI_FIFOWarningInterruptEnable = I2S_TCSR_FWIE_MASK, /*!< FIFO warning flag, means the FIFO is
+ 125:../drivers/fsl_sai.h ****     kSAI_FIFOErrorInterruptEnable = I2S_TCSR_FEIE_MASK,   /*!< FIFO error flag */
+ 126:../drivers/fsl_sai.h **** #if defined(FSL_FEATURE_SAI_FIFO_COUNT) && (FSL_FEATURE_SAI_FIFO_COUNT > 1)
+ 127:../drivers/fsl_sai.h ****     kSAI_FIFORequestInterruptEnable = I2S_TCSR_FRIE_MASK, /*!< FIFO request, means reached watermar
+ 128:../drivers/fsl_sai.h **** #endif                                                    /* FSL_FEATURE_SAI_FIFO_COUNT */
+ 129:../drivers/fsl_sai.h **** };
+ 130:../drivers/fsl_sai.h **** 
+ 131:../drivers/fsl_sai.h **** /*! @brief The DMA request sources */
+ 132:../drivers/fsl_sai.h **** enum _sai_dma_enable_t
+ 133:../drivers/fsl_sai.h **** {
+ 134:../drivers/fsl_sai.h ****     kSAI_FIFOWarningDMAEnable = I2S_TCSR_FWDE_MASK, /*!< FIFO warning caused by the DMA request */
+ 135:../drivers/fsl_sai.h **** #if defined(FSL_FEATURE_SAI_FIFO_COUNT) && (FSL_FEATURE_SAI_FIFO_COUNT > 1)
+ 136:../drivers/fsl_sai.h ****     kSAI_FIFORequestDMAEnable = I2S_TCSR_FRDE_MASK, /*!< FIFO request caused by the DMA request */
+ 137:../drivers/fsl_sai.h **** #endif                                              /* FSL_FEATURE_SAI_FIFO_COUNT */
+ 138:../drivers/fsl_sai.h **** };
+ 139:../drivers/fsl_sai.h **** 
+ 140:../drivers/fsl_sai.h **** /*! @brief The SAI status flag */
+ 141:../drivers/fsl_sai.h **** enum _sai_flags
+ 142:../drivers/fsl_sai.h **** {
+ 143:../drivers/fsl_sai.h ****     kSAI_WordStartFlag = I2S_TCSR_WSF_MASK, /*!< Word start flag, means the first word in a frame d
+ 144:../drivers/fsl_sai.h ****     kSAI_SyncErrorFlag = I2S_TCSR_SEF_MASK, /*!< Sync error flag, means the sync error is detected 
+ 145:../drivers/fsl_sai.h ****     kSAI_FIFOErrorFlag = I2S_TCSR_FEF_MASK, /*!< FIFO error flag */
+ 146:../drivers/fsl_sai.h **** #if defined(FSL_FEATURE_SAI_FIFO_COUNT) && (FSL_FEATURE_SAI_FIFO_COUNT > 1)
+ 147:../drivers/fsl_sai.h ****     kSAI_FIFORequestFlag = I2S_TCSR_FRF_MASK, /*!< FIFO request flag. */
+ 148:../drivers/fsl_sai.h **** #endif                                        /* FSL_FEATURE_SAI_FIFO_COUNT */
+ 149:../drivers/fsl_sai.h ****     kSAI_FIFOWarningFlag = I2S_TCSR_FWF_MASK, /*!< FIFO warning flag */
+ 150:../drivers/fsl_sai.h **** };
+ 151:../drivers/fsl_sai.h **** 
+ 152:../drivers/fsl_sai.h **** /*! @brief The reset type */
+ 153:../drivers/fsl_sai.h **** typedef enum _sai_reset_type
+ 154:../drivers/fsl_sai.h **** {
+ 155:../drivers/fsl_sai.h ****     kSAI_ResetTypeSoftware = I2S_TCSR_SR_MASK,          /*!< Software reset, reset the logic state 
+ 156:../drivers/fsl_sai.h ****     kSAI_ResetTypeFIFO = I2S_TCSR_FR_MASK,              /*!< FIFO reset, reset the FIFO read and wr
+ 157:../drivers/fsl_sai.h ****     kSAI_ResetAll = I2S_TCSR_SR_MASK | I2S_TCSR_FR_MASK /*!< All reset. */
+ 158:../drivers/fsl_sai.h **** } sai_reset_type_t;
+ 159:../drivers/fsl_sai.h **** 
+ 160:../drivers/fsl_sai.h **** #if defined(FSL_FEATURE_SAI_HAS_FIFO_PACKING) && FSL_FEATURE_SAI_HAS_FIFO_PACKING
+ 161:../drivers/fsl_sai.h **** /*!
+ 162:../drivers/fsl_sai.h ****  * @brief The SAI packing mode
+ 163:../drivers/fsl_sai.h ****  * The mode includes 8 bit and 16 bit packing.
+ 164:../drivers/fsl_sai.h ****  */
+ 165:../drivers/fsl_sai.h **** typedef enum _sai_fifo_packing
+ 166:../drivers/fsl_sai.h **** {
+ 167:../drivers/fsl_sai.h ****     kSAI_FifoPackingDisabled = 0x0U, /*!< Packing disabled */
+ 168:../drivers/fsl_sai.h ****     kSAI_FifoPacking8bit = 0x2U,     /*!< 8 bit packing enabled */
+ 169:../drivers/fsl_sai.h ****     kSAI_FifoPacking16bit = 0x3U     /*!< 16bit packing enabled */
+ 170:../drivers/fsl_sai.h **** } sai_fifo_packing_t;
+ 171:../drivers/fsl_sai.h **** #endif /* FSL_FEATURE_SAI_HAS_FIFO_PACKING */
+ 172:../drivers/fsl_sai.h **** 
+ 173:../drivers/fsl_sai.h **** /*! @brief SAI user configuration structure */
+ 174:../drivers/fsl_sai.h **** typedef struct _sai_config
+ 175:../drivers/fsl_sai.h **** {
+ 176:../drivers/fsl_sai.h ****     sai_protocol_t protocol;  /*!< Audio bus protocol in SAI */
+ 177:../drivers/fsl_sai.h ****     sai_sync_mode_t syncMode; /*!< SAI sync mode, control Tx/Rx clock sync */
+ 178:../drivers/fsl_sai.h **** #if defined(FSL_FEATURE_SAI_HAS_MCR) && (FSL_FEATURE_SAI_HAS_MCR)
+ 179:../drivers/fsl_sai.h ****     bool mclkOutputEnable;          /*!< Master clock output enable, true means master clock divide
+ 180:../drivers/fsl_sai.h **** #endif                              /* FSL_FEATURE_SAI_HAS_MCR */
+ 181:../drivers/fsl_sai.h ****     sai_mclk_source_t mclkSource;   /*!< Master Clock source */
+ 182:../drivers/fsl_sai.h ****     sai_bclk_source_t bclkSource;   /*!< Bit Clock source */
+ 183:../drivers/fsl_sai.h ****     sai_master_slave_t masterSlave; /*!< Master or slave */
+ 184:../drivers/fsl_sai.h **** } sai_config_t;
+ 185:../drivers/fsl_sai.h **** 
+ 186:../drivers/fsl_sai.h **** /*!@brief SAI transfer queue size, user can refine it according to use case. */
+ 187:../drivers/fsl_sai.h **** #define SAI_XFER_QUEUE_SIZE (4)
+ 188:../drivers/fsl_sai.h **** 
+ 189:../drivers/fsl_sai.h **** /*! @brief Audio sample rate */
+ 190:../drivers/fsl_sai.h **** typedef enum _sai_sample_rate
+ 191:../drivers/fsl_sai.h **** {
+ 192:../drivers/fsl_sai.h ****     kSAI_SampleRate8KHz = 8000U,     /*!< Sample rate 8000 Hz */
+ 193:../drivers/fsl_sai.h ****     kSAI_SampleRate11025Hz = 11025U, /*!< Sample rate 11025 Hz */
+ 194:../drivers/fsl_sai.h ****     kSAI_SampleRate12KHz = 12000U,   /*!< Sample rate 12000 Hz */
+ 195:../drivers/fsl_sai.h ****     kSAI_SampleRate16KHz = 16000U,   /*!< Sample rate 16000 Hz */
+ 196:../drivers/fsl_sai.h ****     kSAI_SampleRate22050Hz = 22050U, /*!< Sample rate 22050 Hz */
+ 197:../drivers/fsl_sai.h ****     kSAI_SampleRate24KHz = 24000U,   /*!< Sample rate 24000 Hz */
+ 198:../drivers/fsl_sai.h ****     kSAI_SampleRate32KHz = 32000U,   /*!< Sample rate 32000 Hz */
+ 199:../drivers/fsl_sai.h ****     kSAI_SampleRate44100Hz = 44100U, /*!< Sample rate 44100 Hz */
+ 200:../drivers/fsl_sai.h ****     kSAI_SampleRate48KHz = 48000U,   /*!< Sample rate 48000 Hz */
+ 201:../drivers/fsl_sai.h ****     kSAI_SampleRate96KHz = 96000U    /*!< Sample rate 96000 Hz */
+ 202:../drivers/fsl_sai.h **** } sai_sample_rate_t;
+ 203:../drivers/fsl_sai.h **** 
+ 204:../drivers/fsl_sai.h **** /*! @brief Audio word width */
+ 205:../drivers/fsl_sai.h **** typedef enum _sai_word_width
+ 206:../drivers/fsl_sai.h **** {
+ 207:../drivers/fsl_sai.h ****     kSAI_WordWidth8bits = 8U,   /*!< Audio data width 8 bits */
+ 208:../drivers/fsl_sai.h ****     kSAI_WordWidth16bits = 16U, /*!< Audio data width 16 bits */
+ 209:../drivers/fsl_sai.h ****     kSAI_WordWidth24bits = 24U, /*!< Audio data width 24 bits */
+ 210:../drivers/fsl_sai.h ****     kSAI_WordWidth32bits = 32U  /*!< Audio data width 32 bits */
+ 211:../drivers/fsl_sai.h **** } sai_word_width_t;
+ 212:../drivers/fsl_sai.h **** 
+ 213:../drivers/fsl_sai.h **** /*! @brief sai transfer format */
+ 214:../drivers/fsl_sai.h **** typedef struct _sai_transfer_format
+ 215:../drivers/fsl_sai.h **** {
+ 216:../drivers/fsl_sai.h ****     uint32_t sampleRate_Hz;   /*!< Sample rate of audio data */
+ 217:../drivers/fsl_sai.h ****     uint32_t bitWidth;        /*!< Data length of audio data, usually 8/16/24/32 bits */
+ 218:../drivers/fsl_sai.h ****     sai_mono_stereo_t stereo; /*!< Mono or stereo */
+ 219:../drivers/fsl_sai.h ****     uint32_t masterClockHz;   /*!< Master clock frequency in Hz */
+ 220:../drivers/fsl_sai.h **** #if defined(FSL_FEATURE_SAI_FIFO_COUNT) && (FSL_FEATURE_SAI_FIFO_COUNT > 1)
+ 221:../drivers/fsl_sai.h ****     uint8_t watermark;       /*!< Watermark value */
+ 222:../drivers/fsl_sai.h **** #endif                       /* FSL_FEATURE_SAI_FIFO_COUNT */
+ 223:../drivers/fsl_sai.h ****     uint8_t channel;         /*!< Data channel used in transfer.*/
+ 224:../drivers/fsl_sai.h ****     sai_protocol_t protocol; /*!< Which audio protocol used */
+ 225:../drivers/fsl_sai.h ****     bool isFrameSyncCompact; /*!< True means Frame sync length is configurable according to bitWidt
+ 226:../drivers/fsl_sai.h ****                                 sync length is 64 times of bit clock. */
+ 227:../drivers/fsl_sai.h **** } sai_transfer_format_t;
+ 228:../drivers/fsl_sai.h **** 
+ 229:../drivers/fsl_sai.h **** /*! @brief SAI transfer structure */
+ 230:../drivers/fsl_sai.h **** typedef struct _sai_transfer
+ 231:../drivers/fsl_sai.h **** {
+ 232:../drivers/fsl_sai.h ****     uint8_t *data;   /*!< Data start address to transfer. */
+ 233:../drivers/fsl_sai.h ****     size_t dataSize; /*!< Transfer size. */
+ 234:../drivers/fsl_sai.h **** } sai_transfer_t;
+ 235:../drivers/fsl_sai.h **** 
+ 236:../drivers/fsl_sai.h **** typedef struct _sai_handle sai_handle_t;
+ 237:../drivers/fsl_sai.h **** 
+ 238:../drivers/fsl_sai.h **** /*! @brief SAI transfer callback prototype */
+ 239:../drivers/fsl_sai.h **** typedef void (*sai_transfer_callback_t)(I2S_Type *base, sai_handle_t *handle, status_t status, void
+ 240:../drivers/fsl_sai.h **** 
+ 241:../drivers/fsl_sai.h **** /*! @brief SAI handle structure */
+ 242:../drivers/fsl_sai.h **** struct _sai_handle
+ 243:../drivers/fsl_sai.h **** {
+ 244:../drivers/fsl_sai.h ****     uint32_t state;                               /*!< Transfer status */
+ 245:../drivers/fsl_sai.h ****     sai_transfer_callback_t callback;             /*!< Callback function called at transfer event*/
+ 246:../drivers/fsl_sai.h ****     void *userData;                               /*!< Callback parameter passed to callback functi
+ 247:../drivers/fsl_sai.h ****     uint8_t bitWidth;                             /*!< Bit width for transfer, 8/16/24/32 bits */
+ 248:../drivers/fsl_sai.h ****     uint8_t channel;                              /*!< Transfer channel */
+ 249:../drivers/fsl_sai.h ****     sai_transfer_t saiQueue[SAI_XFER_QUEUE_SIZE]; /*!< Transfer queue storing queued transfer */
+ 250:../drivers/fsl_sai.h ****     size_t transferSize[SAI_XFER_QUEUE_SIZE];     /*!< Data bytes need to transfer */
+ 251:../drivers/fsl_sai.h ****     volatile uint8_t queueUser;                   /*!< Index for user to queue transfer */
+ 252:../drivers/fsl_sai.h ****     volatile uint8_t queueDriver;                 /*!< Index for driver to get the transfer data an
+ 253:../drivers/fsl_sai.h **** #if defined(FSL_FEATURE_SAI_FIFO_COUNT) && (FSL_FEATURE_SAI_FIFO_COUNT > 1)
+ 254:../drivers/fsl_sai.h ****     uint8_t watermark; /*!< Watermark value */
+ 255:../drivers/fsl_sai.h **** #endif
+ 256:../drivers/fsl_sai.h **** };
+ 257:../drivers/fsl_sai.h **** 
+ 258:../drivers/fsl_sai.h **** /*******************************************************************************
+ 259:../drivers/fsl_sai.h ****  * API
+ 260:../drivers/fsl_sai.h ****  ******************************************************************************/
+ 261:../drivers/fsl_sai.h **** 
+ 262:../drivers/fsl_sai.h **** #if defined(__cplusplus)
+ 263:../drivers/fsl_sai.h **** extern "C" {
+ 264:../drivers/fsl_sai.h **** #endif /*_cplusplus*/
+ 265:../drivers/fsl_sai.h **** 
+ 266:../drivers/fsl_sai.h **** /*!
+ 267:../drivers/fsl_sai.h ****  * @name Initialization and deinitialization
+ 268:../drivers/fsl_sai.h ****  * @{
+ 269:../drivers/fsl_sai.h ****  */
+ 270:../drivers/fsl_sai.h **** 
+ 271:../drivers/fsl_sai.h **** /*!
+ 272:../drivers/fsl_sai.h ****  * @brief Initializes the SAI Tx peripheral.
+ 273:../drivers/fsl_sai.h ****  *
+ 274:../drivers/fsl_sai.h ****  * Ungates the SAI clock, resets the module, and configures SAI Tx with a configuration structure.
+ 275:../drivers/fsl_sai.h ****  * The configuration structure can be custom filled or set with default values by
+ 276:../drivers/fsl_sai.h ****  * SAI_TxGetDefaultConfig().
+ 277:../drivers/fsl_sai.h ****  *
+ 278:../drivers/fsl_sai.h ****  * @note  This API should be called at the beginning of the application to use
+ 279:../drivers/fsl_sai.h ****  * the SAI driver. Otherwise, accessing the SAIM module can cause a hard fault
+ 280:../drivers/fsl_sai.h ****  * because the clock is not enabled.
+ 281:../drivers/fsl_sai.h ****  *
+ 282:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 283:../drivers/fsl_sai.h ****  * @param config SAI configuration structure.
+ 284:../drivers/fsl_sai.h **** */
+ 285:../drivers/fsl_sai.h **** void SAI_TxInit(I2S_Type *base, const sai_config_t *config);
+ 286:../drivers/fsl_sai.h **** 
+ 287:../drivers/fsl_sai.h **** /*!
+ 288:../drivers/fsl_sai.h ****  * @brief Initializes the the SAI Rx peripheral.
+ 289:../drivers/fsl_sai.h ****  *
+ 290:../drivers/fsl_sai.h ****  * Ungates the SAI clock, resets the module, and configures the SAI Rx with a configuration structu
+ 291:../drivers/fsl_sai.h ****  * The configuration structure can be custom filled or set with default values by
+ 292:../drivers/fsl_sai.h ****  * SAI_RxGetDefaultConfig().
+ 293:../drivers/fsl_sai.h ****  *
+ 294:../drivers/fsl_sai.h ****  * @note  This API should be called at the beginning of the application to use
+ 295:../drivers/fsl_sai.h ****  * the SAI driver. Otherwise, accessing the SAI module can cause a hard fault
+ 296:../drivers/fsl_sai.h ****  * because the clock is not enabled.
+ 297:../drivers/fsl_sai.h ****  *
+ 298:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 299:../drivers/fsl_sai.h ****  * @param config SAI configuration structure.
+ 300:../drivers/fsl_sai.h ****  */
+ 301:../drivers/fsl_sai.h **** void SAI_RxInit(I2S_Type *base, const sai_config_t *config);
+ 302:../drivers/fsl_sai.h **** 
+ 303:../drivers/fsl_sai.h **** /*!
+ 304:../drivers/fsl_sai.h ****  * @brief  Sets the SAI Tx configuration structure to default values.
+ 305:../drivers/fsl_sai.h ****  *
+ 306:../drivers/fsl_sai.h ****  * This API initializes the configuration structure for use in SAI_TxConfig().
+ 307:../drivers/fsl_sai.h ****  * The initialized structure can remain unchanged in SAI_TxConfig(), or it can be modified
+ 308:../drivers/fsl_sai.h ****  *  before calling SAI_TxConfig().
+ 309:../drivers/fsl_sai.h ****  * This is an example.
+ 310:../drivers/fsl_sai.h ****    @code
+ 311:../drivers/fsl_sai.h ****    sai_config_t config;
+ 312:../drivers/fsl_sai.h ****    SAI_TxGetDefaultConfig(&config);
+ 313:../drivers/fsl_sai.h ****    @endcode
+ 314:../drivers/fsl_sai.h ****  *
+ 315:../drivers/fsl_sai.h ****  * @param config pointer to master configuration structure
+ 316:../drivers/fsl_sai.h ****  */
+ 317:../drivers/fsl_sai.h **** void SAI_TxGetDefaultConfig(sai_config_t *config);
+ 318:../drivers/fsl_sai.h **** 
+ 319:../drivers/fsl_sai.h **** /*!
+ 320:../drivers/fsl_sai.h ****  * @brief  Sets the SAI Rx configuration structure to default values.
+ 321:../drivers/fsl_sai.h ****  *
+ 322:../drivers/fsl_sai.h ****  * This API initializes the configuration structure for use in SAI_RxConfig().
+ 323:../drivers/fsl_sai.h ****  * The initialized structure can remain unchanged in SAI_RxConfig() or it can be modified
+ 324:../drivers/fsl_sai.h ****  *  before calling SAI_RxConfig().
+ 325:../drivers/fsl_sai.h ****  * This is an example.
+ 326:../drivers/fsl_sai.h ****    @code
+ 327:../drivers/fsl_sai.h ****    sai_config_t config;
+ 328:../drivers/fsl_sai.h ****    SAI_RxGetDefaultConfig(&config);
+ 329:../drivers/fsl_sai.h ****    @endcode
+ 330:../drivers/fsl_sai.h ****  *
+ 331:../drivers/fsl_sai.h ****  * @param config pointer to master configuration structure
+ 332:../drivers/fsl_sai.h ****  */
+ 333:../drivers/fsl_sai.h **** void SAI_RxGetDefaultConfig(sai_config_t *config);
+ 334:../drivers/fsl_sai.h **** 
+ 335:../drivers/fsl_sai.h **** /*!
+ 336:../drivers/fsl_sai.h ****  * @brief De-initializes the SAI peripheral.
+ 337:../drivers/fsl_sai.h ****  *
+ 338:../drivers/fsl_sai.h ****  * This API gates the SAI clock. The SAI module can't operate unless SAI_TxInit
+ 339:../drivers/fsl_sai.h ****  * or SAI_RxInit is called to enable the clock.
+ 340:../drivers/fsl_sai.h ****  *
+ 341:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 342:../drivers/fsl_sai.h **** */
+ 343:../drivers/fsl_sai.h **** void SAI_Deinit(I2S_Type *base);
+ 344:../drivers/fsl_sai.h **** 
+ 345:../drivers/fsl_sai.h **** /*!
+ 346:../drivers/fsl_sai.h ****  * @brief Resets the SAI Tx.
+ 347:../drivers/fsl_sai.h ****  *
+ 348:../drivers/fsl_sai.h ****  * This function enables the software reset and FIFO reset of SAI Tx. After reset, clear the reset 
+ 349:../drivers/fsl_sai.h ****  *
+ 350:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 351:../drivers/fsl_sai.h ****  */
+ 352:../drivers/fsl_sai.h **** void SAI_TxReset(I2S_Type *base);
+ 353:../drivers/fsl_sai.h **** 
+ 354:../drivers/fsl_sai.h **** /*!
+ 355:../drivers/fsl_sai.h ****  * @brief Resets the SAI Rx.
+ 356:../drivers/fsl_sai.h ****  *
+ 357:../drivers/fsl_sai.h ****  * This function enables the software reset and FIFO reset of SAI Rx. After reset, clear the reset 
+ 358:../drivers/fsl_sai.h ****  *
+ 359:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 360:../drivers/fsl_sai.h ****  */
+ 361:../drivers/fsl_sai.h **** void SAI_RxReset(I2S_Type *base);
+ 362:../drivers/fsl_sai.h **** 
+ 363:../drivers/fsl_sai.h **** /*!
+ 364:../drivers/fsl_sai.h ****  * @brief Enables/disables the SAI Tx.
+ 365:../drivers/fsl_sai.h ****  *
+ 366:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 367:../drivers/fsl_sai.h ****  * @param enable True means enable SAI Tx, false means disable.
+ 368:../drivers/fsl_sai.h ****  */
+ 369:../drivers/fsl_sai.h **** void SAI_TxEnable(I2S_Type *base, bool enable);
+ 370:../drivers/fsl_sai.h **** 
+ 371:../drivers/fsl_sai.h **** /*!
+ 372:../drivers/fsl_sai.h ****  * @brief Enables/disables the SAI Rx.
+ 373:../drivers/fsl_sai.h ****  *
+ 374:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 375:../drivers/fsl_sai.h ****  * @param enable True means enable SAI Rx, false means disable.
+ 376:../drivers/fsl_sai.h ****  */
+ 377:../drivers/fsl_sai.h **** void SAI_RxEnable(I2S_Type *base, bool enable);
+ 378:../drivers/fsl_sai.h **** 
+ 379:../drivers/fsl_sai.h **** /*! @} */
+ 380:../drivers/fsl_sai.h **** 
+ 381:../drivers/fsl_sai.h **** /*!
+ 382:../drivers/fsl_sai.h ****  * @name Status
+ 383:../drivers/fsl_sai.h ****  * @{
+ 384:../drivers/fsl_sai.h ****  */
+ 385:../drivers/fsl_sai.h **** 
+ 386:../drivers/fsl_sai.h **** /*!
+ 387:../drivers/fsl_sai.h ****  * @brief Gets the SAI Tx status flag state.
+ 388:../drivers/fsl_sai.h ****  *
+ 389:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 390:../drivers/fsl_sai.h ****  * @return SAI Tx status flag value. Use the Status Mask to get the status value needed.
+ 391:../drivers/fsl_sai.h ****  */
+ 392:../drivers/fsl_sai.h **** static inline uint32_t SAI_TxGetStatusFlag(I2S_Type *base)
+ 393:../drivers/fsl_sai.h **** {
+ 394:../drivers/fsl_sai.h ****     return base->TCSR;
+ 395:../drivers/fsl_sai.h **** }
+ 396:../drivers/fsl_sai.h **** 
+ 397:../drivers/fsl_sai.h **** /*!
+ 398:../drivers/fsl_sai.h ****  * @brief Clears the SAI Tx status flag state.
+ 399:../drivers/fsl_sai.h ****  *
+ 400:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 401:../drivers/fsl_sai.h ****  * @param mask State mask. It can be a combination of the following source if defined:
+ 402:../drivers/fsl_sai.h ****  *        @arg kSAI_WordStartFlag
+ 403:../drivers/fsl_sai.h ****  *        @arg kSAI_SyncErrorFlag
+ 404:../drivers/fsl_sai.h ****  *        @arg kSAI_FIFOErrorFlag
+ 405:../drivers/fsl_sai.h ****  */
+ 406:../drivers/fsl_sai.h **** static inline void SAI_TxClearStatusFlags(I2S_Type *base, uint32_t mask)
+ 407:../drivers/fsl_sai.h **** {
+ 408:../drivers/fsl_sai.h ****     base->TCSR = ((base->TCSR & 0xFFE3FFFFU) | mask);
+ 409:../drivers/fsl_sai.h **** }
+ 410:../drivers/fsl_sai.h **** 
+ 411:../drivers/fsl_sai.h **** /*!
+ 412:../drivers/fsl_sai.h ****  * @brief Gets the SAI Tx status flag state.
+ 413:../drivers/fsl_sai.h ****  *
+ 414:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 415:../drivers/fsl_sai.h ****  * @return SAI Rx status flag value. Use the Status Mask to get the status value needed.
+ 416:../drivers/fsl_sai.h ****  */
+ 417:../drivers/fsl_sai.h **** static inline uint32_t SAI_RxGetStatusFlag(I2S_Type *base)
+ 418:../drivers/fsl_sai.h **** {
+ 419:../drivers/fsl_sai.h ****     return base->RCSR;
+ 420:../drivers/fsl_sai.h **** }
+ 421:../drivers/fsl_sai.h **** 
+ 422:../drivers/fsl_sai.h **** /*!
+ 423:../drivers/fsl_sai.h ****  * @brief Clears the SAI Rx status flag state.
+ 424:../drivers/fsl_sai.h ****  *
+ 425:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 426:../drivers/fsl_sai.h ****  * @param mask State mask. It can be a combination of the following sources if defined.
+ 427:../drivers/fsl_sai.h ****  *        @arg kSAI_WordStartFlag
+ 428:../drivers/fsl_sai.h ****  *        @arg kSAI_SyncErrorFlag
+ 429:../drivers/fsl_sai.h ****  *        @arg kSAI_FIFOErrorFlag
+ 430:../drivers/fsl_sai.h ****  */
+ 431:../drivers/fsl_sai.h **** static inline void SAI_RxClearStatusFlags(I2S_Type *base, uint32_t mask)
+ 432:../drivers/fsl_sai.h **** {
+ 433:../drivers/fsl_sai.h ****     base->RCSR = ((base->RCSR & 0xFFE3FFFFU) | mask);
+ 434:../drivers/fsl_sai.h **** }
+ 435:../drivers/fsl_sai.h **** 
+ 436:../drivers/fsl_sai.h **** /*!
+ 437:../drivers/fsl_sai.h ****  * @brief Do software reset or FIFO reset .
+ 438:../drivers/fsl_sai.h ****  *
+ 439:../drivers/fsl_sai.h ****  * FIFO reset means clear all the data in the FIFO, and make the FIFO pointer both to 0.
+ 440:../drivers/fsl_sai.h ****  * Software reset means claer the Tx internal logic, including the bit clock, frame count etc. But 
+ 441:../drivers/fsl_sai.h ****  * reset will not clear any configuration registers like TCR1~TCR5.
+ 442:../drivers/fsl_sai.h ****  * This function will also clear all the error flags such as FIFO error, sync error etc.
+ 443:../drivers/fsl_sai.h ****  *
+ 444:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 445:../drivers/fsl_sai.h ****  * @param type Reset type, FIFO reset or software reset
+ 446:../drivers/fsl_sai.h ****  */
+ 447:../drivers/fsl_sai.h **** void SAI_TxSoftwareReset(I2S_Type *base, sai_reset_type_t type);
+ 448:../drivers/fsl_sai.h **** 
+ 449:../drivers/fsl_sai.h **** /*!
+ 450:../drivers/fsl_sai.h ****  * @brief Do software reset or FIFO reset .
+ 451:../drivers/fsl_sai.h ****  *
+ 452:../drivers/fsl_sai.h ****  * FIFO reset means clear all the data in the FIFO, and make the FIFO pointer both to 0.
+ 453:../drivers/fsl_sai.h ****  * Software reset means claer the Rx internal logic, including the bit clock, frame count etc. But 
+ 454:../drivers/fsl_sai.h ****  * reset will not clear any configuration registers like RCR1~RCR5.
+ 455:../drivers/fsl_sai.h ****  * This function will also clear all the error flags such as FIFO error, sync error etc.
+ 456:../drivers/fsl_sai.h ****  *
+ 457:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 458:../drivers/fsl_sai.h ****  * @param type Reset type, FIFO reset or software reset
+ 459:../drivers/fsl_sai.h ****  */
+ 460:../drivers/fsl_sai.h **** void SAI_RxSoftwareReset(I2S_Type *base, sai_reset_type_t type);
+ 461:../drivers/fsl_sai.h **** 
+ 462:../drivers/fsl_sai.h **** /*!
+ 463:../drivers/fsl_sai.h ****  * @brief Set the Tx channel FIFO enable mask.
+ 464:../drivers/fsl_sai.h ****  *
+ 465:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 466:../drivers/fsl_sai.h ****  * @param mask Channel enable mask, 0 means all channel FIFO disabled, 1 means channel 0 enabled,
+ 467:../drivers/fsl_sai.h ****  * 3 means both channel 0 and channel 1 enabled.
+ 468:../drivers/fsl_sai.h ****  */
+ 469:../drivers/fsl_sai.h **** void SAI_TxSetChannelFIFOMask(I2S_Type *base, uint8_t mask);
+ 470:../drivers/fsl_sai.h **** 
+ 471:../drivers/fsl_sai.h **** /*!
+ 472:../drivers/fsl_sai.h ****  * @brief Set the Rx channel FIFO enable mask.
+ 473:../drivers/fsl_sai.h ****  *
+ 474:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 475:../drivers/fsl_sai.h ****  * @param mask Channel enable mask, 0 means all channel FIFO disabled, 1 means channel 0 enabled,
+ 476:../drivers/fsl_sai.h ****  * 3 means both channel 0 and channel 1 enabled.
+ 477:../drivers/fsl_sai.h ****  */
+ 478:../drivers/fsl_sai.h **** void SAI_RxSetChannelFIFOMask(I2S_Type *base, uint8_t mask);
+ 479:../drivers/fsl_sai.h **** 
+ 480:../drivers/fsl_sai.h **** /*! @} */
+ 481:../drivers/fsl_sai.h **** 
+ 482:../drivers/fsl_sai.h **** /*!
+ 483:../drivers/fsl_sai.h ****  * @name Interrupts
+ 484:../drivers/fsl_sai.h ****  * @{
+ 485:../drivers/fsl_sai.h ****  */
+ 486:../drivers/fsl_sai.h **** 
+ 487:../drivers/fsl_sai.h **** /*!
+ 488:../drivers/fsl_sai.h ****  * @brief Enables the SAI Tx interrupt requests.
+ 489:../drivers/fsl_sai.h ****  *
+ 490:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 491:../drivers/fsl_sai.h ****  * @param mask interrupt source
+ 492:../drivers/fsl_sai.h ****  *     The parameter can be a combination of the following sources if defined.
+ 493:../drivers/fsl_sai.h ****  *     @arg kSAI_WordStartInterruptEnable
+ 494:../drivers/fsl_sai.h ****  *     @arg kSAI_SyncErrorInterruptEnable
+ 495:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFOWarningInterruptEnable
+ 496:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFORequestInterruptEnable
+ 497:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFOErrorInterruptEnable
+ 498:../drivers/fsl_sai.h ****  */
+ 499:../drivers/fsl_sai.h **** static inline void SAI_TxEnableInterrupts(I2S_Type *base, uint32_t mask)
+ 500:../drivers/fsl_sai.h **** {
+ 501:../drivers/fsl_sai.h ****     base->TCSR = ((base->TCSR & 0xFFE3FFFFU) | mask);
+ 502:../drivers/fsl_sai.h **** }
+ 503:../drivers/fsl_sai.h **** 
+ 504:../drivers/fsl_sai.h **** /*!
+ 505:../drivers/fsl_sai.h ****  * @brief Enables the SAI Rx interrupt requests.
+ 506:../drivers/fsl_sai.h ****  *
+ 507:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 508:../drivers/fsl_sai.h ****  * @param mask interrupt source
+ 509:../drivers/fsl_sai.h ****  *     The parameter can be a combination of the following sources if defined.
+ 510:../drivers/fsl_sai.h ****  *     @arg kSAI_WordStartInterruptEnable
+ 511:../drivers/fsl_sai.h ****  *     @arg kSAI_SyncErrorInterruptEnable
+ 512:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFOWarningInterruptEnable
+ 513:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFORequestInterruptEnable
+ 514:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFOErrorInterruptEnable
+ 515:../drivers/fsl_sai.h ****  */
+ 516:../drivers/fsl_sai.h **** static inline void SAI_RxEnableInterrupts(I2S_Type *base, uint32_t mask)
+ 517:../drivers/fsl_sai.h **** {
+ 518:../drivers/fsl_sai.h ****     base->RCSR = ((base->RCSR & 0xFFE3FFFFU) | mask);
+ 519:../drivers/fsl_sai.h **** }
+ 520:../drivers/fsl_sai.h **** 
+ 521:../drivers/fsl_sai.h **** /*!
+ 522:../drivers/fsl_sai.h ****  * @brief Disables the SAI Tx interrupt requests.
+ 523:../drivers/fsl_sai.h ****  *
+ 524:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 525:../drivers/fsl_sai.h ****  * @param mask interrupt source
+ 526:../drivers/fsl_sai.h ****  *     The parameter can be a combination of the following sources if defined.
+ 527:../drivers/fsl_sai.h ****  *     @arg kSAI_WordStartInterruptEnable
+ 528:../drivers/fsl_sai.h ****  *     @arg kSAI_SyncErrorInterruptEnable
+ 529:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFOWarningInterruptEnable
+ 530:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFORequestInterruptEnable
+ 531:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFOErrorInterruptEnable
+ 532:../drivers/fsl_sai.h ****  */
+ 533:../drivers/fsl_sai.h **** static inline void SAI_TxDisableInterrupts(I2S_Type *base, uint32_t mask)
+ 534:../drivers/fsl_sai.h **** {
+ 535:../drivers/fsl_sai.h ****     base->TCSR = ((base->TCSR & 0xFFE3FFFFU) & (~mask));
+ 536:../drivers/fsl_sai.h **** }
+ 537:../drivers/fsl_sai.h **** 
+ 538:../drivers/fsl_sai.h **** /*!
+ 539:../drivers/fsl_sai.h ****  * @brief Disables the SAI Rx interrupt requests.
+ 540:../drivers/fsl_sai.h ****  *
+ 541:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 542:../drivers/fsl_sai.h ****  * @param mask interrupt source
+ 543:../drivers/fsl_sai.h ****  *     The parameter can be a combination of the following sources if defined.
+ 544:../drivers/fsl_sai.h ****  *     @arg kSAI_WordStartInterruptEnable
+ 545:../drivers/fsl_sai.h ****  *     @arg kSAI_SyncErrorInterruptEnable
+ 546:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFOWarningInterruptEnable
+ 547:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFORequestInterruptEnable
+ 548:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFOErrorInterruptEnable
+ 549:../drivers/fsl_sai.h ****  */
+ 550:../drivers/fsl_sai.h **** static inline void SAI_RxDisableInterrupts(I2S_Type *base, uint32_t mask)
+ 551:../drivers/fsl_sai.h **** {
+ 552:../drivers/fsl_sai.h ****     base->RCSR = ((base->RCSR & 0xFFE3FFFFU) & (~mask));
+ 553:../drivers/fsl_sai.h **** }
+ 554:../drivers/fsl_sai.h **** 
+ 555:../drivers/fsl_sai.h **** /*! @} */
+ 556:../drivers/fsl_sai.h **** 
+ 557:../drivers/fsl_sai.h **** /*!
+ 558:../drivers/fsl_sai.h ****  * @name DMA Control
+ 559:../drivers/fsl_sai.h ****  * @{
+ 560:../drivers/fsl_sai.h ****  */
+ 561:../drivers/fsl_sai.h **** 
+ 562:../drivers/fsl_sai.h **** /*!
+ 563:../drivers/fsl_sai.h ****  * @brief Enables/disables the SAI Tx DMA requests.
+ 564:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 565:../drivers/fsl_sai.h ****  * @param mask DMA source
+ 566:../drivers/fsl_sai.h ****  *     The parameter can be combination of the following sources if defined.
+ 567:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFOWarningDMAEnable
+ 568:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFORequestDMAEnable
+ 569:../drivers/fsl_sai.h ****  * @param enable True means enable DMA, false means disable DMA.
+ 570:../drivers/fsl_sai.h ****  */
+ 571:../drivers/fsl_sai.h **** static inline void SAI_TxEnableDMA(I2S_Type *base, uint32_t mask, bool enable)
+ 572:../drivers/fsl_sai.h **** {
+ 573:../drivers/fsl_sai.h ****     if (enable)
+ 574:../drivers/fsl_sai.h ****     {
+ 575:../drivers/fsl_sai.h ****         base->TCSR = ((base->TCSR & 0xFFE3FFFFU) | mask);
+ 576:../drivers/fsl_sai.h ****     }
+ 577:../drivers/fsl_sai.h ****     else
+ 578:../drivers/fsl_sai.h ****     {
+ 579:../drivers/fsl_sai.h ****         base->TCSR = ((base->TCSR & 0xFFE3FFFFU) & (~mask));
+  95              		.loc 2 579 0
+  96 0046 1368     		ldr	r3, [r2]
+  97 0048 23F4E013 		bic	r3, r3, #1835008
+  98 004c 23F00103 		bic	r3, r3, #1
+  99 0050 1360     		str	r3, [r2]
+ 100              	.LVL10:
+ 101              	.LBE32:
+ 102              	.LBE31:
+ 103              	.LBE30:
+ 110:../drivers/fsl_sai_edma.c ****         EDMA_AbortTransfer(handle);
+ 104              		.loc 1 110 0
+ 105 0052 2846     		mov	r0, r5
+ 106              	.LBE29:
+ 107              	.LBE28:
+ 111:../drivers/fsl_sai_edma.c ****     }
+ 112:../drivers/fsl_sai_edma.c **** }
+ 108              		.loc 1 112 0
+ 109 0054 BDE8F840 		pop	{r3, r4, r5, r6, r7, lr}
+ 110              		.cfi_remember_state
+ 111              		.cfi_restore 14
+ 112              		.cfi_restore 7
+ 113              		.cfi_restore 6
+ 114              		.cfi_restore 5
+ 115              		.cfi_restore 4
+ 116              		.cfi_restore 3
+ 117              		.cfi_def_cfa_offset 0
+ 118              	.LVL11:
+ 119              	.LBB34:
+ 120              	.LBB33:
+ 110:../drivers/fsl_sai_edma.c ****         EDMA_AbortTransfer(handle);
+ 121              		.loc 1 110 0
+ 122 0058 FFF7FEBF 		b	EDMA_AbortTransfer
+ 123              	.LVL12:
+ 124              	.L1:
+ 125              		.cfi_restore_state
+ 126              	.LBE33:
+ 127              	.LBE34:
+ 128              		.loc 1 112 0
+ 129 005c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 130              		.cfi_endproc
+ 131              	.LFE171:
+ 133              		.section	.text.SAI_RxEDMACallback,"ax",%progbits
+ 134              		.align	1
+ 135              		.syntax unified
+ 136              		.thumb
+ 137              		.thumb_func
+ 138              		.fpu fpv4-sp-d16
+ 140              	SAI_RxEDMACallback:
+ 141              	.LFB172:
+ 113:../drivers/fsl_sai_edma.c **** 
+ 114:../drivers/fsl_sai_edma.c **** static void SAI_RxEDMACallback(edma_handle_t *handle, void *userData, bool done, uint32_t tcds)
+ 115:../drivers/fsl_sai_edma.c **** {
+ 142              		.loc 1 115 0
+ 143              		.cfi_startproc
+ 144              		@ args = 0, pretend = 0, frame = 0
+ 145              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146              	.LVL13:
+ 147 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 148              		.cfi_def_cfa_offset 24
+ 149              		.cfi_offset 3, -24
+ 150              		.cfi_offset 4, -20
+ 151              		.cfi_offset 5, -16
+ 152              		.cfi_offset 6, -12
+ 153              		.cfi_offset 7, -8
+ 154              		.cfi_offset 14, -4
+ 116:../drivers/fsl_sai_edma.c ****     sai_edma_private_handle_t *privHandle = (sai_edma_private_handle_t *)userData;
+ 117:../drivers/fsl_sai_edma.c ****     sai_edma_handle_t *saiHandle = privHandle->handle;
+ 155              		.loc 1 117 0
+ 156 0002 4C68     		ldr	r4, [r1, #4]
+ 157              	.LVL14:
+ 118:../drivers/fsl_sai_edma.c **** 
+ 119:../drivers/fsl_sai_edma.c ****     /* If finished a blcok, call the callback function */
+ 120:../drivers/fsl_sai_edma.c ****     memset(&saiHandle->saiQueue[saiHandle->queueDriver], 0, sizeof(sai_transfer_t));
+ 158              		.loc 1 120 0
+ 159 0004 94F8E530 		ldrb	r3, [r4, #229]	@ zero_extendqisi2
+ 160              	.LVL15:
+ 161 0008 DB00     		lsls	r3, r3, #3
+ 162 000a B433     		adds	r3, r3, #180
+ 163 000c 0022     		movs	r2, #0
+ 164              	.LVL16:
+ 115:../drivers/fsl_sai_edma.c ****     sai_edma_private_handle_t *privHandle = (sai_edma_private_handle_t *)userData;
+ 165              		.loc 1 115 0
+ 166 000e 0E46     		mov	r6, r1
+ 167              		.loc 1 120 0
+ 168 0010 E118     		adds	r1, r4, r3
+ 169              	.LVL17:
+ 170 0012 E250     		str	r2, [r4, r3]	@ unaligned
+ 171 0014 4A60     		str	r2, [r1, #4]	@ unaligned
+ 121:../drivers/fsl_sai_edma.c ****     saiHandle->queueDriver = (saiHandle->queueDriver + 1) % SAI_XFER_QUEUE_SIZE;
+ 172              		.loc 1 121 0
+ 173 0016 94F8E530 		ldrb	r3, [r4, #229]	@ zero_extendqisi2
+ 122:../drivers/fsl_sai_edma.c ****     if (saiHandle->callback)
+ 174              		.loc 1 122 0
+ 175 001a E768     		ldr	r7, [r4, #12]
+ 121:../drivers/fsl_sai_edma.c ****     saiHandle->queueDriver = (saiHandle->queueDriver + 1) % SAI_XFER_QUEUE_SIZE;
+ 176              		.loc 1 121 0
+ 177 001c 0133     		adds	r3, r3, #1
+ 178 001e 03F00303 		and	r3, r3, #3
+ 115:../drivers/fsl_sai_edma.c ****     sai_edma_private_handle_t *privHandle = (sai_edma_private_handle_t *)userData;
+ 179              		.loc 1 115 0
+ 180 0022 0546     		mov	r5, r0
+ 121:../drivers/fsl_sai_edma.c ****     saiHandle->queueDriver = (saiHandle->queueDriver + 1) % SAI_XFER_QUEUE_SIZE;
+ 181              		.loc 1 121 0
+ 182 0024 84F8E530 		strb	r3, [r4, #229]
+ 183              		.loc 1 122 0
+ 184 0028 2FB1     		cbz	r7, .L8
+ 123:../drivers/fsl_sai_edma.c ****     {
+ 124:../drivers/fsl_sai_edma.c ****         (saiHandle->callback)(privHandle->base, saiHandle, kStatus_SAI_RxIdle, saiHandle->userData)
+ 185              		.loc 1 124 0
+ 186 002a 2369     		ldr	r3, [r4, #16]
+ 187 002c 3068     		ldr	r0, [r6]
+ 188              	.LVL18:
+ 189 002e 40F27272 		movw	r2, #1906
+ 190 0032 2146     		mov	r1, r4
+ 191 0034 B847     		blx	r7
+ 192              	.LVL19:
+ 193              	.L8:
+ 125:../drivers/fsl_sai_edma.c ****     }
+ 126:../drivers/fsl_sai_edma.c **** 
+ 127:../drivers/fsl_sai_edma.c ****     /* If all data finished, just stop the transfer */
+ 128:../drivers/fsl_sai_edma.c ****     if (saiHandle->saiQueue[saiHandle->queueDriver].data == NULL)
+ 194              		.loc 1 128 0
+ 195 0036 94F8E530 		ldrb	r3, [r4, #229]	@ zero_extendqisi2
+ 196 003a 04EBC304 		add	r4, r4, r3, lsl #3
+ 197              	.LVL20:
+ 198 003e D4F8B430 		ldr	r3, [r4, #180]
+ 199 0042 6BB9     		cbnz	r3, .L7
+ 200              	.LVL21:
+ 201              	.LBB41:
+ 202              	.LBB42:
+ 129:../drivers/fsl_sai_edma.c ****     {
+ 130:../drivers/fsl_sai_edma.c ****         /* Disable DMA enable bit */
+ 131:../drivers/fsl_sai_edma.c ****         SAI_RxEnableDMA(privHandle->base, kSAI_FIFORequestDMAEnable, false);
+ 203              		.loc 1 131 0
+ 204 0044 3268     		ldr	r2, [r6]
+ 205              	.LVL22:
+ 206              	.LBB43:
+ 207              	.LBB44:
+ 208              	.LBB45:
+ 580:../drivers/fsl_sai.h ****     }
+ 581:../drivers/fsl_sai.h **** }
+ 582:../drivers/fsl_sai.h **** 
+ 583:../drivers/fsl_sai.h **** /*!
+ 584:../drivers/fsl_sai.h ****  * @brief Enables/disables the SAI Rx DMA requests.
+ 585:../drivers/fsl_sai.h ****  * @param base SAI base pointer
+ 586:../drivers/fsl_sai.h ****  * @param mask DMA source
+ 587:../drivers/fsl_sai.h ****  *     The parameter can be a combination of the following sources if defined.
+ 588:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFOWarningDMAEnable
+ 589:../drivers/fsl_sai.h ****  *     @arg kSAI_FIFORequestDMAEnable
+ 590:../drivers/fsl_sai.h ****  * @param enable True means enable DMA, false means disable DMA.
+ 591:../drivers/fsl_sai.h ****  */
+ 592:../drivers/fsl_sai.h **** static inline void SAI_RxEnableDMA(I2S_Type *base, uint32_t mask, bool enable)
+ 593:../drivers/fsl_sai.h **** {
+ 594:../drivers/fsl_sai.h ****     if (enable)
+ 595:../drivers/fsl_sai.h ****     {
+ 596:../drivers/fsl_sai.h ****         base->RCSR = ((base->RCSR & 0xFFE3FFFFU) | mask);
+ 597:../drivers/fsl_sai.h ****     }
+ 598:../drivers/fsl_sai.h ****     else
+ 599:../drivers/fsl_sai.h ****     {
+ 600:../drivers/fsl_sai.h ****         base->RCSR = ((base->RCSR & 0xFFE3FFFFU) & (~mask));
+ 209              		.loc 2 600 0
+ 210 0046 D2F88030 		ldr	r3, [r2, #128]
+ 211 004a 23F4E013 		bic	r3, r3, #1835008
+ 212 004e 23F00103 		bic	r3, r3, #1
+ 213 0052 C2F88030 		str	r3, [r2, #128]
+ 214              	.LVL23:
+ 215              	.LBE45:
+ 216              	.LBE44:
+ 217              	.LBE43:
+ 132:../drivers/fsl_sai_edma.c ****         EDMA_AbortTransfer(handle);
+ 218              		.loc 1 132 0
+ 219 0056 2846     		mov	r0, r5
+ 220              	.LBE42:
+ 221              	.LBE41:
+ 133:../drivers/fsl_sai_edma.c ****     }
+ 134:../drivers/fsl_sai_edma.c **** }
+ 222              		.loc 1 134 0
+ 223 0058 BDE8F840 		pop	{r3, r4, r5, r6, r7, lr}
+ 224              		.cfi_remember_state
+ 225              		.cfi_restore 14
+ 226              		.cfi_restore 7
+ 227              		.cfi_restore 6
+ 228              		.cfi_restore 5
+ 229              		.cfi_restore 4
+ 230              		.cfi_restore 3
+ 231              		.cfi_def_cfa_offset 0
+ 232              	.LVL24:
+ 233              	.LBB47:
+ 234              	.LBB46:
+ 132:../drivers/fsl_sai_edma.c ****         EDMA_AbortTransfer(handle);
+ 235              		.loc 1 132 0
+ 236 005c FFF7FEBF 		b	EDMA_AbortTransfer
+ 237              	.LVL25:
+ 238              	.L7:
+ 239              		.cfi_restore_state
+ 240              	.LBE46:
+ 241              	.LBE47:
+ 242              		.loc 1 134 0
+ 243 0060 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 244              		.cfi_endproc
+ 245              	.LFE172:
+ 247              		.section	.text.SAI_TransferTxCreateHandleEDMA,"ax",%progbits
+ 248              		.align	1
+ 249              		.global	SAI_TransferTxCreateHandleEDMA
+ 250              		.syntax unified
+ 251              		.thumb
+ 252              		.thumb_func
+ 253              		.fpu fpv4-sp-d16
+ 255              	SAI_TransferTxCreateHandleEDMA:
+ 256              	.LFB173:
+ 135:../drivers/fsl_sai_edma.c **** 
+ 136:../drivers/fsl_sai_edma.c **** void SAI_TransferTxCreateHandleEDMA(
+ 137:../drivers/fsl_sai_edma.c ****     I2S_Type *base, sai_edma_handle_t *handle, sai_edma_callback_t callback, void *userData, edma_h
+ 138:../drivers/fsl_sai_edma.c **** {
+ 257              		.loc 1 138 0
+ 258              		.cfi_startproc
+ 259              		@ args = 4, pretend = 0, frame = 0
+ 260              		@ frame_needed = 0, uses_anonymous_args = 0
+ 261              	.LVL26:
+ 262 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 263              		.cfi_def_cfa_offset 32
+ 264              		.cfi_offset 3, -32
+ 265              		.cfi_offset 4, -28
+ 266              		.cfi_offset 5, -24
+ 267              		.cfi_offset 6, -20
+ 268              		.cfi_offset 7, -16
+ 269              		.cfi_offset 8, -12
+ 270              		.cfi_offset 9, -8
+ 271              		.cfi_offset 14, -4
+ 272              		.loc 1 138 0
+ 273 0004 089E     		ldr	r6, [sp, #32]
+ 274 0006 0C46     		mov	r4, r1
+ 275 0008 9846     		mov	r8, r3
+ 276 000a 9146     		mov	r9, r2
+ 277 000c 0746     		mov	r7, r0
+ 139:../drivers/fsl_sai_edma.c ****     assert(handle && dmaHandle);
+ 140:../drivers/fsl_sai_edma.c **** 
+ 141:../drivers/fsl_sai_edma.c ****     uint32_t instance = SAI_GetInstance(base);
+ 278              		.loc 1 141 0
+ 279 000e FFF7FEFF 		bl	SAI_GetInstance
+ 280              	.LVL27:
+ 142:../drivers/fsl_sai_edma.c **** 
+ 143:../drivers/fsl_sai_edma.c ****     /* Zero the handle */
+ 144:../drivers/fsl_sai_edma.c ****     memset(handle, 0, sizeof(*handle));
+ 281              		.loc 1 144 0
+ 282 0012 E422     		movs	r2, #228
+ 141:../drivers/fsl_sai_edma.c **** 
+ 283              		.loc 1 141 0
+ 284 0014 0546     		mov	r5, r0
+ 285              	.LVL28:
+ 286              		.loc 1 144 0
+ 287 0016 0021     		movs	r1, #0
+ 288 0018 201D     		adds	r0, r4, #4
+ 289              	.LVL29:
+ 290 001a FFF7FEFF 		bl	memset
+ 291              	.LVL30:
+ 145:../drivers/fsl_sai_edma.c **** 
+ 146:../drivers/fsl_sai_edma.c ****     /* Set sai base to handle */
+ 147:../drivers/fsl_sai_edma.c ****     handle->dmaHandle = dmaHandle;
+ 148:../drivers/fsl_sai_edma.c ****     handle->callback = callback;
+ 149:../drivers/fsl_sai_edma.c ****     handle->userData = userData;
+ 150:../drivers/fsl_sai_edma.c **** 
+ 151:../drivers/fsl_sai_edma.c ****     /* Set SAI state to idle */
+ 152:../drivers/fsl_sai_edma.c ****     handle->state = kSAI_Idle;
+ 292              		.loc 1 152 0
+ 293 001e 0123     		movs	r3, #1
+ 294 0020 A360     		str	r3, [r4, #8]
+ 153:../drivers/fsl_sai_edma.c **** 
+ 154:../drivers/fsl_sai_edma.c ****     s_edmaPrivateHandle[instance][0].base = base;
+ 295              		.loc 1 154 0
+ 296 0022 0B4B     		ldr	r3, .L14
+ 147:../drivers/fsl_sai_edma.c ****     handle->callback = callback;
+ 297              		.loc 1 147 0
+ 298 0024 2660     		str	r6, [r4]
+ 299              		.loc 1 154 0
+ 300 0026 2801     		lsls	r0, r5, #4
+ 301 0028 1D18     		adds	r5, r3, r0
+ 302              	.LVL31:
+ 155:../drivers/fsl_sai_edma.c ****     s_edmaPrivateHandle[instance][0].handle = handle;
+ 156:../drivers/fsl_sai_edma.c **** 
+ 157:../drivers/fsl_sai_edma.c ****     /* Need to use scatter gather */
+ 158:../drivers/fsl_sai_edma.c ****     EDMA_InstallTCDMemory(dmaHandle, STCD_ADDR(handle->tcd), SAI_XFER_QUEUE_SIZE);
+ 303              		.loc 1 158 0
+ 304 002a 04F13401 		add	r1, r4, #52
+ 149:../drivers/fsl_sai_edma.c **** 
+ 305              		.loc 1 149 0
+ 306 002e C4E90398 		strd	r9, r8, [r4, #12]
+ 307              		.loc 1 158 0
+ 308 0032 0422     		movs	r2, #4
+ 154:../drivers/fsl_sai_edma.c ****     s_edmaPrivateHandle[instance][0].handle = handle;
+ 309              		.loc 1 154 0
+ 310 0034 1F50     		str	r7, [r3, r0]
+ 155:../drivers/fsl_sai_edma.c ****     s_edmaPrivateHandle[instance][0].handle = handle;
+ 311              		.loc 1 155 0
+ 312 0036 6C60     		str	r4, [r5, #4]
+ 313              		.loc 1 158 0
+ 314 0038 3046     		mov	r0, r6
+ 315 003a 21F01F01 		bic	r1, r1, #31
+ 316 003e FFF7FEFF 		bl	EDMA_InstallTCDMemory
+ 317              	.LVL32:
+ 159:../drivers/fsl_sai_edma.c **** 
+ 160:../drivers/fsl_sai_edma.c ****     /* Install callback for Tx dma channel */
+ 161:../drivers/fsl_sai_edma.c ****     EDMA_SetCallback(dmaHandle, SAI_TxEDMACallback, &s_edmaPrivateHandle[instance][0]);
+ 318              		.loc 1 161 0
+ 319 0042 2A46     		mov	r2, r5
+ 320 0044 3046     		mov	r0, r6
+ 321 0046 0349     		ldr	r1, .L14+4
+ 162:../drivers/fsl_sai_edma.c **** }
+ 322              		.loc 1 162 0
+ 323 0048 BDE8F843 		pop	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 324              		.cfi_restore 14
+ 325              		.cfi_restore 9
+ 326              		.cfi_restore 8
+ 327              		.cfi_restore 7
+ 328              		.cfi_restore 6
+ 329              		.cfi_restore 5
+ 330              		.cfi_restore 4
+ 331              		.cfi_restore 3
+ 332              		.cfi_def_cfa_offset 0
+ 333              	.LVL33:
+ 161:../drivers/fsl_sai_edma.c **** }
+ 334              		.loc 1 161 0
+ 335 004c FFF7FEBF 		b	EDMA_SetCallback
+ 336              	.LVL34:
+ 337              	.L15:
+ 338              		.align	2
+ 339              	.L14:
+ 340 0050 00000000 		.word	.LANCHOR0
+ 341 0054 00000000 		.word	SAI_TxEDMACallback
+ 342              		.cfi_endproc
+ 343              	.LFE173:
+ 345              		.section	.text.SAI_TransferRxCreateHandleEDMA,"ax",%progbits
+ 346              		.align	1
+ 347              		.global	SAI_TransferRxCreateHandleEDMA
+ 348              		.syntax unified
+ 349              		.thumb
+ 350              		.thumb_func
+ 351              		.fpu fpv4-sp-d16
+ 353              	SAI_TransferRxCreateHandleEDMA:
+ 354              	.LFB174:
+ 163:../drivers/fsl_sai_edma.c **** 
+ 164:../drivers/fsl_sai_edma.c **** void SAI_TransferRxCreateHandleEDMA(
+ 165:../drivers/fsl_sai_edma.c ****     I2S_Type *base, sai_edma_handle_t *handle, sai_edma_callback_t callback, void *userData, edma_h
+ 166:../drivers/fsl_sai_edma.c **** {
+ 355              		.loc 1 166 0
+ 356              		.cfi_startproc
+ 357              		@ args = 4, pretend = 0, frame = 0
+ 358              		@ frame_needed = 0, uses_anonymous_args = 0
+ 359              	.LVL35:
+ 360 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 361              		.cfi_def_cfa_offset 32
+ 362              		.cfi_offset 3, -32
+ 363              		.cfi_offset 4, -28
+ 364              		.cfi_offset 5, -24
+ 365              		.cfi_offset 6, -20
+ 366              		.cfi_offset 7, -16
+ 367              		.cfi_offset 8, -12
+ 368              		.cfi_offset 9, -8
+ 369              		.cfi_offset 14, -4
+ 370              		.loc 1 166 0
+ 371 0004 089E     		ldr	r6, [sp, #32]
+ 372 0006 0C46     		mov	r4, r1
+ 373 0008 1F46     		mov	r7, r3
+ 374 000a 9146     		mov	r9, r2
+ 375 000c 8046     		mov	r8, r0
+ 167:../drivers/fsl_sai_edma.c ****     assert(handle && dmaHandle);
+ 168:../drivers/fsl_sai_edma.c **** 
+ 169:../drivers/fsl_sai_edma.c ****     uint32_t instance = SAI_GetInstance(base);
+ 376              		.loc 1 169 0
+ 377 000e FFF7FEFF 		bl	SAI_GetInstance
+ 378              	.LVL36:
+ 170:../drivers/fsl_sai_edma.c **** 
+ 171:../drivers/fsl_sai_edma.c ****     /* Zero the handle */
+ 172:../drivers/fsl_sai_edma.c ****     memset(handle, 0, sizeof(*handle));
+ 379              		.loc 1 172 0
+ 380 0012 E422     		movs	r2, #228
+ 169:../drivers/fsl_sai_edma.c **** 
+ 381              		.loc 1 169 0
+ 382 0014 0546     		mov	r5, r0
+ 383              	.LVL37:
+ 384              		.loc 1 172 0
+ 385 0016 0021     		movs	r1, #0
+ 386 0018 201D     		adds	r0, r4, #4
+ 387              	.LVL38:
+ 388 001a FFF7FEFF 		bl	memset
+ 389              	.LVL39:
+ 173:../drivers/fsl_sai_edma.c **** 
+ 174:../drivers/fsl_sai_edma.c ****     /* Set sai base to handle */
+ 175:../drivers/fsl_sai_edma.c ****     handle->dmaHandle = dmaHandle;
+ 176:../drivers/fsl_sai_edma.c ****     handle->callback = callback;
+ 177:../drivers/fsl_sai_edma.c ****     handle->userData = userData;
+ 390              		.loc 1 177 0
+ 391 001e C4E90397 		strd	r9, r7, [r4, #12]
+ 178:../drivers/fsl_sai_edma.c **** 
+ 179:../drivers/fsl_sai_edma.c ****     /* Set SAI state to idle */
+ 180:../drivers/fsl_sai_edma.c ****     handle->state = kSAI_Idle;
+ 181:../drivers/fsl_sai_edma.c **** 
+ 182:../drivers/fsl_sai_edma.c ****     s_edmaPrivateHandle[instance][1].base = base;
+ 392              		.loc 1 182 0
+ 393 0022 0C4F     		ldr	r7, .L17
+ 394              	.LVL40:
+ 175:../drivers/fsl_sai_edma.c ****     handle->callback = callback;
+ 395              		.loc 1 175 0
+ 396 0024 2660     		str	r6, [r4]
+ 397              		.loc 1 182 0
+ 398 0026 2D01     		lsls	r5, r5, #4
+ 399              	.LVL41:
+ 180:../drivers/fsl_sai_edma.c **** 
+ 400              		.loc 1 180 0
+ 401 0028 0123     		movs	r3, #1
+ 402 002a A360     		str	r3, [r4, #8]
+ 183:../drivers/fsl_sai_edma.c ****     s_edmaPrivateHandle[instance][1].handle = handle;
+ 184:../drivers/fsl_sai_edma.c **** 
+ 185:../drivers/fsl_sai_edma.c ****     /* Need to use scatter gather */
+ 186:../drivers/fsl_sai_edma.c ****     EDMA_InstallTCDMemory(dmaHandle, STCD_ADDR(handle->tcd), SAI_XFER_QUEUE_SIZE);
+ 403              		.loc 1 186 0
+ 404 002c 04F13401 		add	r1, r4, #52
+ 182:../drivers/fsl_sai_edma.c ****     s_edmaPrivateHandle[instance][1].handle = handle;
+ 405              		.loc 1 182 0
+ 406 0030 7B19     		adds	r3, r7, r5
+ 407              		.loc 1 186 0
+ 408 0032 3046     		mov	r0, r6
+ 183:../drivers/fsl_sai_edma.c ****     s_edmaPrivateHandle[instance][1].handle = handle;
+ 409              		.loc 1 183 0
+ 410 0034 C3E90284 		strd	r8, r4, [r3, #8]
+ 411              		.loc 1 186 0
+ 412 0038 0422     		movs	r2, #4
+ 413 003a 21F01F01 		bic	r1, r1, #31
+ 414 003e FFF7FEFF 		bl	EDMA_InstallTCDMemory
+ 415              	.LVL42:
+ 187:../drivers/fsl_sai_edma.c **** 
+ 188:../drivers/fsl_sai_edma.c ****     /* Install callback for Tx dma channel */
+ 189:../drivers/fsl_sai_edma.c ****     EDMA_SetCallback(dmaHandle, SAI_RxEDMACallback, &s_edmaPrivateHandle[instance][1]);
+ 416              		.loc 1 189 0
+ 417 0042 05F10802 		add	r2, r5, #8
+ 418 0046 3A44     		add	r2, r2, r7
+ 419 0048 3046     		mov	r0, r6
+ 420 004a 0349     		ldr	r1, .L17+4
+ 190:../drivers/fsl_sai_edma.c **** }
+ 421              		.loc 1 190 0
+ 422 004c BDE8F843 		pop	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 423              		.cfi_restore 14
+ 424              		.cfi_restore 9
+ 425              		.cfi_restore 8
+ 426              		.cfi_restore 7
+ 427              		.cfi_restore 6
+ 428              		.cfi_restore 5
+ 429              		.cfi_restore 4
+ 430              		.cfi_restore 3
+ 431              		.cfi_def_cfa_offset 0
+ 432              	.LVL43:
+ 189:../drivers/fsl_sai_edma.c **** }
+ 433              		.loc 1 189 0
+ 434 0050 FFF7FEBF 		b	EDMA_SetCallback
+ 435              	.LVL44:
+ 436              	.L18:
+ 437              		.align	2
+ 438              	.L17:
+ 439 0054 00000000 		.word	.LANCHOR0
+ 440 0058 00000000 		.word	SAI_RxEDMACallback
+ 441              		.cfi_endproc
+ 442              	.LFE174:
+ 444              		.section	.text.SAI_TransferTxSetFormatEDMA,"ax",%progbits
+ 445              		.align	1
+ 446              		.global	SAI_TransferTxSetFormatEDMA
+ 447              		.syntax unified
+ 448              		.thumb
+ 449              		.thumb_func
+ 450              		.fpu fpv4-sp-d16
+ 452              	SAI_TransferTxSetFormatEDMA:
+ 453              	.LFB175:
+ 191:../drivers/fsl_sai_edma.c **** 
+ 192:../drivers/fsl_sai_edma.c **** void SAI_TransferTxSetFormatEDMA(I2S_Type *base,
+ 193:../drivers/fsl_sai_edma.c ****                                  sai_edma_handle_t *handle,
+ 194:../drivers/fsl_sai_edma.c ****                                  sai_transfer_format_t *format,
+ 195:../drivers/fsl_sai_edma.c ****                                  uint32_t mclkSourceClockHz,
+ 196:../drivers/fsl_sai_edma.c ****                                  uint32_t bclkSourceClockHz)
+ 197:../drivers/fsl_sai_edma.c **** {
+ 454              		.loc 1 197 0
+ 455              		.cfi_startproc
+ 456              		@ args = 4, pretend = 0, frame = 0
+ 457              		@ frame_needed = 0, uses_anonymous_args = 0
+ 458              	.LVL45:
+ 459 0000 70B5     		push	{r4, r5, r6, lr}
+ 460              		.cfi_def_cfa_offset 16
+ 461              		.cfi_offset 4, -16
+ 462              		.cfi_offset 5, -12
+ 463              		.cfi_offset 6, -8
+ 464              		.cfi_offset 14, -4
+ 465              		.loc 1 197 0
+ 466 0002 1546     		mov	r5, r2
+ 467 0004 0C46     		mov	r4, r1
+ 468 0006 1A46     		mov	r2, r3
+ 469              	.LVL46:
+ 198:../drivers/fsl_sai_edma.c ****     assert(handle && format);
+ 199:../drivers/fsl_sai_edma.c **** 
+ 200:../drivers/fsl_sai_edma.c ****     /* Configure the audio format to SAI registers */
+ 201:../drivers/fsl_sai_edma.c ****     SAI_TxSetFormat(base, format, mclkSourceClockHz, bclkSourceClockHz);
+ 470              		.loc 1 201 0
+ 471 0008 2946     		mov	r1, r5
+ 472              	.LVL47:
+ 473 000a 049B     		ldr	r3, [sp, #16]
+ 474              	.LVL48:
+ 197:../drivers/fsl_sai_edma.c ****     assert(handle && format);
+ 475              		.loc 1 197 0
+ 476 000c 0646     		mov	r6, r0
+ 477              		.loc 1 201 0
+ 478 000e FFF7FEFF 		bl	SAI_TxSetFormat
+ 479              	.LVL49:
+ 202:../drivers/fsl_sai_edma.c **** 
+ 203:../drivers/fsl_sai_edma.c ****     /* Get the tranfer size from format, this should be used in EDMA configuration */
+ 204:../drivers/fsl_sai_edma.c ****     if (format->bitWidth == 24U)
+ 480              		.loc 1 204 0
+ 481 0012 6B68     		ldr	r3, [r5, #4]
+ 482 0014 182B     		cmp	r3, #24
+ 205:../drivers/fsl_sai_edma.c ****     {
+ 206:../drivers/fsl_sai_edma.c ****         handle->bytesPerFrame = 4U;
+ 483              		.loc 1 206 0
+ 484 0016 0CBF     		ite	eq
+ 485 0018 0423     		moveq	r3, #4
+ 207:../drivers/fsl_sai_edma.c ****     }
+ 208:../drivers/fsl_sai_edma.c ****     else
+ 209:../drivers/fsl_sai_edma.c ****     {
+ 210:../drivers/fsl_sai_edma.c ****         handle->bytesPerFrame = format->bitWidth / 8U;
+ 486              		.loc 1 210 0
+ 487 001a DB08     		lsrne	r3, r3, #3
+ 488 001c 6371     		strb	r3, [r4, #5]
+ 211:../drivers/fsl_sai_edma.c ****     }
+ 212:../drivers/fsl_sai_edma.c **** 
+ 213:../drivers/fsl_sai_edma.c ****     /* Update the data channel SAI used */
+ 214:../drivers/fsl_sai_edma.c ****     handle->channel = format->channel;
+ 489              		.loc 1 214 0
+ 490 001e 6B7C     		ldrb	r3, [r5, #17]	@ zero_extendqisi2
+ 491 0020 A371     		strb	r3, [r4, #6]
+ 215:../drivers/fsl_sai_edma.c **** 
+ 216:../drivers/fsl_sai_edma.c ****     /* Clear the channel enable bits unitl do a send/receive */
+ 217:../drivers/fsl_sai_edma.c ****     base->TCR3 &= ~I2S_TCR3_TCE_MASK;
+ 492              		.loc 1 217 0
+ 493 0022 F368     		ldr	r3, [r6, #12]
+ 494 0024 23F44033 		bic	r3, r3, #196608
+ 495 0028 F360     		str	r3, [r6, #12]
+ 218:../drivers/fsl_sai_edma.c **** #if defined(FSL_FEATURE_SAI_FIFO_COUNT) && (FSL_FEATURE_SAI_FIFO_COUNT > 1)
+ 219:../drivers/fsl_sai_edma.c ****     handle->count = FSL_FEATURE_SAI_FIFO_COUNT - format->watermark;
+ 496              		.loc 1 219 0
+ 497 002a 2B7C     		ldrb	r3, [r5, #16]	@ zero_extendqisi2
+ 498 002c C3F10803 		rsb	r3, r3, #8
+ 499 0030 E371     		strb	r3, [r4, #7]
+ 220:../drivers/fsl_sai_edma.c **** #else
+ 221:../drivers/fsl_sai_edma.c ****     handle->count = 1U;
+ 222:../drivers/fsl_sai_edma.c **** #endif /* FSL_FEATURE_SAI_FIFO_COUNT */
+ 223:../drivers/fsl_sai_edma.c **** }
+ 500              		.loc 1 223 0
+ 501 0032 70BD     		pop	{r4, r5, r6, pc}
+ 502              		.cfi_endproc
+ 503              	.LFE175:
+ 505              		.section	.text.SAI_TransferRxSetFormatEDMA,"ax",%progbits
+ 506              		.align	1
+ 507              		.global	SAI_TransferRxSetFormatEDMA
+ 508              		.syntax unified
+ 509              		.thumb
+ 510              		.thumb_func
+ 511              		.fpu fpv4-sp-d16
+ 513              	SAI_TransferRxSetFormatEDMA:
+ 514              	.LFB176:
+ 224:../drivers/fsl_sai_edma.c **** 
+ 225:../drivers/fsl_sai_edma.c **** void SAI_TransferRxSetFormatEDMA(I2S_Type *base,
+ 226:../drivers/fsl_sai_edma.c ****                                  sai_edma_handle_t *handle,
+ 227:../drivers/fsl_sai_edma.c ****                                  sai_transfer_format_t *format,
+ 228:../drivers/fsl_sai_edma.c ****                                  uint32_t mclkSourceClockHz,
+ 229:../drivers/fsl_sai_edma.c ****                                  uint32_t bclkSourceClockHz)
+ 230:../drivers/fsl_sai_edma.c **** {
+ 515              		.loc 1 230 0
+ 516              		.cfi_startproc
+ 517              		@ args = 4, pretend = 0, frame = 0
+ 518              		@ frame_needed = 0, uses_anonymous_args = 0
+ 519              	.LVL50:
+ 520 0000 70B5     		push	{r4, r5, r6, lr}
+ 521              		.cfi_def_cfa_offset 16
+ 522              		.cfi_offset 4, -16
+ 523              		.cfi_offset 5, -12
+ 524              		.cfi_offset 6, -8
+ 525              		.cfi_offset 14, -4
+ 526              		.loc 1 230 0
+ 527 0002 1546     		mov	r5, r2
+ 528 0004 0C46     		mov	r4, r1
+ 529 0006 1A46     		mov	r2, r3
+ 530              	.LVL51:
+ 231:../drivers/fsl_sai_edma.c ****     assert(handle && format);
+ 232:../drivers/fsl_sai_edma.c **** 
+ 233:../drivers/fsl_sai_edma.c ****     /* Configure the audio format to SAI registers */
+ 234:../drivers/fsl_sai_edma.c ****     SAI_RxSetFormat(base, format, mclkSourceClockHz, bclkSourceClockHz);
+ 531              		.loc 1 234 0
+ 532 0008 2946     		mov	r1, r5
+ 533              	.LVL52:
+ 534 000a 049B     		ldr	r3, [sp, #16]
+ 535              	.LVL53:
+ 230:../drivers/fsl_sai_edma.c ****     assert(handle && format);
+ 536              		.loc 1 230 0
+ 537 000c 0646     		mov	r6, r0
+ 538              		.loc 1 234 0
+ 539 000e FFF7FEFF 		bl	SAI_RxSetFormat
+ 540              	.LVL54:
+ 235:../drivers/fsl_sai_edma.c **** 
+ 236:../drivers/fsl_sai_edma.c ****     /* Get the tranfer size from format, this should be used in EDMA configuration */
+ 237:../drivers/fsl_sai_edma.c ****     if (format->bitWidth == 24U)
+ 541              		.loc 1 237 0
+ 542 0012 6B68     		ldr	r3, [r5, #4]
+ 543 0014 182B     		cmp	r3, #24
+ 238:../drivers/fsl_sai_edma.c ****     {
+ 239:../drivers/fsl_sai_edma.c ****         handle->bytesPerFrame = 4U;
+ 544              		.loc 1 239 0
+ 545 0016 0CBF     		ite	eq
+ 546 0018 0423     		moveq	r3, #4
+ 240:../drivers/fsl_sai_edma.c ****     }
+ 241:../drivers/fsl_sai_edma.c ****     else
+ 242:../drivers/fsl_sai_edma.c ****     {
+ 243:../drivers/fsl_sai_edma.c ****         handle->bytesPerFrame = format->bitWidth / 8U;
+ 547              		.loc 1 243 0
+ 548 001a DB08     		lsrne	r3, r3, #3
+ 549 001c 6371     		strb	r3, [r4, #5]
+ 244:../drivers/fsl_sai_edma.c ****     }
+ 245:../drivers/fsl_sai_edma.c **** 
+ 246:../drivers/fsl_sai_edma.c ****     /* Update the data channel SAI used */
+ 247:../drivers/fsl_sai_edma.c ****     handle->channel = format->channel;
+ 550              		.loc 1 247 0
+ 551 001e 6B7C     		ldrb	r3, [r5, #17]	@ zero_extendqisi2
+ 552 0020 A371     		strb	r3, [r4, #6]
+ 248:../drivers/fsl_sai_edma.c **** 
+ 249:../drivers/fsl_sai_edma.c ****     /* Clear the channel enable bits unitl do a send/receive */
+ 250:../drivers/fsl_sai_edma.c ****     base->RCR3 &= ~I2S_RCR3_RCE_MASK;
+ 553              		.loc 1 250 0
+ 554 0022 D6F88C30 		ldr	r3, [r6, #140]
+ 555 0026 23F44033 		bic	r3, r3, #196608
+ 556 002a C6F88C30 		str	r3, [r6, #140]
+ 251:../drivers/fsl_sai_edma.c **** #if defined(FSL_FEATURE_SAI_FIFO_COUNT) && (FSL_FEATURE_SAI_FIFO_COUNT > 1)
+ 252:../drivers/fsl_sai_edma.c ****     handle->count = format->watermark;
+ 557              		.loc 1 252 0
+ 558 002e 2B7C     		ldrb	r3, [r5, #16]	@ zero_extendqisi2
+ 559 0030 E371     		strb	r3, [r4, #7]
+ 253:../drivers/fsl_sai_edma.c **** #else
+ 254:../drivers/fsl_sai_edma.c ****     handle->count = 1U;
+ 255:../drivers/fsl_sai_edma.c **** #endif /* FSL_FEATURE_SAI_FIFO_COUNT */
+ 256:../drivers/fsl_sai_edma.c **** }
+ 560              		.loc 1 256 0
+ 561 0032 70BD     		pop	{r4, r5, r6, pc}
+ 562              		.cfi_endproc
+ 563              	.LFE176:
+ 565              		.section	.text.SAI_TransferSendEDMA,"ax",%progbits
+ 566              		.align	1
+ 567              		.global	SAI_TransferSendEDMA
+ 568              		.syntax unified
+ 569              		.thumb
+ 570              		.thumb_func
+ 571              		.fpu fpv4-sp-d16
+ 573              	SAI_TransferSendEDMA:
+ 574              	.LFB177:
+ 257:../drivers/fsl_sai_edma.c **** 
+ 258:../drivers/fsl_sai_edma.c **** status_t SAI_TransferSendEDMA(I2S_Type *base, sai_edma_handle_t *handle, sai_transfer_t *xfer)
+ 259:../drivers/fsl_sai_edma.c **** {
+ 575              		.loc 1 259 0
+ 576              		.cfi_startproc
+ 577              		@ args = 0, pretend = 0, frame = 24
+ 578              		@ frame_needed = 0, uses_anonymous_args = 0
+ 579              	.LVL55:
+ 580 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 581              		.cfi_def_cfa_offset 20
+ 582              		.cfi_offset 4, -20
+ 583              		.cfi_offset 5, -16
+ 584              		.cfi_offset 6, -12
+ 585              		.cfi_offset 7, -8
+ 586              		.cfi_offset 14, -4
+ 587 0002 1746     		mov	r7, r2
+ 588 0004 8BB0     		sub	sp, sp, #44
+ 589              		.cfi_def_cfa_offset 64
+ 590              		.loc 1 259 0
+ 591 0006 0646     		mov	r6, r0
+ 592 0008 0C46     		mov	r4, r1
+ 260:../drivers/fsl_sai_edma.c ****     assert(handle && xfer);
+ 261:../drivers/fsl_sai_edma.c **** 
+ 262:../drivers/fsl_sai_edma.c ****     edma_transfer_config_t config = {0};
+ 593              		.loc 1 262 0
+ 594 000a 1822     		movs	r2, #24
+ 595              	.LVL56:
+ 596 000c 0021     		movs	r1, #0
+ 597              	.LVL57:
+ 598 000e 04A8     		add	r0, sp, #16
+ 599              	.LVL58:
+ 600 0010 FFF7FEFF 		bl	memset
+ 601              	.LVL59:
+ 263:../drivers/fsl_sai_edma.c ****     uint32_t destAddr = SAI_TxGetDataRegisterAddress(base, handle->channel);
+ 264:../drivers/fsl_sai_edma.c **** 
+ 265:../drivers/fsl_sai_edma.c ****     /* Check if input parameter invalid */
+ 266:../drivers/fsl_sai_edma.c ****     if ((xfer->data == NULL) || (xfer->dataSize == 0U))
+ 602              		.loc 1 266 0
+ 603 0014 3868     		ldr	r0, [r7]
+ 604 0016 0028     		cmp	r0, #0
+ 605 0018 58D0     		beq	.L30
+ 606              		.loc 1 266 0 is_stmt 0 discriminator 1
+ 607 001a 7968     		ldr	r1, [r7, #4]
+ 608 001c 0029     		cmp	r1, #0
+ 609 001e 55D0     		beq	.L30
+ 267:../drivers/fsl_sai_edma.c ****     {
+ 268:../drivers/fsl_sai_edma.c ****         return kStatus_InvalidArgument;
+ 269:../drivers/fsl_sai_edma.c ****     }
+ 270:../drivers/fsl_sai_edma.c **** 
+ 271:../drivers/fsl_sai_edma.c ****     if (handle->saiQueue[handle->queueUser].data)
+ 610              		.loc 1 271 0 is_stmt 1
+ 611 0020 94F8E430 		ldrb	r3, [r4, #228]	@ zero_extendqisi2
+ 612 0024 04EBC303 		add	r3, r4, r3, lsl #3
+ 613 0028 D3F8B450 		ldr	r5, [r3, #180]
+ 614 002c 002D     		cmp	r5, #0
+ 615 002e 4FD1     		bne	.L31
+ 272:../drivers/fsl_sai_edma.c ****     {
+ 273:../drivers/fsl_sai_edma.c ****         return kStatus_SAI_QueueFull;
+ 274:../drivers/fsl_sai_edma.c ****     }
+ 275:../drivers/fsl_sai_edma.c **** 
+ 276:../drivers/fsl_sai_edma.c ****     /* Change the state of handle */
+ 277:../drivers/fsl_sai_edma.c ****     handle->state = kSAI_Busy;
+ 278:../drivers/fsl_sai_edma.c **** 
+ 279:../drivers/fsl_sai_edma.c ****     /* Update the queue state */
+ 280:../drivers/fsl_sai_edma.c ****     handle->transferSize[handle->queueUser] = xfer->dataSize;
+ 616              		.loc 1 280 0
+ 617 0030 94F8E420 		ldrb	r2, [r4, #228]	@ zero_extendqisi2
+ 263:../drivers/fsl_sai_edma.c **** 
+ 618              		.loc 1 263 0
+ 619 0034 A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
+ 277:../drivers/fsl_sai_edma.c **** 
+ 620              		.loc 1 277 0
+ 621 0036 A560     		str	r5, [r4, #8]
+ 622              		.loc 1 280 0
+ 623 0038 04EB8202 		add	r2, r4, r2, lsl #2
+ 624              	.LBB48:
+ 625              	.LBB49:
+ 601:../drivers/fsl_sai.h ****     }
+ 602:../drivers/fsl_sai.h **** }
+ 603:../drivers/fsl_sai.h **** 
+ 604:../drivers/fsl_sai.h **** /*!
+ 605:../drivers/fsl_sai.h ****  * @brief  Gets the SAI Tx data register address.
+ 606:../drivers/fsl_sai.h ****  *
+ 607:../drivers/fsl_sai.h ****  * This API is used to provide a transfer address for the SAI DMA transfer configuration.
+ 608:../drivers/fsl_sai.h ****  *
+ 609:../drivers/fsl_sai.h ****  * @param base SAI base pointer.
+ 610:../drivers/fsl_sai.h ****  * @param channel Which data channel used.
+ 611:../drivers/fsl_sai.h ****  * @return data register address.
+ 612:../drivers/fsl_sai.h ****  */
+ 613:../drivers/fsl_sai.h **** static inline uint32_t SAI_TxGetDataRegisterAddress(I2S_Type *base, uint32_t channel)
+ 614:../drivers/fsl_sai.h **** {
+ 615:../drivers/fsl_sai.h ****     return (uint32_t)(&(base->TDR)[channel]);
+ 626              		.loc 2 615 0
+ 627 003c 0833     		adds	r3, r3, #8
+ 628              	.LBE49:
+ 629              	.LBE48:
+ 630              		.loc 1 280 0
+ 631 003e C2F8D410 		str	r1, [r2, #212]
+ 281:../drivers/fsl_sai_edma.c ****     handle->saiQueue[handle->queueUser].data = xfer->data;
+ 632              		.loc 1 281 0
+ 633 0042 94F8E420 		ldrb	r2, [r4, #228]	@ zero_extendqisi2
+ 634 0046 04EBC202 		add	r2, r4, r2, lsl #3
+ 282:../drivers/fsl_sai_edma.c ****     handle->saiQueue[handle->queueUser].dataSize = xfer->dataSize;
+ 283:../drivers/fsl_sai_edma.c ****     handle->queueUser = (handle->queueUser + 1) % SAI_XFER_QUEUE_SIZE;
+ 284:../drivers/fsl_sai_edma.c **** 
+ 285:../drivers/fsl_sai_edma.c ****     /* Prepare edma configure */
+ 286:../drivers/fsl_sai_edma.c ****     EDMA_PrepareTransfer(&config, xfer->data, handle->bytesPerFrame, (void *)destAddr, handle->byte
+ 635              		.loc 1 286 0
+ 636 004a 06EB8303 		add	r3, r6, r3, lsl #2
+ 281:../drivers/fsl_sai_edma.c ****     handle->saiQueue[handle->queueUser].data = xfer->data;
+ 637              		.loc 1 281 0
+ 638 004e C2F8B400 		str	r0, [r2, #180]
+ 282:../drivers/fsl_sai_edma.c ****     handle->saiQueue[handle->queueUser].dataSize = xfer->dataSize;
+ 639              		.loc 1 282 0
+ 640 0052 94F8E420 		ldrb	r2, [r4, #228]	@ zero_extendqisi2
+ 641 0056 04EBC202 		add	r2, r4, r2, lsl #3
+ 642              		.loc 1 286 0
+ 643 005a 04A8     		add	r0, sp, #16
+ 282:../drivers/fsl_sai_edma.c ****     handle->saiQueue[handle->queueUser].dataSize = xfer->dataSize;
+ 644              		.loc 1 282 0
+ 645 005c C2F8B810 		str	r1, [r2, #184]
+ 283:../drivers/fsl_sai_edma.c **** 
+ 646              		.loc 1 283 0
+ 647 0060 94F8E420 		ldrb	r2, [r4, #228]	@ zero_extendqisi2
+ 648 0064 0132     		adds	r2, r2, #1
+ 649 0066 02F00302 		and	r2, r2, #3
+ 650              		.loc 1 286 0
+ 651 006a 0221     		movs	r1, #2
+ 283:../drivers/fsl_sai_edma.c **** 
+ 652              		.loc 1 283 0
+ 653 006c 84F8E420 		strb	r2, [r4, #228]
+ 654              		.loc 1 286 0
+ 655 0070 0391     		str	r1, [sp, #12]
+ 656 0072 7968     		ldr	r1, [r7, #4]
+ 657 0074 6279     		ldrb	r2, [r4, #5]	@ zero_extendqisi2
+ 658 0076 0291     		str	r1, [sp, #8]
+ 287:../drivers/fsl_sai_edma.c ****                          handle->count * handle->bytesPerFrame, xfer->dataSize, kEDMA_MemoryToPerip
+ 659              		.loc 1 287 0
+ 660 0078 E179     		ldrb	r1, [r4, #7]	@ zero_extendqisi2
+ 661 007a 11FB02F1 		smulbb	r1, r1, r2
+ 286:../drivers/fsl_sai_edma.c ****                          handle->count * handle->bytesPerFrame, xfer->dataSize, kEDMA_MemoryToPerip
+ 662              		.loc 1 286 0
+ 663 007e CDE90021 		strd	r2, r1, [sp]
+ 664 0082 3968     		ldr	r1, [r7]
+ 665 0084 FFF7FEFF 		bl	EDMA_PrepareTransfer
+ 666              	.LVL60:
+ 288:../drivers/fsl_sai_edma.c **** 
+ 289:../drivers/fsl_sai_edma.c ****     /* Store the initially configured eDMA minor byte transfer count into the SAI handle */
+ 290:../drivers/fsl_sai_edma.c ****     handle->nbytes = handle->count * handle->bytesPerFrame;
+ 667              		.loc 1 290 0
+ 668 0088 6279     		ldrb	r2, [r4, #5]	@ zero_extendqisi2
+ 669 008a E379     		ldrb	r3, [r4, #7]	@ zero_extendqisi2
+ 291:../drivers/fsl_sai_edma.c **** 
+ 292:../drivers/fsl_sai_edma.c ****     EDMA_SubmitTransfer(handle->dmaHandle, &config);
+ 670              		.loc 1 292 0
+ 671 008c 2068     		ldr	r0, [r4]
+ 290:../drivers/fsl_sai_edma.c **** 
+ 672              		.loc 1 290 0
+ 673 008e 13FB02F3 		smulbb	r3, r3, r2
+ 674 0092 2371     		strb	r3, [r4, #4]
+ 675              		.loc 1 292 0
+ 676 0094 04A9     		add	r1, sp, #16
+ 677 0096 FFF7FEFF 		bl	EDMA_SubmitTransfer
+ 678              	.LVL61:
+ 293:../drivers/fsl_sai_edma.c **** 
+ 294:../drivers/fsl_sai_edma.c ****     /* Start DMA transfer */
+ 295:../drivers/fsl_sai_edma.c ****     EDMA_StartTransfer(handle->dmaHandle);
+ 679              		.loc 1 295 0
+ 680 009a 2068     		ldr	r0, [r4]
+ 681 009c FFF7FEFF 		bl	EDMA_StartTransfer
+ 682              	.LVL62:
+ 683              	.LBB50:
+ 684              	.LBB51:
+ 575:../drivers/fsl_sai.h ****     }
+ 685              		.loc 2 575 0
+ 686 00a0 3368     		ldr	r3, [r6]
+ 687 00a2 23F4E013 		bic	r3, r3, #1835008
+ 688 00a6 43F00103 		orr	r3, r3, #1
+ 689 00aa 3360     		str	r3, [r6]
+ 690              	.LVL63:
+ 691              	.LBE51:
+ 692              	.LBE50:
+ 296:../drivers/fsl_sai_edma.c **** 
+ 297:../drivers/fsl_sai_edma.c ****     /* Enable DMA enable bit */
+ 298:../drivers/fsl_sai_edma.c ****     SAI_TxEnableDMA(base, kSAI_FIFORequestDMAEnable, true);
+ 299:../drivers/fsl_sai_edma.c **** 
+ 300:../drivers/fsl_sai_edma.c ****     /* Enable SAI Tx clock */
+ 301:../drivers/fsl_sai_edma.c ****     SAI_TxEnable(base, true);
+ 693              		.loc 1 301 0
+ 694 00ac 0121     		movs	r1, #1
+ 695 00ae 3046     		mov	r0, r6
+ 696 00b0 FFF7FEFF 		bl	SAI_TxEnable
+ 697              	.LVL64:
+ 302:../drivers/fsl_sai_edma.c **** 
+ 303:../drivers/fsl_sai_edma.c ****     /* Enable the channel FIFO */
+ 304:../drivers/fsl_sai_edma.c ****     base->TCR3 |= I2S_TCR3_TCE(1U << handle->channel);
+ 698              		.loc 1 304 0
+ 699 00b4 A179     		ldrb	r1, [r4, #6]	@ zero_extendqisi2
+ 700 00b6 F268     		ldr	r2, [r6, #12]
+ 701 00b8 4FF48033 		mov	r3, #65536
+ 702 00bc 8B40     		lsls	r3, r3, r1
+ 703 00be 03F44033 		and	r3, r3, #196608
+ 704 00c2 1343     		orrs	r3, r3, r2
+ 705 00c4 F360     		str	r3, [r6, #12]
+ 305:../drivers/fsl_sai_edma.c **** 
+ 306:../drivers/fsl_sai_edma.c ****     return kStatus_Success;
+ 706              		.loc 1 306 0
+ 707 00c6 2846     		mov	r0, r5
+ 708              	.L27:
+ 307:../drivers/fsl_sai_edma.c **** }
+ 709              		.loc 1 307 0
+ 710 00c8 0BB0     		add	sp, sp, #44
+ 711              		.cfi_remember_state
+ 712              		.cfi_def_cfa_offset 20
+ 713              		@ sp needed
+ 714 00ca F0BD     		pop	{r4, r5, r6, r7, pc}
+ 715              	.LVL65:
+ 716              	.L30:
+ 717              		.cfi_restore_state
+ 268:../drivers/fsl_sai_edma.c ****     }
+ 718              		.loc 1 268 0
+ 719 00cc 0420     		movs	r0, #4
+ 720 00ce FBE7     		b	.L27
+ 721              	.L31:
+ 273:../drivers/fsl_sai_edma.c ****     }
+ 722              		.loc 1 273 0
+ 723 00d0 4FF4EE60 		mov	r0, #1904
+ 724 00d4 F8E7     		b	.L27
+ 725              		.cfi_endproc
+ 726              	.LFE177:
+ 728              		.section	.text.SAI_TransferReceiveEDMA,"ax",%progbits
+ 729              		.align	1
+ 730              		.global	SAI_TransferReceiveEDMA
+ 731              		.syntax unified
+ 732              		.thumb
+ 733              		.thumb_func
+ 734              		.fpu fpv4-sp-d16
+ 736              	SAI_TransferReceiveEDMA:
+ 737              	.LFB178:
+ 308:../drivers/fsl_sai_edma.c **** 
+ 309:../drivers/fsl_sai_edma.c **** status_t SAI_TransferReceiveEDMA(I2S_Type *base, sai_edma_handle_t *handle, sai_transfer_t *xfer)
+ 310:../drivers/fsl_sai_edma.c **** {
+ 738              		.loc 1 310 0
+ 739              		.cfi_startproc
+ 740              		@ args = 0, pretend = 0, frame = 24
+ 741              		@ frame_needed = 0, uses_anonymous_args = 0
+ 742              	.LVL66:
+ 743 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 744              		.cfi_def_cfa_offset 24
+ 745              		.cfi_offset 4, -24
+ 746              		.cfi_offset 5, -20
+ 747              		.cfi_offset 6, -16
+ 748              		.cfi_offset 7, -12
+ 749              		.cfi_offset 8, -8
+ 750              		.cfi_offset 14, -4
+ 751 0004 9046     		mov	r8, r2
+ 752 0006 8AB0     		sub	sp, sp, #40
+ 753              		.cfi_def_cfa_offset 64
+ 754              		.loc 1 310 0
+ 755 0008 0646     		mov	r6, r0
+ 756 000a 0C46     		mov	r4, r1
+ 311:../drivers/fsl_sai_edma.c ****     assert(handle && xfer);
+ 312:../drivers/fsl_sai_edma.c **** 
+ 313:../drivers/fsl_sai_edma.c ****     edma_transfer_config_t config = {0};
+ 757              		.loc 1 313 0
+ 758 000c 1822     		movs	r2, #24
+ 759              	.LVL67:
+ 760 000e 0021     		movs	r1, #0
+ 761              	.LVL68:
+ 762 0010 04A8     		add	r0, sp, #16
+ 763              	.LVL69:
+ 764 0012 FFF7FEFF 		bl	memset
+ 765              	.LVL70:
+ 314:../drivers/fsl_sai_edma.c ****     uint32_t srcAddr = SAI_RxGetDataRegisterAddress(base, handle->channel);
+ 315:../drivers/fsl_sai_edma.c **** 
+ 316:../drivers/fsl_sai_edma.c ****     /* Check if input parameter invalid */
+ 317:../drivers/fsl_sai_edma.c ****     if ((xfer->data == NULL) || (xfer->dataSize == 0U))
+ 766              		.loc 1 317 0
+ 767 0016 D8F80000 		ldr	r0, [r8]
+ 768 001a 0028     		cmp	r0, #0
+ 769 001c 5FD0     		beq	.L35
+ 770              		.loc 1 317 0 is_stmt 0 discriminator 1
+ 771 001e D8F80420 		ldr	r2, [r8, #4]
+ 772 0022 002A     		cmp	r2, #0
+ 773 0024 5BD0     		beq	.L35
+ 318:../drivers/fsl_sai_edma.c ****     {
+ 319:../drivers/fsl_sai_edma.c ****         return kStatus_InvalidArgument;
+ 320:../drivers/fsl_sai_edma.c ****     }
+ 321:../drivers/fsl_sai_edma.c **** 
+ 322:../drivers/fsl_sai_edma.c ****     if (handle->saiQueue[handle->queueUser].data)
+ 774              		.loc 1 322 0 is_stmt 1
+ 775 0026 94F8E430 		ldrb	r3, [r4, #228]	@ zero_extendqisi2
+ 776 002a 04EBC303 		add	r3, r4, r3, lsl #3
+ 777 002e D3F8B450 		ldr	r5, [r3, #180]
+ 778 0032 002D     		cmp	r5, #0
+ 779 0034 55D1     		bne	.L36
+ 323:../drivers/fsl_sai_edma.c ****     {
+ 324:../drivers/fsl_sai_edma.c ****         return kStatus_SAI_QueueFull;
+ 325:../drivers/fsl_sai_edma.c ****     }
+ 326:../drivers/fsl_sai_edma.c **** 
+ 327:../drivers/fsl_sai_edma.c ****     /* Change the state of handle */
+ 328:../drivers/fsl_sai_edma.c ****     handle->state = kSAI_Busy;
+ 329:../drivers/fsl_sai_edma.c **** 
+ 330:../drivers/fsl_sai_edma.c ****     /* Update queue state  */
+ 331:../drivers/fsl_sai_edma.c ****     handle->transferSize[handle->queueUser] = xfer->dataSize;
+ 780              		.loc 1 331 0
+ 781 0036 94F8E430 		ldrb	r3, [r4, #228]	@ zero_extendqisi2
+ 314:../drivers/fsl_sai_edma.c **** 
+ 782              		.loc 1 314 0
+ 783 003a A179     		ldrb	r1, [r4, #6]	@ zero_extendqisi2
+ 328:../drivers/fsl_sai_edma.c **** 
+ 784              		.loc 1 328 0
+ 785 003c A560     		str	r5, [r4, #8]
+ 786              		.loc 1 331 0
+ 787 003e 04EB8303 		add	r3, r4, r3, lsl #2
+ 332:../drivers/fsl_sai_edma.c ****     handle->saiQueue[handle->queueUser].data = xfer->data;
+ 333:../drivers/fsl_sai_edma.c ****     handle->saiQueue[handle->queueUser].dataSize = xfer->dataSize;
+ 334:../drivers/fsl_sai_edma.c ****     handle->queueUser = (handle->queueUser + 1) % SAI_XFER_QUEUE_SIZE;
+ 335:../drivers/fsl_sai_edma.c **** 
+ 336:../drivers/fsl_sai_edma.c ****     /* Prepare edma configure */
+ 337:../drivers/fsl_sai_edma.c ****     EDMA_PrepareTransfer(&config, (void *)srcAddr, handle->bytesPerFrame, xfer->data, handle->bytes
+ 788              		.loc 1 337 0
+ 789 0042 0127     		movs	r7, #1
+ 331:../drivers/fsl_sai_edma.c ****     handle->saiQueue[handle->queueUser].data = xfer->data;
+ 790              		.loc 1 331 0
+ 791 0044 C3F8D420 		str	r2, [r3, #212]
+ 332:../drivers/fsl_sai_edma.c ****     handle->saiQueue[handle->queueUser].data = xfer->data;
+ 792              		.loc 1 332 0
+ 793 0048 94F8E430 		ldrb	r3, [r4, #228]	@ zero_extendqisi2
+ 794 004c 04EBC303 		add	r3, r4, r3, lsl #3
+ 795              	.LBB52:
+ 796              	.LBB53:
+ 616:../drivers/fsl_sai.h **** }
+ 617:../drivers/fsl_sai.h **** 
+ 618:../drivers/fsl_sai.h **** /*!
+ 619:../drivers/fsl_sai.h ****  * @brief  Gets the SAI Rx data register address.
+ 620:../drivers/fsl_sai.h ****  *
+ 621:../drivers/fsl_sai.h ****  * This API is used to provide a transfer address for the SAI DMA transfer configuration.
+ 622:../drivers/fsl_sai.h ****  *
+ 623:../drivers/fsl_sai.h ****  * @param base SAI base pointer.
+ 624:../drivers/fsl_sai.h ****  * @param channel Which data channel used.
+ 625:../drivers/fsl_sai.h ****  * @return data register address.
+ 626:../drivers/fsl_sai.h ****  */
+ 627:../drivers/fsl_sai.h **** static inline uint32_t SAI_RxGetDataRegisterAddress(I2S_Type *base, uint32_t channel)
+ 628:../drivers/fsl_sai.h **** {
+ 629:../drivers/fsl_sai.h ****     return (uint32_t)(&(base->RDR)[channel]);
+ 797              		.loc 2 629 0
+ 798 0050 2831     		adds	r1, r1, #40
+ 799              	.LBE53:
+ 800              	.LBE52:
+ 332:../drivers/fsl_sai_edma.c ****     handle->saiQueue[handle->queueUser].dataSize = xfer->dataSize;
+ 801              		.loc 1 332 0
+ 802 0052 C3F8B400 		str	r0, [r3, #180]
+ 333:../drivers/fsl_sai_edma.c ****     handle->queueUser = (handle->queueUser + 1) % SAI_XFER_QUEUE_SIZE;
+ 803              		.loc 1 333 0
+ 804 0056 94F8E430 		ldrb	r3, [r4, #228]	@ zero_extendqisi2
+ 805 005a 04EBC303 		add	r3, r4, r3, lsl #3
+ 806              		.loc 1 337 0
+ 807 005e 06EB8101 		add	r1, r6, r1, lsl #2
+ 333:../drivers/fsl_sai_edma.c ****     handle->queueUser = (handle->queueUser + 1) % SAI_XFER_QUEUE_SIZE;
+ 808              		.loc 1 333 0
+ 809 0062 C3F8B820 		str	r2, [r3, #184]
+ 334:../drivers/fsl_sai_edma.c **** 
+ 810              		.loc 1 334 0
+ 811 0066 94F8E430 		ldrb	r3, [r4, #228]	@ zero_extendqisi2
+ 812              		.loc 1 337 0
+ 813 006a 6279     		ldrb	r2, [r4, #5]	@ zero_extendqisi2
+ 814 006c 0397     		str	r7, [sp, #12]
+ 334:../drivers/fsl_sai_edma.c **** 
+ 815              		.loc 1 334 0
+ 816 006e 0133     		adds	r3, r3, #1
+ 817 0070 03F00303 		and	r3, r3, #3
+ 818 0074 84F8E430 		strb	r3, [r4, #228]
+ 819              		.loc 1 337 0
+ 820 0078 D8F80430 		ldr	r3, [r8, #4]
+ 821 007c 0293     		str	r3, [sp, #8]
+ 338:../drivers/fsl_sai_edma.c ****                          handle->count * handle->bytesPerFrame, xfer->dataSize, kEDMA_PeripheralToM
+ 822              		.loc 1 338 0
+ 823 007e E379     		ldrb	r3, [r4, #7]	@ zero_extendqisi2
+ 824 0080 13FB02F3 		smulbb	r3, r3, r2
+ 337:../drivers/fsl_sai_edma.c ****                          handle->count * handle->bytesPerFrame, xfer->dataSize, kEDMA_PeripheralToM
+ 825              		.loc 1 337 0
+ 826 0084 CDE90023 		strd	r2, r3, [sp]
+ 827 0088 04A8     		add	r0, sp, #16
+ 828 008a D8F80030 		ldr	r3, [r8]
+ 829 008e FFF7FEFF 		bl	EDMA_PrepareTransfer
+ 830              	.LVL71:
+ 339:../drivers/fsl_sai_edma.c **** 
+ 340:../drivers/fsl_sai_edma.c ****     /* Store the initially configured eDMA minor byte transfer count into the SAI handle */
+ 341:../drivers/fsl_sai_edma.c ****     handle->nbytes = handle->count * handle->bytesPerFrame;
+ 831              		.loc 1 341 0
+ 832 0092 6279     		ldrb	r2, [r4, #5]	@ zero_extendqisi2
+ 833 0094 E379     		ldrb	r3, [r4, #7]	@ zero_extendqisi2
+ 342:../drivers/fsl_sai_edma.c **** 
+ 343:../drivers/fsl_sai_edma.c ****     EDMA_SubmitTransfer(handle->dmaHandle, &config);
+ 834              		.loc 1 343 0
+ 835 0096 2068     		ldr	r0, [r4]
+ 341:../drivers/fsl_sai_edma.c **** 
+ 836              		.loc 1 341 0
+ 837 0098 13FB02F3 		smulbb	r3, r3, r2
+ 838 009c 2371     		strb	r3, [r4, #4]
+ 839              		.loc 1 343 0
+ 840 009e 04A9     		add	r1, sp, #16
+ 841 00a0 FFF7FEFF 		bl	EDMA_SubmitTransfer
+ 842              	.LVL72:
+ 344:../drivers/fsl_sai_edma.c **** 
+ 345:../drivers/fsl_sai_edma.c ****     /* Start DMA transfer */
+ 346:../drivers/fsl_sai_edma.c ****     EDMA_StartTransfer(handle->dmaHandle);
+ 843              		.loc 1 346 0
+ 844 00a4 2068     		ldr	r0, [r4]
+ 845 00a6 FFF7FEFF 		bl	EDMA_StartTransfer
+ 846              	.LVL73:
+ 847              	.LBB54:
+ 848              	.LBB55:
+ 596:../drivers/fsl_sai.h ****     }
+ 849              		.loc 2 596 0
+ 850 00aa D6F88030 		ldr	r3, [r6, #128]
+ 851 00ae 23F4E013 		bic	r3, r3, #1835008
+ 852 00b2 3B43     		orrs	r3, r3, r7
+ 853 00b4 C6F88030 		str	r3, [r6, #128]
+ 854              	.LVL74:
+ 855              	.LBE55:
+ 856              	.LBE54:
+ 347:../drivers/fsl_sai_edma.c **** 
+ 348:../drivers/fsl_sai_edma.c ****     /* Enable DMA enable bit */
+ 349:../drivers/fsl_sai_edma.c ****     SAI_RxEnableDMA(base, kSAI_FIFORequestDMAEnable, true);
+ 350:../drivers/fsl_sai_edma.c **** 
+ 351:../drivers/fsl_sai_edma.c ****     /* Enable the channel FIFO */
+ 352:../drivers/fsl_sai_edma.c ****     base->RCR3 |= I2S_RCR3_RCE(1U << handle->channel);
+ 857              		.loc 1 352 0
+ 858 00b8 A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
+ 859 00ba D6F88C20 		ldr	r2, [r6, #140]
+ 860 00be 07FA03F3 		lsl	r3, r7, r3
+ 861 00c2 1B04     		lsls	r3, r3, #16
+ 862 00c4 03F44033 		and	r3, r3, #196608
+ 863 00c8 1343     		orrs	r3, r3, r2
+ 353:../drivers/fsl_sai_edma.c **** 
+ 354:../drivers/fsl_sai_edma.c ****     /* Enable SAI Rx clock */
+ 355:../drivers/fsl_sai_edma.c ****     SAI_RxEnable(base, true);
+ 864              		.loc 1 355 0
+ 865 00ca 3046     		mov	r0, r6
+ 352:../drivers/fsl_sai_edma.c **** 
+ 866              		.loc 1 352 0
+ 867 00cc C6F88C30 		str	r3, [r6, #140]
+ 868              		.loc 1 355 0
+ 869 00d0 3946     		mov	r1, r7
+ 870 00d2 FFF7FEFF 		bl	SAI_RxEnable
+ 871              	.LVL75:
+ 356:../drivers/fsl_sai_edma.c **** 
+ 357:../drivers/fsl_sai_edma.c ****     return kStatus_Success;
+ 872              		.loc 1 357 0
+ 873 00d6 2846     		mov	r0, r5
+ 874              	.L32:
+ 358:../drivers/fsl_sai_edma.c **** }
+ 875              		.loc 1 358 0
+ 876 00d8 0AB0     		add	sp, sp, #40
+ 877              		.cfi_remember_state
+ 878              		.cfi_def_cfa_offset 24
+ 879              		@ sp needed
+ 880 00da BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 881              	.LVL76:
+ 882              	.L35:
+ 883              		.cfi_restore_state
+ 319:../drivers/fsl_sai_edma.c ****     }
+ 884              		.loc 1 319 0
+ 885 00de 0420     		movs	r0, #4
+ 886 00e0 FAE7     		b	.L32
+ 887              	.L36:
+ 324:../drivers/fsl_sai_edma.c ****     }
+ 888              		.loc 1 324 0
+ 889 00e2 4FF4EE60 		mov	r0, #1904
+ 890 00e6 F7E7     		b	.L32
+ 891              		.cfi_endproc
+ 892              	.LFE178:
+ 894              		.section	.text.SAI_TransferAbortSendEDMA,"ax",%progbits
+ 895              		.align	1
+ 896              		.global	SAI_TransferAbortSendEDMA
+ 897              		.syntax unified
+ 898              		.thumb
+ 899              		.thumb_func
+ 900              		.fpu fpv4-sp-d16
+ 902              	SAI_TransferAbortSendEDMA:
+ 903              	.LFB179:
+ 359:../drivers/fsl_sai_edma.c **** 
+ 360:../drivers/fsl_sai_edma.c **** void SAI_TransferAbortSendEDMA(I2S_Type *base, sai_edma_handle_t *handle)
+ 361:../drivers/fsl_sai_edma.c **** {
+ 904              		.loc 1 361 0
+ 905              		.cfi_startproc
+ 906              		@ args = 0, pretend = 0, frame = 0
+ 907              		@ frame_needed = 0, uses_anonymous_args = 0
+ 908              	.LVL77:
+ 909 0000 38B5     		push	{r3, r4, r5, lr}
+ 910              		.cfi_def_cfa_offset 16
+ 911              		.cfi_offset 3, -16
+ 912              		.cfi_offset 4, -12
+ 913              		.cfi_offset 5, -8
+ 914              		.cfi_offset 14, -4
+ 915              		.loc 1 361 0
+ 916 0002 0446     		mov	r4, r0
+ 362:../drivers/fsl_sai_edma.c ****     assert(handle);
+ 363:../drivers/fsl_sai_edma.c **** 
+ 364:../drivers/fsl_sai_edma.c ****     /* Disable dma */
+ 365:../drivers/fsl_sai_edma.c ****     EDMA_AbortTransfer(handle->dmaHandle);
+ 917              		.loc 1 365 0
+ 918 0004 0868     		ldr	r0, [r1]
+ 919              	.LVL78:
+ 361:../drivers/fsl_sai_edma.c ****     assert(handle);
+ 920              		.loc 1 361 0
+ 921 0006 0D46     		mov	r5, r1
+ 922              		.loc 1 365 0
+ 923 0008 FFF7FEFF 		bl	EDMA_AbortTransfer
+ 924              	.LVL79:
+ 366:../drivers/fsl_sai_edma.c **** 
+ 367:../drivers/fsl_sai_edma.c ****     /* Disable the channel FIFO */
+ 368:../drivers/fsl_sai_edma.c ****     base->TCR3 &= ~I2S_TCR3_TCE_MASK;
+ 925              		.loc 1 368 0
+ 926 000c E368     		ldr	r3, [r4, #12]
+ 927 000e 23F44033 		bic	r3, r3, #196608
+ 928 0012 E360     		str	r3, [r4, #12]
+ 929              	.LVL80:
+ 930              	.LBB60:
+ 931              	.LBB61:
+ 932              	.LBB62:
+ 579:../drivers/fsl_sai.h ****     }
+ 933              		.loc 2 579 0
+ 934 0014 2368     		ldr	r3, [r4]
+ 935 0016 23F4E013 		bic	r3, r3, #1835008
+ 936 001a 23F00103 		bic	r3, r3, #1
+ 937 001e 2360     		str	r3, [r4]
+ 938              	.LVL81:
+ 939              	.LBE62:
+ 940              	.LBE61:
+ 941              	.LBE60:
+ 369:../drivers/fsl_sai_edma.c **** 
+ 370:../drivers/fsl_sai_edma.c ****     /* Disable DMA enable bit */
+ 371:../drivers/fsl_sai_edma.c ****     SAI_TxEnableDMA(base, kSAI_FIFORequestDMAEnable, false);
+ 372:../drivers/fsl_sai_edma.c **** 
+ 373:../drivers/fsl_sai_edma.c ****     /* Disable Tx */
+ 374:../drivers/fsl_sai_edma.c ****     SAI_TxEnable(base, false);
+ 942              		.loc 1 374 0
+ 943 0020 0021     		movs	r1, #0
+ 944 0022 2046     		mov	r0, r4
+ 945 0024 FFF7FEFF 		bl	SAI_TxEnable
+ 946              	.LVL82:
+ 375:../drivers/fsl_sai_edma.c **** 
+ 376:../drivers/fsl_sai_edma.c ****     /* Reset the FIFO pointer, at the same time clear all error flags if set */
+ 377:../drivers/fsl_sai_edma.c ****     base->TCSR |= (I2S_TCSR_FR_MASK | I2S_TCSR_SR_MASK);
+ 947              		.loc 1 377 0
+ 948 0028 2368     		ldr	r3, [r4]
+ 949 002a 43F04073 		orr	r3, r3, #50331648
+ 950 002e 2360     		str	r3, [r4]
+ 378:../drivers/fsl_sai_edma.c ****     base->TCSR &= ~I2S_TCSR_SR_MASK;
+ 951              		.loc 1 378 0
+ 952 0030 2368     		ldr	r3, [r4]
+ 953 0032 23F08073 		bic	r3, r3, #16777216
+ 954 0036 2360     		str	r3, [r4]
+ 379:../drivers/fsl_sai_edma.c **** 
+ 380:../drivers/fsl_sai_edma.c ****     /* Handle the queue index */
+ 381:../drivers/fsl_sai_edma.c ****     memset(&handle->saiQueue[handle->queueDriver], 0, sizeof(sai_transfer_t));
+ 955              		.loc 1 381 0
+ 956 0038 95F8E530 		ldrb	r3, [r5, #229]	@ zero_extendqisi2
+ 957 003c DB00     		lsls	r3, r3, #3
+ 958 003e B433     		adds	r3, r3, #180
+ 959 0040 E918     		adds	r1, r5, r3
+ 960 0042 0022     		movs	r2, #0
+ 961 0044 EA50     		str	r2, [r5, r3]	@ unaligned
+ 962 0046 4A60     		str	r2, [r1, #4]	@ unaligned
+ 382:../drivers/fsl_sai_edma.c ****     handle->queueDriver = (handle->queueDriver + 1) % SAI_XFER_QUEUE_SIZE;
+ 963              		.loc 1 382 0
+ 964 0048 95F8E530 		ldrb	r3, [r5, #229]	@ zero_extendqisi2
+ 965 004c 0133     		adds	r3, r3, #1
+ 966 004e 03F00303 		and	r3, r3, #3
+ 967 0052 85F8E530 		strb	r3, [r5, #229]
+ 383:../drivers/fsl_sai_edma.c **** 
+ 384:../drivers/fsl_sai_edma.c ****     /* Set the handle state */
+ 385:../drivers/fsl_sai_edma.c ****     handle->state = kSAI_Idle;
+ 968              		.loc 1 385 0
+ 969 0056 0123     		movs	r3, #1
+ 970 0058 AB60     		str	r3, [r5, #8]
+ 386:../drivers/fsl_sai_edma.c **** }
+ 971              		.loc 1 386 0
+ 972 005a 38BD     		pop	{r3, r4, r5, pc}
+ 973              		.cfi_endproc
+ 974              	.LFE179:
+ 976              		.section	.text.SAI_TransferAbortReceiveEDMA,"ax",%progbits
+ 977              		.align	1
+ 978              		.global	SAI_TransferAbortReceiveEDMA
+ 979              		.syntax unified
+ 980              		.thumb
+ 981              		.thumb_func
+ 982              		.fpu fpv4-sp-d16
+ 984              	SAI_TransferAbortReceiveEDMA:
+ 985              	.LFB180:
+ 387:../drivers/fsl_sai_edma.c **** 
+ 388:../drivers/fsl_sai_edma.c **** void SAI_TransferAbortReceiveEDMA(I2S_Type *base, sai_edma_handle_t *handle)
+ 389:../drivers/fsl_sai_edma.c **** {
+ 986              		.loc 1 389 0
+ 987              		.cfi_startproc
+ 988              		@ args = 0, pretend = 0, frame = 0
+ 989              		@ frame_needed = 0, uses_anonymous_args = 0
+ 990              	.LVL83:
+ 991 0000 38B5     		push	{r3, r4, r5, lr}
+ 992              		.cfi_def_cfa_offset 16
+ 993              		.cfi_offset 3, -16
+ 994              		.cfi_offset 4, -12
+ 995              		.cfi_offset 5, -8
+ 996              		.cfi_offset 14, -4
+ 997              		.loc 1 389 0
+ 998 0002 0446     		mov	r4, r0
+ 390:../drivers/fsl_sai_edma.c ****     assert(handle);
+ 391:../drivers/fsl_sai_edma.c **** 
+ 392:../drivers/fsl_sai_edma.c ****     /* Disable dma */
+ 393:../drivers/fsl_sai_edma.c ****     EDMA_AbortTransfer(handle->dmaHandle);
+ 999              		.loc 1 393 0
+ 1000 0004 0868     		ldr	r0, [r1]
+ 1001              	.LVL84:
+ 389:../drivers/fsl_sai_edma.c ****     assert(handle);
+ 1002              		.loc 1 389 0
+ 1003 0006 0D46     		mov	r5, r1
+ 1004              		.loc 1 393 0
+ 1005 0008 FFF7FEFF 		bl	EDMA_AbortTransfer
+ 1006              	.LVL85:
+ 394:../drivers/fsl_sai_edma.c **** 
+ 395:../drivers/fsl_sai_edma.c ****     /* Disable the channel FIFO */
+ 396:../drivers/fsl_sai_edma.c ****     base->RCR3 &= ~I2S_RCR3_RCE_MASK;
+ 1007              		.loc 1 396 0
+ 1008 000c D4F88C30 		ldr	r3, [r4, #140]
+ 1009 0010 23F44033 		bic	r3, r3, #196608
+ 1010 0014 C4F88C30 		str	r3, [r4, #140]
+ 1011              	.LVL86:
+ 1012              	.LBB67:
+ 1013              	.LBB68:
+ 1014              	.LBB69:
+ 600:../drivers/fsl_sai.h ****     }
+ 1015              		.loc 2 600 0
+ 1016 0018 D4F88030 		ldr	r3, [r4, #128]
+ 1017 001c 23F4E013 		bic	r3, r3, #1835008
+ 1018 0020 23F00103 		bic	r3, r3, #1
+ 1019 0024 C4F88030 		str	r3, [r4, #128]
+ 1020              	.LVL87:
+ 1021              	.LBE69:
+ 1022              	.LBE68:
+ 1023              	.LBE67:
+ 397:../drivers/fsl_sai_edma.c **** 
+ 398:../drivers/fsl_sai_edma.c ****     /* Disable DMA enable bit */
+ 399:../drivers/fsl_sai_edma.c ****     SAI_RxEnableDMA(base, kSAI_FIFORequestDMAEnable, false);
+ 400:../drivers/fsl_sai_edma.c **** 
+ 401:../drivers/fsl_sai_edma.c ****     /* Disable Rx */
+ 402:../drivers/fsl_sai_edma.c ****     SAI_RxEnable(base, false);
+ 1024              		.loc 1 402 0
+ 1025 0028 0021     		movs	r1, #0
+ 1026 002a 2046     		mov	r0, r4
+ 1027 002c FFF7FEFF 		bl	SAI_RxEnable
+ 1028              	.LVL88:
+ 403:../drivers/fsl_sai_edma.c **** 
+ 404:../drivers/fsl_sai_edma.c ****     /* Reset the FIFO pointer, at the same time clear all error flags if set */
+ 405:../drivers/fsl_sai_edma.c ****     base->RCSR |= (I2S_RCSR_FR_MASK | I2S_RCSR_SR_MASK);
+ 1029              		.loc 1 405 0
+ 1030 0030 D4F88030 		ldr	r3, [r4, #128]
+ 1031 0034 43F04073 		orr	r3, r3, #50331648
+ 1032 0038 C4F88030 		str	r3, [r4, #128]
+ 406:../drivers/fsl_sai_edma.c ****     base->RCSR &= ~I2S_RCSR_SR_MASK;
+ 1033              		.loc 1 406 0
+ 1034 003c D4F88030 		ldr	r3, [r4, #128]
+ 1035 0040 23F08073 		bic	r3, r3, #16777216
+ 1036 0044 C4F88030 		str	r3, [r4, #128]
+ 407:../drivers/fsl_sai_edma.c **** 
+ 408:../drivers/fsl_sai_edma.c ****     /* Handle the queue index */
+ 409:../drivers/fsl_sai_edma.c ****     memset(&handle->saiQueue[handle->queueDriver], 0, sizeof(sai_transfer_t));
+ 1037              		.loc 1 409 0
+ 1038 0048 95F8E530 		ldrb	r3, [r5, #229]	@ zero_extendqisi2
+ 1039 004c DB00     		lsls	r3, r3, #3
+ 1040 004e B433     		adds	r3, r3, #180
+ 1041 0050 E918     		adds	r1, r5, r3
+ 1042 0052 0022     		movs	r2, #0
+ 1043 0054 EA50     		str	r2, [r5, r3]	@ unaligned
+ 1044 0056 4A60     		str	r2, [r1, #4]	@ unaligned
+ 410:../drivers/fsl_sai_edma.c ****     handle->queueDriver = (handle->queueDriver + 1) % SAI_XFER_QUEUE_SIZE;
+ 1045              		.loc 1 410 0
+ 1046 0058 95F8E530 		ldrb	r3, [r5, #229]	@ zero_extendqisi2
+ 1047 005c 0133     		adds	r3, r3, #1
+ 1048 005e 03F00303 		and	r3, r3, #3
+ 1049 0062 85F8E530 		strb	r3, [r5, #229]
+ 411:../drivers/fsl_sai_edma.c **** 
+ 412:../drivers/fsl_sai_edma.c ****     /* Set the handle state */
+ 413:../drivers/fsl_sai_edma.c ****     handle->state = kSAI_Idle;
+ 1050              		.loc 1 413 0
+ 1051 0066 0123     		movs	r3, #1
+ 1052 0068 AB60     		str	r3, [r5, #8]
+ 414:../drivers/fsl_sai_edma.c **** }
+ 1053              		.loc 1 414 0
+ 1054 006a 38BD     		pop	{r3, r4, r5, pc}
+ 1055              		.cfi_endproc
+ 1056              	.LFE180:
+ 1058              		.section	.text.SAI_TransferTerminateSendEDMA,"ax",%progbits
+ 1059              		.align	1
+ 1060              		.global	SAI_TransferTerminateSendEDMA
+ 1061              		.syntax unified
+ 1062              		.thumb
+ 1063              		.thumb_func
+ 1064              		.fpu fpv4-sp-d16
+ 1066              	SAI_TransferTerminateSendEDMA:
+ 1067              	.LFB181:
+ 415:../drivers/fsl_sai_edma.c **** 
+ 416:../drivers/fsl_sai_edma.c **** void SAI_TransferTerminateSendEDMA(I2S_Type *base, sai_edma_handle_t *handle)
+ 417:../drivers/fsl_sai_edma.c **** {
+ 1068              		.loc 1 417 0
+ 1069              		.cfi_startproc
+ 1070              		@ args = 0, pretend = 0, frame = 0
+ 1071              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1072              	.LVL89:
+ 1073 0000 10B5     		push	{r4, lr}
+ 1074              		.cfi_def_cfa_offset 8
+ 1075              		.cfi_offset 4, -8
+ 1076              		.cfi_offset 14, -4
+ 1077              		.loc 1 417 0
+ 1078 0002 0C46     		mov	r4, r1
+ 418:../drivers/fsl_sai_edma.c ****     assert(handle);
+ 419:../drivers/fsl_sai_edma.c **** 
+ 420:../drivers/fsl_sai_edma.c ****     /* Abort the current transfer */
+ 421:../drivers/fsl_sai_edma.c ****     SAI_TransferAbortSendEDMA(base, handle);
+ 1079              		.loc 1 421 0
+ 1080 0004 FFF7FEFF 		bl	SAI_TransferAbortSendEDMA
+ 1081              	.LVL90:
+ 422:../drivers/fsl_sai_edma.c **** 
+ 423:../drivers/fsl_sai_edma.c ****     /* Clear all the internal information */
+ 424:../drivers/fsl_sai_edma.c ****     memset(handle->tcd, 0U, sizeof(handle->tcd));
+ 1082              		.loc 1 424 0
+ 1083 0008 A022     		movs	r2, #160
+ 1084 000a 0021     		movs	r1, #0
+ 1085 000c 04F11400 		add	r0, r4, #20
+ 1086 0010 FFF7FEFF 		bl	memset
+ 1087              	.LVL91:
+ 425:../drivers/fsl_sai_edma.c ****     memset(handle->saiQueue, 0U, sizeof(handle->saiQueue));
+ 1088              		.loc 1 425 0
+ 1089 0014 2022     		movs	r2, #32
+ 1090 0016 0021     		movs	r1, #0
+ 1091 0018 04F1B400 		add	r0, r4, #180
+ 1092 001c FFF7FEFF 		bl	memset
+ 1093              	.LVL92:
+ 426:../drivers/fsl_sai_edma.c ****     memset(handle->transferSize, 0U, sizeof(handle->transferSize));
+ 1094              		.loc 1 426 0
+ 1095 0020 1022     		movs	r2, #16
+ 1096 0022 0021     		movs	r1, #0
+ 1097 0024 04F1D400 		add	r0, r4, #212
+ 1098 0028 FFF7FEFF 		bl	memset
+ 1099              	.LVL93:
+ 427:../drivers/fsl_sai_edma.c ****     handle->queueUser = 0U;
+ 1100              		.loc 1 427 0
+ 1101 002c 0023     		movs	r3, #0
+ 1102 002e 84F8E430 		strb	r3, [r4, #228]
+ 428:../drivers/fsl_sai_edma.c ****     handle->queueDriver = 0U;
+ 1103              		.loc 1 428 0
+ 1104 0032 84F8E530 		strb	r3, [r4, #229]
+ 429:../drivers/fsl_sai_edma.c **** }
+ 1105              		.loc 1 429 0
+ 1106 0036 10BD     		pop	{r4, pc}
+ 1107              		.cfi_endproc
+ 1108              	.LFE181:
+ 1110              		.section	.text.SAI_TransferTerminateReceiveEDMA,"ax",%progbits
+ 1111              		.align	1
+ 1112              		.global	SAI_TransferTerminateReceiveEDMA
+ 1113              		.syntax unified
+ 1114              		.thumb
+ 1115              		.thumb_func
+ 1116              		.fpu fpv4-sp-d16
+ 1118              	SAI_TransferTerminateReceiveEDMA:
+ 1119              	.LFB182:
+ 430:../drivers/fsl_sai_edma.c **** 
+ 431:../drivers/fsl_sai_edma.c **** void SAI_TransferTerminateReceiveEDMA(I2S_Type *base, sai_edma_handle_t *handle)
+ 432:../drivers/fsl_sai_edma.c **** {
+ 1120              		.loc 1 432 0
+ 1121              		.cfi_startproc
+ 1122              		@ args = 0, pretend = 0, frame = 0
+ 1123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1124              	.LVL94:
+ 1125 0000 10B5     		push	{r4, lr}
+ 1126              		.cfi_def_cfa_offset 8
+ 1127              		.cfi_offset 4, -8
+ 1128              		.cfi_offset 14, -4
+ 1129              		.loc 1 432 0
+ 1130 0002 0C46     		mov	r4, r1
+ 433:../drivers/fsl_sai_edma.c ****     assert(handle);
+ 434:../drivers/fsl_sai_edma.c **** 
+ 435:../drivers/fsl_sai_edma.c ****     /* Abort the current transfer */
+ 436:../drivers/fsl_sai_edma.c ****     SAI_TransferAbortReceiveEDMA(base, handle);
+ 1131              		.loc 1 436 0
+ 1132 0004 FFF7FEFF 		bl	SAI_TransferAbortReceiveEDMA
+ 1133              	.LVL95:
+ 437:../drivers/fsl_sai_edma.c **** 
+ 438:../drivers/fsl_sai_edma.c ****     /* Clear all the internal information */
+ 439:../drivers/fsl_sai_edma.c ****     memset(handle->tcd, 0U, sizeof(handle->tcd));
+ 1134              		.loc 1 439 0
+ 1135 0008 A022     		movs	r2, #160
+ 1136 000a 0021     		movs	r1, #0
+ 1137 000c 04F11400 		add	r0, r4, #20
+ 1138 0010 FFF7FEFF 		bl	memset
+ 1139              	.LVL96:
+ 440:../drivers/fsl_sai_edma.c ****     memset(handle->saiQueue, 0U, sizeof(handle->saiQueue));
+ 1140              		.loc 1 440 0
+ 1141 0014 2022     		movs	r2, #32
+ 1142 0016 0021     		movs	r1, #0
+ 1143 0018 04F1B400 		add	r0, r4, #180
+ 1144 001c FFF7FEFF 		bl	memset
+ 1145              	.LVL97:
+ 441:../drivers/fsl_sai_edma.c ****     memset(handle->transferSize, 0U, sizeof(handle->transferSize));
+ 1146              		.loc 1 441 0
+ 1147 0020 1022     		movs	r2, #16
+ 1148 0022 0021     		movs	r1, #0
+ 1149 0024 04F1D400 		add	r0, r4, #212
+ 1150 0028 FFF7FEFF 		bl	memset
+ 1151              	.LVL98:
+ 442:../drivers/fsl_sai_edma.c ****     handle->queueUser = 0U;
+ 1152              		.loc 1 442 0
+ 1153 002c 0023     		movs	r3, #0
+ 1154 002e 84F8E430 		strb	r3, [r4, #228]
+ 443:../drivers/fsl_sai_edma.c ****     handle->queueDriver = 0U;
+ 1155              		.loc 1 443 0
+ 1156 0032 84F8E530 		strb	r3, [r4, #229]
+ 444:../drivers/fsl_sai_edma.c **** }
+ 1157              		.loc 1 444 0
+ 1158 0036 10BD     		pop	{r4, pc}
+ 1159              		.cfi_endproc
+ 1160              	.LFE182:
+ 1162              		.section	.text.SAI_TransferGetSendCountEDMA,"ax",%progbits
+ 1163              		.align	1
+ 1164              		.global	SAI_TransferGetSendCountEDMA
+ 1165              		.syntax unified
+ 1166              		.thumb
+ 1167              		.thumb_func
+ 1168              		.fpu fpv4-sp-d16
+ 1170              	SAI_TransferGetSendCountEDMA:
+ 1171              	.LFB183:
+ 445:../drivers/fsl_sai_edma.c **** 
+ 446:../drivers/fsl_sai_edma.c **** status_t SAI_TransferGetSendCountEDMA(I2S_Type *base, sai_edma_handle_t *handle, size_t *count)
+ 447:../drivers/fsl_sai_edma.c **** {
+ 1172              		.loc 1 447 0
+ 1173              		.cfi_startproc
+ 1174              		@ args = 0, pretend = 0, frame = 0
+ 1175              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1176              	.LVL99:
+ 1177 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1178              		.cfi_def_cfa_offset 24
+ 1179              		.cfi_offset 3, -24
+ 1180              		.cfi_offset 4, -20
+ 1181              		.cfi_offset 5, -16
+ 1182              		.cfi_offset 6, -12
+ 1183              		.cfi_offset 7, -8
+ 1184              		.cfi_offset 14, -4
+ 448:../drivers/fsl_sai_edma.c ****     assert(handle);
+ 449:../drivers/fsl_sai_edma.c **** 
+ 450:../drivers/fsl_sai_edma.c ****     status_t status = kStatus_Success;
+ 451:../drivers/fsl_sai_edma.c **** 
+ 452:../drivers/fsl_sai_edma.c ****     if (handle->state != kSAI_Busy)
+ 1185              		.loc 1 452 0
+ 1186 0002 8C68     		ldr	r4, [r1, #8]
+ 447:../drivers/fsl_sai_edma.c ****     assert(handle);
+ 1187              		.loc 1 447 0
+ 1188 0004 1646     		mov	r6, r2
+ 1189              		.loc 1 452 0
+ 1190 0006 84B9     		cbnz	r4, .L43
+ 453:../drivers/fsl_sai_edma.c ****     {
+ 454:../drivers/fsl_sai_edma.c ****         status = kStatus_NoTransferInProgress;
+ 455:../drivers/fsl_sai_edma.c ****     }
+ 456:../drivers/fsl_sai_edma.c ****     else
+ 457:../drivers/fsl_sai_edma.c ****     {
+ 458:../drivers/fsl_sai_edma.c ****         *count = (handle->transferSize[handle->queueDriver] -
+ 1191              		.loc 1 458 0
+ 1192 0008 91F8E530 		ldrb	r3, [r1, #229]	@ zero_extendqisi2
+ 459:../drivers/fsl_sai_edma.c ****                   (uint32_t)handle->nbytes *
+ 1193              		.loc 1 459 0
+ 1194 000c 0D79     		ldrb	r5, [r1, #4]	@ zero_extendqisi2
+ 458:../drivers/fsl_sai_edma.c ****                   (uint32_t)handle->nbytes *
+ 1195              		.loc 1 458 0
+ 1196 000e 01EB8303 		add	r3, r1, r3, lsl #2
+ 1197 0012 D3F8D470 		ldr	r7, [r3, #212]
+ 460:../drivers/fsl_sai_edma.c ****                       EDMA_GetRemainingMajorLoopCount(handle->dmaHandle->base, handle->dmaHandle->c
+ 1198              		.loc 1 460 0
+ 1199 0016 0B68     		ldr	r3, [r1]
+ 1200 0018 197C     		ldrb	r1, [r3, #16]	@ zero_extendqisi2
+ 1201              	.LVL100:
+ 1202 001a 9868     		ldr	r0, [r3, #8]
+ 1203              	.LVL101:
+ 1204 001c FFF7FEFF 		bl	EDMA_GetRemainingMajorLoopCount
+ 1205              	.LVL102:
+ 458:../drivers/fsl_sai_edma.c ****                   (uint32_t)handle->nbytes *
+ 1206              		.loc 1 458 0
+ 1207 0020 00FB1570 		mls	r0, r0, r5, r7
+ 1208 0024 3060     		str	r0, [r6]
+ 450:../drivers/fsl_sai_edma.c **** 
+ 1209              		.loc 1 450 0
+ 1210 0026 2046     		mov	r0, r4
+ 1211              	.LVL103:
+ 1212              	.L41:
+ 461:../drivers/fsl_sai_edma.c ****     }
+ 462:../drivers/fsl_sai_edma.c **** 
+ 463:../drivers/fsl_sai_edma.c ****     return status;
+ 464:../drivers/fsl_sai_edma.c **** }
+ 1213              		.loc 1 464 0
+ 1214 0028 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1215              	.LVL104:
+ 1216              	.L43:
+ 454:../drivers/fsl_sai_edma.c ****     }
+ 1217              		.loc 1 454 0
+ 1218 002a 0620     		movs	r0, #6
+ 1219              	.LVL105:
+ 463:../drivers/fsl_sai_edma.c **** }
+ 1220              		.loc 1 463 0
+ 1221 002c FCE7     		b	.L41
+ 1222              		.cfi_endproc
+ 1223              	.LFE183:
+ 1225              		.section	.text.SAI_TransferGetReceiveCountEDMA,"ax",%progbits
+ 1226              		.align	1
+ 1227              		.global	SAI_TransferGetReceiveCountEDMA
+ 1228              		.syntax unified
+ 1229              		.thumb
+ 1230              		.thumb_func
+ 1231              		.fpu fpv4-sp-d16
+ 1233              	SAI_TransferGetReceiveCountEDMA:
+ 1234              	.LFB190:
+ 1235              		.cfi_startproc
+ 1236              		@ args = 0, pretend = 0, frame = 0
+ 1237              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1238              		@ link register save eliminated.
+ 1239 0000 FFF7FEBF 		b	SAI_TransferGetSendCountEDMA
+ 1240              		.cfi_endproc
+ 1241              	.LFE190:
+ 1243              		.section	.bss.s_edmaPrivateHandle,"aw",%nobits
+ 1244              		.align	2
+ 1245              		.set	.LANCHOR0,. + 0
+ 1248              	s_edmaPrivateHandle:
+ 1249 0000 00000000 		.space	16
+ 1249      00000000 
+ 1249      00000000 
+ 1249      00000000 
+ 1250              		.text
+ 1251              	.Letext0:
+ 1252              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1253              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1254              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1255              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1256              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1257              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1258              		.file 9 "../CMSIS/core_cm4.h"
+ 1259              		.file 10 "../CMSIS/system_MK64F12.h"
+ 1260              		.file 11 "../CMSIS/MK64F12.h"
+ 1261              		.file 12 "../drivers/fsl_common.h"
+ 1262              		.file 13 "../drivers/fsl_clock.h"
+ 1263              		.file 14 "../drivers/fsl_edma.h"
+ 1264              		.file 15 "../drivers/fsl_sai_edma.h"
+ 1265              		.file 16 "<built-in>"

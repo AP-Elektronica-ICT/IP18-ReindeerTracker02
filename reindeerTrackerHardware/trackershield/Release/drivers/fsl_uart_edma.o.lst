@@ -1,0 +1,1593 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_uart_edma.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.UART_TransferCreateHandleEDMA,"ax",%progbits
+  18              		.align	1
+  19              		.global	UART_TransferCreateHandleEDMA
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	UART_TransferCreateHandleEDMA:
+  26              	.LFB166:
+  27              		.file 1 "../drivers/fsl_uart_edma.c"
+   1:../drivers/fsl_uart_edma.c **** /*
+   2:../drivers/fsl_uart_edma.c ****  * The Clear BSD License
+   3:../drivers/fsl_uart_edma.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_uart_edma.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_uart_edma.c ****  * All rights reserved.
+   6:../drivers/fsl_uart_edma.c ****  *
+   7:../drivers/fsl_uart_edma.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_uart_edma.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_uart_edma.c ****  * that the following conditions are met:
+  10:../drivers/fsl_uart_edma.c ****  *
+  11:../drivers/fsl_uart_edma.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_uart_edma.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_uart_edma.c ****  *
+  14:../drivers/fsl_uart_edma.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_uart_edma.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_uart_edma.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_uart_edma.c ****  *
+  18:../drivers/fsl_uart_edma.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_uart_edma.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_uart_edma.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_uart_edma.c ****  *
+  22:../drivers/fsl_uart_edma.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_uart_edma.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_uart_edma.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_uart_edma.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_uart_edma.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_uart_edma.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_uart_edma.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_uart_edma.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_uart_edma.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_uart_edma.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_uart_edma.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_uart_edma.c ****  */
+  34:../drivers/fsl_uart_edma.c **** 
+  35:../drivers/fsl_uart_edma.c **** #include "fsl_uart_edma.h"
+  36:../drivers/fsl_uart_edma.c **** 
+  37:../drivers/fsl_uart_edma.c **** /*******************************************************************************
+  38:../drivers/fsl_uart_edma.c ****  * Definitions
+  39:../drivers/fsl_uart_edma.c ****  ******************************************************************************/
+  40:../drivers/fsl_uart_edma.c **** 
+  41:../drivers/fsl_uart_edma.c **** /* Array of UART handle. */
+  42:../drivers/fsl_uart_edma.c **** #if (defined(UART5))
+  43:../drivers/fsl_uart_edma.c **** #define UART_HANDLE_ARRAY_SIZE 6
+  44:../drivers/fsl_uart_edma.c **** #else /* UART5 */
+  45:../drivers/fsl_uart_edma.c **** #if (defined(UART4))
+  46:../drivers/fsl_uart_edma.c **** #define UART_HANDLE_ARRAY_SIZE 5
+  47:../drivers/fsl_uart_edma.c **** #else /* UART4 */
+  48:../drivers/fsl_uart_edma.c **** #if (defined(UART3))
+  49:../drivers/fsl_uart_edma.c **** #define UART_HANDLE_ARRAY_SIZE 4
+  50:../drivers/fsl_uart_edma.c **** #else /* UART3 */
+  51:../drivers/fsl_uart_edma.c **** #if (defined(UART2))
+  52:../drivers/fsl_uart_edma.c **** #define UART_HANDLE_ARRAY_SIZE 3
+  53:../drivers/fsl_uart_edma.c **** #else /* UART2 */
+  54:../drivers/fsl_uart_edma.c **** #if (defined(UART1))
+  55:../drivers/fsl_uart_edma.c **** #define UART_HANDLE_ARRAY_SIZE 2
+  56:../drivers/fsl_uart_edma.c **** #else /* UART1 */
+  57:../drivers/fsl_uart_edma.c **** #if (defined(UART0))
+  58:../drivers/fsl_uart_edma.c **** #define UART_HANDLE_ARRAY_SIZE 1
+  59:../drivers/fsl_uart_edma.c **** #else /* UART0 */
+  60:../drivers/fsl_uart_edma.c **** #error No UART instance.
+  61:../drivers/fsl_uart_edma.c **** #endif /* UART 0 */
+  62:../drivers/fsl_uart_edma.c **** #endif /* UART 1 */
+  63:../drivers/fsl_uart_edma.c **** #endif /* UART 2 */
+  64:../drivers/fsl_uart_edma.c **** #endif /* UART 3 */
+  65:../drivers/fsl_uart_edma.c **** #endif /* UART 4 */
+  66:../drivers/fsl_uart_edma.c **** #endif /* UART 5 */
+  67:../drivers/fsl_uart_edma.c **** 
+  68:../drivers/fsl_uart_edma.c **** /*<! Structure definition for uart_edma_private_handle_t. The structure is private. */
+  69:../drivers/fsl_uart_edma.c **** typedef struct _uart_edma_private_handle
+  70:../drivers/fsl_uart_edma.c **** {
+  71:../drivers/fsl_uart_edma.c ****     UART_Type *base;
+  72:../drivers/fsl_uart_edma.c ****     uart_edma_handle_t *handle;
+  73:../drivers/fsl_uart_edma.c **** } uart_edma_private_handle_t;
+  74:../drivers/fsl_uart_edma.c **** 
+  75:../drivers/fsl_uart_edma.c **** /* UART EDMA transfer handle. */
+  76:../drivers/fsl_uart_edma.c **** enum _uart_edma_tansfer_states
+  77:../drivers/fsl_uart_edma.c **** {
+  78:../drivers/fsl_uart_edma.c ****     kUART_TxIdle, /* TX idle. */
+  79:../drivers/fsl_uart_edma.c ****     kUART_TxBusy, /* TX busy. */
+  80:../drivers/fsl_uart_edma.c ****     kUART_RxIdle, /* RX idle. */
+  81:../drivers/fsl_uart_edma.c ****     kUART_RxBusy  /* RX busy. */
+  82:../drivers/fsl_uart_edma.c **** };
+  83:../drivers/fsl_uart_edma.c **** 
+  84:../drivers/fsl_uart_edma.c **** /*******************************************************************************
+  85:../drivers/fsl_uart_edma.c ****  * Definitions
+  86:../drivers/fsl_uart_edma.c ****  ******************************************************************************/
+  87:../drivers/fsl_uart_edma.c **** 
+  88:../drivers/fsl_uart_edma.c **** /*<! Private handle only used for internally. */
+  89:../drivers/fsl_uart_edma.c **** static uart_edma_private_handle_t s_edmaPrivateHandle[UART_HANDLE_ARRAY_SIZE];
+  90:../drivers/fsl_uart_edma.c **** 
+  91:../drivers/fsl_uart_edma.c **** /*******************************************************************************
+  92:../drivers/fsl_uart_edma.c ****  * Prototypes
+  93:../drivers/fsl_uart_edma.c ****  ******************************************************************************/
+  94:../drivers/fsl_uart_edma.c **** 
+  95:../drivers/fsl_uart_edma.c **** /*!
+  96:../drivers/fsl_uart_edma.c ****  * @brief UART EDMA send finished callback function.
+  97:../drivers/fsl_uart_edma.c ****  *
+  98:../drivers/fsl_uart_edma.c ****  * This function is called when UART EDMA send finished. It disables the UART
+  99:../drivers/fsl_uart_edma.c ****  * TX EDMA request and sends @ref kStatus_UART_TxIdle to UART callback.
+ 100:../drivers/fsl_uart_edma.c ****  *
+ 101:../drivers/fsl_uart_edma.c ****  * @param handle The EDMA handle.
+ 102:../drivers/fsl_uart_edma.c ****  * @param param Callback function parameter.
+ 103:../drivers/fsl_uart_edma.c ****  */
+ 104:../drivers/fsl_uart_edma.c **** static void UART_SendEDMACallback(edma_handle_t *handle, void *param, bool transferDone, uint32_t t
+ 105:../drivers/fsl_uart_edma.c **** 
+ 106:../drivers/fsl_uart_edma.c **** /*!
+ 107:../drivers/fsl_uart_edma.c ****  * @brief UART EDMA receive finished callback function.
+ 108:../drivers/fsl_uart_edma.c ****  *
+ 109:../drivers/fsl_uart_edma.c ****  * This function is called when UART EDMA receive finished. It disables the UART
+ 110:../drivers/fsl_uart_edma.c ****  * RX EDMA request and sends @ref kStatus_UART_RxIdle to UART callback.
+ 111:../drivers/fsl_uart_edma.c ****  *
+ 112:../drivers/fsl_uart_edma.c ****  * @param handle The EDMA handle.
+ 113:../drivers/fsl_uart_edma.c ****  * @param param Callback function parameter.
+ 114:../drivers/fsl_uart_edma.c ****  */
+ 115:../drivers/fsl_uart_edma.c **** static void UART_ReceiveEDMACallback(edma_handle_t *handle, void *param, bool transferDone, uint32_
+ 116:../drivers/fsl_uart_edma.c **** 
+ 117:../drivers/fsl_uart_edma.c **** /*!
+ 118:../drivers/fsl_uart_edma.c ****  * @brief Get the UART instance from peripheral base address.
+ 119:../drivers/fsl_uart_edma.c ****  *
+ 120:../drivers/fsl_uart_edma.c ****  * @param base UART peripheral base address.
+ 121:../drivers/fsl_uart_edma.c ****  * @return UART instance.
+ 122:../drivers/fsl_uart_edma.c ****  */
+ 123:../drivers/fsl_uart_edma.c **** extern uint32_t UART_GetInstance(UART_Type *base);
+ 124:../drivers/fsl_uart_edma.c **** 
+ 125:../drivers/fsl_uart_edma.c **** /*******************************************************************************
+ 126:../drivers/fsl_uart_edma.c ****  * Code
+ 127:../drivers/fsl_uart_edma.c ****  ******************************************************************************/
+ 128:../drivers/fsl_uart_edma.c **** 
+ 129:../drivers/fsl_uart_edma.c **** static void UART_SendEDMACallback(edma_handle_t *handle, void *param, bool transferDone, uint32_t t
+ 130:../drivers/fsl_uart_edma.c **** {
+ 131:../drivers/fsl_uart_edma.c ****     assert(param);
+ 132:../drivers/fsl_uart_edma.c **** 
+ 133:../drivers/fsl_uart_edma.c ****     uart_edma_private_handle_t *uartPrivateHandle = (uart_edma_private_handle_t *)param;
+ 134:../drivers/fsl_uart_edma.c **** 
+ 135:../drivers/fsl_uart_edma.c ****     /* Avoid the warning for unused variables. */
+ 136:../drivers/fsl_uart_edma.c ****     handle = handle;
+ 137:../drivers/fsl_uart_edma.c ****     tcds = tcds;
+ 138:../drivers/fsl_uart_edma.c **** 
+ 139:../drivers/fsl_uart_edma.c ****     if (transferDone)
+ 140:../drivers/fsl_uart_edma.c ****     {
+ 141:../drivers/fsl_uart_edma.c ****         UART_TransferAbortSendEDMA(uartPrivateHandle->base, uartPrivateHandle->handle);
+ 142:../drivers/fsl_uart_edma.c **** 
+ 143:../drivers/fsl_uart_edma.c ****         if (uartPrivateHandle->handle->callback)
+ 144:../drivers/fsl_uart_edma.c ****         {
+ 145:../drivers/fsl_uart_edma.c ****             uartPrivateHandle->handle->callback(uartPrivateHandle->base, uartPrivateHandle->handle,
+ 146:../drivers/fsl_uart_edma.c ****                                                 uartPrivateHandle->handle->userData);
+ 147:../drivers/fsl_uart_edma.c ****         }
+ 148:../drivers/fsl_uart_edma.c ****     }
+ 149:../drivers/fsl_uart_edma.c **** }
+ 150:../drivers/fsl_uart_edma.c **** 
+ 151:../drivers/fsl_uart_edma.c **** static void UART_ReceiveEDMACallback(edma_handle_t *handle, void *param, bool transferDone, uint32_
+ 152:../drivers/fsl_uart_edma.c **** {
+ 153:../drivers/fsl_uart_edma.c ****     assert(param);
+ 154:../drivers/fsl_uart_edma.c **** 
+ 155:../drivers/fsl_uart_edma.c ****     uart_edma_private_handle_t *uartPrivateHandle = (uart_edma_private_handle_t *)param;
+ 156:../drivers/fsl_uart_edma.c **** 
+ 157:../drivers/fsl_uart_edma.c ****     /* Avoid warning for unused parameters. */
+ 158:../drivers/fsl_uart_edma.c ****     handle = handle;
+ 159:../drivers/fsl_uart_edma.c ****     tcds = tcds;
+ 160:../drivers/fsl_uart_edma.c **** 
+ 161:../drivers/fsl_uart_edma.c ****     if (transferDone)
+ 162:../drivers/fsl_uart_edma.c ****     {
+ 163:../drivers/fsl_uart_edma.c ****         /* Disable transfer. */
+ 164:../drivers/fsl_uart_edma.c ****         UART_TransferAbortReceiveEDMA(uartPrivateHandle->base, uartPrivateHandle->handle);
+ 165:../drivers/fsl_uart_edma.c **** 
+ 166:../drivers/fsl_uart_edma.c ****         if (uartPrivateHandle->handle->callback)
+ 167:../drivers/fsl_uart_edma.c ****         {
+ 168:../drivers/fsl_uart_edma.c ****             uartPrivateHandle->handle->callback(uartPrivateHandle->base, uartPrivateHandle->handle,
+ 169:../drivers/fsl_uart_edma.c ****                                                 uartPrivateHandle->handle->userData);
+ 170:../drivers/fsl_uart_edma.c ****         }
+ 171:../drivers/fsl_uart_edma.c ****     }
+ 172:../drivers/fsl_uart_edma.c **** }
+ 173:../drivers/fsl_uart_edma.c **** 
+ 174:../drivers/fsl_uart_edma.c **** void UART_TransferCreateHandleEDMA(UART_Type *base,
+ 175:../drivers/fsl_uart_edma.c ****                                    uart_edma_handle_t *handle,
+ 176:../drivers/fsl_uart_edma.c ****                                    uart_edma_transfer_callback_t callback,
+ 177:../drivers/fsl_uart_edma.c ****                                    void *userData,
+ 178:../drivers/fsl_uart_edma.c ****                                    edma_handle_t *txEdmaHandle,
+ 179:../drivers/fsl_uart_edma.c ****                                    edma_handle_t *rxEdmaHandle)
+ 180:../drivers/fsl_uart_edma.c **** {
+  28              		.loc 1 180 0
+  29              		.cfi_startproc
+  30              		@ args = 8, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 2DE9F84F 		push	{r3, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  34              		.cfi_def_cfa_offset 40
+  35              		.cfi_offset 3, -40
+  36              		.cfi_offset 4, -36
+  37              		.cfi_offset 5, -32
+  38              		.cfi_offset 6, -28
+  39              		.cfi_offset 7, -24
+  40              		.cfi_offset 8, -20
+  41              		.cfi_offset 9, -16
+  42              		.cfi_offset 10, -12
+  43              		.cfi_offset 11, -8
+  44              		.cfi_offset 14, -4
+  45              		.loc 1 180 0
+  46 0004 0C46     		mov	r4, r1
+  47 0006 9246     		mov	r10, r2
+  48 0008 9B46     		mov	fp, r3
+  49 000a 8146     		mov	r9, r0
+  50 000c DDE90A78 		ldrd	r7, r8, [sp, #40]
+ 181:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 182:../drivers/fsl_uart_edma.c **** 
+ 183:../drivers/fsl_uart_edma.c ****     uint32_t instance = UART_GetInstance(base);
+  51              		.loc 1 183 0
+  52 0010 FFF7FEFF 		bl	UART_GetInstance
+  53              	.LVL1:
+ 184:../drivers/fsl_uart_edma.c **** 
+ 185:../drivers/fsl_uart_edma.c ****     s_edmaPrivateHandle[instance].base = base;
+  54              		.loc 1 185 0
+  55 0014 164E     		ldr	r6, .L6
+ 186:../drivers/fsl_uart_edma.c ****     s_edmaPrivateHandle[instance].handle = handle;
+  56              		.loc 1 186 0
+  57 0016 C500     		lsls	r5, r0, #3
+  58 0018 7319     		adds	r3, r6, r5
+ 185:../drivers/fsl_uart_edma.c ****     s_edmaPrivateHandle[instance].handle = handle;
+  59              		.loc 1 185 0
+  60 001a 46F83090 		str	r9, [r6, r0, lsl #3]
+  61              		.loc 1 186 0
+  62 001e 5C60     		str	r4, [r3, #4]
+ 187:../drivers/fsl_uart_edma.c **** 
+ 188:../drivers/fsl_uart_edma.c ****     memset(handle, 0, sizeof(*handle));
+  63              		.loc 1 188 0
+  64 0020 1422     		movs	r2, #20
+  65 0022 0021     		movs	r1, #0
+  66 0024 04F10800 		add	r0, r4, #8
+  67              	.LVL2:
+  68 0028 FFF7FEFF 		bl	memset
+  69              	.LVL3:
+ 189:../drivers/fsl_uart_edma.c **** 
+ 190:../drivers/fsl_uart_edma.c ****     handle->rxState = kUART_RxIdle;
+  70              		.loc 1 190 0
+  71 002c 0223     		movs	r3, #2
+  72 002e A376     		strb	r3, [r4, #26]
+ 191:../drivers/fsl_uart_edma.c ****     handle->txState = kUART_TxIdle;
+  73              		.loc 1 191 0
+  74 0030 0023     		movs	r3, #0
+  75 0032 6376     		strb	r3, [r4, #25]
+ 192:../drivers/fsl_uart_edma.c **** 
+ 193:../drivers/fsl_uart_edma.c ****     handle->rxEdmaHandle = rxEdmaHandle;
+ 194:../drivers/fsl_uart_edma.c ****     handle->txEdmaHandle = txEdmaHandle;
+  76              		.loc 1 194 0
+  77 0034 C4E90478 		strd	r7, r8, [r4, #16]
+ 195:../drivers/fsl_uart_edma.c **** 
+ 196:../drivers/fsl_uart_edma.c ****     handle->callback = callback;
+ 197:../drivers/fsl_uart_edma.c ****     handle->userData = userData;
+  78              		.loc 1 197 0
+  79 0038 C4E900AB 		strd	r10, fp, [r4]
+ 198:../drivers/fsl_uart_edma.c **** 
+ 199:../drivers/fsl_uart_edma.c **** #if defined(FSL_FEATURE_UART_HAS_FIFO) && FSL_FEATURE_UART_HAS_FIFO
+ 200:../drivers/fsl_uart_edma.c ****     /* Note:
+ 201:../drivers/fsl_uart_edma.c ****        Take care of the RX FIFO, EDMA request only assert when received bytes
+ 202:../drivers/fsl_uart_edma.c ****        equal or more than RX water mark, there is potential issue if RX water
+ 203:../drivers/fsl_uart_edma.c ****        mark larger than 1.
+ 204:../drivers/fsl_uart_edma.c ****        For example, if RX FIFO water mark is 2, upper layer needs 5 bytes and
+ 205:../drivers/fsl_uart_edma.c ****        5 bytes are received. the last byte will be saved in FIFO but not trigger
+ 206:../drivers/fsl_uart_edma.c ****        EDMA transfer because the water mark is 2.
+ 207:../drivers/fsl_uart_edma.c ****      */
+ 208:../drivers/fsl_uart_edma.c ****     if (rxEdmaHandle)
+  80              		.loc 1 208 0
+  81 003c B8F1000F 		cmp	r8, #0
+  82 0040 0AD0     		beq	.L2
+ 209:../drivers/fsl_uart_edma.c ****     {
+ 210:../drivers/fsl_uart_edma.c ****         base->RWFIFO = 1U;
+  83              		.loc 1 210 0
+  84 0042 0123     		movs	r3, #1
+  85 0044 89F81530 		strb	r3, [r9, #21]
+ 211:../drivers/fsl_uart_edma.c ****     }
+ 212:../drivers/fsl_uart_edma.c **** #endif
+ 213:../drivers/fsl_uart_edma.c **** 
+ 214:../drivers/fsl_uart_edma.c ****     /* Configure TX. */
+ 215:../drivers/fsl_uart_edma.c ****     if (txEdmaHandle)
+  86              		.loc 1 215 0
+  87 0048 3FB9     		cbnz	r7, .L3
+  88              	.L4:
+ 216:../drivers/fsl_uart_edma.c ****     {
+ 217:../drivers/fsl_uart_edma.c ****         EDMA_SetCallback(handle->txEdmaHandle, UART_SendEDMACallback, &s_edmaPrivateHandle[instance
+ 218:../drivers/fsl_uart_edma.c ****     }
+ 219:../drivers/fsl_uart_edma.c **** 
+ 220:../drivers/fsl_uart_edma.c ****     /* Configure RX. */
+ 221:../drivers/fsl_uart_edma.c ****     if (rxEdmaHandle)
+ 222:../drivers/fsl_uart_edma.c ****     {
+ 223:../drivers/fsl_uart_edma.c ****         EDMA_SetCallback(handle->rxEdmaHandle, UART_ReceiveEDMACallback, &s_edmaPrivateHandle[insta
+  89              		.loc 1 223 0
+  90 004a 7219     		adds	r2, r6, r5
+  91 004c 6069     		ldr	r0, [r4, #20]
+  92 004e 0949     		ldr	r1, .L6+4
+ 224:../drivers/fsl_uart_edma.c ****     }
+ 225:../drivers/fsl_uart_edma.c **** }
+  93              		.loc 1 225 0
+  94 0050 BDE8F84F 		pop	{r3, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  95              		.cfi_remember_state
+  96              		.cfi_restore 14
+  97              		.cfi_restore 11
+  98              		.cfi_restore 10
+  99              		.cfi_restore 9
+ 100              		.cfi_restore 8
+ 101              		.cfi_restore 7
+ 102              		.cfi_restore 6
+ 103              		.cfi_restore 5
+ 104              		.cfi_restore 4
+ 105              		.cfi_restore 3
+ 106              		.cfi_def_cfa_offset 0
+ 107              	.LVL4:
+ 223:../drivers/fsl_uart_edma.c ****     }
+ 108              		.loc 1 223 0
+ 109 0054 FFF7FEBF 		b	EDMA_SetCallback
+ 110              	.LVL5:
+ 111              	.L2:
+ 112              		.cfi_restore_state
+ 215:../drivers/fsl_uart_edma.c ****     {
+ 113              		.loc 1 215 0
+ 114 0058 3FB1     		cbz	r7, .L1
+ 115              	.L3:
+ 217:../drivers/fsl_uart_edma.c ****     }
+ 116              		.loc 1 217 0
+ 117 005a 7219     		adds	r2, r6, r5
+ 118 005c 0649     		ldr	r1, .L6+8
+ 119 005e 3846     		mov	r0, r7
+ 120 0060 FFF7FEFF 		bl	EDMA_SetCallback
+ 121              	.LVL6:
+ 221:../drivers/fsl_uart_edma.c ****     {
+ 122              		.loc 1 221 0
+ 123 0064 B8F1000F 		cmp	r8, #0
+ 124 0068 EFD1     		bne	.L4
+ 125              	.L1:
+ 126              		.loc 1 225 0
+ 127 006a BDE8F88F 		pop	{r3, r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 128              	.LVL7:
+ 129              	.L7:
+ 130 006e 00BF     		.align	2
+ 131              	.L6:
+ 132 0070 00000000 		.word	.LANCHOR0
+ 133 0074 00000000 		.word	UART_ReceiveEDMACallback
+ 134 0078 00000000 		.word	UART_SendEDMACallback
+ 135              		.cfi_endproc
+ 136              	.LFE166:
+ 138              		.section	.text.UART_SendEDMA,"ax",%progbits
+ 139              		.align	1
+ 140              		.global	UART_SendEDMA
+ 141              		.syntax unified
+ 142              		.thumb
+ 143              		.thumb_func
+ 144              		.fpu fpv4-sp-d16
+ 146              	UART_SendEDMA:
+ 147              	.LFB167:
+ 226:../drivers/fsl_uart_edma.c **** 
+ 227:../drivers/fsl_uart_edma.c **** status_t UART_SendEDMA(UART_Type *base, uart_edma_handle_t *handle, uart_transfer_t *xfer)
+ 228:../drivers/fsl_uart_edma.c **** {
+ 148              		.loc 1 228 0
+ 149              		.cfi_startproc
+ 150              		@ args = 0, pretend = 0, frame = 24
+ 151              		@ frame_needed = 0, uses_anonymous_args = 0
+ 152              	.LVL8:
+ 153 0000 70B5     		push	{r4, r5, r6, lr}
+ 154              		.cfi_def_cfa_offset 16
+ 155              		.cfi_offset 4, -16
+ 156              		.cfi_offset 5, -12
+ 157              		.cfi_offset 6, -8
+ 158              		.cfi_offset 14, -4
+ 159 0002 0C46     		mov	r4, r1
+ 160 0004 8AB0     		sub	sp, sp, #40
+ 161              		.cfi_def_cfa_offset 56
+ 229:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 230:../drivers/fsl_uart_edma.c ****     assert(handle->txEdmaHandle);
+ 231:../drivers/fsl_uart_edma.c ****     assert(xfer);
+ 232:../drivers/fsl_uart_edma.c ****     assert(xfer->data);
+ 233:../drivers/fsl_uart_edma.c ****     assert(xfer->dataSize);
+ 234:../drivers/fsl_uart_edma.c **** 
+ 235:../drivers/fsl_uart_edma.c ****     edma_transfer_config_t xferConfig;
+ 236:../drivers/fsl_uart_edma.c ****     status_t status;
+ 237:../drivers/fsl_uart_edma.c **** 
+ 238:../drivers/fsl_uart_edma.c ****     /* If previous TX not finished. */
+ 239:../drivers/fsl_uart_edma.c ****     if (kUART_TxBusy == handle->txState)
+ 162              		.loc 1 239 0
+ 163 0006 637E     		ldrb	r3, [r4, #25]	@ zero_extendqisi2
+ 164 0008 012B     		cmp	r3, #1
+ 228:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 165              		.loc 1 228 0
+ 166 000a 0546     		mov	r5, r0
+ 167 000c 1146     		mov	r1, r2
+ 168              	.LVL9:
+ 169              		.loc 1 239 0
+ 170 000e 21D0     		beq	.L10
+ 240:../drivers/fsl_uart_edma.c ****     {
+ 241:../drivers/fsl_uart_edma.c ****         status = kStatus_UART_TxBusy;
+ 242:../drivers/fsl_uart_edma.c ****     }
+ 243:../drivers/fsl_uart_edma.c ****     else
+ 244:../drivers/fsl_uart_edma.c ****     {
+ 245:../drivers/fsl_uart_edma.c ****         handle->txState = kUART_TxBusy;
+ 171              		.loc 1 245 0
+ 172 0010 0126     		movs	r6, #1
+ 173 0012 6676     		strb	r6, [r4, #25]
+ 246:../drivers/fsl_uart_edma.c ****         handle->txDataSizeAll = xfer->dataSize;
+ 174              		.loc 1 246 0
+ 175 0014 5368     		ldr	r3, [r2, #4]
+ 176 0016 E360     		str	r3, [r4, #12]
+ 247:../drivers/fsl_uart_edma.c **** 
+ 248:../drivers/fsl_uart_edma.c ****         /* Prepare transfer. */
+ 249:../drivers/fsl_uart_edma.c ****         EDMA_PrepareTransfer(&xferConfig, xfer->data, sizeof(uint8_t), (void *)UART_GetDataRegister
+ 177              		.loc 1 249 0
+ 178 0018 0222     		movs	r2, #2
+ 179              	.LVL10:
+ 180 001a CDE90232 		strd	r3, r2, [sp, #8]
+ 181 001e CDE90066 		strd	r6, r6, [sp]
+ 182 0022 C31D     		adds	r3, r0, #7
+ 183 0024 3246     		mov	r2, r6
+ 184 0026 0968     		ldr	r1, [r1]
+ 185              	.LVL11:
+ 186 0028 04A8     		add	r0, sp, #16
+ 187              	.LVL12:
+ 188 002a FFF7FEFF 		bl	EDMA_PrepareTransfer
+ 189              	.LVL13:
+ 250:../drivers/fsl_uart_edma.c ****                              sizeof(uint8_t), sizeof(uint8_t), xfer->dataSize, kEDMA_MemoryToPeriph
+ 251:../drivers/fsl_uart_edma.c **** 
+ 252:../drivers/fsl_uart_edma.c ****         /* Store the initially configured eDMA minor byte transfer count into the UART handle */
+ 253:../drivers/fsl_uart_edma.c ****         handle->nbytes = sizeof(uint8_t);
+ 254:../drivers/fsl_uart_edma.c **** 
+ 255:../drivers/fsl_uart_edma.c ****         /* Submit transfer. */
+ 256:../drivers/fsl_uart_edma.c ****         EDMA_SubmitTransfer(handle->txEdmaHandle, &xferConfig);
+ 190              		.loc 1 256 0
+ 191 002e 04A9     		add	r1, sp, #16
+ 253:../drivers/fsl_uart_edma.c **** 
+ 192              		.loc 1 253 0
+ 193 0030 2676     		strb	r6, [r4, #24]
+ 194              		.loc 1 256 0
+ 195 0032 2069     		ldr	r0, [r4, #16]
+ 196 0034 FFF7FEFF 		bl	EDMA_SubmitTransfer
+ 197              	.LVL14:
+ 257:../drivers/fsl_uart_edma.c ****         EDMA_StartTransfer(handle->txEdmaHandle);
+ 198              		.loc 1 257 0
+ 199 0038 2069     		ldr	r0, [r4, #16]
+ 200 003a FFF7FEFF 		bl	EDMA_StartTransfer
+ 201              	.LVL15:
+ 202              	.LBB16:
+ 203              	.LBB17:
+ 204              	.LBB18:
+ 205              		.file 2 "../drivers/fsl_uart.h"
+   1:../drivers/fsl_uart.h **** /*
+   2:../drivers/fsl_uart.h ****  * The Clear BSD License
+   3:../drivers/fsl_uart.h ****  * Copyright (c) 2015-2016, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_uart.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_uart.h ****  * All rights reserved.
+   6:../drivers/fsl_uart.h ****  *
+   7:../drivers/fsl_uart.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_uart.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_uart.h ****  * that the following conditions are met:
+  10:../drivers/fsl_uart.h ****  *
+  11:../drivers/fsl_uart.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_uart.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_uart.h ****  *
+  14:../drivers/fsl_uart.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_uart.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_uart.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_uart.h ****  *
+  18:../drivers/fsl_uart.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_uart.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_uart.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_uart.h ****  *
+  22:../drivers/fsl_uart.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_uart.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_uart.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_uart.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_uart.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_uart.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_uart.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_uart.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_uart.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_uart.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_uart.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_uart.h ****  */
+  34:../drivers/fsl_uart.h **** #ifndef _FSL_UART_H_
+  35:../drivers/fsl_uart.h **** #define _FSL_UART_H_
+  36:../drivers/fsl_uart.h **** 
+  37:../drivers/fsl_uart.h **** #include "fsl_common.h"
+  38:../drivers/fsl_uart.h **** 
+  39:../drivers/fsl_uart.h **** /*!
+  40:../drivers/fsl_uart.h ****  * @addtogroup uart_driver
+  41:../drivers/fsl_uart.h ****  * @{
+  42:../drivers/fsl_uart.h ****  */
+  43:../drivers/fsl_uart.h **** 
+  44:../drivers/fsl_uart.h **** /*******************************************************************************
+  45:../drivers/fsl_uart.h ****  * Definitions
+  46:../drivers/fsl_uart.h ****  ******************************************************************************/
+  47:../drivers/fsl_uart.h **** 
+  48:../drivers/fsl_uart.h **** /*! @name Driver version */
+  49:../drivers/fsl_uart.h **** /*@{*/
+  50:../drivers/fsl_uart.h **** /*! @brief UART driver version 2.1.5. */
+  51:../drivers/fsl_uart.h **** #define FSL_UART_DRIVER_VERSION (MAKE_VERSION(2, 1, 5))
+  52:../drivers/fsl_uart.h **** /*@}*/
+  53:../drivers/fsl_uart.h **** 
+  54:../drivers/fsl_uart.h **** /*! @brief Error codes for the UART driver. */
+  55:../drivers/fsl_uart.h **** enum _uart_status
+  56:../drivers/fsl_uart.h **** {
+  57:../drivers/fsl_uart.h ****     kStatus_UART_TxBusy = MAKE_STATUS(kStatusGroup_UART, 0),              /*!< Transmitter is busy.
+  58:../drivers/fsl_uart.h ****     kStatus_UART_RxBusy = MAKE_STATUS(kStatusGroup_UART, 1),              /*!< Receiver is busy. */
+  59:../drivers/fsl_uart.h ****     kStatus_UART_TxIdle = MAKE_STATUS(kStatusGroup_UART, 2),              /*!< UART transmitter is 
+  60:../drivers/fsl_uart.h ****     kStatus_UART_RxIdle = MAKE_STATUS(kStatusGroup_UART, 3),              /*!< UART receiver is idl
+  61:../drivers/fsl_uart.h ****     kStatus_UART_TxWatermarkTooLarge = MAKE_STATUS(kStatusGroup_UART, 4), /*!< TX FIFO watermark to
+  62:../drivers/fsl_uart.h ****     kStatus_UART_RxWatermarkTooLarge = MAKE_STATUS(kStatusGroup_UART, 5), /*!< RX FIFO watermark to
+  63:../drivers/fsl_uart.h ****     kStatus_UART_FlagCannotClearManually =
+  64:../drivers/fsl_uart.h ****         MAKE_STATUS(kStatusGroup_UART, 6),                                /*!< UART flag can't be m
+  65:../drivers/fsl_uart.h ****     kStatus_UART_Error = MAKE_STATUS(kStatusGroup_UART, 7),               /*!< Error happens on UAR
+  66:../drivers/fsl_uart.h ****     kStatus_UART_RxRingBufferOverrun = MAKE_STATUS(kStatusGroup_UART, 8), /*!< UART RX software rin
+  67:../drivers/fsl_uart.h ****     kStatus_UART_RxHardwareOverrun = MAKE_STATUS(kStatusGroup_UART, 9),   /*!< UART RX receiver ove
+  68:../drivers/fsl_uart.h ****     kStatus_UART_NoiseError = MAKE_STATUS(kStatusGroup_UART, 10),         /*!< UART noise error. */
+  69:../drivers/fsl_uart.h ****     kStatus_UART_FramingError = MAKE_STATUS(kStatusGroup_UART, 11),       /*!< UART framing error. 
+  70:../drivers/fsl_uart.h ****     kStatus_UART_ParityError = MAKE_STATUS(kStatusGroup_UART, 12),        /*!< UART parity error. *
+  71:../drivers/fsl_uart.h ****     kStatus_UART_BaudrateNotSupport =
+  72:../drivers/fsl_uart.h ****         MAKE_STATUS(kStatusGroup_UART, 13), /*!< Baudrate is not support in current clock source */
+  73:../drivers/fsl_uart.h ****     kStatus_UART_IdleLineDetected = MAKE_STATUS(kStatusGroup_UART, 14), /*!< UART IDLE line detecte
+  74:../drivers/fsl_uart.h **** };
+  75:../drivers/fsl_uart.h **** 
+  76:../drivers/fsl_uart.h **** /*! @brief UART parity mode. */
+  77:../drivers/fsl_uart.h **** typedef enum _uart_parity_mode
+  78:../drivers/fsl_uart.h **** {
+  79:../drivers/fsl_uart.h ****     kUART_ParityDisabled = 0x0U, /*!< Parity disabled */
+  80:../drivers/fsl_uart.h ****     kUART_ParityEven = 0x2U,     /*!< Parity enabled, type even, bit setting: PE|PT = 10 */
+  81:../drivers/fsl_uart.h ****     kUART_ParityOdd = 0x3U,      /*!< Parity enabled, type odd,  bit setting: PE|PT = 11 */
+  82:../drivers/fsl_uart.h **** } uart_parity_mode_t;
+  83:../drivers/fsl_uart.h **** 
+  84:../drivers/fsl_uart.h **** /*! @brief UART stop bit count. */
+  85:../drivers/fsl_uart.h **** typedef enum _uart_stop_bit_count
+  86:../drivers/fsl_uart.h **** {
+  87:../drivers/fsl_uart.h ****     kUART_OneStopBit = 0U, /*!< One stop bit */
+  88:../drivers/fsl_uart.h ****     kUART_TwoStopBit = 1U, /*!< Two stop bits */
+  89:../drivers/fsl_uart.h **** } uart_stop_bit_count_t;
+  90:../drivers/fsl_uart.h **** 
+  91:../drivers/fsl_uart.h **** /*! @brief UART idle type select. */
+  92:../drivers/fsl_uart.h **** typedef enum _uart_idle_type_select
+  93:../drivers/fsl_uart.h **** {
+  94:../drivers/fsl_uart.h ****     kUART_IdleTypeStartBit = 0U, /*!< Start counting after a valid start bit. */
+  95:../drivers/fsl_uart.h ****     kUART_IdleTypeStopBit = 1U,  /*!< Start conuting after a stop bit. */
+  96:../drivers/fsl_uart.h **** } uart_idle_type_select_t;
+  97:../drivers/fsl_uart.h **** 
+  98:../drivers/fsl_uart.h **** /*!
+  99:../drivers/fsl_uart.h ****  * @brief UART interrupt configuration structure, default settings all disabled.
+ 100:../drivers/fsl_uart.h ****  *
+ 101:../drivers/fsl_uart.h ****  * This structure contains the settings for all of the UART interrupt configurations.
+ 102:../drivers/fsl_uart.h ****  */
+ 103:../drivers/fsl_uart.h **** enum _uart_interrupt_enable
+ 104:../drivers/fsl_uart.h **** {
+ 105:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT) && FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT
+ 106:../drivers/fsl_uart.h ****     kUART_LinBreakInterruptEnable = (UART_BDH_LBKDIE_MASK), /*!< LIN break detect interrupt. */
+ 107:../drivers/fsl_uart.h **** #endif
+ 108:../drivers/fsl_uart.h ****     kUART_RxActiveEdgeInterruptEnable = (UART_BDH_RXEDGIE_MASK),   /*!< RX active edge interrupt. *
+ 109:../drivers/fsl_uart.h ****     kUART_TxDataRegEmptyInterruptEnable = (UART_C2_TIE_MASK << 8), /*!< Transmit data register empt
+ 110:../drivers/fsl_uart.h ****     kUART_TransmissionCompleteInterruptEnable = (UART_C2_TCIE_MASK << 8), /*!< Transmission complet
+ 111:../drivers/fsl_uart.h ****     kUART_RxDataRegFullInterruptEnable = (UART_C2_RIE_MASK << 8),         /*!< Receiver data regist
+ 112:../drivers/fsl_uart.h ****     kUART_IdleLineInterruptEnable = (UART_C2_ILIE_MASK << 8),             /*!< Idle line interrupt.
+ 113:../drivers/fsl_uart.h ****     kUART_RxOverrunInterruptEnable = (UART_C3_ORIE_MASK << 16),           /*!< Receiver overrun int
+ 114:../drivers/fsl_uart.h ****     kUART_NoiseErrorInterruptEnable = (UART_C3_NEIE_MASK << 16),          /*!< Noise error flag int
+ 115:../drivers/fsl_uart.h ****     kUART_FramingErrorInterruptEnable = (UART_C3_FEIE_MASK << 16),        /*!< Framing error flag i
+ 116:../drivers/fsl_uart.h ****     kUART_ParityErrorInterruptEnable = (UART_C3_PEIE_MASK << 16),         /*!< Parity error flag in
+ 117:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_FIFO) && FSL_FEATURE_UART_HAS_FIFO
+ 118:../drivers/fsl_uart.h ****     kUART_RxFifoOverflowInterruptEnable = (UART_CFIFO_RXOFE_MASK << 24),  /*!< RX FIFO overflow int
+ 119:../drivers/fsl_uart.h ****     kUART_TxFifoOverflowInterruptEnable = (UART_CFIFO_TXOFE_MASK << 24),  /*!< TX FIFO overflow int
+ 120:../drivers/fsl_uart.h ****     kUART_RxFifoUnderflowInterruptEnable = (UART_CFIFO_RXUFE_MASK << 24), /*!< RX FIFO underflow in
+ 121:../drivers/fsl_uart.h **** #endif
+ 122:../drivers/fsl_uart.h ****     kUART_AllInterruptsEnable =
+ 123:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT) && FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT
+ 124:../drivers/fsl_uart.h ****         kUART_LinBreakInterruptEnable |
+ 125:../drivers/fsl_uart.h **** #endif
+ 126:../drivers/fsl_uart.h ****         kUART_RxActiveEdgeInterruptEnable | kUART_TxDataRegEmptyInterruptEnable |
+ 127:../drivers/fsl_uart.h ****         kUART_TransmissionCompleteInterruptEnable | kUART_RxDataRegFullInterruptEnable | kUART_Idle
+ 128:../drivers/fsl_uart.h ****         kUART_RxOverrunInterruptEnable | kUART_NoiseErrorInterruptEnable | kUART_FramingErrorInterr
+ 129:../drivers/fsl_uart.h ****         kUART_ParityErrorInterruptEnable
+ 130:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_FIFO) && FSL_FEATURE_UART_HAS_FIFO
+ 131:../drivers/fsl_uart.h ****         |
+ 132:../drivers/fsl_uart.h ****         kUART_RxFifoOverflowInterruptEnable | kUART_TxFifoOverflowInterruptEnable | kUART_RxFifoUnd
+ 133:../drivers/fsl_uart.h **** #endif
+ 134:../drivers/fsl_uart.h ****     ,
+ 135:../drivers/fsl_uart.h **** };
+ 136:../drivers/fsl_uart.h **** 
+ 137:../drivers/fsl_uart.h **** /*!
+ 138:../drivers/fsl_uart.h ****  * @brief UART status flags.
+ 139:../drivers/fsl_uart.h ****  *
+ 140:../drivers/fsl_uart.h ****  * This provides constants for the UART status flags for use in the UART functions.
+ 141:../drivers/fsl_uart.h ****  */
+ 142:../drivers/fsl_uart.h **** enum _uart_flags
+ 143:../drivers/fsl_uart.h **** {
+ 144:../drivers/fsl_uart.h ****     kUART_TxDataRegEmptyFlag = (UART_S1_TDRE_MASK),     /*!< TX data register empty flag. */
+ 145:../drivers/fsl_uart.h ****     kUART_TransmissionCompleteFlag = (UART_S1_TC_MASK), /*!< Transmission complete flag. */
+ 146:../drivers/fsl_uart.h ****     kUART_RxDataRegFullFlag = (UART_S1_RDRF_MASK),      /*!< RX data register full flag. */
+ 147:../drivers/fsl_uart.h ****     kUART_IdleLineFlag = (UART_S1_IDLE_MASK),           /*!< Idle line detect flag. */
+ 148:../drivers/fsl_uart.h ****     kUART_RxOverrunFlag = (UART_S1_OR_MASK),            /*!< RX overrun flag. */
+ 149:../drivers/fsl_uart.h ****     kUART_NoiseErrorFlag = (UART_S1_NF_MASK),           /*!< RX takes 3 samples of each received bi
+ 150:../drivers/fsl_uart.h ****                                                              If any of these samples differ, noise 
+ 151:../drivers/fsl_uart.h ****     kUART_FramingErrorFlag = (UART_S1_FE_MASK),         /*!< Frame error flag, sets if logic 0 was 
+ 152:../drivers/fsl_uart.h ****                                                              where stop bit expected */
+ 153:../drivers/fsl_uart.h ****     kUART_ParityErrorFlag = (UART_S1_PF_MASK),          /*!< If parity enabled, sets upon parity er
+ 154:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT) && FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT
+ 155:../drivers/fsl_uart.h ****     kUART_LinBreakFlag =
+ 156:../drivers/fsl_uart.h ****         (UART_S2_LBKDIF_MASK
+ 157:../drivers/fsl_uart.h ****          << 8), /*!< LIN break detect interrupt flag, sets when LIN break char detected and LIN cir
+ 158:../drivers/fsl_uart.h **** #endif
+ 159:../drivers/fsl_uart.h ****     kUART_RxActiveEdgeFlag =
+ 160:../drivers/fsl_uart.h ****         (UART_S2_RXEDGIF_MASK << 8), /*!< RX pin active edge interrupt flag,sets when active edge d
+ 161:../drivers/fsl_uart.h ****     kUART_RxActiveFlag =
+ 162:../drivers/fsl_uart.h ****         (UART_S2_RAF_MASK << 8), /*!< Receiver Active Flag (RAF), sets at beginning of valid start 
+ 163:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_EXTENDED_DATA_REGISTER_FLAGS) && FSL_FEATURE_UART_HAS_EXTENDED_DAT
+ 164:../drivers/fsl_uart.h ****     kUART_NoiseErrorInRxDataRegFlag = (UART_ED_NOISY_MASK << 16),    /*!< Noisy bit, sets if noise 
+ 165:../drivers/fsl_uart.h ****     kUART_ParityErrorInRxDataRegFlag = (UART_ED_PARITYE_MASK << 16), /*!< Paritye bit, sets if pari
+ 166:../drivers/fsl_uart.h **** #endif
+ 167:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_FIFO) && FSL_FEATURE_UART_HAS_FIFO
+ 168:../drivers/fsl_uart.h ****     kUART_TxFifoEmptyFlag = (UART_SFIFO_TXEMPT_MASK << 24),   /*!< TXEMPT bit, sets if TX buffer is
+ 169:../drivers/fsl_uart.h ****     kUART_RxFifoEmptyFlag = (UART_SFIFO_RXEMPT_MASK << 24),   /*!< RXEMPT bit, sets if RX buffer is
+ 170:../drivers/fsl_uart.h ****     kUART_TxFifoOverflowFlag = (UART_SFIFO_TXOF_MASK << 24),  /*!< TXOF bit, sets if TX buffer over
+ 171:../drivers/fsl_uart.h ****     kUART_RxFifoOverflowFlag = (UART_SFIFO_RXOF_MASK << 24),  /*!< RXOF bit, sets if receive buffer
+ 172:../drivers/fsl_uart.h ****     kUART_RxFifoUnderflowFlag = (UART_SFIFO_RXUF_MASK << 24), /*!< RXUF bit, sets if receive buffer
+ 173:../drivers/fsl_uart.h **** #endif
+ 174:../drivers/fsl_uart.h **** };
+ 175:../drivers/fsl_uart.h **** 
+ 176:../drivers/fsl_uart.h **** /*! @brief UART configuration structure. */
+ 177:../drivers/fsl_uart.h **** typedef struct _uart_config
+ 178:../drivers/fsl_uart.h **** {
+ 179:../drivers/fsl_uart.h ****     uint32_t baudRate_Bps;         /*!< UART baud rate  */
+ 180:../drivers/fsl_uart.h ****     uart_parity_mode_t parityMode; /*!< Parity mode, disabled (default), even, odd */
+ 181:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_STOP_BIT_CONFIG_SUPPORT) && FSL_FEATURE_UART_HAS_STOP_BIT_CONFIG_S
+ 182:../drivers/fsl_uart.h ****     uart_stop_bit_count_t stopBitCount; /*!< Number of stop bits, 1 stop bit (default) or 2 stop bi
+ 183:../drivers/fsl_uart.h **** #endif
+ 184:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_FIFO) && FSL_FEATURE_UART_HAS_FIFO
+ 185:../drivers/fsl_uart.h ****     uint8_t txFifoWatermark; /*!< TX FIFO watermark */
+ 186:../drivers/fsl_uart.h ****     uint8_t rxFifoWatermark; /*!< RX FIFO watermark */
+ 187:../drivers/fsl_uart.h **** #endif
+ 188:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_MODEM_SUPPORT) && FSL_FEATURE_UART_HAS_MODEM_SUPPORT
+ 189:../drivers/fsl_uart.h ****     bool enableRxRTS; /*!< RX RTS enable */
+ 190:../drivers/fsl_uart.h ****     bool enableTxCTS; /*!< TX CTS enable */
+ 191:../drivers/fsl_uart.h **** #endif
+ 192:../drivers/fsl_uart.h ****     uart_idle_type_select_t idleType; /*!< IDLE type select. */
+ 193:../drivers/fsl_uart.h ****     bool enableTx;                    /*!< Enable TX */
+ 194:../drivers/fsl_uart.h ****     bool enableRx;                    /*!< Enable RX */
+ 195:../drivers/fsl_uart.h **** } uart_config_t;
+ 196:../drivers/fsl_uart.h **** 
+ 197:../drivers/fsl_uart.h **** /*! @brief UART transfer structure. */
+ 198:../drivers/fsl_uart.h **** typedef struct _uart_transfer
+ 199:../drivers/fsl_uart.h **** {
+ 200:../drivers/fsl_uart.h ****     uint8_t *data;   /*!< The buffer of data to be transfer.*/
+ 201:../drivers/fsl_uart.h ****     size_t dataSize; /*!< The byte count to be transfer. */
+ 202:../drivers/fsl_uart.h **** } uart_transfer_t;
+ 203:../drivers/fsl_uart.h **** 
+ 204:../drivers/fsl_uart.h **** /* Forward declaration of the handle typedef. */
+ 205:../drivers/fsl_uart.h **** typedef struct _uart_handle uart_handle_t;
+ 206:../drivers/fsl_uart.h **** 
+ 207:../drivers/fsl_uart.h **** /*! @brief UART transfer callback function. */
+ 208:../drivers/fsl_uart.h **** typedef void (*uart_transfer_callback_t)(UART_Type *base, uart_handle_t *handle, status_t status, v
+ 209:../drivers/fsl_uart.h **** 
+ 210:../drivers/fsl_uart.h **** /*! @brief UART handle structure. */
+ 211:../drivers/fsl_uart.h **** struct _uart_handle
+ 212:../drivers/fsl_uart.h **** {
+ 213:../drivers/fsl_uart.h ****     uint8_t *volatile txData;   /*!< Address of remaining data to send. */
+ 214:../drivers/fsl_uart.h ****     volatile size_t txDataSize; /*!< Size of the remaining data to send. */
+ 215:../drivers/fsl_uart.h ****     size_t txDataSizeAll;       /*!< Size of the data to send out. */
+ 216:../drivers/fsl_uart.h ****     uint8_t *volatile rxData;   /*!< Address of remaining data to receive. */
+ 217:../drivers/fsl_uart.h ****     volatile size_t rxDataSize; /*!< Size of the remaining data to receive. */
+ 218:../drivers/fsl_uart.h ****     size_t rxDataSizeAll;       /*!< Size of the data to receive. */
+ 219:../drivers/fsl_uart.h **** 
+ 220:../drivers/fsl_uart.h ****     uint8_t *rxRingBuffer;              /*!< Start address of the receiver ring buffer. */
+ 221:../drivers/fsl_uart.h ****     size_t rxRingBufferSize;            /*!< Size of the ring buffer. */
+ 222:../drivers/fsl_uart.h ****     volatile uint16_t rxRingBufferHead; /*!< Index for the driver to store received data into ring 
+ 223:../drivers/fsl_uart.h ****     volatile uint16_t rxRingBufferTail; /*!< Index for the user to get data from the ring buffer. *
+ 224:../drivers/fsl_uart.h **** 
+ 225:../drivers/fsl_uart.h ****     uart_transfer_callback_t callback; /*!< Callback function. */
+ 226:../drivers/fsl_uart.h ****     void *userData;                    /*!< UART callback function parameter.*/
+ 227:../drivers/fsl_uart.h **** 
+ 228:../drivers/fsl_uart.h ****     volatile uint8_t txState; /*!< TX transfer state. */
+ 229:../drivers/fsl_uart.h ****     volatile uint8_t rxState; /*!< RX transfer state */
+ 230:../drivers/fsl_uart.h **** };
+ 231:../drivers/fsl_uart.h **** 
+ 232:../drivers/fsl_uart.h **** /*******************************************************************************
+ 233:../drivers/fsl_uart.h ****  * API
+ 234:../drivers/fsl_uart.h ****  ******************************************************************************/
+ 235:../drivers/fsl_uart.h **** 
+ 236:../drivers/fsl_uart.h **** #if defined(__cplusplus)
+ 237:../drivers/fsl_uart.h **** extern "C" {
+ 238:../drivers/fsl_uart.h **** #endif /* _cplusplus */
+ 239:../drivers/fsl_uart.h **** 
+ 240:../drivers/fsl_uart.h **** /*!
+ 241:../drivers/fsl_uart.h ****  * @name Initialization and deinitialization
+ 242:../drivers/fsl_uart.h ****  * @{
+ 243:../drivers/fsl_uart.h ****  */
+ 244:../drivers/fsl_uart.h **** 
+ 245:../drivers/fsl_uart.h **** /*!
+ 246:../drivers/fsl_uart.h ****  * @brief Initializes a UART instance with a user configuration structure and peripheral clock.
+ 247:../drivers/fsl_uart.h ****  *
+ 248:../drivers/fsl_uart.h ****  * This function configures the UART module with the user-defined settings. The user can configure 
+ 249:../drivers/fsl_uart.h ****  * structure and also get the default configuration by using the UART_GetDefaultConfig() function.
+ 250:../drivers/fsl_uart.h ****  * The example below shows how to use this API to configure UART.
+ 251:../drivers/fsl_uart.h ****  * @code
+ 252:../drivers/fsl_uart.h ****  *  uart_config_t uartConfig;
+ 253:../drivers/fsl_uart.h ****  *  uartConfig.baudRate_Bps = 115200U;
+ 254:../drivers/fsl_uart.h ****  *  uartConfig.parityMode = kUART_ParityDisabled;
+ 255:../drivers/fsl_uart.h ****  *  uartConfig.stopBitCount = kUART_OneStopBit;
+ 256:../drivers/fsl_uart.h ****  *  uartConfig.txFifoWatermark = 0;
+ 257:../drivers/fsl_uart.h ****  *  uartConfig.rxFifoWatermark = 1;
+ 258:../drivers/fsl_uart.h ****  *  UART_Init(UART1, &uartConfig, 20000000U);
+ 259:../drivers/fsl_uart.h ****  * @endcode
+ 260:../drivers/fsl_uart.h ****  *
+ 261:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 262:../drivers/fsl_uart.h ****  * @param config Pointer to the user-defined configuration structure.
+ 263:../drivers/fsl_uart.h ****  * @param srcClock_Hz UART clock source frequency in HZ.
+ 264:../drivers/fsl_uart.h ****  * @retval kStatus_UART_BaudrateNotSupport Baudrate is not support in current clock source.
+ 265:../drivers/fsl_uart.h ****  * @retval kStatus_Success Status UART initialize succeed
+ 266:../drivers/fsl_uart.h ****  */
+ 267:../drivers/fsl_uart.h **** status_t UART_Init(UART_Type *base, const uart_config_t *config, uint32_t srcClock_Hz);
+ 268:../drivers/fsl_uart.h **** 
+ 269:../drivers/fsl_uart.h **** /*!
+ 270:../drivers/fsl_uart.h ****  * @brief Deinitializes a UART instance.
+ 271:../drivers/fsl_uart.h ****  *
+ 272:../drivers/fsl_uart.h ****  * This function waits for TX complete, disables TX and RX, and disables the UART clock.
+ 273:../drivers/fsl_uart.h ****  *
+ 274:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 275:../drivers/fsl_uart.h ****  */
+ 276:../drivers/fsl_uart.h **** void UART_Deinit(UART_Type *base);
+ 277:../drivers/fsl_uart.h **** 
+ 278:../drivers/fsl_uart.h **** /*!
+ 279:../drivers/fsl_uart.h ****  * @brief Gets the default configuration structure.
+ 280:../drivers/fsl_uart.h ****  *
+ 281:../drivers/fsl_uart.h ****  * This function initializes the UART configuration structure to a default value. The default
+ 282:../drivers/fsl_uart.h ****  * values are as follows.
+ 283:../drivers/fsl_uart.h ****  *   uartConfig->baudRate_Bps = 115200U;
+ 284:../drivers/fsl_uart.h ****  *   uartConfig->bitCountPerChar = kUART_8BitsPerChar;
+ 285:../drivers/fsl_uart.h ****  *   uartConfig->parityMode = kUART_ParityDisabled;
+ 286:../drivers/fsl_uart.h ****  *   uartConfig->stopBitCount = kUART_OneStopBit;
+ 287:../drivers/fsl_uart.h ****  *   uartConfig->txFifoWatermark = 0;
+ 288:../drivers/fsl_uart.h ****  *   uartConfig->rxFifoWatermark = 1;
+ 289:../drivers/fsl_uart.h ****  *   uartConfig->idleType = kUART_IdleTypeStartBit;
+ 290:../drivers/fsl_uart.h ****  *   uartConfig->enableTx = false;
+ 291:../drivers/fsl_uart.h ****  *   uartConfig->enableRx = false;
+ 292:../drivers/fsl_uart.h ****  *
+ 293:../drivers/fsl_uart.h ****  * @param config Pointer to configuration structure.
+ 294:../drivers/fsl_uart.h ****  */
+ 295:../drivers/fsl_uart.h **** void UART_GetDefaultConfig(uart_config_t *config);
+ 296:../drivers/fsl_uart.h **** 
+ 297:../drivers/fsl_uart.h **** /*!
+ 298:../drivers/fsl_uart.h ****  * @brief Sets the UART instance baud rate.
+ 299:../drivers/fsl_uart.h ****  *
+ 300:../drivers/fsl_uart.h ****  * This function configures the UART module baud rate. This function is used to update
+ 301:../drivers/fsl_uart.h ****  * the UART module baud rate after the UART module is initialized by the UART_Init.
+ 302:../drivers/fsl_uart.h ****  * @code
+ 303:../drivers/fsl_uart.h ****  *  UART_SetBaudRate(UART1, 115200U, 20000000U);
+ 304:../drivers/fsl_uart.h ****  * @endcode
+ 305:../drivers/fsl_uart.h ****  *
+ 306:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 307:../drivers/fsl_uart.h ****  * @param baudRate_Bps UART baudrate to be set.
+ 308:../drivers/fsl_uart.h ****  * @param srcClock_Hz UART clock source freqency in Hz.
+ 309:../drivers/fsl_uart.h ****  * @retval kStatus_UART_BaudrateNotSupport Baudrate is not support in the current clock source.
+ 310:../drivers/fsl_uart.h ****  * @retval kStatus_Success Set baudrate succeeded.
+ 311:../drivers/fsl_uart.h ****  */
+ 312:../drivers/fsl_uart.h **** status_t UART_SetBaudRate(UART_Type *base, uint32_t baudRate_Bps, uint32_t srcClock_Hz);
+ 313:../drivers/fsl_uart.h **** 
+ 314:../drivers/fsl_uart.h **** /* @} */
+ 315:../drivers/fsl_uart.h **** 
+ 316:../drivers/fsl_uart.h **** /*!
+ 317:../drivers/fsl_uart.h ****  * @name Status
+ 318:../drivers/fsl_uart.h ****  * @{
+ 319:../drivers/fsl_uart.h ****  */
+ 320:../drivers/fsl_uart.h **** 
+ 321:../drivers/fsl_uart.h **** /*!
+ 322:../drivers/fsl_uart.h ****  * @brief Gets UART status flags.
+ 323:../drivers/fsl_uart.h ****  *
+ 324:../drivers/fsl_uart.h ****  * This function gets all UART status flags. The flags are returned as the logical
+ 325:../drivers/fsl_uart.h ****  * OR value of the enumerators @ref _uart_flags. To check a specific status,
+ 326:../drivers/fsl_uart.h ****  * compare the return value with enumerators in @ref _uart_flags.
+ 327:../drivers/fsl_uart.h ****  * For example, to check whether the TX is empty, do the following.
+ 328:../drivers/fsl_uart.h ****  * @code
+ 329:../drivers/fsl_uart.h ****  *     if (kUART_TxDataRegEmptyFlag & UART_GetStatusFlags(UART1))
+ 330:../drivers/fsl_uart.h ****  *     {
+ 331:../drivers/fsl_uart.h ****  *         ...
+ 332:../drivers/fsl_uart.h ****  *     }
+ 333:../drivers/fsl_uart.h ****  * @endcode
+ 334:../drivers/fsl_uart.h ****  *
+ 335:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 336:../drivers/fsl_uart.h ****  * @return UART status flags which are ORed by the enumerators in the _uart_flags.
+ 337:../drivers/fsl_uart.h ****  */
+ 338:../drivers/fsl_uart.h **** uint32_t UART_GetStatusFlags(UART_Type *base);
+ 339:../drivers/fsl_uart.h **** 
+ 340:../drivers/fsl_uart.h **** /*!
+ 341:../drivers/fsl_uart.h ****  * @brief Clears status flags with the provided mask.
+ 342:../drivers/fsl_uart.h ****  *
+ 343:../drivers/fsl_uart.h ****  * This function clears UART status flags with a provided mask. An automatically cleared flag
+ 344:../drivers/fsl_uart.h ****  * can't be cleared by this function.
+ 345:../drivers/fsl_uart.h ****  * These flags can only be cleared or set by hardware.
+ 346:../drivers/fsl_uart.h ****  *    kUART_TxDataRegEmptyFlag, kUART_TransmissionCompleteFlag, kUART_RxDataRegFullFlag,
+ 347:../drivers/fsl_uart.h ****  *    kUART_RxActiveFlag, kUART_NoiseErrorInRxDataRegFlag, kUART_ParityErrorInRxDataRegFlag,
+ 348:../drivers/fsl_uart.h ****  *    kUART_TxFifoEmptyFlag,kUART_RxFifoEmptyFlag
+ 349:../drivers/fsl_uart.h ****  * Note that this API should be called when the Tx/Rx is idle. Otherwise it has no effect.
+ 350:../drivers/fsl_uart.h ****  *
+ 351:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 352:../drivers/fsl_uart.h ****  * @param mask The status flags to be cleared; it is logical OR value of @ref _uart_flags.
+ 353:../drivers/fsl_uart.h ****  * @retval kStatus_UART_FlagCannotClearManually The flag can't be cleared by this function but
+ 354:../drivers/fsl_uart.h ****  *         it is cleared automatically by hardware.
+ 355:../drivers/fsl_uart.h ****  * @retval kStatus_Success Status in the mask is cleared.
+ 356:../drivers/fsl_uart.h ****  */
+ 357:../drivers/fsl_uart.h **** status_t UART_ClearStatusFlags(UART_Type *base, uint32_t mask);
+ 358:../drivers/fsl_uart.h **** 
+ 359:../drivers/fsl_uart.h **** /* @} */
+ 360:../drivers/fsl_uart.h **** 
+ 361:../drivers/fsl_uart.h **** /*!
+ 362:../drivers/fsl_uart.h ****  * @name Interrupts
+ 363:../drivers/fsl_uart.h ****  * @{
+ 364:../drivers/fsl_uart.h ****  */
+ 365:../drivers/fsl_uart.h **** 
+ 366:../drivers/fsl_uart.h **** /*!
+ 367:../drivers/fsl_uart.h ****  * @brief Enables UART interrupts according to the provided mask.
+ 368:../drivers/fsl_uart.h ****  *
+ 369:../drivers/fsl_uart.h ****  * This function enables the UART interrupts according to the provided mask. The mask
+ 370:../drivers/fsl_uart.h ****  * is a logical OR of enumeration members. See @ref _uart_interrupt_enable.
+ 371:../drivers/fsl_uart.h ****  * For example, to enable TX empty interrupt and RX full interrupt, do the following.
+ 372:../drivers/fsl_uart.h ****  * @code
+ 373:../drivers/fsl_uart.h ****  *     UART_EnableInterrupts(UART1,kUART_TxDataRegEmptyInterruptEnable | kUART_RxDataRegFullInterru
+ 374:../drivers/fsl_uart.h ****  * @endcode
+ 375:../drivers/fsl_uart.h ****  *
+ 376:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 377:../drivers/fsl_uart.h ****  * @param mask The interrupts to enable. Logical OR of @ref _uart_interrupt_enable.
+ 378:../drivers/fsl_uart.h ****  */
+ 379:../drivers/fsl_uart.h **** void UART_EnableInterrupts(UART_Type *base, uint32_t mask);
+ 380:../drivers/fsl_uart.h **** 
+ 381:../drivers/fsl_uart.h **** /*!
+ 382:../drivers/fsl_uart.h ****  * @brief Disables the UART interrupts according to the provided mask.
+ 383:../drivers/fsl_uart.h ****  *
+ 384:../drivers/fsl_uart.h ****  * This function disables the UART interrupts according to the provided mask. The mask
+ 385:../drivers/fsl_uart.h ****  * is a logical OR of enumeration members. See @ref _uart_interrupt_enable.
+ 386:../drivers/fsl_uart.h ****  * For example, to disable TX empty interrupt and RX full interrupt do the following.
+ 387:../drivers/fsl_uart.h ****  * @code
+ 388:../drivers/fsl_uart.h ****  *     UART_DisableInterrupts(UART1,kUART_TxDataRegEmptyInterruptEnable | kUART_RxDataRegFullInterr
+ 389:../drivers/fsl_uart.h ****  * @endcode
+ 390:../drivers/fsl_uart.h ****  *
+ 391:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 392:../drivers/fsl_uart.h ****  * @param mask The interrupts to disable. Logical OR of @ref _uart_interrupt_enable.
+ 393:../drivers/fsl_uart.h ****  */
+ 394:../drivers/fsl_uart.h **** void UART_DisableInterrupts(UART_Type *base, uint32_t mask);
+ 395:../drivers/fsl_uart.h **** 
+ 396:../drivers/fsl_uart.h **** /*!
+ 397:../drivers/fsl_uart.h ****  * @brief Gets the enabled UART interrupts.
+ 398:../drivers/fsl_uart.h ****  *
+ 399:../drivers/fsl_uart.h ****  * This function gets the enabled UART interrupts. The enabled interrupts are returned
+ 400:../drivers/fsl_uart.h ****  * as the logical OR value of the enumerators @ref _uart_interrupt_enable. To check
+ 401:../drivers/fsl_uart.h ****  * a specific interrupts enable status, compare the return value with enumerators
+ 402:../drivers/fsl_uart.h ****  * in @ref _uart_interrupt_enable.
+ 403:../drivers/fsl_uart.h ****  * For example, to check whether TX empty interrupt is enabled, do the following.
+ 404:../drivers/fsl_uart.h ****  * @code
+ 405:../drivers/fsl_uart.h ****  *     uint32_t enabledInterrupts = UART_GetEnabledInterrupts(UART1);
+ 406:../drivers/fsl_uart.h ****  *
+ 407:../drivers/fsl_uart.h ****  *     if (kUART_TxDataRegEmptyInterruptEnable & enabledInterrupts)
+ 408:../drivers/fsl_uart.h ****  *     {
+ 409:../drivers/fsl_uart.h ****  *         ...
+ 410:../drivers/fsl_uart.h ****  *     }
+ 411:../drivers/fsl_uart.h ****  * @endcode
+ 412:../drivers/fsl_uart.h ****  *
+ 413:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 414:../drivers/fsl_uart.h ****  * @return UART interrupt flags which are logical OR of the enumerators in @ref _uart_interrupt_ena
+ 415:../drivers/fsl_uart.h ****  */
+ 416:../drivers/fsl_uart.h **** uint32_t UART_GetEnabledInterrupts(UART_Type *base);
+ 417:../drivers/fsl_uart.h **** 
+ 418:../drivers/fsl_uart.h **** /* @} */
+ 419:../drivers/fsl_uart.h **** 
+ 420:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_DMA_SELECT) && FSL_FEATURE_UART_HAS_DMA_SELECT
+ 421:../drivers/fsl_uart.h **** /*!
+ 422:../drivers/fsl_uart.h ****  * @name DMA Control
+ 423:../drivers/fsl_uart.h ****  * @{
+ 424:../drivers/fsl_uart.h ****  */
+ 425:../drivers/fsl_uart.h **** 
+ 426:../drivers/fsl_uart.h **** /*!
+ 427:../drivers/fsl_uart.h ****  * @brief Gets the UART data register address.
+ 428:../drivers/fsl_uart.h ****  *
+ 429:../drivers/fsl_uart.h ****  * This function returns the UART data register address, which is mainly used by DMA/eDMA.
+ 430:../drivers/fsl_uart.h ****  *
+ 431:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 432:../drivers/fsl_uart.h ****  * @return UART data register addresses which are used both by the transmitter and the receiver.
+ 433:../drivers/fsl_uart.h ****  */
+ 434:../drivers/fsl_uart.h **** static inline uint32_t UART_GetDataRegisterAddress(UART_Type *base)
+ 435:../drivers/fsl_uart.h **** {
+ 436:../drivers/fsl_uart.h ****     return (uint32_t) & (base->D);
+ 437:../drivers/fsl_uart.h **** }
+ 438:../drivers/fsl_uart.h **** 
+ 439:../drivers/fsl_uart.h **** /*!
+ 440:../drivers/fsl_uart.h ****  * @brief Enables or disables the UART transmitter DMA request.
+ 441:../drivers/fsl_uart.h ****  *
+ 442:../drivers/fsl_uart.h ****  * This function enables or disables the transmit data register empty flag, S1[TDRE], to generate t
+ 443:../drivers/fsl_uart.h ****  *
+ 444:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 445:../drivers/fsl_uart.h ****  * @param enable True to enable, false to disable.
+ 446:../drivers/fsl_uart.h ****  */
+ 447:../drivers/fsl_uart.h **** static inline void UART_EnableTxDMA(UART_Type *base, bool enable)
+ 448:../drivers/fsl_uart.h **** {
+ 449:../drivers/fsl_uart.h ****     if (enable)
+ 450:../drivers/fsl_uart.h ****     {
+ 451:../drivers/fsl_uart.h **** #if (defined(FSL_FEATURE_UART_IS_SCI) && FSL_FEATURE_UART_IS_SCI)
+ 452:../drivers/fsl_uart.h ****         base->C4 |= UART_C4_TDMAS_MASK;
+ 453:../drivers/fsl_uart.h **** #else
+ 454:../drivers/fsl_uart.h ****         base->C5 |= UART_C5_TDMAS_MASK;
+ 206              		.loc 2 454 0
+ 207 003e EB7A     		ldrb	r3, [r5, #11]	@ zero_extendqisi2
+ 208 0040 43F08003 		orr	r3, r3, #128
+ 209 0044 EB72     		strb	r3, [r5, #11]
+ 455:../drivers/fsl_uart.h **** #endif
+ 456:../drivers/fsl_uart.h ****         base->C2 |= UART_C2_TIE_MASK;
+ 210              		.loc 2 456 0
+ 211 0046 EB78     		ldrb	r3, [r5, #3]	@ zero_extendqisi2
+ 212 0048 43F08003 		orr	r3, r3, #128
+ 213 004c EB70     		strb	r3, [r5, #3]
+ 214              	.LBE18:
+ 215              	.LBE17:
+ 216              	.LBE16:
+ 258:../drivers/fsl_uart_edma.c **** 
+ 259:../drivers/fsl_uart_edma.c ****         /* Enable UART TX EDMA. */
+ 260:../drivers/fsl_uart_edma.c ****         UART_EnableTxDMA(base, true);
+ 261:../drivers/fsl_uart_edma.c **** 
+ 262:../drivers/fsl_uart_edma.c ****         status = kStatus_Success;
+ 217              		.loc 1 262 0
+ 218 004e 0020     		movs	r0, #0
+ 219              	.LVL16:
+ 220              	.L8:
+ 263:../drivers/fsl_uart_edma.c ****     }
+ 264:../drivers/fsl_uart_edma.c **** 
+ 265:../drivers/fsl_uart_edma.c ****     return status;
+ 266:../drivers/fsl_uart_edma.c **** }
+ 221              		.loc 1 266 0
+ 222 0050 0AB0     		add	sp, sp, #40
+ 223              		.cfi_remember_state
+ 224              		.cfi_def_cfa_offset 16
+ 225              		@ sp needed
+ 226 0052 70BD     		pop	{r4, r5, r6, pc}
+ 227              	.LVL17:
+ 228              	.L10:
+ 229              		.cfi_restore_state
+ 241:../drivers/fsl_uart_edma.c ****     }
+ 230              		.loc 1 241 0
+ 231 0054 4FF47A70 		mov	r0, #1000
+ 232              	.LVL18:
+ 265:../drivers/fsl_uart_edma.c **** }
+ 233              		.loc 1 265 0
+ 234 0058 FAE7     		b	.L8
+ 235              		.cfi_endproc
+ 236              	.LFE167:
+ 238              		.section	.text.UART_ReceiveEDMA,"ax",%progbits
+ 239              		.align	1
+ 240              		.global	UART_ReceiveEDMA
+ 241              		.syntax unified
+ 242              		.thumb
+ 243              		.thumb_func
+ 244              		.fpu fpv4-sp-d16
+ 246              	UART_ReceiveEDMA:
+ 247              	.LFB168:
+ 267:../drivers/fsl_uart_edma.c **** 
+ 268:../drivers/fsl_uart_edma.c **** status_t UART_ReceiveEDMA(UART_Type *base, uart_edma_handle_t *handle, uart_transfer_t *xfer)
+ 269:../drivers/fsl_uart_edma.c **** {
+ 248              		.loc 1 269 0
+ 249              		.cfi_startproc
+ 250              		@ args = 0, pretend = 0, frame = 24
+ 251              		@ frame_needed = 0, uses_anonymous_args = 0
+ 252              	.LVL19:
+ 253 0000 70B5     		push	{r4, r5, r6, lr}
+ 254              		.cfi_def_cfa_offset 16
+ 255              		.cfi_offset 4, -16
+ 256              		.cfi_offset 5, -12
+ 257              		.cfi_offset 6, -8
+ 258              		.cfi_offset 14, -4
+ 270:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 271:../drivers/fsl_uart_edma.c ****     assert(handle->rxEdmaHandle);
+ 272:../drivers/fsl_uart_edma.c ****     assert(xfer);
+ 273:../drivers/fsl_uart_edma.c ****     assert(xfer->data);
+ 274:../drivers/fsl_uart_edma.c ****     assert(xfer->dataSize);
+ 275:../drivers/fsl_uart_edma.c **** 
+ 276:../drivers/fsl_uart_edma.c ****     edma_transfer_config_t xferConfig;
+ 277:../drivers/fsl_uart_edma.c ****     status_t status;
+ 278:../drivers/fsl_uart_edma.c **** 
+ 279:../drivers/fsl_uart_edma.c ****     /* If previous RX not finished. */
+ 280:../drivers/fsl_uart_edma.c ****     if (kUART_RxBusy == handle->rxState)
+ 259              		.loc 1 280 0
+ 260 0002 8B7E     		ldrb	r3, [r1, #26]	@ zero_extendqisi2
+ 261 0004 032B     		cmp	r3, #3
+ 269:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 262              		.loc 1 269 0
+ 263 0006 8AB0     		sub	sp, sp, #40
+ 264              		.cfi_def_cfa_offset 56
+ 269:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 265              		.loc 1 269 0
+ 266 0008 0546     		mov	r5, r0
+ 267 000a 0C46     		mov	r4, r1
+ 268              		.loc 1 280 0
+ 269 000c 21D0     		beq	.L13
+ 281:../drivers/fsl_uart_edma.c ****     {
+ 282:../drivers/fsl_uart_edma.c ****         status = kStatus_UART_RxBusy;
+ 283:../drivers/fsl_uart_edma.c ****     }
+ 284:../drivers/fsl_uart_edma.c ****     else
+ 285:../drivers/fsl_uart_edma.c ****     {
+ 286:../drivers/fsl_uart_edma.c ****         handle->rxState = kUART_RxBusy;
+ 270              		.loc 1 286 0
+ 271 000e 0323     		movs	r3, #3
+ 272 0010 8B76     		strb	r3, [r1, #26]
+ 287:../drivers/fsl_uart_edma.c ****         handle->rxDataSizeAll = xfer->dataSize;
+ 273              		.loc 1 287 0
+ 274 0012 5368     		ldr	r3, [r2, #4]
+ 275 0014 8B60     		str	r3, [r1, #8]
+ 288:../drivers/fsl_uart_edma.c **** 
+ 289:../drivers/fsl_uart_edma.c ****         /* Prepare transfer. */
+ 290:../drivers/fsl_uart_edma.c ****         EDMA_PrepareTransfer(&xferConfig, (void *)UART_GetDataRegisterAddress(base), sizeof(uint8_t
+ 276              		.loc 1 290 0
+ 277 0016 0126     		movs	r6, #1
+ 278 0018 CDE90236 		strd	r3, r6, [sp, #8]
+ 279 001c CDE90066 		strd	r6, r6, [sp]
+ 280 0020 C11D     		adds	r1, r0, #7
+ 281              	.LVL20:
+ 282 0022 1368     		ldr	r3, [r2]
+ 283 0024 04A8     		add	r0, sp, #16
+ 284              	.LVL21:
+ 285 0026 3246     		mov	r2, r6
+ 286              	.LVL22:
+ 287 0028 FFF7FEFF 		bl	EDMA_PrepareTransfer
+ 288              	.LVL23:
+ 291:../drivers/fsl_uart_edma.c ****                              sizeof(uint8_t), sizeof(uint8_t), xfer->dataSize, kEDMA_PeripheralToMe
+ 292:../drivers/fsl_uart_edma.c **** 
+ 293:../drivers/fsl_uart_edma.c ****         /* Store the initially configured eDMA minor byte transfer count into the UART handle */
+ 294:../drivers/fsl_uart_edma.c ****         handle->nbytes = sizeof(uint8_t);
+ 295:../drivers/fsl_uart_edma.c **** 
+ 296:../drivers/fsl_uart_edma.c ****         /* Submit transfer. */
+ 297:../drivers/fsl_uart_edma.c ****         EDMA_SubmitTransfer(handle->rxEdmaHandle, &xferConfig);
+ 289              		.loc 1 297 0
+ 290 002c 04A9     		add	r1, sp, #16
+ 294:../drivers/fsl_uart_edma.c **** 
+ 291              		.loc 1 294 0
+ 292 002e 2676     		strb	r6, [r4, #24]
+ 293              		.loc 1 297 0
+ 294 0030 6069     		ldr	r0, [r4, #20]
+ 295 0032 FFF7FEFF 		bl	EDMA_SubmitTransfer
+ 296              	.LVL24:
+ 298:../drivers/fsl_uart_edma.c ****         EDMA_StartTransfer(handle->rxEdmaHandle);
+ 297              		.loc 1 298 0
+ 298 0036 6069     		ldr	r0, [r4, #20]
+ 299 0038 FFF7FEFF 		bl	EDMA_StartTransfer
+ 300              	.LVL25:
+ 301              	.LBB25:
+ 302              	.LBB26:
+ 303              	.LBB27:
+ 457:../drivers/fsl_uart.h ****     }
+ 458:../drivers/fsl_uart.h ****     else
+ 459:../drivers/fsl_uart.h ****     {
+ 460:../drivers/fsl_uart.h **** #if (defined(FSL_FEATURE_UART_IS_SCI) && FSL_FEATURE_UART_IS_SCI)
+ 461:../drivers/fsl_uart.h ****         base->C4 &= ~UART_C4_TDMAS_MASK;
+ 462:../drivers/fsl_uart.h **** #else
+ 463:../drivers/fsl_uart.h ****         base->C5 &= ~UART_C5_TDMAS_MASK;
+ 464:../drivers/fsl_uart.h **** #endif
+ 465:../drivers/fsl_uart.h ****         base->C2 &= ~UART_C2_TIE_MASK;
+ 466:../drivers/fsl_uart.h ****     }
+ 467:../drivers/fsl_uart.h **** }
+ 468:../drivers/fsl_uart.h **** 
+ 469:../drivers/fsl_uart.h **** /*!
+ 470:../drivers/fsl_uart.h ****  * @brief Enables or disables the UART receiver DMA.
+ 471:../drivers/fsl_uart.h ****  *
+ 472:../drivers/fsl_uart.h ****  * This function enables or disables the receiver data register full flag, S1[RDRF], to generate DM
+ 473:../drivers/fsl_uart.h ****  *
+ 474:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 475:../drivers/fsl_uart.h ****  * @param enable True to enable, false to disable.
+ 476:../drivers/fsl_uart.h ****  */
+ 477:../drivers/fsl_uart.h **** static inline void UART_EnableRxDMA(UART_Type *base, bool enable)
+ 478:../drivers/fsl_uart.h **** {
+ 479:../drivers/fsl_uart.h ****     if (enable)
+ 480:../drivers/fsl_uart.h ****     {
+ 481:../drivers/fsl_uart.h **** #if (defined(FSL_FEATURE_UART_IS_SCI) && FSL_FEATURE_UART_IS_SCI)
+ 482:../drivers/fsl_uart.h ****         base->C4 |= UART_C4_RDMAS_MASK;
+ 483:../drivers/fsl_uart.h **** #else
+ 484:../drivers/fsl_uart.h ****         base->C5 |= UART_C5_RDMAS_MASK;
+ 304              		.loc 2 484 0
+ 305 003c EB7A     		ldrb	r3, [r5, #11]	@ zero_extendqisi2
+ 306 003e 43F02003 		orr	r3, r3, #32
+ 307 0042 EB72     		strb	r3, [r5, #11]
+ 485:../drivers/fsl_uart.h **** #endif
+ 486:../drivers/fsl_uart.h ****         base->C2 |= UART_C2_RIE_MASK;
+ 308              		.loc 2 486 0
+ 309 0044 EB78     		ldrb	r3, [r5, #3]	@ zero_extendqisi2
+ 310 0046 43F02003 		orr	r3, r3, #32
+ 311 004a EB70     		strb	r3, [r5, #3]
+ 312              	.LBE27:
+ 313              	.LBE26:
+ 314              	.LBE25:
+ 299:../drivers/fsl_uart_edma.c **** 
+ 300:../drivers/fsl_uart_edma.c ****         /* Enable UART RX EDMA. */
+ 301:../drivers/fsl_uart_edma.c ****         UART_EnableRxDMA(base, true);
+ 302:../drivers/fsl_uart_edma.c **** 
+ 303:../drivers/fsl_uart_edma.c ****         status = kStatus_Success;
+ 315              		.loc 1 303 0
+ 316 004c 0020     		movs	r0, #0
+ 317              	.LVL26:
+ 318              	.L11:
+ 304:../drivers/fsl_uart_edma.c ****     }
+ 305:../drivers/fsl_uart_edma.c **** 
+ 306:../drivers/fsl_uart_edma.c ****     return status;
+ 307:../drivers/fsl_uart_edma.c **** }
+ 319              		.loc 1 307 0
+ 320 004e 0AB0     		add	sp, sp, #40
+ 321              		.cfi_remember_state
+ 322              		.cfi_def_cfa_offset 16
+ 323              		@ sp needed
+ 324 0050 70BD     		pop	{r4, r5, r6, pc}
+ 325              	.LVL27:
+ 326              	.L13:
+ 327              		.cfi_restore_state
+ 282:../drivers/fsl_uart_edma.c ****     }
+ 328              		.loc 1 282 0
+ 329 0052 40F2E930 		movw	r0, #1001
+ 330              	.LVL28:
+ 306:../drivers/fsl_uart_edma.c **** }
+ 331              		.loc 1 306 0
+ 332 0056 FAE7     		b	.L11
+ 333              		.cfi_endproc
+ 334              	.LFE168:
+ 336              		.section	.text.UART_TransferAbortSendEDMA,"ax",%progbits
+ 337              		.align	1
+ 338              		.global	UART_TransferAbortSendEDMA
+ 339              		.syntax unified
+ 340              		.thumb
+ 341              		.thumb_func
+ 342              		.fpu fpv4-sp-d16
+ 344              	UART_TransferAbortSendEDMA:
+ 345              	.LFB169:
+ 308:../drivers/fsl_uart_edma.c **** 
+ 309:../drivers/fsl_uart_edma.c **** void UART_TransferAbortSendEDMA(UART_Type *base, uart_edma_handle_t *handle)
+ 310:../drivers/fsl_uart_edma.c **** {
+ 346              		.loc 1 310 0
+ 347              		.cfi_startproc
+ 348              		@ args = 0, pretend = 0, frame = 0
+ 349              		@ frame_needed = 0, uses_anonymous_args = 0
+ 350              	.LVL29:
+ 351 0000 10B5     		push	{r4, lr}
+ 352              		.cfi_def_cfa_offset 8
+ 353              		.cfi_offset 4, -8
+ 354              		.cfi_offset 14, -4
+ 355              	.LBB30:
+ 356              	.LBB31:
+ 463:../drivers/fsl_uart.h **** #endif
+ 357              		.loc 2 463 0
+ 358 0002 C37A     		ldrb	r3, [r0, #11]	@ zero_extendqisi2
+ 359 0004 03F07F03 		and	r3, r3, #127
+ 360 0008 C372     		strb	r3, [r0, #11]
+ 465:../drivers/fsl_uart.h ****     }
+ 361              		.loc 2 465 0
+ 362 000a C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 363 000c 03F07F03 		and	r3, r3, #127
+ 364 0010 C370     		strb	r3, [r0, #3]
+ 365              	.LVL30:
+ 366              	.LBE31:
+ 367              	.LBE30:
+ 368              		.loc 1 310 0
+ 369 0012 0C46     		mov	r4, r1
+ 311:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 312:../drivers/fsl_uart_edma.c ****     assert(handle->txEdmaHandle);
+ 313:../drivers/fsl_uart_edma.c **** 
+ 314:../drivers/fsl_uart_edma.c ****     /* Disable UART TX EDMA. */
+ 315:../drivers/fsl_uart_edma.c ****     UART_EnableTxDMA(base, false);
+ 316:../drivers/fsl_uart_edma.c **** 
+ 317:../drivers/fsl_uart_edma.c ****     /* Stop transfer. */
+ 318:../drivers/fsl_uart_edma.c ****     EDMA_AbortTransfer(handle->txEdmaHandle);
+ 370              		.loc 1 318 0
+ 371 0014 0869     		ldr	r0, [r1, #16]
+ 372              	.LVL31:
+ 373 0016 FFF7FEFF 		bl	EDMA_AbortTransfer
+ 374              	.LVL32:
+ 319:../drivers/fsl_uart_edma.c **** 
+ 320:../drivers/fsl_uart_edma.c ****     handle->txState = kUART_TxIdle;
+ 375              		.loc 1 320 0
+ 376 001a 0023     		movs	r3, #0
+ 377 001c 6376     		strb	r3, [r4, #25]
+ 321:../drivers/fsl_uart_edma.c **** }
+ 378              		.loc 1 321 0
+ 379 001e 10BD     		pop	{r4, pc}
+ 380              		.cfi_endproc
+ 381              	.LFE169:
+ 383              		.section	.text.UART_SendEDMACallback,"ax",%progbits
+ 384              		.align	1
+ 385              		.syntax unified
+ 386              		.thumb
+ 387              		.thumb_func
+ 388              		.fpu fpv4-sp-d16
+ 390              	UART_SendEDMACallback:
+ 391              	.LFB164:
+ 130:../drivers/fsl_uart_edma.c ****     assert(param);
+ 392              		.loc 1 130 0
+ 393              		.cfi_startproc
+ 394              		@ args = 0, pretend = 0, frame = 0
+ 395              		@ frame_needed = 0, uses_anonymous_args = 0
+ 396              	.LVL33:
+ 397 0000 70B5     		push	{r4, r5, r6, lr}
+ 398              		.cfi_def_cfa_offset 16
+ 399              		.cfi_offset 4, -16
+ 400              		.cfi_offset 5, -12
+ 401              		.cfi_offset 6, -8
+ 402              		.cfi_offset 14, -4
+ 130:../drivers/fsl_uart_edma.c ****     assert(param);
+ 403              		.loc 1 130 0
+ 404 0002 0C46     		mov	r4, r1
+ 139:../drivers/fsl_uart_edma.c ****     {
+ 405              		.loc 1 139 0
+ 406 0004 72B1     		cbz	r2, .L15
+ 407              	.LVL34:
+ 408              	.LBB34:
+ 409              	.LBB35:
+ 141:../drivers/fsl_uart_edma.c **** 
+ 410              		.loc 1 141 0
+ 411 0006 D1E90001 		ldrd	r0, r1, [r1]
+ 412              	.LVL35:
+ 413 000a FFF7FEFF 		bl	UART_TransferAbortSendEDMA
+ 414              	.LVL36:
+ 143:../drivers/fsl_uart_edma.c ****         {
+ 415              		.loc 1 143 0
+ 416 000e 6168     		ldr	r1, [r4, #4]
+ 417 0010 0D68     		ldr	r5, [r1]
+ 418 0012 3DB1     		cbz	r5, .L15
+ 145:../drivers/fsl_uart_edma.c ****                                                 uartPrivateHandle->handle->userData);
+ 419              		.loc 1 145 0
+ 420 0014 2068     		ldr	r0, [r4]
+ 421 0016 4B68     		ldr	r3, [r1, #4]
+ 422 0018 AC46     		mov	ip, r5
+ 423 001a 40F2EA32 		movw	r2, #1002
+ 424              	.LBE35:
+ 425              	.LBE34:
+ 149:../drivers/fsl_uart_edma.c **** 
+ 426              		.loc 1 149 0
+ 427 001e BDE87040 		pop	{r4, r5, r6, lr}
+ 428              		.cfi_remember_state
+ 429              		.cfi_restore 14
+ 430              		.cfi_restore 6
+ 431              		.cfi_restore 5
+ 432              		.cfi_restore 4
+ 433              		.cfi_def_cfa_offset 0
+ 434              	.LVL37:
+ 435              	.LBB37:
+ 436              	.LBB36:
+ 145:../drivers/fsl_uart_edma.c ****                                                 uartPrivateHandle->handle->userData);
+ 437              		.loc 1 145 0
+ 438 0022 6047     		bx	ip	@ indirect register sibling call
+ 439              	.LVL38:
+ 440              	.L15:
+ 441              		.cfi_restore_state
+ 442              	.LBE36:
+ 443              	.LBE37:
+ 149:../drivers/fsl_uart_edma.c **** 
+ 444              		.loc 1 149 0
+ 445 0024 70BD     		pop	{r4, r5, r6, pc}
+ 446              		.cfi_endproc
+ 447              	.LFE164:
+ 449              		.section	.text.UART_TransferAbortReceiveEDMA,"ax",%progbits
+ 450              		.align	1
+ 451              		.global	UART_TransferAbortReceiveEDMA
+ 452              		.syntax unified
+ 453              		.thumb
+ 454              		.thumb_func
+ 455              		.fpu fpv4-sp-d16
+ 457              	UART_TransferAbortReceiveEDMA:
+ 458              	.LFB170:
+ 322:../drivers/fsl_uart_edma.c **** 
+ 323:../drivers/fsl_uart_edma.c **** void UART_TransferAbortReceiveEDMA(UART_Type *base, uart_edma_handle_t *handle)
+ 324:../drivers/fsl_uart_edma.c **** {
+ 459              		.loc 1 324 0
+ 460              		.cfi_startproc
+ 461              		@ args = 0, pretend = 0, frame = 0
+ 462              		@ frame_needed = 0, uses_anonymous_args = 0
+ 463              	.LVL39:
+ 464 0000 10B5     		push	{r4, lr}
+ 465              		.cfi_def_cfa_offset 8
+ 466              		.cfi_offset 4, -8
+ 467              		.cfi_offset 14, -4
+ 468              	.LBB40:
+ 469              	.LBB41:
+ 487:../drivers/fsl_uart.h ****     }
+ 488:../drivers/fsl_uart.h ****     else
+ 489:../drivers/fsl_uart.h ****     {
+ 490:../drivers/fsl_uart.h **** #if (defined(FSL_FEATURE_UART_IS_SCI) && FSL_FEATURE_UART_IS_SCI)
+ 491:../drivers/fsl_uart.h ****         base->C4 &= ~UART_C4_RDMAS_MASK;
+ 492:../drivers/fsl_uart.h **** #else
+ 493:../drivers/fsl_uart.h ****         base->C5 &= ~UART_C5_RDMAS_MASK;
+ 470              		.loc 2 493 0
+ 471 0002 C37A     		ldrb	r3, [r0, #11]	@ zero_extendqisi2
+ 472 0004 03F0DF03 		and	r3, r3, #223
+ 473 0008 C372     		strb	r3, [r0, #11]
+ 494:../drivers/fsl_uart.h **** #endif
+ 495:../drivers/fsl_uart.h ****         base->C2 &= ~UART_C2_RIE_MASK;
+ 474              		.loc 2 495 0
+ 475 000a C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 476 000c 03F0DF03 		and	r3, r3, #223
+ 477 0010 C370     		strb	r3, [r0, #3]
+ 478              	.LVL40:
+ 479              	.LBE41:
+ 480              	.LBE40:
+ 481              		.loc 1 324 0
+ 482 0012 0C46     		mov	r4, r1
+ 325:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 326:../drivers/fsl_uart_edma.c ****     assert(handle->rxEdmaHandle);
+ 327:../drivers/fsl_uart_edma.c **** 
+ 328:../drivers/fsl_uart_edma.c ****     /* Disable UART RX EDMA. */
+ 329:../drivers/fsl_uart_edma.c ****     UART_EnableRxDMA(base, false);
+ 330:../drivers/fsl_uart_edma.c **** 
+ 331:../drivers/fsl_uart_edma.c ****     /* Stop transfer. */
+ 332:../drivers/fsl_uart_edma.c ****     EDMA_AbortTransfer(handle->rxEdmaHandle);
+ 483              		.loc 1 332 0
+ 484 0014 4869     		ldr	r0, [r1, #20]
+ 485              	.LVL41:
+ 486 0016 FFF7FEFF 		bl	EDMA_AbortTransfer
+ 487              	.LVL42:
+ 333:../drivers/fsl_uart_edma.c **** 
+ 334:../drivers/fsl_uart_edma.c ****     handle->rxState = kUART_RxIdle;
+ 488              		.loc 1 334 0
+ 489 001a 0223     		movs	r3, #2
+ 490 001c A376     		strb	r3, [r4, #26]
+ 335:../drivers/fsl_uart_edma.c **** }
+ 491              		.loc 1 335 0
+ 492 001e 10BD     		pop	{r4, pc}
+ 493              		.cfi_endproc
+ 494              	.LFE170:
+ 496              		.section	.text.UART_ReceiveEDMACallback,"ax",%progbits
+ 497              		.align	1
+ 498              		.syntax unified
+ 499              		.thumb
+ 500              		.thumb_func
+ 501              		.fpu fpv4-sp-d16
+ 503              	UART_ReceiveEDMACallback:
+ 504              	.LFB165:
+ 152:../drivers/fsl_uart_edma.c ****     assert(param);
+ 505              		.loc 1 152 0
+ 506              		.cfi_startproc
+ 507              		@ args = 0, pretend = 0, frame = 0
+ 508              		@ frame_needed = 0, uses_anonymous_args = 0
+ 509              	.LVL43:
+ 510 0000 70B5     		push	{r4, r5, r6, lr}
+ 511              		.cfi_def_cfa_offset 16
+ 512              		.cfi_offset 4, -16
+ 513              		.cfi_offset 5, -12
+ 514              		.cfi_offset 6, -8
+ 515              		.cfi_offset 14, -4
+ 152:../drivers/fsl_uart_edma.c ****     assert(param);
+ 516              		.loc 1 152 0
+ 517 0002 0C46     		mov	r4, r1
+ 161:../drivers/fsl_uart_edma.c ****     {
+ 518              		.loc 1 161 0
+ 519 0004 72B1     		cbz	r2, .L23
+ 520              	.LVL44:
+ 521              	.LBB44:
+ 522              	.LBB45:
+ 164:../drivers/fsl_uart_edma.c **** 
+ 523              		.loc 1 164 0
+ 524 0006 D1E90001 		ldrd	r0, r1, [r1]
+ 525              	.LVL45:
+ 526 000a FFF7FEFF 		bl	UART_TransferAbortReceiveEDMA
+ 527              	.LVL46:
+ 166:../drivers/fsl_uart_edma.c ****         {
+ 528              		.loc 1 166 0
+ 529 000e 6168     		ldr	r1, [r4, #4]
+ 530 0010 0D68     		ldr	r5, [r1]
+ 531 0012 3DB1     		cbz	r5, .L23
+ 168:../drivers/fsl_uart_edma.c ****                                                 uartPrivateHandle->handle->userData);
+ 532              		.loc 1 168 0
+ 533 0014 2068     		ldr	r0, [r4]
+ 534 0016 4B68     		ldr	r3, [r1, #4]
+ 535 0018 AC46     		mov	ip, r5
+ 536 001a 40F2EB32 		movw	r2, #1003
+ 537              	.LBE45:
+ 538              	.LBE44:
+ 172:../drivers/fsl_uart_edma.c **** 
+ 539              		.loc 1 172 0
+ 540 001e BDE87040 		pop	{r4, r5, r6, lr}
+ 541              		.cfi_remember_state
+ 542              		.cfi_restore 14
+ 543              		.cfi_restore 6
+ 544              		.cfi_restore 5
+ 545              		.cfi_restore 4
+ 546              		.cfi_def_cfa_offset 0
+ 547              	.LVL47:
+ 548              	.LBB47:
+ 549              	.LBB46:
+ 168:../drivers/fsl_uart_edma.c ****                                                 uartPrivateHandle->handle->userData);
+ 550              		.loc 1 168 0
+ 551 0022 6047     		bx	ip	@ indirect register sibling call
+ 552              	.LVL48:
+ 553              	.L23:
+ 554              		.cfi_restore_state
+ 555              	.LBE46:
+ 556              	.LBE47:
+ 172:../drivers/fsl_uart_edma.c **** 
+ 557              		.loc 1 172 0
+ 558 0024 70BD     		pop	{r4, r5, r6, pc}
+ 559              		.cfi_endproc
+ 560              	.LFE165:
+ 562              		.section	.text.UART_TransferGetReceiveCountEDMA,"ax",%progbits
+ 563              		.align	1
+ 564              		.global	UART_TransferGetReceiveCountEDMA
+ 565              		.syntax unified
+ 566              		.thumb
+ 567              		.thumb_func
+ 568              		.fpu fpv4-sp-d16
+ 570              	UART_TransferGetReceiveCountEDMA:
+ 571              	.LFB171:
+ 336:../drivers/fsl_uart_edma.c **** 
+ 337:../drivers/fsl_uart_edma.c **** status_t UART_TransferGetReceiveCountEDMA(UART_Type *base, uart_edma_handle_t *handle, uint32_t *co
+ 338:../drivers/fsl_uart_edma.c **** {
+ 572              		.loc 1 338 0
+ 573              		.cfi_startproc
+ 574              		@ args = 0, pretend = 0, frame = 0
+ 575              		@ frame_needed = 0, uses_anonymous_args = 0
+ 576              	.LVL49:
+ 577 0000 70B5     		push	{r4, r5, r6, lr}
+ 578              		.cfi_def_cfa_offset 16
+ 579              		.cfi_offset 4, -16
+ 580              		.cfi_offset 5, -12
+ 581              		.cfi_offset 6, -8
+ 582              		.cfi_offset 14, -4
+ 339:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 340:../drivers/fsl_uart_edma.c ****     assert(handle->rxEdmaHandle);
+ 341:../drivers/fsl_uart_edma.c ****     assert(count);
+ 342:../drivers/fsl_uart_edma.c **** 
+ 343:../drivers/fsl_uart_edma.c ****     if (kUART_RxIdle == handle->rxState)
+ 583              		.loc 1 343 0
+ 584 0002 8B7E     		ldrb	r3, [r1, #26]	@ zero_extendqisi2
+ 585 0004 022B     		cmp	r3, #2
+ 338:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 586              		.loc 1 338 0
+ 587 0006 1546     		mov	r5, r2
+ 588              		.loc 1 343 0
+ 589 0008 0BD0     		beq	.L32
+ 344:../drivers/fsl_uart_edma.c ****     {
+ 345:../drivers/fsl_uart_edma.c ****         return kStatus_NoTransferInProgress;
+ 346:../drivers/fsl_uart_edma.c ****     }
+ 347:../drivers/fsl_uart_edma.c **** 
+ 348:../drivers/fsl_uart_edma.c ****     *count = handle->rxDataSizeAll -
+ 349:../drivers/fsl_uart_edma.c ****              (uint32_t)handle->nbytes *
+ 350:../drivers/fsl_uart_edma.c ****                  EDMA_GetRemainingMajorLoopCount(handle->rxEdmaHandle->base, handle->rxEdmaHandle->
+ 590              		.loc 1 350 0
+ 591 000a 4B69     		ldr	r3, [r1, #20]
+ 348:../drivers/fsl_uart_edma.c ****              (uint32_t)handle->nbytes *
+ 592              		.loc 1 348 0
+ 593 000c 8E68     		ldr	r6, [r1, #8]
+ 349:../drivers/fsl_uart_edma.c ****                  EDMA_GetRemainingMajorLoopCount(handle->rxEdmaHandle->base, handle->rxEdmaHandle->
+ 594              		.loc 1 349 0
+ 595 000e 0C7E     		ldrb	r4, [r1, #24]	@ zero_extendqisi2
+ 596              		.loc 1 350 0
+ 597 0010 9868     		ldr	r0, [r3, #8]
+ 598              	.LVL50:
+ 599 0012 197C     		ldrb	r1, [r3, #16]	@ zero_extendqisi2
+ 600              	.LVL51:
+ 601 0014 FFF7FEFF 		bl	EDMA_GetRemainingMajorLoopCount
+ 602              	.LVL52:
+ 348:../drivers/fsl_uart_edma.c ****              (uint32_t)handle->nbytes *
+ 603              		.loc 1 348 0
+ 604 0018 00FB1460 		mls	r0, r0, r4, r6
+ 605 001c 2860     		str	r0, [r5]
+ 351:../drivers/fsl_uart_edma.c **** 
+ 352:../drivers/fsl_uart_edma.c ****     return kStatus_Success;
+ 606              		.loc 1 352 0
+ 607 001e 0020     		movs	r0, #0
+ 608              	.L30:
+ 353:../drivers/fsl_uart_edma.c **** }
+ 609              		.loc 1 353 0
+ 610 0020 70BD     		pop	{r4, r5, r6, pc}
+ 611              	.LVL53:
+ 612              	.L32:
+ 345:../drivers/fsl_uart_edma.c ****     }
+ 613              		.loc 1 345 0
+ 614 0022 0620     		movs	r0, #6
+ 615              	.LVL54:
+ 616 0024 FCE7     		b	.L30
+ 617              		.cfi_endproc
+ 618              	.LFE171:
+ 620              		.section	.text.UART_TransferGetSendCountEDMA,"ax",%progbits
+ 621              		.align	1
+ 622              		.global	UART_TransferGetSendCountEDMA
+ 623              		.syntax unified
+ 624              		.thumb
+ 625              		.thumb_func
+ 626              		.fpu fpv4-sp-d16
+ 628              	UART_TransferGetSendCountEDMA:
+ 629              	.LFB172:
+ 354:../drivers/fsl_uart_edma.c **** 
+ 355:../drivers/fsl_uart_edma.c **** status_t UART_TransferGetSendCountEDMA(UART_Type *base, uart_edma_handle_t *handle, uint32_t *count
+ 356:../drivers/fsl_uart_edma.c **** {
+ 630              		.loc 1 356 0
+ 631              		.cfi_startproc
+ 632              		@ args = 0, pretend = 0, frame = 0
+ 633              		@ frame_needed = 0, uses_anonymous_args = 0
+ 634              	.LVL55:
+ 635 0000 70B5     		push	{r4, r5, r6, lr}
+ 636              		.cfi_def_cfa_offset 16
+ 637              		.cfi_offset 4, -16
+ 638              		.cfi_offset 5, -12
+ 639              		.cfi_offset 6, -8
+ 640              		.cfi_offset 14, -4
+ 357:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 358:../drivers/fsl_uart_edma.c ****     assert(handle->txEdmaHandle);
+ 359:../drivers/fsl_uart_edma.c ****     assert(count);
+ 360:../drivers/fsl_uart_edma.c **** 
+ 361:../drivers/fsl_uart_edma.c ****     if (kUART_TxIdle == handle->txState)
+ 641              		.loc 1 361 0
+ 642 0002 4B7E     		ldrb	r3, [r1, #25]	@ zero_extendqisi2
+ 356:../drivers/fsl_uart_edma.c ****     assert(handle);
+ 643              		.loc 1 356 0
+ 644 0004 1546     		mov	r5, r2
+ 645              		.loc 1 361 0
+ 646 0006 5BB1     		cbz	r3, .L35
+ 362:../drivers/fsl_uart_edma.c ****     {
+ 363:../drivers/fsl_uart_edma.c ****         return kStatus_NoTransferInProgress;
+ 364:../drivers/fsl_uart_edma.c ****     }
+ 365:../drivers/fsl_uart_edma.c **** 
+ 366:../drivers/fsl_uart_edma.c ****     *count = handle->txDataSizeAll -
+ 367:../drivers/fsl_uart_edma.c ****              (uint32_t)handle->nbytes *
+ 368:../drivers/fsl_uart_edma.c ****                  EDMA_GetRemainingMajorLoopCount(handle->txEdmaHandle->base, handle->txEdmaHandle->
+ 647              		.loc 1 368 0
+ 648 0008 0B69     		ldr	r3, [r1, #16]
+ 366:../drivers/fsl_uart_edma.c ****              (uint32_t)handle->nbytes *
+ 649              		.loc 1 366 0
+ 650 000a CE68     		ldr	r6, [r1, #12]
+ 367:../drivers/fsl_uart_edma.c ****                  EDMA_GetRemainingMajorLoopCount(handle->txEdmaHandle->base, handle->txEdmaHandle->
+ 651              		.loc 1 367 0
+ 652 000c 0C7E     		ldrb	r4, [r1, #24]	@ zero_extendqisi2
+ 653              		.loc 1 368 0
+ 654 000e 9868     		ldr	r0, [r3, #8]
+ 655              	.LVL56:
+ 656 0010 197C     		ldrb	r1, [r3, #16]	@ zero_extendqisi2
+ 657              	.LVL57:
+ 658 0012 FFF7FEFF 		bl	EDMA_GetRemainingMajorLoopCount
+ 659              	.LVL58:
+ 366:../drivers/fsl_uart_edma.c ****              (uint32_t)handle->nbytes *
+ 660              		.loc 1 366 0
+ 661 0016 00FB1460 		mls	r0, r0, r4, r6
+ 662 001a 2860     		str	r0, [r5]
+ 369:../drivers/fsl_uart_edma.c **** 
+ 370:../drivers/fsl_uart_edma.c ****     return kStatus_Success;
+ 663              		.loc 1 370 0
+ 664 001c 0020     		movs	r0, #0
+ 665              	.L33:
+ 371:../drivers/fsl_uart_edma.c **** }
+ 666              		.loc 1 371 0
+ 667 001e 70BD     		pop	{r4, r5, r6, pc}
+ 668              	.LVL59:
+ 669              	.L35:
+ 363:../drivers/fsl_uart_edma.c ****     }
+ 670              		.loc 1 363 0
+ 671 0020 0620     		movs	r0, #6
+ 672              	.LVL60:
+ 673 0022 FCE7     		b	.L33
+ 674              		.cfi_endproc
+ 675              	.LFE172:
+ 677              		.section	.bss.s_edmaPrivateHandle,"aw",%nobits
+ 678              		.align	2
+ 679              		.set	.LANCHOR0,. + 0
+ 682              	s_edmaPrivateHandle:
+ 683 0000 00000000 		.space	48
+ 683      00000000 
+ 683      00000000 
+ 683      00000000 
+ 683      00000000 
+ 684              		.text
+ 685              	.Letext0:
+ 686              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 687              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 688              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 689              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 690              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 691              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 692              		.file 9 "../CMSIS/core_cm4.h"
+ 693              		.file 10 "../CMSIS/system_MK64F12.h"
+ 694              		.file 11 "../CMSIS/MK64F12.h"
+ 695              		.file 12 "../drivers/fsl_common.h"
+ 696              		.file 13 "../drivers/fsl_clock.h"
+ 697              		.file 14 "../drivers/fsl_edma.h"
+ 698              		.file 15 "../drivers/fsl_uart_edma.h"
+ 699              		.file 16 "<built-in>"

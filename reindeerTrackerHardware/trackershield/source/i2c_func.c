@@ -13,7 +13,7 @@
 #define FRDM_ACC_SADDR 0x1D
 #define TRACKER_ACC_SADDR 0x1C
 
-#define ACC_SADDR TRACKER_ACC_SADDR
+#define ACC_SADDR FRDM_ACC_SADDR
 
 void initI2C()
 {

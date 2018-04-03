@@ -1,0 +1,1687 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_ewm.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.EWM_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	EWM_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	EWM_Init:
+  26              	.LFB150:
+  27              		.file 1 "../drivers/fsl_ewm.c"
+   1:../drivers/fsl_ewm.c **** /*
+   2:../drivers/fsl_ewm.c ****  * The Clear BSD License
+   3:../drivers/fsl_ewm.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_ewm.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_ewm.c ****  * All rights reserved.
+   6:../drivers/fsl_ewm.c ****  *
+   7:../drivers/fsl_ewm.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_ewm.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_ewm.c ****  * that the following conditions are met:
+  10:../drivers/fsl_ewm.c ****  *
+  11:../drivers/fsl_ewm.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_ewm.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_ewm.c ****  *
+  14:../drivers/fsl_ewm.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_ewm.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_ewm.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_ewm.c ****  *
+  18:../drivers/fsl_ewm.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_ewm.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_ewm.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_ewm.c ****  *
+  22:../drivers/fsl_ewm.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_ewm.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_ewm.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_ewm.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_ewm.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_ewm.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_ewm.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_ewm.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_ewm.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_ewm.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_ewm.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_ewm.c ****  */
+  34:../drivers/fsl_ewm.c **** 
+  35:../drivers/fsl_ewm.c **** #include "fsl_ewm.h"
+  36:../drivers/fsl_ewm.c **** 
+  37:../drivers/fsl_ewm.c **** /*******************************************************************************
+  38:../drivers/fsl_ewm.c ****  * Code
+  39:../drivers/fsl_ewm.c ****  ******************************************************************************/
+  40:../drivers/fsl_ewm.c **** 
+  41:../drivers/fsl_ewm.c **** void EWM_Init(EWM_Type *base, const ewm_config_t *config)
+  42:../drivers/fsl_ewm.c **** {
+  28              		.loc 1 42 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33              	.LBB22:
+  34              	.LBB23:
+  35              		.file 2 "../drivers/fsl_clock.h"
+   1:../drivers/fsl_clock.h **** /*
+   2:../drivers/fsl_clock.h ****  * The Clear BSD License
+   3:../drivers/fsl_clock.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_clock.h ****  * Copyright (c) 2016 - 2017 , NXP
+   5:../drivers/fsl_clock.h ****  * All rights reserved.
+   6:../drivers/fsl_clock.h ****  *
+   7:../drivers/fsl_clock.h ****  *
+   8:../drivers/fsl_clock.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   9:../drivers/fsl_clock.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+  10:../drivers/fsl_clock.h ****  * that the following conditions are met:
+  11:../drivers/fsl_clock.h ****  *
+  12:../drivers/fsl_clock.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  13:../drivers/fsl_clock.h ****  *   of conditions and the following disclaimer.
+  14:../drivers/fsl_clock.h ****  *
+  15:../drivers/fsl_clock.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  16:../drivers/fsl_clock.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  17:../drivers/fsl_clock.h ****  *   other materials provided with the distribution.
+  18:../drivers/fsl_clock.h ****  *
+  19:../drivers/fsl_clock.h ****  * o Neither the name of copyright holder nor the names of its
+  20:../drivers/fsl_clock.h ****  *   contributors may be used to endorse or promote products derived from this
+  21:../drivers/fsl_clock.h ****  *   software without specific prior written permission.
+  22:../drivers/fsl_clock.h ****  *
+  23:../drivers/fsl_clock.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  24:../drivers/fsl_clock.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  25:../drivers/fsl_clock.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  26:../drivers/fsl_clock.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  27:../drivers/fsl_clock.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  28:../drivers/fsl_clock.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  29:../drivers/fsl_clock.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  30:../drivers/fsl_clock.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  31:../drivers/fsl_clock.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  32:../drivers/fsl_clock.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  33:../drivers/fsl_clock.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  34:../drivers/fsl_clock.h ****  */
+  35:../drivers/fsl_clock.h **** 
+  36:../drivers/fsl_clock.h **** #ifndef _FSL_CLOCK_H_
+  37:../drivers/fsl_clock.h **** #define _FSL_CLOCK_H_
+  38:../drivers/fsl_clock.h **** 
+  39:../drivers/fsl_clock.h **** #include "fsl_common.h"
+  40:../drivers/fsl_clock.h **** 
+  41:../drivers/fsl_clock.h **** /*! @addtogroup clock */
+  42:../drivers/fsl_clock.h **** /*! @{ */
+  43:../drivers/fsl_clock.h **** 
+  44:../drivers/fsl_clock.h **** /*! @file */
+  45:../drivers/fsl_clock.h **** 
+  46:../drivers/fsl_clock.h **** /*******************************************************************************
+  47:../drivers/fsl_clock.h ****  * Configurations
+  48:../drivers/fsl_clock.h ****  ******************************************************************************/
+  49:../drivers/fsl_clock.h **** 
+  50:../drivers/fsl_clock.h **** /*! @brief Configures whether to check a parameter in a function.
+  51:../drivers/fsl_clock.h ****  *
+  52:../drivers/fsl_clock.h ****  * Some MCG settings must be changed with conditions, for example:
+  53:../drivers/fsl_clock.h ****  *  1. MCGIRCLK settings, such as the source, divider, and the trim value should not change when
+  54:../drivers/fsl_clock.h ****  *     MCGIRCLK is used as a system clock source.
+  55:../drivers/fsl_clock.h ****  *  2. MCG_C7[OSCSEL] should not be changed  when the external reference clock is used
+  56:../drivers/fsl_clock.h ****  *     as a system clock source. For example, in FBE/BLPE/PBE modes.
+  57:../drivers/fsl_clock.h ****  *  3. The users should only switch between the supported clock modes.
+  58:../drivers/fsl_clock.h ****  *
+  59:../drivers/fsl_clock.h ****  * MCG functions check the parameter and MCG status before setting, if not allowed
+  60:../drivers/fsl_clock.h ****  * to change, the functions return error. The parameter checking increases code size,
+  61:../drivers/fsl_clock.h ****  * if code size is a critical requirement, change #MCG_CONFIG_CHECK_PARAM to 0 to
+  62:../drivers/fsl_clock.h ****  * disable parameter checking.
+  63:../drivers/fsl_clock.h ****  */
+  64:../drivers/fsl_clock.h **** #ifndef MCG_CONFIG_CHECK_PARAM
+  65:../drivers/fsl_clock.h **** #define MCG_CONFIG_CHECK_PARAM 0U
+  66:../drivers/fsl_clock.h **** #endif
+  67:../drivers/fsl_clock.h **** 
+  68:../drivers/fsl_clock.h **** /*! @brief Configure whether driver controls clock
+  69:../drivers/fsl_clock.h ****  *
+  70:../drivers/fsl_clock.h ****  * When set to 0, peripheral drivers will enable clock in initialize function
+  71:../drivers/fsl_clock.h ****  * and disable clock in de-initialize function. When set to 1, peripheral
+  72:../drivers/fsl_clock.h ****  * driver will not control the clock, application could contol the clock out of
+  73:../drivers/fsl_clock.h ****  * the driver.
+  74:../drivers/fsl_clock.h ****  *
+  75:../drivers/fsl_clock.h ****  * @note All drivers share this feature switcher. If it is set to 1, application
+  76:../drivers/fsl_clock.h ****  * should handle clock enable and disable for all drivers.
+  77:../drivers/fsl_clock.h ****  */
+  78:../drivers/fsl_clock.h **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL))
+  79:../drivers/fsl_clock.h **** #define FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL 0
+  80:../drivers/fsl_clock.h **** #endif
+  81:../drivers/fsl_clock.h **** 
+  82:../drivers/fsl_clock.h **** /*******************************************************************************
+  83:../drivers/fsl_clock.h ****  * Definitions
+  84:../drivers/fsl_clock.h ****  ******************************************************************************/
+  85:../drivers/fsl_clock.h **** 
+  86:../drivers/fsl_clock.h **** /*! @name Driver version */
+  87:../drivers/fsl_clock.h **** /*@{*/
+  88:../drivers/fsl_clock.h **** /*! @brief CLOCK driver version 2.2.1. */
+  89:../drivers/fsl_clock.h **** #define FSL_CLOCK_DRIVER_VERSION (MAKE_VERSION(2, 2, 1))
+  90:../drivers/fsl_clock.h **** /*@}*/
+  91:../drivers/fsl_clock.h **** 
+  92:../drivers/fsl_clock.h **** /*! @brief External XTAL0 (OSC0) clock frequency.
+  93:../drivers/fsl_clock.h ****  *
+  94:../drivers/fsl_clock.h ****  * The XTAL0/EXTAL0 (OSC0) clock frequency in Hz. When the clock is set up, use the
+  95:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal0Freq to set the value in the clock driver. For example,
+  96:../drivers/fsl_clock.h ****  * if XTAL0 is 8 MHz:
+  97:../drivers/fsl_clock.h ****  * @code
+  98:../drivers/fsl_clock.h ****  * CLOCK_InitOsc0(...); // Set up the OSC0
+  99:../drivers/fsl_clock.h ****  * CLOCK_SetXtal0Freq(80000000); // Set the XTAL0 value to the clock driver.
+ 100:../drivers/fsl_clock.h ****  * @endcode
+ 101:../drivers/fsl_clock.h ****  *
+ 102:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where only one core needs to set up the
+ 103:../drivers/fsl_clock.h ****  * OSC0 using the CLOCK_InitOsc0. All other cores need to call the CLOCK_SetXtal0Freq
+ 104:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+ 105:../drivers/fsl_clock.h ****  */
+ 106:../drivers/fsl_clock.h **** extern uint32_t g_xtal0Freq;
+ 107:../drivers/fsl_clock.h **** 
+ 108:../drivers/fsl_clock.h **** /*! @brief External XTAL32/EXTAL32/RTC_CLKIN clock frequency.
+ 109:../drivers/fsl_clock.h ****  *
+ 110:../drivers/fsl_clock.h ****  * The XTAL32/EXTAL32/RTC_CLKIN clock frequency in Hz. When the clock is set up, use the
+ 111:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal32Freq to set the value in the clock driver.
+ 112:../drivers/fsl_clock.h ****  *
+ 113:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where only one core needs to set up
+ 114:../drivers/fsl_clock.h ****  * the clock. All other cores need to call the CLOCK_SetXtal32Freq
+ 115:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+ 116:../drivers/fsl_clock.h ****  */
+ 117:../drivers/fsl_clock.h **** extern uint32_t g_xtal32Freq;
+ 118:../drivers/fsl_clock.h **** 
+ 119:../drivers/fsl_clock.h **** /*! @brief IRC48M clock frequency in Hz. */
+ 120:../drivers/fsl_clock.h **** #define MCG_INTERNAL_IRC_48M 48000000U
+ 121:../drivers/fsl_clock.h **** 
+ 122:../drivers/fsl_clock.h **** #if (defined(OSC) && !(defined(OSC0)))
+ 123:../drivers/fsl_clock.h **** #define OSC0 OSC
+ 124:../drivers/fsl_clock.h **** #endif
+ 125:../drivers/fsl_clock.h **** 
+ 126:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DMAMUX. */
+ 127:../drivers/fsl_clock.h **** #define DMAMUX_CLOCKS  \
+ 128:../drivers/fsl_clock.h ****     {                  \
+ 129:../drivers/fsl_clock.h ****         kCLOCK_Dmamux0 \
+ 130:../drivers/fsl_clock.h ****     }
+ 131:../drivers/fsl_clock.h **** 
+ 132:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for RTC. */
+ 133:../drivers/fsl_clock.h **** #define RTC_CLOCKS  \
+ 134:../drivers/fsl_clock.h ****     {               \
+ 135:../drivers/fsl_clock.h ****         kCLOCK_Rtc0 \
+ 136:../drivers/fsl_clock.h ****     }
+ 137:../drivers/fsl_clock.h **** 
+ 138:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for ENET. */
+ 139:../drivers/fsl_clock.h **** #define ENET_CLOCKS  \
+ 140:../drivers/fsl_clock.h ****     {                \
+ 141:../drivers/fsl_clock.h ****         kCLOCK_Enet0 \
+ 142:../drivers/fsl_clock.h ****     }
+ 143:../drivers/fsl_clock.h **** 
+ 144:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PORT. */
+ 145:../drivers/fsl_clock.h **** #define PORT_CLOCKS                                                          \
+ 146:../drivers/fsl_clock.h ****     {                                                                        \
+ 147:../drivers/fsl_clock.h ****         kCLOCK_PortA, kCLOCK_PortB, kCLOCK_PortC, kCLOCK_PortD, kCLOCK_PortE \
+ 148:../drivers/fsl_clock.h ****     }
+ 149:../drivers/fsl_clock.h **** 
+ 150:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SAI. */
+ 151:../drivers/fsl_clock.h **** #define SAI_CLOCKS  \
+ 152:../drivers/fsl_clock.h ****     {               \
+ 153:../drivers/fsl_clock.h ****         kCLOCK_Sai0 \
+ 154:../drivers/fsl_clock.h ****     }
+ 155:../drivers/fsl_clock.h **** 
+ 156:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FLEXBUS. */
+ 157:../drivers/fsl_clock.h **** #define FLEXBUS_CLOCKS  \
+ 158:../drivers/fsl_clock.h ****     {                   \
+ 159:../drivers/fsl_clock.h ****         kCLOCK_Flexbus0 \
+ 160:../drivers/fsl_clock.h ****     }
+ 161:../drivers/fsl_clock.h **** 
+ 162:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for EWM. */
+ 163:../drivers/fsl_clock.h **** #define EWM_CLOCKS  \
+ 164:../drivers/fsl_clock.h ****     {               \
+ 165:../drivers/fsl_clock.h ****         kCLOCK_Ewm0 \
+ 166:../drivers/fsl_clock.h ****     }
+ 167:../drivers/fsl_clock.h **** 
+ 168:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PIT. */
+ 169:../drivers/fsl_clock.h **** #define PIT_CLOCKS  \
+ 170:../drivers/fsl_clock.h ****     {               \
+ 171:../drivers/fsl_clock.h ****         kCLOCK_Pit0 \
+ 172:../drivers/fsl_clock.h ****     }
+ 173:../drivers/fsl_clock.h **** 
+ 174:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DSPI. */
+ 175:../drivers/fsl_clock.h **** #define DSPI_CLOCKS                           \
+ 176:../drivers/fsl_clock.h ****     {                                         \
+ 177:../drivers/fsl_clock.h ****         kCLOCK_Spi0, kCLOCK_Spi1, kCLOCK_Spi2 \
+ 178:../drivers/fsl_clock.h ****     }
+ 179:../drivers/fsl_clock.h **** 
+ 180:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for LPTMR. */
+ 181:../drivers/fsl_clock.h **** #define LPTMR_CLOCKS  \
+ 182:../drivers/fsl_clock.h ****     {                 \
+ 183:../drivers/fsl_clock.h ****         kCLOCK_Lptmr0 \
+ 184:../drivers/fsl_clock.h ****     }
+ 185:../drivers/fsl_clock.h **** 
+ 186:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SDHC. */
+ 187:../drivers/fsl_clock.h **** #define SDHC_CLOCKS  \
+ 188:../drivers/fsl_clock.h ****     {                \
+ 189:../drivers/fsl_clock.h ****         kCLOCK_Sdhc0 \
+ 190:../drivers/fsl_clock.h ****     }
+ 191:../drivers/fsl_clock.h **** 
+ 192:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FTM. */
+ 193:../drivers/fsl_clock.h **** #define FTM_CLOCKS                                         \
+ 194:../drivers/fsl_clock.h ****     {                                                      \
+ 195:../drivers/fsl_clock.h ****         kCLOCK_Ftm0, kCLOCK_Ftm1, kCLOCK_Ftm2, kCLOCK_Ftm3 \
+ 196:../drivers/fsl_clock.h ****     }
+ 197:../drivers/fsl_clock.h **** 
+ 198:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for EDMA. */
+ 199:../drivers/fsl_clock.h **** #define EDMA_CLOCKS \
+ 200:../drivers/fsl_clock.h ****     {               \
+ 201:../drivers/fsl_clock.h ****         kCLOCK_Dma0 \
+ 202:../drivers/fsl_clock.h ****     }
+ 203:../drivers/fsl_clock.h **** 
+ 204:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FLEXCAN. */
+ 205:../drivers/fsl_clock.h **** #define FLEXCAN_CLOCKS  \
+ 206:../drivers/fsl_clock.h ****     {                   \
+ 207:../drivers/fsl_clock.h ****         kCLOCK_Flexcan0 \
+ 208:../drivers/fsl_clock.h ****     }
+ 209:../drivers/fsl_clock.h **** 
+ 210:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DAC. */
+ 211:../drivers/fsl_clock.h **** #define DAC_CLOCKS               \
+ 212:../drivers/fsl_clock.h ****     {                            \
+ 213:../drivers/fsl_clock.h ****         kCLOCK_Dac0, kCLOCK_Dac1 \
+ 214:../drivers/fsl_clock.h ****     }
+ 215:../drivers/fsl_clock.h **** 
+ 216:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for ADC16. */
+ 217:../drivers/fsl_clock.h **** #define ADC16_CLOCKS             \
+ 218:../drivers/fsl_clock.h ****     {                            \
+ 219:../drivers/fsl_clock.h ****         kCLOCK_Adc0, kCLOCK_Adc1 \
+ 220:../drivers/fsl_clock.h ****     }
+ 221:../drivers/fsl_clock.h **** 
+ 222:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for MPU. */
+ 223:../drivers/fsl_clock.h **** #define SYSMPU_CLOCKS  \
+ 224:../drivers/fsl_clock.h ****     {                  \
+ 225:../drivers/fsl_clock.h ****         kCLOCK_Sysmpu0 \
+ 226:../drivers/fsl_clock.h ****     }
+ 227:../drivers/fsl_clock.h **** 
+ 228:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for VREF. */
+ 229:../drivers/fsl_clock.h **** #define VREF_CLOCKS  \
+ 230:../drivers/fsl_clock.h ****     {                \
+ 231:../drivers/fsl_clock.h ****         kCLOCK_Vref0 \
+ 232:../drivers/fsl_clock.h ****     }
+ 233:../drivers/fsl_clock.h **** 
+ 234:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CMT. */
+ 235:../drivers/fsl_clock.h **** #define CMT_CLOCKS  \
+ 236:../drivers/fsl_clock.h ****     {               \
+ 237:../drivers/fsl_clock.h ****         kCLOCK_Cmt0 \
+ 238:../drivers/fsl_clock.h ****     }
+ 239:../drivers/fsl_clock.h **** 
+ 240:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for UART. */
+ 241:../drivers/fsl_clock.h **** #define UART_CLOCKS                                                                        \
+ 242:../drivers/fsl_clock.h ****     {                                                                                      \
+ 243:../drivers/fsl_clock.h ****         kCLOCK_Uart0, kCLOCK_Uart1, kCLOCK_Uart2, kCLOCK_Uart3, kCLOCK_Uart4, kCLOCK_Uart5 \
+ 244:../drivers/fsl_clock.h ****     }
+ 245:../drivers/fsl_clock.h **** 
+ 246:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for RNGA. */
+ 247:../drivers/fsl_clock.h **** #define RNGA_CLOCKS  \
+ 248:../drivers/fsl_clock.h ****     {                \
+ 249:../drivers/fsl_clock.h ****         kCLOCK_Rnga0 \
+ 250:../drivers/fsl_clock.h ****     }
+ 251:../drivers/fsl_clock.h **** 
+ 252:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CRC. */
+ 253:../drivers/fsl_clock.h **** #define CRC_CLOCKS  \
+ 254:../drivers/fsl_clock.h ****     {               \
+ 255:../drivers/fsl_clock.h ****         kCLOCK_Crc0 \
+ 256:../drivers/fsl_clock.h ****     }
+ 257:../drivers/fsl_clock.h **** 
+ 258:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for I2C. */
+ 259:../drivers/fsl_clock.h **** #define I2C_CLOCKS                            \
+ 260:../drivers/fsl_clock.h ****     {                                         \
+ 261:../drivers/fsl_clock.h ****         kCLOCK_I2c0, kCLOCK_I2c1, kCLOCK_I2c2 \
+ 262:../drivers/fsl_clock.h ****     }
+ 263:../drivers/fsl_clock.h **** 
+ 264:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PDB. */
+ 265:../drivers/fsl_clock.h **** #define PDB_CLOCKS  \
+ 266:../drivers/fsl_clock.h ****     {               \
+ 267:../drivers/fsl_clock.h ****         kCLOCK_Pdb0 \
+ 268:../drivers/fsl_clock.h ****     }
+ 269:../drivers/fsl_clock.h **** 
+ 270:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FTF. */
+ 271:../drivers/fsl_clock.h **** #define FTF_CLOCKS  \
+ 272:../drivers/fsl_clock.h ****     {               \
+ 273:../drivers/fsl_clock.h ****         kCLOCK_Ftf0 \
+ 274:../drivers/fsl_clock.h ****     }
+ 275:../drivers/fsl_clock.h **** 
+ 276:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CMP. */
+ 277:../drivers/fsl_clock.h **** #define CMP_CLOCKS                            \
+ 278:../drivers/fsl_clock.h ****     {                                         \
+ 279:../drivers/fsl_clock.h ****         kCLOCK_Cmp0, kCLOCK_Cmp1, kCLOCK_Cmp2 \
+ 280:../drivers/fsl_clock.h ****     }
+ 281:../drivers/fsl_clock.h **** 
+ 282:../drivers/fsl_clock.h **** /*!
+ 283:../drivers/fsl_clock.h ****  * @brief LPO clock frequency.
+ 284:../drivers/fsl_clock.h ****  */
+ 285:../drivers/fsl_clock.h **** #define LPO_CLK_FREQ 1000U
+ 286:../drivers/fsl_clock.h **** 
+ 287:../drivers/fsl_clock.h **** /*! @brief Peripherals clock source definition. */
+ 288:../drivers/fsl_clock.h **** #define SYS_CLK kCLOCK_CoreSysClk
+ 289:../drivers/fsl_clock.h **** #define BUS_CLK kCLOCK_BusClk
+ 290:../drivers/fsl_clock.h **** 
+ 291:../drivers/fsl_clock.h **** #define I2C0_CLK_SRC BUS_CLK
+ 292:../drivers/fsl_clock.h **** #define I2C1_CLK_SRC BUS_CLK
+ 293:../drivers/fsl_clock.h **** #define I2C2_CLK_SRC BUS_CLK
+ 294:../drivers/fsl_clock.h **** #define DSPI0_CLK_SRC BUS_CLK
+ 295:../drivers/fsl_clock.h **** #define DSPI1_CLK_SRC BUS_CLK
+ 296:../drivers/fsl_clock.h **** #define DSPI2_CLK_SRC BUS_CLK
+ 297:../drivers/fsl_clock.h **** #define UART0_CLK_SRC SYS_CLK
+ 298:../drivers/fsl_clock.h **** #define UART1_CLK_SRC SYS_CLK
+ 299:../drivers/fsl_clock.h **** #define UART2_CLK_SRC BUS_CLK
+ 300:../drivers/fsl_clock.h **** #define UART3_CLK_SRC BUS_CLK
+ 301:../drivers/fsl_clock.h **** #define UART4_CLK_SRC BUS_CLK
+ 302:../drivers/fsl_clock.h **** #define UART5_CLK_SRC BUS_CLK
+ 303:../drivers/fsl_clock.h **** 
+ 304:../drivers/fsl_clock.h **** /*! @brief Clock name used to get clock frequency. */
+ 305:../drivers/fsl_clock.h **** typedef enum _clock_name
+ 306:../drivers/fsl_clock.h **** {
+ 307:../drivers/fsl_clock.h **** 
+ 308:../drivers/fsl_clock.h ****     /* ----------------------------- System layer clock -------------------------------*/
+ 309:../drivers/fsl_clock.h ****     kCLOCK_CoreSysClk,    /*!< Core/system clock                                         */
+ 310:../drivers/fsl_clock.h ****     kCLOCK_PlatClk,       /*!< Platform clock                                            */
+ 311:../drivers/fsl_clock.h ****     kCLOCK_BusClk,        /*!< Bus clock                                                 */
+ 312:../drivers/fsl_clock.h ****     kCLOCK_FlexBusClk,    /*!< FlexBus clock                                             */
+ 313:../drivers/fsl_clock.h ****     kCLOCK_FlashClk,      /*!< Flash clock                                               */
+ 314:../drivers/fsl_clock.h ****     kCLOCK_FastPeriphClk, /*!< Fast peripheral clock                                     */
+ 315:../drivers/fsl_clock.h ****     kCLOCK_PllFllSelClk,  /*!< The clock after SIM[PLLFLLSEL].                           */
+ 316:../drivers/fsl_clock.h **** 
+ 317:../drivers/fsl_clock.h ****     /* ---------------------------------- OSC clock -----------------------------------*/
+ 318:../drivers/fsl_clock.h ****     kCLOCK_Er32kClk,       /*!< External reference 32K clock (ERCLK32K)                   */
+ 319:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClk,      /*!< OSC0 external reference clock (OSC0ERCLK)                 */
+ 320:../drivers/fsl_clock.h ****     kCLOCK_Osc1ErClk,      /*!< OSC1 external reference clock (OSC1ERCLK)                 */
+ 321:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClkUndiv, /*!< OSC0 external reference undivided clock(OSC0ERCLK_UNDIV). */
+ 322:../drivers/fsl_clock.h **** 
+ 323:../drivers/fsl_clock.h ****     /* ----------------------------- MCG and MCG-Lite clock ---------------------------*/
+ 324:../drivers/fsl_clock.h ****     kCLOCK_McgFixedFreqClk,   /*!< MCG fixed frequency clock (MCGFFCLK)                      */
+ 325:../drivers/fsl_clock.h ****     kCLOCK_McgInternalRefClk, /*!< MCG internal reference clock (MCGIRCLK)                   */
+ 326:../drivers/fsl_clock.h ****     kCLOCK_McgFllClk,         /*!< MCGFLLCLK                                                 */
+ 327:../drivers/fsl_clock.h ****     kCLOCK_McgPll0Clk,        /*!< MCGPLL0CLK                                                */
+ 328:../drivers/fsl_clock.h ****     kCLOCK_McgPll1Clk,        /*!< MCGPLL1CLK                                                */
+ 329:../drivers/fsl_clock.h ****     kCLOCK_McgExtPllClk,      /*!< EXT_PLLCLK                                                */
+ 330:../drivers/fsl_clock.h ****     kCLOCK_McgPeriphClk,      /*!< MCG peripheral clock (MCGPCLK)                            */
+ 331:../drivers/fsl_clock.h ****     kCLOCK_McgIrc48MClk,      /*!< MCG IRC48M clock                                          */
+ 332:../drivers/fsl_clock.h **** 
+ 333:../drivers/fsl_clock.h ****     /* --------------------------------- Other clock ----------------------------------*/
+ 334:../drivers/fsl_clock.h ****     kCLOCK_LpoClk, /*!< LPO clock                                                 */
+ 335:../drivers/fsl_clock.h **** 
+ 336:../drivers/fsl_clock.h **** } clock_name_t;
+ 337:../drivers/fsl_clock.h **** 
+ 338:../drivers/fsl_clock.h **** /*! @brief USB clock source definition. */
+ 339:../drivers/fsl_clock.h **** typedef enum _clock_usb_src
+ 340:../drivers/fsl_clock.h **** {
+ 341:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcPll0 = SIM_SOPT2_USBSRC(1U) | SIM_SOPT2_PLLFLLSEL(1U),   /*!< Use PLL0.      */
+ 342:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcIrc48M = SIM_SOPT2_USBSRC(1U) | SIM_SOPT2_PLLFLLSEL(3U), /*!< Use IRC48M.    */
+ 343:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcExt = SIM_SOPT2_USBSRC(0U)                               /*!< Use USB_CLKIN. */
+ 344:../drivers/fsl_clock.h **** } clock_usb_src_t;
+ 345:../drivers/fsl_clock.h **** 
+ 346:../drivers/fsl_clock.h **** /*------------------------------------------------------------------------------
+ 347:../drivers/fsl_clock.h **** 
+ 348:../drivers/fsl_clock.h ****  clock_gate_t definition:
+ 349:../drivers/fsl_clock.h **** 
+ 350:../drivers/fsl_clock.h ****  31                              16                              0
+ 351:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 352:../drivers/fsl_clock.h ****  | SIM_SCGC register offset       |   control bit offset in SCGC |
+ 353:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 354:../drivers/fsl_clock.h **** 
+ 355:../drivers/fsl_clock.h ****  For example, the SDHC clock gate is controlled by SIM_SCGC3[17], the
+ 356:../drivers/fsl_clock.h ****  SIM_SCGC3 offset in SIM is 0x1030, then kCLOCK_GateSdhc0 is defined as
+ 357:../drivers/fsl_clock.h **** 
+ 358:../drivers/fsl_clock.h ****               kCLOCK_GateSdhc0 = (0x1030 << 16) | 17;
+ 359:../drivers/fsl_clock.h **** 
+ 360:../drivers/fsl_clock.h **** ------------------------------------------------------------------------------*/
+ 361:../drivers/fsl_clock.h **** 
+ 362:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_SHIFT 16U
+ 363:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_MASK 0xFFFF0000U
+ 364:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_SHIFT 0U
+ 365:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_MASK 0x0000FFFFU
+ 366:../drivers/fsl_clock.h **** 
+ 367:../drivers/fsl_clock.h **** #define CLK_GATE_DEFINE(reg_offset, bit_shift)                                  \
+ 368:../drivers/fsl_clock.h ****     ((((reg_offset) << CLK_GATE_REG_OFFSET_SHIFT) & CLK_GATE_REG_OFFSET_MASK) | \
+ 369:../drivers/fsl_clock.h ****      (((bit_shift) << CLK_GATE_BIT_SHIFT_SHIFT) & CLK_GATE_BIT_SHIFT_MASK))
+ 370:../drivers/fsl_clock.h **** 
+ 371:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_REG_OFFSET(x) (((x)&CLK_GATE_REG_OFFSET_MASK) >> CLK_GATE_REG_OFFSET_SHIF
+ 372:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_BITS_SHIFT(x) (((x)&CLK_GATE_BIT_SHIFT_MASK) >> CLK_GATE_BIT_SHIFT_SHIFT)
+ 373:../drivers/fsl_clock.h **** 
+ 374:../drivers/fsl_clock.h **** /*! @brief Clock gate name used for CLOCK_EnableClock/CLOCK_DisableClock. */
+ 375:../drivers/fsl_clock.h **** typedef enum _clock_ip_name
+ 376:../drivers/fsl_clock.h **** {
+ 377:../drivers/fsl_clock.h ****     kCLOCK_IpInvalid = 0U,
+ 378:../drivers/fsl_clock.h ****     kCLOCK_I2c2 = CLK_GATE_DEFINE(0x1028U, 6U),
+ 379:../drivers/fsl_clock.h ****     kCLOCK_Uart4 = CLK_GATE_DEFINE(0x1028U, 10U),
+ 380:../drivers/fsl_clock.h ****     kCLOCK_Uart5 = CLK_GATE_DEFINE(0x1028U, 11U),
+ 381:../drivers/fsl_clock.h **** 
+ 382:../drivers/fsl_clock.h ****     kCLOCK_Enet0 = CLK_GATE_DEFINE(0x102CU, 0U),
+ 383:../drivers/fsl_clock.h ****     kCLOCK_Dac0 = CLK_GATE_DEFINE(0x102CU, 12U),
+ 384:../drivers/fsl_clock.h ****     kCLOCK_Dac1 = CLK_GATE_DEFINE(0x102CU, 13U),
+ 385:../drivers/fsl_clock.h **** 
+ 386:../drivers/fsl_clock.h ****     kCLOCK_Spi2 = CLK_GATE_DEFINE(0x1030U, 12U),
+ 387:../drivers/fsl_clock.h ****     kCLOCK_Sdhc0 = CLK_GATE_DEFINE(0x1030U, 17U),
+ 388:../drivers/fsl_clock.h ****     kCLOCK_Ftm3 = CLK_GATE_DEFINE(0x1030U, 25U),
+ 389:../drivers/fsl_clock.h ****     kCLOCK_Adc1 = CLK_GATE_DEFINE(0x1030U, 27U),
+ 390:../drivers/fsl_clock.h **** 
+ 391:../drivers/fsl_clock.h ****     kCLOCK_Ewm0 = CLK_GATE_DEFINE(0x1034U, 1U),
+ 392:../drivers/fsl_clock.h ****     kCLOCK_Cmt0 = CLK_GATE_DEFINE(0x1034U, 2U),
+ 393:../drivers/fsl_clock.h ****     kCLOCK_I2c0 = CLK_GATE_DEFINE(0x1034U, 6U),
+ 394:../drivers/fsl_clock.h ****     kCLOCK_I2c1 = CLK_GATE_DEFINE(0x1034U, 7U),
+ 395:../drivers/fsl_clock.h ****     kCLOCK_Uart0 = CLK_GATE_DEFINE(0x1034U, 10U),
+ 396:../drivers/fsl_clock.h ****     kCLOCK_Uart1 = CLK_GATE_DEFINE(0x1034U, 11U),
+ 397:../drivers/fsl_clock.h ****     kCLOCK_Uart2 = CLK_GATE_DEFINE(0x1034U, 12U),
+ 398:../drivers/fsl_clock.h ****     kCLOCK_Uart3 = CLK_GATE_DEFINE(0x1034U, 13U),
+ 399:../drivers/fsl_clock.h ****     kCLOCK_Usbfs0 = CLK_GATE_DEFINE(0x1034U, 18U),
+ 400:../drivers/fsl_clock.h ****     kCLOCK_Cmp0 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 401:../drivers/fsl_clock.h ****     kCLOCK_Cmp1 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 402:../drivers/fsl_clock.h ****     kCLOCK_Cmp2 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 403:../drivers/fsl_clock.h ****     kCLOCK_Vref0 = CLK_GATE_DEFINE(0x1034U, 20U),
+ 404:../drivers/fsl_clock.h **** 
+ 405:../drivers/fsl_clock.h ****     kCLOCK_Lptmr0 = CLK_GATE_DEFINE(0x1038U, 0U),
+ 406:../drivers/fsl_clock.h ****     kCLOCK_PortA = CLK_GATE_DEFINE(0x1038U, 9U),
+ 407:../drivers/fsl_clock.h ****     kCLOCK_PortB = CLK_GATE_DEFINE(0x1038U, 10U),
+ 408:../drivers/fsl_clock.h ****     kCLOCK_PortC = CLK_GATE_DEFINE(0x1038U, 11U),
+ 409:../drivers/fsl_clock.h ****     kCLOCK_PortD = CLK_GATE_DEFINE(0x1038U, 12U),
+ 410:../drivers/fsl_clock.h ****     kCLOCK_PortE = CLK_GATE_DEFINE(0x1038U, 13U),
+ 411:../drivers/fsl_clock.h **** 
+ 412:../drivers/fsl_clock.h ****     kCLOCK_Ftf0 = CLK_GATE_DEFINE(0x103CU, 0U),
+ 413:../drivers/fsl_clock.h ****     kCLOCK_Dmamux0 = CLK_GATE_DEFINE(0x103CU, 1U),
+ 414:../drivers/fsl_clock.h ****     kCLOCK_Flexcan0 = CLK_GATE_DEFINE(0x103CU, 4U),
+ 415:../drivers/fsl_clock.h ****     kCLOCK_Rnga0 = CLK_GATE_DEFINE(0x103CU, 9U),
+ 416:../drivers/fsl_clock.h ****     kCLOCK_Spi0 = CLK_GATE_DEFINE(0x103CU, 12U),
+ 417:../drivers/fsl_clock.h ****     kCLOCK_Spi1 = CLK_GATE_DEFINE(0x103CU, 13U),
+ 418:../drivers/fsl_clock.h ****     kCLOCK_Sai0 = CLK_GATE_DEFINE(0x103CU, 15U),
+ 419:../drivers/fsl_clock.h ****     kCLOCK_Crc0 = CLK_GATE_DEFINE(0x103CU, 18U),
+ 420:../drivers/fsl_clock.h ****     kCLOCK_Usbdcd0 = CLK_GATE_DEFINE(0x103CU, 21U),
+ 421:../drivers/fsl_clock.h ****     kCLOCK_Pdb0 = CLK_GATE_DEFINE(0x103CU, 22U),
+ 422:../drivers/fsl_clock.h ****     kCLOCK_Pit0 = CLK_GATE_DEFINE(0x103CU, 23U),
+ 423:../drivers/fsl_clock.h ****     kCLOCK_Ftm0 = CLK_GATE_DEFINE(0x103CU, 24U),
+ 424:../drivers/fsl_clock.h ****     kCLOCK_Ftm1 = CLK_GATE_DEFINE(0x103CU, 25U),
+ 425:../drivers/fsl_clock.h ****     kCLOCK_Ftm2 = CLK_GATE_DEFINE(0x103CU, 26U),
+ 426:../drivers/fsl_clock.h ****     kCLOCK_Adc0 = CLK_GATE_DEFINE(0x103CU, 27U),
+ 427:../drivers/fsl_clock.h ****     kCLOCK_Rtc0 = CLK_GATE_DEFINE(0x103CU, 29U),
+ 428:../drivers/fsl_clock.h **** 
+ 429:../drivers/fsl_clock.h ****     kCLOCK_Flexbus0 = CLK_GATE_DEFINE(0x1040U, 0U),
+ 430:../drivers/fsl_clock.h ****     kCLOCK_Dma0 = CLK_GATE_DEFINE(0x1040U, 1U),
+ 431:../drivers/fsl_clock.h ****     kCLOCK_Sysmpu0 = CLK_GATE_DEFINE(0x1040U, 2U),
+ 432:../drivers/fsl_clock.h **** } clock_ip_name_t;
+ 433:../drivers/fsl_clock.h **** 
+ 434:../drivers/fsl_clock.h **** /*!@brief SIM configuration structure for clock setting. */
+ 435:../drivers/fsl_clock.h **** typedef struct _sim_clock_config
+ 436:../drivers/fsl_clock.h **** {
+ 437:../drivers/fsl_clock.h ****     uint8_t pllFllSel; /*!< PLL/FLL/IRC48M selection.    */
+ 438:../drivers/fsl_clock.h ****     uint8_t er32kSrc;  /*!< ERCLK32K source selection.   */
+ 439:../drivers/fsl_clock.h ****     uint32_t clkdiv1;  /*!< SIM_CLKDIV1.                 */
+ 440:../drivers/fsl_clock.h **** } sim_clock_config_t;
+ 441:../drivers/fsl_clock.h **** 
+ 442:../drivers/fsl_clock.h **** /*! @brief OSC work mode. */
+ 443:../drivers/fsl_clock.h **** typedef enum _osc_mode
+ 444:../drivers/fsl_clock.h **** {
+ 445:../drivers/fsl_clock.h ****     kOSC_ModeExt = 0U, /*!< Use an external clock.   */
+ 446:../drivers/fsl_clock.h **** #if (defined(MCG_C2_EREFS_MASK) && !(defined(MCG_C2_EREFS0_MASK)))
+ 447:../drivers/fsl_clock.h ****     kOSC_ModeOscLowPower = MCG_C2_EREFS_MASK, /*!< Oscillator low power. */
+ 448:../drivers/fsl_clock.h **** #else
+ 449:../drivers/fsl_clock.h ****     kOSC_ModeOscLowPower = MCG_C2_EREFS0_MASK, /*!< Oscillator low power. */
+ 450:../drivers/fsl_clock.h **** #endif
+ 451:../drivers/fsl_clock.h ****     kOSC_ModeOscHighGain = 0U
+ 452:../drivers/fsl_clock.h **** #if (defined(MCG_C2_EREFS_MASK) && !(defined(MCG_C2_EREFS0_MASK)))
+ 453:../drivers/fsl_clock.h ****                            |
+ 454:../drivers/fsl_clock.h ****                            MCG_C2_EREFS_MASK
+ 455:../drivers/fsl_clock.h **** #else
+ 456:../drivers/fsl_clock.h ****                            |
+ 457:../drivers/fsl_clock.h ****                            MCG_C2_EREFS0_MASK
+ 458:../drivers/fsl_clock.h **** #endif
+ 459:../drivers/fsl_clock.h **** #if (defined(MCG_C2_HGO_MASK) && !(defined(MCG_C2_HGO0_MASK)))
+ 460:../drivers/fsl_clock.h ****                            |
+ 461:../drivers/fsl_clock.h ****                            MCG_C2_HGO_MASK, /*!< Oscillator high gain. */
+ 462:../drivers/fsl_clock.h **** #else
+ 463:../drivers/fsl_clock.h ****                            |
+ 464:../drivers/fsl_clock.h ****                            MCG_C2_HGO0_MASK, /*!< Oscillator high gain. */
+ 465:../drivers/fsl_clock.h **** #endif
+ 466:../drivers/fsl_clock.h **** } osc_mode_t;
+ 467:../drivers/fsl_clock.h **** 
+ 468:../drivers/fsl_clock.h **** /*! @brief Oscillator capacitor load setting.*/
+ 469:../drivers/fsl_clock.h **** enum _osc_cap_load
+ 470:../drivers/fsl_clock.h **** {
+ 471:../drivers/fsl_clock.h ****     kOSC_Cap2P = OSC_CR_SC2P_MASK,  /*!< 2  pF capacitor load */
+ 472:../drivers/fsl_clock.h ****     kOSC_Cap4P = OSC_CR_SC4P_MASK,  /*!< 4  pF capacitor load */
+ 473:../drivers/fsl_clock.h ****     kOSC_Cap8P = OSC_CR_SC8P_MASK,  /*!< 8  pF capacitor load */
+ 474:../drivers/fsl_clock.h ****     kOSC_Cap16P = OSC_CR_SC16P_MASK /*!< 16 pF capacitor load */
+ 475:../drivers/fsl_clock.h **** };
+ 476:../drivers/fsl_clock.h **** 
+ 477:../drivers/fsl_clock.h **** /*! @brief OSCERCLK enable mode. */
+ 478:../drivers/fsl_clock.h **** enum _oscer_enable_mode
+ 479:../drivers/fsl_clock.h **** {
+ 480:../drivers/fsl_clock.h ****     kOSC_ErClkEnable = OSC_CR_ERCLKEN_MASK,       /*!< Enable.              */
+ 481:../drivers/fsl_clock.h ****     kOSC_ErClkEnableInStop = OSC_CR_EREFSTEN_MASK /*!< Enable in stop mode. */
+ 482:../drivers/fsl_clock.h **** };
+ 483:../drivers/fsl_clock.h **** 
+ 484:../drivers/fsl_clock.h **** /*! @brief OSC configuration for OSCERCLK. */
+ 485:../drivers/fsl_clock.h **** typedef struct _oscer_config
+ 486:../drivers/fsl_clock.h **** {
+ 487:../drivers/fsl_clock.h ****     uint8_t enableMode; /*!< OSCERCLK enable mode. OR'ed value of @ref _oscer_enable_mode. */
+ 488:../drivers/fsl_clock.h **** 
+ 489:../drivers/fsl_clock.h **** } oscer_config_t;
+ 490:../drivers/fsl_clock.h **** 
+ 491:../drivers/fsl_clock.h **** /*!
+ 492:../drivers/fsl_clock.h ****  * @brief OSC Initialization Configuration Structure
+ 493:../drivers/fsl_clock.h ****  *
+ 494:../drivers/fsl_clock.h ****  * Defines the configuration data structure to initialize the OSC.
+ 495:../drivers/fsl_clock.h ****  * When porting to a new board, set the following members
+ 496:../drivers/fsl_clock.h ****  * according to the board setting:
+ 497:../drivers/fsl_clock.h ****  * 1. freq: The external frequency.
+ 498:../drivers/fsl_clock.h ****  * 2. workMode: The OSC module mode.
+ 499:../drivers/fsl_clock.h ****  */
+ 500:../drivers/fsl_clock.h **** typedef struct _osc_config
+ 501:../drivers/fsl_clock.h **** {
+ 502:../drivers/fsl_clock.h ****     uint32_t freq;              /*!< External clock frequency.    */
+ 503:../drivers/fsl_clock.h ****     uint8_t capLoad;            /*!< Capacitor load setting.      */
+ 504:../drivers/fsl_clock.h ****     osc_mode_t workMode;        /*!< OSC work mode setting.       */
+ 505:../drivers/fsl_clock.h ****     oscer_config_t oscerConfig; /*!< Configuration for OSCERCLK.  */
+ 506:../drivers/fsl_clock.h **** } osc_config_t;
+ 507:../drivers/fsl_clock.h **** 
+ 508:../drivers/fsl_clock.h **** /*! @brief MCG FLL reference clock source select. */
+ 509:../drivers/fsl_clock.h **** typedef enum _mcg_fll_src
+ 510:../drivers/fsl_clock.h **** {
+ 511:../drivers/fsl_clock.h ****     kMCG_FllSrcExternal, /*!< External reference clock is selected          */
+ 512:../drivers/fsl_clock.h ****     kMCG_FllSrcInternal  /*!< The slow internal reference clock is selected */
+ 513:../drivers/fsl_clock.h **** } mcg_fll_src_t;
+ 514:../drivers/fsl_clock.h **** 
+ 515:../drivers/fsl_clock.h **** /*! @brief MCG internal reference clock select */
+ 516:../drivers/fsl_clock.h **** typedef enum _mcg_irc_mode
+ 517:../drivers/fsl_clock.h **** {
+ 518:../drivers/fsl_clock.h ****     kMCG_IrcSlow, /*!< Slow internal reference clock selected */
+ 519:../drivers/fsl_clock.h ****     kMCG_IrcFast  /*!< Fast internal reference clock selected */
+ 520:../drivers/fsl_clock.h **** } mcg_irc_mode_t;
+ 521:../drivers/fsl_clock.h **** 
+ 522:../drivers/fsl_clock.h **** /*! @brief MCG DCO Maximum Frequency with 32.768 kHz Reference */
+ 523:../drivers/fsl_clock.h **** typedef enum _mcg_dmx32
+ 524:../drivers/fsl_clock.h **** {
+ 525:../drivers/fsl_clock.h ****     kMCG_Dmx32Default, /*!< DCO has a default range of 25% */
+ 526:../drivers/fsl_clock.h ****     kMCG_Dmx32Fine     /*!< DCO is fine-tuned for maximum frequency with 32.768 kHz reference */
+ 527:../drivers/fsl_clock.h **** } mcg_dmx32_t;
+ 528:../drivers/fsl_clock.h **** 
+ 529:../drivers/fsl_clock.h **** /*! @brief MCG DCO range select */
+ 530:../drivers/fsl_clock.h **** typedef enum _mcg_drs
+ 531:../drivers/fsl_clock.h **** {
+ 532:../drivers/fsl_clock.h ****     kMCG_DrsLow,     /*!< Low frequency range       */
+ 533:../drivers/fsl_clock.h ****     kMCG_DrsMid,     /*!< Mid frequency range       */
+ 534:../drivers/fsl_clock.h ****     kMCG_DrsMidHigh, /*!< Mid-High frequency range  */
+ 535:../drivers/fsl_clock.h ****     kMCG_DrsHigh     /*!< High frequency range      */
+ 536:../drivers/fsl_clock.h **** } mcg_drs_t;
+ 537:../drivers/fsl_clock.h **** 
+ 538:../drivers/fsl_clock.h **** /*! @brief MCG PLL reference clock select */
+ 539:../drivers/fsl_clock.h **** typedef enum _mcg_pll_ref_src
+ 540:../drivers/fsl_clock.h **** {
+ 541:../drivers/fsl_clock.h ****     kMCG_PllRefOsc0, /*!< Selects OSC0 as PLL reference clock                 */
+ 542:../drivers/fsl_clock.h ****     kMCG_PllRefOsc1  /*!< Selects OSC1 as PLL reference clock                 */
+ 543:../drivers/fsl_clock.h **** } mcg_pll_ref_src_t;
+ 544:../drivers/fsl_clock.h **** 
+ 545:../drivers/fsl_clock.h **** /*! @brief MCGOUT clock source. */
+ 546:../drivers/fsl_clock.h **** typedef enum _mcg_clkout_src
+ 547:../drivers/fsl_clock.h **** {
+ 548:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcOut,      /*!< Output of the FLL is selected (reset default)  */
+ 549:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcInternal, /*!< Internal reference clock is selected           */
+ 550:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcExternal, /*!< External reference clock is selected           */
+ 551:../drivers/fsl_clock.h **** } mcg_clkout_src_t;
+ 552:../drivers/fsl_clock.h **** 
+ 553:../drivers/fsl_clock.h **** /*! @brief MCG Automatic Trim Machine Select */
+ 554:../drivers/fsl_clock.h **** typedef enum _mcg_atm_select
+ 555:../drivers/fsl_clock.h **** {
+ 556:../drivers/fsl_clock.h ****     kMCG_AtmSel32k, /*!< 32 kHz Internal Reference Clock selected  */
+ 557:../drivers/fsl_clock.h ****     kMCG_AtmSel4m   /*!< 4 MHz Internal Reference Clock selected   */
+ 558:../drivers/fsl_clock.h **** } mcg_atm_select_t;
+ 559:../drivers/fsl_clock.h **** 
+ 560:../drivers/fsl_clock.h **** /*! @brief MCG OSC Clock Select */
+ 561:../drivers/fsl_clock.h **** typedef enum _mcg_oscsel
+ 562:../drivers/fsl_clock.h **** {
+ 563:../drivers/fsl_clock.h ****     kMCG_OscselOsc, /*!< Selects System Oscillator (OSCCLK) */
+ 564:../drivers/fsl_clock.h ****     kMCG_OscselRtc, /*!< Selects 32 kHz RTC Oscillator      */
+ 565:../drivers/fsl_clock.h ****     kMCG_OscselIrc  /*!< Selects 48 MHz IRC Oscillator      */
+ 566:../drivers/fsl_clock.h **** } mcg_oscsel_t;
+ 567:../drivers/fsl_clock.h **** 
+ 568:../drivers/fsl_clock.h **** /*! @brief MCG PLLCS select */
+ 569:../drivers/fsl_clock.h **** typedef enum _mcg_pll_clk_select
+ 570:../drivers/fsl_clock.h **** {
+ 571:../drivers/fsl_clock.h ****     kMCG_PllClkSelPll0, /*!< PLL0 output clock is selected  */
+ 572:../drivers/fsl_clock.h ****     kMCG_PllClkSelPll1  /* PLL1 output clock is selected    */
+ 573:../drivers/fsl_clock.h **** } mcg_pll_clk_select_t;
+ 574:../drivers/fsl_clock.h **** 
+ 575:../drivers/fsl_clock.h **** /*! @brief MCG clock monitor mode. */
+ 576:../drivers/fsl_clock.h **** typedef enum _mcg_monitor_mode
+ 577:../drivers/fsl_clock.h **** {
+ 578:../drivers/fsl_clock.h ****     kMCG_MonitorNone, /*!< Clock monitor is disabled.         */
+ 579:../drivers/fsl_clock.h ****     kMCG_MonitorInt,  /*!< Trigger interrupt when clock lost. */
+ 580:../drivers/fsl_clock.h ****     kMCG_MonitorReset /*!< System reset when clock lost.      */
+ 581:../drivers/fsl_clock.h **** } mcg_monitor_mode_t;
+ 582:../drivers/fsl_clock.h **** 
+ 583:../drivers/fsl_clock.h **** /*! @brief MCG status. */
+ 584:../drivers/fsl_clock.h **** enum _mcg_status
+ 585:../drivers/fsl_clock.h **** {
+ 586:../drivers/fsl_clock.h ****     kStatus_MCG_ModeUnreachable = MAKE_STATUS(kStatusGroup_MCG, 0),       /*!< Can't switch to targ
+ 587:../drivers/fsl_clock.h ****     kStatus_MCG_ModeInvalid = MAKE_STATUS(kStatusGroup_MCG, 1),           /*!< Current mode invalid
+ 588:../drivers/fsl_clock.h ****                                                                                function. */
+ 589:../drivers/fsl_clock.h ****     kStatus_MCG_AtmBusClockInvalid = MAKE_STATUS(kStatusGroup_MCG, 2),    /*!< Invalid bus clock fo
+ 590:../drivers/fsl_clock.h ****     kStatus_MCG_AtmDesiredFreqInvalid = MAKE_STATUS(kStatusGroup_MCG, 3), /*!< Invalid desired freq
+ 591:../drivers/fsl_clock.h ****     kStatus_MCG_AtmIrcUsed = MAKE_STATUS(kStatusGroup_MCG, 4),            /*!< IRC is used when usi
+ 592:../drivers/fsl_clock.h ****     kStatus_MCG_AtmHardwareFail = MAKE_STATUS(kStatusGroup_MCG, 5),       /*!< Hardware fail occurs
+ 593:../drivers/fsl_clock.h ****     kStatus_MCG_SourceUsed = MAKE_STATUS(kStatusGroup_MCG, 6)             /*!< Can't change the clo
+ 594:../drivers/fsl_clock.h ****                                                                                it is in use. */
+ 595:../drivers/fsl_clock.h **** };
+ 596:../drivers/fsl_clock.h **** 
+ 597:../drivers/fsl_clock.h **** /*! @brief MCG status flags. */
+ 598:../drivers/fsl_clock.h **** enum _mcg_status_flags_t
+ 599:../drivers/fsl_clock.h **** {
+ 600:../drivers/fsl_clock.h ****     kMCG_Osc0LostFlag = (1U << 0U),   /*!< OSC0 lost.         */
+ 601:../drivers/fsl_clock.h ****     kMCG_Osc0InitFlag = (1U << 1U),   /*!< OSC0 crystal initialized. */
+ 602:../drivers/fsl_clock.h ****     kMCG_RtcOscLostFlag = (1U << 4U), /*!< RTC OSC lost.      */
+ 603:../drivers/fsl_clock.h ****     kMCG_Pll0LostFlag = (1U << 5U),   /*!< PLL0 lost.         */
+ 604:../drivers/fsl_clock.h ****     kMCG_Pll0LockFlag = (1U << 6U),   /*!< PLL0 locked.       */
+ 605:../drivers/fsl_clock.h **** };
+ 606:../drivers/fsl_clock.h **** 
+ 607:../drivers/fsl_clock.h **** /*! @brief MCG internal reference clock (MCGIRCLK) enable mode definition. */
+ 608:../drivers/fsl_clock.h **** enum _mcg_irclk_enable_mode
+ 609:../drivers/fsl_clock.h **** {
+ 610:../drivers/fsl_clock.h ****     kMCG_IrclkEnable = MCG_C1_IRCLKEN_MASK,       /*!< MCGIRCLK enable.              */
+ 611:../drivers/fsl_clock.h ****     kMCG_IrclkEnableInStop = MCG_C1_IREFSTEN_MASK /*!< MCGIRCLK enable in stop mode. */
+ 612:../drivers/fsl_clock.h **** };
+ 613:../drivers/fsl_clock.h **** 
+ 614:../drivers/fsl_clock.h **** /*! @brief MCG PLL clock enable mode definition. */
+ 615:../drivers/fsl_clock.h **** enum _mcg_pll_enable_mode
+ 616:../drivers/fsl_clock.h **** {
+ 617:../drivers/fsl_clock.h ****     kMCG_PllEnableIndependent = MCG_C5_PLLCLKEN0_MASK, /*!< MCGPLLCLK enable independent of the
+ 618:../drivers/fsl_clock.h ****                                                            MCG clock mode. Generally, the PLL
+ 619:../drivers/fsl_clock.h ****                                                            is disabled in FLL modes
+ 620:../drivers/fsl_clock.h ****                                                            (FEI/FBI/FEE/FBE). Setting the PLL clock
+ 621:../drivers/fsl_clock.h ****                                                            enable independent, enables the
+ 622:../drivers/fsl_clock.h ****                                                            PLL in the FLL modes.          */
+ 623:../drivers/fsl_clock.h ****     kMCG_PllEnableInStop = MCG_C5_PLLSTEN0_MASK        /*!< MCGPLLCLK enable in STOP mode. */
+ 624:../drivers/fsl_clock.h **** };
+ 625:../drivers/fsl_clock.h **** 
+ 626:../drivers/fsl_clock.h **** /*! @brief MCG mode definitions */
+ 627:../drivers/fsl_clock.h **** typedef enum _mcg_mode
+ 628:../drivers/fsl_clock.h **** {
+ 629:../drivers/fsl_clock.h ****     kMCG_ModeFEI = 0U, /*!< FEI   - FLL Engaged Internal         */
+ 630:../drivers/fsl_clock.h ****     kMCG_ModeFBI,      /*!< FBI   - FLL Bypassed Internal        */
+ 631:../drivers/fsl_clock.h ****     kMCG_ModeBLPI,     /*!< BLPI  - Bypassed Low Power Internal  */
+ 632:../drivers/fsl_clock.h ****     kMCG_ModeFEE,      /*!< FEE   - FLL Engaged External         */
+ 633:../drivers/fsl_clock.h ****     kMCG_ModeFBE,      /*!< FBE   - FLL Bypassed External        */
+ 634:../drivers/fsl_clock.h ****     kMCG_ModeBLPE,     /*!< BLPE  - Bypassed Low Power External  */
+ 635:../drivers/fsl_clock.h ****     kMCG_ModePBE,      /*!< PBE   - PLL Bypassed External        */
+ 636:../drivers/fsl_clock.h ****     kMCG_ModePEE,      /*!< PEE   - PLL Engaged External         */
+ 637:../drivers/fsl_clock.h ****     kMCG_ModeError     /*!< Unknown mode                         */
+ 638:../drivers/fsl_clock.h **** } mcg_mode_t;
+ 639:../drivers/fsl_clock.h **** 
+ 640:../drivers/fsl_clock.h **** /*! @brief MCG PLL configuration. */
+ 641:../drivers/fsl_clock.h **** typedef struct _mcg_pll_config
+ 642:../drivers/fsl_clock.h **** {
+ 643:../drivers/fsl_clock.h ****     uint8_t enableMode; /*!< Enable mode. OR'ed value of @ref _mcg_pll_enable_mode. */
+ 644:../drivers/fsl_clock.h ****     uint8_t prdiv;      /*!< Reference divider PRDIV.    */
+ 645:../drivers/fsl_clock.h ****     uint8_t vdiv;       /*!< VCO divider VDIV.           */
+ 646:../drivers/fsl_clock.h **** } mcg_pll_config_t;
+ 647:../drivers/fsl_clock.h **** 
+ 648:../drivers/fsl_clock.h **** /*! @brief MCG mode change configuration structure
+ 649:../drivers/fsl_clock.h ****  *
+ 650:../drivers/fsl_clock.h ****  * When porting to a new board, set the following members
+ 651:../drivers/fsl_clock.h ****  * according to the board setting:
+ 652:../drivers/fsl_clock.h ****  * 1. frdiv: If the FLL uses the external reference clock, set this
+ 653:../drivers/fsl_clock.h ****  *    value to ensure that the external reference clock divided by frdiv is
+ 654:../drivers/fsl_clock.h ****  *    in the 31.25 kHz to 39.0625 kHz range.
+ 655:../drivers/fsl_clock.h ****  * 2. The PLL reference clock divider PRDIV: PLL reference clock frequency after
+ 656:../drivers/fsl_clock.h ****  *    PRDIV should be in the FSL_FEATURE_MCG_PLL_REF_MIN to
+ 657:../drivers/fsl_clock.h ****  *    FSL_FEATURE_MCG_PLL_REF_MAX range.
+ 658:../drivers/fsl_clock.h ****  */
+ 659:../drivers/fsl_clock.h **** typedef struct _mcg_config
+ 660:../drivers/fsl_clock.h **** {
+ 661:../drivers/fsl_clock.h ****     mcg_mode_t mcgMode; /*!< MCG mode.                   */
+ 662:../drivers/fsl_clock.h **** 
+ 663:../drivers/fsl_clock.h ****     /* ----------------------- MCGIRCCLK settings ------------------------ */
+ 664:../drivers/fsl_clock.h ****     uint8_t irclkEnableMode; /*!< MCGIRCLK enable mode.       */
+ 665:../drivers/fsl_clock.h ****     mcg_irc_mode_t ircs;     /*!< Source, MCG_C2[IRCS].       */
+ 666:../drivers/fsl_clock.h ****     uint8_t fcrdiv;          /*!< Divider, MCG_SC[FCRDIV].    */
+ 667:../drivers/fsl_clock.h **** 
+ 668:../drivers/fsl_clock.h ****     /* ------------------------ MCG FLL settings ------------------------- */
+ 669:../drivers/fsl_clock.h ****     uint8_t frdiv;       /*!< Divider MCG_C1[FRDIV].      */
+ 670:../drivers/fsl_clock.h ****     mcg_drs_t drs;       /*!< DCO range MCG_C4[DRST_DRS]. */
+ 671:../drivers/fsl_clock.h ****     mcg_dmx32_t dmx32;   /*!< MCG_C4[DMX32].              */
+ 672:../drivers/fsl_clock.h ****     mcg_oscsel_t oscsel; /*!< OSC select MCG_C7[OSCSEL].  */
+ 673:../drivers/fsl_clock.h **** 
+ 674:../drivers/fsl_clock.h ****     /* ------------------------ MCG PLL settings ------------------------- */
+ 675:../drivers/fsl_clock.h ****     mcg_pll_config_t pll0Config; /*!< MCGPLL0CLK configuration.   */
+ 676:../drivers/fsl_clock.h **** 
+ 677:../drivers/fsl_clock.h **** } mcg_config_t;
+ 678:../drivers/fsl_clock.h **** 
+ 679:../drivers/fsl_clock.h **** /*******************************************************************************
+ 680:../drivers/fsl_clock.h ****  * API
+ 681:../drivers/fsl_clock.h ****  ******************************************************************************/
+ 682:../drivers/fsl_clock.h **** 
+ 683:../drivers/fsl_clock.h **** #if defined(__cplusplus)
+ 684:../drivers/fsl_clock.h **** extern "C" {
+ 685:../drivers/fsl_clock.h **** #endif /* __cplusplus */
+ 686:../drivers/fsl_clock.h **** 
+ 687:../drivers/fsl_clock.h **** /*!
+ 688:../drivers/fsl_clock.h ****  * @brief Enable the clock for specific IP.
+ 689:../drivers/fsl_clock.h ****  *
+ 690:../drivers/fsl_clock.h ****  * @param name  Which clock to enable, see \ref clock_ip_name_t.
+ 691:../drivers/fsl_clock.h ****  */
+ 692:../drivers/fsl_clock.h **** static inline void CLOCK_EnableClock(clock_ip_name_t name)
+ 693:../drivers/fsl_clock.h **** {
+ 694:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+ 695:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+  36              		.loc 2 695 0
+  37 0000 0B4A     		ldr	r2, .L2
+  38 0002 1368     		ldr	r3, [r2]
+  39 0004 43F00203 		orr	r3, r3, #2
+  40              	.LBE23:
+  41              	.LBE22:
+  42              		.loc 1 42 0
+  43 0008 10B5     		push	{r4, lr}
+  44              		.cfi_def_cfa_offset 8
+  45              		.cfi_offset 4, -8
+  46              		.cfi_offset 14, -4
+  47              	.LBB25:
+  48              	.LBB24:
+  49              		.loc 2 695 0
+  50 000a 1360     		str	r3, [r2]
+  51              	.LVL1:
+  52              	.LBE24:
+  53              	.LBE25:
+  43:../drivers/fsl_ewm.c ****     assert(config);
+  44:../drivers/fsl_ewm.c **** 
+  45:../drivers/fsl_ewm.c ****     uint32_t value = 0U;
+  46:../drivers/fsl_ewm.c **** 
+  47:../drivers/fsl_ewm.c **** #if !((defined(FSL_FEATURE_SOC_PCC_COUNT) && FSL_FEATURE_SOC_PCC_COUNT) && \
+  48:../drivers/fsl_ewm.c ****     (defined(FSL_FEATURE_PCC_SUPPORT_EWM_CLOCK_REMOVE) && FSL_FEATURE_PCC_SUPPORT_EWM_CLOCK_REMOVE)
+  49:../drivers/fsl_ewm.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+  50:../drivers/fsl_ewm.c ****     CLOCK_EnableClock(kCLOCK_Ewm0);
+  51:../drivers/fsl_ewm.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+  52:../drivers/fsl_ewm.c **** #endif
+  53:../drivers/fsl_ewm.c ****     value = EWM_CTRL_EWMEN(config->enableEwm) | EWM_CTRL_ASSIN(config->setInputAssertLogic) |
+  54:../drivers/fsl_ewm.c ****             EWM_CTRL_INEN(config->enableEwmInput) | EWM_CTRL_INTEN(config->enableInterrupt);
+  54              		.loc 1 54 0
+  55 000c 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
+  53:../drivers/fsl_ewm.c ****             EWM_CTRL_INEN(config->enableEwmInput) | EWM_CTRL_INTEN(config->enableInterrupt);
+  56              		.loc 1 53 0
+  57 000e 8A78     		ldrb	r2, [r1, #2]	@ zero_extendqisi2
+  58 0010 0C78     		ldrb	r4, [r1]	@ zero_extendqisi2
+  59              		.loc 1 54 0
+  60 0012 9B00     		lsls	r3, r3, #2
+  53:../drivers/fsl_ewm.c ****             EWM_CTRL_INEN(config->enableEwmInput) | EWM_CTRL_INTEN(config->enableInterrupt);
+  61              		.loc 1 53 0
+  62 0014 43EA4203 		orr	r3, r3, r2, lsl #1
+  63              		.loc 1 54 0
+  64 0018 CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
+  65 001a D200     		lsls	r2, r2, #3
+  66 001c D2B2     		uxtb	r2, r2
+  53:../drivers/fsl_ewm.c ****             EWM_CTRL_INEN(config->enableEwmInput) | EWM_CTRL_INTEN(config->enableInterrupt);
+  67              		.loc 1 53 0
+  68 001e 2243     		orrs	r2, r2, r4
+  55:../drivers/fsl_ewm.c **** #if defined(FSL_FEATURE_EWM_HAS_PRESCALER) && FSL_FEATURE_EWM_HAS_PRESCALER
+  56:../drivers/fsl_ewm.c ****     base->CLKPRESCALER = config->prescaler;
+  57:../drivers/fsl_ewm.c **** #endif /* FSL_FEATURE_EWM_HAS_PRESCALER */
+  58:../drivers/fsl_ewm.c **** 
+  59:../drivers/fsl_ewm.c **** #if defined(FSL_FEATURE_EWM_HAS_CLOCK_SELECT) && FSL_FEATURE_EWM_HAS_CLOCK_SELECT
+  60:../drivers/fsl_ewm.c ****     base->CLKCTRL = config->clockSource;
+  61:../drivers/fsl_ewm.c **** #endif /* FSL_FEATURE_EWM_HAS_CLOCK_SELECT*/
+  62:../drivers/fsl_ewm.c **** 
+  63:../drivers/fsl_ewm.c ****     base->CMPL = config->compareLowValue;
+  69              		.loc 1 63 0
+  70 0020 0C79     		ldrb	r4, [r1, #4]	@ zero_extendqisi2
+  71 0022 8470     		strb	r4, [r0, #2]
+  53:../drivers/fsl_ewm.c ****             EWM_CTRL_INEN(config->enableEwmInput) | EWM_CTRL_INTEN(config->enableInterrupt);
+  72              		.loc 1 53 0
+  73 0024 DBB2     		uxtb	r3, r3
+  74              	.LVL2:
+  64:../drivers/fsl_ewm.c ****     base->CMPH = config->compareHighValue;
+  75              		.loc 1 64 0
+  76 0026 4979     		ldrb	r1, [r1, #5]	@ zero_extendqisi2
+  77              	.LVL3:
+  78 0028 C170     		strb	r1, [r0, #3]
+  65:../drivers/fsl_ewm.c ****     base->CTRL = value;
+  79              		.loc 1 65 0
+  80 002a 1343     		orrs	r3, r3, r2
+  81              	.LVL4:
+  82 002c 0370     		strb	r3, [r0]
+  66:../drivers/fsl_ewm.c **** }
+  83              		.loc 1 66 0
+  84 002e 10BD     		pop	{r4, pc}
+  85              	.L3:
+  86              		.align	2
+  87              	.L2:
+  88 0030 34800440 		.word	1074036788
+  89              		.cfi_endproc
+  90              	.LFE150:
+  92              		.section	.text.EWM_Deinit,"ax",%progbits
+  93              		.align	1
+  94              		.global	EWM_Deinit
+  95              		.syntax unified
+  96              		.thumb
+  97              		.thumb_func
+  98              		.fpu fpv4-sp-d16
+ 100              	EWM_Deinit:
+ 101              	.LFB151:
+  67:../drivers/fsl_ewm.c **** 
+  68:../drivers/fsl_ewm.c **** void EWM_Deinit(EWM_Type *base)
+  69:../drivers/fsl_ewm.c **** {
+ 102              		.loc 1 69 0
+ 103              		.cfi_startproc
+ 104              		@ args = 0, pretend = 0, frame = 0
+ 105              		@ frame_needed = 0, uses_anonymous_args = 0
+ 106              		@ link register save eliminated.
+ 107              	.LVL5:
+ 108              	.LBB30:
+ 109              	.LBB31:
+ 110              		.file 3 "../drivers/fsl_ewm.h"
+   1:../drivers/fsl_ewm.h **** /*
+   2:../drivers/fsl_ewm.h ****  * The Clear BSD License
+   3:../drivers/fsl_ewm.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_ewm.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_ewm.h ****  * All rights reserved.
+   6:../drivers/fsl_ewm.h ****  *
+   7:../drivers/fsl_ewm.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_ewm.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_ewm.h ****  * that the following conditions are met:
+  10:../drivers/fsl_ewm.h ****  *
+  11:../drivers/fsl_ewm.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_ewm.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_ewm.h ****  *
+  14:../drivers/fsl_ewm.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_ewm.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_ewm.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_ewm.h ****  *
+  18:../drivers/fsl_ewm.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_ewm.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_ewm.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_ewm.h ****  *
+  22:../drivers/fsl_ewm.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_ewm.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_ewm.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_ewm.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_ewm.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_ewm.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_ewm.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_ewm.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_ewm.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_ewm.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_ewm.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_ewm.h ****  */
+  34:../drivers/fsl_ewm.h **** #ifndef _FSL_EWM_H_
+  35:../drivers/fsl_ewm.h **** #define _FSL_EWM_H_
+  36:../drivers/fsl_ewm.h **** 
+  37:../drivers/fsl_ewm.h **** #include "fsl_common.h"
+  38:../drivers/fsl_ewm.h **** 
+  39:../drivers/fsl_ewm.h **** /*!
+  40:../drivers/fsl_ewm.h ****  * @addtogroup ewm
+  41:../drivers/fsl_ewm.h ****  * @{
+  42:../drivers/fsl_ewm.h ****  */
+  43:../drivers/fsl_ewm.h **** 
+  44:../drivers/fsl_ewm.h **** 
+  45:../drivers/fsl_ewm.h **** /*******************************************************************************
+  46:../drivers/fsl_ewm.h ****  * Definitions
+  47:../drivers/fsl_ewm.h ****  *******************************************************************************/
+  48:../drivers/fsl_ewm.h **** 
+  49:../drivers/fsl_ewm.h **** /*! @name Driver version */
+  50:../drivers/fsl_ewm.h **** /*@{*/
+  51:../drivers/fsl_ewm.h **** /*! @brief EWM driver version 2.0.1. */
+  52:../drivers/fsl_ewm.h **** #define FSL_EWM_DRIVER_VERSION (MAKE_VERSION(2, 0, 1))
+  53:../drivers/fsl_ewm.h **** /*@}*/
+  54:../drivers/fsl_ewm.h **** 
+  55:../drivers/fsl_ewm.h **** /*! @brief Describes EWM clock source. */
+  56:../drivers/fsl_ewm.h **** #if defined(FSL_FEATURE_EWM_HAS_CLOCK_SELECT) && FSL_FEATURE_EWM_HAS_CLOCK_SELECT
+  57:../drivers/fsl_ewm.h **** typedef enum _ewm_lpo_clock_source
+  58:../drivers/fsl_ewm.h **** {
+  59:../drivers/fsl_ewm.h ****     kEWM_LpoClockSource0 = 0U, /*!< EWM clock sourced from lpo_clk[0]*/
+  60:../drivers/fsl_ewm.h ****     kEWM_LpoClockSource1 = 1U, /*!< EWM clock sourced from lpo_clk[1]*/
+  61:../drivers/fsl_ewm.h ****     kEWM_LpoClockSource2 = 2U, /*!< EWM clock sourced from lpo_clk[2]*/
+  62:../drivers/fsl_ewm.h ****     kEWM_LpoClockSource3 = 3U, /*!< EWM clock sourced from lpo_clk[3]*/
+  63:../drivers/fsl_ewm.h **** } ewm_lpo_clock_source_t;
+  64:../drivers/fsl_ewm.h **** #endif /* FSL_FEATURE_EWM_HAS_CLOCK_SELECT */
+  65:../drivers/fsl_ewm.h **** 
+  66:../drivers/fsl_ewm.h **** /*!
+  67:../drivers/fsl_ewm.h **** * @brief Data structure for EWM configuration.
+  68:../drivers/fsl_ewm.h **** *
+  69:../drivers/fsl_ewm.h **** * This structure is used to configure the EWM.
+  70:../drivers/fsl_ewm.h **** */
+  71:../drivers/fsl_ewm.h **** typedef struct _ewm_config
+  72:../drivers/fsl_ewm.h **** {
+  73:../drivers/fsl_ewm.h ****     bool enableEwm;           /*!< Enable EWM module */
+  74:../drivers/fsl_ewm.h ****     bool enableEwmInput;      /*!< Enable EWM_in input */
+  75:../drivers/fsl_ewm.h ****     bool setInputAssertLogic; /*!< EWM_in signal assertion state */
+  76:../drivers/fsl_ewm.h ****     bool enableInterrupt;     /*!< Enable EWM interrupt */
+  77:../drivers/fsl_ewm.h **** #if defined(FSL_FEATURE_EWM_HAS_CLOCK_SELECT) && FSL_FEATURE_EWM_HAS_CLOCK_SELECT
+  78:../drivers/fsl_ewm.h ****     ewm_lpo_clock_source_t clockSource; /*!< Clock source select */
+  79:../drivers/fsl_ewm.h **** #endif                                  /* FSL_FEATURE_EWM_HAS_CLOCK_SELECT */
+  80:../drivers/fsl_ewm.h **** #if defined(FSL_FEATURE_EWM_HAS_PRESCALER) && FSL_FEATURE_EWM_HAS_PRESCALER
+  81:../drivers/fsl_ewm.h ****     uint8_t prescaler;        /*!< Clock prescaler value */
+  82:../drivers/fsl_ewm.h **** #endif                        /* FSL_FEATURE_EWM_HAS_PRESCALER */
+  83:../drivers/fsl_ewm.h ****     uint8_t compareLowValue;  /*!< Compare low-register value */
+  84:../drivers/fsl_ewm.h ****     uint8_t compareHighValue; /*!< Compare high-register value */
+  85:../drivers/fsl_ewm.h **** } ewm_config_t;
+  86:../drivers/fsl_ewm.h **** 
+  87:../drivers/fsl_ewm.h **** /*!
+  88:../drivers/fsl_ewm.h ****  * @brief EWM interrupt configuration structure with default settings all disabled.
+  89:../drivers/fsl_ewm.h ****  *
+  90:../drivers/fsl_ewm.h ****  * This structure contains the settings for all of EWM interrupt configurations.
+  91:../drivers/fsl_ewm.h ****  */
+  92:../drivers/fsl_ewm.h **** enum _ewm_interrupt_enable_t
+  93:../drivers/fsl_ewm.h **** {
+  94:../drivers/fsl_ewm.h ****     kEWM_InterruptEnable = EWM_CTRL_INTEN_MASK, /*!< Enable the EWM to generate an interrupt*/
+  95:../drivers/fsl_ewm.h **** };
+  96:../drivers/fsl_ewm.h **** 
+  97:../drivers/fsl_ewm.h **** /*!
+  98:../drivers/fsl_ewm.h ****  * @brief EWM status flags.
+  99:../drivers/fsl_ewm.h ****  *
+ 100:../drivers/fsl_ewm.h ****  * This structure contains the constants for the EWM status flags for use in the EWM functions.
+ 101:../drivers/fsl_ewm.h ****  */
+ 102:../drivers/fsl_ewm.h **** enum _ewm_status_flags_t
+ 103:../drivers/fsl_ewm.h **** {
+ 104:../drivers/fsl_ewm.h ****     kEWM_RunningFlag = EWM_CTRL_EWMEN_MASK, /*!< Running flag, set when EWM is enabled*/
+ 105:../drivers/fsl_ewm.h **** };
+ 106:../drivers/fsl_ewm.h **** 
+ 107:../drivers/fsl_ewm.h **** /*******************************************************************************
+ 108:../drivers/fsl_ewm.h ****  * API
+ 109:../drivers/fsl_ewm.h ****  *******************************************************************************/
+ 110:../drivers/fsl_ewm.h **** 
+ 111:../drivers/fsl_ewm.h **** #if defined(__cplusplus)
+ 112:../drivers/fsl_ewm.h **** extern "C" {
+ 113:../drivers/fsl_ewm.h **** #endif /* __cplusplus */
+ 114:../drivers/fsl_ewm.h **** 
+ 115:../drivers/fsl_ewm.h **** /*!
+ 116:../drivers/fsl_ewm.h ****  * @name EWM initialization and de-initialization
+ 117:../drivers/fsl_ewm.h ****  * @{
+ 118:../drivers/fsl_ewm.h ****  */
+ 119:../drivers/fsl_ewm.h **** 
+ 120:../drivers/fsl_ewm.h **** /*!
+ 121:../drivers/fsl_ewm.h ****  * @brief Initializes the EWM peripheral.
+ 122:../drivers/fsl_ewm.h ****  *
+ 123:../drivers/fsl_ewm.h ****  * This function is used to initialize the EWM. After calling, the EWM
+ 124:../drivers/fsl_ewm.h ****  * runs immediately according to the configuration.
+ 125:../drivers/fsl_ewm.h ****  * Note that, except for the interrupt enable control bit, other control bits and registers are wri
+ 126:../drivers/fsl_ewm.h ****  * CPU reset. Modifying them more than once generates a bus transfer error.
+ 127:../drivers/fsl_ewm.h ****  *
+ 128:../drivers/fsl_ewm.h ****  * This is an example.
+ 129:../drivers/fsl_ewm.h ****  * @code
+ 130:../drivers/fsl_ewm.h ****  *   ewm_config_t config;
+ 131:../drivers/fsl_ewm.h ****  *   EWM_GetDefaultConfig(&config);
+ 132:../drivers/fsl_ewm.h ****  *   config.compareHighValue = 0xAAU;
+ 133:../drivers/fsl_ewm.h ****  *   EWM_Init(ewm_base,&config);
+ 134:../drivers/fsl_ewm.h ****  * @endcode
+ 135:../drivers/fsl_ewm.h ****  *
+ 136:../drivers/fsl_ewm.h ****  * @param base EWM peripheral base address
+ 137:../drivers/fsl_ewm.h ****  * @param config The configuration of the EWM
+ 138:../drivers/fsl_ewm.h **** */
+ 139:../drivers/fsl_ewm.h **** void EWM_Init(EWM_Type *base, const ewm_config_t *config);
+ 140:../drivers/fsl_ewm.h **** 
+ 141:../drivers/fsl_ewm.h **** /*!
+ 142:../drivers/fsl_ewm.h ****  * @brief Deinitializes the EWM peripheral.
+ 143:../drivers/fsl_ewm.h ****  *
+ 144:../drivers/fsl_ewm.h ****  * This function is used to shut down the EWM.
+ 145:../drivers/fsl_ewm.h ****  *
+ 146:../drivers/fsl_ewm.h ****  * @param base EWM peripheral base address
+ 147:../drivers/fsl_ewm.h **** */
+ 148:../drivers/fsl_ewm.h **** void EWM_Deinit(EWM_Type *base);
+ 149:../drivers/fsl_ewm.h **** 
+ 150:../drivers/fsl_ewm.h **** /*!
+ 151:../drivers/fsl_ewm.h ****  * @brief Initializes the EWM configuration structure.
+ 152:../drivers/fsl_ewm.h ****  *
+ 153:../drivers/fsl_ewm.h ****  * This function initializes the EWM configuration structure to default values. The default
+ 154:../drivers/fsl_ewm.h ****  * values are as follows.
+ 155:../drivers/fsl_ewm.h ****  * @code
+ 156:../drivers/fsl_ewm.h ****  *   ewmConfig->enableEwm = true;
+ 157:../drivers/fsl_ewm.h ****  *   ewmConfig->enableEwmInput = false;
+ 158:../drivers/fsl_ewm.h ****  *   ewmConfig->setInputAssertLogic = false;
+ 159:../drivers/fsl_ewm.h ****  *   ewmConfig->enableInterrupt = false;
+ 160:../drivers/fsl_ewm.h ****  *   ewmConfig->ewm_lpo_clock_source_t = kEWM_LpoClockSource0;
+ 161:../drivers/fsl_ewm.h ****  *   ewmConfig->prescaler = 0;
+ 162:../drivers/fsl_ewm.h ****  *   ewmConfig->compareLowValue = 0;
+ 163:../drivers/fsl_ewm.h ****  *   ewmConfig->compareHighValue = 0xFEU;
+ 164:../drivers/fsl_ewm.h ****  * @endcode
+ 165:../drivers/fsl_ewm.h ****  *
+ 166:../drivers/fsl_ewm.h ****  * @param config Pointer to the EWM configuration structure.
+ 167:../drivers/fsl_ewm.h ****  * @see ewm_config_t
+ 168:../drivers/fsl_ewm.h ****  */
+ 169:../drivers/fsl_ewm.h **** void EWM_GetDefaultConfig(ewm_config_t *config);
+ 170:../drivers/fsl_ewm.h **** 
+ 171:../drivers/fsl_ewm.h **** /* @} */
+ 172:../drivers/fsl_ewm.h **** 
+ 173:../drivers/fsl_ewm.h **** /*!
+ 174:../drivers/fsl_ewm.h ****  * @name EWM functional Operation
+ 175:../drivers/fsl_ewm.h ****  * @{
+ 176:../drivers/fsl_ewm.h ****  */
+ 177:../drivers/fsl_ewm.h **** 
+ 178:../drivers/fsl_ewm.h **** /*!
+ 179:../drivers/fsl_ewm.h ****  * @brief Enables the EWM interrupt.
+ 180:../drivers/fsl_ewm.h ****  *
+ 181:../drivers/fsl_ewm.h ****  * This function enables the EWM interrupt.
+ 182:../drivers/fsl_ewm.h ****  *
+ 183:../drivers/fsl_ewm.h ****  * @param base EWM peripheral base address
+ 184:../drivers/fsl_ewm.h ****  * @param mask The interrupts to enable
+ 185:../drivers/fsl_ewm.h ****  *        The parameter can be combination of the following source if defined
+ 186:../drivers/fsl_ewm.h ****  *        @arg kEWM_InterruptEnable
+ 187:../drivers/fsl_ewm.h ****  */
+ 188:../drivers/fsl_ewm.h **** static inline void EWM_EnableInterrupts(EWM_Type *base, uint32_t mask)
+ 189:../drivers/fsl_ewm.h **** {
+ 190:../drivers/fsl_ewm.h ****     base->CTRL |= mask;
+ 191:../drivers/fsl_ewm.h **** }
+ 192:../drivers/fsl_ewm.h **** 
+ 193:../drivers/fsl_ewm.h **** /*!
+ 194:../drivers/fsl_ewm.h ****  * @brief Disables the EWM interrupt.
+ 195:../drivers/fsl_ewm.h ****  *
+ 196:../drivers/fsl_ewm.h ****  * This function enables the EWM interrupt.
+ 197:../drivers/fsl_ewm.h ****  *
+ 198:../drivers/fsl_ewm.h ****  * @param base EWM peripheral base address
+ 199:../drivers/fsl_ewm.h ****  * @param mask The interrupts to disable
+ 200:../drivers/fsl_ewm.h ****  *        The parameter can be combination of the following source if defined
+ 201:../drivers/fsl_ewm.h ****  *        @arg kEWM_InterruptEnable
+ 202:../drivers/fsl_ewm.h ****  */
+ 203:../drivers/fsl_ewm.h **** static inline void EWM_DisableInterrupts(EWM_Type *base, uint32_t mask)
+ 204:../drivers/fsl_ewm.h **** {
+ 205:../drivers/fsl_ewm.h ****     base->CTRL &= ~mask;
+ 111              		.loc 3 205 0
+ 112 0000 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 113              	.LBE31:
+ 114              	.LBE30:
+ 115              	.LBB33:
+ 116              	.LBB34:
+ 696:../drivers/fsl_clock.h **** }
+ 697:../drivers/fsl_clock.h **** 
+ 698:../drivers/fsl_clock.h **** /*!
+ 699:../drivers/fsl_clock.h ****  * @brief Disable the clock for specific IP.
+ 700:../drivers/fsl_clock.h ****  *
+ 701:../drivers/fsl_clock.h ****  * @param name  Which clock to disable, see \ref clock_ip_name_t.
+ 702:../drivers/fsl_clock.h ****  */
+ 703:../drivers/fsl_clock.h **** static inline void CLOCK_DisableClock(clock_ip_name_t name)
+ 704:../drivers/fsl_clock.h **** {
+ 705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+ 706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+ 117              		.loc 2 706 0
+ 118 0002 044A     		ldr	r2, .L5
+ 119              	.LBE34:
+ 120              	.LBE33:
+ 121              	.LBB36:
+ 122              	.LBB32:
+ 123              		.loc 3 205 0
+ 124 0004 03F0F703 		and	r3, r3, #247
+ 125 0008 0370     		strb	r3, [r0]
+ 126              	.LVL6:
+ 127              	.LBE32:
+ 128              	.LBE36:
+ 129              	.LBB37:
+ 130              	.LBB35:
+ 131              		.loc 2 706 0
+ 132 000a 1368     		ldr	r3, [r2]
+ 133 000c 23F00203 		bic	r3, r3, #2
+ 134 0010 1360     		str	r3, [r2]
+ 135              	.LVL7:
+ 136              	.LBE35:
+ 137              	.LBE37:
+  70:../drivers/fsl_ewm.c ****     EWM_DisableInterrupts(base, kEWM_InterruptEnable);
+  71:../drivers/fsl_ewm.c **** #if !((defined(FSL_FEATURE_SOC_PCC_COUNT) && FSL_FEATURE_SOC_PCC_COUNT) && \
+  72:../drivers/fsl_ewm.c ****     (defined(FSL_FEATURE_PCC_SUPPORT_EWM_CLOCK_REMOVE) && FSL_FEATURE_PCC_SUPPORT_EWM_CLOCK_REMOVE)
+  73:../drivers/fsl_ewm.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+  74:../drivers/fsl_ewm.c ****     CLOCK_DisableClock(kCLOCK_Ewm0);
+  75:../drivers/fsl_ewm.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+  76:../drivers/fsl_ewm.c **** #endif /* FSL_FEATURE_PCC_SUPPORT_EWM_CLOCK_REMOVE */
+  77:../drivers/fsl_ewm.c **** }
+ 138              		.loc 1 77 0
+ 139 0012 7047     		bx	lr
+ 140              	.L6:
+ 141              		.align	2
+ 142              	.L5:
+ 143 0014 34800440 		.word	1074036788
+ 144              		.cfi_endproc
+ 145              	.LFE151:
+ 147              		.section	.text.EWM_GetDefaultConfig,"ax",%progbits
+ 148              		.align	1
+ 149              		.global	EWM_GetDefaultConfig
+ 150              		.syntax unified
+ 151              		.thumb
+ 152              		.thumb_func
+ 153              		.fpu fpv4-sp-d16
+ 155              	EWM_GetDefaultConfig:
+ 156              	.LFB152:
+  78:../drivers/fsl_ewm.c **** 
+  79:../drivers/fsl_ewm.c **** void EWM_GetDefaultConfig(ewm_config_t *config)
+  80:../drivers/fsl_ewm.c **** {
+ 157              		.loc 1 80 0
+ 158              		.cfi_startproc
+ 159              		@ args = 0, pretend = 0, frame = 0
+ 160              		@ frame_needed = 0, uses_anonymous_args = 0
+ 161              		@ link register save eliminated.
+ 162              	.LVL8:
+  81:../drivers/fsl_ewm.c ****     assert(config);
+  82:../drivers/fsl_ewm.c **** 
+  83:../drivers/fsl_ewm.c ****     config->enableEwm = true;
+ 163              		.loc 1 83 0
+ 164 0000 0123     		movs	r3, #1
+ 165 0002 0370     		strb	r3, [r0]
+  84:../drivers/fsl_ewm.c ****     config->enableEwmInput = false;
+ 166              		.loc 1 84 0
+ 167 0004 0023     		movs	r3, #0
+ 168 0006 4370     		strb	r3, [r0, #1]
+  85:../drivers/fsl_ewm.c ****     config->setInputAssertLogic = false;
+ 169              		.loc 1 85 0
+ 170 0008 8370     		strb	r3, [r0, #2]
+  86:../drivers/fsl_ewm.c ****     config->enableInterrupt = false;
+ 171              		.loc 1 86 0
+ 172 000a C370     		strb	r3, [r0, #3]
+  87:../drivers/fsl_ewm.c **** #if defined(FSL_FEATURE_EWM_HAS_CLOCK_SELECT) && FSL_FEATURE_EWM_HAS_CLOCK_SELECT
+  88:../drivers/fsl_ewm.c ****     config->clockSource = kEWM_LpoClockSource0;
+  89:../drivers/fsl_ewm.c **** #endif /* FSL_FEATURE_EWM_HAS_CLOCK_SELECT*/
+  90:../drivers/fsl_ewm.c **** #if defined(FSL_FEATURE_EWM_HAS_PRESCALER) && FSL_FEATURE_EWM_HAS_PRESCALER
+  91:../drivers/fsl_ewm.c ****     config->prescaler = 0U;
+  92:../drivers/fsl_ewm.c **** #endif /* FSL_FEATURE_EWM_HAS_PRESCALER */
+  93:../drivers/fsl_ewm.c ****     config->compareLowValue = 0U;
+ 173              		.loc 1 93 0
+ 174 000c 0371     		strb	r3, [r0, #4]
+  94:../drivers/fsl_ewm.c ****     config->compareHighValue = 0xFEU;
+ 175              		.loc 1 94 0
+ 176 000e FE23     		movs	r3, #254
+ 177 0010 4371     		strb	r3, [r0, #5]
+  95:../drivers/fsl_ewm.c **** }
+ 178              		.loc 1 95 0
+ 179 0012 7047     		bx	lr
+ 180              		.cfi_endproc
+ 181              	.LFE152:
+ 183              		.section	.text.EWM_Refresh,"ax",%progbits
+ 184              		.align	1
+ 185              		.global	EWM_Refresh
+ 186              		.syntax unified
+ 187              		.thumb
+ 188              		.thumb_func
+ 189              		.fpu fpv4-sp-d16
+ 191              	EWM_Refresh:
+ 192              	.LFB153:
+  96:../drivers/fsl_ewm.c **** 
+  97:../drivers/fsl_ewm.c **** void EWM_Refresh(EWM_Type *base)
+  98:../drivers/fsl_ewm.c **** {
+ 193              		.loc 1 98 0
+ 194              		.cfi_startproc
+ 195              		@ args = 0, pretend = 0, frame = 0
+ 196              		@ frame_needed = 0, uses_anonymous_args = 0
+ 197              		@ link register save eliminated.
+ 198              	.LVL9:
+ 199              	.LBB38:
+ 200              	.LBB39:
+ 201              	.LBB40:
+ 202              	.LBB41:
+ 203              		.file 4 "../CMSIS/cmsis_gcc.h"
+   1:../CMSIS/cmsis_gcc.h **** /**************************************************************************//**
+   2:../CMSIS/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:../CMSIS/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:../CMSIS/cmsis_gcc.h ****  * @version  V5.0.2
+   5:../CMSIS/cmsis_gcc.h ****  * @date     13. February 2017
+   6:../CMSIS/cmsis_gcc.h ****  ******************************************************************************/
+   7:../CMSIS/cmsis_gcc.h **** /*
+   8:../CMSIS/cmsis_gcc.h ****  * Copyright (c) 2009-2017 ARM Limited. All rights reserved.
+   9:../CMSIS/cmsis_gcc.h ****  *
+  10:../CMSIS/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:../CMSIS/cmsis_gcc.h ****  *
+  12:../CMSIS/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:../CMSIS/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:../CMSIS/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:../CMSIS/cmsis_gcc.h ****  *
+  16:../CMSIS/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:../CMSIS/cmsis_gcc.h ****  *
+  18:../CMSIS/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:../CMSIS/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:../CMSIS/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:../CMSIS/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:../CMSIS/cmsis_gcc.h ****  * limitations under the License.
+  23:../CMSIS/cmsis_gcc.h ****  */
+  24:../CMSIS/cmsis_gcc.h **** 
+  25:../CMSIS/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:../CMSIS/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:../CMSIS/cmsis_gcc.h **** 
+  28:../CMSIS/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:../CMSIS/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:../CMSIS/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:../CMSIS/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:../CMSIS/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:../CMSIS/cmsis_gcc.h **** 
+  34:../CMSIS/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:../CMSIS/cmsis_gcc.h **** #ifndef __has_builtin
+  36:../CMSIS/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:../CMSIS/cmsis_gcc.h **** #endif
+  38:../CMSIS/cmsis_gcc.h **** 
+  39:../CMSIS/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:../CMSIS/cmsis_gcc.h **** #ifndef   __ASM
+  41:../CMSIS/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:../CMSIS/cmsis_gcc.h **** #endif
+  43:../CMSIS/cmsis_gcc.h **** #ifndef   __INLINE
+  44:../CMSIS/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:../CMSIS/cmsis_gcc.h **** #endif
+  46:../CMSIS/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:../CMSIS/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:../CMSIS/cmsis_gcc.h **** #endif
+  49:../CMSIS/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  50:../CMSIS/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((noreturn))
+  51:../CMSIS/cmsis_gcc.h **** #endif
+  52:../CMSIS/cmsis_gcc.h **** #ifndef   __USED
+  53:../CMSIS/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  54:../CMSIS/cmsis_gcc.h **** #endif
+  55:../CMSIS/cmsis_gcc.h **** #ifndef   __WEAK
+  56:../CMSIS/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  57:../CMSIS/cmsis_gcc.h **** #endif
+  58:../CMSIS/cmsis_gcc.h **** #ifndef   __PACKED
+  59:../CMSIS/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  60:../CMSIS/cmsis_gcc.h **** #endif
+  61:../CMSIS/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  62:../CMSIS/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  63:../CMSIS/cmsis_gcc.h **** #endif
+  64:../CMSIS/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  65:../CMSIS/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  66:../CMSIS/cmsis_gcc.h **** #endif
+  67:../CMSIS/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  68:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  69:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  70:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  71:../CMSIS/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  72:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  73:../CMSIS/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  74:../CMSIS/cmsis_gcc.h **** #endif
+  75:../CMSIS/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  76:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  77:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  78:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  79:../CMSIS/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  80:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  81:../CMSIS/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  82:../CMSIS/cmsis_gcc.h **** #endif
+  83:../CMSIS/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  84:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  85:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  86:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  87:../CMSIS/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  88:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  89:../CMSIS/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  90:../CMSIS/cmsis_gcc.h **** #endif
+  91:../CMSIS/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  92:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  93:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  94:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  95:../CMSIS/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  96:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  97:../CMSIS/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+  98:../CMSIS/cmsis_gcc.h **** #endif
+  99:../CMSIS/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 100:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 101:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 102:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 103:../CMSIS/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 104:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 105:../CMSIS/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 106:../CMSIS/cmsis_gcc.h **** #endif
+ 107:../CMSIS/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 108:../CMSIS/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 109:../CMSIS/cmsis_gcc.h **** #endif
+ 110:../CMSIS/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 111:../CMSIS/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 112:../CMSIS/cmsis_gcc.h **** #endif
+ 113:../CMSIS/cmsis_gcc.h **** 
+ 114:../CMSIS/cmsis_gcc.h **** 
+ 115:../CMSIS/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 116:../CMSIS/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 117:../CMSIS/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 118:../CMSIS/cmsis_gcc.h ****   @{
+ 119:../CMSIS/cmsis_gcc.h ****  */
+ 120:../CMSIS/cmsis_gcc.h **** 
+ 121:../CMSIS/cmsis_gcc.h **** /**
+ 122:../CMSIS/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 123:../CMSIS/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 124:../CMSIS/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 125:../CMSIS/cmsis_gcc.h ****  */
+ 126:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __enable_irq(void)
+ 127:../CMSIS/cmsis_gcc.h **** {
+ 128:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 129:../CMSIS/cmsis_gcc.h **** }
+ 130:../CMSIS/cmsis_gcc.h **** 
+ 131:../CMSIS/cmsis_gcc.h **** 
+ 132:../CMSIS/cmsis_gcc.h **** /**
+ 133:../CMSIS/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 134:../CMSIS/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 135:../CMSIS/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 136:../CMSIS/cmsis_gcc.h ****  */
+ 137:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __disable_irq(void)
+ 138:../CMSIS/cmsis_gcc.h **** {
+ 139:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 140:../CMSIS/cmsis_gcc.h **** }
+ 141:../CMSIS/cmsis_gcc.h **** 
+ 142:../CMSIS/cmsis_gcc.h **** 
+ 143:../CMSIS/cmsis_gcc.h **** /**
+ 144:../CMSIS/cmsis_gcc.h ****   \brief   Get Control Register
+ 145:../CMSIS/cmsis_gcc.h ****   \details Returns the content of the Control Register.
+ 146:../CMSIS/cmsis_gcc.h ****   \return               Control Register value
+ 147:../CMSIS/cmsis_gcc.h ****  */
+ 148:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_CONTROL(void)
+ 149:../CMSIS/cmsis_gcc.h **** {
+ 150:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 151:../CMSIS/cmsis_gcc.h **** 
+ 152:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 153:../CMSIS/cmsis_gcc.h ****   return(result);
+ 154:../CMSIS/cmsis_gcc.h **** }
+ 155:../CMSIS/cmsis_gcc.h **** 
+ 156:../CMSIS/cmsis_gcc.h **** 
+ 157:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 158:../CMSIS/cmsis_gcc.h **** /**
+ 159:../CMSIS/cmsis_gcc.h ****   \brief   Get Control Register (non-secure)
+ 160:../CMSIS/cmsis_gcc.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 161:../CMSIS/cmsis_gcc.h ****   \return               non-secure Control Register value
+ 162:../CMSIS/cmsis_gcc.h ****  */
+ 163:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_CONTROL_NS(void)
+ 164:../CMSIS/cmsis_gcc.h **** {
+ 165:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 166:../CMSIS/cmsis_gcc.h **** 
+ 167:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 168:../CMSIS/cmsis_gcc.h ****   return(result);
+ 169:../CMSIS/cmsis_gcc.h **** }
+ 170:../CMSIS/cmsis_gcc.h **** #endif
+ 171:../CMSIS/cmsis_gcc.h **** 
+ 172:../CMSIS/cmsis_gcc.h **** 
+ 173:../CMSIS/cmsis_gcc.h **** /**
+ 174:../CMSIS/cmsis_gcc.h ****   \brief   Set Control Register
+ 175:../CMSIS/cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+ 176:../CMSIS/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 177:../CMSIS/cmsis_gcc.h ****  */
+ 178:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __set_CONTROL(uint32_t control)
+ 179:../CMSIS/cmsis_gcc.h **** {
+ 180:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 181:../CMSIS/cmsis_gcc.h **** }
+ 182:../CMSIS/cmsis_gcc.h **** 
+ 183:../CMSIS/cmsis_gcc.h **** 
+ 184:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 185:../CMSIS/cmsis_gcc.h **** /**
+ 186:../CMSIS/cmsis_gcc.h ****   \brief   Set Control Register (non-secure)
+ 187:../CMSIS/cmsis_gcc.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 188:../CMSIS/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 189:../CMSIS/cmsis_gcc.h ****  */
+ 190:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ 191:../CMSIS/cmsis_gcc.h **** {
+ 192:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 193:../CMSIS/cmsis_gcc.h **** }
+ 194:../CMSIS/cmsis_gcc.h **** #endif
+ 195:../CMSIS/cmsis_gcc.h **** 
+ 196:../CMSIS/cmsis_gcc.h **** 
+ 197:../CMSIS/cmsis_gcc.h **** /**
+ 198:../CMSIS/cmsis_gcc.h ****   \brief   Get IPSR Register
+ 199:../CMSIS/cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 200:../CMSIS/cmsis_gcc.h ****   \return               IPSR Register value
+ 201:../CMSIS/cmsis_gcc.h ****  */
+ 202:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_IPSR(void)
+ 203:../CMSIS/cmsis_gcc.h **** {
+ 204:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 205:../CMSIS/cmsis_gcc.h **** 
+ 206:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 207:../CMSIS/cmsis_gcc.h ****   return(result);
+ 208:../CMSIS/cmsis_gcc.h **** }
+ 209:../CMSIS/cmsis_gcc.h **** 
+ 210:../CMSIS/cmsis_gcc.h **** 
+ 211:../CMSIS/cmsis_gcc.h **** /**
+ 212:../CMSIS/cmsis_gcc.h ****   \brief   Get APSR Register
+ 213:../CMSIS/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 214:../CMSIS/cmsis_gcc.h ****   \return               APSR Register value
+ 215:../CMSIS/cmsis_gcc.h ****  */
+ 216:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_APSR(void)
+ 217:../CMSIS/cmsis_gcc.h **** {
+ 218:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 219:../CMSIS/cmsis_gcc.h **** 
+ 220:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 221:../CMSIS/cmsis_gcc.h ****   return(result);
+ 222:../CMSIS/cmsis_gcc.h **** }
+ 223:../CMSIS/cmsis_gcc.h **** 
+ 224:../CMSIS/cmsis_gcc.h **** 
+ 225:../CMSIS/cmsis_gcc.h **** /**
+ 226:../CMSIS/cmsis_gcc.h ****   \brief   Get xPSR Register
+ 227:../CMSIS/cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 228:../CMSIS/cmsis_gcc.h ****   \return               xPSR Register value
+ 229:../CMSIS/cmsis_gcc.h ****  */
+ 230:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_xPSR(void)
+ 231:../CMSIS/cmsis_gcc.h **** {
+ 232:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 233:../CMSIS/cmsis_gcc.h **** 
+ 234:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 235:../CMSIS/cmsis_gcc.h ****   return(result);
+ 236:../CMSIS/cmsis_gcc.h **** }
+ 237:../CMSIS/cmsis_gcc.h **** 
+ 238:../CMSIS/cmsis_gcc.h **** 
+ 239:../CMSIS/cmsis_gcc.h **** /**
+ 240:../CMSIS/cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 241:../CMSIS/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 242:../CMSIS/cmsis_gcc.h ****   \return               PSP Register value
+ 243:../CMSIS/cmsis_gcc.h ****  */
+ 244:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_PSP(void)
+ 245:../CMSIS/cmsis_gcc.h **** {
+ 246:../CMSIS/cmsis_gcc.h ****   register uint32_t result;
+ 247:../CMSIS/cmsis_gcc.h **** 
+ 248:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
+ 249:../CMSIS/cmsis_gcc.h ****   return(result);
+ 250:../CMSIS/cmsis_gcc.h **** }
+ 251:../CMSIS/cmsis_gcc.h **** 
+ 252:../CMSIS/cmsis_gcc.h **** 
+ 253:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 254:../CMSIS/cmsis_gcc.h **** /**
+ 255:../CMSIS/cmsis_gcc.h ****   \brief   Get Process Stack Pointer (non-secure)
+ 256:../CMSIS/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure s
+ 257:../CMSIS/cmsis_gcc.h ****   \return               PSP Register value
+ 258:../CMSIS/cmsis_gcc.h ****  */
+ 259:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_PSP_NS(void)
+ 260:../CMSIS/cmsis_gcc.h **** {
+ 261:../CMSIS/cmsis_gcc.h ****   register uint32_t result;
+ 262:../CMSIS/cmsis_gcc.h **** 
+ 263:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
+ 264:../CMSIS/cmsis_gcc.h ****   return(result);
+ 265:../CMSIS/cmsis_gcc.h **** }
+ 266:../CMSIS/cmsis_gcc.h **** #endif
+ 267:../CMSIS/cmsis_gcc.h **** 
+ 268:../CMSIS/cmsis_gcc.h **** 
+ 269:../CMSIS/cmsis_gcc.h **** /**
+ 270:../CMSIS/cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 271:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 272:../CMSIS/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 273:../CMSIS/cmsis_gcc.h ****  */
+ 274:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __set_PSP(uint32_t topOfProcStack)
+ 275:../CMSIS/cmsis_gcc.h **** {
+ 276:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
+ 277:../CMSIS/cmsis_gcc.h **** }
+ 278:../CMSIS/cmsis_gcc.h **** 
+ 279:../CMSIS/cmsis_gcc.h **** 
+ 280:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 281:../CMSIS/cmsis_gcc.h **** /**
+ 282:../CMSIS/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 283:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure sta
+ 284:../CMSIS/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 285:../CMSIS/cmsis_gcc.h ****  */
+ 286:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
+ 287:../CMSIS/cmsis_gcc.h **** {
+ 288:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR psp_ns, %0" : : "r" (topOfProcStack) : );
+ 289:../CMSIS/cmsis_gcc.h **** }
+ 290:../CMSIS/cmsis_gcc.h **** #endif
+ 291:../CMSIS/cmsis_gcc.h **** 
+ 292:../CMSIS/cmsis_gcc.h **** 
+ 293:../CMSIS/cmsis_gcc.h **** /**
+ 294:../CMSIS/cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 295:../CMSIS/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 296:../CMSIS/cmsis_gcc.h ****   \return               MSP Register value
+ 297:../CMSIS/cmsis_gcc.h ****  */
+ 298:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_MSP(void)
+ 299:../CMSIS/cmsis_gcc.h **** {
+ 300:../CMSIS/cmsis_gcc.h ****   register uint32_t result;
+ 301:../CMSIS/cmsis_gcc.h **** 
+ 302:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
+ 303:../CMSIS/cmsis_gcc.h ****   return(result);
+ 304:../CMSIS/cmsis_gcc.h **** }
+ 305:../CMSIS/cmsis_gcc.h **** 
+ 306:../CMSIS/cmsis_gcc.h **** 
+ 307:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 308:../CMSIS/cmsis_gcc.h **** /**
+ 309:../CMSIS/cmsis_gcc.h ****   \brief   Get Main Stack Pointer (non-secure)
+ 310:../CMSIS/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure stat
+ 311:../CMSIS/cmsis_gcc.h ****   \return               MSP Register value
+ 312:../CMSIS/cmsis_gcc.h ****  */
+ 313:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_MSP_NS(void)
+ 314:../CMSIS/cmsis_gcc.h **** {
+ 315:../CMSIS/cmsis_gcc.h ****   register uint32_t result;
+ 316:../CMSIS/cmsis_gcc.h **** 
+ 317:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
+ 318:../CMSIS/cmsis_gcc.h ****   return(result);
+ 319:../CMSIS/cmsis_gcc.h **** }
+ 320:../CMSIS/cmsis_gcc.h **** #endif
+ 321:../CMSIS/cmsis_gcc.h **** 
+ 322:../CMSIS/cmsis_gcc.h **** 
+ 323:../CMSIS/cmsis_gcc.h **** /**
+ 324:../CMSIS/cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 325:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 326:../CMSIS/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 327:../CMSIS/cmsis_gcc.h ****  */
+ 328:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __set_MSP(uint32_t topOfMainStack)
+ 329:../CMSIS/cmsis_gcc.h **** {
+ 330:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
+ 331:../CMSIS/cmsis_gcc.h **** }
+ 332:../CMSIS/cmsis_gcc.h **** 
+ 333:../CMSIS/cmsis_gcc.h **** 
+ 334:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 335:../CMSIS/cmsis_gcc.h **** /**
+ 336:../CMSIS/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
+ 337:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
+ 338:../CMSIS/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 339:../CMSIS/cmsis_gcc.h ****  */
+ 340:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
+ 341:../CMSIS/cmsis_gcc.h **** {
+ 342:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
+ 343:../CMSIS/cmsis_gcc.h **** }
+ 344:../CMSIS/cmsis_gcc.h **** #endif
+ 345:../CMSIS/cmsis_gcc.h **** 
+ 346:../CMSIS/cmsis_gcc.h **** 
+ 347:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 348:../CMSIS/cmsis_gcc.h **** /**
+ 349:../CMSIS/cmsis_gcc.h ****   \brief   Get Stack Pointer (non-secure)
+ 350:../CMSIS/cmsis_gcc.h ****   \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
+ 351:../CMSIS/cmsis_gcc.h ****   \return               SP Register value
+ 352:../CMSIS/cmsis_gcc.h ****  */
+ 353:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_SP_NS(void)
+ 354:../CMSIS/cmsis_gcc.h **** {
+ 355:../CMSIS/cmsis_gcc.h ****   register uint32_t result;
+ 356:../CMSIS/cmsis_gcc.h **** 
+ 357:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, sp_ns" : "=r" (result) );
+ 358:../CMSIS/cmsis_gcc.h ****   return(result);
+ 359:../CMSIS/cmsis_gcc.h **** }
+ 360:../CMSIS/cmsis_gcc.h **** 
+ 361:../CMSIS/cmsis_gcc.h **** 
+ 362:../CMSIS/cmsis_gcc.h **** /**
+ 363:../CMSIS/cmsis_gcc.h ****   \brief   Set Stack Pointer (non-secure)
+ 364:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
+ 365:../CMSIS/cmsis_gcc.h ****   \param [in]    topOfStack  Stack Pointer value to set
+ 366:../CMSIS/cmsis_gcc.h ****  */
+ 367:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __TZ_set_SP_NS(uint32_t topOfStack)
+ 368:../CMSIS/cmsis_gcc.h **** {
+ 369:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
+ 370:../CMSIS/cmsis_gcc.h **** }
+ 371:../CMSIS/cmsis_gcc.h **** #endif
+ 372:../CMSIS/cmsis_gcc.h **** 
+ 373:../CMSIS/cmsis_gcc.h **** 
+ 374:../CMSIS/cmsis_gcc.h **** /**
+ 375:../CMSIS/cmsis_gcc.h ****   \brief   Get Priority Mask
+ 376:../CMSIS/cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 377:../CMSIS/cmsis_gcc.h ****   \return               Priority Mask value
+ 378:../CMSIS/cmsis_gcc.h ****  */
+ 379:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_PRIMASK(void)
+ 380:../CMSIS/cmsis_gcc.h **** {
+ 381:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 382:../CMSIS/cmsis_gcc.h **** 
+ 383:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) );
+ 204              		.loc 4 383 0
+ 205              		.syntax unified
+ 206              	@ 383 "../CMSIS/cmsis_gcc.h" 1
+ 207 0000 EFF31083 		MRS r3, primask
+ 208              	@ 0 "" 2
+ 209              		.thumb
+ 210              		.syntax unified
+ 211              	.LBE41:
+ 212              	.LBE40:
+ 213              	.LBB42:
+ 214              	.LBB43:
+ 139:../CMSIS/cmsis_gcc.h **** }
+ 215              		.loc 4 139 0
+ 216              		.syntax unified
+ 217              	@ 139 "../CMSIS/cmsis_gcc.h" 1
+ 218 0004 72B6     		cpsid i
+ 219              	@ 0 "" 2
+ 220              	.LVL10:
+ 221              		.thumb
+ 222              		.syntax unified
+ 223              	.LBE43:
+ 224              	.LBE42:
+ 225              	.LBE39:
+ 226              	.LBE38:
+  99:../drivers/fsl_ewm.c ****     uint32_t primaskValue = 0U;
+ 100:../drivers/fsl_ewm.c **** 
+ 101:../drivers/fsl_ewm.c ****     /* Disable the global interrupt to protect refresh sequence */
+ 102:../drivers/fsl_ewm.c ****     primaskValue = DisableGlobalIRQ();
+ 103:../drivers/fsl_ewm.c ****     base->SERV = (uint8_t)0xB4U;
+ 227              		.loc 1 103 0
+ 228 0006 B422     		movs	r2, #180
+ 229 0008 4270     		strb	r2, [r0, #1]
+ 104:../drivers/fsl_ewm.c ****     base->SERV = (uint8_t)0x2CU;
+ 230              		.loc 1 104 0
+ 231 000a 2C22     		movs	r2, #44
+ 232 000c 4270     		strb	r2, [r0, #1]
+ 233              	.LBB44:
+ 234              	.LBB45:
+ 235              	.LBB46:
+ 384:../CMSIS/cmsis_gcc.h ****   return(result);
+ 385:../CMSIS/cmsis_gcc.h **** }
+ 386:../CMSIS/cmsis_gcc.h **** 
+ 387:../CMSIS/cmsis_gcc.h **** 
+ 388:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 389:../CMSIS/cmsis_gcc.h **** /**
+ 390:../CMSIS/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
+ 391:../CMSIS/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
+ 392:../CMSIS/cmsis_gcc.h ****   \return               Priority Mask value
+ 393:../CMSIS/cmsis_gcc.h ****  */
+ 394:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_PRIMASK_NS(void)
+ 395:../CMSIS/cmsis_gcc.h **** {
+ 396:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 397:../CMSIS/cmsis_gcc.h **** 
+ 398:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask_ns" : "=r" (result) );
+ 399:../CMSIS/cmsis_gcc.h ****   return(result);
+ 400:../CMSIS/cmsis_gcc.h **** }
+ 401:../CMSIS/cmsis_gcc.h **** #endif
+ 402:../CMSIS/cmsis_gcc.h **** 
+ 403:../CMSIS/cmsis_gcc.h **** 
+ 404:../CMSIS/cmsis_gcc.h **** /**
+ 405:../CMSIS/cmsis_gcc.h ****   \brief   Set Priority Mask
+ 406:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 407:../CMSIS/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 408:../CMSIS/cmsis_gcc.h ****  */
+ 409:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __set_PRIMASK(uint32_t priMask)
+ 410:../CMSIS/cmsis_gcc.h **** {
+ 411:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ 236              		.loc 4 411 0
+ 237              		.syntax unified
+ 238              	@ 411 "../CMSIS/cmsis_gcc.h" 1
+ 239 000e 83F31088 		MSR primask, r3
+ 240              	@ 0 "" 2
+ 241              		.thumb
+ 242              		.syntax unified
+ 243              	.LBE46:
+ 244              	.LBE45:
+ 245              	.LBE44:
+ 105:../drivers/fsl_ewm.c ****     EnableGlobalIRQ(primaskValue);
+ 106:../drivers/fsl_ewm.c **** }
+ 246              		.loc 1 106 0
+ 247 0012 7047     		bx	lr
+ 248              		.cfi_endproc
+ 249              	.LFE153:
+ 251              		.text
+ 252              	.Letext0:
+ 253              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 254              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 255              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 256              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 257              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 258              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 259              		.file 11 "../CMSIS/core_cm4.h"
+ 260              		.file 12 "../CMSIS/system_MK64F12.h"
+ 261              		.file 13 "../CMSIS/MK64F12.h"
+ 262              		.file 14 "../drivers/fsl_common.h"

@@ -1,0 +1,160 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"timing.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.millis,"ax",%progbits
+  18              		.align	1
+  19              		.global	millis
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	millis:
+  26              	.LFB0:
+  27              		.file 1 "../source/timing.c"
+   1:../source/timing.c **** /*
+   2:../source/timing.c ****  * timing.c
+   3:../source/timing.c ****  *
+   4:../source/timing.c ****  *  Created on: Mar 27, 2018
+   5:../source/timing.c ****  *      Author: pauli
+   6:../source/timing.c ****  */
+   7:../source/timing.c **** 
+   8:../source/timing.c **** #include "timing.h"
+   9:../source/timing.c **** 
+  10:../source/timing.c **** volatile uint32_t ticks = 0;
+  11:../source/timing.c **** 
+  12:../source/timing.c **** uint32_t millis()
+  13:../source/timing.c **** {
+  28              		.loc 1 13 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  14:../source/timing.c **** 	return ticks;
+  33              		.loc 1 14 0
+  34 0000 014B     		ldr	r3, .L2
+  35 0002 1868     		ldr	r0, [r3]
+  15:../source/timing.c **** }
+  36              		.loc 1 15 0
+  37 0004 7047     		bx	lr
+  38              	.L3:
+  39 0006 00BF     		.align	2
+  40              	.L2:
+  41 0008 00000000 		.word	.LANCHOR0
+  42              		.cfi_endproc
+  43              	.LFE0:
+  45              		.section	.text.SysTick_Handler,"ax",%progbits
+  46              		.align	1
+  47              		.global	SysTick_Handler
+  48              		.syntax unified
+  49              		.thumb
+  50              		.thumb_func
+  51              		.fpu fpv4-sp-d16
+  53              	SysTick_Handler:
+  54              	.LFB1:
+  16:../source/timing.c **** 
+  17:../source/timing.c **** void SysTick_Handler()
+  18:../source/timing.c **** {
+  55              		.loc 1 18 0
+  56              		.cfi_startproc
+  57              		@ args = 0, pretend = 0, frame = 0
+  58              		@ frame_needed = 0, uses_anonymous_args = 0
+  59              		@ link register save eliminated.
+  19:../source/timing.c **** 
+  20:../source/timing.c **** 	ticks++;
+  60              		.loc 1 20 0
+  61 0000 024A     		ldr	r2, .L5
+  62 0002 1368     		ldr	r3, [r2]
+  63 0004 0133     		adds	r3, r3, #1
+  64 0006 1360     		str	r3, [r2]
+  21:../source/timing.c **** }
+  65              		.loc 1 21 0
+  66 0008 7047     		bx	lr
+  67              	.L6:
+  68 000a 00BF     		.align	2
+  69              	.L5:
+  70 000c 00000000 		.word	.LANCHOR0
+  71              		.cfi_endproc
+  72              	.LFE1:
+  74              		.section	.text.delay_ms,"ax",%progbits
+  75              		.align	1
+  76              		.global	delay_ms
+  77              		.syntax unified
+  78              		.thumb
+  79              		.thumb_func
+  80              		.fpu fpv4-sp-d16
+  82              	delay_ms:
+  83              	.LFB2:
+  22:../source/timing.c **** 
+  23:../source/timing.c **** 
+  24:../source/timing.c **** /*
+  25:../source/timing.c ****  * Small delay_ms function
+  26:../source/timing.c ****  */
+  27:../source/timing.c **** void delay_ms(uint32_t del)
+  28:../source/timing.c **** {
+  84              		.loc 1 28 0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              		@ link register save eliminated.
+  89              	.LVL0:
+  90              	.LBB6:
+  91              	.LBB7:
+  14:../source/timing.c **** }
+  92              		.loc 1 14 0
+  93 0000 034B     		ldr	r3, .L10
+  94 0002 1A68     		ldr	r2, [r3]
+  95              	.LBE7:
+  96              	.LBE6:
+  29:../source/timing.c **** 
+  30:../source/timing.c **** 	uint32_t otime = millis()+del;
+  97              		.loc 1 30 0
+  98 0004 1044     		add	r0, r0, r2
+  99              	.LVL1:
+ 100              	.L8:
+ 101              	.LBB8:
+ 102              	.LBB9:
+  14:../source/timing.c **** }
+ 103              		.loc 1 14 0 discriminator 1
+ 104 0006 1A68     		ldr	r2, [r3]
+ 105              	.LBE9:
+ 106              	.LBE8:
+  31:../source/timing.c **** 
+  32:../source/timing.c **** 	while(millis() < otime)
+ 107              		.loc 1 32 0 discriminator 1
+ 108 0008 9042     		cmp	r0, r2
+ 109 000a FCD8     		bhi	.L8
+  33:../source/timing.c **** 	{
+  34:../source/timing.c **** 
+  35:../source/timing.c **** 	}
+  36:../source/timing.c **** }
+ 110              		.loc 1 36 0
+ 111 000c 7047     		bx	lr
+ 112              	.L11:
+ 113 000e 00BF     		.align	2
+ 114              	.L10:
+ 115 0010 00000000 		.word	.LANCHOR0
+ 116              		.cfi_endproc
+ 117              	.LFE2:
+ 119              		.global	ticks
+ 120              		.section	.bss.ticks,"aw",%nobits
+ 121              		.align	2
+ 122              		.set	.LANCHOR0,. + 0
+ 125              	ticks:
+ 126 0000 00000000 		.space	4
+ 127              		.text
+ 128              	.Letext0:
+ 129              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 130              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
