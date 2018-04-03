@@ -13,7 +13,6 @@
 #include "fsl_i2c.h"
 #include "fsl_smc.h"
 #include "fsl_lptmr.h"
-#include "fsl_dspi.h"
 #include "at_func.h"
 
 #include <stdio.h>
