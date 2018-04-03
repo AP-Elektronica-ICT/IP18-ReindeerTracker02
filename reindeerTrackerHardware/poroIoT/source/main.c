@@ -14,6 +14,7 @@
 #include "fsl_smc.h"
 #include "fsl_lptmr.h"
 #include "at_func.h"
+#include "fsl_lpuart.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,11 +34,12 @@ lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
-volatile uint8_t wake = 2;
-volatile uint8_t UART3_strReady = 0;
-volatile uint16_t UART3_bufPtr = 0;
 
-char UART3_recBuf[500]; 	//buffer for receiving NB IoT module data
+volatile uint8_t wake = 2;
+volatile uint8_t NB_strReady = 0;
+volatile uint16_t NB_bufPtr = 0;
+
+char NB_recBuf[500]; 	//buffer for receiving NB IoT module data
 
 static char PC_recBuf[500];	//buffer for receiving from PC terminal
 volatile uint16_t PC_bufPtr = 0;
@@ -85,73 +87,74 @@ void initTimer() {
 
 /*
  *
- * Init all needed UART buses. UART3 for NB-IoT, UART0 for PC, UART2 for GPS
+ * Init all needed UART buses. LPUART0 for NB-IoT, UART0 for PC, UART2 for GPS
  */
 
 void initUART() {
 
+	lpuart_config_t lpuart_config;
 	uint32_t uartClkSrcFreq = BOARD_DEBUG_UART_CLK_FREQ; //get MCU clock frequency for setting correct baudrate
 
 	UART_GetDefaultConfig(&uart_config);
 	uart_config.baudRate_Bps = 9600;
 	uart_config.enableTx = true;
 	uart_config.enableRx = true;
+	lpuart_config.baudRate_Bps = 57600;
+	lpuart_config.enableTx = true;
+	lpuart_config.enableRx = true;
 
-	UART_Init(UART3, &uart_config, uartClkSrcFreq); //Init UART3 for NBiot
+	CLOCK_SetLpuart1Clock(0x1U);
+	CLOCK_SetLpuart0Clock(0x1U);
+
+	LPUART_Init(LPUART0, &lpuart_config, uartClkSrcFreq); //Init LPUART0 for NBiot
 
 	UART_Init(UART2, &uart_config, uartClkSrcFreq); //UART2 for GPS with same settings!
 
-	UART_EnableInterrupts(UART3, kUART_RxDataRegFullInterruptEnable); //enable UART3 receive interrupt to receive data from NBiot
+	lpuart_config.baudRate_Bps = 115200;
 
-	EnableIRQ(UART3_RX_TX_IRQn);
+	LPUART_Init(LPUART1, &lpuart_config, uartClkSrcFreq); //Init LPUART0 for NBiot
 
-	UART_EnableInterrupts(UART2, kUART_RxDataRegFullInterruptEnable); //enable UART3 receive interrupt to receive data from GPS
-	EnableIRQ(UART2_RX_TX_IRQn);
+	LPUART_EnableInterrupts(LPUART0, kUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from NBiot
 
-	UART_EnableInterrupts(UART0, kUART_RxDataRegFullInterruptEnable); //enable UART0 receive interrupt to receive data from PC
-	EnableIRQ(UART0_RX_TX_IRQn);
+	EnableIRQ(LPUART0_IRQn);
+
+	UART_EnableInterrupts(UART2, kUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from GPS
+	EnableIRQ(UART2_FLEXIO_IRQn);
+
+	LPUART_EnableInterrupts(LPUART1, kUART_RxDataRegFullInterruptEnable); //enable UART0 receive interrupt to receive data from PC
+	EnableIRQ( LPUART1_IRQn );
 
 }
 
 /*
- * Send data to NBiot with UART3
+ * Send data to NBiot with LPUART0
  * String to be sent is pointed by *data
  *
  */
 
-void UART3_send(char *data) {
+void NB_send(char *data) {
 
 	char c = *data++; //assign c a character from the string and post-increment string pointer
 
 	while (c) { //loop until c is zero which means string has ended and no more chars has to be sent
 
-		while (!((UART3->S1) & 0x80)) {
-		} //wait until UART3 Transmission Complete flag rises, so we can send new char
-		UART3->D = c; //write new character to transmit buffer
+		while (!((LPUART0->STAT) & kLPUART_TxDataRegEmptyFlag)) {
+		} //wait until LPUART0 Transmission Complete flag rises, so we can send new char
+		LPUART0->DATA = c; //write new character to transmit buffer
 		c = *data++; //assign next character to c and post-increment string pointer
 	}
 }
 
-uint8_t UART3_receive() {
 
-	if (UART3_strReady) {
-		//printf("Received raw buffer: %s\r\n", UART3_recBuf);
-		UART3_strReady = 0;
-		memset(UART3_recBuf, 0, strlen(UART3_recBuf));
 
-		return 1;
-	}
-	return 0;
-}
-
-void UART2_send(char *data, uint8_t len) {
+void GPS_send(char *data, uint8_t len) {
 
 	char c = *data++; //assign c a character from the string and post-increment string pointer
 
 	for (; len > 0; len--) { //loop until c is zero which means string has ended and no more chars has to be sent
 
 		while (!((UART2->S1) & 0x80)) {
-		} //wait until UART3 Transmission Complete flag rises, so we can send new char
+		} //wait until LPUART0 Transmission Complete flag rises, so we can send new char
 		UART2->D = c; //write new character to transmit buffer
 		c = *data++; //assign next character to c and post-increment string pointer
 	}
@@ -195,19 +198,21 @@ int main(void) {
 
 	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay functions(see timing.h)
 
-	initI2C();
-	initAdc();
+	//initI2C();
+	//initAdc();
 	initUART();
-	configure_acc();
-	acc_init();
-	initTimer();
+	//configure_acc();
+	//acc_init();
+	//initTimer();
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
 	};
 
+
+	/*
 	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeVlls);
-	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; /*!< Stop submode 1, for VLLS1/LLS1. */
+	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; /*!< Stop submode 1, for VLLS1/LLS1.
 
 	LLWU->ME |= 0x01; 		// enable LLWU wakeup source from LPTMR module
 	LLWU->PE3 |= 0x01; // enable LLWU wakeup source from accelerometer interrupt pin
@@ -218,16 +223,20 @@ int main(void) {
 
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
 	LPTMR_StartTimer(LPTMR0);
+*/
+	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//blue led as output
 
-	GPIO_PinInit(GPIOB, 21u, &LED_configOutput);	//blue led as output
-	GPIO_PinInit(GPIOB, 22u, &LED_configOutput);	//red led as output
+	while(true) {
+		GPIO_PortToggle(GPIOA, 1 << 4u);
+		delay_ms(1000);
+	}
 
 	/*
 	 * set boost regulator enable pin as output. This pin will control the power to RF modules
 	 */
-	GPIO_PinInit(GPIOB, 11u, &LED_configOutput);
+	GPIO_PinInit(GPIOA, 1u, &LED_configOutput);
 
-	GPIO_SetPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
+	GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
 
 	//fletcher8(PMC_set, 14);
 	//fletcher8(ubx_cfg_prt, 7);
@@ -329,10 +338,10 @@ int main(void) {
 			{
 				printf("send to gps\r\n");
 				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf + 2); //Calculate UBX checksum and add it to the message
-				UART2_send(PC_recBuf, ubxMsgLen); //Send UBX message to module
+				GPS_send(PC_recBuf, ubxMsgLen); //Send UBX message to module
 			} else {
 
-				UART3_send(PC_recBuf);
+				NB_send(PC_recBuf);
 
 			}
 			memset(PC_recBuf, 0, strlen(PC_recBuf));
@@ -340,7 +349,7 @@ int main(void) {
 			PC_bufPtr = 0;
 		}
 
-		if (UART3_strReady) {
+		if (NB_strReady) {
 			moduleResponseTimeout = millis() + RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial value
 
 			while (millis() < moduleResponseTimeout)
@@ -355,11 +364,11 @@ int main(void) {
 
 			//now the timeout has expired since last character had arrived, so we can process data
 
-			printf(UART3_recBuf);
+			printf(NB_recBuf);
 			printf("\r\n");
-			memset(UART3_recBuf, 0, 500);
-			UART3_bufPtr = 0;
-			UART3_strReady = 0;
+			memset(NB_recBuf, 0, 500);
+			NB_bufPtr = 0;
+			NB_strReady = 0;
 		}
 
 		/*
@@ -468,27 +477,27 @@ void LPTMR0_IRQHandler() {
 	GPIO_PortToggle(GPIOB, 1 << 21u); //light blue LED
 }
 
-void UART3_RX_TX_IRQHandler() {
+void LPUART0_IRQHandler () {
 
-	UART_ClearStatusFlags(UART3, kUART_RxDataRegFullFlag);
+	LPUART_ClearStatusFlags(LPUART0, kUART_RxDataRegFullFlag);
 	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from NB Iiootee module
 
-	uint8_t uartData = UART3->D;
+	uint8_t uartData = LPUART0->DATA;
 	if (uartData != 0) {
 
-		UART3_recBuf[UART3_bufPtr] = uartData;
-		UART3_bufPtr++;
+		NB_recBuf[NB_bufPtr] = uartData;
+		NB_bufPtr++;
 
 		if (uartData == 0x0d) {
-			UART3_strReady = 1;
-			//UART3_bufPtr = 0;
+			NB_strReady = 1;
+			//NB_bufPtr = 0;
 		}
 
 	}
 
 }
 
-void UART2_RX_TX_IRQHandler() {
+void UART2_FLEXIO_IRQHandler() {
 
 	UART_ClearStatusFlags(UART2, kUART_RxDataRegFullFlag);
 	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from GPS module
@@ -519,14 +528,13 @@ void UART2_RX_TX_IRQHandler() {
 
 void LPUART1_IRQHandler() {
 
-	uint8_t tmp = LPUART1->DATA;
+	uint8_t uartData = LPUART1->DATA;
+	//GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
 
-	//GPIOA ->PTOR |= 0x10;
-
-	PC_recBuf[PC_bufPtr] = tmp;
+	PC_recBuf[PC_bufPtr] = uartData;
 	PC_bufPtr++;
 
-	if (tmp == 0x0a) {
+	if (uartData == 0x0a) {
 		PC_strReady = 1;
 		PC_bufPtr = 0;
 
