@@ -227,8 +227,11 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen){
 	  NB_define_pdp();
 	  delay_ms(1000);
 
+<<<<<<< HEAD
 	  do{
 
+=======
+>>>>>>> master
 	 NB_cops_deRegister();
 	  delay_ms(2200);
 
@@ -245,9 +248,14 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen){
 	 NB_create_socket();
 	  delay_ms(1000);
 
+<<<<<<< HEAD
 	  reSend_msg = NB_send_msg(mqttMessage, msgLen);
 
 	} while(reSend_msg == 1);
+=======
+	  NB_send_msg(mqttMessage, msgLen);
+
+>>>>>>> master
 
 	  //NB_received_data();
 	  delay_ms(4000);
