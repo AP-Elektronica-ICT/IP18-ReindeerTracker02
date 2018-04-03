@@ -1176,50 +1176,49 @@
   99 0046 43F08003 		orr	r3, r3, #128
  100 004a 0360     		str	r3, [r0]
  101              	.LVL9:
- 102              	.LBE17:
- 103              	.LBE16:
+ 102 004c 10BD     		pop	{r4, pc}
+ 103              	.L7:
+ 104 004e 00BF     		.align	2
+ 105              	.L6:
+ 106 0050 3C800440 		.word	1074036796
+ 107 0054 F180F3FF 		.word	-818959
+ 108              	.LBE17:
+ 109              	.LBE16:
+ 110              		.cfi_endproc
+ 111              	.LFE166:
+ 113              		.section	.text.PDB_Deinit,"ax",%progbits
+ 114              		.align	1
+ 115              		.global	PDB_Deinit
+ 116              		.syntax unified
+ 117              		.thumb
+ 118              		.thumb_func
+ 119              		.fpu fpv4-sp-d16
+ 121              	PDB_Deinit:
+ 122              	.LFB167:
  101:../drivers/fsl_pdb.c **** 
  102:../drivers/fsl_pdb.c ****     PDB_Enable(base, true); /* Enable the PDB module. */
  103:../drivers/fsl_pdb.c **** }
- 104              		.loc 1 103 0
- 105 004c 10BD     		pop	{r4, pc}
- 106              	.L7:
- 107 004e 00BF     		.align	2
- 108              	.L6:
- 109 0050 3C800440 		.word	1074036796
- 110 0054 F180F3FF 		.word	-818959
- 111              		.cfi_endproc
- 112              	.LFE166:
- 114              		.section	.text.PDB_Deinit,"ax",%progbits
- 115              		.align	1
- 116              		.global	PDB_Deinit
- 117              		.syntax unified
- 118              		.thumb
- 119              		.thumb_func
- 120              		.fpu fpv4-sp-d16
- 122              	PDB_Deinit:
- 123              	.LFB167:
  104:../drivers/fsl_pdb.c **** 
  105:../drivers/fsl_pdb.c **** void PDB_Deinit(PDB_Type *base)
  106:../drivers/fsl_pdb.c **** {
- 124              		.loc 1 106 0
- 125              		.cfi_startproc
- 126              		@ args = 0, pretend = 0, frame = 0
- 127              		@ frame_needed = 0, uses_anonymous_args = 0
- 128              		@ link register save eliminated.
- 129              	.LVL10:
- 130              	.LBB24:
- 131              	.LBB25:
+ 123              		.loc 1 106 0
+ 124              		.cfi_startproc
+ 125              		@ args = 0, pretend = 0, frame = 0
+ 126              		@ frame_needed = 0, uses_anonymous_args = 0
+ 127              		@ link register save eliminated.
+ 128              	.LVL10:
+ 129              	.LBB24:
+ 130              	.LBB25:
  281:../drivers/fsl_pdb.h ****     }
  282:../drivers/fsl_pdb.h ****     else
  283:../drivers/fsl_pdb.h ****     {
  284:../drivers/fsl_pdb.h ****         base->SC &= ~PDB_SC_PDBEN_MASK;
- 132              		.loc 3 284 0
- 133 0000 0368     		ldr	r3, [r0]
- 134              	.LBE25:
- 135              	.LBE24:
- 136              	.LBB27:
- 137              	.LBB28:
+ 131              		.loc 3 284 0
+ 132 0000 0368     		ldr	r3, [r0]
+ 133              	.LBE25:
+ 134              	.LBE24:
+ 135              	.LBB27:
+ 136              	.LBB28:
  696:../drivers/fsl_clock.h **** }
  697:../drivers/fsl_clock.h **** 
  698:../drivers/fsl_clock.h **** /*!
@@ -1231,27 +1230,43 @@
  704:../drivers/fsl_clock.h **** {
  705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
  706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
- 138              		.loc 2 706 0
- 139 0002 044A     		ldr	r2, .L9
- 140              	.LBE28:
- 141              	.LBE27:
- 142              	.LBB30:
- 143              	.LBB26:
- 144              		.loc 3 284 0
- 145 0004 23F08003 		bic	r3, r3, #128
- 146 0008 0360     		str	r3, [r0]
- 147              	.LVL11:
- 148              	.LBE26:
- 149              	.LBE30:
- 150              	.LBB31:
- 151              	.LBB29:
- 152              		.loc 2 706 0
- 153 000a 1368     		ldr	r3, [r2]
- 154 000c 23F48003 		bic	r3, r3, #4194304
- 155 0010 1360     		str	r3, [r2]
- 156              	.LVL12:
- 157              	.LBE29:
- 158              	.LBE31:
+ 137              		.loc 2 706 0
+ 138 0002 044A     		ldr	r2, .L9
+ 139              	.LBE28:
+ 140              	.LBE27:
+ 141              	.LBB30:
+ 142              	.LBB26:
+ 143              		.loc 3 284 0
+ 144 0004 23F08003 		bic	r3, r3, #128
+ 145 0008 0360     		str	r3, [r0]
+ 146              	.LVL11:
+ 147              	.LBE26:
+ 148              	.LBE30:
+ 149              	.LBB31:
+ 150              	.LBB29:
+ 151              		.loc 2 706 0
+ 152 000a 1368     		ldr	r3, [r2]
+ 153 000c 23F48003 		bic	r3, r3, #4194304
+ 154 0010 1360     		str	r3, [r2]
+ 155              	.LVL12:
+ 156 0012 7047     		bx	lr
+ 157              	.L10:
+ 158              		.align	2
+ 159              	.L9:
+ 160 0014 3C800440 		.word	1074036796
+ 161              	.LBE29:
+ 162              	.LBE31:
+ 163              		.cfi_endproc
+ 164              	.LFE167:
+ 166              		.section	.text.PDB_GetDefaultConfig,"ax",%progbits
+ 167              		.align	1
+ 168              		.global	PDB_GetDefaultConfig
+ 169              		.syntax unified
+ 170              		.thumb
+ 171              		.thumb_func
+ 172              		.fpu fpv4-sp-d16
+ 174              	PDB_GetDefaultConfig:
+ 175              	.LFB168:
  107:../drivers/fsl_pdb.c ****     PDB_Enable(base, false); /* Disable the PDB module. */
  108:../drivers/fsl_pdb.c **** 
  109:../drivers/fsl_pdb.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
@@ -1259,80 +1274,62 @@
  111:../drivers/fsl_pdb.c ****     CLOCK_DisableClock(s_pdbClocks[PDB_GetInstance(base)]);
  112:../drivers/fsl_pdb.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
  113:../drivers/fsl_pdb.c **** }
- 159              		.loc 1 113 0
- 160 0012 7047     		bx	lr
- 161              	.L10:
- 162              		.align	2
- 163              	.L9:
- 164 0014 3C800440 		.word	1074036796
- 165              		.cfi_endproc
- 166              	.LFE167:
- 168              		.section	.text.PDB_GetDefaultConfig,"ax",%progbits
- 169              		.align	1
- 170              		.global	PDB_GetDefaultConfig
- 171              		.syntax unified
- 172              		.thumb
- 173              		.thumb_func
- 174              		.fpu fpv4-sp-d16
- 176              	PDB_GetDefaultConfig:
- 177              	.LFB168:
  114:../drivers/fsl_pdb.c **** 
  115:../drivers/fsl_pdb.c **** void PDB_GetDefaultConfig(pdb_config_t *config)
  116:../drivers/fsl_pdb.c **** {
- 178              		.loc 1 116 0
- 179              		.cfi_startproc
- 180              		@ args = 0, pretend = 0, frame = 0
- 181              		@ frame_needed = 0, uses_anonymous_args = 0
- 182              		@ link register save eliminated.
- 183              	.LVL13:
+ 176              		.loc 1 116 0
+ 177              		.cfi_startproc
+ 178              		@ args = 0, pretend = 0, frame = 0
+ 179              		@ frame_needed = 0, uses_anonymous_args = 0
+ 180              		@ link register save eliminated.
+ 181              	.LVL13:
  117:../drivers/fsl_pdb.c ****     assert(NULL != config);
  118:../drivers/fsl_pdb.c **** 
  119:../drivers/fsl_pdb.c ****     config->loadValueMode = kPDB_LoadValueImmediately;
- 184              		.loc 1 119 0
- 185 0000 0023     		movs	r3, #0
+ 182              		.loc 1 119 0
+ 183 0000 0023     		movs	r3, #0
  120:../drivers/fsl_pdb.c ****     config->prescalerDivider = kPDB_PrescalerDivider1;
  121:../drivers/fsl_pdb.c ****     config->dividerMultiplicationFactor = kPDB_DividerMultiplicationFactor1;
  122:../drivers/fsl_pdb.c ****     config->triggerInputSource = kPDB_TriggerSoftware;
- 186              		.loc 1 122 0
- 187 0002 0F22     		movs	r2, #15
+ 184              		.loc 1 122 0
+ 185 0002 0F22     		movs	r2, #15
  119:../drivers/fsl_pdb.c ****     config->prescalerDivider = kPDB_PrescalerDivider1;
- 188              		.loc 1 119 0
- 189 0004 0370     		strb	r3, [r0]
+ 186              		.loc 1 119 0
+ 187 0004 0370     		strb	r3, [r0]
  120:../drivers/fsl_pdb.c ****     config->prescalerDivider = kPDB_PrescalerDivider1;
- 190              		.loc 1 120 0
- 191 0006 4370     		strb	r3, [r0, #1]
+ 188              		.loc 1 120 0
+ 189 0006 4370     		strb	r3, [r0, #1]
  121:../drivers/fsl_pdb.c ****     config->triggerInputSource = kPDB_TriggerSoftware;
- 192              		.loc 1 121 0
- 193 0008 8370     		strb	r3, [r0, #2]
- 194              		.loc 1 122 0
- 195 000a C270     		strb	r2, [r0, #3]
+ 190              		.loc 1 121 0
+ 191 0008 8370     		strb	r3, [r0, #2]
+ 192              		.loc 1 122 0
+ 193 000a C270     		strb	r2, [r0, #3]
  123:../drivers/fsl_pdb.c ****     config->enableContinuousMode = false;
- 196              		.loc 1 123 0
- 197 000c 0371     		strb	r3, [r0, #4]
+ 194              		.loc 1 123 0
+ 195 000c 0371     		strb	r3, [r0, #4]
+ 196 000e 7047     		bx	lr
+ 197              		.cfi_endproc
+ 198              	.LFE168:
+ 200              		.section	.text.PDB_SetDACTriggerConfig,"ax",%progbits
+ 201              		.align	1
+ 202              		.global	PDB_SetDACTriggerConfig
+ 203              		.syntax unified
+ 204              		.thumb
+ 205              		.thumb_func
+ 206              		.fpu fpv4-sp-d16
+ 208              	PDB_SetDACTriggerConfig:
+ 209              	.LFB169:
  124:../drivers/fsl_pdb.c **** }
- 198              		.loc 1 124 0
- 199 000e 7047     		bx	lr
- 200              		.cfi_endproc
- 201              	.LFE168:
- 203              		.section	.text.PDB_SetDACTriggerConfig,"ax",%progbits
- 204              		.align	1
- 205              		.global	PDB_SetDACTriggerConfig
- 206              		.syntax unified
- 207              		.thumb
- 208              		.thumb_func
- 209              		.fpu fpv4-sp-d16
- 211              	PDB_SetDACTriggerConfig:
- 212              	.LFB169:
  125:../drivers/fsl_pdb.c **** 
  126:../drivers/fsl_pdb.c **** #if defined(FSL_FEATURE_PDB_HAS_DAC) && FSL_FEATURE_PDB_HAS_DAC
  127:../drivers/fsl_pdb.c **** void PDB_SetDACTriggerConfig(PDB_Type *base, uint32_t channel, pdb_dac_trigger_config_t *config)
  128:../drivers/fsl_pdb.c **** {
- 213              		.loc 1 128 0
- 214              		.cfi_startproc
- 215              		@ args = 0, pretend = 0, frame = 0
- 216              		@ frame_needed = 0, uses_anonymous_args = 0
- 217              		@ link register save eliminated.
- 218              	.LVL14:
+ 210              		.loc 1 128 0
+ 211              		.cfi_startproc
+ 212              		@ args = 0, pretend = 0, frame = 0
+ 213              		@ frame_needed = 0, uses_anonymous_args = 0
+ 214              		@ link register save eliminated.
+ 215              	.LVL14:
  129:../drivers/fsl_pdb.c ****     assert(channel < PDB_INTC_COUNT);
  130:../drivers/fsl_pdb.c ****     assert(NULL != config);
  131:../drivers/fsl_pdb.c **** 
@@ -1340,49 +1337,47 @@
  133:../drivers/fsl_pdb.c **** 
  134:../drivers/fsl_pdb.c ****     /* PDBx_DACINTC. */
  135:../drivers/fsl_pdb.c ****     if (config->enableExternalTriggerInput)
- 219              		.loc 1 135 0
- 220 0000 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 216              		.loc 1 135 0
+ 217 0000 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
  136:../drivers/fsl_pdb.c ****     {
  137:../drivers/fsl_pdb.c ****         tmp32 |= PDB_INTC_EXT_MASK;
  138:../drivers/fsl_pdb.c ****     }
  139:../drivers/fsl_pdb.c ****     if (config->enableIntervalTrigger)
- 221              		.loc 1 139 0
- 222 0002 5278     		ldrb	r2, [r2, #1]	@ zero_extendqisi2
- 223              	.LVL15:
+ 218              		.loc 1 139 0
+ 219 0002 5278     		ldrb	r2, [r2, #1]	@ zero_extendqisi2
+ 220              	.LVL15:
  137:../drivers/fsl_pdb.c ****     }
- 224              		.loc 1 137 0
- 225 0004 002B     		cmp	r3, #0
- 226 0006 0CBF     		ite	eq
- 227 0008 0023     		moveq	r3, #0
- 228 000a 0223     		movne	r3, #2
- 229              	.LVL16:
- 230              		.loc 1 139 0
- 231 000c 0AB1     		cbz	r2, .L14
+ 221              		.loc 1 137 0
+ 222 0004 002B     		cmp	r3, #0
+ 223 0006 0CBF     		ite	eq
+ 224 0008 0023     		moveq	r3, #0
+ 225 000a 0223     		movne	r3, #2
+ 226              	.LVL16:
+ 227              		.loc 1 139 0
+ 228 000c 0AB1     		cbz	r2, .L14
  140:../drivers/fsl_pdb.c ****     {
  141:../drivers/fsl_pdb.c ****         tmp32 |= PDB_INTC_TOE_MASK;
- 232              		.loc 1 141 0
- 233 000e 43F00103 		orr	r3, r3, #1
- 234              	.LVL17:
- 235              	.L14:
+ 229              		.loc 1 141 0
+ 230 000e 43F00103 		orr	r3, r3, #1
+ 231              	.LVL17:
+ 232              	.L14:
  142:../drivers/fsl_pdb.c ****     }
  143:../drivers/fsl_pdb.c ****     base->DAC[channel].INTC = tmp32;
- 236              		.loc 1 143 0
- 237 0012 2A31     		adds	r1, r1, #42
- 238              	.LVL18:
- 239 0014 40F83130 		str	r3, [r0, r1, lsl #3]
- 144:../drivers/fsl_pdb.c **** }
- 240              		.loc 1 144 0
- 241 0018 7047     		bx	lr
- 242              		.cfi_endproc
- 243              	.LFE169:
- 245              		.text
- 246              	.Letext0:
- 247              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 248              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 249              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 250              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 251              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 252              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 253              		.file 10 "../CMSIS/core_cm4.h"
- 254              		.file 11 "../CMSIS/system_MK64F12.h"
- 255              		.file 12 "../CMSIS/MK64F12.h"
+ 233              		.loc 1 143 0
+ 234 0012 2A31     		adds	r1, r1, #42
+ 235              	.LVL18:
+ 236 0014 40F83130 		str	r3, [r0, r1, lsl #3]
+ 237 0018 7047     		bx	lr
+ 238              		.cfi_endproc
+ 239              	.LFE169:
+ 241              		.text
+ 242              	.Letext0:
+ 243              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 244              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 245              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 246              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 247              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+ 248              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+ 249              		.file 10 "../CMSIS/core_cm4.h"
+ 250              		.file 11 "../CMSIS/system_MK64F12.h"
+ 251              		.file 12 "../CMSIS/MK64F12.h"

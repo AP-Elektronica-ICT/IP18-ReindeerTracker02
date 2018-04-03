@@ -39,7 +39,7 @@
   13:../source/i2c_func.c **** #define FRDM_ACC_SADDR 0x1D
   14:../source/i2c_func.c **** #define TRACKER_ACC_SADDR 0x1C
   15:../source/i2c_func.c **** 
-  16:../source/i2c_func.c **** #define ACC_SADDR TRACKER_ACC_SADDR
+  16:../source/i2c_func.c **** #define ACC_SADDR FRDM_ACC_SADDR
   17:../source/i2c_func.c **** 
   18:../source/i2c_func.c **** void initI2C()
   19:../source/i2c_func.c **** {
@@ -1256,7 +1256,7 @@
  150              		.loc 1 43 0
  151 0008 1348     		ldr	r0, .L14
  152              	.LVL12:
- 153 000a 1C21     		movs	r1, #28
+ 153 000a 1D21     		movs	r1, #29
  154              	.LVL13:
  155 000c FFF7FEFF 		bl	I2C_MasterStart
  156              	.LVL14:
@@ -1377,7 +1377,7 @@
  238              		.loc 1 72 0
  239 0004 0446     		mov	r4, r0
  240              		.loc 1 75 0
- 241 0006 1C21     		movs	r1, #28
+ 241 0006 1D21     		movs	r1, #29
  242 0008 1B48     		ldr	r0, .L29
  243              	.LVL17:
  244 000a FFF7FEFF 		bl	I2C_MasterStart
@@ -1432,7 +1432,7 @@
  275 0034 42F00202 		orr	r2, r2, #2
  276 0038 DA70     		strb	r2, [r3, #3]
  277              		.loc 1 92 0
- 278 003a 1C21     		movs	r1, #28
+ 278 003a 1D21     		movs	r1, #29
  279 003c 0122     		movs	r2, #1
  280 003e FFF7FEFF 		bl	I2C_MasterRepeatedStart
  281              	.LVL19:
@@ -1514,12 +1514,12 @@
  328              	.LFE164:
  330              		.text
  331              	.Letext0:
- 332              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 333              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 334              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 335              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 336              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 337              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 332              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 333              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 334              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 335              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 336              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+ 337              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
  338              		.file 10 "../CMSIS/core_cm4.h"
  339              		.file 11 "../CMSIS/system_MK64F12.h"
  340              		.file 12 "../CMSIS/MK64F12.h"
