@@ -13,7 +13,6 @@
 #include "fsl_i2c.h"
 #include "fsl_smc.h"
 #include "fsl_lptmr.h"
-#include "fsl_dspi.h"
 #include "at_func.h"
 
 #include <stdio.h>
@@ -156,6 +155,23 @@ void UART2_send(char *data, uint8_t len) {
 		UART2->D = c; //write new character to transmit buffer
 		c = *data++; //assign next character to c and post-increment string pointer
 	}
+}
+
+uint8_t PCprint(char *data) {
+	char c;
+	uint8_t len = 0;
+	while ((c = *data++)) {
+
+		while (!(LPUART1->STAT & kLPUART_TxDataRegEmptyFlag)) {
+		}
+
+		LPUART1->DATA = c;
+		len++;
+
+	}
+
+
+	return len;
 }
 
 int main(void) {
@@ -501,19 +517,18 @@ void UART2_RX_TX_IRQHandler() {
 
 }
 
-void UART0_RX_TX_IRQHandler() {
+void LPUART1_IRQHandler() {
 
-	UART_ClearStatusFlags(UART0, kUART_RxDataRegFullFlag);
-	GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
+	uint8_t tmp = LPUART1->DATA;
 
-	uint8_t uartData = UART0->D;
+	//GPIOA ->PTOR |= 0x10;
 
-	PC_recBuf[PC_bufPtr] = uartData;
+	PC_recBuf[PC_bufPtr] = tmp;
 	PC_bufPtr++;
 
-	if (uartData == 0x0d) {
+	if (tmp == 0x0a) {
 		PC_strReady = 1;
+		PC_bufPtr = 0;
 
 	}
-
 }

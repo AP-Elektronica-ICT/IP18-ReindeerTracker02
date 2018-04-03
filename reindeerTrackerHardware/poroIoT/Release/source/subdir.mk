@@ -4,37 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../source/acc_func.c \
-../source/adc_func.c \
-../source/at_func.c \
-../source/gps_func.c \
-../source/i2c_func.c \
-../source/main.c \
-../source/nbiot_func.c \
-../source/timing.c \
-../source/ubx_func.c 
+../source/main.c 
 
 OBJS += \
-./source/acc_func.o \
-./source/adc_func.o \
-./source/at_func.o \
-./source/gps_func.o \
-./source/i2c_func.o \
-./source/main.o \
-./source/nbiot_func.o \
-./source/timing.o \
-./source/ubx_func.o 
+./source/main.o 
 
 C_DEPS += \
-./source/acc_func.d \
-./source/adc_func.d \
-./source/at_func.d \
-./source/gps_func.d \
-./source/i2c_func.d \
-./source/main.d \
-./source/nbiot_func.d \
-./source/timing.d \
-./source/ubx_func.d 
+./source/main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
