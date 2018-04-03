@@ -10,6 +10,7 @@
  * @brief Application entry point.
  */
 int main(void) {
+	printf("PERKELE");
   /* Init board hardware. */
   BOARD_InitPins();
   BOARD_BootClockRUN();
