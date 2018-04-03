@@ -1,0 +1,117 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"board.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.BOARD_InitDebugConsole,"ax",%progbits
+  18              		.align	1
+  19              		.global	BOARD_InitDebugConsole
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	BOARD_InitDebugConsole:
+  26              	.LFB159:
+  27              		.file 1 "../board/board.c"
+   1:../board/board.c **** /*
+   2:../board/board.c ****  * The Clear BSD License
+   3:../board/board.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../board/board.c ****  * Copyright 2016-2017 NXP
+   5:../board/board.c ****  * All rights reserved.
+   6:../board/board.c ****  *
+   7:../board/board.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../board/board.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../board/board.c ****  * that the following conditions are met:
+  10:../board/board.c ****  *
+  11:../board/board.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../board/board.c ****  *   of conditions and the following disclaimer.
+  13:../board/board.c ****  *
+  14:../board/board.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../board/board.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../board/board.c ****  *   other materials provided with the distribution.
+  17:../board/board.c ****  *
+  18:../board/board.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../board/board.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../board/board.c ****  *   software without specific prior written permission.
+  21:../board/board.c ****  *
+  22:../board/board.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../board/board.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../board/board.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../board/board.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../board/board.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../board/board.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../board/board.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../board/board.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../board/board.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../board/board.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../board/board.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../board/board.c ****  */
+  34:../board/board.c **** 
+  35:../board/board.c **** #include <stdint.h>
+  36:../board/board.c **** #include "fsl_common.h"
+  37:../board/board.c **** #include "fsl_debug_console.h"
+  38:../board/board.c **** #include "board.h"
+  39:../board/board.c **** 
+  40:../board/board.c **** /* Initialize debug console. */
+  41:../board/board.c **** void BOARD_InitDebugConsole(void)
+  42:../board/board.c **** {
+  28              		.loc 1 42 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 10B5     		push	{r4, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
+  43:../board/board.c ****     uint32_t uartClkSrcFreq = BOARD_DEBUG_UART_CLK_FREQ;
+  36              		.loc 1 43 0
+  37 0002 FFF7FEFF 		bl	CLOCK_GetCoreSysClkFreq
+  38              	.LVL0:
+  44:../board/board.c ****     DbgConsole_Init(BOARD_DEBUG_UART_BASEADDR, BOARD_DEBUG_UART_BAUDRATE, BOARD_DEBUG_UART_TYPE, ua
+  39              		.loc 1 44 0
+  40 0006 0122     		movs	r2, #1
+  41 0008 0346     		mov	r3, r0
+  42 000a 4FF4E131 		mov	r1, #115200
+  43 000e 0248     		ldr	r0, .L2
+  44              	.LVL1:
+  45:../board/board.c **** }
+  45              		.loc 1 45 0
+  46 0010 BDE81040 		pop	{r4, lr}
+  47              		.cfi_restore 14
+  48              		.cfi_restore 4
+  49              		.cfi_def_cfa_offset 0
+  44:../board/board.c ****     DbgConsole_Init(BOARD_DEBUG_UART_BASEADDR, BOARD_DEBUG_UART_BAUDRATE, BOARD_DEBUG_UART_TYPE, ua
+  50              		.loc 1 44 0
+  51 0014 FFF7FEBF 		b	DbgConsole_Init
+  52              	.LVL2:
+  53              	.L3:
+  54              		.align	2
+  55              	.L2:
+  56 0018 00A00640 		.word	1074176000
+  57              		.cfi_endproc
+  58              	.LFE159:
+  60              		.text
+  61              	.Letext0:
+  62              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+  63              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+  64              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+  65              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+  66              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+  67              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+  68              		.file 8 "../CMSIS/core_cm4.h"
+  69              		.file 9 "../CMSIS/system_MK64F12.h"
+  70              		.file 10 "../CMSIS/MK64F12.h"
+  71              		.file 11 "../drivers/fsl_clock.h"
+  72              		.file 12 "../board/clock_config.h"
+  73              		.file 13 "../utilities/fsl_debug_console.h"

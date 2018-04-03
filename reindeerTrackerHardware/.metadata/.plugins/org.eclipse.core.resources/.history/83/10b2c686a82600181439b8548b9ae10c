@@ -1,0 +1,51 @@
+#include <stdint.h>
+#include <stdio.h>
+
+#include "at_func.h"
+
+
+char AT_REQ[] = "AT";
+char AT_GPSDBG_ON[] = "CGNSDBG=1";
+char AT_GPSTST_ON[] = "CGNSTST=1";
+char AT_GPSINFO[] = "CGNSINF";
+
+char AT_NPIN[] = "CPIN=";  // sets, the PIN-code
+char AT_CMEE[] = "CMEE=2\r\n";
+char AT_CFUN[] = "CFUN="; 	// sets functionality mode, edit this to change power mode
+char AT_CCLK[] = "CCLK=";	// sets and reads rtc example: AT+CCLK="14/07/01,15:00:00+01"
+char AT_CREG[] = "CREG?";
+char AT_CGATT[] = "CGATT?";
+char AT_CSTT[] = "CSTT=\"apn\",\"\",\"\"";
+char AT_CIICR[] = "CIICR";
+char AT_CIFSR[] = "CIFSR";
+char AT_CIPSTATUS[] = "CIPSTATUS";
+char AT_CIPSTART[] = "CIPSTART=\"TCP\",\"139.59.155.145\",1883";
+char AT_CIPSEND[] = "CIPSEND=";
+
+void NB_init() {
+	char cmd_buf[50];
+
+	sprintf(cmd_buf, "AT+%s\r\n", AT_CMEE);
+
+	printf(cmd_buf);
+}
+
+void AT_send(char *AT_cmd) {
+
+	char cmd_buf[100];
+
+	sprintf(cmd_buf, "Received cmd: %s \r\n", AT_cmd);
+
+	printf(cmd_buf);
+
+}
+
+void NB_setPin(char* pinCode) {
+
+	char cmd_buf[100];
+
+	sprintf(cmd_buf, "%s2,\"%s\"\r\n", AT_NPIN, pinCode);
+
+	printf(cmd_buf);
+
+}
