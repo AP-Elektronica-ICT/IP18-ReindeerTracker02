@@ -184,8 +184,14 @@ int main(void) {
 	initUART();
 	configure_acc();
 	acc_init();
+<<<<<<< HEAD
 	initTimer();
 
+=======
+
+	initTimer();
+
+>>>>>>> master
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
 	};
@@ -198,7 +204,7 @@ int main(void) {
 					   // 0x20 for stock frdm pin enable,
 	LLWU->FILT1 |= 0x28;	// set pin wakeup from rising edge, 0x2A for frdm
 
-	//EnableIRQ(PORTC_IRQn);
+	EnableIRQ(PORTC_IRQn);
 
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
 	LPTMR_StartTimer(LPTMR0);
@@ -226,13 +232,20 @@ int main(void) {
 	/*
 	 * Copy all reindeer variables to struct before starting network operations
 	 */
+<<<<<<< HEAD
 	char testLat[11] = ("6500.53");
 	char testLon[11] = ("02534.554");
+=======
+
+char testLat[11] = ("6500.53");
+char testLon[11] = ("02534.554");
+>>>>>>> master
 	strcpy(reindeerData.serialNum, "11111");
 	strcpy(reindeerData.latitude, testLat);
 	strcpy(reindeerData.longitude, testLon);
 	strcpy(reindeerData.dead, "false");
 	reindeerData.batteryLevel = 45;
+<<<<<<< HEAD
 	/*
 	 while (true) {
 
@@ -248,12 +261,21 @@ int main(void) {
 		SMC_PreEnterStopModes();
 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
 	}
+=======
+
+	while(1){
+		int16_t acc_val = read_acc_axis(0);
+			printf("Accelereometer %d\r\n",acc_val);
+			delay_ms(500);
+	}
+
+>>>>>>> master
 
 	while (1) {
 
 		//int16_t acc_val = read_acc_axis(0);
 		//printf("Accelereometer %d\r\n",acc_val);
-		//break;
+		break;
 		/*
 		 * Check if a string has arrived from PC (with CR line end)
 		 */
@@ -397,12 +419,17 @@ int main(void) {
 	 * Assemble data to json format and then to POST message
 	 */
 
-	uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
+	//uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
 
 	//NB_send_msg(mqttMessage, msgLen);
+<<<<<<< HEAD
 
 	NB_create_pdp_send(mqttMessage, msgLen);
 	printf("Roger\r\n");
+=======
+printf("kuusi on puu\r\n");
+	//NB_create_pdp_send(mqttMessage, msgLen);
+>>>>>>> master
 	//parseData(testLat, testLon);
 }
 /*
