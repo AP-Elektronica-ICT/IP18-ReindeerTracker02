@@ -101,7 +101,7 @@ __isr_vector:
     .long 0xFFFFFFFF
     .long 0xFFFFFFFF
     .long 0xFFFFFFFF
-    .long 0xFFFF3FFE
+    .long 0xFFFF1FFE
 
     .text
     .thumb

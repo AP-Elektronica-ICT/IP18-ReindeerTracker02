@@ -15,8 +15,8 @@
 
 extern volatile uint8_t UART3_strReady;
 
-extern char UART3_recBuf[];
-extern char UART3_bufPtr;
+extern char NB_recBuf[];
+extern char NB_bufPtr;
 
 uint8_t res;
 
@@ -185,21 +185,21 @@ void NB_received_data(){
 
 	uint32_t time_limit = 1000000;
 
-	UART3_bufPtr = 0;
-	memset(UART3_recBuf, 0, strlen(UART3_recBuf));
+	NB_bufPtr = 0;
+	memset(NB_recBuf, 0, strlen(NB_recBuf));
 
 while(time_limit--){
 
 	if (UART3_strReady)
 			{
 
-			if(strstr(UART3_recBuf,"NSONMI") != NULL) //if received buffer contains expected answer
+			if(strstr(NB_recBuf,"NSONMI") != NULL) //if received buffer contains expected answer
 				{
-					printf(UART3_recBuf);
+					printf(NB_recBuf);
 					printf("received\r\n");
 					break;
 				}
-				else if (strstr(UART3_recBuf, "ERROR") != NULL)
+				else if (strstr(NB_recBuf, "ERROR") != NULL)
 				{
 
 					break;
@@ -207,8 +207,8 @@ while(time_limit--){
 				UART3_strReady = 0;
 			}
 }
-	UART3_bufPtr = 0;
-	memset(UART3_recBuf, 0, strlen(UART3_recBuf));
+	NB_bufPtr = 0;
+	memset(NB_recBuf, 0, strlen(NB_recBuf));
 }
 
 void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen){
