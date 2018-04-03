@@ -401,6 +401,7 @@ int main(void) {
 	//NB_send_msg(mqttMessage, msgLen);
 
 	NB_create_pdp_send(mqttMessage, msgLen);
+	printf("Roger\r\n");
 	//parseData(testLat, testLon);
 }
 /*

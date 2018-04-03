@@ -213,27 +213,42 @@ while(time_limit--){
 
 void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen){
 
+	uint8_t reSend_msg = 0;
+
 	 NB_reboot();
 	  NB_setPin();
+
 	  delay_ms(1000);  //viivettä pitää olla
 	  NB_cops_register();
+
 	  NB_network_status();
 	  delay_ms(1000);
+
 	  NB_define_pdp();
 	  delay_ms(1000);
+
+	  do{
+
 	 NB_cops_deRegister();
 	  delay_ms(2200);
+
 	  NB_active_pdp();
 	  delay_ms(3000);
-	  NB_show_ip();
-	  delay_ms(1000);
-	 NB_create_socket();
-	  delay_ms(1000);
-	  while(1){
 
-	  NB_send_msg(mqttMessage, msgLen);
+	  if(reSend_msg == 1){
+	  NB_network_status();
 	  delay_ms(1000);
 	  }
+	  NB_show_ip();
+	  delay_ms(1000);
+
+	 NB_create_socket();
+	  delay_ms(1000);
+
+	  reSend_msg = NB_send_msg(mqttMessage, msgLen);
+
+	} while(reSend_msg == 1);
+
 	  //NB_received_data();
 	  delay_ms(4000);
 	  NB_read_msg();
@@ -336,9 +351,10 @@ void NB_create_socket() {
 		printf("error\r\n");
 	}
 }
-void NB_send_msg(char *mqttMessage, uint8_t msgLen) {
+uint8_t NB_send_msg(char *mqttMessage, uint8_t msgLen) {
 
 	char nsost_command[500];
+	uint8_t reSend_msg = 0;
 
 	sprintf(nsost_command,"0,\"167.99.207.133\",1884,%d,\"%s\"", msgLen, mqttMessage);
 
@@ -350,7 +366,10 @@ void NB_send_msg(char *mqttMessage, uint8_t msgLen) {
 		printf("sent");
 	} else if (res == 1) {
 		printf("error\r\n");
+		reSend_msg = 1;
+		return reSend_msg;
 	}
+	return 0;
 }
 void NB_read_msg() {
 	res = AT_send(AT_NSORF, "", "OK");     //read echo data
