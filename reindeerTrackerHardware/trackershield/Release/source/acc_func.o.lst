@@ -22,7 +22,7 @@
   22              		.thumb_func
   23              		.fpu fpv4-sp-d16
   25              	acc_init:
-  26              	.LFB3:
+  26              	.LFB1:
   27              		.file 1 "../source/acc_func.c"
    1:../source/acc_func.c **** /*
    2:../source/acc_func.c ****  * acc_func.c
@@ -74,7 +74,7 @@
   50 0012 FFF7FEBF 		b	accWriteReg
   51              	.LVL1:
   52              		.cfi_endproc
-  53              	.LFE3:
+  53              	.LFE1:
   55              		.section	.text.configure_acc,"ax",%progbits
   56              		.align	1
   57              		.global	configure_acc
@@ -83,7 +83,7 @@
   60              		.thumb_func
   61              		.fpu fpv4-sp-d16
   63              	configure_acc:
-  64              	.LFB4:
+  64              	.LFB2:
   25:../source/acc_func.c **** 
   26:../source/acc_func.c **** void configure_acc() {
   65              		.loc 1 26 0
@@ -187,7 +187,7 @@
  138 005c FFF7FEBF 		b	accWriteReg
  139              	.LVL17:
  140              		.cfi_endproc
- 141              	.LFE4:
+ 141              	.LFE2:
  143              		.section	.text.read_acc_axis,"ax",%progbits
  144              		.align	1
  145              		.global	read_acc_axis
@@ -196,7 +196,7 @@
  148              		.thumb_func
  149              		.fpu fpv4-sp-d16
  151              	read_acc_axis:
- 152              	.LFB5:
+ 152              	.LFB3:
   51:../source/acc_func.c **** 
   52:../source/acc_func.c **** int16_t read_acc_axis(uint8_t axis) {
  153              		.loc 1 52 0
@@ -217,25 +217,25 @@
   55:../source/acc_func.c **** 	switch (axis) {
  166              		.loc 1 55 0
  167 0004 0328     		cmp	r0, #3
- 168 0006 04D8     		bhi	.L7
+ 168 0006 04D8     		bhi	.L5
  169 0008 DFE800F0 		tbb	[pc, r0]
  170              	.L6:
- 171 000c 02       		.byte	(.L5-.L6)/2
- 172 000d 22       		.byte	(.L12-.L6)/2
+ 171 000c 22       		.byte	(.L12-.L6)/2
+ 172 000d 02       		.byte	(.L7-.L6)/2
  173 000e 1B       		.byte	(.L8-.L6)/2
  174 000f 1D       		.byte	(.L9-.L6)/2
  175              		.p2align 1
- 176              	.L5:
+ 176              	.L7:
   56:../source/acc_func.c **** 	case 0:
   57:../source/acc_func.c **** 		axis = 0x01;
- 177              		.loc 1 57 0
- 178 0010 0125     		movs	r5, #1
- 179              	.LVL19:
- 180              	.L7:
   58:../source/acc_func.c **** 		break;
   59:../source/acc_func.c **** 
   60:../source/acc_func.c **** 	case 1:
   61:../source/acc_func.c **** 		axis = 0x03;
+ 177              		.loc 1 61 0
+ 178 0010 0325     		movs	r5, #3
+ 179              	.LVL19:
+ 180              	.L5:
   62:../source/acc_func.c **** 		break;
   63:../source/acc_func.c **** 
   64:../source/acc_func.c **** 	case 2:
@@ -316,48 +316,46 @@
  214 003a 58BF     		it	pl
  215 003c C0F30C00 		ubfxpl	r0, r0, #0, #13
  216              	.LVL29:
- 217 0040 05E0     		b	.L10
- 218              	.LVL30:
- 219              	.L8:
-  65:../source/acc_func.c **** 		break;
- 220              		.loc 1 65 0
- 221 0042 0525     		movs	r5, #5
-  66:../source/acc_func.c **** 
- 222              		.loc 1 66 0
- 223 0044 E5E7     		b	.L7
- 224              	.LVL31:
- 225              	.L9:
-  69:../source/acc_func.c **** 		return (int16_t) acc_temp;
- 226              		.loc 1 69 0
- 227 0046 5120     		movs	r0, #81
- 228              	.LVL32:
- 229 0048 FFF7FEFF 		bl	accReadReg
- 230              	.LVL33:
-  70:../source/acc_func.c **** 		break;
- 231              		.loc 1 70 0
- 232 004c 40B2     		sxtb	r0, r0
- 233              	.LVL34:
- 234              	.L10:
  106:../source/acc_func.c **** 	}
  107:../source/acc_func.c **** 	return out;
  108:../source/acc_func.c **** }
- 235              		.loc 1 108 0
- 236 004e 38BD     		pop	{r3, r4, r5, pc}
- 237              	.LVL35:
- 238              	.L12:
-  61:../source/acc_func.c **** 		break;
- 239              		.loc 1 61 0
- 240 0050 0325     		movs	r5, #3
- 241 0052 DEE7     		b	.L7
- 242              		.cfi_endproc
- 243              	.LFE5:
- 245              		.comm	buffer,50,1
- 246              		.text
- 247              	.Letext0:
- 248              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 249              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 250              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 251              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 252              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 253              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 254              		.file 8 "../source/i2c_func.h"
+ 217              		.loc 1 108 0
+ 218 0040 38BD     		pop	{r3, r4, r5, pc}
+ 219              	.LVL30:
+ 220              	.L8:
+  65:../source/acc_func.c **** 		break;
+ 221              		.loc 1 65 0
+ 222 0042 0525     		movs	r5, #5
+  66:../source/acc_func.c **** 
+ 223              		.loc 1 66 0
+ 224 0044 E5E7     		b	.L5
+ 225              	.LVL31:
+ 226              	.L9:
+  69:../source/acc_func.c **** 		return (int16_t) acc_temp;
+ 227              		.loc 1 69 0
+ 228 0046 5120     		movs	r0, #81
+ 229              	.LVL32:
+ 230 0048 FFF7FEFF 		bl	accReadReg
+ 231              	.LVL33:
+  70:../source/acc_func.c **** 		break;
+ 232              		.loc 1 70 0
+ 233 004c 40B2     		sxtb	r0, r0
+ 234 004e 38BD     		pop	{r3, r4, r5, pc}
+ 235              	.LVL34:
+ 236              	.L12:
+  57:../source/acc_func.c **** 		break;
+ 237              		.loc 1 57 0
+ 238 0050 0125     		movs	r5, #1
+ 239 0052 DEE7     		b	.L5
+ 240              		.cfi_endproc
+ 241              	.LFE3:
+ 243              		.comm	buffer,50,1
+ 244              		.text
+ 245              	.Letext0:
+ 246              		.file 2 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 247              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 248              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 249              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 250              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+ 251              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+ 252              		.file 8 "../source/i2c_func.h"

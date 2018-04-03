@@ -588,7 +588,7 @@
  388:../utilities/fsl_log.c ****     /* get char should not add '\0'*/
  389:../utilities/fsl_log.c ****     if (i == size)
  209              		.loc 1 389 0 is_stmt 1
- 210 000c 15D1     		bne	.L21
+ 210 000c 0DD1     		bne	.L21
  390:../utilities/fsl_log.c ****     {
  391:../utilities/fsl_log.c ****         buf[i] = '\0';
  211              		.loc 1 391 0
@@ -655,101 +655,102 @@
  229 001c 3046     		mov	r0, r6
  230 001e FFF7FEFF 		bl	IO_Transfer
  231              	.LVL20:
- 232 0022 70B9     		cbnz	r0, .L23
- 233              	.LVL21:
- 234              	.LBE5:
- 235              	.LBE4:
- 374:../utilities/fsl_log.c ****         {
- 236              		.loc 1 374 0
- 237 0024 2B5D     		ldrb	r3, [r5, r4]	@ zero_extendqisi2
- 238 0026 0D2B     		cmp	r3, #13
- 239 0028 01D0     		beq	.L19
- 374:../utilities/fsl_log.c ****         {
- 240              		.loc 1 374 0 is_stmt 0 discriminator 1
- 241 002a 0A2B     		cmp	r3, #10
- 242 002c 03D1     		bne	.L20
- 243              	.L19:
- 377:../utilities/fsl_log.c ****             {
- 244              		.loc 1 377 0 is_stmt 1
- 245 002e 24B9     		cbnz	r4, .L21
- 379:../utilities/fsl_log.c ****                 i = -1;
- 246              		.loc 1 379 0
- 247 0030 3470     		strb	r4, [r6]
- 248              	.LVL22:
- 380:../utilities/fsl_log.c ****             }
- 249              		.loc 1 380 0
- 250 0032 4FF0FF34 		mov	r4, #-1
- 251              	.LVL23:
- 252              	.L20:
- 363:../utilities/fsl_log.c ****     {
- 253              		.loc 1 363 0 discriminator 2
- 254 0036 0134     		adds	r4, r4, #1
- 255              	.LVL24:
- 256 0038 E6E7     		b	.L17
- 257              	.L21:
- 395:../utilities/fsl_log.c ****     }
- 258              		.loc 1 395 0
- 259 003a 2544     		add	r5, r5, r4
- 260              	.LVL25:
- 261 003c 0023     		movs	r3, #0
- 262 003e 6B70     		strb	r3, [r5, #1]
- 263 0040 E7E7     		b	.L16
- 264              	.LVL26:
- 265              	.L23:
+ 232 0022 30B1     		cbz	r0, .L29
+ 233              	.LBE5:
+ 234              	.LBE4:
  368:../utilities/fsl_log.c ****         }
- 266              		.loc 1 368 0
- 267 0042 4FF0FF34 		mov	r4, #-1
- 268              	.LVL27:
- 269 0046 E4E7     		b	.L16
- 270              		.cfi_endproc
- 271              	.LFE152:
- 273              		.section	.text.LOG_ReadCharacter,"ax",%progbits
- 274              		.align	1
- 275              		.global	LOG_ReadCharacter
- 276              		.syntax unified
- 277              		.thumb
- 278              		.thumb_func
- 279              		.fpu fpv4-sp-d16
- 281              	LOG_ReadCharacter:
- 282              	.LFB153:
+ 235              		.loc 1 368 0
+ 236 0024 4FF0FF34 		mov	r4, #-1
+ 237              	.LVL21:
+ 238 0028 F3E7     		b	.L16
+ 239              	.LVL22:
+ 240              	.L21:
+ 395:../utilities/fsl_log.c ****     }
+ 241              		.loc 1 395 0
+ 242 002a 2544     		add	r5, r5, r4
+ 243              	.LVL23:
+ 244 002c 0023     		movs	r3, #0
+ 245 002e 6B70     		strb	r3, [r5, #1]
+ 246 0030 EFE7     		b	.L16
+ 247              	.LVL24:
+ 248              	.L29:
+ 374:../utilities/fsl_log.c ****         {
+ 249              		.loc 1 374 0
+ 250 0032 2B5D     		ldrb	r3, [r5, r4]	@ zero_extendqisi2
+ 251 0034 0D2B     		cmp	r3, #13
+ 252 0036 01D0     		beq	.L23
+ 374:../utilities/fsl_log.c ****         {
+ 253              		.loc 1 374 0 is_stmt 0 discriminator 1
+ 254 0038 0A2B     		cmp	r3, #10
+ 255 003a 04D1     		bne	.L20
+ 256              	.L23:
+ 377:../utilities/fsl_log.c ****             {
+ 257              		.loc 1 377 0 is_stmt 1
+ 258 003c 002C     		cmp	r4, #0
+ 259 003e F4D1     		bne	.L21
+ 379:../utilities/fsl_log.c ****                 i = -1;
+ 260              		.loc 1 379 0
+ 261 0040 3470     		strb	r4, [r6]
+ 262              	.LVL25:
+ 380:../utilities/fsl_log.c ****             }
+ 263              		.loc 1 380 0
+ 264 0042 4FF0FF34 		mov	r4, #-1
+ 265              	.LVL26:
+ 266              	.L20:
+ 363:../utilities/fsl_log.c ****     {
+ 267              		.loc 1 363 0 discriminator 2
+ 268 0046 0134     		adds	r4, r4, #1
+ 269              	.LVL27:
+ 270 0048 DEE7     		b	.L17
+ 271              		.cfi_endproc
+ 272              	.LFE152:
+ 274              		.section	.text.LOG_ReadCharacter,"ax",%progbits
+ 275              		.align	1
+ 276              		.global	LOG_ReadCharacter
+ 277              		.syntax unified
+ 278              		.thumb
+ 279              		.thumb_func
+ 280              		.fpu fpv4-sp-d16
+ 282              	LOG_ReadCharacter:
+ 283              	.LFB153:
  405:../utilities/fsl_log.c ****     assert(ch != NULL);
- 283              		.loc 1 405 0
- 284              		.cfi_startproc
- 285              		@ args = 0, pretend = 0, frame = 0
- 286              		@ frame_needed = 0, uses_anonymous_args = 0
- 287              	.LVL28:
- 288 0000 08B5     		push	{r3, lr}
- 289              		.cfi_def_cfa_offset 8
- 290              		.cfi_offset 3, -8
- 291              		.cfi_offset 14, -4
- 292              	.LBB8:
- 293              	.LBB9:
- 294              		.loc 1 433 0
- 295 0002 0022     		movs	r2, #0
- 296 0004 0121     		movs	r1, #1
- 297 0006 FFF7FEFF 		bl	IO_Transfer
- 298              	.LVL29:
- 299 000a 0028     		cmp	r0, #0
- 300              	.LBE9:
- 301              	.LBE8:
+ 284              		.loc 1 405 0
+ 285              		.cfi_startproc
+ 286              		@ args = 0, pretend = 0, frame = 0
+ 287              		@ frame_needed = 0, uses_anonymous_args = 0
+ 288              	.LVL28:
+ 289 0000 08B5     		push	{r3, lr}
+ 290              		.cfi_def_cfa_offset 8
+ 291              		.cfi_offset 3, -8
+ 292              		.cfi_offset 14, -4
+ 293              	.LBB8:
+ 294              	.LBB9:
+ 295              		.loc 1 433 0
+ 296 0002 0022     		movs	r2, #0
+ 297 0004 0121     		movs	r1, #1
+ 298 0006 FFF7FEFF 		bl	IO_Transfer
+ 299              	.LVL29:
+ 300 000a 0028     		cmp	r0, #0
+ 301              	.LBE9:
+ 302              	.LBE8:
  428:../utilities/fsl_log.c **** 
- 302              		.loc 1 428 0
- 303 000c 14BF     		ite	ne
- 304 000e 4FF0FF30 		movne	r0, #-1
- 305 0012 0120     		moveq	r0, #1
- 306 0014 08BD     		pop	{r3, pc}
- 307              		.cfi_endproc
- 308              	.LFE153:
- 310              		.text
- 311              	.Letext0:
- 312              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 313              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 314              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 315              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 316              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 317              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 318              		.file 8 "../CMSIS/core_cm4.h"
- 319              		.file 9 "../CMSIS/system_MK64F12.h"
- 320              		.file 10 "../drivers/fsl_common.h"
- 321              		.file 11 "../drivers/fsl_clock.h"
- 322              		.file 12 "../utilities/fsl_io.h"
+ 303              		.loc 1 428 0
+ 304 000c 0CBF     		ite	eq
+ 305 000e 0120     		moveq	r0, #1
+ 306 0010 4FF0FF30 		movne	r0, #-1
+ 307 0014 08BD     		pop	{r3, pc}
+ 308              		.cfi_endproc
+ 309              	.LFE153:
+ 311              		.text
+ 312              	.Letext0:
+ 313              		.file 2 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 314              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 315              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+ 316              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 317              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 318              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+ 319              		.file 8 "../CMSIS/core_cm4.h"
+ 320              		.file 9 "../CMSIS/system_MK64F12.h"
+ 321              		.file 10 "../drivers/fsl_common.h"
+ 322              		.file 11 "../drivers/fsl_clock.h"
+ 323              		.file 12 "../utilities/fsl_io.h"

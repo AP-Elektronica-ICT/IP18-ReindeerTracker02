@@ -436,25 +436,24 @@
  267              		.loc 1 142 0
  268 0004 85B0     		sub	sp, sp, #20
  269              		.cfi_def_cfa_offset 40
- 270              		.loc 1 151 0
- 271 0006 6C46     		mov	r4, sp
  142:../drivers/fsl_rtc.c ****     assert(datetime);
- 272              		.loc 1 142 0
- 273 0008 0746     		mov	r7, r0
- 274 000a 0B46     		mov	r3, r1
- 275              		.loc 1 151 0
- 276 000c 02F1080C 		add	ip, r2, #8
- 277 0010 2546     		mov	r5, r4
- 278              	.LVL11:
- 279              	.L19:
- 280 0012 1068     		ldr	r0, [r2]	@ unaligned
- 281 0014 5168     		ldr	r1, [r2, #4]	@ unaligned
- 282 0016 2646     		mov	r6, r4
- 283 0018 03C6     		stmia	r6!, {r0, r1}
- 284 001a 0832     		adds	r2, r2, #8
- 285 001c 6245     		cmp	r2, ip
- 286 001e 3446     		mov	r4, r6
- 287 0020 F7D1     		bne	.L19
+ 270              		.loc 1 142 0
+ 271 0006 0746     		mov	r7, r0
+ 272 0008 0B46     		mov	r3, r1
+ 273              		.loc 1 151 0
+ 274 000a 6C46     		mov	r4, sp
+ 275 000c 02F1080E 		add	lr, r2, #8
+ 276 0010 6D46     		mov	r5, sp
+ 277              	.LVL11:
+ 278              	.L19:
+ 279 0012 1068     		ldr	r0, [r2]	@ unaligned
+ 280 0014 5168     		ldr	r1, [r2, #4]	@ unaligned
+ 281 0016 2646     		mov	r6, r4
+ 282 0018 03C6     		stmia	r6!, {r0, r1}
+ 283 001a 0832     		adds	r2, r2, #8
+ 284 001c 7245     		cmp	r2, lr
+ 285 001e 3446     		mov	r4, r6
+ 286 0020 F7D1     		bne	.L19
  152:../drivers/fsl_rtc.c **** 
  153:../drivers/fsl_rtc.c ****     /* Start with the seconds value that is passed in to be converted to date time format */
  154:../drivers/fsl_rtc.c ****     secondsRemaining = seconds;
@@ -463,67 +462,67 @@
  157:../drivers/fsl_rtc.c ****      * hours and seconds field
  158:../drivers/fsl_rtc.c ****      */
  159:../drivers/fsl_rtc.c ****     days = secondsRemaining / SECONDS_IN_A_DAY + 1;
- 288              		.loc 1 159 0
- 289 0022 2149     		ldr	r1, .L30+4
+ 287              		.loc 1 159 0
+ 288 0022 2149     		ldr	r1, .L30+4
  151:../drivers/fsl_rtc.c **** 
- 290              		.loc 1 151 0
- 291 0024 1068     		ldr	r0, [r2]	@ unaligned
- 292 0026 3060     		str	r0, [r6]
+ 289              		.loc 1 151 0
+ 290 0024 1068     		ldr	r0, [r2]	@ unaligned
+ 291 0026 3060     		str	r0, [r6]
  160:../drivers/fsl_rtc.c **** 
  161:../drivers/fsl_rtc.c ****     /* Update seconds left*/
  162:../drivers/fsl_rtc.c ****     secondsRemaining = secondsRemaining % SECONDS_IN_A_DAY;
  163:../drivers/fsl_rtc.c **** 
  164:../drivers/fsl_rtc.c ****     /* Calculate the datetime hour, minute and second fields */
  165:../drivers/fsl_rtc.c ****     datetime->hour = secondsRemaining / SECONDS_IN_A_HOUR;
- 293              		.loc 1 165 0
- 294 0028 4FF46164 		mov	r4, #3600
+ 292              		.loc 1 165 0
+ 293 0028 4FF46164 		mov	r4, #3600
  159:../drivers/fsl_rtc.c **** 
- 295              		.loc 1 159 0
- 296 002c B7FBF1F0 		udiv	r0, r7, r1
+ 294              		.loc 1 159 0
+ 295 002c B7FBF1F0 		udiv	r0, r7, r1
  151:../drivers/fsl_rtc.c **** 
- 297              		.loc 1 151 0
- 298 0030 1279     		ldrb	r2, [r2, #4]	@ zero_extendqisi2
- 299 0032 3271     		strb	r2, [r6, #4]
- 300              	.LVL12:
+ 296              		.loc 1 151 0
+ 297 0030 1279     		ldrb	r2, [r2, #4]	@ zero_extendqisi2
+ 298 0032 3271     		strb	r2, [r6, #4]
+ 299              	.LVL12:
  162:../drivers/fsl_rtc.c **** 
- 301              		.loc 1 162 0
- 302 0034 01FB1071 		mls	r1, r1, r0, r7
+ 300              		.loc 1 162 0
+ 301 0034 01FB1071 		mls	r1, r1, r0, r7
  159:../drivers/fsl_rtc.c **** 
- 303              		.loc 1 159 0
- 304 0038 421C     		adds	r2, r0, #1
- 305              	.LVL13:
- 306              		.loc 1 165 0
- 307 003a B1FBF4F0 		udiv	r0, r1, r4
- 308 003e 1871     		strb	r0, [r3, #4]
+ 302              		.loc 1 159 0
+ 303 0038 421C     		adds	r2, r0, #1
+ 304              	.LVL13:
+ 305              		.loc 1 165 0
+ 306 003a B1FBF4F0 		udiv	r0, r1, r4
+ 307 003e 1871     		strb	r0, [r3, #4]
  166:../drivers/fsl_rtc.c ****     secondsRemaining = secondsRemaining % SECONDS_IN_A_HOUR;
- 309              		.loc 1 166 0
- 310 0040 04FB1010 		mls	r0, r4, r0, r1
- 311              	.LVL14:
+ 308              		.loc 1 166 0
+ 309 0040 04FB1010 		mls	r0, r4, r0, r1
+ 310              	.LVL14:
  167:../drivers/fsl_rtc.c ****     datetime->minute = secondsRemaining / 60U;
- 312              		.loc 1 167 0
- 313 0044 3C24     		movs	r4, #60
- 314 0046 B0FBF4F1 		udiv	r1, r0, r4
+ 311              		.loc 1 167 0
+ 312 0044 3C24     		movs	r4, #60
+ 313 0046 B0FBF4F1 		udiv	r1, r0, r4
  168:../drivers/fsl_rtc.c ****     datetime->second = secondsRemaining % SECONDS_IN_A_MINUTE;
- 315              		.loc 1 168 0
- 316 004a 04FB1100 		mls	r0, r4, r1, r0
- 317              	.LVL15:
+ 314              		.loc 1 168 0
+ 315 004a 04FB1100 		mls	r0, r4, r1, r0
+ 316              	.LVL15:
  167:../drivers/fsl_rtc.c ****     datetime->minute = secondsRemaining / 60U;
- 318              		.loc 1 167 0
- 319 004e 5971     		strb	r1, [r3, #5]
- 320              		.loc 1 168 0
- 321 0050 9871     		strb	r0, [r3, #6]
- 322              	.LVL16:
+ 317              		.loc 1 167 0
+ 318 004e 5971     		strb	r1, [r3, #5]
+ 319              		.loc 1 168 0
+ 320 0050 9871     		strb	r0, [r3, #6]
+ 321              	.LVL16:
  169:../drivers/fsl_rtc.c **** 
  170:../drivers/fsl_rtc.c ****     /* Calculate year */
  171:../drivers/fsl_rtc.c ****     daysInYear = DAYS_IN_A_YEAR;
  172:../drivers/fsl_rtc.c ****     datetime->year = YEAR_RANGE_START;
- 323              		.loc 1 172 0
- 324 0052 40F2B271 		movw	r1, #1970
+ 322              		.loc 1 172 0
+ 323 0052 40F2B271 		movw	r1, #1970
  171:../drivers/fsl_rtc.c ****     datetime->year = YEAR_RANGE_START;
- 325              		.loc 1 171 0
- 326 0056 40F26D10 		movw	r0, #365
- 327              		.loc 1 172 0
- 328 005a 1980     		strh	r1, [r3]	@ movhi
+ 324              		.loc 1 171 0
+ 325 0056 40F26D10 		movw	r0, #365
+ 326              		.loc 1 172 0
+ 327 005a 1980     		strh	r1, [r3]	@ movhi
  173:../drivers/fsl_rtc.c ****     while (days > daysInYear)
  174:../drivers/fsl_rtc.c ****     {
  175:../drivers/fsl_rtc.c ****         /* Decrease day count by a year and increment year by 1 */
@@ -534,51 +533,51 @@
  180:../drivers/fsl_rtc.c ****         if (datetime->year & 3U)
  181:../drivers/fsl_rtc.c ****         {
  182:../drivers/fsl_rtc.c ****             daysInYear = DAYS_IN_A_YEAR;
- 329              		.loc 1 182 0
- 330 005c 0446     		mov	r4, r0
- 331              	.LVL17:
- 332              	.L20:
- 173:../drivers/fsl_rtc.c ****     while (days > daysInYear)
- 333              		.loc 1 173 0
- 334 005e 9042     		cmp	r0, r2
- 335 0060 1988     		ldrh	r1, [r3]
- 336 0062 0CD3     		bcc	.L22
  183:../drivers/fsl_rtc.c ****         }
  184:../drivers/fsl_rtc.c ****         else
  185:../drivers/fsl_rtc.c ****         {
  186:../drivers/fsl_rtc.c ****             daysInYear = DAYS_IN_A_YEAR + 1;
+ 328              		.loc 1 186 0
+ 329 005c 0446     		mov	r4, r0
+ 330              	.LVL17:
+ 331              	.L20:
+ 173:../drivers/fsl_rtc.c ****     while (days > daysInYear)
+ 332              		.loc 1 173 0
+ 333 005e 8242     		cmp	r2, r0
+ 334 0060 1988     		ldrh	r1, [r3]
+ 335 0062 0CD8     		bhi	.L22
  187:../drivers/fsl_rtc.c ****         }
  188:../drivers/fsl_rtc.c ****     }
  189:../drivers/fsl_rtc.c **** 
  190:../drivers/fsl_rtc.c ****     /* Adjust the days in February for a leap year */
  191:../drivers/fsl_rtc.c ****     if (!(datetime->year & 3U))
- 337              		.loc 1 191 0
- 338 0064 8907     		lsls	r1, r1, #30
+ 336              		.loc 1 191 0
+ 337 0064 8907     		lsls	r1, r1, #30
  192:../drivers/fsl_rtc.c ****     {
  193:../drivers/fsl_rtc.c ****         daysPerMonth[2] = 29U;
- 339              		.loc 1 193 0
- 340 0066 04BF     		itt	eq
- 341 0068 1D21     		moveq	r1, #29
- 342 006a 8DF80210 		strbeq	r1, [sp, #2]
- 343              	.LVL18:
+ 338              		.loc 1 193 0
+ 339 0066 04BF     		itt	eq
+ 340 0068 1D21     		moveq	r1, #29
+ 341 006a 8DF80210 		strbeq	r1, [sp, #2]
+ 342              	.LVL18:
  194:../drivers/fsl_rtc.c ****     }
  195:../drivers/fsl_rtc.c **** 
  196:../drivers/fsl_rtc.c ****     for (x = 1U; x <= 12U; x++)
- 344              		.loc 1 196 0
- 345 006e 0121     		movs	r1, #1
- 346              	.LVL19:
- 347              	.L26:
+ 343              		.loc 1 196 0
+ 344 006e 0121     		movs	r1, #1
+ 345              	.LVL19:
+ 346              	.L26:
  197:../drivers/fsl_rtc.c ****     {
  198:../drivers/fsl_rtc.c ****         if (days <= daysPerMonth[x])
- 348              		.loc 1 198 0
- 349 0070 685C     		ldrb	r0, [r5, r1]	@ zero_extendqisi2
- 350 0072 9042     		cmp	r0, r2
- 351 0074 0FD3     		bcc	.L24
+ 347              		.loc 1 198 0
+ 348 0070 685C     		ldrb	r0, [r5, r1]	@ zero_extendqisi2
+ 349 0072 9042     		cmp	r0, r2
+ 350 0074 0FD3     		bcc	.L24
  199:../drivers/fsl_rtc.c ****         {
  200:../drivers/fsl_rtc.c ****             datetime->month = x;
- 352              		.loc 1 200 0
- 353 0076 9970     		strb	r1, [r3, #2]
- 354              	.L25:
+ 351              		.loc 1 200 0
+ 352 0076 9970     		strb	r1, [r3, #2]
+ 353              	.L25:
  201:../drivers/fsl_rtc.c ****             break;
  202:../drivers/fsl_rtc.c ****         }
  203:../drivers/fsl_rtc.c ****         else
@@ -588,70 +587,70 @@
  207:../drivers/fsl_rtc.c ****     }
  208:../drivers/fsl_rtc.c **** 
  209:../drivers/fsl_rtc.c ****     datetime->day = days;
- 355              		.loc 1 209 0
- 356 0078 DA70     		strb	r2, [r3, #3]
+ 354              		.loc 1 209 0
+ 355 0078 DA70     		strb	r2, [r3, #3]
  210:../drivers/fsl_rtc.c **** }
- 357              		.loc 1 210 0
- 358 007a 05B0     		add	sp, sp, #20
- 359              		.cfi_remember_state
- 360              		.cfi_def_cfa_offset 20
- 361              		@ sp needed
- 362 007c F0BD     		pop	{r4, r5, r6, r7, pc}
- 363              	.LVL20:
- 364              	.L22:
- 365              		.cfi_restore_state
+ 356              		.loc 1 210 0
+ 357 007a 05B0     		add	sp, sp, #20
+ 358              		.cfi_remember_state
+ 359              		.cfi_def_cfa_offset 20
+ 360              		@ sp needed
+ 361 007c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 362              	.LVL20:
+ 363              	.L22:
+ 364              		.cfi_restore_state
  177:../drivers/fsl_rtc.c **** 
- 366              		.loc 1 177 0
- 367 007e 0131     		adds	r1, r1, #1
- 368 0080 89B2     		uxth	r1, r1
- 182:../drivers/fsl_rtc.c ****         }
- 369              		.loc 1 182 0
- 370 0082 11F0030F 		tst	r1, #3
+ 365              		.loc 1 177 0
+ 366 007e 0131     		adds	r1, r1, #1
+ 367 0080 89B2     		uxth	r1, r1
+ 186:../drivers/fsl_rtc.c ****         }
+ 368              		.loc 1 186 0
+ 369 0082 11F0030F 		tst	r1, #3
  176:../drivers/fsl_rtc.c ****         datetime->year++;
- 371              		.loc 1 176 0
- 372 0086 A2EB0002 		sub	r2, r2, r0
- 373              	.LVL21:
+ 370              		.loc 1 176 0
+ 371 0086 A2EB0002 		sub	r2, r2, r0
+ 372              	.LVL21:
  177:../drivers/fsl_rtc.c **** 
- 374              		.loc 1 177 0
- 375 008a 1980     		strh	r1, [r3]	@ movhi
- 182:../drivers/fsl_rtc.c ****         }
- 376              		.loc 1 182 0
- 377 008c 0CBF     		ite	eq
- 378 008e 4FF4B770 		moveq	r0, #366
- 379              	.LVL22:
- 380 0092 2046     		movne	r0, r4
- 381 0094 E3E7     		b	.L20
- 382              	.LVL23:
- 383              	.L24:
+ 373              		.loc 1 177 0
+ 374 008a 1980     		strh	r1, [r3]	@ movhi
+ 186:../drivers/fsl_rtc.c ****         }
+ 375              		.loc 1 186 0
+ 376 008c 14BF     		ite	ne
+ 377 008e 2046     		movne	r0, r4
+ 378              	.LVL22:
+ 379 0090 4FF4B770 		moveq	r0, #366
+ 380 0094 E3E7     		b	.L20
+ 381              	.LVL23:
+ 382              	.L24:
  196:../drivers/fsl_rtc.c ****     {
- 384              		.loc 1 196 0 discriminator 2
- 385 0096 0131     		adds	r1, r1, #1
- 386              	.LVL24:
- 387 0098 0D29     		cmp	r1, #13
+ 383              		.loc 1 196 0 discriminator 2
+ 384 0096 0131     		adds	r1, r1, #1
+ 385              	.LVL24:
+ 386 0098 0D29     		cmp	r1, #13
  205:../drivers/fsl_rtc.c ****         }
- 388              		.loc 1 205 0 discriminator 2
- 389 009a A2EB0002 		sub	r2, r2, r0
- 390              	.LVL25:
+ 387              		.loc 1 205 0 discriminator 2
+ 388 009a A2EB0002 		sub	r2, r2, r0
+ 389              	.LVL25:
  196:../drivers/fsl_rtc.c ****     {
- 391              		.loc 1 196 0 discriminator 2
- 392 009e E7D1     		bne	.L26
- 393 00a0 EAE7     		b	.L25
- 394              	.L31:
- 395 00a2 00BF     		.align	2
- 396              	.L30:
- 397 00a4 00000000 		.word	.LANCHOR0
- 398 00a8 80510100 		.word	86400
- 399              		.cfi_endproc
- 400              	.LFE155:
- 402              		.section	.text.RTC_GetDefaultConfig,"ax",%progbits
- 403              		.align	1
- 404              		.global	RTC_GetDefaultConfig
- 405              		.syntax unified
- 406              		.thumb
- 407              		.thumb_func
- 408              		.fpu fpv4-sp-d16
- 410              	RTC_GetDefaultConfig:
- 411              	.LFB157:
+ 390              		.loc 1 196 0 discriminator 2
+ 391 009e E7D1     		bne	.L26
+ 392 00a0 EAE7     		b	.L25
+ 393              	.L31:
+ 394 00a2 00BF     		.align	2
+ 395              	.L30:
+ 396 00a4 00000000 		.word	.LANCHOR0
+ 397 00a8 80510100 		.word	86400
+ 398              		.cfi_endproc
+ 399              	.LFE155:
+ 401              		.section	.text.RTC_GetDefaultConfig,"ax",%progbits
+ 402              		.align	1
+ 403              		.global	RTC_GetDefaultConfig
+ 404              		.syntax unified
+ 405              		.thumb
+ 406              		.thumb_func
+ 407              		.fpu fpv4-sp-d16
+ 409              	RTC_GetDefaultConfig:
+ 410              	.LFB157:
  211:../drivers/fsl_rtc.c **** 
  212:../drivers/fsl_rtc.c **** void RTC_Init(RTC_Type *base, const rtc_config_t *config)
  213:../drivers/fsl_rtc.c **** {
@@ -693,35 +692,35 @@
  249:../drivers/fsl_rtc.c **** 
  250:../drivers/fsl_rtc.c **** void RTC_GetDefaultConfig(rtc_config_t *config)
  251:../drivers/fsl_rtc.c **** {
- 412              		.loc 1 251 0
- 413              		.cfi_startproc
- 414              		@ args = 0, pretend = 0, frame = 0
- 415              		@ frame_needed = 0, uses_anonymous_args = 0
- 416              		@ link register save eliminated.
- 417              	.LVL26:
+ 411              		.loc 1 251 0
+ 412              		.cfi_startproc
+ 413              		@ args = 0, pretend = 0, frame = 0
+ 414              		@ frame_needed = 0, uses_anonymous_args = 0
+ 415              		@ link register save eliminated.
+ 416              	.LVL26:
  252:../drivers/fsl_rtc.c ****     assert(config);
  253:../drivers/fsl_rtc.c **** 
  254:../drivers/fsl_rtc.c ****     /* Wakeup pin will assert if the RTC interrupt asserts or if the wakeup pin is turned on */
  255:../drivers/fsl_rtc.c ****     config->wakeupSelect = false;
- 418              		.loc 1 255 0
- 419 0000 0023     		movs	r3, #0
- 420 0002 0370     		strb	r3, [r0]
+ 417              		.loc 1 255 0
+ 418 0000 0023     		movs	r3, #0
+ 419 0002 0370     		strb	r3, [r0]
  256:../drivers/fsl_rtc.c ****     /* Registers cannot be written when locked */
  257:../drivers/fsl_rtc.c ****     config->updateMode = false;
- 421              		.loc 1 257 0
- 422 0004 4370     		strb	r3, [r0, #1]
+ 420              		.loc 1 257 0
+ 421 0004 4370     		strb	r3, [r0, #1]
  258:../drivers/fsl_rtc.c ****     /* Non-supervisor mode write accesses are not supported and will generate a bus error */
  259:../drivers/fsl_rtc.c ****     config->supervisorAccess = false;
- 423              		.loc 1 259 0
- 424 0006 8370     		strb	r3, [r0, #2]
+ 422              		.loc 1 259 0
+ 423 0006 8370     		strb	r3, [r0, #2]
  260:../drivers/fsl_rtc.c ****     /* Compensation interval used by the crystal compensation logic */
  261:../drivers/fsl_rtc.c ****     config->compensationInterval = 0;
+ 424              		.loc 1 261 0
+ 425 0008 4360     		str	r3, [r0, #4]
  262:../drivers/fsl_rtc.c ****     /* Compensation time used by the crystal compensation logic */
  263:../drivers/fsl_rtc.c ****     config->compensationTime = 0;
- 425              		.loc 1 263 0
- 426 0008 C0E90133 		strd	r3, r3, [r0, #4]
- 264:../drivers/fsl_rtc.c **** }
- 427              		.loc 1 264 0
+ 426              		.loc 1 263 0
+ 427 000a 8360     		str	r3, [r0, #8]
  428 000c 7047     		bx	lr
  429              		.cfi_endproc
  430              	.LFE157:
@@ -734,6 +733,7 @@
  438              		.fpu fpv4-sp-d16
  440              	RTC_SetDatetime:
  441              	.LFB158:
+ 264:../drivers/fsl_rtc.c **** }
  265:../drivers/fsl_rtc.c **** 
  266:../drivers/fsl_rtc.c **** status_t RTC_SetDatetime(RTC_Type *base, const rtc_datetime_t *datetime)
  267:../drivers/fsl_rtc.c **** {
@@ -779,76 +779,75 @@
  279:../drivers/fsl_rtc.c ****     return kStatus_Success;
  469              		.loc 1 279 0
  470 0016 0020     		movs	r0, #0
- 471              	.L33:
- 280:../drivers/fsl_rtc.c **** }
- 472              		.loc 1 280 0
- 473 0018 38BD     		pop	{r3, r4, r5, pc}
- 474              	.LVL31:
- 475              	.L35:
+ 471 0018 38BD     		pop	{r3, r4, r5, pc}
+ 472              	.LVL31:
+ 473              	.L35:
  273:../drivers/fsl_rtc.c ****     }
- 476              		.loc 1 273 0
- 477 001a 0420     		movs	r0, #4
- 478 001c FCE7     		b	.L33
- 479              		.cfi_endproc
- 480              	.LFE158:
- 482              		.section	.text.RTC_GetDatetime,"ax",%progbits
- 483              		.align	1
- 484              		.global	RTC_GetDatetime
- 485              		.syntax unified
- 486              		.thumb
- 487              		.thumb_func
- 488              		.fpu fpv4-sp-d16
- 490              	RTC_GetDatetime:
- 491              	.LFB159:
+ 474              		.loc 1 273 0
+ 475 001a 0420     		movs	r0, #4
+ 280:../drivers/fsl_rtc.c **** }
+ 476              		.loc 1 280 0
+ 477 001c 38BD     		pop	{r3, r4, r5, pc}
+ 478              		.cfi_endproc
+ 479              	.LFE158:
+ 481              		.section	.text.RTC_GetDatetime,"ax",%progbits
+ 482              		.align	1
+ 483              		.global	RTC_GetDatetime
+ 484              		.syntax unified
+ 485              		.thumb
+ 486              		.thumb_func
+ 487              		.fpu fpv4-sp-d16
+ 489              	RTC_GetDatetime:
+ 490              	.LFB159:
  281:../drivers/fsl_rtc.c **** 
  282:../drivers/fsl_rtc.c **** void RTC_GetDatetime(RTC_Type *base, rtc_datetime_t *datetime)
  283:../drivers/fsl_rtc.c **** {
- 492              		.loc 1 283 0
- 493              		.cfi_startproc
- 494              		@ args = 0, pretend = 0, frame = 0
- 495              		@ frame_needed = 0, uses_anonymous_args = 0
- 496              		@ link register save eliminated.
- 497              	.LVL32:
+ 491              		.loc 1 283 0
+ 492              		.cfi_startproc
+ 493              		@ args = 0, pretend = 0, frame = 0
+ 494              		@ frame_needed = 0, uses_anonymous_args = 0
+ 495              		@ link register save eliminated.
+ 496              	.LVL32:
  284:../drivers/fsl_rtc.c ****     assert(datetime);
  285:../drivers/fsl_rtc.c **** 
  286:../drivers/fsl_rtc.c ****     uint32_t seconds = 0;
  287:../drivers/fsl_rtc.c **** 
  288:../drivers/fsl_rtc.c ****     seconds = base->TSR;
- 498              		.loc 1 288 0
- 499 0000 0068     		ldr	r0, [r0]
- 500              	.LVL33:
+ 497              		.loc 1 288 0
+ 498 0000 0068     		ldr	r0, [r0]
+ 499              	.LVL33:
  289:../drivers/fsl_rtc.c ****     RTC_ConvertSecondsToDatetime(seconds, datetime);
- 501              		.loc 1 289 0
- 502 0002 FFF7FEBF 		b	RTC_ConvertSecondsToDatetime
- 503              	.LVL34:
- 504              		.cfi_endproc
- 505              	.LFE159:
- 507              		.section	.text.RTC_SetAlarm,"ax",%progbits
- 508              		.align	1
- 509              		.global	RTC_SetAlarm
- 510              		.syntax unified
- 511              		.thumb
- 512              		.thumb_func
- 513              		.fpu fpv4-sp-d16
- 515              	RTC_SetAlarm:
- 516              	.LFB160:
+ 500              		.loc 1 289 0
+ 501 0002 FFF7FEBF 		b	RTC_ConvertSecondsToDatetime
+ 502              	.LVL34:
+ 503              		.cfi_endproc
+ 504              	.LFE159:
+ 506              		.section	.text.RTC_SetAlarm,"ax",%progbits
+ 507              		.align	1
+ 508              		.global	RTC_SetAlarm
+ 509              		.syntax unified
+ 510              		.thumb
+ 511              		.thumb_func
+ 512              		.fpu fpv4-sp-d16
+ 514              	RTC_SetAlarm:
+ 515              	.LFB160:
  290:../drivers/fsl_rtc.c **** }
  291:../drivers/fsl_rtc.c **** 
  292:../drivers/fsl_rtc.c **** status_t RTC_SetAlarm(RTC_Type *base, const rtc_datetime_t *alarmTime)
  293:../drivers/fsl_rtc.c **** {
- 517              		.loc 1 293 0
- 518              		.cfi_startproc
- 519              		@ args = 0, pretend = 0, frame = 0
- 520              		@ frame_needed = 0, uses_anonymous_args = 0
- 521              	.LVL35:
- 522 0000 38B5     		push	{r3, r4, r5, lr}
- 523              		.cfi_def_cfa_offset 16
- 524              		.cfi_offset 3, -16
- 525              		.cfi_offset 4, -12
- 526              		.cfi_offset 5, -8
- 527              		.cfi_offset 14, -4
- 528              		.loc 1 293 0
- 529 0002 0446     		mov	r4, r0
+ 516              		.loc 1 293 0
+ 517              		.cfi_startproc
+ 518              		@ args = 0, pretend = 0, frame = 0
+ 519              		@ frame_needed = 0, uses_anonymous_args = 0
+ 520              	.LVL35:
+ 521 0000 38B5     		push	{r3, r4, r5, lr}
+ 522              		.cfi_def_cfa_offset 16
+ 523              		.cfi_offset 3, -16
+ 524              		.cfi_offset 4, -12
+ 525              		.cfi_offset 5, -8
+ 526              		.cfi_offset 14, -4
+ 527              		.loc 1 293 0
+ 528 0002 0446     		mov	r4, r0
  294:../drivers/fsl_rtc.c ****     assert(alarmTime);
  295:../drivers/fsl_rtc.c **** 
  296:../drivers/fsl_rtc.c ****     uint32_t alarmSeconds = 0;
@@ -856,155 +855,154 @@
  298:../drivers/fsl_rtc.c **** 
  299:../drivers/fsl_rtc.c ****     /* Return error if the alarm time provided is not valid */
  300:../drivers/fsl_rtc.c ****     if (!(RTC_CheckDatetimeFormat(alarmTime)))
- 530              		.loc 1 300 0
- 531 0004 0846     		mov	r0, r1
- 532              	.LVL36:
+ 529              		.loc 1 300 0
+ 530 0004 0846     		mov	r0, r1
+ 531              	.LVL36:
  293:../drivers/fsl_rtc.c ****     assert(alarmTime);
- 533              		.loc 1 293 0
- 534 0006 0D46     		mov	r5, r1
- 535              		.loc 1 300 0
- 536 0008 FFF7FEFF 		bl	RTC_CheckDatetimeFormat
- 537              	.LVL37:
- 538 000c 40B1     		cbz	r0, .L39
+ 532              		.loc 1 293 0
+ 533 0006 0D46     		mov	r5, r1
+ 534              		.loc 1 300 0
+ 535 0008 FFF7FEFF 		bl	RTC_CheckDatetimeFormat
+ 536              	.LVL37:
+ 537 000c 40B1     		cbz	r0, .L39
  301:../drivers/fsl_rtc.c ****     {
  302:../drivers/fsl_rtc.c ****         return kStatus_InvalidArgument;
  303:../drivers/fsl_rtc.c ****     }
  304:../drivers/fsl_rtc.c **** 
  305:../drivers/fsl_rtc.c ****     alarmSeconds = RTC_ConvertDatetimeToSeconds(alarmTime);
- 539              		.loc 1 305 0
- 540 000e 2846     		mov	r0, r5
- 541 0010 FFF7FEFF 		bl	RTC_ConvertDatetimeToSeconds
- 542              	.LVL38:
+ 538              		.loc 1 305 0
+ 539 000e 2846     		mov	r0, r5
+ 540 0010 FFF7FEFF 		bl	RTC_ConvertDatetimeToSeconds
+ 541              	.LVL38:
  306:../drivers/fsl_rtc.c **** 
  307:../drivers/fsl_rtc.c ****     /* Get the current time */
  308:../drivers/fsl_rtc.c ****     currSeconds = base->TSR;
- 543              		.loc 1 308 0
- 544 0014 2368     		ldr	r3, [r4]
- 545              	.LVL39:
+ 542              		.loc 1 308 0
+ 543 0014 2368     		ldr	r3, [r4]
+ 544              	.LVL39:
  309:../drivers/fsl_rtc.c **** 
  310:../drivers/fsl_rtc.c ****     /* Return error if the alarm time has passed */
  311:../drivers/fsl_rtc.c ****     if (alarmSeconds < currSeconds)
- 546              		.loc 1 311 0
- 547 0016 9842     		cmp	r0, r3
- 548 0018 04D3     		bcc	.L40
+ 545              		.loc 1 311 0
+ 546 0016 9842     		cmp	r0, r3
+ 547 0018 04D3     		bcc	.L40
  312:../drivers/fsl_rtc.c ****     {
  313:../drivers/fsl_rtc.c ****         return kStatus_Fail;
  314:../drivers/fsl_rtc.c ****     }
  315:../drivers/fsl_rtc.c **** 
  316:../drivers/fsl_rtc.c ****     /* Set alarm in seconds*/
  317:../drivers/fsl_rtc.c ****     base->TAR = alarmSeconds;
- 549              		.loc 1 317 0
- 550 001a A060     		str	r0, [r4, #8]
+ 548              		.loc 1 317 0
+ 549 001a A060     		str	r0, [r4, #8]
  318:../drivers/fsl_rtc.c **** 
  319:../drivers/fsl_rtc.c ****     return kStatus_Success;
- 551              		.loc 1 319 0
- 552 001c 0020     		movs	r0, #0
- 553              	.LVL40:
- 554              	.L37:
- 320:../drivers/fsl_rtc.c **** }
- 555              		.loc 1 320 0
- 556 001e 38BD     		pop	{r3, r4, r5, pc}
- 557              	.LVL41:
- 558              	.L39:
+ 550              		.loc 1 319 0
+ 551 001c 0020     		movs	r0, #0
+ 552              	.LVL40:
+ 553 001e 38BD     		pop	{r3, r4, r5, pc}
+ 554              	.LVL41:
+ 555              	.L39:
  302:../drivers/fsl_rtc.c ****     }
- 559              		.loc 1 302 0
- 560 0020 0420     		movs	r0, #4
- 561 0022 FCE7     		b	.L37
- 562              	.LVL42:
- 563              	.L40:
+ 556              		.loc 1 302 0
+ 557 0020 0420     		movs	r0, #4
+ 558 0022 38BD     		pop	{r3, r4, r5, pc}
+ 559              	.LVL42:
+ 560              	.L40:
  313:../drivers/fsl_rtc.c ****     }
- 564              		.loc 1 313 0
- 565 0024 0120     		movs	r0, #1
- 566              	.LVL43:
- 567 0026 FAE7     		b	.L37
- 568              		.cfi_endproc
- 569              	.LFE160:
- 571              		.section	.text.RTC_GetAlarm,"ax",%progbits
- 572              		.align	1
- 573              		.global	RTC_GetAlarm
- 574              		.syntax unified
- 575              		.thumb
- 576              		.thumb_func
- 577              		.fpu fpv4-sp-d16
- 579              	RTC_GetAlarm:
- 580              	.LFB161:
+ 561              		.loc 1 313 0
+ 562 0024 0120     		movs	r0, #1
+ 563              	.LVL43:
+ 320:../drivers/fsl_rtc.c **** }
+ 564              		.loc 1 320 0
+ 565 0026 38BD     		pop	{r3, r4, r5, pc}
+ 566              		.cfi_endproc
+ 567              	.LFE160:
+ 569              		.section	.text.RTC_GetAlarm,"ax",%progbits
+ 570              		.align	1
+ 571              		.global	RTC_GetAlarm
+ 572              		.syntax unified
+ 573              		.thumb
+ 574              		.thumb_func
+ 575              		.fpu fpv4-sp-d16
+ 577              	RTC_GetAlarm:
+ 578              	.LFB161:
  321:../drivers/fsl_rtc.c **** 
  322:../drivers/fsl_rtc.c **** void RTC_GetAlarm(RTC_Type *base, rtc_datetime_t *datetime)
  323:../drivers/fsl_rtc.c **** {
- 581              		.loc 1 323 0
- 582              		.cfi_startproc
- 583              		@ args = 0, pretend = 0, frame = 0
- 584              		@ frame_needed = 0, uses_anonymous_args = 0
- 585              		@ link register save eliminated.
- 586              	.LVL44:
+ 579              		.loc 1 323 0
+ 580              		.cfi_startproc
+ 581              		@ args = 0, pretend = 0, frame = 0
+ 582              		@ frame_needed = 0, uses_anonymous_args = 0
+ 583              		@ link register save eliminated.
+ 584              	.LVL44:
  324:../drivers/fsl_rtc.c ****     assert(datetime);
  325:../drivers/fsl_rtc.c **** 
  326:../drivers/fsl_rtc.c ****     uint32_t alarmSeconds = 0;
  327:../drivers/fsl_rtc.c **** 
  328:../drivers/fsl_rtc.c ****     /* Get alarm in seconds  */
  329:../drivers/fsl_rtc.c ****     alarmSeconds = base->TAR;
- 587              		.loc 1 329 0
- 588 0000 8068     		ldr	r0, [r0, #8]
- 589              	.LVL45:
+ 585              		.loc 1 329 0
+ 586 0000 8068     		ldr	r0, [r0, #8]
+ 587              	.LVL45:
  330:../drivers/fsl_rtc.c **** 
  331:../drivers/fsl_rtc.c ****     RTC_ConvertSecondsToDatetime(alarmSeconds, datetime);
- 590              		.loc 1 331 0
- 591 0002 FFF7FEBF 		b	RTC_ConvertSecondsToDatetime
- 592              	.LVL46:
- 593              		.cfi_endproc
- 594              	.LFE161:
- 596              		.section	.text.RTC_EnableInterrupts,"ax",%progbits
- 597              		.align	1
- 598              		.global	RTC_EnableInterrupts
- 599              		.syntax unified
- 600              		.thumb
- 601              		.thumb_func
- 602              		.fpu fpv4-sp-d16
- 604              	RTC_EnableInterrupts:
- 605              	.LFB162:
+ 588              		.loc 1 331 0
+ 589 0002 FFF7FEBF 		b	RTC_ConvertSecondsToDatetime
+ 590              	.LVL46:
+ 591              		.cfi_endproc
+ 592              	.LFE161:
+ 594              		.section	.text.RTC_EnableInterrupts,"ax",%progbits
+ 595              		.align	1
+ 596              		.global	RTC_EnableInterrupts
+ 597              		.syntax unified
+ 598              		.thumb
+ 599              		.thumb_func
+ 600              		.fpu fpv4-sp-d16
+ 602              	RTC_EnableInterrupts:
+ 603              	.LFB162:
  332:../drivers/fsl_rtc.c **** }
  333:../drivers/fsl_rtc.c **** 
  334:../drivers/fsl_rtc.c **** void RTC_EnableInterrupts(RTC_Type *base, uint32_t mask)
  335:../drivers/fsl_rtc.c **** {
- 606              		.loc 1 335 0
- 607              		.cfi_startproc
- 608              		@ args = 0, pretend = 0, frame = 0
- 609              		@ frame_needed = 0, uses_anonymous_args = 0
- 610              		@ link register save eliminated.
- 611              	.LVL47:
+ 604              		.loc 1 335 0
+ 605              		.cfi_startproc
+ 606              		@ args = 0, pretend = 0, frame = 0
+ 607              		@ frame_needed = 0, uses_anonymous_args = 0
+ 608              		@ link register save eliminated.
+ 609              	.LVL47:
  336:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
  337:../drivers/fsl_rtc.c **** 
  338:../drivers/fsl_rtc.c ****     /* RTC_IER */
  339:../drivers/fsl_rtc.c ****     if (kRTC_TimeInvalidInterruptEnable == (kRTC_TimeInvalidInterruptEnable & mask))
- 612              		.loc 1 339 0
- 613 0000 01F00103 		and	r3, r1, #1
- 614              	.LVL48:
+ 610              		.loc 1 339 0
+ 611 0000 01F00103 		and	r3, r1, #1
+ 612              	.LVL48:
  340:../drivers/fsl_rtc.c ****     {
  341:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TIIE_MASK;
  342:../drivers/fsl_rtc.c ****     }
  343:../drivers/fsl_rtc.c ****     if (kRTC_TimeOverflowInterruptEnable == (kRTC_TimeOverflowInterruptEnable & mask))
- 615              		.loc 1 343 0
- 616 0004 8A07     		lsls	r2, r1, #30
+ 613              		.loc 1 343 0
+ 614 0004 8A07     		lsls	r2, r1, #30
  344:../drivers/fsl_rtc.c ****     {
  345:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TOIE_MASK;
- 617              		.loc 1 345 0
- 618 0006 48BF     		it	mi
- 619 0008 43F00203 		orrmi	r3, r3, #2
- 620              	.LVL49:
+ 615              		.loc 1 345 0
+ 616 0006 48BF     		it	mi
+ 617 0008 43F00203 		orrmi	r3, r3, #2
+ 618              	.LVL49:
  346:../drivers/fsl_rtc.c ****     }
  347:../drivers/fsl_rtc.c ****     if (kRTC_AlarmInterruptEnable == (kRTC_AlarmInterruptEnable & mask))
- 621              		.loc 1 347 0
- 622 000c 4A07     		lsls	r2, r1, #29
+ 619              		.loc 1 347 0
+ 620 000c 4A07     		lsls	r2, r1, #29
  348:../drivers/fsl_rtc.c ****     {
  349:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TAIE_MASK;
- 623              		.loc 1 349 0
- 624 000e 48BF     		it	mi
- 625 0010 43F00403 		orrmi	r3, r3, #4
- 626              	.LVL50:
+ 621              		.loc 1 349 0
+ 622 000e 48BF     		it	mi
+ 623 0010 43F00403 		orrmi	r3, r3, #4
+ 624              	.LVL50:
  350:../drivers/fsl_rtc.c ****     }
  351:../drivers/fsl_rtc.c ****     if (kRTC_SecondsInterruptEnable == (kRTC_SecondsInterruptEnable & mask))
- 627              		.loc 1 351 0
- 628 0014 0A07     		lsls	r2, r1, #28
+ 625              		.loc 1 351 0
+ 626 0014 0A07     		lsls	r2, r1, #28
  352:../drivers/fsl_rtc.c ****     {
  353:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TSIE_MASK;
  354:../drivers/fsl_rtc.c ****     }
@@ -1015,17 +1013,29 @@
  359:../drivers/fsl_rtc.c ****     }
  360:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_MONOTONIC */
  361:../drivers/fsl_rtc.c ****     base->IER |= tmp32;
- 629              		.loc 1 361 0
- 630 0016 C269     		ldr	r2, [r0, #28]
+ 627              		.loc 1 361 0
+ 628 0016 C269     		ldr	r2, [r0, #28]
  353:../drivers/fsl_rtc.c ****     }
- 631              		.loc 1 353 0
- 632 0018 48BF     		it	mi
- 633 001a 43F01003 		orrmi	r3, r3, #16
- 634              	.LVL51:
- 635              		.loc 1 361 0
- 636 001e 1343     		orrs	r3, r3, r2
- 637              	.LVL52:
- 638 0020 C361     		str	r3, [r0, #28]
+ 629              		.loc 1 353 0
+ 630 0018 48BF     		it	mi
+ 631 001a 43F01003 		orrmi	r3, r3, #16
+ 632              	.LVL51:
+ 633              		.loc 1 361 0
+ 634 001e 1343     		orrs	r3, r3, r2
+ 635              	.LVL52:
+ 636 0020 C361     		str	r3, [r0, #28]
+ 637 0022 7047     		bx	lr
+ 638              		.cfi_endproc
+ 639              	.LFE162:
+ 641              		.section	.text.RTC_DisableInterrupts,"ax",%progbits
+ 642              		.align	1
+ 643              		.global	RTC_DisableInterrupts
+ 644              		.syntax unified
+ 645              		.thumb
+ 646              		.thumb_func
+ 647              		.fpu fpv4-sp-d16
+ 649              	RTC_DisableInterrupts:
+ 650              	.LFB163:
  362:../drivers/fsl_rtc.c **** 
  363:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR) && FSL_FEATURE_RTC_HAS_TIR)
  364:../drivers/fsl_rtc.c ****     tmp32 = 0U;
@@ -1060,61 +1070,48 @@
  393:../drivers/fsl_rtc.c ****     base->TIR |= tmp32;
  394:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR */
  395:../drivers/fsl_rtc.c **** }
- 639              		.loc 1 395 0
- 640 0022 7047     		bx	lr
- 641              		.cfi_endproc
- 642              	.LFE162:
- 644              		.section	.text.RTC_DisableInterrupts,"ax",%progbits
- 645              		.align	1
- 646              		.global	RTC_DisableInterrupts
- 647              		.syntax unified
- 648              		.thumb
- 649              		.thumb_func
- 650              		.fpu fpv4-sp-d16
- 652              	RTC_DisableInterrupts:
- 653              	.LFB163:
  396:../drivers/fsl_rtc.c **** 
  397:../drivers/fsl_rtc.c **** void RTC_DisableInterrupts(RTC_Type *base, uint32_t mask)
  398:../drivers/fsl_rtc.c **** {
- 654              		.loc 1 398 0
- 655              		.cfi_startproc
- 656              		@ args = 0, pretend = 0, frame = 0
- 657              		@ frame_needed = 0, uses_anonymous_args = 0
- 658              		@ link register save eliminated.
- 659              	.LVL53:
+ 651              		.loc 1 398 0
+ 652              		.cfi_startproc
+ 653              		@ args = 0, pretend = 0, frame = 0
+ 654              		@ frame_needed = 0, uses_anonymous_args = 0
+ 655              		@ link register save eliminated.
+ 656              	.LVL53:
  399:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
  400:../drivers/fsl_rtc.c **** 
  401:../drivers/fsl_rtc.c ****     /* RTC_IER */
  402:../drivers/fsl_rtc.c ****     if (kRTC_TimeInvalidInterruptEnable == (kRTC_TimeInvalidInterruptEnable & mask))
- 660              		.loc 1 402 0
- 661 0000 01F00103 		and	r3, r1, #1
- 662              	.LVL54:
+ 657              		.loc 1 402 0
+ 658 0000 01F00103 		and	r3, r1, #1
+ 659              	.LVL54:
  403:../drivers/fsl_rtc.c ****     {
  404:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TIIE_MASK;
  405:../drivers/fsl_rtc.c ****     }
  406:../drivers/fsl_rtc.c ****     if (kRTC_TimeOverflowInterruptEnable == (kRTC_TimeOverflowInterruptEnable & mask))
- 663              		.loc 1 406 0
- 664 0004 8A07     		lsls	r2, r1, #30
+ 660              		.loc 1 406 0
+ 661 0004 8A07     		lsls	r2, r1, #30
  407:../drivers/fsl_rtc.c ****     {
  408:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TOIE_MASK;
- 665              		.loc 1 408 0
- 666 0006 48BF     		it	mi
- 667 0008 43F00203 		orrmi	r3, r3, #2
- 668              	.LVL55:
+ 662              		.loc 1 408 0
+ 663 0006 48BF     		it	mi
+ 664 0008 43F00203 		orrmi	r3, r3, #2
+ 665              	.LVL55:
  409:../drivers/fsl_rtc.c ****     }
  410:../drivers/fsl_rtc.c ****     if (kRTC_AlarmInterruptEnable == (kRTC_AlarmInterruptEnable & mask))
- 669              		.loc 1 410 0
- 670 000c 4A07     		lsls	r2, r1, #29
+ 666              		.loc 1 410 0
+ 667 000c 4A07     		lsls	r2, r1, #29
  411:../drivers/fsl_rtc.c ****     {
  412:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TAIE_MASK;
- 671              		.loc 1 412 0
- 672 000e 48BF     		it	mi
- 673 0010 43F00403 		orrmi	r3, r3, #4
- 674              	.LVL56:
+ 668              		.loc 1 412 0
+ 669 000e 48BF     		it	mi
+ 670 0010 43F00403 		orrmi	r3, r3, #4
+ 671              	.LVL56:
  413:../drivers/fsl_rtc.c ****     }
  414:../drivers/fsl_rtc.c ****     if (kRTC_SecondsInterruptEnable == (kRTC_SecondsInterruptEnable & mask))
- 675              		.loc 1 414 0
- 676 0014 0A07     		lsls	r2, r1, #28
+ 672              		.loc 1 414 0
+ 673 0014 0A07     		lsls	r2, r1, #28
  415:../drivers/fsl_rtc.c ****     {
  416:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TSIE_MASK;
  417:../drivers/fsl_rtc.c ****     }
@@ -1125,17 +1122,29 @@
  422:../drivers/fsl_rtc.c ****     }
  423:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_MONOTONIC */
  424:../drivers/fsl_rtc.c ****     base->IER &= (uint32_t)(~tmp32);
- 677              		.loc 1 424 0
- 678 0016 C269     		ldr	r2, [r0, #28]
+ 674              		.loc 1 424 0
+ 675 0016 C269     		ldr	r2, [r0, #28]
  416:../drivers/fsl_rtc.c ****     }
- 679              		.loc 1 416 0
- 680 0018 48BF     		it	mi
- 681 001a 43F01003 		orrmi	r3, r3, #16
- 682              	.LVL57:
- 683              		.loc 1 424 0
- 684 001e 22EA0303 		bic	r3, r2, r3
- 685              	.LVL58:
- 686 0022 C361     		str	r3, [r0, #28]
+ 676              		.loc 1 416 0
+ 677 0018 48BF     		it	mi
+ 678 001a 43F01003 		orrmi	r3, r3, #16
+ 679              	.LVL57:
+ 680              		.loc 1 424 0
+ 681 001e 22EA0303 		bic	r3, r2, r3
+ 682              	.LVL58:
+ 683 0022 C361     		str	r3, [r0, #28]
+ 684 0024 7047     		bx	lr
+ 685              		.cfi_endproc
+ 686              	.LFE163:
+ 688              		.section	.text.RTC_GetEnabledInterrupts,"ax",%progbits
+ 689              		.align	1
+ 690              		.global	RTC_GetEnabledInterrupts
+ 691              		.syntax unified
+ 692              		.thumb
+ 693              		.thumb_func
+ 694              		.fpu fpv4-sp-d16
+ 696              	RTC_GetEnabledInterrupts:
+ 697              	.LFB164:
  425:../drivers/fsl_rtc.c **** 
  426:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR) && FSL_FEATURE_RTC_HAS_TIR)
  427:../drivers/fsl_rtc.c ****     tmp32 = 0U;
@@ -1170,75 +1179,62 @@
  456:../drivers/fsl_rtc.c ****     base->TIR &= (uint32_t)(~tmp32);
  457:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR */
  458:../drivers/fsl_rtc.c **** }
- 687              		.loc 1 458 0
- 688 0024 7047     		bx	lr
- 689              		.cfi_endproc
- 690              	.LFE163:
- 692              		.section	.text.RTC_GetEnabledInterrupts,"ax",%progbits
- 693              		.align	1
- 694              		.global	RTC_GetEnabledInterrupts
- 695              		.syntax unified
- 696              		.thumb
- 697              		.thumb_func
- 698              		.fpu fpv4-sp-d16
- 700              	RTC_GetEnabledInterrupts:
- 701              	.LFB164:
  459:../drivers/fsl_rtc.c **** 
  460:../drivers/fsl_rtc.c **** uint32_t RTC_GetEnabledInterrupts(RTC_Type *base)
  461:../drivers/fsl_rtc.c **** {
- 702              		.loc 1 461 0
- 703              		.cfi_startproc
- 704              		@ args = 0, pretend = 0, frame = 0
- 705              		@ frame_needed = 0, uses_anonymous_args = 0
- 706              		@ link register save eliminated.
- 707              	.LVL59:
+ 698              		.loc 1 461 0
+ 699              		.cfi_startproc
+ 700              		@ args = 0, pretend = 0, frame = 0
+ 701              		@ frame_needed = 0, uses_anonymous_args = 0
+ 702              		@ link register save eliminated.
+ 703              	.LVL59:
  462:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
  463:../drivers/fsl_rtc.c **** 
  464:../drivers/fsl_rtc.c ****     /* RTC_IER */
  465:../drivers/fsl_rtc.c ****     if (RTC_IER_TIIE_MASK == (RTC_IER_TIIE_MASK & base->IER))
- 708              		.loc 1 465 0
- 709 0000 C369     		ldr	r3, [r0, #28]
+ 704              		.loc 1 465 0
+ 705 0000 C369     		ldr	r3, [r0, #28]
  466:../drivers/fsl_rtc.c ****     {
  467:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TimeInvalidInterruptEnable;
  468:../drivers/fsl_rtc.c ****     }
  469:../drivers/fsl_rtc.c ****     if (RTC_IER_TOIE_MASK == (RTC_IER_TOIE_MASK & base->IER))
- 710              		.loc 1 469 0
- 711 0002 C269     		ldr	r2, [r0, #28]
- 712 0004 9207     		lsls	r2, r2, #30
+ 706              		.loc 1 469 0
+ 707 0002 C269     		ldr	r2, [r0, #28]
+ 708 0004 9207     		lsls	r2, r2, #30
  470:../drivers/fsl_rtc.c ****     {
  471:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TimeOverflowInterruptEnable;
  472:../drivers/fsl_rtc.c ****     }
  473:../drivers/fsl_rtc.c ****     if (RTC_IER_TAIE_MASK == (RTC_IER_TAIE_MASK & base->IER))
- 713              		.loc 1 473 0
- 714 0006 C269     		ldr	r2, [r0, #28]
- 715 0008 03F00103 		and	r3, r3, #1
- 716              	.LVL60:
+ 709              		.loc 1 473 0
+ 710 0006 C269     		ldr	r2, [r0, #28]
+ 711 0008 03F00103 		and	r3, r3, #1
+ 712              	.LVL60:
  471:../drivers/fsl_rtc.c ****     }
- 717              		.loc 1 471 0
- 718 000c 48BF     		it	mi
- 719 000e 43F00203 		orrmi	r3, r3, #2
- 720              	.LVL61:
- 721              		.loc 1 473 0
- 722 0012 5107     		lsls	r1, r2, #29
+ 713              		.loc 1 471 0
+ 714 000c 48BF     		it	mi
+ 715 000e 43F00203 		orrmi	r3, r3, #2
+ 716              	.LVL61:
+ 717              		.loc 1 473 0
+ 718 0012 5107     		lsls	r1, r2, #29
  474:../drivers/fsl_rtc.c ****     {
  475:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_AlarmInterruptEnable;
  476:../drivers/fsl_rtc.c ****     }
  477:../drivers/fsl_rtc.c ****     if (RTC_IER_TSIE_MASK == (RTC_IER_TSIE_MASK & base->IER))
- 723              		.loc 1 477 0
- 724 0014 C269     		ldr	r2, [r0, #28]
+ 719              		.loc 1 477 0
+ 720 0014 C269     		ldr	r2, [r0, #28]
  475:../drivers/fsl_rtc.c ****     }
- 725              		.loc 1 475 0
- 726 0016 48BF     		it	mi
- 727 0018 43F00403 		orrmi	r3, r3, #4
- 728              	.LVL62:
- 729              		.loc 1 477 0
- 730 001c D206     		lsls	r2, r2, #27
+ 721              		.loc 1 475 0
+ 722 0016 48BF     		it	mi
+ 723 0018 43F00403 		orrmi	r3, r3, #4
+ 724              	.LVL62:
+ 725              		.loc 1 477 0
+ 726 001c D206     		lsls	r2, r2, #27
  478:../drivers/fsl_rtc.c ****     {
  479:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_SecondsInterruptEnable;
- 731              		.loc 1 479 0
- 732 001e 48BF     		it	mi
- 733 0020 43F00803 		orrmi	r3, r3, #8
- 734              	.LVL63:
+ 727              		.loc 1 479 0
+ 728 001e 48BF     		it	mi
+ 729 0020 43F00803 		orrmi	r3, r3, #8
+ 730              	.LVL63:
  480:../drivers/fsl_rtc.c ****     }
  481:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_MONOTONIC) && (FSL_FEATURE_RTC_HAS_MONOTONIC)
  482:../drivers/fsl_rtc.c ****     if (RTC_IER_MOIE_MASK == (RTC_IER_MOIE_MASK & base->IER))
@@ -1279,64 +1275,64 @@
  517:../drivers/fsl_rtc.c **** 
  518:../drivers/fsl_rtc.c ****     return tmp32;
  519:../drivers/fsl_rtc.c **** }
- 735              		.loc 1 519 0
- 736 0024 1846     		mov	r0, r3
- 737              	.LVL64:
- 738 0026 7047     		bx	lr
- 739              		.cfi_endproc
- 740              	.LFE164:
- 742              		.section	.text.RTC_GetStatusFlags,"ax",%progbits
- 743              		.align	1
- 744              		.global	RTC_GetStatusFlags
- 745              		.syntax unified
- 746              		.thumb
- 747              		.thumb_func
- 748              		.fpu fpv4-sp-d16
- 750              	RTC_GetStatusFlags:
- 751              	.LFB165:
+ 731              		.loc 1 519 0
+ 732 0024 1846     		mov	r0, r3
+ 733              	.LVL64:
+ 734 0026 7047     		bx	lr
+ 735              		.cfi_endproc
+ 736              	.LFE164:
+ 738              		.section	.text.RTC_GetStatusFlags,"ax",%progbits
+ 739              		.align	1
+ 740              		.global	RTC_GetStatusFlags
+ 741              		.syntax unified
+ 742              		.thumb
+ 743              		.thumb_func
+ 744              		.fpu fpv4-sp-d16
+ 746              	RTC_GetStatusFlags:
+ 747              	.LFB165:
  520:../drivers/fsl_rtc.c **** 
  521:../drivers/fsl_rtc.c **** uint32_t RTC_GetStatusFlags(RTC_Type *base)
  522:../drivers/fsl_rtc.c **** {
- 752              		.loc 1 522 0
- 753              		.cfi_startproc
- 754              		@ args = 0, pretend = 0, frame = 0
- 755              		@ frame_needed = 0, uses_anonymous_args = 0
- 756              		@ link register save eliminated.
- 757              	.LVL65:
+ 748              		.loc 1 522 0
+ 749              		.cfi_startproc
+ 750              		@ args = 0, pretend = 0, frame = 0
+ 751              		@ frame_needed = 0, uses_anonymous_args = 0
+ 752              		@ link register save eliminated.
+ 753              	.LVL65:
  523:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
  524:../drivers/fsl_rtc.c **** 
  525:../drivers/fsl_rtc.c ****     /* RTC_SR */
  526:../drivers/fsl_rtc.c ****     if (RTC_SR_TIF_MASK == (RTC_SR_TIF_MASK & base->SR))
- 758              		.loc 1 526 0
- 759 0000 4369     		ldr	r3, [r0, #20]
+ 754              		.loc 1 526 0
+ 755 0000 4369     		ldr	r3, [r0, #20]
  527:../drivers/fsl_rtc.c ****     {
  528:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TimeInvalidFlag;
  529:../drivers/fsl_rtc.c ****     }
  530:../drivers/fsl_rtc.c ****     if (RTC_SR_TOF_MASK == (RTC_SR_TOF_MASK & base->SR))
- 760              		.loc 1 530 0
- 761 0002 4269     		ldr	r2, [r0, #20]
- 762 0004 9107     		lsls	r1, r2, #30
+ 756              		.loc 1 530 0
+ 757 0002 4269     		ldr	r2, [r0, #20]
+ 758 0004 9107     		lsls	r1, r2, #30
  531:../drivers/fsl_rtc.c ****     {
  532:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TimeOverflowFlag;
  533:../drivers/fsl_rtc.c ****     }
  534:../drivers/fsl_rtc.c ****     if (RTC_SR_TAF_MASK == (RTC_SR_TAF_MASK & base->SR))
- 763              		.loc 1 534 0
- 764 0006 4269     		ldr	r2, [r0, #20]
- 765 0008 03F00103 		and	r3, r3, #1
- 766              	.LVL66:
+ 759              		.loc 1 534 0
+ 760 0006 4269     		ldr	r2, [r0, #20]
+ 761 0008 03F00103 		and	r3, r3, #1
+ 762              	.LVL66:
  532:../drivers/fsl_rtc.c ****     }
- 767              		.loc 1 532 0
- 768 000c 48BF     		it	mi
- 769 000e 43F00203 		orrmi	r3, r3, #2
- 770              	.LVL67:
- 771              		.loc 1 534 0
- 772 0012 5207     		lsls	r2, r2, #29
+ 763              		.loc 1 532 0
+ 764 000c 48BF     		it	mi
+ 765 000e 43F00203 		orrmi	r3, r3, #2
+ 766              	.LVL67:
+ 767              		.loc 1 534 0
+ 768 0012 5207     		lsls	r2, r2, #29
  535:../drivers/fsl_rtc.c ****     {
  536:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_AlarmFlag;
- 773              		.loc 1 536 0
- 774 0014 48BF     		it	mi
- 775 0016 43F00403 		orrmi	r3, r3, #4
- 776              	.LVL68:
+ 769              		.loc 1 536 0
+ 770 0014 48BF     		it	mi
+ 771 0016 43F00403 		orrmi	r3, r3, #4
+ 772              	.LVL68:
  537:../drivers/fsl_rtc.c ****     }
  538:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_MONOTONIC) && (FSL_FEATURE_RTC_HAS_MONOTONIC)
  539:../drivers/fsl_rtc.c ****     if (RTC_SR_MOF_MASK == (RTC_SR_MOF_MASK & base->SR))
@@ -1383,30 +1379,30 @@
  580:../drivers/fsl_rtc.c **** 
  581:../drivers/fsl_rtc.c ****     return tmp32;
  582:../drivers/fsl_rtc.c **** }
- 777              		.loc 1 582 0
- 778 001a 1846     		mov	r0, r3
- 779              	.LVL69:
- 780 001c 7047     		bx	lr
- 781              		.cfi_endproc
- 782              	.LFE165:
- 784              		.section	.text.RTC_Init,"ax",%progbits
- 785              		.align	1
- 786              		.global	RTC_Init
- 787              		.syntax unified
- 788              		.thumb
- 789              		.thumb_func
- 790              		.fpu fpv4-sp-d16
- 792              	RTC_Init:
- 793              	.LFB156:
+ 773              		.loc 1 582 0
+ 774 001a 1846     		mov	r0, r3
+ 775              	.LVL69:
+ 776 001c 7047     		bx	lr
+ 777              		.cfi_endproc
+ 778              	.LFE165:
+ 780              		.section	.text.RTC_Init,"ax",%progbits
+ 781              		.align	1
+ 782              		.global	RTC_Init
+ 783              		.syntax unified
+ 784              		.thumb
+ 785              		.thumb_func
+ 786              		.fpu fpv4-sp-d16
+ 788              	RTC_Init:
+ 789              	.LFB156:
  213:../drivers/fsl_rtc.c ****     assert(config);
- 794              		.loc 1 213 0
- 795              		.cfi_startproc
- 796              		@ args = 0, pretend = 0, frame = 0
- 797              		@ frame_needed = 0, uses_anonymous_args = 0
- 798              	.LVL70:
- 799              	.LBB6:
- 800              	.LBB7:
- 801              		.file 2 "../drivers/fsl_clock.h"
+ 790              		.loc 1 213 0
+ 791              		.cfi_startproc
+ 792              		@ args = 0, pretend = 0, frame = 0
+ 793              		@ frame_needed = 0, uses_anonymous_args = 0
+ 794              	.LVL70:
+ 795              	.LBB6:
+ 796              	.LBB7:
+ 797              		.file 2 "../drivers/fsl_clock.h"
    1:../drivers/fsl_clock.h **** /*
    2:../drivers/fsl_clock.h ****  * The Clear BSD License
    3:../drivers/fsl_clock.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
@@ -2102,50 +2098,50 @@
  693:../drivers/fsl_clock.h **** {
  694:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
  695:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
- 802              		.loc 2 695 0
- 803 0000 164A     		ldr	r2, .L95
- 804 0002 1368     		ldr	r3, [r2]
- 805              	.LBE7:
- 806              	.LBE6:
+ 798              		.loc 2 695 0
+ 799 0000 184A     		ldr	r2, .L95
+ 800 0002 1368     		ldr	r3, [r2]
+ 801              	.LBE7:
+ 802              	.LBE6:
  213:../drivers/fsl_rtc.c ****     assert(config);
- 807              		.loc 1 213 0
- 808 0004 70B5     		push	{r4, r5, r6, lr}
- 809              		.cfi_def_cfa_offset 16
- 810              		.cfi_offset 4, -16
- 811              		.cfi_offset 5, -12
- 812              		.cfi_offset 6, -8
- 813              		.cfi_offset 14, -4
+ 803              		.loc 1 213 0
+ 804 0004 70B5     		push	{r4, r5, r6, lr}
+ 805              		.cfi_def_cfa_offset 16
+ 806              		.cfi_offset 4, -16
+ 807              		.cfi_offset 5, -12
+ 808              		.cfi_offset 6, -8
+ 809              		.cfi_offset 14, -4
  225:../drivers/fsl_rtc.c ****     {
- 814              		.loc 1 225 0
- 815 0006 164E     		ldr	r6, .L95+4
- 816              	.LBB9:
- 817              	.LBB8:
- 818              		.loc 2 695 0
- 819 0008 43F00053 		orr	r3, r3, #536870912
- 820 000c 1360     		str	r3, [r2]
- 821              	.LVL71:
- 822              	.LBE8:
- 823              	.LBE9:
+ 810              		.loc 1 225 0
+ 811 0006 184E     		ldr	r6, .L95+4
+ 812              	.LBB9:
+ 813              	.LBB8:
+ 814              		.loc 2 695 0
+ 815 0008 43F00053 		orr	r3, r3, #536870912
+ 816 000c 1360     		str	r3, [r2]
+ 817              	.LVL71:
+ 818              	.LBE8:
+ 819              	.LBE9:
  213:../drivers/fsl_rtc.c ****     assert(config);
- 824              		.loc 1 213 0
- 825 000e 0446     		mov	r4, r0
+ 820              		.loc 1 213 0
+ 821 000e 0446     		mov	r4, r0
  225:../drivers/fsl_rtc.c ****     {
- 826              		.loc 1 225 0
- 827 0010 3046     		mov	r0, r6
- 828              	.LVL72:
+ 822              		.loc 1 225 0
+ 823 0010 3046     		mov	r0, r6
+ 824              	.LVL72:
  213:../drivers/fsl_rtc.c ****     assert(config);
- 829              		.loc 1 213 0
- 830 0012 0D46     		mov	r5, r1
+ 825              		.loc 1 213 0
+ 826 0012 0D46     		mov	r5, r1
  225:../drivers/fsl_rtc.c ****     {
- 831              		.loc 1 225 0
- 832 0014 FFF7FEFF 		bl	RTC_GetStatusFlags
- 833              	.LVL73:
- 834 0018 C307     		lsls	r3, r0, #31
- 835 001a 09D5     		bpl	.L91
- 836              	.LVL74:
- 837              	.LBB10:
- 838              	.LBB11:
- 839              		.file 3 "../drivers/fsl_rtc.h"
+ 827              		.loc 1 225 0
+ 828 0014 FFF7FEFF 		bl	RTC_GetStatusFlags
+ 829              	.LVL73:
+ 830 0018 C307     		lsls	r3, r0, #31
+ 831 001a 09D5     		bpl	.L91
+ 832              	.LVL74:
+ 833              	.LBB10:
+ 834              	.LBB11:
+ 835              		.file 3 "../drivers/fsl_rtc.h"
    1:../drivers/fsl_rtc.h **** /*
    2:../drivers/fsl_rtc.h ****  * The Clear BSD License
    3:../drivers/fsl_rtc.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
@@ -2581,215 +2577,175 @@
  433:../drivers/fsl_rtc.h **** static inline void RTC_Reset(RTC_Type *base)
  434:../drivers/fsl_rtc.h **** {
  435:../drivers/fsl_rtc.h ****     base->CR |= RTC_CR_SWR_MASK;
- 840              		.loc 3 435 0
- 841 001c 3369     		ldr	r3, [r6, #16]
- 842 001e 43F00103 		orr	r3, r3, #1
- 843 0022 3361     		str	r3, [r6, #16]
+ 836              		.loc 3 435 0
+ 837 001c 3369     		ldr	r3, [r6, #16]
+ 838 001e 43F00103 		orr	r3, r3, #1
+ 839 0022 3361     		str	r3, [r6, #16]
  436:../drivers/fsl_rtc.h ****     base->CR &= ~RTC_CR_SWR_MASK;
- 844              		.loc 3 436 0
- 845 0024 3369     		ldr	r3, [r6, #16]
- 846 0026 23F00103 		bic	r3, r3, #1
- 847 002a 3361     		str	r3, [r6, #16]
+ 840              		.loc 3 436 0
+ 841 0024 3369     		ldr	r3, [r6, #16]
+ 842 0026 23F00103 		bic	r3, r3, #1
+ 843 002a 3361     		str	r3, [r6, #16]
  437:../drivers/fsl_rtc.h **** 
  438:../drivers/fsl_rtc.h ****     /* Set TSR register to 0x1 to avoid the timer invalid (TIF) bit being set in the SR register */
  439:../drivers/fsl_rtc.h ****     base->TSR = 1U;
- 848              		.loc 3 439 0
- 849 002c 0123     		movs	r3, #1
- 850 002e 3360     		str	r3, [r6]
- 851              	.LVL75:
- 852              	.L91:
- 853              	.LBE11:
- 854              	.LBE10:
+ 844              		.loc 3 439 0
+ 845 002c 0123     		movs	r3, #1
+ 846 002e 3360     		str	r3, [r6]
+ 847              	.LVL75:
+ 848              	.L91:
+ 849              	.LBE11:
+ 850              	.LBE10:
+ 233:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_WAKEUP_PIN_SELECTION) && FSL_FEATURE_RTC_HAS_WAKEUP_PIN_SELECTION
+ 851              		.loc 1 233 0
+ 852 0030 6A78     		ldrb	r2, [r5, #1]	@ zero_extendqisi2
+ 853 0032 A978     		ldrb	r1, [r5, #2]	@ zero_extendqisi2
  230:../drivers/fsl_rtc.c ****     /* Setup the update mode and supervisor access mode */
- 855              		.loc 1 230 0
- 856 0030 2369     		ldr	r3, [r4, #16]
- 857              	.LVL76:
+ 854              		.loc 1 230 0
+ 855 0034 2369     		ldr	r3, [r4, #16]
+ 856              	.LVL76:
  233:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_WAKEUP_PIN_SELECTION) && FSL_FEATURE_RTC_HAS_WAKEUP_PIN_SELECTION
- 858              		.loc 1 233 0
- 859 0032 6A78     		ldrb	r2, [r5, #1]	@ zero_extendqisi2
- 232:../drivers/fsl_rtc.c ****     reg |= RTC_CR_UM(config->updateMode) | RTC_CR_SUP(config->supervisorAccess);
- 860              		.loc 1 232 0
- 861 0034 23F00C03 		bic	r3, r3, #12
- 862              	.LVL77:
- 863 0038 43EAC203 		orr	r3, r3, r2, lsl #3
- 864              	.LVL78:
- 233:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_WAKEUP_PIN_SELECTION) && FSL_FEATURE_RTC_HAS_WAKEUP_PIN_SELECTION
- 865              		.loc 1 233 0
- 866 003c AA78     		ldrb	r2, [r5, #2]	@ zero_extendqisi2
- 867 003e 43EA8203 		orr	r3, r3, r2, lsl #2
- 868              	.LVL79:
- 237:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_WAKEUP_PIN */
- 869              		.loc 1 237 0
- 870 0042 2A78     		ldrb	r2, [r5]	@ zero_extendqisi2
+ 857              		.loc 1 233 0
+ 858 0036 D200     		lsls	r2, r2, #3
+ 859 0038 8900     		lsls	r1, r1, #2
+ 860 003a 02F00802 		and	r2, r2, #8
+ 861 003e 01F00401 		and	r1, r1, #4
+ 862 0042 23F01C03 		bic	r3, r3, #28
+ 863              	.LVL77:
+ 864 0046 0A43     		orrs	r2, r2, r1
  236:../drivers/fsl_rtc.c ****     reg |= RTC_CR_WPS(config->wakeupSelect);
- 871              		.loc 1 236 0
- 872 0044 23F01003 		bic	r3, r3, #16
- 873              	.LVL80:
+ 865              		.loc 1 236 0
+ 866 0048 1A43     		orrs	r2, r2, r3
+ 867              	.LVL78:
  237:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_WAKEUP_PIN */
- 874              		.loc 1 237 0
- 875 0048 43EA0213 		orr	r3, r3, r2, lsl #4
- 876              	.LVL81:
+ 868              		.loc 1 237 0
+ 869 004a 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 870 004c 1B01     		lsls	r3, r3, #4
+ 871 004e 03F01003 		and	r3, r3, #16
+ 872 0052 1343     		orrs	r3, r3, r2
+ 873              	.LVL79:
  239:../drivers/fsl_rtc.c **** 
- 877              		.loc 1 239 0
- 878 004c 2361     		str	r3, [r4, #16]
+ 874              		.loc 1 239 0
+ 875 0054 2361     		str	r3, [r4, #16]
  242:../drivers/fsl_rtc.c **** 	
- 879              		.loc 1 242 0
- 880 004e 6B68     		ldr	r3, [r5, #4]
- 881              	.LVL82:
- 882 0050 2A7A     		ldrb	r2, [r5, #8]	@ zero_extendqisi2
- 883 0052 1B02     		lsls	r3, r3, #8
- 884 0054 9BB2     		uxth	r3, r3
- 885 0056 1343     		orrs	r3, r3, r2
- 886 0058 E360     		str	r3, [r4, #12]
- 887              	.LVL83:
- 248:../drivers/fsl_rtc.c **** 
- 888              		.loc 1 248 0
- 889 005a 70BD     		pop	{r4, r5, r6, pc}
- 890              	.LVL84:
- 891              	.L96:
- 892              		.align	2
- 893              	.L95:
- 894 005c 3C800440 		.word	1074036796
- 895 0060 00D00340 		.word	1073991680
- 896              		.cfi_endproc
- 897              	.LFE156:
- 899              		.section	.text.RTC_ClearStatusFlags,"ax",%progbits
- 900              		.align	1
- 901              		.global	RTC_ClearStatusFlags
- 902              		.syntax unified
- 903              		.thumb
- 904              		.thumb_func
- 905              		.fpu fpv4-sp-d16
- 907              	RTC_ClearStatusFlags:
- 908              	.LFB166:
+ 876              		.loc 1 242 0
+ 877 0056 6B68     		ldr	r3, [r5, #4]
+ 878              	.LVL80:
+ 879 0058 2A7A     		ldrb	r2, [r5, #8]	@ zero_extendqisi2
+ 880 005a 1B02     		lsls	r3, r3, #8
+ 881 005c 9BB2     		uxth	r3, r3
+ 882 005e 1343     		orrs	r3, r3, r2
+ 883 0060 E360     		str	r3, [r4, #12]
+ 884              	.LVL81:
+ 885 0062 70BD     		pop	{r4, r5, r6, pc}
+ 886              	.LVL82:
+ 887              	.L96:
+ 888              		.align	2
+ 889              	.L95:
+ 890 0064 3C800440 		.word	1074036796
+ 891 0068 00D00340 		.word	1073991680
+ 892              		.cfi_endproc
+ 893              	.LFE156:
+ 895              		.section	.text.RTC_ClearStatusFlags,"ax",%progbits
+ 896              		.align	1
+ 897              		.global	RTC_ClearStatusFlags
+ 898              		.syntax unified
+ 899              		.thumb
+ 900              		.thumb_func
+ 901              		.fpu fpv4-sp-d16
+ 903              	RTC_ClearStatusFlags:
+ 904              	.LFB166:
  583:../drivers/fsl_rtc.c **** 
  584:../drivers/fsl_rtc.c **** void RTC_ClearStatusFlags(RTC_Type *base, uint32_t mask)
  585:../drivers/fsl_rtc.c **** {
- 909              		.loc 1 585 0
- 910              		.cfi_startproc
- 911              		@ args = 0, pretend = 0, frame = 0
- 912              		@ frame_needed = 0, uses_anonymous_args = 0
- 913              		@ link register save eliminated.
- 914              	.LVL85:
+ 905              		.loc 1 585 0
+ 906              		.cfi_startproc
+ 907              		@ args = 0, pretend = 0, frame = 0
+ 908              		@ frame_needed = 0, uses_anonymous_args = 0
+ 909              		@ link register save eliminated.
+ 910              	.LVL83:
  586:../drivers/fsl_rtc.c ****     /* The alarm flag is cleared by writing to the TAR register */
  587:../drivers/fsl_rtc.c ****     if (mask & kRTC_AlarmFlag)
- 915              		.loc 1 587 0
- 916 0000 4B07     		lsls	r3, r1, #29
+ 911              		.loc 1 587 0
+ 912 0000 4B07     		lsls	r3, r1, #29
  588:../drivers/fsl_rtc.c ****     {
  589:../drivers/fsl_rtc.c ****         base->TAR = 0U;
- 917              		.loc 1 589 0
- 918 0002 44BF     		itt	mi
- 919 0004 0023     		movmi	r3, #0
- 920 0006 8360     		strmi	r3, [r0, #8]
+ 913              		.loc 1 589 0
+ 914 0002 44BF     		itt	mi
+ 915 0004 0023     		movmi	r3, #0
+ 916 0006 8360     		strmi	r3, [r0, #8]
  590:../drivers/fsl_rtc.c ****     }
  591:../drivers/fsl_rtc.c **** 
  592:../drivers/fsl_rtc.c ****     /* The timer overflow flag is cleared by initializing the TSR register.
  593:../drivers/fsl_rtc.c ****      * The time counter should be disabled for this write to be successful
  594:../drivers/fsl_rtc.c ****      */
  595:../drivers/fsl_rtc.c ****     if (mask & kRTC_TimeOverflowFlag)
- 921              		.loc 1 595 0
- 922 0008 8A07     		lsls	r2, r1, #30
+ 917              		.loc 1 595 0
+ 918 0008 8A07     		lsls	r2, r1, #30
  596:../drivers/fsl_rtc.c ****     {
  597:../drivers/fsl_rtc.c ****         base->TSR = 1U;
- 923              		.loc 1 597 0
- 924 000a 44BF     		itt	mi
- 925 000c 0123     		movmi	r3, #1
- 926 000e 0360     		strmi	r3, [r0]
+ 919              		.loc 1 597 0
+ 920 000a 44BF     		itt	mi
+ 921 000c 0123     		movmi	r3, #1
+ 922 000e 0360     		strmi	r3, [r0]
  598:../drivers/fsl_rtc.c ****     }
  599:../drivers/fsl_rtc.c **** 
  600:../drivers/fsl_rtc.c ****     /* The timer overflow flag is cleared by initializing the TSR register.
  601:../drivers/fsl_rtc.c ****      * The time counter should be disabled for this write to be successful
  602:../drivers/fsl_rtc.c ****      */
  603:../drivers/fsl_rtc.c ****     if (mask & kRTC_TimeInvalidFlag)
- 927              		.loc 1 603 0
- 928 0010 CB07     		lsls	r3, r1, #31
+ 923              		.loc 1 603 0
+ 924 0010 CB07     		lsls	r3, r1, #31
  604:../drivers/fsl_rtc.c ****     {
  605:../drivers/fsl_rtc.c ****         base->TSR = 1U;
- 929              		.loc 1 605 0
- 930 0012 44BF     		itt	mi
- 931 0014 0123     		movmi	r3, #1
- 932 0016 0360     		strmi	r3, [r0]
- 606:../drivers/fsl_rtc.c ****     }
- 607:../drivers/fsl_rtc.c **** 
- 608:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR) && FSL_FEATURE_RTC_HAS_TDR)
- 609:../drivers/fsl_rtc.c ****     /* To clear, write logic one to this flag after exiting from all test modes */
- 610:../drivers/fsl_rtc.c ****     if (kRTC_TestModeFlag == (kRTC_TestModeFlag & mask))
- 611:../drivers/fsl_rtc.c ****     {
- 612:../drivers/fsl_rtc.c ****         base->TDR = RTC_TDR_TMF_MASK;
- 613:../drivers/fsl_rtc.c ****     }
- 614:../drivers/fsl_rtc.c ****     /* To clear, write logic one to this flag after flash security is enabled */
- 615:../drivers/fsl_rtc.c ****     if (kRTC_FlashSecurityFlag == (kRTC_FlashSecurityFlag & mask))
- 616:../drivers/fsl_rtc.c ****     {
- 617:../drivers/fsl_rtc.c ****         base->TDR = RTC_TDR_FSF_MASK;
- 618:../drivers/fsl_rtc.c ****     }
- 619:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_TPF) && FSL_FEATURE_RTC_HAS_TDR_TPF)
- 620:../drivers/fsl_rtc.c ****     /* To clear, write logic one to the corresponding flag after that tamper pin negates */
- 621:../drivers/fsl_rtc.c ****     if (kRTC_TamperPinFlag == (kRTC_TamperPinFlag & mask))
- 622:../drivers/fsl_rtc.c ****     {
- 623:../drivers/fsl_rtc.c ****         base->TDR = RTC_TDR_TPF_MASK;
- 624:../drivers/fsl_rtc.c ****     }
- 625:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR_TPF */
- 626:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_STF) && FSL_FEATURE_RTC_HAS_TDR_STF)
- 627:../drivers/fsl_rtc.c ****     /* To clear, write logic one to this flag after security module has negated its tamper detect *
- 628:../drivers/fsl_rtc.c ****     if (kRTC_SecurityTamperFlag == (kRTC_SecurityTamperFlag & mask))
- 629:../drivers/fsl_rtc.c ****     {
- 630:../drivers/fsl_rtc.c ****         base->TDR = RTC_TDR_STF_MASK;
- 631:../drivers/fsl_rtc.c ****     }
- 632:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR_STF */
- 633:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_LCTF) && FSL_FEATURE_RTC_HAS_TDR_LCTF)
- 634:../drivers/fsl_rtc.c ****     /* To clear, write logic one to this flag after loss of clock negates */
- 635:../drivers/fsl_rtc.c ****     if (kRTC_LossOfClockTamperFlag == (kRTC_LossOfClockTamperFlag & mask))
- 636:../drivers/fsl_rtc.c ****     {
- 637:../drivers/fsl_rtc.c ****         base->TDR = RTC_TDR_LCTF_MASK;
- 638:../drivers/fsl_rtc.c ****     }
- 639:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR_LCTF */
- 640:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR */
- 641:../drivers/fsl_rtc.c **** }
- 933              		.loc 1 641 0
- 934 0018 7047     		bx	lr
- 935              		.cfi_endproc
- 936              	.LFE166:
- 938              		.section	.rodata
- 939              		.align	1
- 940              		.set	.LANCHOR0,. + 0
- 941              	.LC0:
- 942 0000 00       		.byte	0
- 943 0001 1F       		.byte	31
- 944 0002 1C       		.byte	28
- 945 0003 1F       		.byte	31
- 946 0004 1E       		.byte	30
- 947 0005 1F       		.byte	31
- 948 0006 1E       		.byte	30
- 949 0007 1F       		.byte	31
- 950 0008 1F       		.byte	31
- 951 0009 1E       		.byte	30
- 952 000a 1F       		.byte	31
- 953 000b 1E       		.byte	30
- 954 000c 1F       		.byte	31
- 955 000d 00       		.space	1
- 956              	.LC1:
- 957 000e 0000     		.short	0
- 958 0010 0000     		.short	0
- 959 0012 1F00     		.short	31
- 960 0014 3B00     		.short	59
- 961 0016 5A00     		.short	90
- 962 0018 7800     		.short	120
- 963 001a 9700     		.short	151
- 964 001c B500     		.short	181
- 965 001e D400     		.short	212
- 966 0020 F300     		.short	243
- 967 0022 1101     		.short	273
- 968 0024 3001     		.short	304
- 969 0026 4E01     		.short	334
- 970              		.text
- 971              	.Letext0:
- 972              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 973              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 974              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 975              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 976              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 977              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 978              		.file 10 "../CMSIS/core_cm4.h"
- 979              		.file 11 "../CMSIS/system_MK64F12.h"
- 980              		.file 12 "../CMSIS/MK64F12.h"
- 981              		.file 13 "../drivers/fsl_common.h"
+ 925              		.loc 1 605 0
+ 926 0012 44BF     		itt	mi
+ 927 0014 0123     		movmi	r3, #1
+ 928 0016 0360     		strmi	r3, [r0]
+ 929 0018 7047     		bx	lr
+ 930              		.cfi_endproc
+ 931              	.LFE166:
+ 933              		.section	.rodata
+ 934              		.align	1
+ 935              		.set	.LANCHOR0,. + 0
+ 936              	.LC0:
+ 937 0000 00       		.byte	0
+ 938 0001 1F       		.byte	31
+ 939 0002 1C       		.byte	28
+ 940 0003 1F       		.byte	31
+ 941 0004 1E       		.byte	30
+ 942 0005 1F       		.byte	31
+ 943 0006 1E       		.byte	30
+ 944 0007 1F       		.byte	31
+ 945 0008 1F       		.byte	31
+ 946 0009 1E       		.byte	30
+ 947 000a 1F       		.byte	31
+ 948 000b 1E       		.byte	30
+ 949 000c 1F       		.byte	31
+ 950 000d 00       		.space	1
+ 951              	.LC1:
+ 952 000e 0000     		.short	0
+ 953 0010 0000     		.short	0
+ 954 0012 1F00     		.short	31
+ 955 0014 3B00     		.short	59
+ 956 0016 5A00     		.short	90
+ 957 0018 7800     		.short	120
+ 958 001a 9700     		.short	151
+ 959 001c B500     		.short	181
+ 960 001e D400     		.short	212
+ 961 0020 F300     		.short	243
+ 962 0022 1101     		.short	273
+ 963 0024 3001     		.short	304
+ 964 0026 4E01     		.short	334
+ 965              		.text
+ 966              	.Letext0:
+ 967              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 968              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 969              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 970              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 971              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+ 972              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+ 973              		.file 10 "../CMSIS/core_cm4.h"
+ 974              		.file 11 "../CMSIS/system_MK64F12.h"
+ 975              		.file 12 "../CMSIS/MK64F12.h"
+ 976              		.file 13 "../drivers/fsl_common.h"

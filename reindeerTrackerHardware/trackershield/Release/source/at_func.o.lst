@@ -22,7 +22,7 @@
   22              		.thumb_func
   23              		.fpu fpv4-sp-d16
   25              	breakIfAtOk:
-  26              	.LFB3:
+  26              	.LFB1:
   27              		.file 1 "../source/at_func.c"
    1:../source/at_func.c **** #include <stdint.h>
    2:../source/at_func.c **** #include <stdio.h>
@@ -98,7 +98,7 @@
   49 0014 00000000 		.word	.LC0
   50 0018 00000000 		.word	UART3_recBuf
   51              		.cfi_endproc
-  52              	.LFE3:
+  52              	.LFE1:
   54              		.section	.text.AT_checkResult,"ax",%progbits
   55              		.align	1
   56              		.global	AT_checkResult
@@ -107,7 +107,7 @@
   59              		.thumb_func
   60              		.fpu fpv4-sp-d16
   62              	AT_checkResult:
-  63              	.LFB4:
+  63              	.LFB2:
   51:../source/at_func.c **** 
   52:../source/at_func.c **** /*
   53:../source/at_func.c ****  * Check AT command return result and print related ok message or error message.
@@ -164,7 +164,7 @@
   93 0018 08000000 		.word	.LC2
   94 001c 13000000 		.word	.LC3
   95              		.cfi_endproc
-  96              	.LFE4:
+  96              	.LFE2:
   98              		.section	.text.AT_send,"ax",%progbits
   99              		.align	1
  100              		.global	AT_send
@@ -173,7 +173,7 @@
  103              		.thumb_func
  104              		.fpu fpv4-sp-d16
  106              	AT_send:
- 107              	.LFB5:
+ 107              	.LFB3:
   73:../source/at_func.c **** 	}
   74:../source/at_func.c **** }
   75:../source/at_func.c **** 
@@ -306,8 +306,8 @@
  183              		.loc 1 106 0
  184 0054 FFF7FEFF 		bl	millis
  185              	.LVL19:
- 186 0058 A042     		cmp	r0, r4
- 187 005a 01D3     		bcc	.L16
+ 186 0058 8442     		cmp	r4, r0
+ 187 005a 01D8     		bhi	.L16
   90:../source/at_func.c **** 	uint32_t time_limit = 1000;
  188              		.loc 1 90 0
  189 005c 0224     		movs	r4, #2
@@ -402,7 +402,7 @@
  254 00b4 1F000000 		.word	.LC6
  255 00b8 23000000 		.word	.LC7
  256              		.cfi_endproc
- 257              	.LFE5:
+ 257              	.LFE3:
  259              		.global	AT_CCLK
  260              		.global	AT_CFUN
  261              		.global	AT_CMEE
@@ -571,15 +571,14 @@
  420 0080 415400   		.ascii	"AT\000"
  421              		.text
  422              	.Letext0:
- 423              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 424              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 425              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 426              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 427              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 428              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 429              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 423              		.file 2 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 424              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 425              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 426              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 427              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+ 428              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+ 429              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/stdlib.h"
  430              		.file 9 "../source/at_func.h"
- 431              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
- 432              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ 431              		.file 10 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/stdio.h"
+ 432              		.file 11 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/string.h"
  433              		.file 12 "../source/timing.h"
- 434              		.file 13 "<built-in>"

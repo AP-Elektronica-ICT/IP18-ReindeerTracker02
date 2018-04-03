@@ -902,50 +902,49 @@
  100:../drivers/fsl_dac.c ****     base->C0 = tmp8;
  103              		.loc 1 100 0
  104 004a 80F82130 		strb	r3, [r0, #33]
+ 105 004e 30BD     		pop	{r4, r5, pc}
+ 106              	.LVL8:
+ 107              	.L5:
+ 108              	.LBB15:
+ 109              	.LBB11:
+  65:../drivers/fsl_dac.c ****     {
+ 110              		.loc 1 65 0
+ 111 0050 0023     		movs	r3, #0
+ 112 0052 DFE7     		b	.L2
+ 113              	.L11:
+ 114              		.align	2
+ 115              	.L10:
+ 116 0054 00C00C40 		.word	1074577408
+ 117 0058 00000000 		.word	.LANCHOR0
+ 118              	.LBE11:
+ 119              	.LBE15:
+ 120              		.cfi_endproc
+ 121              	.LFE153:
+ 123              		.section	.text.DAC_Deinit,"ax",%progbits
+ 124              		.align	1
+ 125              		.global	DAC_Deinit
+ 126              		.syntax unified
+ 127              		.thumb
+ 128              		.thumb_func
+ 129              		.fpu fpv4-sp-d16
+ 131              	DAC_Deinit:
+ 132              	.LFB154:
  101:../drivers/fsl_dac.c **** 
  102:../drivers/fsl_dac.c ****     /* DAC_Enable(base, true); */
  103:../drivers/fsl_dac.c ****     /* Tip: The DAC output can be enabled till then after user sets their own available data in app
  104:../drivers/fsl_dac.c **** }
- 105              		.loc 1 104 0
- 106 004e 30BD     		pop	{r4, r5, pc}
- 107              	.LVL8:
- 108              	.L5:
- 109              	.LBB15:
- 110              	.LBB11:
-  65:../drivers/fsl_dac.c ****     {
- 111              		.loc 1 65 0
- 112 0050 0023     		movs	r3, #0
- 113 0052 DFE7     		b	.L2
- 114              	.L11:
- 115              		.align	2
- 116              	.L10:
- 117 0054 00C00C40 		.word	1074577408
- 118 0058 00000000 		.word	.LANCHOR0
- 119              	.LBE11:
- 120              	.LBE15:
- 121              		.cfi_endproc
- 122              	.LFE153:
- 124              		.section	.text.DAC_Deinit,"ax",%progbits
- 125              		.align	1
- 126              		.global	DAC_Deinit
- 127              		.syntax unified
- 128              		.thumb
- 129              		.thumb_func
- 130              		.fpu fpv4-sp-d16
- 132              	DAC_Deinit:
- 133              	.LFB154:
  105:../drivers/fsl_dac.c **** 
  106:../drivers/fsl_dac.c **** void DAC_Deinit(DAC_Type *base)
  107:../drivers/fsl_dac.c **** {
- 134              		.loc 1 107 0
- 135              		.cfi_startproc
- 136              		@ args = 0, pretend = 0, frame = 0
- 137              		@ frame_needed = 0, uses_anonymous_args = 0
- 138              		@ link register save eliminated.
- 139              	.LVL9:
- 140              	.LBB22:
- 141              	.LBB23:
- 142              		.file 3 "../drivers/fsl_dac.h"
+ 133              		.loc 1 107 0
+ 134              		.cfi_startproc
+ 135              		@ args = 0, pretend = 0, frame = 0
+ 136              		@ frame_needed = 0, uses_anonymous_args = 0
+ 137              		@ link register save eliminated.
+ 138              	.LVL9:
+ 139              	.LBB22:
+ 140              	.LBB23:
+ 141              		.file 3 "../drivers/fsl_dac.h"
    1:../drivers/fsl_dac.h **** /*
    2:../drivers/fsl_dac.h ****  * The Clear BSD License
    3:../drivers/fsl_dac.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
@@ -1168,43 +1167,43 @@
  220:../drivers/fsl_dac.h ****     else
  221:../drivers/fsl_dac.h ****     {
  222:../drivers/fsl_dac.h ****         base->C0 &= ~DAC_C0_DACEN_MASK;
- 143              		.loc 3 222 0
- 144 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
- 145 0004 03F07F03 		and	r3, r3, #127
- 146 0008 80F82130 		strb	r3, [r0, #33]
- 147              	.LVL10:
- 148              	.LBE23:
- 149              	.LBE22:
- 150              	.LBB24:
- 151              	.LBB25:
+ 142              		.loc 3 222 0
+ 143 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
+ 144 0004 03F07F03 		and	r3, r3, #127
+ 145 0008 80F82130 		strb	r3, [r0, #33]
+ 146              	.LVL10:
+ 147              	.LBE23:
+ 148              	.LBE22:
+ 149              	.LBB24:
+ 150              	.LBB25:
   67:../drivers/fsl_dac.c ****         {
- 152              		.loc 1 67 0
- 153 000c 0D4B     		ldr	r3, .L16
- 154 000e 9842     		cmp	r0, r3
- 155 0010 16D0     		beq	.L14
- 156              	.LVL11:
+ 151              		.loc 1 67 0
+ 152 000c 0D4B     		ldr	r3, .L16
+ 153 000e 9842     		cmp	r0, r3
+ 154 0010 16D0     		beq	.L14
+ 155              	.LVL11:
   65:../drivers/fsl_dac.c ****     {
- 157              		.loc 1 65 0
- 158 0012 03F58053 		add	r3, r3, #4096
- 159 0016 9842     		cmp	r0, r3
- 160 0018 0CBF     		ite	eq
- 161 001a 0120     		moveq	r0, #1
- 162 001c 0220     		movne	r0, #2
- 163              	.LVL12:
- 164              	.L13:
- 165              	.LBE25:
- 166              	.LBE24:
+ 156              		.loc 1 65 0
+ 157 0012 03F58053 		add	r3, r3, #4096
+ 158 0016 9842     		cmp	r0, r3
+ 159 0018 0CBF     		ite	eq
+ 160 001a 0120     		moveq	r0, #1
+ 161 001c 0220     		movne	r0, #2
+ 162              	.LVL12:
+ 163              	.L13:
+ 164              	.LBE25:
+ 165              	.LBE24:
  108:../drivers/fsl_dac.c ****     DAC_Enable(base, false);
  109:../drivers/fsl_dac.c **** 
  110:../drivers/fsl_dac.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
  111:../drivers/fsl_dac.c ****     /* Disable the clock. */
  112:../drivers/fsl_dac.c ****     CLOCK_DisableClock(s_dacClocks[DAC_GetInstance(base)]);
- 167              		.loc 1 112 0
- 168 001e 0A4B     		ldr	r3, .L16+4
- 169 0020 53F82020 		ldr	r2, [r3, r0, lsl #2]
- 170              	.LVL13:
- 171              	.LBB27:
- 172              	.LBB28:
+ 166              		.loc 1 112 0
+ 167 001e 0A4B     		ldr	r3, .L16+4
+ 168 0020 53F82020 		ldr	r2, [r3, r0, lsl #2]
+ 169              	.LVL13:
+ 170              	.LBB27:
+ 171              	.LBB28:
  696:../drivers/fsl_clock.h **** }
  697:../drivers/fsl_clock.h **** 
  698:../drivers/fsl_clock.h **** /*!
@@ -1215,122 +1214,120 @@
  703:../drivers/fsl_clock.h **** static inline void CLOCK_DisableClock(clock_ip_name_t name)
  704:../drivers/fsl_clock.h **** {
  705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
- 173              		.loc 2 705 0
- 174 0024 130C     		lsrs	r3, r2, #16
- 175 0026 03F18043 		add	r3, r3, #1073741824
- 176 002a 03F58E23 		add	r3, r3, #290816
+ 172              		.loc 2 705 0
+ 173 0024 130C     		lsrs	r3, r2, #16
+ 174 0026 03F18043 		add	r3, r3, #1073741824
+ 175 002a 03F58E23 		add	r3, r3, #290816
  706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
- 177              		.loc 2 706 0
- 178 002e 92B2     		uxth	r2, r2
- 179              	.LVL14:
- 180 0030 1968     		ldr	r1, [r3]
- 181 0032 0120     		movs	r0, #1
- 182              	.LVL15:
- 183 0034 00FA02F2 		lsl	r2, r0, r2
- 184 0038 21EA0202 		bic	r2, r1, r2
- 185 003c 1A60     		str	r2, [r3]
- 186              	.LBE28:
- 187              	.LBE27:
+ 176              		.loc 2 706 0
+ 177 002e 92B2     		uxth	r2, r2
+ 178              	.LVL14:
+ 179 0030 1968     		ldr	r1, [r3]
+ 180 0032 0120     		movs	r0, #1
+ 181              	.LVL15:
+ 182 0034 00FA02F2 		lsl	r2, r0, r2
+ 183 0038 21EA0202 		bic	r2, r1, r2
+ 184 003c 1A60     		str	r2, [r3]
+ 185 003e 7047     		bx	lr
+ 186              	.LVL16:
+ 187              	.L14:
+ 188              	.LBE28:
+ 189              	.LBE27:
+ 190              	.LBB29:
+ 191              	.LBB26:
+  65:../drivers/fsl_dac.c ****     {
+ 192              		.loc 1 65 0
+ 193 0040 0020     		movs	r0, #0
+ 194              	.LVL17:
+ 195 0042 ECE7     		b	.L13
+ 196              	.L17:
+ 197              		.align	2
+ 198              	.L16:
+ 199 0044 00C00C40 		.word	1074577408
+ 200 0048 00000000 		.word	.LANCHOR0
+ 201              	.LBE26:
+ 202              	.LBE29:
+ 203              		.cfi_endproc
+ 204              	.LFE154:
+ 206              		.section	.text.DAC_GetDefaultConfig,"ax",%progbits
+ 207              		.align	1
+ 208              		.global	DAC_GetDefaultConfig
+ 209              		.syntax unified
+ 210              		.thumb
+ 211              		.thumb_func
+ 212              		.fpu fpv4-sp-d16
+ 214              	DAC_GetDefaultConfig:
+ 215              	.LFB155:
  113:../drivers/fsl_dac.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
  114:../drivers/fsl_dac.c **** }
- 188              		.loc 1 114 0
- 189 003e 7047     		bx	lr
- 190              	.LVL16:
- 191              	.L14:
- 192              	.LBB29:
- 193              	.LBB26:
-  65:../drivers/fsl_dac.c ****     {
- 194              		.loc 1 65 0
- 195 0040 0020     		movs	r0, #0
- 196              	.LVL17:
- 197 0042 ECE7     		b	.L13
- 198              	.L17:
- 199              		.align	2
- 200              	.L16:
- 201 0044 00C00C40 		.word	1074577408
- 202 0048 00000000 		.word	.LANCHOR0
- 203              	.LBE26:
- 204              	.LBE29:
- 205              		.cfi_endproc
- 206              	.LFE154:
- 208              		.section	.text.DAC_GetDefaultConfig,"ax",%progbits
- 209              		.align	1
- 210              		.global	DAC_GetDefaultConfig
- 211              		.syntax unified
- 212              		.thumb
- 213              		.thumb_func
- 214              		.fpu fpv4-sp-d16
- 216              	DAC_GetDefaultConfig:
- 217              	.LFB155:
  115:../drivers/fsl_dac.c **** 
  116:../drivers/fsl_dac.c **** void DAC_GetDefaultConfig(dac_config_t *config)
  117:../drivers/fsl_dac.c **** {
- 218              		.loc 1 117 0
- 219              		.cfi_startproc
- 220              		@ args = 0, pretend = 0, frame = 0
- 221              		@ frame_needed = 0, uses_anonymous_args = 0
- 222              		@ link register save eliminated.
- 223              	.LVL18:
+ 216              		.loc 1 117 0
+ 217              		.cfi_startproc
+ 218              		@ args = 0, pretend = 0, frame = 0
+ 219              		@ frame_needed = 0, uses_anonymous_args = 0
+ 220              		@ link register save eliminated.
+ 221              	.LVL18:
  118:../drivers/fsl_dac.c ****     assert(NULL != config);
  119:../drivers/fsl_dac.c **** 
  120:../drivers/fsl_dac.c ****     config->referenceVoltageSource = kDAC_ReferenceVoltageSourceVref2;
- 224              		.loc 1 120 0
- 225 0000 0123     		movs	r3, #1
- 226 0002 0370     		strb	r3, [r0]
+ 222              		.loc 1 120 0
+ 223 0000 0123     		movs	r3, #1
+ 224 0002 0370     		strb	r3, [r0]
  121:../drivers/fsl_dac.c ****     config->enableLowPowerMode = false;
- 227              		.loc 1 121 0
- 228 0004 0023     		movs	r3, #0
- 229 0006 4370     		strb	r3, [r0, #1]
+ 225              		.loc 1 121 0
+ 226 0004 0023     		movs	r3, #0
+ 227 0006 4370     		strb	r3, [r0, #1]
+ 228 0008 7047     		bx	lr
+ 229              		.cfi_endproc
+ 230              	.LFE155:
+ 232              		.section	.text.DAC_SetBufferConfig,"ax",%progbits
+ 233              		.align	1
+ 234              		.global	DAC_SetBufferConfig
+ 235              		.syntax unified
+ 236              		.thumb
+ 237              		.thumb_func
+ 238              		.fpu fpv4-sp-d16
+ 240              	DAC_SetBufferConfig:
+ 241              	.LFB156:
  122:../drivers/fsl_dac.c **** }
- 230              		.loc 1 122 0
- 231 0008 7047     		bx	lr
- 232              		.cfi_endproc
- 233              	.LFE155:
- 235              		.section	.text.DAC_SetBufferConfig,"ax",%progbits
- 236              		.align	1
- 237              		.global	DAC_SetBufferConfig
- 238              		.syntax unified
- 239              		.thumb
- 240              		.thumb_func
- 241              		.fpu fpv4-sp-d16
- 243              	DAC_SetBufferConfig:
- 244              	.LFB156:
  123:../drivers/fsl_dac.c **** 
  124:../drivers/fsl_dac.c **** void DAC_SetBufferConfig(DAC_Type *base, const dac_buffer_config_t *config)
  125:../drivers/fsl_dac.c **** {
- 245              		.loc 1 125 0
- 246              		.cfi_startproc
- 247              		@ args = 0, pretend = 0, frame = 0
- 248              		@ frame_needed = 0, uses_anonymous_args = 0
- 249              		@ link register save eliminated.
- 250              	.LVL19:
+ 242              		.loc 1 125 0
+ 243              		.cfi_startproc
+ 244              		@ args = 0, pretend = 0, frame = 0
+ 245              		@ frame_needed = 0, uses_anonymous_args = 0
+ 246              		@ link register save eliminated.
+ 247              	.LVL19:
  126:../drivers/fsl_dac.c ****     assert(NULL != config);
  127:../drivers/fsl_dac.c **** 
  128:../drivers/fsl_dac.c ****     uint8_t tmp8;
  129:../drivers/fsl_dac.c **** 
  130:../drivers/fsl_dac.c ****     /* DACx_C0. */
  131:../drivers/fsl_dac.c ****     tmp8 = base->C0 & ~(DAC_C0_DACTRGSEL_MASK);
- 251              		.loc 1 131 0
- 252 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
+ 248              		.loc 1 131 0
+ 249 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
  132:../drivers/fsl_dac.c ****     if (kDAC_BufferTriggerBySoftwareMode == config->triggerMode)
- 253              		.loc 1 132 0
- 254 0004 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 250              		.loc 1 132 0
+ 251 0004 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
  131:../drivers/fsl_dac.c ****     if (kDAC_BufferTriggerBySoftwareMode == config->triggerMode)
- 255              		.loc 1 131 0
- 256 0006 03F0DF03 		and	r3, r3, #223
- 257              	.LVL20:
- 258              		.loc 1 132 0
- 259 000a 012A     		cmp	r2, #1
+ 252              		.loc 1 131 0
+ 253 0006 03F0DF03 		and	r3, r3, #223
+ 254              	.LVL20:
+ 255              		.loc 1 132 0
+ 256 000a 012A     		cmp	r2, #1
  133:../drivers/fsl_dac.c ****     {
  134:../drivers/fsl_dac.c ****         tmp8 |= DAC_C0_DACTRGSEL_MASK;
- 260              		.loc 1 134 0
- 261 000c 08BF     		it	eq
- 262 000e 43F02003 		orreq	r3, r3, #32
- 263              	.LVL21:
+ 257              		.loc 1 134 0
+ 258 000c 08BF     		it	eq
+ 259 000e 43F02003 		orreq	r3, r3, #32
+ 260              	.LVL21:
  135:../drivers/fsl_dac.c ****     }
  136:../drivers/fsl_dac.c ****     base->C0 = tmp8;
- 264              		.loc 1 136 0
- 265 0012 80F82130 		strb	r3, [r0, #33]
+ 261              		.loc 1 136 0
+ 262 0012 80F82130 		strb	r3, [r0, #33]
  137:../drivers/fsl_dac.c **** 
  138:../drivers/fsl_dac.c ****     /* DACx_C1. */
  139:../drivers/fsl_dac.c ****     tmp8 = base->C1 &
@@ -1341,342 +1338,333 @@
  144:../drivers/fsl_dac.c ****                DAC_C1_DACBFMD_MASK);
  145:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION
  146:../drivers/fsl_dac.c ****     tmp8 |= DAC_C1_DACBFWM(config->watermark);
- 266              		.loc 1 146 0
- 267 0016 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+ 263              		.loc 1 146 0
+ 264 0016 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
  139:../drivers/fsl_dac.c ****            ~(
- 268              		.loc 1 139 0
- 269 0018 90F82230 		ldrb	r3, [r0, #34]	@ zero_extendqisi2
- 270              	.LVL22:
- 271              		.loc 1 146 0
- 272 001c D200     		lsls	r2, r2, #3
- 273 001e 02F01802 		and	r2, r2, #24
+ 265              		.loc 1 139 0
+ 266 0018 90F82230 		ldrb	r3, [r0, #34]	@ zero_extendqisi2
+ 267              	.LVL22:
+ 268              		.loc 1 146 0
+ 269 001c D200     		lsls	r2, r2, #3
+ 270 001e 02F01802 		and	r2, r2, #24
  139:../drivers/fsl_dac.c ****            ~(
- 274              		.loc 1 139 0
- 275 0022 03F0E103 		and	r3, r3, #225
- 276              	.LVL23:
- 277              		.loc 1 146 0
- 278 0026 1343     		orrs	r3, r3, r2
- 279              	.LVL24:
+ 271              		.loc 1 139 0
+ 272 0022 03F0E103 		and	r3, r3, #225
+ 273              	.LVL23:
+ 274              		.loc 1 146 0
+ 275 0026 1343     		orrs	r3, r3, r2
+ 276              	.LVL24:
  147:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION */
  148:../drivers/fsl_dac.c ****     tmp8 |= DAC_C1_DACBFMD(config->workMode);
- 280              		.loc 1 148 0
- 281 0028 8A78     		ldrb	r2, [r1, #2]	@ zero_extendqisi2
- 282 002a 5200     		lsls	r2, r2, #1
- 283 002c 02F00602 		and	r2, r2, #6
- 284 0030 1343     		orrs	r3, r3, r2
- 285              	.LVL25:
+ 277              		.loc 1 148 0
+ 278 0028 8A78     		ldrb	r2, [r1, #2]	@ zero_extendqisi2
+ 279 002a 5200     		lsls	r2, r2, #1
+ 280 002c 02F00602 		and	r2, r2, #6
+ 281 0030 1343     		orrs	r3, r3, r2
+ 282              	.LVL25:
  149:../drivers/fsl_dac.c ****     base->C1 = tmp8;
- 286              		.loc 1 149 0
- 287 0032 80F82230 		strb	r3, [r0, #34]
+ 283              		.loc 1 149 0
+ 284 0032 80F82230 		strb	r3, [r0, #34]
  150:../drivers/fsl_dac.c **** 
  151:../drivers/fsl_dac.c ****     /* DACx_C2. */
  152:../drivers/fsl_dac.c ****     tmp8 = base->C2 & ~DAC_C2_DACBFUP_MASK;
- 288              		.loc 1 152 0
- 289 0036 90F82330 		ldrb	r3, [r0, #35]	@ zero_extendqisi2
- 290              	.LVL26:
+ 285              		.loc 1 152 0
+ 286 0036 90F82330 		ldrb	r3, [r0, #35]	@ zero_extendqisi2
+ 287              	.LVL26:
  153:../drivers/fsl_dac.c ****     tmp8 |= DAC_C2_DACBFUP(config->upperLimit);
- 291              		.loc 1 153 0
- 292 003a CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
+ 288              		.loc 1 153 0
+ 289 003a CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
  152:../drivers/fsl_dac.c ****     tmp8 |= DAC_C2_DACBFUP(config->upperLimit);
- 293              		.loc 1 152 0
- 294 003c 03F0F003 		and	r3, r3, #240
- 295              	.LVL27:
- 296              		.loc 1 153 0
- 297 0040 02F00F02 		and	r2, r2, #15
- 298 0044 1343     		orrs	r3, r3, r2
- 299              	.LVL28:
+ 290              		.loc 1 152 0
+ 291 003c 03F0F003 		and	r3, r3, #240
+ 292              	.LVL27:
+ 293              		.loc 1 153 0
+ 294 0040 02F00F02 		and	r2, r2, #15
+ 295 0044 1343     		orrs	r3, r3, r2
+ 296              	.LVL28:
  154:../drivers/fsl_dac.c ****     base->C2 = tmp8;
- 300              		.loc 1 154 0
- 301 0046 80F82330 		strb	r3, [r0, #35]
+ 297              		.loc 1 154 0
+ 298 0046 80F82330 		strb	r3, [r0, #35]
+ 299 004a 7047     		bx	lr
+ 300              		.cfi_endproc
+ 301              	.LFE156:
+ 303              		.section	.text.DAC_GetDefaultBufferConfig,"ax",%progbits
+ 304              		.align	1
+ 305              		.global	DAC_GetDefaultBufferConfig
+ 306              		.syntax unified
+ 307              		.thumb
+ 308              		.thumb_func
+ 309              		.fpu fpv4-sp-d16
+ 311              	DAC_GetDefaultBufferConfig:
+ 312              	.LFB157:
  155:../drivers/fsl_dac.c **** }
- 302              		.loc 1 155 0
- 303 004a 7047     		bx	lr
- 304              		.cfi_endproc
- 305              	.LFE156:
- 307              		.section	.text.DAC_GetDefaultBufferConfig,"ax",%progbits
- 308              		.align	1
- 309              		.global	DAC_GetDefaultBufferConfig
- 310              		.syntax unified
- 311              		.thumb
- 312              		.thumb_func
- 313              		.fpu fpv4-sp-d16
- 315              	DAC_GetDefaultBufferConfig:
- 316              	.LFB157:
  156:../drivers/fsl_dac.c **** 
  157:../drivers/fsl_dac.c **** void DAC_GetDefaultBufferConfig(dac_buffer_config_t *config)
  158:../drivers/fsl_dac.c **** {
- 317              		.loc 1 158 0
- 318              		.cfi_startproc
- 319              		@ args = 0, pretend = 0, frame = 0
- 320              		@ frame_needed = 0, uses_anonymous_args = 0
- 321              		@ link register save eliminated.
- 322              	.LVL29:
+ 313              		.loc 1 158 0
+ 314              		.cfi_startproc
+ 315              		@ args = 0, pretend = 0, frame = 0
+ 316              		@ frame_needed = 0, uses_anonymous_args = 0
+ 317              		@ link register save eliminated.
+ 318              	.LVL29:
  159:../drivers/fsl_dac.c ****     assert(NULL != config);
  160:../drivers/fsl_dac.c **** 
  161:../drivers/fsl_dac.c ****     config->triggerMode = kDAC_BufferTriggerBySoftwareMode;
- 323              		.loc 1 161 0
- 324 0000 0123     		movs	r3, #1
- 325 0002 0370     		strb	r3, [r0]
+ 319              		.loc 1 161 0
+ 320 0000 0123     		movs	r3, #1
+ 321 0002 0370     		strb	r3, [r0]
  162:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION
  163:../drivers/fsl_dac.c ****     config->watermark = kDAC_BufferWatermark1Word;
- 326              		.loc 1 163 0
- 327 0004 0023     		movs	r3, #0
- 328 0006 4370     		strb	r3, [r0, #1]
+ 322              		.loc 1 163 0
+ 323 0004 0023     		movs	r3, #0
+ 324 0006 4370     		strb	r3, [r0, #1]
  164:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION */
  165:../drivers/fsl_dac.c ****     config->workMode = kDAC_BufferWorkAsNormalMode;
- 329              		.loc 1 165 0
- 330 0008 8370     		strb	r3, [r0, #2]
+ 325              		.loc 1 165 0
+ 326 0008 8370     		strb	r3, [r0, #2]
  166:../drivers/fsl_dac.c ****     config->upperLimit = DAC_DATL_COUNT - 1U;
- 331              		.loc 1 166 0
- 332 000a 0F23     		movs	r3, #15
- 333 000c C370     		strb	r3, [r0, #3]
+ 327              		.loc 1 166 0
+ 328 000a 0F23     		movs	r3, #15
+ 329 000c C370     		strb	r3, [r0, #3]
+ 330 000e 7047     		bx	lr
+ 331              		.cfi_endproc
+ 332              	.LFE157:
+ 334              		.section	.text.DAC_SetBufferValue,"ax",%progbits
+ 335              		.align	1
+ 336              		.global	DAC_SetBufferValue
+ 337              		.syntax unified
+ 338              		.thumb
+ 339              		.thumb_func
+ 340              		.fpu fpv4-sp-d16
+ 342              	DAC_SetBufferValue:
+ 343              	.LFB158:
  167:../drivers/fsl_dac.c **** }
- 334              		.loc 1 167 0
- 335 000e 7047     		bx	lr
- 336              		.cfi_endproc
- 337              	.LFE157:
- 339              		.section	.text.DAC_SetBufferValue,"ax",%progbits
- 340              		.align	1
- 341              		.global	DAC_SetBufferValue
- 342              		.syntax unified
- 343              		.thumb
- 344              		.thumb_func
- 345              		.fpu fpv4-sp-d16
- 347              	DAC_SetBufferValue:
- 348              	.LFB158:
  168:../drivers/fsl_dac.c **** 
  169:../drivers/fsl_dac.c **** void DAC_SetBufferValue(DAC_Type *base, uint8_t index, uint16_t value)
  170:../drivers/fsl_dac.c **** {
- 349              		.loc 1 170 0
- 350              		.cfi_startproc
- 351              		@ args = 0, pretend = 0, frame = 0
- 352              		@ frame_needed = 0, uses_anonymous_args = 0
- 353              	.LVL30:
- 354 0000 10B5     		push	{r4, lr}
- 355              		.cfi_def_cfa_offset 8
- 356              		.cfi_offset 4, -8
- 357              		.cfi_offset 14, -4
- 358 0002 00EB4103 		add	r3, r0, r1, lsl #1
+ 344              		.loc 1 170 0
+ 345              		.cfi_startproc
+ 346              		@ args = 0, pretend = 0, frame = 0
+ 347              		@ frame_needed = 0, uses_anonymous_args = 0
+ 348              	.LVL30:
+ 349 0000 10B5     		push	{r4, lr}
+ 350              		.cfi_def_cfa_offset 8
+ 351              		.cfi_offset 4, -8
+ 352              		.cfi_offset 14, -4
+ 353 0002 00EB4103 		add	r3, r0, r1, lsl #1
  171:../drivers/fsl_dac.c ****     assert(index < DAC_DATL_COUNT);
  172:../drivers/fsl_dac.c **** 
  173:../drivers/fsl_dac.c ****     base->DAT[index].DATL = (uint8_t)(0xFFU & value);         /* Low 8-bit. */
- 359              		.loc 1 173 0
- 360 0006 D4B2     		uxtb	r4, r2
+ 354              		.loc 1 173 0
+ 355 0006 D4B2     		uxtb	r4, r2
  174:../drivers/fsl_dac.c ****     base->DAT[index].DATH = (uint8_t)((0xF00U & value) >> 8); /* High 4-bit. */
- 361              		.loc 1 174 0
- 362 0008 C2F30322 		ubfx	r2, r2, #8, #4
- 363              	.LVL31:
+ 356              		.loc 1 174 0
+ 357 0008 C2F30322 		ubfx	r2, r2, #8, #4
+ 358              	.LVL31:
  173:../drivers/fsl_dac.c ****     base->DAT[index].DATH = (uint8_t)((0xF00U & value) >> 8); /* High 4-bit. */
- 364              		.loc 1 173 0
- 365 000c 00F81140 		strb	r4, [r0, r1, lsl #1]
- 366              		.loc 1 174 0
- 367 0010 5A70     		strb	r2, [r3, #1]
+ 359              		.loc 1 173 0
+ 360 000c 00F81140 		strb	r4, [r0, r1, lsl #1]
+ 361              		.loc 1 174 0
+ 362 0010 5A70     		strb	r2, [r3, #1]
+ 363 0012 10BD     		pop	{r4, pc}
+ 364              		.cfi_endproc
+ 365              	.LFE158:
+ 367              		.section	.text.DAC_SetBufferReadPointer,"ax",%progbits
+ 368              		.align	1
+ 369              		.global	DAC_SetBufferReadPointer
+ 370              		.syntax unified
+ 371              		.thumb
+ 372              		.thumb_func
+ 373              		.fpu fpv4-sp-d16
+ 375              	DAC_SetBufferReadPointer:
+ 376              	.LFB159:
  175:../drivers/fsl_dac.c **** }
- 368              		.loc 1 175 0
- 369 0012 10BD     		pop	{r4, pc}
- 370              		.cfi_endproc
- 371              	.LFE158:
- 373              		.section	.text.DAC_SetBufferReadPointer,"ax",%progbits
- 374              		.align	1
- 375              		.global	DAC_SetBufferReadPointer
- 376              		.syntax unified
- 377              		.thumb
- 378              		.thumb_func
- 379              		.fpu fpv4-sp-d16
- 381              	DAC_SetBufferReadPointer:
- 382              	.LFB159:
  176:../drivers/fsl_dac.c **** 
  177:../drivers/fsl_dac.c **** void DAC_SetBufferReadPointer(DAC_Type *base, uint8_t index)
  178:../drivers/fsl_dac.c **** {
- 383              		.loc 1 178 0
- 384              		.cfi_startproc
- 385              		@ args = 0, pretend = 0, frame = 0
- 386              		@ frame_needed = 0, uses_anonymous_args = 0
- 387              		@ link register save eliminated.
- 388              	.LVL32:
+ 377              		.loc 1 178 0
+ 378              		.cfi_startproc
+ 379              		@ args = 0, pretend = 0, frame = 0
+ 380              		@ frame_needed = 0, uses_anonymous_args = 0
+ 381              		@ link register save eliminated.
+ 382              	.LVL32:
  179:../drivers/fsl_dac.c ****     assert(index < DAC_DATL_COUNT);
  180:../drivers/fsl_dac.c **** 
  181:../drivers/fsl_dac.c ****     uint8_t tmp8 = base->C2 & ~DAC_C2_DACBFRP_MASK;
- 389              		.loc 1 181 0
- 390 0000 90F82330 		ldrb	r3, [r0, #35]	@ zero_extendqisi2
- 391 0004 03F00F03 		and	r3, r3, #15
- 392              	.LVL33:
+ 383              		.loc 1 181 0
+ 384 0000 90F82330 		ldrb	r3, [r0, #35]	@ zero_extendqisi2
+ 385 0004 03F00F03 		and	r3, r3, #15
+ 386              	.LVL33:
  182:../drivers/fsl_dac.c **** 
  183:../drivers/fsl_dac.c ****     tmp8 |= DAC_C2_DACBFRP(index);
- 393              		.loc 1 183 0
- 394 0008 43EA0111 		orr	r1, r3, r1, lsl #4
- 395              	.LVL34:
- 396 000c C9B2     		uxtb	r1, r1
- 397              	.LVL35:
+ 387              		.loc 1 183 0
+ 388 0008 43EA0111 		orr	r1, r3, r1, lsl #4
+ 389              	.LVL34:
+ 390 000c C9B2     		uxtb	r1, r1
+ 391              	.LVL35:
  184:../drivers/fsl_dac.c ****     base->C2 = tmp8;
- 398              		.loc 1 184 0
- 399 000e 80F82310 		strb	r1, [r0, #35]
+ 392              		.loc 1 184 0
+ 393 000e 80F82310 		strb	r1, [r0, #35]
+ 394 0012 7047     		bx	lr
+ 395              		.cfi_endproc
+ 396              	.LFE159:
+ 398              		.section	.text.DAC_EnableBufferInterrupts,"ax",%progbits
+ 399              		.align	1
+ 400              		.global	DAC_EnableBufferInterrupts
+ 401              		.syntax unified
+ 402              		.thumb
+ 403              		.thumb_func
+ 404              		.fpu fpv4-sp-d16
+ 406              	DAC_EnableBufferInterrupts:
+ 407              	.LFB160:
  185:../drivers/fsl_dac.c **** }
- 400              		.loc 1 185 0
- 401 0012 7047     		bx	lr
- 402              		.cfi_endproc
- 403              	.LFE159:
- 405              		.section	.text.DAC_EnableBufferInterrupts,"ax",%progbits
- 406              		.align	1
- 407              		.global	DAC_EnableBufferInterrupts
- 408              		.syntax unified
- 409              		.thumb
- 410              		.thumb_func
- 411              		.fpu fpv4-sp-d16
- 413              	DAC_EnableBufferInterrupts:
- 414              	.LFB160:
  186:../drivers/fsl_dac.c **** 
  187:../drivers/fsl_dac.c **** void DAC_EnableBufferInterrupts(DAC_Type *base, uint32_t mask)
  188:../drivers/fsl_dac.c **** {
- 415              		.loc 1 188 0
- 416              		.cfi_startproc
- 417              		@ args = 0, pretend = 0, frame = 0
- 418              		@ frame_needed = 0, uses_anonymous_args = 0
- 419              		@ link register save eliminated.
- 420              	.LVL36:
+ 408              		.loc 1 188 0
+ 409              		.cfi_startproc
+ 410              		@ args = 0, pretend = 0, frame = 0
+ 411              		@ frame_needed = 0, uses_anonymous_args = 0
+ 412              		@ link register save eliminated.
+ 413              	.LVL36:
  189:../drivers/fsl_dac.c ****     mask &= (
  190:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION
  191:../drivers/fsl_dac.c ****         DAC_C0_DACBWIEN_MASK |
  192:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION */
  193:../drivers/fsl_dac.c ****         DAC_C0_DACBTIEN_MASK | DAC_C0_DACBBIEN_MASK);
  194:../drivers/fsl_dac.c ****     base->C0 |= ((uint8_t)mask); /* Write 1 to enable. */
- 421              		.loc 1 194 0
- 422 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
+ 414              		.loc 1 194 0
+ 415 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
  189:../drivers/fsl_dac.c ****     mask &= (
- 423              		.loc 1 189 0
- 424 0004 01F00701 		and	r1, r1, #7
- 425              	.LVL37:
- 426              		.loc 1 194 0
- 427 0008 0B43     		orrs	r3, r3, r1
- 428 000a 80F82130 		strb	r3, [r0, #33]
+ 416              		.loc 1 189 0
+ 417 0004 01F00701 		and	r1, r1, #7
+ 418              	.LVL37:
+ 419              		.loc 1 194 0
+ 420 0008 0B43     		orrs	r3, r3, r1
+ 421 000a 80F82130 		strb	r3, [r0, #33]
+ 422 000e 7047     		bx	lr
+ 423              		.cfi_endproc
+ 424              	.LFE160:
+ 426              		.section	.text.DAC_DisableBufferInterrupts,"ax",%progbits
+ 427              		.align	1
+ 428              		.global	DAC_DisableBufferInterrupts
+ 429              		.syntax unified
+ 430              		.thumb
+ 431              		.thumb_func
+ 432              		.fpu fpv4-sp-d16
+ 434              	DAC_DisableBufferInterrupts:
+ 435              	.LFB161:
  195:../drivers/fsl_dac.c **** }
- 429              		.loc 1 195 0
- 430 000e 7047     		bx	lr
- 431              		.cfi_endproc
- 432              	.LFE160:
- 434              		.section	.text.DAC_DisableBufferInterrupts,"ax",%progbits
- 435              		.align	1
- 436              		.global	DAC_DisableBufferInterrupts
- 437              		.syntax unified
- 438              		.thumb
- 439              		.thumb_func
- 440              		.fpu fpv4-sp-d16
- 442              	DAC_DisableBufferInterrupts:
- 443              	.LFB161:
  196:../drivers/fsl_dac.c **** 
  197:../drivers/fsl_dac.c **** void DAC_DisableBufferInterrupts(DAC_Type *base, uint32_t mask)
  198:../drivers/fsl_dac.c **** {
- 444              		.loc 1 198 0
- 445              		.cfi_startproc
- 446              		@ args = 0, pretend = 0, frame = 0
- 447              		@ frame_needed = 0, uses_anonymous_args = 0
- 448              		@ link register save eliminated.
- 449              	.LVL38:
+ 436              		.loc 1 198 0
+ 437              		.cfi_startproc
+ 438              		@ args = 0, pretend = 0, frame = 0
+ 439              		@ frame_needed = 0, uses_anonymous_args = 0
+ 440              		@ link register save eliminated.
+ 441              	.LVL38:
  199:../drivers/fsl_dac.c ****     mask &= (
  200:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION
  201:../drivers/fsl_dac.c ****         DAC_C0_DACBWIEN_MASK |
  202:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION */
  203:../drivers/fsl_dac.c ****         DAC_C0_DACBTIEN_MASK | DAC_C0_DACBBIEN_MASK);
  204:../drivers/fsl_dac.c ****     base->C0 &= (uint8_t)(~((uint8_t)mask)); /* Write 0 to disable. */
- 450              		.loc 1 204 0
- 451 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
+ 442              		.loc 1 204 0
+ 443 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
  199:../drivers/fsl_dac.c ****     mask &= (
- 452              		.loc 1 199 0
- 453 0004 01F00701 		and	r1, r1, #7
- 454              	.LVL39:
- 455              		.loc 1 204 0
- 456 0008 23EA0103 		bic	r3, r3, r1
- 457 000c 80F82130 		strb	r3, [r0, #33]
+ 444              		.loc 1 199 0
+ 445 0004 01F00701 		and	r1, r1, #7
+ 446              	.LVL39:
+ 447              		.loc 1 204 0
+ 448 0008 23EA0103 		bic	r3, r3, r1
+ 449 000c 80F82130 		strb	r3, [r0, #33]
+ 450 0010 7047     		bx	lr
+ 451              		.cfi_endproc
+ 452              	.LFE161:
+ 454              		.section	.text.DAC_GetBufferStatusFlags,"ax",%progbits
+ 455              		.align	1
+ 456              		.global	DAC_GetBufferStatusFlags
+ 457              		.syntax unified
+ 458              		.thumb
+ 459              		.thumb_func
+ 460              		.fpu fpv4-sp-d16
+ 462              	DAC_GetBufferStatusFlags:
+ 463              	.LFB162:
  205:../drivers/fsl_dac.c **** }
- 458              		.loc 1 205 0
- 459 0010 7047     		bx	lr
- 460              		.cfi_endproc
- 461              	.LFE161:
- 463              		.section	.text.DAC_GetBufferStatusFlags,"ax",%progbits
- 464              		.align	1
- 465              		.global	DAC_GetBufferStatusFlags
- 466              		.syntax unified
- 467              		.thumb
- 468              		.thumb_func
- 469              		.fpu fpv4-sp-d16
- 471              	DAC_GetBufferStatusFlags:
- 472              	.LFB162:
  206:../drivers/fsl_dac.c **** 
  207:../drivers/fsl_dac.c **** uint32_t DAC_GetBufferStatusFlags(DAC_Type *base)
  208:../drivers/fsl_dac.c **** {
- 473              		.loc 1 208 0
- 474              		.cfi_startproc
- 475              		@ args = 0, pretend = 0, frame = 0
- 476              		@ frame_needed = 0, uses_anonymous_args = 0
- 477              		@ link register save eliminated.
- 478              	.LVL40:
+ 464              		.loc 1 208 0
+ 465              		.cfi_startproc
+ 466              		@ args = 0, pretend = 0, frame = 0
+ 467              		@ frame_needed = 0, uses_anonymous_args = 0
+ 468              		@ link register save eliminated.
+ 469              	.LVL40:
  209:../drivers/fsl_dac.c ****     return (uint32_t)(base->SR & (
- 479              		.loc 1 209 0
- 480 0000 90F82000 		ldrb	r0, [r0, #32]	@ zero_extendqisi2
- 481              	.LVL41:
+ 470              		.loc 1 209 0
+ 471 0000 90F82000 		ldrb	r0, [r0, #32]	@ zero_extendqisi2
+ 472              	.LVL41:
  210:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION
  211:../drivers/fsl_dac.c ****                                      DAC_SR_DACBFWMF_MASK |
  212:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION */
  213:../drivers/fsl_dac.c ****                                      DAC_SR_DACBFRPTF_MASK | DAC_SR_DACBFRPBF_MASK));
  214:../drivers/fsl_dac.c **** }
- 482              		.loc 1 214 0
- 483 0004 00F00700 		and	r0, r0, #7
- 484 0008 7047     		bx	lr
- 485              		.cfi_endproc
- 486              	.LFE162:
- 488              		.section	.text.DAC_ClearBufferStatusFlags,"ax",%progbits
- 489              		.align	1
- 490              		.global	DAC_ClearBufferStatusFlags
- 491              		.syntax unified
- 492              		.thumb
- 493              		.thumb_func
- 494              		.fpu fpv4-sp-d16
- 496              	DAC_ClearBufferStatusFlags:
- 497              	.LFB163:
+ 473              		.loc 1 214 0
+ 474 0004 00F00700 		and	r0, r0, #7
+ 475 0008 7047     		bx	lr
+ 476              		.cfi_endproc
+ 477              	.LFE162:
+ 479              		.section	.text.DAC_ClearBufferStatusFlags,"ax",%progbits
+ 480              		.align	1
+ 481              		.global	DAC_ClearBufferStatusFlags
+ 482              		.syntax unified
+ 483              		.thumb
+ 484              		.thumb_func
+ 485              		.fpu fpv4-sp-d16
+ 487              	DAC_ClearBufferStatusFlags:
+ 488              	.LFB163:
  215:../drivers/fsl_dac.c **** 
  216:../drivers/fsl_dac.c **** void DAC_ClearBufferStatusFlags(DAC_Type *base, uint32_t mask)
  217:../drivers/fsl_dac.c **** {
- 498              		.loc 1 217 0
- 499              		.cfi_startproc
- 500              		@ args = 0, pretend = 0, frame = 0
- 501              		@ frame_needed = 0, uses_anonymous_args = 0
- 502              		@ link register save eliminated.
- 503              	.LVL42:
+ 489              		.loc 1 217 0
+ 490              		.cfi_startproc
+ 491              		@ args = 0, pretend = 0, frame = 0
+ 492              		@ frame_needed = 0, uses_anonymous_args = 0
+ 493              		@ link register save eliminated.
+ 494              	.LVL42:
  218:../drivers/fsl_dac.c ****     mask &= (
  219:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION
  220:../drivers/fsl_dac.c ****         DAC_SR_DACBFWMF_MASK |
  221:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION */
  222:../drivers/fsl_dac.c ****         DAC_SR_DACBFRPTF_MASK | DAC_SR_DACBFRPBF_MASK);
  223:../drivers/fsl_dac.c ****     base->SR &= (uint8_t)(~((uint8_t)mask)); /* Write 0 to clear flags. */
- 504              		.loc 1 223 0
- 505 0000 90F82030 		ldrb	r3, [r0, #32]	@ zero_extendqisi2
+ 495              		.loc 1 223 0
+ 496 0000 90F82030 		ldrb	r3, [r0, #32]	@ zero_extendqisi2
  218:../drivers/fsl_dac.c ****     mask &= (
- 506              		.loc 1 218 0
- 507 0004 01F00701 		and	r1, r1, #7
- 508              	.LVL43:
- 509              		.loc 1 223 0
- 510 0008 23EA0103 		bic	r3, r3, r1
- 511 000c 80F82030 		strb	r3, [r0, #32]
- 224:../drivers/fsl_dac.c **** }
- 512              		.loc 1 224 0
- 513 0010 7047     		bx	lr
- 514              		.cfi_endproc
- 515              	.LFE163:
- 517              		.section	.rodata.s_dacClocks,"a",%progbits
- 518              		.align	2
- 519              		.set	.LANCHOR0,. + 0
- 522              	s_dacClocks:
- 523 0000 0C002C10 		.word	271319052
- 524 0004 0D002C10 		.word	271319053
- 525              		.text
- 526              	.Letext0:
- 527              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 528              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 529              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 530              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 531              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 532              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 533              		.file 10 "../CMSIS/core_cm4.h"
- 534              		.file 11 "../CMSIS/system_MK64F12.h"
- 535              		.file 12 "../CMSIS/MK64F12.h"
- 536              		.file 13 "../drivers/fsl_common.h"
+ 497              		.loc 1 218 0
+ 498 0004 01F00701 		and	r1, r1, #7
+ 499              	.LVL43:
+ 500              		.loc 1 223 0
+ 501 0008 23EA0103 		bic	r3, r3, r1
+ 502 000c 80F82030 		strb	r3, [r0, #32]
+ 503 0010 7047     		bx	lr
+ 504              		.cfi_endproc
+ 505              	.LFE163:
+ 507              		.section	.rodata.s_dacClocks,"a",%progbits
+ 508              		.align	2
+ 509              		.set	.LANCHOR0,. + 0
+ 512              	s_dacClocks:
+ 513 0000 0C002C10 		.word	271319052
+ 514 0004 0D002C10 		.word	271319053
+ 515              		.text
+ 516              	.Letext0:
+ 517              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 518              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 519              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 520              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 521              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+ 522              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+ 523              		.file 10 "../CMSIS/core_cm4.h"
+ 524              		.file 11 "../CMSIS/system_MK64F12.h"
+ 525              		.file 12 "../CMSIS/MK64F12.h"

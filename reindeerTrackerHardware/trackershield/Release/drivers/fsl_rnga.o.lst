@@ -973,65 +973,63 @@
   67 001e 0368     		ldr	r3, [r0]
   68 0020 43F00103 		orr	r3, r3, #1
   69 0024 0360     		str	r3, [r0]
+  70 0026 7047     		bx	lr
+  71              	.L3:
+  72              		.align	2
+  73              	.L2:
+  74 0028 3C800440 		.word	1074036796
+  75              		.cfi_endproc
+  76              	.LFE147:
+  78              		.section	.text.RNGA_Deinit,"ax",%progbits
+  79              		.align	1
+  80              		.global	RNGA_Deinit
+  81              		.syntax unified
+  82              		.thumb
+  83              		.thumb_func
+  84              		.fpu fpv4-sp-d16
+  86              	RNGA_Deinit:
+  87              	.LFB148:
  201:../drivers/fsl_rnga.c **** }
-  70              		.loc 1 201 0
-  71 0026 7047     		bx	lr
-  72              	.L3:
-  73              		.align	2
-  74              	.L2:
-  75 0028 3C800440 		.word	1074036796
-  76              		.cfi_endproc
-  77              	.LFE147:
-  79              		.section	.text.RNGA_Deinit,"ax",%progbits
-  80              		.align	1
-  81              		.global	RNGA_Deinit
-  82              		.syntax unified
-  83              		.thumb
-  84              		.thumb_func
-  85              		.fpu fpv4-sp-d16
-  87              	RNGA_Deinit:
-  88              	.LFB148:
  202:../drivers/fsl_rnga.c **** 
  203:../drivers/fsl_rnga.c **** void RNGA_Deinit(RNG_Type *base)
  204:../drivers/fsl_rnga.c **** {
-  89              		.loc 1 204 0
-  90              		.cfi_startproc
-  91              		@ args = 0, pretend = 0, frame = 0
-  92              		@ frame_needed = 0, uses_anonymous_args = 0
-  93              		@ link register save eliminated.
-  94              	.LVL4:
-  95              	.LBB18:
-  96              	.LBB19:
-  97              		.loc 2 706 0
-  98 0000 024A     		ldr	r2, .L5
-  99 0002 1368     		ldr	r3, [r2]
- 100 0004 23F40073 		bic	r3, r3, #512
- 101 0008 1360     		str	r3, [r2]
- 102              	.LVL5:
- 103              	.LBE19:
- 104              	.LBE18:
+  88              		.loc 1 204 0
+  89              		.cfi_startproc
+  90              		@ args = 0, pretend = 0, frame = 0
+  91              		@ frame_needed = 0, uses_anonymous_args = 0
+  92              		@ link register save eliminated.
+  93              	.LVL4:
+  94              	.LBB18:
+  95              	.LBB19:
+  96              		.loc 2 706 0
+  97 0000 024A     		ldr	r2, .L5
+  98 0002 1368     		ldr	r3, [r2]
+  99 0004 23F40073 		bic	r3, r3, #512
+ 100 0008 1360     		str	r3, [r2]
+ 101              	.LVL5:
+ 102 000a 7047     		bx	lr
+ 103              	.L6:
+ 104              		.align	2
+ 105              	.L5:
+ 106 000c 3C800440 		.word	1074036796
+ 107              	.LBE19:
+ 108              	.LBE18:
+ 109              		.cfi_endproc
+ 110              	.LFE148:
+ 112              		.section	.text.RNGA_GetRandomData,"ax",%progbits
+ 113              		.align	1
+ 114              		.global	RNGA_GetRandomData
+ 115              		.syntax unified
+ 116              		.thumb
+ 117              		.thumb_func
+ 118              		.fpu fpv4-sp-d16
+ 120              	RNGA_GetRandomData:
+ 121              	.LFB150:
  205:../drivers/fsl_rnga.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
  206:../drivers/fsl_rnga.c ****     /* Disable the clock for RNGA module.*/
  207:../drivers/fsl_rnga.c ****     CLOCK_DisableClock(kCLOCK_Rnga0);
  208:../drivers/fsl_rnga.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
  209:../drivers/fsl_rnga.c **** }
- 105              		.loc 1 209 0
- 106 000a 7047     		bx	lr
- 107              	.L6:
- 108              		.align	2
- 109              	.L5:
- 110 000c 3C800440 		.word	1074036796
- 111              		.cfi_endproc
- 112              	.LFE148:
- 114              		.section	.text.RNGA_GetRandomData,"ax",%progbits
- 115              		.align	1
- 116              		.global	RNGA_GetRandomData
- 117              		.syntax unified
- 118              		.thumb
- 119              		.thumb_func
- 120              		.fpu fpv4-sp-d16
- 122              	RNGA_GetRandomData:
- 123              	.LFB150:
  210:../drivers/fsl_rnga.c **** 
  211:../drivers/fsl_rnga.c **** /*!
  212:../drivers/fsl_rnga.c ****  * @brief Get a random data from RNGA.
@@ -1055,17 +1053,17 @@
  230:../drivers/fsl_rnga.c **** 
  231:../drivers/fsl_rnga.c **** status_t RNGA_GetRandomData(RNG_Type *base, void *data, size_t data_size)
  232:../drivers/fsl_rnga.c **** {
- 124              		.loc 1 232 0
- 125              		.cfi_startproc
- 126              		@ args = 0, pretend = 0, frame = 8
- 127              		@ frame_needed = 0, uses_anonymous_args = 0
- 128              	.LVL6:
- 129 0000 73B5     		push	{r0, r1, r4, r5, r6, lr}
- 130              		.cfi_def_cfa_offset 24
- 131              		.cfi_offset 4, -16
- 132              		.cfi_offset 5, -12
- 133              		.cfi_offset 6, -8
- 134              		.cfi_offset 14, -4
+ 122              		.loc 1 232 0
+ 123              		.cfi_startproc
+ 124              		@ args = 0, pretend = 0, frame = 8
+ 125              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126              	.LVL6:
+ 127 0000 73B5     		push	{r0, r1, r4, r5, r6, lr}
+ 128              		.cfi_def_cfa_offset 24
+ 129              		.cfi_offset 4, -16
+ 130              		.cfi_offset 5, -12
+ 131              		.cfi_offset 6, -8
+ 132              		.cfi_offset 14, -4
  233:../drivers/fsl_rnga.c ****     status_t result = kStatus_Success;
  234:../drivers/fsl_rnga.c ****     uint32_t random_32;
  235:../drivers/fsl_rnga.c ****     uint8_t *random_p;
@@ -1075,12 +1073,12 @@
  239:../drivers/fsl_rnga.c **** 
  240:../drivers/fsl_rnga.c ****     /* Check input parameters.*/
  241:../drivers/fsl_rnga.c ****     if (base && data && data_size)
- 135              		.loc 1 241 0
- 136 0002 F0B1     		cbz	r0, .L16
- 137              		.loc 1 241 0 is_stmt 0 discriminator 1
- 138 0004 E9B1     		cbz	r1, .L16
- 139              		.loc 1 241 0 discriminator 2
- 140 0006 E2B1     		cbz	r2, .L16
+ 133              		.loc 1 241 0
+ 134 0002 F8B1     		cbz	r0, .L16
+ 135              		.loc 1 241 0 is_stmt 0 discriminator 1
+ 136 0004 F1B1     		cbz	r1, .L16
+ 137              		.loc 1 241 0 discriminator 2
+ 138 0006 EAB1     		cbz	r2, .L16
  242:../drivers/fsl_rnga.c ****     {
  243:../drivers/fsl_rnga.c ****         do
  244:../drivers/fsl_rnga.c ****         {
@@ -1101,14 +1099,14 @@
  259:../drivers/fsl_rnga.c ****             for (i = 0; i < random_size; i++)
  260:../drivers/fsl_rnga.c ****             {
  261:../drivers/fsl_rnga.c ****                 *data_p++ = *random_p++;
- 141              		.loc 1 261 0 is_stmt 1
- 142 0008 01AD     		add	r5, sp, #4
- 143              	.LVL7:
- 144              	.L13:
- 145              	.LBB24:
- 146              	.LBB25:
- 147              	.LBB26:
- 148              	.LBB27:
+ 139              		.loc 1 261 0 is_stmt 1
+ 140 0008 01AD     		add	r5, sp, #4
+ 141              	.LVL7:
+ 142              	.L13:
+ 143              	.LBB24:
+ 144              	.LBB25:
+ 145              	.LBB26:
+ 146              	.LBB27:
  262:../drivers/fsl_rnga.c ****             }
  263:../drivers/fsl_rnga.c **** 
  264:../drivers/fsl_rnga.c ****             data_size -= random_size;
@@ -1130,189 +1128,186 @@
  280:../drivers/fsl_rnga.c **** rnga_mode_t RNGA_GetMode(RNG_Type *base)
  281:../drivers/fsl_rnga.c **** {
  282:../drivers/fsl_rnga.c ****     return (rnga_mode_t)RNG_RD_SR_SLP(base);
- 149              		.loc 1 282 0
- 150 000a 4368     		ldr	r3, [r0, #4]
- 151              	.LVL8:
- 152              	.LBE27:
- 153              	.LBE26:
+ 147              		.loc 1 282 0
+ 148 000a 4368     		ldr	r3, [r0, #4]
+ 149              	.LVL8:
+ 150              	.LBE27:
+ 151              	.LBE26:
  219:../drivers/fsl_rnga.c ****     {
- 154              		.loc 1 219 0
- 155 000c DB06     		lsls	r3, r3, #27
- 156 000e 16D4     		bmi	.L17
- 157              	.L10:
+ 152              		.loc 1 219 0
+ 153 000c DB06     		lsls	r3, r3, #27
+ 154 000e 17D4     		bmi	.L17
+ 155              	.L10:
  222:../drivers/fsl_rnga.c ****         {
- 158              		.loc 1 222 0
- 159 0010 4368     		ldr	r3, [r0, #4]
- 160 0012 13F47F4F 		tst	r3, #65280
- 161 0016 FBD0     		beq	.L10
+ 156              		.loc 1 222 0
+ 157 0010 4368     		ldr	r3, [r0, #4]
+ 158 0012 C3F30723 		ubfx	r3, r3, #8, #8
+ 159 0016 002B     		cmp	r3, #0
+ 160 0018 FAD0     		beq	.L10
  225:../drivers/fsl_rnga.c ****     }
- 162              		.loc 1 225 0
- 163 0018 C368     		ldr	r3, [r0, #12]
- 164              	.LVL9:
- 165              	.L9:
- 166              	.LBE25:
- 167              	.LBE24:
+ 161              		.loc 1 225 0
+ 162 001a C368     		ldr	r3, [r0, #12]
+ 163              	.LVL9:
+ 164              	.L9:
+ 165              	.LBE25:
+ 166              	.LBE24:
  246:../drivers/fsl_rnga.c **** 
- 168              		.loc 1 246 0
- 169 001a 0193     		str	r3, [sp, #4]
- 170              	.LVL10:
+ 167              		.loc 1 246 0
+ 168 001c 0193     		str	r3, [sp, #4]
+ 169              	.LVL10:
  256:../drivers/fsl_rnga.c ****             }
- 171              		.loc 1 256 0
- 172 001c 042A     		cmp	r2, #4
- 173 001e 1446     		mov	r4, r2
+ 170              		.loc 1 256 0
+ 171 001e 042A     		cmp	r2, #4
+ 172 0020 1446     		mov	r4, r2
  259:../drivers/fsl_rnga.c ****             {
- 174              		.loc 1 259 0
- 175 0020 4FF00003 		mov	r3, #0
+ 173              		.loc 1 259 0
+ 174 0022 4FF00003 		mov	r3, #0
  256:../drivers/fsl_rnga.c ****             }
- 176              		.loc 1 256 0
- 177 0024 28BF     		it	cs
- 178 0026 0424     		movcs	r4, #4
- 179              	.LVL11:
- 180              	.L12:
+ 175              		.loc 1 256 0
+ 176 0026 28BF     		it	cs
+ 177 0028 0424     		movcs	r4, #4
+ 178              	.LVL11:
+ 179              	.L12:
  261:../drivers/fsl_rnga.c ****             }
- 181              		.loc 1 261 0 discriminator 3
- 182 0028 5E5D     		ldrb	r6, [r3, r5]	@ zero_extendqisi2
- 183 002a CE54     		strb	r6, [r1, r3]
+ 180              		.loc 1 261 0 discriminator 3
+ 181 002a 5E5D     		ldrb	r6, [r3, r5]	@ zero_extendqisi2
+ 182 002c CE54     		strb	r6, [r1, r3]
  259:../drivers/fsl_rnga.c ****             {
- 184              		.loc 1 259 0 discriminator 3
- 185 002c 0133     		adds	r3, r3, #1
- 186              	.LVL12:
- 187 002e 9C42     		cmp	r4, r3
- 188 0030 FAD1     		bne	.L12
- 189              	.LVL13:
+ 183              		.loc 1 259 0 discriminator 3
+ 184 002e 0133     		adds	r3, r3, #1
+ 185              	.LVL12:
+ 186 0030 9C42     		cmp	r4, r3
+ 187 0032 FAD1     		bne	.L12
+ 188              	.LVL13:
  265:../drivers/fsl_rnga.c ****     }
- 190              		.loc 1 265 0
- 191 0032 121B     		subs	r2, r2, r4
- 192              	.LVL14:
- 193 0034 2144     		add	r1, r1, r4
- 194              	.LVL15:
- 195 0036 E8D1     		bne	.L13
+ 189              		.loc 1 265 0
+ 190 0034 121B     		subs	r2, r2, r4
+ 191              	.LVL14:
+ 192 0036 2144     		add	r1, r1, r4
+ 193              	.LVL15:
+ 194 0038 E7D1     		bne	.L13
  233:../drivers/fsl_rnga.c ****     uint32_t random_32;
- 196              		.loc 1 233 0
- 197 0038 1046     		mov	r0, r2
- 198              	.LVL16:
- 199              	.L7:
+ 195              		.loc 1 233 0
+ 196 003a 1046     		mov	r0, r2
+ 197              	.LVL16:
+ 198              	.L7:
  273:../drivers/fsl_rnga.c **** 
- 200              		.loc 1 273 0
- 201 003a 02B0     		add	sp, sp, #8
- 202              		.cfi_remember_state
- 203              		.cfi_def_cfa_offset 16
- 204              		@ sp needed
- 205 003c 70BD     		pop	{r4, r5, r6, pc}
- 206              	.LVL17:
- 207              	.L17:
- 208              		.cfi_restore_state
- 209              	.LBB29:
- 210              	.LBB28:
+ 199              		.loc 1 273 0
+ 200 003c 02B0     		add	sp, sp, #8
+ 201              		.cfi_remember_state
+ 202              		.cfi_def_cfa_offset 16
+ 203              		@ sp needed
+ 204 003e 70BD     		pop	{r4, r5, r6, pc}
+ 205              	.LVL17:
+ 206              	.L17:
+ 207              		.cfi_restore_state
+ 208              	.LBB29:
+ 209              	.LBB28:
  218:../drivers/fsl_rnga.c ****     if (RNGA_GetMode(base) == kRNGA_ModeNormal) /* Is in normal mode.*/
- 211              		.loc 1 218 0
- 212 003e 0023     		movs	r3, #0
- 213 0040 EBE7     		b	.L9
- 214              	.LVL18:
- 215              	.L16:
- 216              	.LBE28:
- 217              	.LBE29:
+ 210              		.loc 1 218 0
+ 211 0040 0023     		movs	r3, #0
+ 212 0042 EBE7     		b	.L9
+ 213              	.LVL18:
+ 214              	.L16:
+ 215              	.LBE28:
+ 216              	.LBE29:
  269:../drivers/fsl_rnga.c ****     }
- 218              		.loc 1 269 0
- 219 0042 0420     		movs	r0, #4
- 220              	.LVL19:
+ 217              		.loc 1 269 0
+ 218 0044 0420     		movs	r0, #4
+ 219              	.LVL19:
  272:../drivers/fsl_rnga.c **** }
- 221              		.loc 1 272 0
- 222 0044 F9E7     		b	.L7
- 223              		.cfi_endproc
- 224              	.LFE150:
- 226              		.section	.text.RNGA_SetMode,"ax",%progbits
- 227              		.align	1
- 228              		.global	RNGA_SetMode
- 229              		.syntax unified
- 230              		.thumb
- 231              		.thumb_func
- 232              		.fpu fpv4-sp-d16
- 234              	RNGA_SetMode:
- 235              	.LFB151:
+ 220              		.loc 1 272 0
+ 221 0046 F9E7     		b	.L7
+ 222              		.cfi_endproc
+ 223              	.LFE150:
+ 225              		.section	.text.RNGA_SetMode,"ax",%progbits
+ 226              		.align	1
+ 227              		.global	RNGA_SetMode
+ 228              		.syntax unified
+ 229              		.thumb
+ 230              		.thumb_func
+ 231              		.fpu fpv4-sp-d16
+ 233              	RNGA_SetMode:
+ 234              	.LFB151:
  276:../drivers/fsl_rnga.c ****     RNG_WR_CR_SLP(base, (uint32_t)mode);
- 236              		.loc 1 276 0
- 237              		.cfi_startproc
- 238              		@ args = 0, pretend = 0, frame = 0
- 239              		@ frame_needed = 0, uses_anonymous_args = 0
- 240              		@ link register save eliminated.
- 241              	.LVL20:
+ 235              		.loc 1 276 0
+ 236              		.cfi_startproc
+ 237              		@ args = 0, pretend = 0, frame = 0
+ 238              		@ frame_needed = 0, uses_anonymous_args = 0
+ 239              		@ link register save eliminated.
+ 240              	.LVL20:
  277:../drivers/fsl_rnga.c **** }
- 242              		.loc 1 277 0
- 243 0000 0368     		ldr	r3, [r0]
- 244 0002 0901     		lsls	r1, r1, #4
- 245              	.LVL21:
- 246 0004 01F01001 		and	r1, r1, #16
- 247 0008 23F01003 		bic	r3, r3, #16
- 248 000c 1943     		orrs	r1, r1, r3
- 249 000e 0160     		str	r1, [r0]
- 278:../drivers/fsl_rnga.c **** 
- 250              		.loc 1 278 0
- 251 0010 7047     		bx	lr
- 252              		.cfi_endproc
- 253              	.LFE151:
- 255              		.section	.text.RNGA_GetMode,"ax",%progbits
- 256              		.align	1
- 257              		.global	RNGA_GetMode
- 258              		.syntax unified
- 259              		.thumb
- 260              		.thumb_func
- 261              		.fpu fpv4-sp-d16
- 263              	RNGA_GetMode:
- 264              	.LFB152:
+ 241              		.loc 1 277 0
+ 242 0000 0368     		ldr	r3, [r0]
+ 243 0002 0901     		lsls	r1, r1, #4
+ 244              	.LVL21:
+ 245 0004 01F01001 		and	r1, r1, #16
+ 246 0008 23F01003 		bic	r3, r3, #16
+ 247 000c 1943     		orrs	r1, r1, r3
+ 248 000e 0160     		str	r1, [r0]
+ 249 0010 7047     		bx	lr
+ 250              		.cfi_endproc
+ 251              	.LFE151:
+ 253              		.section	.text.RNGA_GetMode,"ax",%progbits
+ 254              		.align	1
+ 255              		.global	RNGA_GetMode
+ 256              		.syntax unified
+ 257              		.thumb
+ 258              		.thumb_func
+ 259              		.fpu fpv4-sp-d16
+ 261              	RNGA_GetMode:
+ 262              	.LFB152:
  281:../drivers/fsl_rnga.c ****     return (rnga_mode_t)RNG_RD_SR_SLP(base);
- 265              		.loc 1 281 0
- 266              		.cfi_startproc
- 267              		@ args = 0, pretend = 0, frame = 0
- 268              		@ frame_needed = 0, uses_anonymous_args = 0
- 269              		@ link register save eliminated.
- 270              	.LVL22:
- 271              		.loc 1 282 0
- 272 0000 4068     		ldr	r0, [r0, #4]
- 273              	.LVL23:
+ 263              		.loc 1 281 0
+ 264              		.cfi_startproc
+ 265              		@ args = 0, pretend = 0, frame = 0
+ 266              		@ frame_needed = 0, uses_anonymous_args = 0
+ 267              		@ link register save eliminated.
+ 268              	.LVL22:
+ 269              		.loc 1 282 0
+ 270 0000 4068     		ldr	r0, [r0, #4]
+ 271              	.LVL23:
  283:../drivers/fsl_rnga.c **** }
- 274              		.loc 1 283 0
- 275 0002 C0F30010 		ubfx	r0, r0, #4, #1
- 276 0006 7047     		bx	lr
- 277              		.cfi_endproc
- 278              	.LFE152:
- 280              		.section	.text.RNGA_Seed,"ax",%progbits
- 281              		.align	1
- 282              		.global	RNGA_Seed
- 283              		.syntax unified
- 284              		.thumb
- 285              		.thumb_func
- 286              		.fpu fpv4-sp-d16
- 288              	RNGA_Seed:
- 289              	.LFB153:
+ 272              		.loc 1 283 0
+ 273 0002 C0F30010 		ubfx	r0, r0, #4, #1
+ 274 0006 7047     		bx	lr
+ 275              		.cfi_endproc
+ 276              	.LFE152:
+ 278              		.section	.text.RNGA_Seed,"ax",%progbits
+ 279              		.align	1
+ 280              		.global	RNGA_Seed
+ 281              		.syntax unified
+ 282              		.thumb
+ 283              		.thumb_func
+ 284              		.fpu fpv4-sp-d16
+ 286              	RNGA_Seed:
+ 287              	.LFB153:
  284:../drivers/fsl_rnga.c **** 
  285:../drivers/fsl_rnga.c **** void RNGA_Seed(RNG_Type *base, uint32_t seed)
  286:../drivers/fsl_rnga.c **** {
- 290              		.loc 1 286 0
- 291              		.cfi_startproc
- 292              		@ args = 0, pretend = 0, frame = 0
- 293              		@ frame_needed = 0, uses_anonymous_args = 0
- 294              		@ link register save eliminated.
- 295              	.LVL24:
+ 288              		.loc 1 286 0
+ 289              		.cfi_startproc
+ 290              		@ args = 0, pretend = 0, frame = 0
+ 291              		@ frame_needed = 0, uses_anonymous_args = 0
+ 292              		@ link register save eliminated.
+ 293              	.LVL24:
  287:../drivers/fsl_rnga.c ****     /* Write to RNGA Entropy Register.*/
  288:../drivers/fsl_rnga.c ****     RNG_WR_ER(base, seed);
- 296              		.loc 1 288 0
- 297 0000 8160     		str	r1, [r0, #8]
- 289:../drivers/fsl_rnga.c **** }
- 298              		.loc 1 289 0
- 299 0002 7047     		bx	lr
- 300              		.cfi_endproc
- 301              	.LFE153:
- 303              		.text
- 304              	.Letext0:
- 305              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 306              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 307              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 308              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 309              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 310              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 311              		.file 9 "../CMSIS/core_cm4.h"
- 312              		.file 10 "../CMSIS/system_MK64F12.h"
- 313              		.file 11 "../CMSIS/MK64F12.h"
- 314              		.file 12 "../drivers/fsl_common.h"
- 315              		.file 13 "../drivers/fsl_rnga.h"
+ 294              		.loc 1 288 0
+ 295 0000 8160     		str	r1, [r0, #8]
+ 296 0002 7047     		bx	lr
+ 297              		.cfi_endproc
+ 298              	.LFE153:
+ 300              		.text
+ 301              	.Letext0:
+ 302              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 303              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 304              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+ 305              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 306              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 307              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+ 308              		.file 9 "../CMSIS/core_cm4.h"
+ 309              		.file 10 "../CMSIS/system_MK64F12.h"
+ 310              		.file 11 "../CMSIS/MK64F12.h"
+ 311              		.file 12 "../drivers/fsl_common.h"
+ 312              		.file 13 "../drivers/fsl_rnga.h"
