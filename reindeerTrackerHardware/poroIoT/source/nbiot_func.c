@@ -14,6 +14,7 @@
 
 
 extern volatile uint8_t UART3_strReady;
+extern uint8_t PCprint(char *data);
 
 extern char NB_recBuf[];
 extern char NB_bufPtr;
@@ -87,7 +88,7 @@ uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage)
 	length += sprintf(jsonMessage + length, "    \"battery\":\"%d\"\r\n\r\n}",
 			reindeerData->batteryLevel);
 
-	printf(jsonMessage);
+	PCprint(jsonMessage);
 
 	w_buf[0] = 0x30;
 	w_buf[1] = 0x00;
@@ -129,11 +130,11 @@ uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage)
 		messagePtr += sprintf(messagePtr,"%02x", (uint8_t)udpMessage[packet_ptr]);
 
 		//if ((packet_ptr + 1) > 0 && ((packet_ptr + 1) % 15 == 0))
-			//printf("\n"); //this just changes line after 16 bytes printed
+			//PCprint("\n"); //this just changes line after 16 bytes printed
 
 	}
 
-	printf("packet length %d\r\n",packet_len);
+	//PCprint("packet length %d\r\n",packet_len);
 
 	return packet_len;
 }
@@ -156,7 +157,7 @@ void assemblePacket(reindeerData_t *reindeerData, char *udpMessage)
 	length += sprintf(jsonMessage + length, "    \"battery\":\"%d\"\r\n\r\n}",
 			reindeerData->batteryLevel);
 
-	printf(jsonMessage);
+	PCprint(jsonMessage);
 
 	//strcpy(udpMessage,postHeader);
 
@@ -164,20 +165,20 @@ void assemblePacket(reindeerData_t *reindeerData, char *udpMessage)
 
 	strcpy(udpMessage + udpLength, jsonMessage);
 
-	printf("%s\r\n", udpMessage);
+	//PCprint("%s\r\n", udpMessage);
 
 	udpLength = strlen(udpMessage);
 
-	printf("length of udp msg %d \r\nPrinting UDP message in hex\r\n",
-			udpLength);
+	//PCprint("length of udp msg %d \r\nPrinting UDP message in hex\r\n",
+	//		udpLength);
 
 	for (uint16_t p = 0; p < udpLength; p++)
 	{
 
-		printf("%02x", udpMessage[p]);
+		//PCprint("%02x", udpMessage[p]);
 	}
 
-	printf("\r\n");
+	PCprint("\r\n");
 
 }
 
@@ -195,8 +196,8 @@ while(time_limit--){
 
 			if(strstr(NB_recBuf,"NSONMI") != NULL) //if received buffer contains expected answer
 				{
-					printf(NB_recBuf);
-					printf("received\r\n");
+					PCprint(NB_recBuf);
+					PCprint("received\r\n");
 					break;
 				}
 				else if (strstr(NB_recBuf, "ERROR") != NULL)
@@ -260,11 +261,11 @@ void NB_reboot() {
 
 	res = AT_send(AT_NRB, "", "+UFOTAS");
 	if (res == 0) {
-		printf("rebooted\r\n");
+		PCprint("rebooted\r\n");
 	} else if (res == 1) {
-		printf("error\r\n");
+		PCprint("error\r\n");
 	} else if (res == 2) {
-		printf("timeout error\r\n");
+		PCprint("timeout error\r\n");
 	}
 
 }
@@ -272,9 +273,9 @@ void NB_setPin() {
 
 	res = AT_send(AT_NPIN, "", "+NPIN: \"OK\"");
 	if (res == 0) {
-		printf("ack\r\n");
+		PCprint("ack\r\n");
 	} else if (res == 1) {
-		printf("error\r\n");
+		PCprint("error\r\n");
 	}
 
 }
@@ -282,27 +283,27 @@ void NB_cops_register() {
 
 	res = AT_send(AT_COPS, "=0", "OK");   //0 Register to network
 	if (res == 0) {
-		printf("Registered\r\n");
+		PCprint("Registered\r\n");
 	} else if (res == 1) {
-		printf("error\r\n");
+		PCprint("error\r\n");
 	}
 }
 void NB_cops_deRegister() {
 
 	res = AT_send(AT_COPS, "=2", "OK");   //2 De-Register from network
 	if (res == 0) {
-		printf("De-registered\r\n");
+		PCprint("De-registered\r\n");
 	} else if (res == 1) {
-		printf("error\r\n");
+		PCprint("error\r\n");
 	}
 }
 void NB_cops_readRegister() {
 
 	res = AT_send(AT_COPS, "?", "OK");   //2 De-Register from network
 	if (res == 0) {
-		printf("readCOPS\r\n");
+		PCprint("readCOPS\r\n");
 	} else if (res == 1) {
-		printf("error\r\n");
+		PCprint("error\r\n");
 	}
 }
 void NB_network_status() {
@@ -310,9 +311,9 @@ void NB_network_status() {
 	while (res != 0) {
 		res = AT_send(AT_CEREG, "", "+CEREG: 0,1");
 		if (res == 0) {
-			printf("CEREG_OK\r\n");
+			PCprint("CEREG_OK\r\n");
 		} else if (res == 1) {
-			printf("error\r\n");
+			PCprint("error\r\n");
 		}
 	}
 }
@@ -320,35 +321,35 @@ void NB_define_pdp() {
 	res = AT_send(AT_CGDCONT, "", "OK");
 	delay_ms(1000);
 	if (res == 0) {
-		printf("PDP context 1 defined\r\n");
+		PCprint("PDP context 1 defined\r\n");
 	} else if (res == 1) {
-		printf("error\r\n");
+		PCprint("error\r\n");
 	}
 }
 void NB_active_pdp() {
 	res = AT_send(AT_CGACT, "=1,1", "OK");     //Active PDP context 1
 	delay_ms(1000);
 	if (res == 0) {
-		printf("PDP 1 activated\r\n");
+		PCprint("PDP 1 activated\r\n");
 	} else if (res == 1) {
-		printf("error\r\n");
+		PCprint("error\r\n");
 	}
 }
 void NB_show_ip() {
 	res = AT_send(AT_CGPADDR, "", "OK");     //Show ip address
 
 	if (res == 0) {
-		printf("ip  found\r\n");
+		PCprint("ip  found\r\n");
 	} else if (res == 1) {
-		printf("error\r\n");
+		PCprint("error\r\n");
 	}
 }
 void NB_create_socket() {
 	res = AT_send(AT_NSOCR, "", "OK");     //Create UDP socket
 	if (res == 0) {
-		printf("Socket ready\r\n");
+		PCprint("Socket ready\r\n");
 	} else if (res == 1) {
-		printf("error\r\n");
+		PCprint("error\r\n");
 	}
 }
 uint8_t NB_send_msg(char *mqttMessage, uint8_t msgLen) {
@@ -358,14 +359,14 @@ uint8_t NB_send_msg(char *mqttMessage, uint8_t msgLen) {
 
 	sprintf(nsost_command,"0,\"167.99.207.133\",1884,%d,\"%s\"", msgLen, mqttMessage);
 
-	printf("%s\r\n",nsost_command);
+	//PCprint("%s\r\n",nsost_command);
 
 	res = AT_send(AT_NSOST, nsost_command, "OK");     //Send message to server
 
 	if (res == 0) {
-		printf("sent");
+		PCprint("sent");
 	} else if (res == 1) {
-		printf("error\r\n");
+		PCprint("error\r\n");
 		reSend_msg = 1;
 		return reSend_msg;
 	}
@@ -375,9 +376,9 @@ void NB_read_msg() {
 	res = AT_send(AT_NSORF, "", "OK");     //read echo data
 	//delay_ms(1000);
 	if (res == 0) {
-		printf("echo\r\n");
+		PCprint("echo\r\n");
 	} else if (res == 1) {
-		printf("error\r\n");
+		PCprint("error\r\n");
 	}
 }
 
@@ -390,7 +391,7 @@ void NB_read_msg() {
 
  //char cmd_buf[100];
  //sprintf(cmd_buf, "%s\r\n", AT_NPIN);
- //printf(cmd_buf);
+ //PCprint(cmd_buf);
 
  }
  */
@@ -400,16 +401,16 @@ void NB_read_msg() {
  res =  NB_setPin();
 
  if(res == 0){
- printf("ack\r\n");
+ PCprint("ack\r\n");
  }
  else if(res == 1){
- printf("error\r\n");
+ PCprint("error\r\n");
  }
  char cmd_buf[100];
 
  sprintf(cmd_buf, "%s2,\"%s\"\r\n", AT_NPIN, pinCode);
 
- printf(cmd_buf);
+ PCprint(cmd_buf);
 
  }
  */

@@ -8,6 +8,8 @@
 
 extern void NB_send(char* data);
 
+extern uint8_t PCprint(char *data);
+
 extern volatile uint8_t NB_strReady;
 
 extern char NB_recBuf[];
@@ -55,11 +57,11 @@ uint8_t breakIfAtOk() {
 void AT_checkResult(uint8_t res, char *subject) {
 
 	if (res == 0) {
-		printf("%s OK\r\n", subject);
+		//PCprint("%s OK\r\n", subject);
 	} else if (res == 1) {
-		printf("%s ERROR\r\n", subject);
+		//PCprint("%s ERROR\r\n", subject);
 	} else {
-		printf("%s NO RESPONSE\r\n", subject);
+		//PCprint("%s NO RESPONSE\r\n", subject);
 	}
 }
 
@@ -84,7 +86,9 @@ uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer) {
 
 	sprintf(cmd_buf, "AT+%s%s\r\n", AT_cmd, AT_parameter);
 	NB_send(cmd_buf);
-	printf("send to module: %s\r\n", cmd_buf);
+
+	PCprint("send to module: \r\n");
+	PCprint(cmd_buf);
 
 	if (strstr(cmd_buf, "NRB") != NULL) {
 		time_limit = 10000;
@@ -93,10 +97,10 @@ uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer) {
 	time_limit = millis() + time_limit;
 	while (millis() < time_limit) {
 		if (NB_strReady) {
-			//NB_strReady = 0;
+
 			if (strstr(NB_recBuf, AT_exptAnswer) != NULL) //if received buffer contains expected answer
 			{
-				printf(NB_recBuf);
+				PCprint(NB_recBuf);
 				result = 0;
 				break;
 			} else if (strstr(NB_recBuf, "ERROR") != NULL) {
@@ -130,11 +134,11 @@ uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer) {
  res = AT_send(AT_CEREG, "", "+CEREG: 0,1");
  if (res == 0)
  {
- printf("Network registration OK\r\n");
+ PCprint("Network registration OK\r\n");
  }
  else if (res == 1)
  {
- printf("CEREG error\r\n");
+ PCprint("CEREG error\r\n");
  }
  }
 
