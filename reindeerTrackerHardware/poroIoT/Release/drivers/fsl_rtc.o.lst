@@ -1,0 +1,2677 @@
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"fsl_rtc.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.global	__aeabi_uidivmod
+  16              		.section	.text.RTC_CheckDatetimeFormat,"ax",%progbits
+  17              		.align	1
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	RTC_CheckDatetimeFormat:
+  24              	.LFB59:
+  25              		.file 1 "../drivers/fsl_rtc.c"
+   1:../drivers/fsl_rtc.c **** /*
+   2:../drivers/fsl_rtc.c ****  * The Clear BSD License
+   3:../drivers/fsl_rtc.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_rtc.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_rtc.c ****  * All rights reserved.
+   6:../drivers/fsl_rtc.c ****  *
+   7:../drivers/fsl_rtc.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_rtc.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_rtc.c ****  * that the following conditions are met:
+  10:../drivers/fsl_rtc.c ****  *
+  11:../drivers/fsl_rtc.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_rtc.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_rtc.c ****  *
+  14:../drivers/fsl_rtc.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_rtc.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_rtc.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_rtc.c ****  *
+  18:../drivers/fsl_rtc.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_rtc.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_rtc.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_rtc.c ****  *
+  22:../drivers/fsl_rtc.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_rtc.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_rtc.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_rtc.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_rtc.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_rtc.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_rtc.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_rtc.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_rtc.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_rtc.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_rtc.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_rtc.c ****  */
+  34:../drivers/fsl_rtc.c **** 
+  35:../drivers/fsl_rtc.c **** #include "fsl_rtc.h"
+  36:../drivers/fsl_rtc.c **** 
+  37:../drivers/fsl_rtc.c **** /*******************************************************************************
+  38:../drivers/fsl_rtc.c ****  * Definitions
+  39:../drivers/fsl_rtc.c ****  ******************************************************************************/
+  40:../drivers/fsl_rtc.c **** #define SECONDS_IN_A_DAY (86400U)
+  41:../drivers/fsl_rtc.c **** #define SECONDS_IN_A_HOUR (3600U)
+  42:../drivers/fsl_rtc.c **** #define SECONDS_IN_A_MINUTE (60U)
+  43:../drivers/fsl_rtc.c **** #define DAYS_IN_A_YEAR (365U)
+  44:../drivers/fsl_rtc.c **** #define YEAR_RANGE_START (1970U)
+  45:../drivers/fsl_rtc.c **** #define YEAR_RANGE_END (2099U)
+  46:../drivers/fsl_rtc.c **** 
+  47:../drivers/fsl_rtc.c **** /*******************************************************************************
+  48:../drivers/fsl_rtc.c ****  * Prototypes
+  49:../drivers/fsl_rtc.c ****  ******************************************************************************/
+  50:../drivers/fsl_rtc.c **** /*!
+  51:../drivers/fsl_rtc.c ****  * @brief Checks whether the date and time passed in is valid
+  52:../drivers/fsl_rtc.c ****  *
+  53:../drivers/fsl_rtc.c ****  * @param datetime Pointer to structure where the date and time details are stored
+  54:../drivers/fsl_rtc.c ****  *
+  55:../drivers/fsl_rtc.c ****  * @return Returns false if the date & time details are out of range; true if in range
+  56:../drivers/fsl_rtc.c ****  */
+  57:../drivers/fsl_rtc.c **** static bool RTC_CheckDatetimeFormat(const rtc_datetime_t *datetime);
+  58:../drivers/fsl_rtc.c **** 
+  59:../drivers/fsl_rtc.c **** /*!
+  60:../drivers/fsl_rtc.c ****  * @brief Converts time data from datetime to seconds
+  61:../drivers/fsl_rtc.c ****  *
+  62:../drivers/fsl_rtc.c ****  * @param datetime Pointer to datetime structure where the date and time details are stored
+  63:../drivers/fsl_rtc.c ****  *
+  64:../drivers/fsl_rtc.c ****  * @return The result of the conversion in seconds
+  65:../drivers/fsl_rtc.c ****  */
+  66:../drivers/fsl_rtc.c **** static uint32_t RTC_ConvertDatetimeToSeconds(const rtc_datetime_t *datetime);
+  67:../drivers/fsl_rtc.c **** 
+  68:../drivers/fsl_rtc.c **** /*!
+  69:../drivers/fsl_rtc.c ****  * @brief Converts time data from seconds to a datetime structure
+  70:../drivers/fsl_rtc.c ****  *
+  71:../drivers/fsl_rtc.c ****  * @param seconds  Seconds value that needs to be converted to datetime format
+  72:../drivers/fsl_rtc.c ****  * @param datetime Pointer to the datetime structure where the result of the conversion is stored
+  73:../drivers/fsl_rtc.c ****  */
+  74:../drivers/fsl_rtc.c **** static void RTC_ConvertSecondsToDatetime(uint32_t seconds, rtc_datetime_t *datetime);
+  75:../drivers/fsl_rtc.c **** 
+  76:../drivers/fsl_rtc.c **** /*******************************************************************************
+  77:../drivers/fsl_rtc.c ****  * Code
+  78:../drivers/fsl_rtc.c ****  ******************************************************************************/
+  79:../drivers/fsl_rtc.c **** static bool RTC_CheckDatetimeFormat(const rtc_datetime_t *datetime)
+  80:../drivers/fsl_rtc.c **** {
+  26              		.loc 1 80 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 16
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              	.LVL0:
+  31 0000 70B5     		push	{r4, r5, r6, lr}
+  32              		.cfi_def_cfa_offset 16
+  33              		.cfi_offset 4, -16
+  34              		.cfi_offset 5, -12
+  35              		.cfi_offset 6, -8
+  36              		.cfi_offset 14, -4
+  37 0002 84B0     		sub	sp, sp, #16
+  38              		.cfi_def_cfa_offset 32
+  39 0004 0400     		movs	r4, r0
+  81:../drivers/fsl_rtc.c ****     assert(datetime);
+  82:../drivers/fsl_rtc.c **** 
+  83:../drivers/fsl_rtc.c ****     /* Table of days in a month for a non leap year. First entry in the table is not used,
+  84:../drivers/fsl_rtc.c ****      * valid months start from 1
+  85:../drivers/fsl_rtc.c ****      */
+  86:../drivers/fsl_rtc.c ****     uint8_t daysPerMonth[] = {0U, 31U, 28U, 31U, 30U, 31U, 30U, 31U, 31U, 30U, 31U, 30U, 31U};
+  40              		.loc 1 86 0
+  41 0006 6B46     		mov	r3, sp
+  42 0008 234A     		ldr	r2, .L15
+  43 000a 23CA     		ldmia	r2!, {r0, r1, r5}
+  44 000c 23C3     		stmia	r3!, {r0, r1, r5}
+  45              	.LVL1:
+  46 000e 1900     		movs	r1, r3
+  47 0010 1378     		ldrb	r3, [r2]
+  48 0012 0B70     		strb	r3, [r1]
+  87:../drivers/fsl_rtc.c **** 
+  88:../drivers/fsl_rtc.c ****     /* Check year, month, hour, minute, seconds */
+  89:../drivers/fsl_rtc.c ****     if ((datetime->year < YEAR_RANGE_START) || (datetime->year > YEAR_RANGE_END) || (datetime->mont
+  49              		.loc 1 89 0
+  50 0014 2588     		ldrh	r5, [r4]
+  51 0016 214B     		ldr	r3, .L15+4
+  52 0018 EB18     		adds	r3, r5, r3
+  53 001a 9BB2     		uxth	r3, r3
+  54 001c 812B     		cmp	r3, #129
+  55 001e 2CD8     		bhi	.L6
+  56              		.loc 1 89 0 is_stmt 0 discriminator 1
+  57 0020 A678     		ldrb	r6, [r4, #2]
+  58 0022 0C2E     		cmp	r6, #12
+  59 0024 2CD8     		bhi	.L7
+  60              		.loc 1 89 0 discriminator 2
+  61 0026 002E     		cmp	r6, #0
+  62 0028 2CD0     		beq	.L8
+  90:../drivers/fsl_rtc.c ****         (datetime->month < 1U) || (datetime->hour >= 24U) || (datetime->minute >= 60U) || (datetime
+  63              		.loc 1 90 0 is_stmt 1
+  64 002a 2379     		ldrb	r3, [r4, #4]
+  65 002c 172B     		cmp	r3, #23
+  66 002e 2BD8     		bhi	.L9
+  67              		.loc 1 90 0 is_stmt 0 discriminator 1
+  68 0030 6379     		ldrb	r3, [r4, #5]
+  69 0032 3B2B     		cmp	r3, #59
+  70 0034 2AD8     		bhi	.L10
+  71              		.loc 1 90 0 discriminator 2
+  72 0036 A379     		ldrb	r3, [r4, #6]
+  73 0038 3B2B     		cmp	r3, #59
+  74 003a 29D8     		bhi	.L11
+  91:../drivers/fsl_rtc.c ****     {
+  92:../drivers/fsl_rtc.c ****         /* If not correct then error*/
+  93:../drivers/fsl_rtc.c ****         return false;
+  94:../drivers/fsl_rtc.c ****     }
+  95:../drivers/fsl_rtc.c **** 
+  96:../drivers/fsl_rtc.c ****     /* Adjust the days in February for a leap year */
+  97:../drivers/fsl_rtc.c ****     if ((((datetime->year & 3U) == 0) && (datetime->year % 100 != 0)) || (datetime->year % 400 == 0
+  75              		.loc 1 97 0 is_stmt 1
+  76 003c AB07     		lsls	r3, r5, #30
+  77 003e 06D1     		bne	.L3
+  78              		.loc 1 97 0 is_stmt 0 discriminator 1
+  79 0040 6421     		movs	r1, #100
+  80 0042 2800     		movs	r0, r5
+  81 0044 FFF7FEFF 		bl	__aeabi_uidivmod
+  82              	.LVL2:
+  83 0048 89B2     		uxth	r1, r1
+  84 004a 0029     		cmp	r1, #0
+  85 004c 07D1     		bne	.L4
+  86              	.L3:
+  87              		.loc 1 97 0 discriminator 3
+  88 004e C821     		movs	r1, #200
+  89 0050 4900     		lsls	r1, r1, #1
+  90 0052 2800     		movs	r0, r5
+  91 0054 FFF7FEFF 		bl	__aeabi_uidivmod
+  92              	.LVL3:
+  93 0058 89B2     		uxth	r1, r1
+  94 005a 0029     		cmp	r1, #0
+  95 005c 02D1     		bne	.L5
+  96              	.L4:
+  98:../drivers/fsl_rtc.c ****     {
+  99:../drivers/fsl_rtc.c ****         daysPerMonth[2] = 29U;
+  97              		.loc 1 99 0 is_stmt 1
+  98 005e 1D23     		movs	r3, #29
+  99 0060 6A46     		mov	r2, sp
+ 100 0062 9370     		strb	r3, [r2, #2]
+ 101              	.L5:
+ 100:../drivers/fsl_rtc.c ****     }
+ 101:../drivers/fsl_rtc.c **** 
+ 102:../drivers/fsl_rtc.c ****     /* Check the validity of the day */
+ 103:../drivers/fsl_rtc.c ****     if ((datetime->day > daysPerMonth[datetime->month]) || (datetime->day < 1U))
+ 102              		.loc 1 103 0
+ 103 0064 E378     		ldrb	r3, [r4, #3]
+ 104 0066 6A46     		mov	r2, sp
+ 105 0068 925D     		ldrb	r2, [r2, r6]
+ 106 006a 9342     		cmp	r3, r2
+ 107 006c 12D8     		bhi	.L12
+ 108              		.loc 1 103 0 is_stmt 0 discriminator 1
+ 109 006e 002B     		cmp	r3, #0
+ 110 0070 01D0     		beq	.L14
+ 104:../drivers/fsl_rtc.c ****     {
+ 105:../drivers/fsl_rtc.c ****         return false;
+ 106:../drivers/fsl_rtc.c ****     }
+ 107:../drivers/fsl_rtc.c **** 
+ 108:../drivers/fsl_rtc.c ****     return true;
+ 111              		.loc 1 108 0 is_stmt 1
+ 112 0072 0120     		movs	r0, #1
+ 113 0074 02E0     		b	.L2
+ 114              	.L14:
+ 105:../drivers/fsl_rtc.c ****     }
+ 115              		.loc 1 105 0
+ 116 0076 0020     		movs	r0, #0
+ 117 0078 00E0     		b	.L2
+ 118              	.L6:
+  93:../drivers/fsl_rtc.c ****     }
+ 119              		.loc 1 93 0
+ 120 007a 0020     		movs	r0, #0
+ 121              	.L2:
+ 109:../drivers/fsl_rtc.c **** }
+ 122              		.loc 1 109 0
+ 123 007c 04B0     		add	sp, sp, #16
+ 124              		@ sp needed
+ 125              	.LVL4:
+ 126 007e 70BD     		pop	{r4, r5, r6, pc}
+ 127              	.LVL5:
+ 128              	.L7:
+  93:../drivers/fsl_rtc.c ****     }
+ 129              		.loc 1 93 0
+ 130 0080 0020     		movs	r0, #0
+ 131 0082 FBE7     		b	.L2
+ 132              	.L8:
+ 133 0084 0020     		movs	r0, #0
+ 134 0086 F9E7     		b	.L2
+ 135              	.L9:
+ 136 0088 0020     		movs	r0, #0
+ 137 008a F7E7     		b	.L2
+ 138              	.L10:
+ 139 008c 0020     		movs	r0, #0
+ 140 008e F5E7     		b	.L2
+ 141              	.L11:
+ 142 0090 0020     		movs	r0, #0
+ 143 0092 F3E7     		b	.L2
+ 144              	.L12:
+ 105:../drivers/fsl_rtc.c ****     }
+ 145              		.loc 1 105 0
+ 146 0094 0020     		movs	r0, #0
+ 147 0096 F1E7     		b	.L2
+ 148              	.L16:
+ 149              		.align	2
+ 150              	.L15:
+ 151 0098 00000000 		.word	.LANCHOR0
+ 152 009c 4EF8FFFF 		.word	-1970
+ 153              		.cfi_endproc
+ 154              	.LFE59:
+ 156              		.section	.text.RTC_ConvertDatetimeToSeconds,"ax",%progbits
+ 157              		.align	1
+ 158              		.syntax unified
+ 159              		.code	16
+ 160              		.thumb_func
+ 161              		.fpu softvfp
+ 163              	RTC_ConvertDatetimeToSeconds:
+ 164              	.LFB60:
+ 110:../drivers/fsl_rtc.c **** 
+ 111:../drivers/fsl_rtc.c **** static uint32_t RTC_ConvertDatetimeToSeconds(const rtc_datetime_t *datetime)
+ 112:../drivers/fsl_rtc.c **** {
+ 165              		.loc 1 112 0
+ 166              		.cfi_startproc
+ 167              		@ args = 0, pretend = 0, frame = 32
+ 168              		@ frame_needed = 0, uses_anonymous_args = 0
+ 169              	.LVL6:
+ 170 0000 70B5     		push	{r4, r5, r6, lr}
+ 171              		.cfi_def_cfa_offset 16
+ 172              		.cfi_offset 4, -16
+ 173              		.cfi_offset 5, -12
+ 174              		.cfi_offset 6, -8
+ 175              		.cfi_offset 14, -4
+ 176 0002 88B0     		sub	sp, sp, #32
+ 177              		.cfi_def_cfa_offset 48
+ 113:../drivers/fsl_rtc.c ****     assert(datetime);
+ 114:../drivers/fsl_rtc.c **** 
+ 115:../drivers/fsl_rtc.c ****     /* Number of days from begin of the non Leap-year*/
+ 116:../drivers/fsl_rtc.c ****     /* Number of days from begin of the non Leap-year*/
+ 117:../drivers/fsl_rtc.c ****     uint16_t monthDays[] = {0U, 0U, 31U, 59U, 90U, 120U, 151U, 181U, 212U, 243U, 273U, 304U, 334U};
+ 178              		.loc 1 117 0
+ 179 0004 01A9     		add	r1, sp, #4
+ 180 0006 0A00     		movs	r2, r1
+ 181 0008 1C4B     		ldr	r3, .L19
+ 182 000a 1033     		adds	r3, r3, #16
+ 183 000c 70CB     		ldmia	r3!, {r4, r5, r6}
+ 184 000e 70C2     		stmia	r2!, {r4, r5, r6}
+ 185 0010 70CB     		ldmia	r3!, {r4, r5, r6}
+ 186 0012 70C2     		stmia	r2!, {r4, r5, r6}
+ 187 0014 1B88     		ldrh	r3, [r3]
+ 188 0016 1380     		strh	r3, [r2]
+ 118:../drivers/fsl_rtc.c ****     uint32_t seconds;
+ 119:../drivers/fsl_rtc.c **** 
+ 120:../drivers/fsl_rtc.c ****     /* Compute number of days from 1970 till given year*/
+ 121:../drivers/fsl_rtc.c ****     seconds = (datetime->year - 1970U) * DAYS_IN_A_YEAR;
+ 189              		.loc 1 121 0
+ 190 0018 0288     		ldrh	r2, [r0]
+ 191 001a D300     		lsls	r3, r2, #3
+ 192 001c 9B18     		adds	r3, r3, r2
+ 193 001e DB00     		lsls	r3, r3, #3
+ 194 0020 9B18     		adds	r3, r3, r2
+ 195 0022 9C00     		lsls	r4, r3, #2
+ 196 0024 1B19     		adds	r3, r3, r4
+ 197 0026 164C     		ldr	r4, .L19+4
+ 198 0028 A446     		mov	ip, r4
+ 199 002a 6344     		add	r3, r3, ip
+ 200              	.LVL7:
+ 122:../drivers/fsl_rtc.c ****     /* Add leap year days */
+ 123:../drivers/fsl_rtc.c ****     seconds += ((datetime->year / 4) - (1970U / 4));
+ 201              		.loc 1 123 0
+ 202 002c 9408     		lsrs	r4, r2, #2
+ 203 002e E318     		adds	r3, r4, r3
+ 204              	.LVL8:
+ 205 0030 ED3B     		subs	r3, r3, #237
+ 206 0032 FF3B     		subs	r3, r3, #255
+ 207              	.LVL9:
+ 124:../drivers/fsl_rtc.c ****     /* Add number of days till given month*/
+ 125:../drivers/fsl_rtc.c ****     seconds += monthDays[datetime->month];
+ 208              		.loc 1 125 0
+ 209 0034 8578     		ldrb	r5, [r0, #2]
+ 210 0036 6C00     		lsls	r4, r5, #1
+ 211 0038 615A     		ldrh	r1, [r4, r1]
+ 212 003a CB18     		adds	r3, r1, r3
+ 213              	.LVL10:
+ 126:../drivers/fsl_rtc.c ****     /* Add days in given month. We subtract the current day as it is
+ 127:../drivers/fsl_rtc.c ****      * represented in the hours, minutes and seconds field*/
+ 128:../drivers/fsl_rtc.c ****     seconds += (datetime->day - 1);
+ 214              		.loc 1 128 0
+ 215 003c C178     		ldrb	r1, [r0, #3]
+ 216 003e C918     		adds	r1, r1, r3
+ 217 0040 4C1E     		subs	r4, r1, #1
+ 218              	.LVL11:
+ 129:../drivers/fsl_rtc.c ****     /* For leap year if month less than or equal to Febraury, decrement day counter*/
+ 130:../drivers/fsl_rtc.c ****     if ((!(datetime->year & 3U)) && (datetime->month <= 2U))
+ 219              		.loc 1 130 0
+ 220 0042 9307     		lsls	r3, r2, #30
+ 221 0044 02D1     		bne	.L18
+ 222              		.loc 1 130 0 is_stmt 0 discriminator 1
+ 223 0046 022D     		cmp	r5, #2
+ 224 0048 00D8     		bhi	.L18
+ 131:../drivers/fsl_rtc.c ****     {
+ 132:../drivers/fsl_rtc.c ****         seconds--;
+ 225              		.loc 1 132 0 is_stmt 1
+ 226 004a 8C1E     		subs	r4, r1, #2
+ 227              	.LVL12:
+ 228              	.L18:
+ 133:../drivers/fsl_rtc.c ****     }
+ 134:../drivers/fsl_rtc.c **** 
+ 135:../drivers/fsl_rtc.c ****     seconds = (seconds * SECONDS_IN_A_DAY) + (datetime->hour * SECONDS_IN_A_HOUR) +
+ 229              		.loc 1 135 0
+ 230 004c 6300     		lsls	r3, r4, #1
+ 231 004e 1B19     		adds	r3, r3, r4
+ 232 0050 1A01     		lsls	r2, r3, #4
+ 233 0052 D31A     		subs	r3, r2, r3
+ 234 0054 1A01     		lsls	r2, r3, #4
+ 235 0056 D21A     		subs	r2, r2, r3
+ 236 0058 D301     		lsls	r3, r2, #7
+ 237 005a 0179     		ldrb	r1, [r0, #4]
+ 238 005c 0A01     		lsls	r2, r1, #4
+ 239 005e 511A     		subs	r1, r2, r1
+ 240 0060 0A01     		lsls	r2, r1, #4
+ 241 0062 521A     		subs	r2, r2, r1
+ 242 0064 1101     		lsls	r1, r2, #4
+ 243 0066 5B18     		adds	r3, r3, r1
+ 136:../drivers/fsl_rtc.c ****               (datetime->minute * SECONDS_IN_A_MINUTE) + datetime->second;
+ 244              		.loc 1 136 0
+ 245 0068 4179     		ldrb	r1, [r0, #5]
+ 246 006a 0A01     		lsls	r2, r1, #4
+ 247 006c 521A     		subs	r2, r2, r1
+ 248 006e 9100     		lsls	r1, r2, #2
+ 135:../drivers/fsl_rtc.c ****               (datetime->minute * SECONDS_IN_A_MINUTE) + datetime->second;
+ 249              		.loc 1 135 0
+ 250 0070 5B18     		adds	r3, r3, r1
+ 251              		.loc 1 136 0
+ 252 0072 8079     		ldrb	r0, [r0, #6]
+ 253              	.LVL13:
+ 135:../drivers/fsl_rtc.c ****               (datetime->minute * SECONDS_IN_A_MINUTE) + datetime->second;
+ 254              		.loc 1 135 0
+ 255 0074 1818     		adds	r0, r3, r0
+ 256              	.LVL14:
+ 137:../drivers/fsl_rtc.c **** 
+ 138:../drivers/fsl_rtc.c ****     return seconds;
+ 139:../drivers/fsl_rtc.c **** }
+ 257              		.loc 1 139 0
+ 258 0076 08B0     		add	sp, sp, #32
+ 259              		@ sp needed
+ 260 0078 70BD     		pop	{r4, r5, r6, pc}
+ 261              	.L20:
+ 262 007a C046     		.align	2
+ 263              	.L19:
+ 264 007c 00000000 		.word	.LANCHOR0
+ 265 0080 3607F5FF 		.word	-719050
+ 266              		.cfi_endproc
+ 267              	.LFE60:
+ 269              		.global	__aeabi_uidiv
+ 270              		.section	.text.RTC_ConvertSecondsToDatetime,"ax",%progbits
+ 271              		.align	1
+ 272              		.syntax unified
+ 273              		.code	16
+ 274              		.thumb_func
+ 275              		.fpu softvfp
+ 277              	RTC_ConvertSecondsToDatetime:
+ 278              	.LFB61:
+ 140:../drivers/fsl_rtc.c **** 
+ 141:../drivers/fsl_rtc.c **** static void RTC_ConvertSecondsToDatetime(uint32_t seconds, rtc_datetime_t *datetime)
+ 142:../drivers/fsl_rtc.c **** {
+ 279              		.loc 1 142 0
+ 280              		.cfi_startproc
+ 281              		@ args = 0, pretend = 0, frame = 16
+ 282              		@ frame_needed = 0, uses_anonymous_args = 0
+ 283              	.LVL15:
+ 284 0000 70B5     		push	{r4, r5, r6, lr}
+ 285              		.cfi_def_cfa_offset 16
+ 286              		.cfi_offset 4, -16
+ 287              		.cfi_offset 5, -12
+ 288              		.cfi_offset 6, -8
+ 289              		.cfi_offset 14, -4
+ 290 0002 84B0     		sub	sp, sp, #16
+ 291              		.cfi_def_cfa_offset 32
+ 292 0004 0600     		movs	r6, r0
+ 293 0006 0D00     		movs	r5, r1
+ 143:../drivers/fsl_rtc.c ****     assert(datetime);
+ 144:../drivers/fsl_rtc.c **** 
+ 145:../drivers/fsl_rtc.c ****     uint32_t x;
+ 146:../drivers/fsl_rtc.c ****     uint32_t secondsRemaining, days;
+ 147:../drivers/fsl_rtc.c ****     uint16_t daysInYear;
+ 148:../drivers/fsl_rtc.c ****     /* Table of days in a month for a non leap year. First entry in the table is not used,
+ 149:../drivers/fsl_rtc.c ****      * valid months start from 1
+ 150:../drivers/fsl_rtc.c ****      */
+ 151:../drivers/fsl_rtc.c ****     uint8_t daysPerMonth[] = {0U, 31U, 28U, 31U, 30U, 31U, 30U, 31U, 31U, 30U, 31U, 30U, 31U};
+ 294              		.loc 1 151 0
+ 295 0008 6B46     		mov	r3, sp
+ 296 000a 264A     		ldr	r2, .L33
+ 297 000c 13CA     		ldmia	r2!, {r0, r1, r4}
+ 298 000e 13C3     		stmia	r3!, {r0, r1, r4}
+ 299              	.LVL16:
+ 300 0010 1900     		movs	r1, r3
+ 301 0012 1378     		ldrb	r3, [r2]
+ 302 0014 0B70     		strb	r3, [r1]
+ 303              	.LVL17:
+ 152:../drivers/fsl_rtc.c **** 
+ 153:../drivers/fsl_rtc.c ****     /* Start with the seconds value that is passed in to be converted to date time format */
+ 154:../drivers/fsl_rtc.c ****     secondsRemaining = seconds;
+ 155:../drivers/fsl_rtc.c **** 
+ 156:../drivers/fsl_rtc.c ****     /* Calcuate the number of days, we add 1 for the current day which is represented in the
+ 157:../drivers/fsl_rtc.c ****      * hours and seconds field
+ 158:../drivers/fsl_rtc.c ****      */
+ 159:../drivers/fsl_rtc.c ****     days = secondsRemaining / SECONDS_IN_A_DAY + 1;
+ 304              		.loc 1 159 0
+ 305 0016 2449     		ldr	r1, .L33+4
+ 306 0018 3000     		movs	r0, r6
+ 307 001a FFF7FEFF 		bl	__aeabi_uidiv
+ 308              	.LVL18:
+ 309 001e 441C     		adds	r4, r0, #1
+ 310              	.LVL19:
+ 160:../drivers/fsl_rtc.c **** 
+ 161:../drivers/fsl_rtc.c ****     /* Update seconds left*/
+ 162:../drivers/fsl_rtc.c ****     secondsRemaining = secondsRemaining % SECONDS_IN_A_DAY;
+ 311              		.loc 1 162 0
+ 312 0020 2149     		ldr	r1, .L33+4
+ 313 0022 3000     		movs	r0, r6
+ 314 0024 FFF7FEFF 		bl	__aeabi_uidivmod
+ 315              	.LVL20:
+ 316 0028 0E00     		movs	r6, r1
+ 317              	.LVL21:
+ 163:../drivers/fsl_rtc.c **** 
+ 164:../drivers/fsl_rtc.c ****     /* Calculate the datetime hour, minute and second fields */
+ 165:../drivers/fsl_rtc.c ****     datetime->hour = secondsRemaining / SECONDS_IN_A_HOUR;
+ 318              		.loc 1 165 0
+ 319 002a E121     		movs	r1, #225
+ 320              	.LVL22:
+ 321 002c 0901     		lsls	r1, r1, #4
+ 322 002e 3000     		movs	r0, r6
+ 323 0030 FFF7FEFF 		bl	__aeabi_uidiv
+ 324              	.LVL23:
+ 325 0034 2871     		strb	r0, [r5, #4]
+ 166:../drivers/fsl_rtc.c ****     secondsRemaining = secondsRemaining % SECONDS_IN_A_HOUR;
+ 326              		.loc 1 166 0
+ 327 0036 E121     		movs	r1, #225
+ 328 0038 0901     		lsls	r1, r1, #4
+ 329 003a 3000     		movs	r0, r6
+ 330 003c FFF7FEFF 		bl	__aeabi_uidivmod
+ 331              	.LVL24:
+ 332 0040 0E00     		movs	r6, r1
+ 333              	.LVL25:
+ 167:../drivers/fsl_rtc.c ****     datetime->minute = secondsRemaining / 60U;
+ 334              		.loc 1 167 0
+ 335 0042 3C21     		movs	r1, #60
+ 336              	.LVL26:
+ 337 0044 3000     		movs	r0, r6
+ 338 0046 FFF7FEFF 		bl	__aeabi_uidiv
+ 339              	.LVL27:
+ 340 004a 6871     		strb	r0, [r5, #5]
+ 168:../drivers/fsl_rtc.c ****     datetime->second = secondsRemaining % SECONDS_IN_A_MINUTE;
+ 341              		.loc 1 168 0
+ 342 004c 3C21     		movs	r1, #60
+ 343 004e 3000     		movs	r0, r6
+ 344 0050 FFF7FEFF 		bl	__aeabi_uidivmod
+ 345              	.LVL28:
+ 346 0054 A971     		strb	r1, [r5, #6]
+ 347              	.LVL29:
+ 169:../drivers/fsl_rtc.c **** 
+ 170:../drivers/fsl_rtc.c ****     /* Calculate year */
+ 171:../drivers/fsl_rtc.c ****     daysInYear = DAYS_IN_A_YEAR;
+ 172:../drivers/fsl_rtc.c ****     datetime->year = YEAR_RANGE_START;
+ 348              		.loc 1 172 0
+ 349 0056 154B     		ldr	r3, .L33+8
+ 350 0058 2B80     		strh	r3, [r5]
+ 171:../drivers/fsl_rtc.c ****     datetime->year = YEAR_RANGE_START;
+ 351              		.loc 1 171 0
+ 352 005a 6E23     		movs	r3, #110
+ 353 005c FF33     		adds	r3, r3, #255
+ 173:../drivers/fsl_rtc.c ****     while (days > daysInYear)
+ 354              		.loc 1 173 0
+ 355 005e 01E0     		b	.L22
+ 356              	.LVL30:
+ 357              	.L30:
+ 174:../drivers/fsl_rtc.c ****     {
+ 175:../drivers/fsl_rtc.c ****         /* Decrease day count by a year and increment year by 1 */
+ 176:../drivers/fsl_rtc.c ****         days -= daysInYear;
+ 177:../drivers/fsl_rtc.c ****         datetime->year++;
+ 178:../drivers/fsl_rtc.c **** 
+ 179:../drivers/fsl_rtc.c ****         /* Adjust the number of days for a leap year */
+ 180:../drivers/fsl_rtc.c ****         if (datetime->year & 3U)
+ 181:../drivers/fsl_rtc.c ****         {
+ 182:../drivers/fsl_rtc.c ****             daysInYear = DAYS_IN_A_YEAR;
+ 183:../drivers/fsl_rtc.c ****         }
+ 184:../drivers/fsl_rtc.c ****         else
+ 185:../drivers/fsl_rtc.c ****         {
+ 186:../drivers/fsl_rtc.c ****             daysInYear = DAYS_IN_A_YEAR + 1;
+ 358              		.loc 1 186 0
+ 359 0060 B723     		movs	r3, #183
+ 360 0062 5B00     		lsls	r3, r3, #1
+ 361              	.L22:
+ 362              	.LVL31:
+ 173:../drivers/fsl_rtc.c ****     while (days > daysInYear)
+ 363              		.loc 1 173 0
+ 364 0064 A342     		cmp	r3, r4
+ 365 0066 09D2     		bcs	.L31
+ 176:../drivers/fsl_rtc.c ****         datetime->year++;
+ 366              		.loc 1 176 0
+ 367 0068 E41A     		subs	r4, r4, r3
+ 368              	.LVL32:
+ 177:../drivers/fsl_rtc.c **** 
+ 369              		.loc 1 177 0
+ 370 006a 2B88     		ldrh	r3, [r5]
+ 371              	.LVL33:
+ 372 006c 0133     		adds	r3, r3, #1
+ 373 006e 9BB2     		uxth	r3, r3
+ 374 0070 2B80     		strh	r3, [r5]
+ 180:../drivers/fsl_rtc.c ****         {
+ 375              		.loc 1 180 0
+ 376 0072 9B07     		lsls	r3, r3, #30
+ 377 0074 F4D0     		beq	.L30
+ 182:../drivers/fsl_rtc.c ****         }
+ 378              		.loc 1 182 0
+ 379 0076 6E23     		movs	r3, #110
+ 380 0078 FF33     		adds	r3, r3, #255
+ 381 007a F3E7     		b	.L22
+ 382              	.LVL34:
+ 383              	.L31:
+ 187:../drivers/fsl_rtc.c ****         }
+ 188:../drivers/fsl_rtc.c ****     }
+ 189:../drivers/fsl_rtc.c **** 
+ 190:../drivers/fsl_rtc.c ****     /* Adjust the days in February for a leap year */
+ 191:../drivers/fsl_rtc.c ****     if (!(datetime->year & 3U))
+ 384              		.loc 1 191 0
+ 385 007c 2B88     		ldrh	r3, [r5]
+ 386              	.LVL35:
+ 387 007e 9B07     		lsls	r3, r3, #30
+ 388 0080 02D1     		bne	.L25
+ 192:../drivers/fsl_rtc.c ****     {
+ 193:../drivers/fsl_rtc.c ****         daysPerMonth[2] = 29U;
+ 389              		.loc 1 193 0
+ 390 0082 1D23     		movs	r3, #29
+ 391 0084 6A46     		mov	r2, sp
+ 392 0086 9370     		strb	r3, [r2, #2]
+ 393              	.L25:
+ 394              	.LVL36:
+ 194:../drivers/fsl_rtc.c ****     }
+ 195:../drivers/fsl_rtc.c **** 
+ 196:../drivers/fsl_rtc.c ****     for (x = 1U; x <= 12U; x++)
+ 395              		.loc 1 196 0
+ 396 0088 0123     		movs	r3, #1
+ 397              	.LVL37:
+ 398              	.L26:
+ 399              		.loc 1 196 0 is_stmt 0 discriminator 1
+ 400 008a 0C2B     		cmp	r3, #12
+ 401 008c 07D8     		bhi	.L28
+ 197:../drivers/fsl_rtc.c ****     {
+ 198:../drivers/fsl_rtc.c ****         if (days <= daysPerMonth[x])
+ 402              		.loc 1 198 0 is_stmt 1
+ 403 008e 6A46     		mov	r2, sp
+ 404 0090 D25C     		ldrb	r2, [r2, r3]
+ 405 0092 A242     		cmp	r2, r4
+ 406 0094 02D2     		bcs	.L32
+ 199:../drivers/fsl_rtc.c ****         {
+ 200:../drivers/fsl_rtc.c ****             datetime->month = x;
+ 201:../drivers/fsl_rtc.c ****             break;
+ 202:../drivers/fsl_rtc.c ****         }
+ 203:../drivers/fsl_rtc.c ****         else
+ 204:../drivers/fsl_rtc.c ****         {
+ 205:../drivers/fsl_rtc.c ****             days -= daysPerMonth[x];
+ 407              		.loc 1 205 0 discriminator 2
+ 408 0096 A41A     		subs	r4, r4, r2
+ 409              	.LVL38:
+ 196:../drivers/fsl_rtc.c ****     {
+ 410              		.loc 1 196 0 discriminator 2
+ 411 0098 0133     		adds	r3, r3, #1
+ 412              	.LVL39:
+ 413 009a F6E7     		b	.L26
+ 414              	.L32:
+ 200:../drivers/fsl_rtc.c ****             break;
+ 415              		.loc 1 200 0
+ 416 009c AB70     		strb	r3, [r5, #2]
+ 417              	.L28:
+ 206:../drivers/fsl_rtc.c ****         }
+ 207:../drivers/fsl_rtc.c ****     }
+ 208:../drivers/fsl_rtc.c **** 
+ 209:../drivers/fsl_rtc.c ****     datetime->day = days;
+ 418              		.loc 1 209 0
+ 419 009e EC70     		strb	r4, [r5, #3]
+ 210:../drivers/fsl_rtc.c **** }
+ 420              		.loc 1 210 0
+ 421 00a0 04B0     		add	sp, sp, #16
+ 422              		@ sp needed
+ 423              	.LVL40:
+ 424              	.LVL41:
+ 425              	.LVL42:
+ 426 00a2 70BD     		pop	{r4, r5, r6, pc}
+ 427              	.L34:
+ 428              		.align	2
+ 429              	.L33:
+ 430 00a4 00000000 		.word	.LANCHOR0
+ 431 00a8 80510100 		.word	86400
+ 432 00ac B2070000 		.word	1970
+ 433              		.cfi_endproc
+ 434              	.LFE61:
+ 436              		.section	.text.RTC_GetDefaultConfig,"ax",%progbits
+ 437              		.align	1
+ 438              		.global	RTC_GetDefaultConfig
+ 439              		.syntax unified
+ 440              		.code	16
+ 441              		.thumb_func
+ 442              		.fpu softvfp
+ 444              	RTC_GetDefaultConfig:
+ 445              	.LFB63:
+ 211:../drivers/fsl_rtc.c **** 
+ 212:../drivers/fsl_rtc.c **** void RTC_Init(RTC_Type *base, const rtc_config_t *config)
+ 213:../drivers/fsl_rtc.c **** {
+ 214:../drivers/fsl_rtc.c ****     assert(config);
+ 215:../drivers/fsl_rtc.c **** 
+ 216:../drivers/fsl_rtc.c ****     uint32_t reg;
+ 217:../drivers/fsl_rtc.c **** 
+ 218:../drivers/fsl_rtc.c **** #if defined(RTC_CLOCKS)
+ 219:../drivers/fsl_rtc.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+ 220:../drivers/fsl_rtc.c ****     CLOCK_EnableClock(kCLOCK_Rtc0);
+ 221:../drivers/fsl_rtc.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+ 222:../drivers/fsl_rtc.c **** #endif /* RTC_CLOCKS */
+ 223:../drivers/fsl_rtc.c **** 
+ 224:../drivers/fsl_rtc.c ****     /* Issue a software reset if timer is invalid */
+ 225:../drivers/fsl_rtc.c ****     if (RTC_GetStatusFlags(RTC) & kRTC_TimeInvalidFlag)
+ 226:../drivers/fsl_rtc.c ****     {
+ 227:../drivers/fsl_rtc.c ****         RTC_Reset(RTC);
+ 228:../drivers/fsl_rtc.c ****     }
+ 229:../drivers/fsl_rtc.c **** 
+ 230:../drivers/fsl_rtc.c ****     reg = base->CR;
+ 231:../drivers/fsl_rtc.c ****     /* Setup the update mode and supervisor access mode */
+ 232:../drivers/fsl_rtc.c ****     reg &= ~(RTC_CR_UM_MASK | RTC_CR_SUP_MASK);
+ 233:../drivers/fsl_rtc.c ****     reg |= RTC_CR_UM(config->updateMode) | RTC_CR_SUP(config->supervisorAccess);
+ 234:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_WAKEUP_PIN_SELECTION) && FSL_FEATURE_RTC_HAS_WAKEUP_PIN_SELECTION
+ 235:../drivers/fsl_rtc.c ****     /* Setup the wakeup pin select */
+ 236:../drivers/fsl_rtc.c ****     reg &= ~(RTC_CR_WPS_MASK);
+ 237:../drivers/fsl_rtc.c ****     reg |= RTC_CR_WPS(config->wakeupSelect);
+ 238:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_WAKEUP_PIN */
+ 239:../drivers/fsl_rtc.c ****     base->CR = reg;
+ 240:../drivers/fsl_rtc.c **** 
+ 241:../drivers/fsl_rtc.c ****     /* Configure the RTC time compensation register */
+ 242:../drivers/fsl_rtc.c ****     base->TCR = (RTC_TCR_CIR(config->compensationInterval) | RTC_TCR_TCR(config->compensationTime))
+ 243:../drivers/fsl_rtc.c **** 	
+ 244:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_TSIC) && FSL_FEATURE_RTC_HAS_TSIC
+ 245:../drivers/fsl_rtc.c **** 	/* Configure RTC timer seconds interrupt to be generated once per second */
+ 246:../drivers/fsl_rtc.c **** 	base->IER &= ~(RTC_IER_TSIC_MASK | RTC_IER_TSIE_MASK);
+ 247:../drivers/fsl_rtc.c **** #endif
+ 248:../drivers/fsl_rtc.c **** }
+ 249:../drivers/fsl_rtc.c **** 
+ 250:../drivers/fsl_rtc.c **** void RTC_GetDefaultConfig(rtc_config_t *config)
+ 251:../drivers/fsl_rtc.c **** {
+ 446              		.loc 1 251 0
+ 447              		.cfi_startproc
+ 448              		@ args = 0, pretend = 0, frame = 0
+ 449              		@ frame_needed = 0, uses_anonymous_args = 0
+ 450              		@ link register save eliminated.
+ 451              	.LVL43:
+ 252:../drivers/fsl_rtc.c ****     assert(config);
+ 253:../drivers/fsl_rtc.c **** 
+ 254:../drivers/fsl_rtc.c ****     /* Wakeup pin will assert if the RTC interrupt asserts or if the wakeup pin is turned on */
+ 255:../drivers/fsl_rtc.c ****     config->wakeupSelect = false;
+ 452              		.loc 1 255 0
+ 453 0000 0023     		movs	r3, #0
+ 454 0002 0370     		strb	r3, [r0]
+ 256:../drivers/fsl_rtc.c ****     /* Registers cannot be written when locked */
+ 257:../drivers/fsl_rtc.c ****     config->updateMode = false;
+ 455              		.loc 1 257 0
+ 456 0004 4370     		strb	r3, [r0, #1]
+ 258:../drivers/fsl_rtc.c ****     /* Non-supervisor mode write accesses are not supported and will generate a bus error */
+ 259:../drivers/fsl_rtc.c ****     config->supervisorAccess = false;
+ 457              		.loc 1 259 0
+ 458 0006 8370     		strb	r3, [r0, #2]
+ 260:../drivers/fsl_rtc.c ****     /* Compensation interval used by the crystal compensation logic */
+ 261:../drivers/fsl_rtc.c ****     config->compensationInterval = 0;
+ 459              		.loc 1 261 0
+ 460 0008 4360     		str	r3, [r0, #4]
+ 262:../drivers/fsl_rtc.c ****     /* Compensation time used by the crystal compensation logic */
+ 263:../drivers/fsl_rtc.c ****     config->compensationTime = 0;
+ 461              		.loc 1 263 0
+ 462 000a 8360     		str	r3, [r0, #8]
+ 264:../drivers/fsl_rtc.c **** }
+ 463              		.loc 1 264 0
+ 464              		@ sp needed
+ 465 000c 7047     		bx	lr
+ 466              		.cfi_endproc
+ 467              	.LFE63:
+ 469              		.section	.text.RTC_SetDatetime,"ax",%progbits
+ 470              		.align	1
+ 471              		.global	RTC_SetDatetime
+ 472              		.syntax unified
+ 473              		.code	16
+ 474              		.thumb_func
+ 475              		.fpu softvfp
+ 477              	RTC_SetDatetime:
+ 478              	.LFB64:
+ 265:../drivers/fsl_rtc.c **** 
+ 266:../drivers/fsl_rtc.c **** status_t RTC_SetDatetime(RTC_Type *base, const rtc_datetime_t *datetime)
+ 267:../drivers/fsl_rtc.c **** {
+ 479              		.loc 1 267 0
+ 480              		.cfi_startproc
+ 481              		@ args = 0, pretend = 0, frame = 0
+ 482              		@ frame_needed = 0, uses_anonymous_args = 0
+ 483              	.LVL44:
+ 484 0000 70B5     		push	{r4, r5, r6, lr}
+ 485              		.cfi_def_cfa_offset 16
+ 486              		.cfi_offset 4, -16
+ 487              		.cfi_offset 5, -12
+ 488              		.cfi_offset 6, -8
+ 489              		.cfi_offset 14, -4
+ 490 0002 0500     		movs	r5, r0
+ 491 0004 0C00     		movs	r4, r1
+ 268:../drivers/fsl_rtc.c ****     assert(datetime);
+ 269:../drivers/fsl_rtc.c **** 
+ 270:../drivers/fsl_rtc.c ****     /* Return error if the time provided is not valid */
+ 271:../drivers/fsl_rtc.c ****     if (!(RTC_CheckDatetimeFormat(datetime)))
+ 492              		.loc 1 271 0
+ 493 0006 0800     		movs	r0, r1
+ 494              	.LVL45:
+ 495 0008 FFF7FEFF 		bl	RTC_CheckDatetimeFormat
+ 496              	.LVL46:
+ 497 000c 0028     		cmp	r0, #0
+ 498 000e 05D0     		beq	.L38
+ 272:../drivers/fsl_rtc.c ****     {
+ 273:../drivers/fsl_rtc.c ****         return kStatus_InvalidArgument;
+ 274:../drivers/fsl_rtc.c ****     }
+ 275:../drivers/fsl_rtc.c **** 
+ 276:../drivers/fsl_rtc.c ****     /* Set time in seconds */
+ 277:../drivers/fsl_rtc.c ****     base->TSR = RTC_ConvertDatetimeToSeconds(datetime);
+ 499              		.loc 1 277 0
+ 500 0010 2000     		movs	r0, r4
+ 501 0012 FFF7FEFF 		bl	RTC_ConvertDatetimeToSeconds
+ 502              	.LVL47:
+ 503 0016 2860     		str	r0, [r5]
+ 278:../drivers/fsl_rtc.c **** 
+ 279:../drivers/fsl_rtc.c ****     return kStatus_Success;
+ 504              		.loc 1 279 0
+ 505 0018 0020     		movs	r0, #0
+ 506              	.L36:
+ 280:../drivers/fsl_rtc.c **** }
+ 507              		.loc 1 280 0
+ 508              		@ sp needed
+ 509              	.LVL48:
+ 510              	.LVL49:
+ 511 001a 70BD     		pop	{r4, r5, r6, pc}
+ 512              	.LVL50:
+ 513              	.L38:
+ 273:../drivers/fsl_rtc.c ****     }
+ 514              		.loc 1 273 0
+ 515 001c 0420     		movs	r0, #4
+ 516 001e FCE7     		b	.L36
+ 517              		.cfi_endproc
+ 518              	.LFE64:
+ 520              		.section	.text.RTC_GetDatetime,"ax",%progbits
+ 521              		.align	1
+ 522              		.global	RTC_GetDatetime
+ 523              		.syntax unified
+ 524              		.code	16
+ 525              		.thumb_func
+ 526              		.fpu softvfp
+ 528              	RTC_GetDatetime:
+ 529              	.LFB65:
+ 281:../drivers/fsl_rtc.c **** 
+ 282:../drivers/fsl_rtc.c **** void RTC_GetDatetime(RTC_Type *base, rtc_datetime_t *datetime)
+ 283:../drivers/fsl_rtc.c **** {
+ 530              		.loc 1 283 0
+ 531              		.cfi_startproc
+ 532              		@ args = 0, pretend = 0, frame = 0
+ 533              		@ frame_needed = 0, uses_anonymous_args = 0
+ 534              	.LVL51:
+ 535 0000 10B5     		push	{r4, lr}
+ 536              		.cfi_def_cfa_offset 8
+ 537              		.cfi_offset 4, -8
+ 538              		.cfi_offset 14, -4
+ 539              	.LVL52:
+ 284:../drivers/fsl_rtc.c ****     assert(datetime);
+ 285:../drivers/fsl_rtc.c **** 
+ 286:../drivers/fsl_rtc.c ****     uint32_t seconds = 0;
+ 287:../drivers/fsl_rtc.c **** 
+ 288:../drivers/fsl_rtc.c ****     seconds = base->TSR;
+ 540              		.loc 1 288 0
+ 541 0002 0068     		ldr	r0, [r0]
+ 542              	.LVL53:
+ 289:../drivers/fsl_rtc.c ****     RTC_ConvertSecondsToDatetime(seconds, datetime);
+ 543              		.loc 1 289 0
+ 544 0004 FFF7FEFF 		bl	RTC_ConvertSecondsToDatetime
+ 545              	.LVL54:
+ 290:../drivers/fsl_rtc.c **** }
+ 546              		.loc 1 290 0
+ 547              		@ sp needed
+ 548 0008 10BD     		pop	{r4, pc}
+ 549              		.cfi_endproc
+ 550              	.LFE65:
+ 552              		.section	.text.RTC_SetAlarm,"ax",%progbits
+ 553              		.align	1
+ 554              		.global	RTC_SetAlarm
+ 555              		.syntax unified
+ 556              		.code	16
+ 557              		.thumb_func
+ 558              		.fpu softvfp
+ 560              	RTC_SetAlarm:
+ 561              	.LFB66:
+ 291:../drivers/fsl_rtc.c **** 
+ 292:../drivers/fsl_rtc.c **** status_t RTC_SetAlarm(RTC_Type *base, const rtc_datetime_t *alarmTime)
+ 293:../drivers/fsl_rtc.c **** {
+ 562              		.loc 1 293 0
+ 563              		.cfi_startproc
+ 564              		@ args = 0, pretend = 0, frame = 0
+ 565              		@ frame_needed = 0, uses_anonymous_args = 0
+ 566              	.LVL55:
+ 567 0000 70B5     		push	{r4, r5, r6, lr}
+ 568              		.cfi_def_cfa_offset 16
+ 569              		.cfi_offset 4, -16
+ 570              		.cfi_offset 5, -12
+ 571              		.cfi_offset 6, -8
+ 572              		.cfi_offset 14, -4
+ 573 0002 0500     		movs	r5, r0
+ 574 0004 0C00     		movs	r4, r1
+ 575              	.LVL56:
+ 294:../drivers/fsl_rtc.c ****     assert(alarmTime);
+ 295:../drivers/fsl_rtc.c **** 
+ 296:../drivers/fsl_rtc.c ****     uint32_t alarmSeconds = 0;
+ 297:../drivers/fsl_rtc.c ****     uint32_t currSeconds = 0;
+ 298:../drivers/fsl_rtc.c **** 
+ 299:../drivers/fsl_rtc.c ****     /* Return error if the alarm time provided is not valid */
+ 300:../drivers/fsl_rtc.c ****     if (!(RTC_CheckDatetimeFormat(alarmTime)))
+ 576              		.loc 1 300 0
+ 577 0006 0800     		movs	r0, r1
+ 578              	.LVL57:
+ 579 0008 FFF7FEFF 		bl	RTC_CheckDatetimeFormat
+ 580              	.LVL58:
+ 581 000c 0028     		cmp	r0, #0
+ 582 000e 08D0     		beq	.L42
+ 301:../drivers/fsl_rtc.c ****     {
+ 302:../drivers/fsl_rtc.c ****         return kStatus_InvalidArgument;
+ 303:../drivers/fsl_rtc.c ****     }
+ 304:../drivers/fsl_rtc.c **** 
+ 305:../drivers/fsl_rtc.c ****     alarmSeconds = RTC_ConvertDatetimeToSeconds(alarmTime);
+ 583              		.loc 1 305 0
+ 584 0010 2000     		movs	r0, r4
+ 585 0012 FFF7FEFF 		bl	RTC_ConvertDatetimeToSeconds
+ 586              	.LVL59:
+ 306:../drivers/fsl_rtc.c **** 
+ 307:../drivers/fsl_rtc.c ****     /* Get the current time */
+ 308:../drivers/fsl_rtc.c ****     currSeconds = base->TSR;
+ 587              		.loc 1 308 0
+ 588 0016 2B68     		ldr	r3, [r5]
+ 589              	.LVL60:
+ 309:../drivers/fsl_rtc.c **** 
+ 310:../drivers/fsl_rtc.c ****     /* Return error if the alarm time has passed */
+ 311:../drivers/fsl_rtc.c ****     if (alarmSeconds < currSeconds)
+ 590              		.loc 1 311 0
+ 591 0018 9842     		cmp	r0, r3
+ 592 001a 04D3     		bcc	.L43
+ 312:../drivers/fsl_rtc.c ****     {
+ 313:../drivers/fsl_rtc.c ****         return kStatus_Fail;
+ 314:../drivers/fsl_rtc.c ****     }
+ 315:../drivers/fsl_rtc.c **** 
+ 316:../drivers/fsl_rtc.c ****     /* Set alarm in seconds*/
+ 317:../drivers/fsl_rtc.c ****     base->TAR = alarmSeconds;
+ 593              		.loc 1 317 0
+ 594 001c A860     		str	r0, [r5, #8]
+ 318:../drivers/fsl_rtc.c **** 
+ 319:../drivers/fsl_rtc.c ****     return kStatus_Success;
+ 595              		.loc 1 319 0
+ 596 001e 0020     		movs	r0, #0
+ 597              	.LVL61:
+ 598              	.L40:
+ 320:../drivers/fsl_rtc.c **** }
+ 599              		.loc 1 320 0
+ 600              		@ sp needed
+ 601              	.LVL62:
+ 602              	.LVL63:
+ 603 0020 70BD     		pop	{r4, r5, r6, pc}
+ 604              	.LVL64:
+ 605              	.L42:
+ 302:../drivers/fsl_rtc.c ****     }
+ 606              		.loc 1 302 0
+ 607 0022 0420     		movs	r0, #4
+ 608 0024 FCE7     		b	.L40
+ 609              	.LVL65:
+ 610              	.L43:
+ 313:../drivers/fsl_rtc.c ****     }
+ 611              		.loc 1 313 0
+ 612 0026 0120     		movs	r0, #1
+ 613              	.LVL66:
+ 614 0028 FAE7     		b	.L40
+ 615              		.cfi_endproc
+ 616              	.LFE66:
+ 618              		.section	.text.RTC_GetAlarm,"ax",%progbits
+ 619              		.align	1
+ 620              		.global	RTC_GetAlarm
+ 621              		.syntax unified
+ 622              		.code	16
+ 623              		.thumb_func
+ 624              		.fpu softvfp
+ 626              	RTC_GetAlarm:
+ 627              	.LFB67:
+ 321:../drivers/fsl_rtc.c **** 
+ 322:../drivers/fsl_rtc.c **** void RTC_GetAlarm(RTC_Type *base, rtc_datetime_t *datetime)
+ 323:../drivers/fsl_rtc.c **** {
+ 628              		.loc 1 323 0
+ 629              		.cfi_startproc
+ 630              		@ args = 0, pretend = 0, frame = 0
+ 631              		@ frame_needed = 0, uses_anonymous_args = 0
+ 632              	.LVL67:
+ 633 0000 10B5     		push	{r4, lr}
+ 634              		.cfi_def_cfa_offset 8
+ 635              		.cfi_offset 4, -8
+ 636              		.cfi_offset 14, -4
+ 637              	.LVL68:
+ 324:../drivers/fsl_rtc.c ****     assert(datetime);
+ 325:../drivers/fsl_rtc.c **** 
+ 326:../drivers/fsl_rtc.c ****     uint32_t alarmSeconds = 0;
+ 327:../drivers/fsl_rtc.c **** 
+ 328:../drivers/fsl_rtc.c ****     /* Get alarm in seconds  */
+ 329:../drivers/fsl_rtc.c ****     alarmSeconds = base->TAR;
+ 638              		.loc 1 329 0
+ 639 0002 8068     		ldr	r0, [r0, #8]
+ 640              	.LVL69:
+ 330:../drivers/fsl_rtc.c **** 
+ 331:../drivers/fsl_rtc.c ****     RTC_ConvertSecondsToDatetime(alarmSeconds, datetime);
+ 641              		.loc 1 331 0
+ 642 0004 FFF7FEFF 		bl	RTC_ConvertSecondsToDatetime
+ 643              	.LVL70:
+ 332:../drivers/fsl_rtc.c **** }
+ 644              		.loc 1 332 0
+ 645              		@ sp needed
+ 646 0008 10BD     		pop	{r4, pc}
+ 647              		.cfi_endproc
+ 648              	.LFE67:
+ 650              		.section	.text.RTC_EnableInterrupts,"ax",%progbits
+ 651              		.align	1
+ 652              		.global	RTC_EnableInterrupts
+ 653              		.syntax unified
+ 654              		.code	16
+ 655              		.thumb_func
+ 656              		.fpu softvfp
+ 658              	RTC_EnableInterrupts:
+ 659              	.LFB68:
+ 333:../drivers/fsl_rtc.c **** 
+ 334:../drivers/fsl_rtc.c **** void RTC_EnableInterrupts(RTC_Type *base, uint32_t mask)
+ 335:../drivers/fsl_rtc.c **** {
+ 660              		.loc 1 335 0
+ 661              		.cfi_startproc
+ 662              		@ args = 0, pretend = 0, frame = 0
+ 663              		@ frame_needed = 0, uses_anonymous_args = 0
+ 664              		@ link register save eliminated.
+ 665              	.LVL71:
+ 336:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
+ 337:../drivers/fsl_rtc.c **** 
+ 338:../drivers/fsl_rtc.c ****     /* RTC_IER */
+ 339:../drivers/fsl_rtc.c ****     if (kRTC_TimeInvalidInterruptEnable == (kRTC_TimeInvalidInterruptEnable & mask))
+ 666              		.loc 1 339 0
+ 667 0000 CB07     		lsls	r3, r1, #31
+ 668 0002 10D4     		bmi	.L50
+ 336:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
+ 669              		.loc 1 336 0
+ 670 0004 0023     		movs	r3, #0
+ 671              	.L46:
+ 672              	.LVL72:
+ 340:../drivers/fsl_rtc.c ****     {
+ 341:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TIIE_MASK;
+ 342:../drivers/fsl_rtc.c ****     }
+ 343:../drivers/fsl_rtc.c ****     if (kRTC_TimeOverflowInterruptEnable == (kRTC_TimeOverflowInterruptEnable & mask))
+ 673              		.loc 1 343 0
+ 674 0006 8A07     		lsls	r2, r1, #30
+ 675 0008 01D5     		bpl	.L47
+ 344:../drivers/fsl_rtc.c ****     {
+ 345:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TOIE_MASK;
+ 676              		.loc 1 345 0
+ 677 000a 0222     		movs	r2, #2
+ 678 000c 1343     		orrs	r3, r2
+ 679              	.LVL73:
+ 680              	.L47:
+ 346:../drivers/fsl_rtc.c ****     }
+ 347:../drivers/fsl_rtc.c ****     if (kRTC_AlarmInterruptEnable == (kRTC_AlarmInterruptEnable & mask))
+ 681              		.loc 1 347 0
+ 682 000e 4A07     		lsls	r2, r1, #29
+ 683 0010 01D5     		bpl	.L48
+ 348:../drivers/fsl_rtc.c ****     {
+ 349:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TAIE_MASK;
+ 684              		.loc 1 349 0
+ 685 0012 0422     		movs	r2, #4
+ 686 0014 1343     		orrs	r3, r2
+ 687              	.LVL74:
+ 688              	.L48:
+ 350:../drivers/fsl_rtc.c ****     }
+ 351:../drivers/fsl_rtc.c ****     if (kRTC_SecondsInterruptEnable == (kRTC_SecondsInterruptEnable & mask))
+ 689              		.loc 1 351 0
+ 690 0016 0A07     		lsls	r2, r1, #28
+ 691 0018 01D5     		bpl	.L49
+ 352:../drivers/fsl_rtc.c ****     {
+ 353:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TSIE_MASK;
+ 692              		.loc 1 353 0
+ 693 001a 1022     		movs	r2, #16
+ 694 001c 1343     		orrs	r3, r2
+ 695              	.LVL75:
+ 696              	.L49:
+ 354:../drivers/fsl_rtc.c ****     }
+ 355:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_MONOTONIC) && (FSL_FEATURE_RTC_HAS_MONOTONIC)
+ 356:../drivers/fsl_rtc.c ****     if (kRTC_MonotonicOverflowInterruptEnable == (kRTC_MonotonicOverflowInterruptEnable & mask))
+ 357:../drivers/fsl_rtc.c ****     {
+ 358:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_MOIE_MASK;
+ 359:../drivers/fsl_rtc.c ****     }
+ 360:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_MONOTONIC */
+ 361:../drivers/fsl_rtc.c ****     base->IER |= tmp32;
+ 697              		.loc 1 361 0
+ 698 001e C269     		ldr	r2, [r0, #28]
+ 699 0020 1343     		orrs	r3, r2
+ 700              	.LVL76:
+ 701 0022 C361     		str	r3, [r0, #28]
+ 362:../drivers/fsl_rtc.c **** 
+ 363:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR) && FSL_FEATURE_RTC_HAS_TIR)
+ 364:../drivers/fsl_rtc.c ****     tmp32 = 0U;
+ 365:../drivers/fsl_rtc.c **** 
+ 366:../drivers/fsl_rtc.c ****     /* RTC_TIR */
+ 367:../drivers/fsl_rtc.c ****     if (kRTC_TestModeInterruptEnable == (kRTC_TestModeInterruptEnable & mask))
+ 368:../drivers/fsl_rtc.c ****     {
+ 369:../drivers/fsl_rtc.c ****         tmp32 |= RTC_TIR_TMIE_MASK;
+ 370:../drivers/fsl_rtc.c ****     }
+ 371:../drivers/fsl_rtc.c ****     if (kRTC_FlashSecurityInterruptEnable == (kRTC_FlashSecurityInterruptEnable & mask))
+ 372:../drivers/fsl_rtc.c ****     {
+ 373:../drivers/fsl_rtc.c ****         tmp32 |= RTC_TIR_FSIE_MASK;
+ 374:../drivers/fsl_rtc.c ****     }
+ 375:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_TPIE) && FSL_FEATURE_RTC_HAS_TIR_TPIE)
+ 376:../drivers/fsl_rtc.c ****     if (kRTC_TamperPinInterruptEnable == (kRTC_TamperPinInterruptEnable & mask))
+ 377:../drivers/fsl_rtc.c ****     {
+ 378:../drivers/fsl_rtc.c ****         tmp32 |= RTC_TIR_TPIE_MASK;
+ 379:../drivers/fsl_rtc.c ****     }
+ 380:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR_TPIE */
+ 381:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_SIE) && FSL_FEATURE_RTC_HAS_TIR_SIE)
+ 382:../drivers/fsl_rtc.c ****     if (kRTC_SecurityModuleInterruptEnable == (kRTC_SecurityModuleInterruptEnable & mask))
+ 383:../drivers/fsl_rtc.c ****     {
+ 384:../drivers/fsl_rtc.c ****         tmp32 |= RTC_TIR_SIE_MASK;
+ 385:../drivers/fsl_rtc.c ****     }
+ 386:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR_SIE */
+ 387:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_LCIE) && FSL_FEATURE_RTC_HAS_TIR_LCIE)
+ 388:../drivers/fsl_rtc.c ****     if (kRTC_LossOfClockInterruptEnable == (kRTC_LossOfClockInterruptEnable & mask))
+ 389:../drivers/fsl_rtc.c ****     {
+ 390:../drivers/fsl_rtc.c ****         tmp32 |= RTC_TIR_LCIE_MASK;
+ 391:../drivers/fsl_rtc.c ****     }
+ 392:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR_LCIE */
+ 393:../drivers/fsl_rtc.c ****     base->TIR |= tmp32;
+ 394:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR */
+ 395:../drivers/fsl_rtc.c **** }
+ 702              		.loc 1 395 0
+ 703              		@ sp needed
+ 704 0024 7047     		bx	lr
+ 705              	.LVL77:
+ 706              	.L50:
+ 341:../drivers/fsl_rtc.c ****     }
+ 707              		.loc 1 341 0
+ 708 0026 0123     		movs	r3, #1
+ 709 0028 EDE7     		b	.L46
+ 710              		.cfi_endproc
+ 711              	.LFE68:
+ 713              		.section	.text.RTC_DisableInterrupts,"ax",%progbits
+ 714              		.align	1
+ 715              		.global	RTC_DisableInterrupts
+ 716              		.syntax unified
+ 717              		.code	16
+ 718              		.thumb_func
+ 719              		.fpu softvfp
+ 721              	RTC_DisableInterrupts:
+ 722              	.LFB69:
+ 396:../drivers/fsl_rtc.c **** 
+ 397:../drivers/fsl_rtc.c **** void RTC_DisableInterrupts(RTC_Type *base, uint32_t mask)
+ 398:../drivers/fsl_rtc.c **** {
+ 723              		.loc 1 398 0
+ 724              		.cfi_startproc
+ 725              		@ args = 0, pretend = 0, frame = 0
+ 726              		@ frame_needed = 0, uses_anonymous_args = 0
+ 727              		@ link register save eliminated.
+ 728              	.LVL78:
+ 399:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
+ 400:../drivers/fsl_rtc.c **** 
+ 401:../drivers/fsl_rtc.c ****     /* RTC_IER */
+ 402:../drivers/fsl_rtc.c ****     if (kRTC_TimeInvalidInterruptEnable == (kRTC_TimeInvalidInterruptEnable & mask))
+ 729              		.loc 1 402 0
+ 730 0000 CB07     		lsls	r3, r1, #31
+ 731 0002 10D4     		bmi	.L56
+ 399:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
+ 732              		.loc 1 399 0
+ 733 0004 0023     		movs	r3, #0
+ 734              	.L52:
+ 735              	.LVL79:
+ 403:../drivers/fsl_rtc.c ****     {
+ 404:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TIIE_MASK;
+ 405:../drivers/fsl_rtc.c ****     }
+ 406:../drivers/fsl_rtc.c ****     if (kRTC_TimeOverflowInterruptEnable == (kRTC_TimeOverflowInterruptEnable & mask))
+ 736              		.loc 1 406 0
+ 737 0006 8A07     		lsls	r2, r1, #30
+ 738 0008 01D5     		bpl	.L53
+ 407:../drivers/fsl_rtc.c ****     {
+ 408:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TOIE_MASK;
+ 739              		.loc 1 408 0
+ 740 000a 0222     		movs	r2, #2
+ 741 000c 1343     		orrs	r3, r2
+ 742              	.LVL80:
+ 743              	.L53:
+ 409:../drivers/fsl_rtc.c ****     }
+ 410:../drivers/fsl_rtc.c ****     if (kRTC_AlarmInterruptEnable == (kRTC_AlarmInterruptEnable & mask))
+ 744              		.loc 1 410 0
+ 745 000e 4A07     		lsls	r2, r1, #29
+ 746 0010 01D5     		bpl	.L54
+ 411:../drivers/fsl_rtc.c ****     {
+ 412:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TAIE_MASK;
+ 747              		.loc 1 412 0
+ 748 0012 0422     		movs	r2, #4
+ 749 0014 1343     		orrs	r3, r2
+ 750              	.LVL81:
+ 751              	.L54:
+ 413:../drivers/fsl_rtc.c ****     }
+ 414:../drivers/fsl_rtc.c ****     if (kRTC_SecondsInterruptEnable == (kRTC_SecondsInterruptEnable & mask))
+ 752              		.loc 1 414 0
+ 753 0016 0A07     		lsls	r2, r1, #28
+ 754 0018 01D5     		bpl	.L55
+ 415:../drivers/fsl_rtc.c ****     {
+ 416:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_TSIE_MASK;
+ 755              		.loc 1 416 0
+ 756 001a 1022     		movs	r2, #16
+ 757 001c 1343     		orrs	r3, r2
+ 758              	.LVL82:
+ 759              	.L55:
+ 417:../drivers/fsl_rtc.c ****     }
+ 418:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_MONOTONIC) && (FSL_FEATURE_RTC_HAS_MONOTONIC)
+ 419:../drivers/fsl_rtc.c ****     if (kRTC_MonotonicOverflowInterruptEnable == (kRTC_MonotonicOverflowInterruptEnable & mask))
+ 420:../drivers/fsl_rtc.c ****     {
+ 421:../drivers/fsl_rtc.c ****         tmp32 |= RTC_IER_MOIE_MASK;
+ 422:../drivers/fsl_rtc.c ****     }
+ 423:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_MONOTONIC */
+ 424:../drivers/fsl_rtc.c ****     base->IER &= (uint32_t)(~tmp32);
+ 760              		.loc 1 424 0
+ 761 001e C269     		ldr	r2, [r0, #28]
+ 762 0020 9A43     		bics	r2, r3
+ 763 0022 C261     		str	r2, [r0, #28]
+ 425:../drivers/fsl_rtc.c **** 
+ 426:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR) && FSL_FEATURE_RTC_HAS_TIR)
+ 427:../drivers/fsl_rtc.c ****     tmp32 = 0U;
+ 428:../drivers/fsl_rtc.c **** 
+ 429:../drivers/fsl_rtc.c ****     /* RTC_TIR */
+ 430:../drivers/fsl_rtc.c ****     if (kRTC_TestModeInterruptEnable == (kRTC_TestModeInterruptEnable & mask))
+ 431:../drivers/fsl_rtc.c ****     {
+ 432:../drivers/fsl_rtc.c ****         tmp32 |= RTC_TIR_TMIE_MASK;
+ 433:../drivers/fsl_rtc.c ****     }
+ 434:../drivers/fsl_rtc.c ****     if (kRTC_FlashSecurityInterruptEnable == (kRTC_FlashSecurityInterruptEnable & mask))
+ 435:../drivers/fsl_rtc.c ****     {
+ 436:../drivers/fsl_rtc.c ****         tmp32 |= RTC_TIR_FSIE_MASK;
+ 437:../drivers/fsl_rtc.c ****     }
+ 438:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_TPIE) && FSL_FEATURE_RTC_HAS_TIR_TPIE)
+ 439:../drivers/fsl_rtc.c ****     if (kRTC_TamperPinInterruptEnable == (kRTC_TamperPinInterruptEnable & mask))
+ 440:../drivers/fsl_rtc.c ****     {
+ 441:../drivers/fsl_rtc.c ****         tmp32 |= RTC_TIR_TPIE_MASK;
+ 442:../drivers/fsl_rtc.c ****     }
+ 443:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR_TPIE */
+ 444:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_SIE) && FSL_FEATURE_RTC_HAS_TIR_SIE)
+ 445:../drivers/fsl_rtc.c ****     if (kRTC_SecurityModuleInterruptEnable == (kRTC_SecurityModuleInterruptEnable & mask))
+ 446:../drivers/fsl_rtc.c ****     {
+ 447:../drivers/fsl_rtc.c ****         tmp32 |= RTC_TIR_SIE_MASK;
+ 448:../drivers/fsl_rtc.c ****     }
+ 449:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR_SIE */
+ 450:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_LCIE) && FSL_FEATURE_RTC_HAS_TIR_LCIE)
+ 451:../drivers/fsl_rtc.c ****     if (kRTC_LossOfClockInterruptEnable == (kRTC_LossOfClockInterruptEnable & mask))
+ 452:../drivers/fsl_rtc.c ****     {
+ 453:../drivers/fsl_rtc.c ****         tmp32 |= RTC_TIR_LCIE_MASK;
+ 454:../drivers/fsl_rtc.c ****     }
+ 455:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR_LCIE */
+ 456:../drivers/fsl_rtc.c ****     base->TIR &= (uint32_t)(~tmp32);
+ 457:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR */
+ 458:../drivers/fsl_rtc.c **** }
+ 764              		.loc 1 458 0
+ 765              		@ sp needed
+ 766 0024 7047     		bx	lr
+ 767              	.LVL83:
+ 768              	.L56:
+ 404:../drivers/fsl_rtc.c ****     }
+ 769              		.loc 1 404 0
+ 770 0026 0123     		movs	r3, #1
+ 771 0028 EDE7     		b	.L52
+ 772              		.cfi_endproc
+ 773              	.LFE69:
+ 775              		.section	.text.RTC_GetEnabledInterrupts,"ax",%progbits
+ 776              		.align	1
+ 777              		.global	RTC_GetEnabledInterrupts
+ 778              		.syntax unified
+ 779              		.code	16
+ 780              		.thumb_func
+ 781              		.fpu softvfp
+ 783              	RTC_GetEnabledInterrupts:
+ 784              	.LFB70:
+ 459:../drivers/fsl_rtc.c **** 
+ 460:../drivers/fsl_rtc.c **** uint32_t RTC_GetEnabledInterrupts(RTC_Type *base)
+ 461:../drivers/fsl_rtc.c **** {
+ 785              		.loc 1 461 0
+ 786              		.cfi_startproc
+ 787              		@ args = 0, pretend = 0, frame = 0
+ 788              		@ frame_needed = 0, uses_anonymous_args = 0
+ 789              		@ link register save eliminated.
+ 790              	.LVL84:
+ 462:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
+ 463:../drivers/fsl_rtc.c **** 
+ 464:../drivers/fsl_rtc.c ****     /* RTC_IER */
+ 465:../drivers/fsl_rtc.c ****     if (RTC_IER_TIIE_MASK == (RTC_IER_TIIE_MASK & base->IER))
+ 791              		.loc 1 465 0
+ 792 0000 C369     		ldr	r3, [r0, #28]
+ 793 0002 DB07     		lsls	r3, r3, #31
+ 794 0004 11D4     		bmi	.L62
+ 462:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
+ 795              		.loc 1 462 0
+ 796 0006 0023     		movs	r3, #0
+ 797              	.L58:
+ 798              	.LVL85:
+ 466:../drivers/fsl_rtc.c ****     {
+ 467:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TimeInvalidInterruptEnable;
+ 468:../drivers/fsl_rtc.c ****     }
+ 469:../drivers/fsl_rtc.c ****     if (RTC_IER_TOIE_MASK == (RTC_IER_TOIE_MASK & base->IER))
+ 799              		.loc 1 469 0
+ 800 0008 C269     		ldr	r2, [r0, #28]
+ 801 000a 9207     		lsls	r2, r2, #30
+ 802 000c 01D5     		bpl	.L59
+ 470:../drivers/fsl_rtc.c ****     {
+ 471:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TimeOverflowInterruptEnable;
+ 803              		.loc 1 471 0
+ 804 000e 0222     		movs	r2, #2
+ 805 0010 1343     		orrs	r3, r2
+ 806              	.LVL86:
+ 807              	.L59:
+ 472:../drivers/fsl_rtc.c ****     }
+ 473:../drivers/fsl_rtc.c ****     if (RTC_IER_TAIE_MASK == (RTC_IER_TAIE_MASK & base->IER))
+ 808              		.loc 1 473 0
+ 809 0012 C269     		ldr	r2, [r0, #28]
+ 810 0014 5207     		lsls	r2, r2, #29
+ 811 0016 01D5     		bpl	.L60
+ 474:../drivers/fsl_rtc.c ****     {
+ 475:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_AlarmInterruptEnable;
+ 812              		.loc 1 475 0
+ 813 0018 0422     		movs	r2, #4
+ 814 001a 1343     		orrs	r3, r2
+ 815              	.LVL87:
+ 816              	.L60:
+ 476:../drivers/fsl_rtc.c ****     }
+ 477:../drivers/fsl_rtc.c ****     if (RTC_IER_TSIE_MASK == (RTC_IER_TSIE_MASK & base->IER))
+ 817              		.loc 1 477 0
+ 818 001c C269     		ldr	r2, [r0, #28]
+ 819 001e D206     		lsls	r2, r2, #27
+ 820 0020 01D5     		bpl	.L57
+ 478:../drivers/fsl_rtc.c ****     {
+ 479:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_SecondsInterruptEnable;
+ 821              		.loc 1 479 0
+ 822 0022 0822     		movs	r2, #8
+ 823 0024 1343     		orrs	r3, r2
+ 824              	.LVL88:
+ 825              	.L57:
+ 480:../drivers/fsl_rtc.c ****     }
+ 481:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_MONOTONIC) && (FSL_FEATURE_RTC_HAS_MONOTONIC)
+ 482:../drivers/fsl_rtc.c ****     if (RTC_IER_MOIE_MASK == (RTC_IER_MOIE_MASK & base->IER))
+ 483:../drivers/fsl_rtc.c ****     {
+ 484:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_MonotonicOverflowInterruptEnable;
+ 485:../drivers/fsl_rtc.c ****     }
+ 486:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_MONOTONIC */
+ 487:../drivers/fsl_rtc.c **** 
+ 488:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR) && FSL_FEATURE_RTC_HAS_TIR)
+ 489:../drivers/fsl_rtc.c ****     /* RTC_TIR */
+ 490:../drivers/fsl_rtc.c ****     if (RTC_TIR_TMIE_MASK == (RTC_TIR_TMIE_MASK & base->TIR))
+ 491:../drivers/fsl_rtc.c ****     {
+ 492:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TestModeInterruptEnable;
+ 493:../drivers/fsl_rtc.c ****     }
+ 494:../drivers/fsl_rtc.c ****     if (RTC_TIR_FSIE_MASK == (RTC_TIR_FSIE_MASK & base->TIR))
+ 495:../drivers/fsl_rtc.c ****     {
+ 496:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_FlashSecurityInterruptEnable;
+ 497:../drivers/fsl_rtc.c ****     }
+ 498:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_TPIE) && FSL_FEATURE_RTC_HAS_TIR_TPIE)
+ 499:../drivers/fsl_rtc.c ****     if (RTC_TIR_TPIE_MASK == (RTC_TIR_TPIE_MASK & base->TIR))
+ 500:../drivers/fsl_rtc.c ****     {
+ 501:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TamperPinInterruptEnable;
+ 502:../drivers/fsl_rtc.c ****     }
+ 503:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR_TPIE */
+ 504:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_SIE) && FSL_FEATURE_RTC_HAS_TIR_SIE)
+ 505:../drivers/fsl_rtc.c ****     if (RTC_TIR_SIE_MASK == (RTC_TIR_SIE_MASK & base->TIR))
+ 506:../drivers/fsl_rtc.c ****     {
+ 507:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_SecurityModuleInterruptEnable;
+ 508:../drivers/fsl_rtc.c ****     }
+ 509:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR_SIE */
+ 510:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_LCIE) && FSL_FEATURE_RTC_HAS_TIR_LCIE)
+ 511:../drivers/fsl_rtc.c ****     if (RTC_TIR_LCIE_MASK == (RTC_TIR_LCIE_MASK & base->TIR))
+ 512:../drivers/fsl_rtc.c ****     {
+ 513:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_LossOfClockInterruptEnable;
+ 514:../drivers/fsl_rtc.c ****     }
+ 515:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR_LCIE */
+ 516:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TIR */
+ 517:../drivers/fsl_rtc.c **** 
+ 518:../drivers/fsl_rtc.c ****     return tmp32;
+ 519:../drivers/fsl_rtc.c **** }
+ 826              		.loc 1 519 0
+ 827 0026 1800     		movs	r0, r3
+ 828              	.LVL89:
+ 829              		@ sp needed
+ 830 0028 7047     		bx	lr
+ 831              	.LVL90:
+ 832              	.L62:
+ 467:../drivers/fsl_rtc.c ****     }
+ 833              		.loc 1 467 0
+ 834 002a 0123     		movs	r3, #1
+ 835 002c ECE7     		b	.L58
+ 836              		.cfi_endproc
+ 837              	.LFE70:
+ 839              		.section	.text.RTC_GetStatusFlags,"ax",%progbits
+ 840              		.align	1
+ 841              		.global	RTC_GetStatusFlags
+ 842              		.syntax unified
+ 843              		.code	16
+ 844              		.thumb_func
+ 845              		.fpu softvfp
+ 847              	RTC_GetStatusFlags:
+ 848              	.LFB71:
+ 520:../drivers/fsl_rtc.c **** 
+ 521:../drivers/fsl_rtc.c **** uint32_t RTC_GetStatusFlags(RTC_Type *base)
+ 522:../drivers/fsl_rtc.c **** {
+ 849              		.loc 1 522 0
+ 850              		.cfi_startproc
+ 851              		@ args = 0, pretend = 0, frame = 0
+ 852              		@ frame_needed = 0, uses_anonymous_args = 0
+ 853              		@ link register save eliminated.
+ 854              	.LVL91:
+ 523:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
+ 524:../drivers/fsl_rtc.c **** 
+ 525:../drivers/fsl_rtc.c ****     /* RTC_SR */
+ 526:../drivers/fsl_rtc.c ****     if (RTC_SR_TIF_MASK == (RTC_SR_TIF_MASK & base->SR))
+ 855              		.loc 1 526 0
+ 856 0000 4369     		ldr	r3, [r0, #20]
+ 857 0002 DB07     		lsls	r3, r3, #31
+ 858 0004 0CD4     		bmi	.L67
+ 523:../drivers/fsl_rtc.c ****     uint32_t tmp32 = 0U;
+ 859              		.loc 1 523 0
+ 860 0006 0023     		movs	r3, #0
+ 861              	.L64:
+ 862              	.LVL92:
+ 527:../drivers/fsl_rtc.c ****     {
+ 528:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TimeInvalidFlag;
+ 529:../drivers/fsl_rtc.c ****     }
+ 530:../drivers/fsl_rtc.c ****     if (RTC_SR_TOF_MASK == (RTC_SR_TOF_MASK & base->SR))
+ 863              		.loc 1 530 0
+ 864 0008 4269     		ldr	r2, [r0, #20]
+ 865 000a 9207     		lsls	r2, r2, #30
+ 866 000c 01D5     		bpl	.L65
+ 531:../drivers/fsl_rtc.c ****     {
+ 532:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TimeOverflowFlag;
+ 867              		.loc 1 532 0
+ 868 000e 0222     		movs	r2, #2
+ 869 0010 1343     		orrs	r3, r2
+ 870              	.LVL93:
+ 871              	.L65:
+ 533:../drivers/fsl_rtc.c ****     }
+ 534:../drivers/fsl_rtc.c ****     if (RTC_SR_TAF_MASK == (RTC_SR_TAF_MASK & base->SR))
+ 872              		.loc 1 534 0
+ 873 0012 4269     		ldr	r2, [r0, #20]
+ 874 0014 5207     		lsls	r2, r2, #29
+ 875 0016 01D5     		bpl	.L63
+ 535:../drivers/fsl_rtc.c ****     {
+ 536:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_AlarmFlag;
+ 876              		.loc 1 536 0
+ 877 0018 0422     		movs	r2, #4
+ 878 001a 1343     		orrs	r3, r2
+ 879              	.LVL94:
+ 880              	.L63:
+ 537:../drivers/fsl_rtc.c ****     }
+ 538:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_MONOTONIC) && (FSL_FEATURE_RTC_HAS_MONOTONIC)
+ 539:../drivers/fsl_rtc.c ****     if (RTC_SR_MOF_MASK == (RTC_SR_MOF_MASK & base->SR))
+ 540:../drivers/fsl_rtc.c ****     {
+ 541:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_MonotonicOverflowFlag;
+ 542:../drivers/fsl_rtc.c ****     }
+ 543:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_MONOTONIC */
+ 544:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_SR_TIDF) && FSL_FEATURE_RTC_HAS_SR_TIDF)
+ 545:../drivers/fsl_rtc.c ****     if (RTC_SR_TIDF_MASK == (RTC_SR_TIDF_MASK & base->SR))
+ 546:../drivers/fsl_rtc.c ****     {
+ 547:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TamperInterruptDetectFlag;
+ 548:../drivers/fsl_rtc.c ****     }
+ 549:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_SR_TIDF */
+ 550:../drivers/fsl_rtc.c **** 
+ 551:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR) && FSL_FEATURE_RTC_HAS_TDR)
+ 552:../drivers/fsl_rtc.c ****     /* RTC_TDR */
+ 553:../drivers/fsl_rtc.c ****     if (RTC_TDR_TMF_MASK == (RTC_TDR_TMF_MASK & base->TDR))
+ 554:../drivers/fsl_rtc.c ****     {
+ 555:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TestModeFlag;
+ 556:../drivers/fsl_rtc.c ****     }
+ 557:../drivers/fsl_rtc.c ****     if (RTC_TDR_FSF_MASK == (RTC_TDR_FSF_MASK & base->TDR))
+ 558:../drivers/fsl_rtc.c ****     {
+ 559:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_FlashSecurityFlag;
+ 560:../drivers/fsl_rtc.c ****     }
+ 561:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_TPF) && FSL_FEATURE_RTC_HAS_TDR_TPF)
+ 562:../drivers/fsl_rtc.c ****     if (RTC_TDR_TPF_MASK == (RTC_TDR_TPF_MASK & base->TDR))
+ 563:../drivers/fsl_rtc.c ****     {
+ 564:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_TamperPinFlag;
+ 565:../drivers/fsl_rtc.c ****     }
+ 566:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR_TPF */
+ 567:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_STF) && FSL_FEATURE_RTC_HAS_TDR_STF)
+ 568:../drivers/fsl_rtc.c ****     if (RTC_TDR_STF_MASK == (RTC_TDR_STF_MASK & base->TDR))
+ 569:../drivers/fsl_rtc.c ****     {
+ 570:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_SecurityTamperFlag;
+ 571:../drivers/fsl_rtc.c ****     }
+ 572:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR_STF */
+ 573:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_LCTF) && FSL_FEATURE_RTC_HAS_TDR_LCTF)
+ 574:../drivers/fsl_rtc.c ****     if (RTC_TDR_LCTF_MASK == (RTC_TDR_LCTF_MASK & base->TDR))
+ 575:../drivers/fsl_rtc.c ****     {
+ 576:../drivers/fsl_rtc.c ****         tmp32 |= kRTC_LossOfClockTamperFlag;
+ 577:../drivers/fsl_rtc.c ****     }
+ 578:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR_LCTF */
+ 579:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR */
+ 580:../drivers/fsl_rtc.c **** 
+ 581:../drivers/fsl_rtc.c ****     return tmp32;
+ 582:../drivers/fsl_rtc.c **** }
+ 881              		.loc 1 582 0
+ 882 001c 1800     		movs	r0, r3
+ 883              	.LVL95:
+ 884              		@ sp needed
+ 885 001e 7047     		bx	lr
+ 886              	.LVL96:
+ 887              	.L67:
+ 528:../drivers/fsl_rtc.c ****     }
+ 888              		.loc 1 528 0
+ 889 0020 0123     		movs	r3, #1
+ 890 0022 F1E7     		b	.L64
+ 891              		.cfi_endproc
+ 892              	.LFE71:
+ 894              		.section	.text.RTC_Init,"ax",%progbits
+ 895              		.align	1
+ 896              		.global	RTC_Init
+ 897              		.syntax unified
+ 898              		.code	16
+ 899              		.thumb_func
+ 900              		.fpu softvfp
+ 902              	RTC_Init:
+ 903              	.LFB62:
+ 213:../drivers/fsl_rtc.c ****     assert(config);
+ 904              		.loc 1 213 0
+ 905              		.cfi_startproc
+ 906              		@ args = 0, pretend = 0, frame = 0
+ 907              		@ frame_needed = 0, uses_anonymous_args = 0
+ 908              	.LVL97:
+ 909 0000 70B5     		push	{r4, r5, r6, lr}
+ 910              		.cfi_def_cfa_offset 16
+ 911              		.cfi_offset 4, -16
+ 912              		.cfi_offset 5, -12
+ 913              		.cfi_offset 6, -8
+ 914              		.cfi_offset 14, -4
+ 915 0002 0400     		movs	r4, r0
+ 916 0004 0D00     		movs	r5, r1
+ 917              	.LVL98:
+ 918              	.LBB6:
+ 919              	.LBB7:
+ 920              		.file 2 "../drivers/fsl_clock.h"
+   1:../drivers/fsl_clock.h **** /*
+   2:../drivers/fsl_clock.h ****  * The Clear BSD License
+   3:../drivers/fsl_clock.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_clock.h ****  * Copyright (c) 2016 - 2017 , NXP
+   5:../drivers/fsl_clock.h ****  * All rights reserved.
+   6:../drivers/fsl_clock.h ****  *
+   7:../drivers/fsl_clock.h ****  *
+   8:../drivers/fsl_clock.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   9:../drivers/fsl_clock.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+  10:../drivers/fsl_clock.h ****  * that the following conditions are met:
+  11:../drivers/fsl_clock.h ****  *
+  12:../drivers/fsl_clock.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  13:../drivers/fsl_clock.h ****  *   of conditions and the following disclaimer.
+  14:../drivers/fsl_clock.h ****  *
+  15:../drivers/fsl_clock.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  16:../drivers/fsl_clock.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  17:../drivers/fsl_clock.h ****  *   other materials provided with the distribution.
+  18:../drivers/fsl_clock.h ****  *
+  19:../drivers/fsl_clock.h ****  * o Neither the name of copyright holder nor the names of its
+  20:../drivers/fsl_clock.h ****  *   contributors may be used to endorse or promote products derived from this
+  21:../drivers/fsl_clock.h ****  *   software without specific prior written permission.
+  22:../drivers/fsl_clock.h ****  *
+  23:../drivers/fsl_clock.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  24:../drivers/fsl_clock.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  25:../drivers/fsl_clock.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  26:../drivers/fsl_clock.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  27:../drivers/fsl_clock.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  28:../drivers/fsl_clock.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  29:../drivers/fsl_clock.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  30:../drivers/fsl_clock.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  31:../drivers/fsl_clock.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  32:../drivers/fsl_clock.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  33:../drivers/fsl_clock.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  34:../drivers/fsl_clock.h ****  */
+  35:../drivers/fsl_clock.h **** 
+  36:../drivers/fsl_clock.h **** #ifndef _FSL_CLOCK_H_
+  37:../drivers/fsl_clock.h **** #define _FSL_CLOCK_H_
+  38:../drivers/fsl_clock.h **** 
+  39:../drivers/fsl_clock.h **** #include "fsl_common.h"
+  40:../drivers/fsl_clock.h **** 
+  41:../drivers/fsl_clock.h **** /*! @addtogroup clock */
+  42:../drivers/fsl_clock.h **** /*! @{ */
+  43:../drivers/fsl_clock.h **** 
+  44:../drivers/fsl_clock.h **** /*! @file */
+  45:../drivers/fsl_clock.h **** 
+  46:../drivers/fsl_clock.h **** /*******************************************************************************
+  47:../drivers/fsl_clock.h ****  * Configurations
+  48:../drivers/fsl_clock.h ****  ******************************************************************************/
+  49:../drivers/fsl_clock.h **** 
+  50:../drivers/fsl_clock.h **** /*! @brief Configure whether driver controls clock
+  51:../drivers/fsl_clock.h ****  *
+  52:../drivers/fsl_clock.h ****  * When set to 0, peripheral drivers will enable clock in initialize function
+  53:../drivers/fsl_clock.h ****  * and disable clock in de-initialize function. When set to 1, peripheral
+  54:../drivers/fsl_clock.h ****  * driver will not control the clock, application could contol the clock out of
+  55:../drivers/fsl_clock.h ****  * the driver.
+  56:../drivers/fsl_clock.h ****  *
+  57:../drivers/fsl_clock.h ****  * @note All drivers share this feature switcher. If it is set to 1, application
+  58:../drivers/fsl_clock.h ****  * should handle clock enable and disable for all drivers.
+  59:../drivers/fsl_clock.h ****  */
+  60:../drivers/fsl_clock.h **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL))
+  61:../drivers/fsl_clock.h **** #define FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL 0
+  62:../drivers/fsl_clock.h **** #endif
+  63:../drivers/fsl_clock.h **** 
+  64:../drivers/fsl_clock.h **** /*******************************************************************************
+  65:../drivers/fsl_clock.h ****  * Definitions
+  66:../drivers/fsl_clock.h ****  ******************************************************************************/
+  67:../drivers/fsl_clock.h **** 
+  68:../drivers/fsl_clock.h **** /*! @name Driver version */
+  69:../drivers/fsl_clock.h **** /*@{*/
+  70:../drivers/fsl_clock.h **** /*! @brief CLOCK driver version 2.1.1. */
+  71:../drivers/fsl_clock.h **** #define FSL_CLOCK_DRIVER_VERSION (MAKE_VERSION(2, 1, 1))
+  72:../drivers/fsl_clock.h **** /*@}*/
+  73:../drivers/fsl_clock.h **** 
+  74:../drivers/fsl_clock.h **** /*! @brief External XTAL0 (OSC0) clock frequency.
+  75:../drivers/fsl_clock.h ****  *
+  76:../drivers/fsl_clock.h ****  * The XTAL0/EXTAL0 (OSC0) clock frequency in Hz. When the clock is set up, use the
+  77:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal0Freq to set the value in the clock driver. For example,
+  78:../drivers/fsl_clock.h ****  * if XTAL0 is 8 MHz:
+  79:../drivers/fsl_clock.h ****  * @code
+  80:../drivers/fsl_clock.h ****  * CLOCK_InitOsc0(...); // Set up the OSC0
+  81:../drivers/fsl_clock.h ****  * CLOCK_SetXtal0Freq(80000000); // Set the XTAL0 value to clock driver.
+  82:../drivers/fsl_clock.h ****  * @endcode
+  83:../drivers/fsl_clock.h ****  *
+  84:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where one core needs to set up the
+  85:../drivers/fsl_clock.h ****  * OSC0 using the CLOCK_InitOsc0. All other cores need to call the CLOCK_SetXtal0Freq
+  86:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+  87:../drivers/fsl_clock.h ****  */
+  88:../drivers/fsl_clock.h **** extern uint32_t g_xtal0Freq;
+  89:../drivers/fsl_clock.h **** 
+  90:../drivers/fsl_clock.h **** /*! @brief The external XTAL32/EXTAL32/RTC_CLKIN clock frequency.
+  91:../drivers/fsl_clock.h ****  *
+  92:../drivers/fsl_clock.h ****  * The XTAL32/EXTAL32/RTC_CLKIN clock frequency in Hz. When the clock is set up, use the
+  93:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal32Freq to set the value in the clock driver.
+  94:../drivers/fsl_clock.h ****  *
+  95:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where one core needs to set up
+  96:../drivers/fsl_clock.h ****  * the clock. All other cores need to call the CLOCK_SetXtal32Freq
+  97:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+  98:../drivers/fsl_clock.h ****  */
+  99:../drivers/fsl_clock.h **** extern uint32_t g_xtal32Freq;
+ 100:../drivers/fsl_clock.h **** 
+ 101:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DMAMUX. */
+ 102:../drivers/fsl_clock.h **** #define DMAMUX_CLOCKS  \
+ 103:../drivers/fsl_clock.h ****     {                  \
+ 104:../drivers/fsl_clock.h ****         kCLOCK_Dmamux0 \
+ 105:../drivers/fsl_clock.h ****     }
+ 106:../drivers/fsl_clock.h **** 
+ 107:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for RTC. */
+ 108:../drivers/fsl_clock.h **** #define RTC_CLOCKS  \
+ 109:../drivers/fsl_clock.h ****     {               \
+ 110:../drivers/fsl_clock.h ****         kCLOCK_Rtc0 \
+ 111:../drivers/fsl_clock.h ****     }
+ 112:../drivers/fsl_clock.h **** 
+ 113:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SAI. */
+ 114:../drivers/fsl_clock.h **** #define SAI_CLOCKS  \
+ 115:../drivers/fsl_clock.h ****     {               \
+ 116:../drivers/fsl_clock.h ****         kCLOCK_Sai0 \
+ 117:../drivers/fsl_clock.h ****     }
+ 118:../drivers/fsl_clock.h **** 
+ 119:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SPI. */
+ 120:../drivers/fsl_clock.h **** #define SPI_CLOCKS               \
+ 121:../drivers/fsl_clock.h ****     {                            \
+ 122:../drivers/fsl_clock.h ****         kCLOCK_Spi0, kCLOCK_Spi1 \
+ 123:../drivers/fsl_clock.h ****     }
+ 124:../drivers/fsl_clock.h **** 
+ 125:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PIT. */
+ 126:../drivers/fsl_clock.h **** #define PIT_CLOCKS  \
+ 127:../drivers/fsl_clock.h ****     {               \
+ 128:../drivers/fsl_clock.h ****         kCLOCK_Pit0 \
+ 129:../drivers/fsl_clock.h ****     }
+ 130:../drivers/fsl_clock.h **** 
+ 131:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PORT. */
+ 132:../drivers/fsl_clock.h **** #define PORT_CLOCKS                                                          \
+ 133:../drivers/fsl_clock.h ****     {                                                                        \
+ 134:../drivers/fsl_clock.h ****         kCLOCK_PortA, kCLOCK_PortB, kCLOCK_PortC, kCLOCK_PortD, kCLOCK_PortE \
+ 135:../drivers/fsl_clock.h ****     }
+ 136:../drivers/fsl_clock.h **** 
+ 137:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for LPUART. */
+ 138:../drivers/fsl_clock.h **** #define LPUART_CLOCKS                  \
+ 139:../drivers/fsl_clock.h ****     {                                  \
+ 140:../drivers/fsl_clock.h ****         kCLOCK_Lpuart0, kCLOCK_Lpuart1 \
+ 141:../drivers/fsl_clock.h ****     }
+ 142:../drivers/fsl_clock.h **** 
+ 143:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DAC. */
+ 144:../drivers/fsl_clock.h **** #define DAC_CLOCKS  \
+ 145:../drivers/fsl_clock.h ****     {               \
+ 146:../drivers/fsl_clock.h ****         kCLOCK_Dac0 \
+ 147:../drivers/fsl_clock.h ****     }
+ 148:../drivers/fsl_clock.h **** 
+ 149:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for LPTMR. */
+ 150:../drivers/fsl_clock.h **** #define LPTMR_CLOCKS  \
+ 151:../drivers/fsl_clock.h ****     {                 \
+ 152:../drivers/fsl_clock.h ****         kCLOCK_Lptmr0 \
+ 153:../drivers/fsl_clock.h ****     }
+ 154:../drivers/fsl_clock.h **** 
+ 155:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for ADC16. */
+ 156:../drivers/fsl_clock.h **** #define ADC16_CLOCKS \
+ 157:../drivers/fsl_clock.h ****     {                \
+ 158:../drivers/fsl_clock.h ****         kCLOCK_Adc0  \
+ 159:../drivers/fsl_clock.h ****     }
+ 160:../drivers/fsl_clock.h **** 
+ 161:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FLEXIO. */
+ 162:../drivers/fsl_clock.h **** #define FLEXIO_CLOCKS  \
+ 163:../drivers/fsl_clock.h ****     {                  \
+ 164:../drivers/fsl_clock.h ****         kCLOCK_Flexio0 \
+ 165:../drivers/fsl_clock.h ****     }
+ 166:../drivers/fsl_clock.h **** 
+ 167:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for VREF. */
+ 168:../drivers/fsl_clock.h **** #define VREF_CLOCKS  \
+ 169:../drivers/fsl_clock.h ****     {                \
+ 170:../drivers/fsl_clock.h ****         kCLOCK_Vref0 \
+ 171:../drivers/fsl_clock.h ****     }
+ 172:../drivers/fsl_clock.h **** 
+ 173:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DMA. */
+ 174:../drivers/fsl_clock.h **** #define DMA_CLOCKS  \
+ 175:../drivers/fsl_clock.h ****     {               \
+ 176:../drivers/fsl_clock.h ****         kCLOCK_Dma0 \
+ 177:../drivers/fsl_clock.h ****     }
+ 178:../drivers/fsl_clock.h **** 
+ 179:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for UART. */
+ 180:../drivers/fsl_clock.h **** #define UART_CLOCKS                                      \
+ 181:../drivers/fsl_clock.h ****     {                                                    \
+ 182:../drivers/fsl_clock.h ****         kCLOCK_IpInvalid, kCLOCK_IpInvalid, kCLOCK_Uart2 \
+ 183:../drivers/fsl_clock.h ****     }
+ 184:../drivers/fsl_clock.h **** 
+ 185:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for TPM. */
+ 186:../drivers/fsl_clock.h **** #define TPM_CLOCKS                            \
+ 187:../drivers/fsl_clock.h ****     {                                         \
+ 188:../drivers/fsl_clock.h ****         kCLOCK_Tpm0, kCLOCK_Tpm1, kCLOCK_Tpm2 \
+ 189:../drivers/fsl_clock.h ****     }
+ 190:../drivers/fsl_clock.h **** 
+ 191:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for I2C. */
+ 192:../drivers/fsl_clock.h **** #define I2C_CLOCKS               \
+ 193:../drivers/fsl_clock.h ****     {                            \
+ 194:../drivers/fsl_clock.h ****         kCLOCK_I2c0, kCLOCK_I2c1 \
+ 195:../drivers/fsl_clock.h ****     }
+ 196:../drivers/fsl_clock.h **** 
+ 197:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FTF. */
+ 198:../drivers/fsl_clock.h **** #define FTF_CLOCKS  \
+ 199:../drivers/fsl_clock.h ****     {               \
+ 200:../drivers/fsl_clock.h ****         kCLOCK_Ftf0 \
+ 201:../drivers/fsl_clock.h ****     }
+ 202:../drivers/fsl_clock.h **** 
+ 203:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CMP. */
+ 204:../drivers/fsl_clock.h **** #define CMP_CLOCKS  \
+ 205:../drivers/fsl_clock.h ****     {               \
+ 206:../drivers/fsl_clock.h ****         kCLOCK_Cmp0 \
+ 207:../drivers/fsl_clock.h ****     }
+ 208:../drivers/fsl_clock.h **** 
+ 209:../drivers/fsl_clock.h **** /*!
+ 210:../drivers/fsl_clock.h ****  * @brief LPO clock frequency.
+ 211:../drivers/fsl_clock.h ****  */
+ 212:../drivers/fsl_clock.h **** #define LPO_CLK_FREQ 1000U
+ 213:../drivers/fsl_clock.h **** 
+ 214:../drivers/fsl_clock.h **** /*! @brief Peripherals clock source definition. */
+ 215:../drivers/fsl_clock.h **** #define SYS_CLK kCLOCK_CoreSysClk
+ 216:../drivers/fsl_clock.h **** #define BUS_CLK kCLOCK_BusClk
+ 217:../drivers/fsl_clock.h **** 
+ 218:../drivers/fsl_clock.h **** #define I2C0_CLK_SRC SYS_CLK
+ 219:../drivers/fsl_clock.h **** #define I2C1_CLK_SRC SYS_CLK
+ 220:../drivers/fsl_clock.h **** #define SPI0_CLK_SRC BUS_CLK
+ 221:../drivers/fsl_clock.h **** #define SPI1_CLK_SRC SYS_CLK
+ 222:../drivers/fsl_clock.h **** #define UART2_CLK_SRC BUS_CLK
+ 223:../drivers/fsl_clock.h **** 
+ 224:../drivers/fsl_clock.h **** /*! @brief Clock name used to get clock frequency. */
+ 225:../drivers/fsl_clock.h **** typedef enum _clock_name
+ 226:../drivers/fsl_clock.h **** {
+ 227:../drivers/fsl_clock.h **** 
+ 228:../drivers/fsl_clock.h ****     /* ----------------------------- System layer clock -------------------------------*/
+ 229:../drivers/fsl_clock.h ****     kCLOCK_CoreSysClk,    /*!< Core/system clock                                         */
+ 230:../drivers/fsl_clock.h ****     kCLOCK_PlatClk,       /*!< Platform clock                                            */
+ 231:../drivers/fsl_clock.h ****     kCLOCK_BusClk,        /*!< Bus clock                                                 */
+ 232:../drivers/fsl_clock.h ****     kCLOCK_FlexBusClk,    /*!< FlexBus clock                                             */
+ 233:../drivers/fsl_clock.h ****     kCLOCK_FlashClk,      /*!< Flash clock                                               */
+ 234:../drivers/fsl_clock.h ****     kCLOCK_FastPeriphClk, /*!< Fast peripheral clock                                     */
+ 235:../drivers/fsl_clock.h ****     kCLOCK_PllFllSelClk,  /*!< The clock after SIM[PLLFLLSEL].                           */
+ 236:../drivers/fsl_clock.h **** 
+ 237:../drivers/fsl_clock.h ****     /* ---------------------------------- OSC clock -----------------------------------*/
+ 238:../drivers/fsl_clock.h ****     kCLOCK_Er32kClk,       /*!< External reference 32K clock (ERCLK32K)                   */
+ 239:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClk,      /*!< OSC0 external reference clock (OSC0ERCLK)                 */
+ 240:../drivers/fsl_clock.h ****     kCLOCK_Osc1ErClk,      /*!< OSC1 external reference clock (OSC1ERCLK)                 */
+ 241:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClkUndiv, /*!< OSC0 external reference undivided clock(OSC0ERCLK_UNDIV). */
+ 242:../drivers/fsl_clock.h **** 
+ 243:../drivers/fsl_clock.h ****     /* ----------------------------- MCG and MCG-Lite clock ---------------------------*/
+ 244:../drivers/fsl_clock.h ****     kCLOCK_McgFixedFreqClk,   /*!< MCG fixed frequency clock (MCGFFCLK)                      */
+ 245:../drivers/fsl_clock.h ****     kCLOCK_McgInternalRefClk, /*!< MCG internal reference clock (MCGIRCLK)                   */
+ 246:../drivers/fsl_clock.h ****     kCLOCK_McgFllClk,         /*!< MCGFLLCLK                                                 */
+ 247:../drivers/fsl_clock.h ****     kCLOCK_McgPll0Clk,        /*!< MCGPLL0CLK                                                */
+ 248:../drivers/fsl_clock.h ****     kCLOCK_McgPll1Clk,        /*!< MCGPLL1CLK                                                */
+ 249:../drivers/fsl_clock.h ****     kCLOCK_McgExtPllClk,      /*!< EXT_PLLCLK                                                */
+ 250:../drivers/fsl_clock.h ****     kCLOCK_McgPeriphClk,      /*!< MCG peripheral clock (MCGPCLK)                            */
+ 251:../drivers/fsl_clock.h ****     kCLOCK_McgIrc48MClk,      /*!< MCG IRC48M clock                                          */
+ 252:../drivers/fsl_clock.h **** 
+ 253:../drivers/fsl_clock.h ****     /* --------------------------------- Other clock ----------------------------------*/
+ 254:../drivers/fsl_clock.h ****     kCLOCK_LpoClk, /*!< LPO clock                                                 */
+ 255:../drivers/fsl_clock.h **** 
+ 256:../drivers/fsl_clock.h **** } clock_name_t;
+ 257:../drivers/fsl_clock.h **** 
+ 258:../drivers/fsl_clock.h **** /*------------------------------------------------------------------------------
+ 259:../drivers/fsl_clock.h **** 
+ 260:../drivers/fsl_clock.h ****  clock_gate_t definition:
+ 261:../drivers/fsl_clock.h **** 
+ 262:../drivers/fsl_clock.h ****  31                              16                              0
+ 263:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 264:../drivers/fsl_clock.h ****  | SIM_SCGC register offset       |   control bit offset in SCGC |
+ 265:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 266:../drivers/fsl_clock.h **** 
+ 267:../drivers/fsl_clock.h ****  For example, the SDHC clock gate is controlled by SIM_SCGC3[17], the
+ 268:../drivers/fsl_clock.h ****  SIM_SCGC3 offset in SIM is 0x1030, then kCLOCK_GateSdhc0 is defined as
+ 269:../drivers/fsl_clock.h **** 
+ 270:../drivers/fsl_clock.h ****               kCLOCK_GateSdhc0 = (0x1030 << 16) | 17;
+ 271:../drivers/fsl_clock.h **** 
+ 272:../drivers/fsl_clock.h **** ------------------------------------------------------------------------------*/
+ 273:../drivers/fsl_clock.h **** 
+ 274:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_SHIFT 16U
+ 275:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_MASK 0xFFFF0000U
+ 276:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_SHIFT 0U
+ 277:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_MASK 0x0000FFFFU
+ 278:../drivers/fsl_clock.h **** 
+ 279:../drivers/fsl_clock.h **** #define CLK_GATE_DEFINE(reg_offset, bit_shift)                                  \
+ 280:../drivers/fsl_clock.h ****     ((((reg_offset) << CLK_GATE_REG_OFFSET_SHIFT) & CLK_GATE_REG_OFFSET_MASK) | \
+ 281:../drivers/fsl_clock.h ****      (((bit_shift) << CLK_GATE_BIT_SHIFT_SHIFT) & CLK_GATE_BIT_SHIFT_MASK))
+ 282:../drivers/fsl_clock.h **** 
+ 283:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_REG_OFFSET(x) (((x)&CLK_GATE_REG_OFFSET_MASK) >> CLK_GATE_REG_OFFSET_SHIF
+ 284:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_BITS_SHIFT(x) (((x)&CLK_GATE_BIT_SHIFT_MASK) >> CLK_GATE_BIT_SHIFT_SHIFT)
+ 285:../drivers/fsl_clock.h **** 
+ 286:../drivers/fsl_clock.h **** /*! @brief Clock gate name used for CLOCK_EnableClock/CLOCK_DisableClock. */
+ 287:../drivers/fsl_clock.h **** typedef enum _clock_ip_name
+ 288:../drivers/fsl_clock.h **** {
+ 289:../drivers/fsl_clock.h ****     kCLOCK_IpInvalid = 0U,
+ 290:../drivers/fsl_clock.h ****     kCLOCK_I2c0 = CLK_GATE_DEFINE(0x1034U, 6U),
+ 291:../drivers/fsl_clock.h ****     kCLOCK_I2c1 = CLK_GATE_DEFINE(0x1034U, 7U),
+ 292:../drivers/fsl_clock.h ****     kCLOCK_Uart2 = CLK_GATE_DEFINE(0x1034U, 12U),
+ 293:../drivers/fsl_clock.h ****     kCLOCK_Cmp0 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 294:../drivers/fsl_clock.h ****     kCLOCK_Vref0 = CLK_GATE_DEFINE(0x1034U, 20U),
+ 295:../drivers/fsl_clock.h ****     kCLOCK_Spi0 = CLK_GATE_DEFINE(0x1034U, 22U),
+ 296:../drivers/fsl_clock.h ****     kCLOCK_Spi1 = CLK_GATE_DEFINE(0x1034U, 23U),
+ 297:../drivers/fsl_clock.h **** 
+ 298:../drivers/fsl_clock.h ****     kCLOCK_Lptmr0 = CLK_GATE_DEFINE(0x1038U, 0U),
+ 299:../drivers/fsl_clock.h ****     kCLOCK_PortA = CLK_GATE_DEFINE(0x1038U, 9U),
+ 300:../drivers/fsl_clock.h ****     kCLOCK_PortB = CLK_GATE_DEFINE(0x1038U, 10U),
+ 301:../drivers/fsl_clock.h ****     kCLOCK_PortC = CLK_GATE_DEFINE(0x1038U, 11U),
+ 302:../drivers/fsl_clock.h ****     kCLOCK_PortD = CLK_GATE_DEFINE(0x1038U, 12U),
+ 303:../drivers/fsl_clock.h ****     kCLOCK_PortE = CLK_GATE_DEFINE(0x1038U, 13U),
+ 304:../drivers/fsl_clock.h ****     kCLOCK_Lpuart0 = CLK_GATE_DEFINE(0x1038U, 20U),
+ 305:../drivers/fsl_clock.h ****     kCLOCK_Lpuart1 = CLK_GATE_DEFINE(0x1038U, 21U),
+ 306:../drivers/fsl_clock.h ****     kCLOCK_Flexio0 = CLK_GATE_DEFINE(0x1038U, 31U),
+ 307:../drivers/fsl_clock.h **** 
+ 308:../drivers/fsl_clock.h ****     kCLOCK_Ftf0 = CLK_GATE_DEFINE(0x103CU, 0U),
+ 309:../drivers/fsl_clock.h ****     kCLOCK_Dmamux0 = CLK_GATE_DEFINE(0x103CU, 1U),
+ 310:../drivers/fsl_clock.h ****     kCLOCK_Sai0 = CLK_GATE_DEFINE(0x103CU, 15U),
+ 311:../drivers/fsl_clock.h ****     kCLOCK_Pit0 = CLK_GATE_DEFINE(0x103CU, 23U),
+ 312:../drivers/fsl_clock.h ****     kCLOCK_Tpm0 = CLK_GATE_DEFINE(0x103CU, 24U),
+ 313:../drivers/fsl_clock.h ****     kCLOCK_Tpm1 = CLK_GATE_DEFINE(0x103CU, 25U),
+ 314:../drivers/fsl_clock.h ****     kCLOCK_Tpm2 = CLK_GATE_DEFINE(0x103CU, 26U),
+ 315:../drivers/fsl_clock.h ****     kCLOCK_Adc0 = CLK_GATE_DEFINE(0x103CU, 27U),
+ 316:../drivers/fsl_clock.h ****     kCLOCK_Rtc0 = CLK_GATE_DEFINE(0x103CU, 29U),
+ 317:../drivers/fsl_clock.h ****     kCLOCK_Dac0 = CLK_GATE_DEFINE(0x103CU, 31U),
+ 318:../drivers/fsl_clock.h **** 
+ 319:../drivers/fsl_clock.h ****     kCLOCK_Dma0 = CLK_GATE_DEFINE(0x1040U, 8U),
+ 320:../drivers/fsl_clock.h **** } clock_ip_name_t;
+ 321:../drivers/fsl_clock.h **** 
+ 322:../drivers/fsl_clock.h **** /*!@brief SIM configuration structure for clock setting. */
+ 323:../drivers/fsl_clock.h **** typedef struct _sim_clock_config
+ 324:../drivers/fsl_clock.h **** {
+ 325:../drivers/fsl_clock.h ****     uint8_t er32kSrc; /*!< ERCLK32K source selection.   */
+ 326:../drivers/fsl_clock.h ****     uint32_t clkdiv1; /*!< SIM_CLKDIV1.                 */
+ 327:../drivers/fsl_clock.h **** } sim_clock_config_t;
+ 328:../drivers/fsl_clock.h **** 
+ 329:../drivers/fsl_clock.h **** /*! @brief Oscillator capacitor load setting.*/
+ 330:../drivers/fsl_clock.h **** enum _osc_cap_load
+ 331:../drivers/fsl_clock.h **** {
+ 332:../drivers/fsl_clock.h ****     kOSC_Cap2P = OSC_CR_SC2P_MASK,  /*!< 2  pF capacitor load */
+ 333:../drivers/fsl_clock.h ****     kOSC_Cap4P = OSC_CR_SC4P_MASK,  /*!< 4  pF capacitor load */
+ 334:../drivers/fsl_clock.h ****     kOSC_Cap8P = OSC_CR_SC8P_MASK,  /*!< 8  pF capacitor load */
+ 335:../drivers/fsl_clock.h ****     kOSC_Cap16P = OSC_CR_SC16P_MASK /*!< 16 pF capacitor load */
+ 336:../drivers/fsl_clock.h **** };
+ 337:../drivers/fsl_clock.h **** 
+ 338:../drivers/fsl_clock.h **** /*! @brief OSCERCLK enable mode. */
+ 339:../drivers/fsl_clock.h **** enum _oscer_enable_mode
+ 340:../drivers/fsl_clock.h **** {
+ 341:../drivers/fsl_clock.h ****     kOSC_ErClkEnable = OSC_CR_ERCLKEN_MASK,       /*!< Enable.              */
+ 342:../drivers/fsl_clock.h ****     kOSC_ErClkEnableInStop = OSC_CR_EREFSTEN_MASK /*!< Enable in stop mode. */
+ 343:../drivers/fsl_clock.h **** };
+ 344:../drivers/fsl_clock.h **** 
+ 345:../drivers/fsl_clock.h **** /*! @brief The OSC configuration for OSCERCLK. */
+ 346:../drivers/fsl_clock.h **** typedef struct _oscer_config
+ 347:../drivers/fsl_clock.h **** {
+ 348:../drivers/fsl_clock.h ****     uint8_t enableMode; /*!< OSCERCLK enable mode. OR'ed value of \ref _oscer_enable_mode. */
+ 349:../drivers/fsl_clock.h **** 
+ 350:../drivers/fsl_clock.h **** } oscer_config_t;
+ 351:../drivers/fsl_clock.h **** 
+ 352:../drivers/fsl_clock.h **** /*! @brief The OSC work mode. */
+ 353:../drivers/fsl_clock.h **** typedef enum _osc_mode
+ 354:../drivers/fsl_clock.h **** {
+ 355:../drivers/fsl_clock.h ****     kOSC_ModeExt = 0U,                                            /*!< Use external clock.   */
+ 356:../drivers/fsl_clock.h ****     kOSC_ModeOscLowPower = MCG_C2_EREFS0_MASK,                    /*!< Oscillator low power. */
+ 357:../drivers/fsl_clock.h ****     kOSC_ModeOscHighGain = MCG_C2_EREFS0_MASK | MCG_C2_HGO0_MASK, /*!< Oscillator high gain. */
+ 358:../drivers/fsl_clock.h **** } osc_mode_t;
+ 359:../drivers/fsl_clock.h **** 
+ 360:../drivers/fsl_clock.h **** /*!
+ 361:../drivers/fsl_clock.h ****  * @brief OSC Initialization Configuration Structure
+ 362:../drivers/fsl_clock.h ****  *
+ 363:../drivers/fsl_clock.h ****  * Defines the configuration data structure to initialize the OSC.
+ 364:../drivers/fsl_clock.h ****  * When porting to a new board, set the following members
+ 365:../drivers/fsl_clock.h ****  * according to the board settings:
+ 366:../drivers/fsl_clock.h ****  * 1. freq: The external frequency.
+ 367:../drivers/fsl_clock.h ****  * 2. workMode: The OSC module mode.
+ 368:../drivers/fsl_clock.h ****  */
+ 369:../drivers/fsl_clock.h **** typedef struct _osc_config
+ 370:../drivers/fsl_clock.h **** {
+ 371:../drivers/fsl_clock.h ****     uint32_t freq;              /*!< External clock frequency.    */
+ 372:../drivers/fsl_clock.h ****     uint8_t capLoad;            /*!< Capacitor load setting.      */
+ 373:../drivers/fsl_clock.h ****     osc_mode_t workMode;        /*!< OSC work mode setting.       */
+ 374:../drivers/fsl_clock.h ****     oscer_config_t oscerConfig; /*!< Configuration for OSCERCLK.  */
+ 375:../drivers/fsl_clock.h **** } osc_config_t;
+ 376:../drivers/fsl_clock.h **** 
+ 377:../drivers/fsl_clock.h **** /*! @brief MCG_Lite clock source selection. */
+ 378:../drivers/fsl_clock.h **** typedef enum _mcglite_clkout_src
+ 379:../drivers/fsl_clock.h **** {
+ 380:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcHirc, /*!< MCGOUTCLK source is HIRC */
+ 381:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcLirc, /*!< MCGOUTCLK source is LIRC */
+ 382:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcExt,  /*!< MCGOUTCLK source is external clock source */
+ 383:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcReserved
+ 384:../drivers/fsl_clock.h **** } mcglite_clkout_src_t;
+ 385:../drivers/fsl_clock.h **** 
+ 386:../drivers/fsl_clock.h **** /*! @brief MCG_Lite LIRC select. */
+ 387:../drivers/fsl_clock.h **** typedef enum _mcglite_lirc_mode
+ 388:../drivers/fsl_clock.h **** {
+ 389:../drivers/fsl_clock.h ****     kMCGLITE_Lirc2M, /*!< Slow internal reference(LIRC) 2 MHz clock selected */
+ 390:../drivers/fsl_clock.h ****     kMCGLITE_Lirc8M, /*!< Slow internal reference(LIRC) 8 MHz clock selected */
+ 391:../drivers/fsl_clock.h **** } mcglite_lirc_mode_t;
+ 392:../drivers/fsl_clock.h **** 
+ 393:../drivers/fsl_clock.h **** /*! @brief MCG_Lite divider factor selection for clock source*/
+ 394:../drivers/fsl_clock.h **** typedef enum _mcglite_lirc_div
+ 395:../drivers/fsl_clock.h **** {
+ 396:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy1 = 0U, /*!< Divider is 1    */
+ 397:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy2,      /*!< Divider is 2    */
+ 398:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy4,      /*!< Divider is 4    */
+ 399:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy8,      /*!< Divider is 8    */
+ 400:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy16,     /*!< Divider is 16   */
+ 401:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy32,     /*!< Divider is 32   */
+ 402:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy64,     /*!< Divider is 64   */
+ 403:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy128     /*!< Divider is 128  */
+ 404:../drivers/fsl_clock.h **** } mcglite_lirc_div_t;
+ 405:../drivers/fsl_clock.h **** 
+ 406:../drivers/fsl_clock.h **** /*! @brief MCG_Lite clock mode definitions */
+ 407:../drivers/fsl_clock.h **** typedef enum _mcglite_mode
+ 408:../drivers/fsl_clock.h **** {
+ 409:../drivers/fsl_clock.h ****     kMCGLITE_ModeHirc48M, /*!< Clock mode is HIRC 48 M  */
+ 410:../drivers/fsl_clock.h ****     kMCGLITE_ModeLirc8M,  /*!< Clock mode is LIRC 8 M   */
+ 411:../drivers/fsl_clock.h ****     kMCGLITE_ModeLirc2M,  /*!< Clock mode is LIRC 2 M   */
+ 412:../drivers/fsl_clock.h ****     kMCGLITE_ModeExt,     /*!< Clock mode is EXT       */
+ 413:../drivers/fsl_clock.h ****     kMCGLITE_ModeError    /*!< Unknown mode            */
+ 414:../drivers/fsl_clock.h **** } mcglite_mode_t;
+ 415:../drivers/fsl_clock.h **** 
+ 416:../drivers/fsl_clock.h **** /*! @brief MCG internal reference clock (MCGIRCLK) enable mode definition. */
+ 417:../drivers/fsl_clock.h **** enum _mcglite_irclk_enable_mode
+ 418:../drivers/fsl_clock.h **** {
+ 419:../drivers/fsl_clock.h ****     kMCGLITE_IrclkEnable = MCG_C1_IRCLKEN_MASK,       /*!< MCGIRCLK enable.              */
+ 420:../drivers/fsl_clock.h ****     kMCGLITE_IrclkEnableInStop = MCG_C1_IREFSTEN_MASK /*!< MCGIRCLK enable in stop mode. */
+ 421:../drivers/fsl_clock.h **** };
+ 422:../drivers/fsl_clock.h **** 
+ 423:../drivers/fsl_clock.h **** /*! @brief MCG_Lite configure structure for mode change. */
+ 424:../drivers/fsl_clock.h **** typedef struct _mcglite_config
+ 425:../drivers/fsl_clock.h **** {
+ 426:../drivers/fsl_clock.h ****     mcglite_clkout_src_t outSrc;  /*!< MCGOUT clock select.                */
+ 427:../drivers/fsl_clock.h ****     uint8_t irclkEnableMode;      /*!< MCGIRCLK enable mode, OR'ed value of _mcglite_irclk_enable_m
+ 428:../drivers/fsl_clock.h ****     mcglite_lirc_mode_t ircs;     /*!< MCG_C2[IRCS].                       */
+ 429:../drivers/fsl_clock.h ****     mcglite_lirc_div_t fcrdiv;    /*!< MCG_SC[FCRDIV].                     */
+ 430:../drivers/fsl_clock.h ****     mcglite_lirc_div_t lircDiv2;  /*!< MCG_MC[LIRC_DIV2].                  */
+ 431:../drivers/fsl_clock.h ****     bool hircEnableInNotHircMode; /*!< HIRC enable when not in HIRC mode.  */
+ 432:../drivers/fsl_clock.h **** } mcglite_config_t;
+ 433:../drivers/fsl_clock.h **** 
+ 434:../drivers/fsl_clock.h **** /*******************************************************************************
+ 435:../drivers/fsl_clock.h ****  * API
+ 436:../drivers/fsl_clock.h ****  ******************************************************************************/
+ 437:../drivers/fsl_clock.h **** 
+ 438:../drivers/fsl_clock.h **** #if defined(__cplusplus)
+ 439:../drivers/fsl_clock.h **** extern "C" {
+ 440:../drivers/fsl_clock.h **** #endif /* __cplusplus */
+ 441:../drivers/fsl_clock.h **** 
+ 442:../drivers/fsl_clock.h **** /*!
+ 443:../drivers/fsl_clock.h ****  * @brief Enable the clock for specific IP.
+ 444:../drivers/fsl_clock.h ****  *
+ 445:../drivers/fsl_clock.h ****  * @param name  Which clock to enable, see \ref clock_ip_name_t.
+ 446:../drivers/fsl_clock.h ****  */
+ 447:../drivers/fsl_clock.h **** static inline void CLOCK_EnableClock(clock_ip_name_t name)
+ 448:../drivers/fsl_clock.h **** {
+ 449:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+ 450:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+ 921              		.loc 2 450 0
+ 922 0006 194A     		ldr	r2, .L70
+ 923 0008 1168     		ldr	r1, [r2]
+ 924              	.LVL99:
+ 925 000a 8023     		movs	r3, #128
+ 926 000c 9B05     		lsls	r3, r3, #22
+ 927 000e 0B43     		orrs	r3, r1
+ 928 0010 1360     		str	r3, [r2]
+ 929              	.LVL100:
+ 930              	.LBE7:
+ 931              	.LBE6:
+ 225:../drivers/fsl_rtc.c ****     {
+ 932              		.loc 1 225 0
+ 933 0012 1748     		ldr	r0, .L70+4
+ 934              	.LVL101:
+ 935 0014 FFF7FEFF 		bl	RTC_GetStatusFlags
+ 936              	.LVL102:
+ 937 0018 C307     		lsls	r3, r0, #31
+ 938 001a 08D5     		bpl	.L69
+ 939              	.LVL103:
+ 940              	.LBB8:
+ 941              	.LBB9:
+ 942              		.file 3 "../drivers/fsl_rtc.h"
+   1:../drivers/fsl_rtc.h **** /*
+   2:../drivers/fsl_rtc.h ****  * The Clear BSD License
+   3:../drivers/fsl_rtc.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_rtc.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_rtc.h ****  * All rights reserved.
+   6:../drivers/fsl_rtc.h ****  *
+   7:../drivers/fsl_rtc.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_rtc.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_rtc.h ****  * that the following conditions are met:
+  10:../drivers/fsl_rtc.h ****  *
+  11:../drivers/fsl_rtc.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_rtc.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_rtc.h ****  *
+  14:../drivers/fsl_rtc.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_rtc.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_rtc.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_rtc.h ****  *
+  18:../drivers/fsl_rtc.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_rtc.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_rtc.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_rtc.h ****  *
+  22:../drivers/fsl_rtc.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_rtc.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_rtc.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_rtc.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_rtc.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_rtc.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_rtc.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_rtc.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_rtc.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_rtc.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_rtc.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_rtc.h ****  */
+  34:../drivers/fsl_rtc.h **** #ifndef _FSL_RTC_H_
+  35:../drivers/fsl_rtc.h **** #define _FSL_RTC_H_
+  36:../drivers/fsl_rtc.h **** 
+  37:../drivers/fsl_rtc.h **** #include "fsl_common.h"
+  38:../drivers/fsl_rtc.h **** 
+  39:../drivers/fsl_rtc.h **** /*!
+  40:../drivers/fsl_rtc.h ****  * @addtogroup rtc
+  41:../drivers/fsl_rtc.h ****  * @{
+  42:../drivers/fsl_rtc.h ****  */
+  43:../drivers/fsl_rtc.h **** 
+  44:../drivers/fsl_rtc.h **** /*******************************************************************************
+  45:../drivers/fsl_rtc.h ****  * Definitions
+  46:../drivers/fsl_rtc.h ****  ******************************************************************************/
+  47:../drivers/fsl_rtc.h **** 
+  48:../drivers/fsl_rtc.h **** /*! @name Driver version */
+  49:../drivers/fsl_rtc.h **** /*@{*/
+  50:../drivers/fsl_rtc.h **** #define FSL_RTC_DRIVER_VERSION (MAKE_VERSION(2, 0, 0)) /*!< Version 2.0.0 */
+  51:../drivers/fsl_rtc.h **** /*@}*/
+  52:../drivers/fsl_rtc.h **** 
+  53:../drivers/fsl_rtc.h **** /*! @brief List of RTC interrupts */
+  54:../drivers/fsl_rtc.h **** typedef enum _rtc_interrupt_enable
+  55:../drivers/fsl_rtc.h **** {
+  56:../drivers/fsl_rtc.h ****     kRTC_TimeInvalidInterruptEnable = (1U << 0U),  /*!< Time invalid interrupt.*/
+  57:../drivers/fsl_rtc.h ****     kRTC_TimeOverflowInterruptEnable = (1U << 1U), /*!< Time overflow interrupt.*/
+  58:../drivers/fsl_rtc.h ****     kRTC_AlarmInterruptEnable = (1U << 2U),        /*!< Alarm interrupt.*/
+  59:../drivers/fsl_rtc.h ****     kRTC_SecondsInterruptEnable = (1U << 3U),      /*!< Seconds interrupt.*/
+  60:../drivers/fsl_rtc.h **** #if defined(FSL_FEATURE_RTC_HAS_MONOTONIC) && (FSL_FEATURE_RTC_HAS_MONOTONIC)
+  61:../drivers/fsl_rtc.h ****     kRTC_MonotonicOverflowInterruptEnable = (1U << 4U), /*!< Monotonic Overflow Interrupt Enable */
+  62:../drivers/fsl_rtc.h **** #endif /* FSL_FEATURE_RTC_HAS_MONOTONIC */
+  63:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_TIR) && FSL_FEATURE_RTC_HAS_TIR)
+  64:../drivers/fsl_rtc.h ****     kRTC_TestModeInterruptEnable = (1U << 5U),      /* test mode interrupt */
+  65:../drivers/fsl_rtc.h ****     kRTC_FlashSecurityInterruptEnable = (1U << 6U), /* flash security interrupt */
+  66:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_TPIE) && FSL_FEATURE_RTC_HAS_TIR_TPIE)
+  67:../drivers/fsl_rtc.h ****     kRTC_TamperPinInterruptEnable = (1U << 7U),     /* Tamper pin interrupt */
+  68:../drivers/fsl_rtc.h **** #endif                                                     /* FSL_FEATURE_RTC_HAS_TIR_TPIE */
+  69:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_SIE) && FSL_FEATURE_RTC_HAS_TIR_SIE)
+  70:../drivers/fsl_rtc.h ****     kRTC_SecurityModuleInterruptEnable = (1U << 8U), /* security module interrupt */
+  71:../drivers/fsl_rtc.h **** #endif                                                     /* FSL_FEATURE_RTC_HAS_TIR_SIE */
+  72:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_TIR_LCIE) && FSL_FEATURE_RTC_HAS_TIR_LCIE)
+  73:../drivers/fsl_rtc.h ****     kRTC_LossOfClockInterruptEnable = (1U << 9U), /* loss of clock interrupt */
+  74:../drivers/fsl_rtc.h **** #endif /* FSL_FEATURE_RTC_HAS_TIR_LCIE */
+  75:../drivers/fsl_rtc.h **** #endif /* FSL_FEATURE_RTC_HAS_TIR */
+  76:../drivers/fsl_rtc.h **** } rtc_interrupt_enable_t;
+  77:../drivers/fsl_rtc.h **** 
+  78:../drivers/fsl_rtc.h **** /*! @brief List of RTC flags */
+  79:../drivers/fsl_rtc.h **** typedef enum _rtc_status_flags
+  80:../drivers/fsl_rtc.h **** {
+  81:../drivers/fsl_rtc.h ****     kRTC_TimeInvalidFlag = (1U << 0U),            /*!< Time invalid flag */
+  82:../drivers/fsl_rtc.h ****     kRTC_TimeOverflowFlag = (1U << 1U),           /*!< Time overflow flag */
+  83:../drivers/fsl_rtc.h ****     kRTC_AlarmFlag = (1U << 2U),                   /*!< Alarm flag*/
+  84:../drivers/fsl_rtc.h **** #if defined(FSL_FEATURE_RTC_HAS_MONOTONIC) && (FSL_FEATURE_RTC_HAS_MONOTONIC)
+  85:../drivers/fsl_rtc.h ****     kRTC_MonotonicOverflowFlag = (1U << 3U),       /*!< Monotonic Overflow Flag */
+  86:../drivers/fsl_rtc.h **** #endif /* FSL_FEATURE_RTC_HAS_MONOTONIC */
+  87:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_SR_TIDF) && FSL_FEATURE_RTC_HAS_SR_TIDF)
+  88:../drivers/fsl_rtc.h ****     kRTC_TamperInterruptDetectFlag = (1U << 4U), /*!< Tamper interrupt detect flag */
+  89:../drivers/fsl_rtc.h **** #endif                                                 /* FSL_FEATURE_RTC_HAS_SR_TIDF */
+  90:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_TDR) && FSL_FEATURE_RTC_HAS_TDR)
+  91:../drivers/fsl_rtc.h ****     kRTC_TestModeFlag = (1U << 5U),      /* Test mode flag */
+  92:../drivers/fsl_rtc.h ****     kRTC_FlashSecurityFlag = (1U << 6U), /* Flash security flag */
+  93:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_TPF) && FSL_FEATURE_RTC_HAS_TDR_TPF)
+  94:../drivers/fsl_rtc.h ****     kRTC_TamperPinFlag = (1U << 7U),     /* Tamper pin flag */
+  95:../drivers/fsl_rtc.h **** #endif                                         /* FSL_FEATURE_RTC_HAS_TDR_TPF */
+  96:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_STF) && FSL_FEATURE_RTC_HAS_TDR_STF)
+  97:../drivers/fsl_rtc.h ****     kRTC_SecurityTamperFlag = (1U << 8U), /* Security tamper flag */
+  98:../drivers/fsl_rtc.h **** #endif                                          /* FSL_FEATURE_RTC_HAS_TDR_STF */
+  99:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_LCTF) && FSL_FEATURE_RTC_HAS_TDR_LCTF)
+ 100:../drivers/fsl_rtc.h ****     kRTC_LossOfClockTamperFlag = (1U << 9U), /* Loss of clock flag */
+ 101:../drivers/fsl_rtc.h **** #endif                                             /* FSL_FEATURE_RTC_HAS_TDR_LCTF */
+ 102:../drivers/fsl_rtc.h **** #endif /* FSL_FEATURE_RTC_HAS_TDR */
+ 103:../drivers/fsl_rtc.h **** } rtc_status_flags_t;
+ 104:../drivers/fsl_rtc.h **** 
+ 105:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_OSC_SCXP) && FSL_FEATURE_RTC_HAS_OSC_SCXP)
+ 106:../drivers/fsl_rtc.h **** 
+ 107:../drivers/fsl_rtc.h **** /*! @brief List of RTC Oscillator capacitor load settings */
+ 108:../drivers/fsl_rtc.h **** typedef enum _rtc_osc_cap_load
+ 109:../drivers/fsl_rtc.h **** {
+ 110:../drivers/fsl_rtc.h ****     kRTC_Capacitor_2p = RTC_CR_SC2P_MASK,  /*!< 2 pF capacitor load */
+ 111:../drivers/fsl_rtc.h ****     kRTC_Capacitor_4p = RTC_CR_SC4P_MASK,  /*!< 4 pF capacitor load */
+ 112:../drivers/fsl_rtc.h ****     kRTC_Capacitor_8p = RTC_CR_SC8P_MASK,  /*!< 8 pF capacitor load */
+ 113:../drivers/fsl_rtc.h ****     kRTC_Capacitor_16p = RTC_CR_SC16P_MASK /*!< 16 pF capacitor load */
+ 114:../drivers/fsl_rtc.h **** } rtc_osc_cap_load_t;
+ 115:../drivers/fsl_rtc.h **** 
+ 116:../drivers/fsl_rtc.h **** #endif /* FSL_FEATURE_SCG_HAS_OSC_SCXP */
+ 117:../drivers/fsl_rtc.h **** 
+ 118:../drivers/fsl_rtc.h **** /*! @brief Structure is used to hold the date and time */
+ 119:../drivers/fsl_rtc.h **** typedef struct _rtc_datetime
+ 120:../drivers/fsl_rtc.h **** {
+ 121:../drivers/fsl_rtc.h ****     uint16_t year;  /*!< Range from 1970 to 2099.*/
+ 122:../drivers/fsl_rtc.h ****     uint8_t month;  /*!< Range from 1 to 12.*/
+ 123:../drivers/fsl_rtc.h ****     uint8_t day;    /*!< Range from 1 to 31 (depending on month).*/
+ 124:../drivers/fsl_rtc.h ****     uint8_t hour;   /*!< Range from 0 to 23.*/
+ 125:../drivers/fsl_rtc.h ****     uint8_t minute; /*!< Range from 0 to 59.*/
+ 126:../drivers/fsl_rtc.h ****     uint8_t second; /*!< Range from 0 to 59.*/
+ 127:../drivers/fsl_rtc.h **** } rtc_datetime_t;
+ 128:../drivers/fsl_rtc.h **** 
+ 129:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_PCR) && FSL_FEATURE_RTC_HAS_PCR)
+ 130:../drivers/fsl_rtc.h **** 
+ 131:../drivers/fsl_rtc.h **** /*!
+ 132:../drivers/fsl_rtc.h ****  * @brief RTC pin config structure
+ 133:../drivers/fsl_rtc.h ****  */
+ 134:../drivers/fsl_rtc.h **** typedef struct _rtc_pin_config
+ 135:../drivers/fsl_rtc.h **** {
+ 136:../drivers/fsl_rtc.h ****     bool inputLogic;       /*!< true: Tamper pin input data is logic one.
+ 137:../drivers/fsl_rtc.h ****                                 false: Tamper pin input data is logic zero. */
+ 138:../drivers/fsl_rtc.h ****     bool pinActiveLow;     /*!< true: Tamper pin is active low.
+ 139:../drivers/fsl_rtc.h ****                                 false: Tamper pin is active high. */
+ 140:../drivers/fsl_rtc.h ****     bool filterEnable;     /*!< true: Input filter is enabled on the tamper pin.
+ 141:../drivers/fsl_rtc.h ****                                 false: Input filter is disabled on the tamper pin. */
+ 142:../drivers/fsl_rtc.h ****     bool pullSelectNegate; /*!< true: Tamper pin pull resistor direction will negate the tamper pin
+ 143:../drivers/fsl_rtc.h ****                                 false: Tamper pin pull resistor direction will assert the tamper pi
+ 144:../drivers/fsl_rtc.h ****     bool pullEnable;       /*!< true: Pull resistor is enabled on tamper pin.
+ 145:../drivers/fsl_rtc.h ****                                 false: Pull resistor is disabled on tamper pin. */
+ 146:../drivers/fsl_rtc.h **** } rtc_pin_config_t;
+ 147:../drivers/fsl_rtc.h **** 
+ 148:../drivers/fsl_rtc.h **** #endif /* FSL_FEATURE_RTC_HAS_PCR */
+ 149:../drivers/fsl_rtc.h **** 
+ 150:../drivers/fsl_rtc.h **** /*!
+ 151:../drivers/fsl_rtc.h ****  * @brief RTC config structure
+ 152:../drivers/fsl_rtc.h ****  *
+ 153:../drivers/fsl_rtc.h ****  * This structure holds the configuration settings for the RTC peripheral. To initialize this
+ 154:../drivers/fsl_rtc.h ****  * structure to reasonable defaults, call the RTC_GetDefaultConfig() function and pass a
+ 155:../drivers/fsl_rtc.h ****  * pointer to your config structure instance.
+ 156:../drivers/fsl_rtc.h ****  *
+ 157:../drivers/fsl_rtc.h ****  * The config struct can be made const so it resides in flash
+ 158:../drivers/fsl_rtc.h ****  */
+ 159:../drivers/fsl_rtc.h **** typedef struct _rtc_config
+ 160:../drivers/fsl_rtc.h **** {
+ 161:../drivers/fsl_rtc.h ****     bool wakeupSelect;             /*!< true: Wakeup pin outputs the 32 KHz clock;
+ 162:../drivers/fsl_rtc.h ****                                         false:Wakeup pin used to wakeup the chip  */
+ 163:../drivers/fsl_rtc.h ****     bool updateMode;               /*!< true: Registers can be written even when locked under certa
+ 164:../drivers/fsl_rtc.h ****                                         conditions, false: No writes allowed when registers are loc
+ 165:../drivers/fsl_rtc.h ****     bool supervisorAccess;         /*!< true: Non-supervisor accesses are allowed;
+ 166:../drivers/fsl_rtc.h ****                                         false: Non-supervisor accesses are not supported */
+ 167:../drivers/fsl_rtc.h ****     uint32_t compensationInterval; /*!< Compensation interval that is written to the CIR field in R
+ 168:../drivers/fsl_rtc.h ****     uint32_t compensationTime;     /*!< Compensation time that is written to the TCR field in RTC T
+ 169:../drivers/fsl_rtc.h **** } rtc_config_t;
+ 170:../drivers/fsl_rtc.h **** 
+ 171:../drivers/fsl_rtc.h **** /*******************************************************************************
+ 172:../drivers/fsl_rtc.h ****  * API
+ 173:../drivers/fsl_rtc.h ****  ******************************************************************************/
+ 174:../drivers/fsl_rtc.h **** 
+ 175:../drivers/fsl_rtc.h **** #if defined(__cplusplus)
+ 176:../drivers/fsl_rtc.h **** extern "C" {
+ 177:../drivers/fsl_rtc.h **** #endif
+ 178:../drivers/fsl_rtc.h **** 
+ 179:../drivers/fsl_rtc.h **** /*!
+ 180:../drivers/fsl_rtc.h ****  * @name Initialization and deinitialization
+ 181:../drivers/fsl_rtc.h ****  * @{
+ 182:../drivers/fsl_rtc.h ****  */
+ 183:../drivers/fsl_rtc.h **** 
+ 184:../drivers/fsl_rtc.h **** /*!
+ 185:../drivers/fsl_rtc.h ****  * @brief Ungates the RTC clock and configures the peripheral for basic operation.
+ 186:../drivers/fsl_rtc.h ****  *
+ 187:../drivers/fsl_rtc.h ****  * This function issues a software reset if the timer invalid flag is set.
+ 188:../drivers/fsl_rtc.h ****  *
+ 189:../drivers/fsl_rtc.h ****  * @note This API should be called at the beginning of the application using the RTC driver.
+ 190:../drivers/fsl_rtc.h ****  *
+ 191:../drivers/fsl_rtc.h ****  * @param base   RTC peripheral base address
+ 192:../drivers/fsl_rtc.h ****  * @param config Pointer to the user's RTC configuration structure.
+ 193:../drivers/fsl_rtc.h ****  */
+ 194:../drivers/fsl_rtc.h **** void RTC_Init(RTC_Type *base, const rtc_config_t *config);
+ 195:../drivers/fsl_rtc.h **** 
+ 196:../drivers/fsl_rtc.h **** /*!
+ 197:../drivers/fsl_rtc.h ****  * @brief Stops the timer and gate the RTC clock.
+ 198:../drivers/fsl_rtc.h ****  *
+ 199:../drivers/fsl_rtc.h ****  * @param base RTC peripheral base address
+ 200:../drivers/fsl_rtc.h ****  */
+ 201:../drivers/fsl_rtc.h **** static inline void RTC_Deinit(RTC_Type *base)
+ 202:../drivers/fsl_rtc.h **** {
+ 203:../drivers/fsl_rtc.h ****     /* Stop the RTC timer */
+ 204:../drivers/fsl_rtc.h ****     base->SR &= ~RTC_SR_TCE_MASK;
+ 205:../drivers/fsl_rtc.h **** 
+ 206:../drivers/fsl_rtc.h **** #if defined(RTC_CLOCKS)
+ 207:../drivers/fsl_rtc.h **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+ 208:../drivers/fsl_rtc.h ****     /* Gate the module clock */
+ 209:../drivers/fsl_rtc.h ****     CLOCK_DisableClock(kCLOCK_Rtc0);
+ 210:../drivers/fsl_rtc.h **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+ 211:../drivers/fsl_rtc.h **** #endif /* RTC_CLOCKS */
+ 212:../drivers/fsl_rtc.h **** }
+ 213:../drivers/fsl_rtc.h **** 
+ 214:../drivers/fsl_rtc.h **** /*!
+ 215:../drivers/fsl_rtc.h ****  * @brief Fills in the RTC config struct with the default settings.
+ 216:../drivers/fsl_rtc.h ****  *
+ 217:../drivers/fsl_rtc.h ****  * The default values are as follows.
+ 218:../drivers/fsl_rtc.h ****  * @code
+ 219:../drivers/fsl_rtc.h ****  *    config->wakeupSelect = false;
+ 220:../drivers/fsl_rtc.h ****  *    config->updateMode = false;
+ 221:../drivers/fsl_rtc.h ****  *    config->supervisorAccess = false;
+ 222:../drivers/fsl_rtc.h ****  *    config->compensationInterval = 0;
+ 223:../drivers/fsl_rtc.h ****  *    config->compensationTime = 0;
+ 224:../drivers/fsl_rtc.h ****  * @endcode
+ 225:../drivers/fsl_rtc.h ****  * @param config Pointer to the user's RTC configuration structure.
+ 226:../drivers/fsl_rtc.h ****  */
+ 227:../drivers/fsl_rtc.h **** void RTC_GetDefaultConfig(rtc_config_t *config);
+ 228:../drivers/fsl_rtc.h **** 
+ 229:../drivers/fsl_rtc.h **** /*! @}*/
+ 230:../drivers/fsl_rtc.h **** 
+ 231:../drivers/fsl_rtc.h **** /*!
+ 232:../drivers/fsl_rtc.h ****  * @name Current Time & Alarm
+ 233:../drivers/fsl_rtc.h ****  * @{
+ 234:../drivers/fsl_rtc.h ****  */
+ 235:../drivers/fsl_rtc.h **** 
+ 236:../drivers/fsl_rtc.h **** /*!
+ 237:../drivers/fsl_rtc.h ****  * @brief Sets the RTC date and time according to the given time structure.
+ 238:../drivers/fsl_rtc.h ****  *
+ 239:../drivers/fsl_rtc.h ****  * The RTC counter must be stopped prior to calling this function because writes to the RTC
+ 240:../drivers/fsl_rtc.h ****  * seconds register fail if the RTC counter is running.
+ 241:../drivers/fsl_rtc.h ****  *
+ 242:../drivers/fsl_rtc.h ****  * @param base     RTC peripheral base address
+ 243:../drivers/fsl_rtc.h ****  * @param datetime Pointer to the structure where the date and time details are stored.
+ 244:../drivers/fsl_rtc.h ****  *
+ 245:../drivers/fsl_rtc.h ****  * @return kStatus_Success: Success in setting the time and starting the RTC
+ 246:../drivers/fsl_rtc.h ****  *         kStatus_InvalidArgument: Error because the datetime format is incorrect
+ 247:../drivers/fsl_rtc.h ****  */
+ 248:../drivers/fsl_rtc.h **** status_t RTC_SetDatetime(RTC_Type *base, const rtc_datetime_t *datetime);
+ 249:../drivers/fsl_rtc.h **** 
+ 250:../drivers/fsl_rtc.h **** /*!
+ 251:../drivers/fsl_rtc.h ****  * @brief Gets the RTC time and stores it in the given time structure.
+ 252:../drivers/fsl_rtc.h ****  *
+ 253:../drivers/fsl_rtc.h ****  * @param base     RTC peripheral base address
+ 254:../drivers/fsl_rtc.h ****  * @param datetime Pointer to the structure where the date and time details are stored.
+ 255:../drivers/fsl_rtc.h ****  */
+ 256:../drivers/fsl_rtc.h **** void RTC_GetDatetime(RTC_Type *base, rtc_datetime_t *datetime);
+ 257:../drivers/fsl_rtc.h **** 
+ 258:../drivers/fsl_rtc.h **** /*!
+ 259:../drivers/fsl_rtc.h ****  * @brief Sets the RTC alarm time.
+ 260:../drivers/fsl_rtc.h ****  *
+ 261:../drivers/fsl_rtc.h ****  * The function checks whether the specified alarm time is greater than the present
+ 262:../drivers/fsl_rtc.h ****  * time. If not, the function does not set the alarm and returns an error.
+ 263:../drivers/fsl_rtc.h ****  *
+ 264:../drivers/fsl_rtc.h ****  * @param base      RTC peripheral base address
+ 265:../drivers/fsl_rtc.h ****  * @param alarmTime Pointer to the structure where the alarm time is stored.
+ 266:../drivers/fsl_rtc.h ****  *
+ 267:../drivers/fsl_rtc.h ****  * @return kStatus_Success: success in setting the RTC alarm
+ 268:../drivers/fsl_rtc.h ****  *         kStatus_InvalidArgument: Error because the alarm datetime format is incorrect
+ 269:../drivers/fsl_rtc.h ****  *         kStatus_Fail: Error because the alarm time has already passed
+ 270:../drivers/fsl_rtc.h ****  */
+ 271:../drivers/fsl_rtc.h **** status_t RTC_SetAlarm(RTC_Type *base, const rtc_datetime_t *alarmTime);
+ 272:../drivers/fsl_rtc.h **** 
+ 273:../drivers/fsl_rtc.h **** /*!
+ 274:../drivers/fsl_rtc.h ****  * @brief Returns the RTC alarm time.
+ 275:../drivers/fsl_rtc.h ****  *
+ 276:../drivers/fsl_rtc.h ****  * @param base     RTC peripheral base address
+ 277:../drivers/fsl_rtc.h ****  * @param datetime Pointer to the structure where the alarm date and time details are stored.
+ 278:../drivers/fsl_rtc.h ****  */
+ 279:../drivers/fsl_rtc.h **** void RTC_GetAlarm(RTC_Type *base, rtc_datetime_t *datetime);
+ 280:../drivers/fsl_rtc.h **** 
+ 281:../drivers/fsl_rtc.h **** /*! @}*/
+ 282:../drivers/fsl_rtc.h **** 
+ 283:../drivers/fsl_rtc.h **** /*!
+ 284:../drivers/fsl_rtc.h ****  * @name Interrupt Interface
+ 285:../drivers/fsl_rtc.h ****  * @{
+ 286:../drivers/fsl_rtc.h ****  */
+ 287:../drivers/fsl_rtc.h **** 
+ 288:../drivers/fsl_rtc.h **** /*!
+ 289:../drivers/fsl_rtc.h ****  * @brief Enables the selected RTC interrupts.
+ 290:../drivers/fsl_rtc.h ****  *
+ 291:../drivers/fsl_rtc.h ****  * @param base RTC peripheral base address
+ 292:../drivers/fsl_rtc.h ****  * @param mask The interrupts to enable. This is a logical OR of members of the
+ 293:../drivers/fsl_rtc.h ****  *             enumeration ::rtc_interrupt_enable_t
+ 294:../drivers/fsl_rtc.h ****  */
+ 295:../drivers/fsl_rtc.h **** void RTC_EnableInterrupts(RTC_Type *base, uint32_t mask);
+ 296:../drivers/fsl_rtc.h **** 
+ 297:../drivers/fsl_rtc.h **** /*!
+ 298:../drivers/fsl_rtc.h ****  * @brief Disables the selected RTC interrupts.
+ 299:../drivers/fsl_rtc.h ****  *
+ 300:../drivers/fsl_rtc.h ****  * @param base RTC peripheral base address
+ 301:../drivers/fsl_rtc.h ****  * @param mask The interrupts to enable. This is a logical OR of members of the
+ 302:../drivers/fsl_rtc.h ****  *             enumeration ::rtc_interrupt_enable_t
+ 303:../drivers/fsl_rtc.h ****  */
+ 304:../drivers/fsl_rtc.h **** void RTC_DisableInterrupts(RTC_Type *base, uint32_t mask);
+ 305:../drivers/fsl_rtc.h **** 
+ 306:../drivers/fsl_rtc.h **** /*!
+ 307:../drivers/fsl_rtc.h ****  * @brief Gets the enabled RTC interrupts.
+ 308:../drivers/fsl_rtc.h ****  *
+ 309:../drivers/fsl_rtc.h ****  * @param base RTC peripheral base address
+ 310:../drivers/fsl_rtc.h ****  *
+ 311:../drivers/fsl_rtc.h ****  * @return The enabled interrupts. This is the logical OR of members of the
+ 312:../drivers/fsl_rtc.h ****  *         enumeration ::rtc_interrupt_enable_t
+ 313:../drivers/fsl_rtc.h ****  */
+ 314:../drivers/fsl_rtc.h **** uint32_t RTC_GetEnabledInterrupts(RTC_Type *base);
+ 315:../drivers/fsl_rtc.h **** 
+ 316:../drivers/fsl_rtc.h **** /*! @}*/
+ 317:../drivers/fsl_rtc.h **** 
+ 318:../drivers/fsl_rtc.h **** /*!
+ 319:../drivers/fsl_rtc.h ****  * @name Status Interface
+ 320:../drivers/fsl_rtc.h ****  * @{
+ 321:../drivers/fsl_rtc.h ****  */
+ 322:../drivers/fsl_rtc.h **** 
+ 323:../drivers/fsl_rtc.h **** /*!
+ 324:../drivers/fsl_rtc.h ****  * @brief Gets the RTC status flags.
+ 325:../drivers/fsl_rtc.h ****  *
+ 326:../drivers/fsl_rtc.h ****  * @param base RTC peripheral base address
+ 327:../drivers/fsl_rtc.h ****  *
+ 328:../drivers/fsl_rtc.h ****  * @return The status flags. This is the logical OR of members of the
+ 329:../drivers/fsl_rtc.h ****  *         enumeration ::rtc_status_flags_t
+ 330:../drivers/fsl_rtc.h ****  */
+ 331:../drivers/fsl_rtc.h **** uint32_t RTC_GetStatusFlags(RTC_Type *base);
+ 332:../drivers/fsl_rtc.h **** 
+ 333:../drivers/fsl_rtc.h **** /*!
+ 334:../drivers/fsl_rtc.h ****  * @brief  Clears the RTC status flags.
+ 335:../drivers/fsl_rtc.h ****  *
+ 336:../drivers/fsl_rtc.h ****  * @param base RTC peripheral base address
+ 337:../drivers/fsl_rtc.h ****  * @param mask The status flags to clear. This is a logical OR of members of the
+ 338:../drivers/fsl_rtc.h ****  *             enumeration ::rtc_status_flags_t
+ 339:../drivers/fsl_rtc.h ****  */
+ 340:../drivers/fsl_rtc.h **** void RTC_ClearStatusFlags(RTC_Type *base, uint32_t mask);
+ 341:../drivers/fsl_rtc.h **** 
+ 342:../drivers/fsl_rtc.h **** /*! @}*/
+ 343:../drivers/fsl_rtc.h **** 
+ 344:../drivers/fsl_rtc.h **** /*!
+ 345:../drivers/fsl_rtc.h ****  * @brief Set RTC clock source.
+ 346:../drivers/fsl_rtc.h ****  * 
+ 347:../drivers/fsl_rtc.h ****  * @param base RTC peripheral base address
+ 348:../drivers/fsl_rtc.h ****  *
+ 349:../drivers/fsl_rtc.h ****  * @note After setting this bit, wait the oscillator startup time before enabling
+ 350:../drivers/fsl_rtc.h ****  *       the time counter to allow the 32.768 kHz clock time to stabilize.
+ 351:../drivers/fsl_rtc.h ****  */
+ 352:../drivers/fsl_rtc.h **** static inline void RTC_SetClockSource(RTC_Type *base)
+ 353:../drivers/fsl_rtc.h **** {
+ 354:../drivers/fsl_rtc.h ****     /* Enable the RTC 32KHz oscillator */
+ 355:../drivers/fsl_rtc.h ****     base->CR |= RTC_CR_OSCE_MASK;
+ 356:../drivers/fsl_rtc.h **** }
+ 357:../drivers/fsl_rtc.h **** 
+ 358:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_TTSR) && FSL_FEATURE_RTC_HAS_TTSR)
+ 359:../drivers/fsl_rtc.h **** 
+ 360:../drivers/fsl_rtc.h **** /*!
+ 361:../drivers/fsl_rtc.h ****  * @brief Get the RTC tamper time seconds.
+ 362:../drivers/fsl_rtc.h ****  *
+ 363:../drivers/fsl_rtc.h ****  * @param base RTC peripheral base address
+ 364:../drivers/fsl_rtc.h ****  */
+ 365:../drivers/fsl_rtc.h **** static inline uint32_t RTC_GetTamperTimeSeconds(RTC_Type *base)
+ 366:../drivers/fsl_rtc.h **** {
+ 367:../drivers/fsl_rtc.h ****     return base->TTSR;
+ 368:../drivers/fsl_rtc.h **** }
+ 369:../drivers/fsl_rtc.h **** 
+ 370:../drivers/fsl_rtc.h **** #endif /* FSL_FEATURE_RTC_HAS_TTSR */
+ 371:../drivers/fsl_rtc.h **** 
+ 372:../drivers/fsl_rtc.h **** /*!
+ 373:../drivers/fsl_rtc.h ****  * @name Timer Start and Stop
+ 374:../drivers/fsl_rtc.h ****  * @{
+ 375:../drivers/fsl_rtc.h ****  */
+ 376:../drivers/fsl_rtc.h **** 
+ 377:../drivers/fsl_rtc.h **** /*!
+ 378:../drivers/fsl_rtc.h ****  * @brief Starts the RTC time counter.
+ 379:../drivers/fsl_rtc.h ****  *
+ 380:../drivers/fsl_rtc.h ****  * After calling this function, the timer counter increments once a second provided SR[TOF] or
+ 381:../drivers/fsl_rtc.h ****  * SR[TIF] are not set.
+ 382:../drivers/fsl_rtc.h ****  *
+ 383:../drivers/fsl_rtc.h ****  * @param base RTC peripheral base address
+ 384:../drivers/fsl_rtc.h ****  */
+ 385:../drivers/fsl_rtc.h **** static inline void RTC_StartTimer(RTC_Type *base)
+ 386:../drivers/fsl_rtc.h **** {
+ 387:../drivers/fsl_rtc.h ****     base->SR |= RTC_SR_TCE_MASK;
+ 388:../drivers/fsl_rtc.h **** }
+ 389:../drivers/fsl_rtc.h **** 
+ 390:../drivers/fsl_rtc.h **** /*!
+ 391:../drivers/fsl_rtc.h ****  * @brief Stops the RTC time counter.
+ 392:../drivers/fsl_rtc.h ****  *
+ 393:../drivers/fsl_rtc.h ****  * RTC's seconds register can be written to only when the timer is stopped.
+ 394:../drivers/fsl_rtc.h ****  *
+ 395:../drivers/fsl_rtc.h ****  * @param base RTC peripheral base address
+ 396:../drivers/fsl_rtc.h ****  */
+ 397:../drivers/fsl_rtc.h **** static inline void RTC_StopTimer(RTC_Type *base)
+ 398:../drivers/fsl_rtc.h **** {
+ 399:../drivers/fsl_rtc.h ****     base->SR &= ~RTC_SR_TCE_MASK;
+ 400:../drivers/fsl_rtc.h **** }
+ 401:../drivers/fsl_rtc.h **** 
+ 402:../drivers/fsl_rtc.h **** /*! @}*/
+ 403:../drivers/fsl_rtc.h **** 
+ 404:../drivers/fsl_rtc.h **** #if (defined(FSL_FEATURE_RTC_HAS_OSC_SCXP) && FSL_FEATURE_RTC_HAS_OSC_SCXP)
+ 405:../drivers/fsl_rtc.h **** 
+ 406:../drivers/fsl_rtc.h **** /*!
+ 407:../drivers/fsl_rtc.h ****  * @brief This function sets the specified capacitor configuration for the RTC oscillator.
+ 408:../drivers/fsl_rtc.h ****  *
+ 409:../drivers/fsl_rtc.h ****  * @param base    RTC peripheral base address
+ 410:../drivers/fsl_rtc.h ****  * @param capLoad Oscillator loads to enable. This is a logical OR of members of the
+ 411:../drivers/fsl_rtc.h ****  *                enumeration ::rtc_osc_cap_load_t
+ 412:../drivers/fsl_rtc.h ****  */
+ 413:../drivers/fsl_rtc.h **** static inline void RTC_SetOscCapLoad(RTC_Type *base, uint32_t capLoad)
+ 414:../drivers/fsl_rtc.h **** {
+ 415:../drivers/fsl_rtc.h ****     uint32_t reg = base->CR;
+ 416:../drivers/fsl_rtc.h **** 
+ 417:../drivers/fsl_rtc.h ****     reg &= ~(RTC_CR_SC2P_MASK | RTC_CR_SC4P_MASK | RTC_CR_SC8P_MASK | RTC_CR_SC16P_MASK);
+ 418:../drivers/fsl_rtc.h ****     reg |= capLoad;
+ 419:../drivers/fsl_rtc.h **** 
+ 420:../drivers/fsl_rtc.h ****     base->CR = reg;
+ 421:../drivers/fsl_rtc.h **** }
+ 422:../drivers/fsl_rtc.h **** 
+ 423:../drivers/fsl_rtc.h **** #endif /* FSL_FEATURE_SCG_HAS_OSC_SCXP */
+ 424:../drivers/fsl_rtc.h **** 
+ 425:../drivers/fsl_rtc.h **** /*!
+ 426:../drivers/fsl_rtc.h ****  * @brief Performs a software reset on the RTC module.
+ 427:../drivers/fsl_rtc.h ****  *
+ 428:../drivers/fsl_rtc.h ****  * This resets all RTC registers except for the SWR bit and the RTC_WAR and RTC_RAR
+ 429:../drivers/fsl_rtc.h ****  * registers. The SWR bit is cleared by software explicitly clearing it.
+ 430:../drivers/fsl_rtc.h ****  *
+ 431:../drivers/fsl_rtc.h ****  * @param base RTC peripheral base address
+ 432:../drivers/fsl_rtc.h ****  */
+ 433:../drivers/fsl_rtc.h **** static inline void RTC_Reset(RTC_Type *base)
+ 434:../drivers/fsl_rtc.h **** {
+ 435:../drivers/fsl_rtc.h ****     base->CR |= RTC_CR_SWR_MASK;
+ 943              		.loc 3 435 0
+ 944 001c 144B     		ldr	r3, .L70+4
+ 945 001e 1969     		ldr	r1, [r3, #16]
+ 946 0020 0122     		movs	r2, #1
+ 947 0022 1143     		orrs	r1, r2
+ 948 0024 1961     		str	r1, [r3, #16]
+ 436:../drivers/fsl_rtc.h ****     base->CR &= ~RTC_CR_SWR_MASK;
+ 949              		.loc 3 436 0
+ 950 0026 1969     		ldr	r1, [r3, #16]
+ 951 0028 9143     		bics	r1, r2
+ 952 002a 1961     		str	r1, [r3, #16]
+ 437:../drivers/fsl_rtc.h **** 
+ 438:../drivers/fsl_rtc.h ****     /* Set TSR register to 0x1 to avoid the timer invalid (TIF) bit being set in the SR register */
+ 439:../drivers/fsl_rtc.h ****     base->TSR = 1U;
+ 953              		.loc 3 439 0
+ 954 002c 1A60     		str	r2, [r3]
+ 955              	.LVL104:
+ 956              	.L69:
+ 957              	.LBE9:
+ 958              	.LBE8:
+ 230:../drivers/fsl_rtc.c ****     /* Setup the update mode and supervisor access mode */
+ 959              		.loc 1 230 0
+ 960 002e 2369     		ldr	r3, [r4, #16]
+ 961              	.LVL105:
+ 232:../drivers/fsl_rtc.c ****     reg |= RTC_CR_UM(config->updateMode) | RTC_CR_SUP(config->supervisorAccess);
+ 962              		.loc 1 232 0
+ 963 0030 0C22     		movs	r2, #12
+ 964 0032 9343     		bics	r3, r2
+ 965              	.LVL106:
+ 966 0034 1A00     		movs	r2, r3
+ 967              	.LVL107:
+ 233:../drivers/fsl_rtc.c **** #if defined(FSL_FEATURE_RTC_HAS_WAKEUP_PIN_SELECTION) && FSL_FEATURE_RTC_HAS_WAKEUP_PIN_SELECTION
+ 968              		.loc 1 233 0
+ 969 0036 6978     		ldrb	r1, [r5, #1]
+ 970 0038 C900     		lsls	r1, r1, #3
+ 971 003a 0823     		movs	r3, #8
+ 972 003c 0B40     		ands	r3, r1
+ 973 003e A878     		ldrb	r0, [r5, #2]
+ 974 0040 8000     		lsls	r0, r0, #2
+ 975 0042 0421     		movs	r1, #4
+ 976 0044 0140     		ands	r1, r0
+ 977 0046 0B43     		orrs	r3, r1
+ 978 0048 1343     		orrs	r3, r2
+ 979              	.LVL108:
+ 236:../drivers/fsl_rtc.c ****     reg |= RTC_CR_WPS(config->wakeupSelect);
+ 980              		.loc 1 236 0
+ 981 004a 1022     		movs	r2, #16
+ 982 004c 9343     		bics	r3, r2
+ 983              	.LVL109:
+ 237:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_WAKEUP_PIN */
+ 984              		.loc 1 237 0
+ 985 004e 2978     		ldrb	r1, [r5]
+ 986 0050 0901     		lsls	r1, r1, #4
+ 987 0052 0A40     		ands	r2, r1
+ 988 0054 1343     		orrs	r3, r2
+ 989              	.LVL110:
+ 239:../drivers/fsl_rtc.c **** 
+ 990              		.loc 1 239 0
+ 991 0056 2361     		str	r3, [r4, #16]
+ 242:../drivers/fsl_rtc.c **** 	
+ 992              		.loc 1 242 0
+ 993 0058 6B68     		ldr	r3, [r5, #4]
+ 994              	.LVL111:
+ 995 005a 1B06     		lsls	r3, r3, #24
+ 996 005c 1B0C     		lsrs	r3, r3, #16
+ 997 005e A968     		ldr	r1, [r5, #8]
+ 998 0060 FF22     		movs	r2, #255
+ 999 0062 0A40     		ands	r2, r1
+ 1000 0064 1343     		orrs	r3, r2
+ 1001 0066 E360     		str	r3, [r4, #12]
+ 1002              	.LVL112:
+ 248:../drivers/fsl_rtc.c **** 
+ 1003              		.loc 1 248 0
+ 1004              		@ sp needed
+ 1005              	.LVL113:
+ 1006              	.LVL114:
+ 1007 0068 70BD     		pop	{r4, r5, r6, pc}
+ 1008              	.L71:
+ 1009 006a C046     		.align	2
+ 1010              	.L70:
+ 1011 006c 3C800440 		.word	1074036796
+ 1012 0070 00D00340 		.word	1073991680
+ 1013              		.cfi_endproc
+ 1014              	.LFE62:
+ 1016              		.section	.text.RTC_ClearStatusFlags,"ax",%progbits
+ 1017              		.align	1
+ 1018              		.global	RTC_ClearStatusFlags
+ 1019              		.syntax unified
+ 1020              		.code	16
+ 1021              		.thumb_func
+ 1022              		.fpu softvfp
+ 1024              	RTC_ClearStatusFlags:
+ 1025              	.LFB72:
+ 583:../drivers/fsl_rtc.c **** 
+ 584:../drivers/fsl_rtc.c **** void RTC_ClearStatusFlags(RTC_Type *base, uint32_t mask)
+ 585:../drivers/fsl_rtc.c **** {
+ 1026              		.loc 1 585 0
+ 1027              		.cfi_startproc
+ 1028              		@ args = 0, pretend = 0, frame = 0
+ 1029              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1030              		@ link register save eliminated.
+ 1031              	.LVL115:
+ 586:../drivers/fsl_rtc.c ****     /* The alarm flag is cleared by writing to the TAR register */
+ 587:../drivers/fsl_rtc.c ****     if (mask & kRTC_AlarmFlag)
+ 1032              		.loc 1 587 0
+ 1033 0000 4B07     		lsls	r3, r1, #29
+ 1034 0002 01D5     		bpl	.L73
+ 588:../drivers/fsl_rtc.c ****     {
+ 589:../drivers/fsl_rtc.c ****         base->TAR = 0U;
+ 1035              		.loc 1 589 0
+ 1036 0004 0023     		movs	r3, #0
+ 1037 0006 8360     		str	r3, [r0, #8]
+ 1038              	.L73:
+ 590:../drivers/fsl_rtc.c ****     }
+ 591:../drivers/fsl_rtc.c **** 
+ 592:../drivers/fsl_rtc.c ****     /* The timer overflow flag is cleared by initializing the TSR register.
+ 593:../drivers/fsl_rtc.c ****      * The time counter should be disabled for this write to be successful
+ 594:../drivers/fsl_rtc.c ****      */
+ 595:../drivers/fsl_rtc.c ****     if (mask & kRTC_TimeOverflowFlag)
+ 1039              		.loc 1 595 0
+ 1040 0008 8B07     		lsls	r3, r1, #30
+ 1041 000a 01D5     		bpl	.L74
+ 596:../drivers/fsl_rtc.c ****     {
+ 597:../drivers/fsl_rtc.c ****         base->TSR = 1U;
+ 1042              		.loc 1 597 0
+ 1043 000c 0123     		movs	r3, #1
+ 1044 000e 0360     		str	r3, [r0]
+ 1045              	.L74:
+ 598:../drivers/fsl_rtc.c ****     }
+ 599:../drivers/fsl_rtc.c **** 
+ 600:../drivers/fsl_rtc.c ****     /* The timer overflow flag is cleared by initializing the TSR register.
+ 601:../drivers/fsl_rtc.c ****      * The time counter should be disabled for this write to be successful
+ 602:../drivers/fsl_rtc.c ****      */
+ 603:../drivers/fsl_rtc.c ****     if (mask & kRTC_TimeInvalidFlag)
+ 1046              		.loc 1 603 0
+ 1047 0010 CB07     		lsls	r3, r1, #31
+ 1048 0012 01D5     		bpl	.L72
+ 604:../drivers/fsl_rtc.c ****     {
+ 605:../drivers/fsl_rtc.c ****         base->TSR = 1U;
+ 1049              		.loc 1 605 0
+ 1050 0014 0123     		movs	r3, #1
+ 1051 0016 0360     		str	r3, [r0]
+ 1052              	.L72:
+ 606:../drivers/fsl_rtc.c ****     }
+ 607:../drivers/fsl_rtc.c **** 
+ 608:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR) && FSL_FEATURE_RTC_HAS_TDR)
+ 609:../drivers/fsl_rtc.c ****     /* To clear, write logic one to this flag after exiting from all test modes */
+ 610:../drivers/fsl_rtc.c ****     if (kRTC_TestModeFlag == (kRTC_TestModeFlag & mask))
+ 611:../drivers/fsl_rtc.c ****     {
+ 612:../drivers/fsl_rtc.c ****         base->TDR = RTC_TDR_TMF_MASK;
+ 613:../drivers/fsl_rtc.c ****     }
+ 614:../drivers/fsl_rtc.c ****     /* To clear, write logic one to this flag after flash security is enabled */
+ 615:../drivers/fsl_rtc.c ****     if (kRTC_FlashSecurityFlag == (kRTC_FlashSecurityFlag & mask))
+ 616:../drivers/fsl_rtc.c ****     {
+ 617:../drivers/fsl_rtc.c ****         base->TDR = RTC_TDR_FSF_MASK;
+ 618:../drivers/fsl_rtc.c ****     }
+ 619:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_TPF) && FSL_FEATURE_RTC_HAS_TDR_TPF)
+ 620:../drivers/fsl_rtc.c ****     /* To clear, write logic one to the corresponding flag after that tamper pin negates */
+ 621:../drivers/fsl_rtc.c ****     if (kRTC_TamperPinFlag == (kRTC_TamperPinFlag & mask))
+ 622:../drivers/fsl_rtc.c ****     {
+ 623:../drivers/fsl_rtc.c ****         base->TDR = RTC_TDR_TPF_MASK;
+ 624:../drivers/fsl_rtc.c ****     }
+ 625:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR_TPF */
+ 626:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_STF) && FSL_FEATURE_RTC_HAS_TDR_STF)
+ 627:../drivers/fsl_rtc.c ****     /* To clear, write logic one to this flag after security module has negated its tamper detect *
+ 628:../drivers/fsl_rtc.c ****     if (kRTC_SecurityTamperFlag == (kRTC_SecurityTamperFlag & mask))
+ 629:../drivers/fsl_rtc.c ****     {
+ 630:../drivers/fsl_rtc.c ****         base->TDR = RTC_TDR_STF_MASK;
+ 631:../drivers/fsl_rtc.c ****     }
+ 632:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR_STF */
+ 633:../drivers/fsl_rtc.c **** #if (defined(FSL_FEATURE_RTC_HAS_TDR_LCTF) && FSL_FEATURE_RTC_HAS_TDR_LCTF)
+ 634:../drivers/fsl_rtc.c ****     /* To clear, write logic one to this flag after loss of clock negates */
+ 635:../drivers/fsl_rtc.c ****     if (kRTC_LossOfClockTamperFlag == (kRTC_LossOfClockTamperFlag & mask))
+ 636:../drivers/fsl_rtc.c ****     {
+ 637:../drivers/fsl_rtc.c ****         base->TDR = RTC_TDR_LCTF_MASK;
+ 638:../drivers/fsl_rtc.c ****     }
+ 639:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR_LCTF */
+ 640:../drivers/fsl_rtc.c **** #endif /* FSL_FEATURE_RTC_HAS_TDR */
+ 641:../drivers/fsl_rtc.c **** }
+ 1053              		.loc 1 641 0
+ 1054              		@ sp needed
+ 1055 0018 7047     		bx	lr
+ 1056              		.cfi_endproc
+ 1057              	.LFE72:
+ 1059              		.section	.rodata
+ 1060              		.align	2
+ 1061              		.set	.LANCHOR0,. + 0
+ 1062              	.LC0:
+ 1063 0000 00       		.byte	0
+ 1064 0001 1F       		.byte	31
+ 1065 0002 1C       		.byte	28
+ 1066 0003 1F       		.byte	31
+ 1067 0004 1E       		.byte	30
+ 1068 0005 1F       		.byte	31
+ 1069 0006 1E       		.byte	30
+ 1070 0007 1F       		.byte	31
+ 1071 0008 1F       		.byte	31
+ 1072 0009 1E       		.byte	30
+ 1073 000a 1F       		.byte	31
+ 1074 000b 1E       		.byte	30
+ 1075 000c 1F       		.byte	31
+ 1076 000d 000000   		.space	3
+ 1077              	.LC1:
+ 1078 0010 0000     		.short	0
+ 1079 0012 0000     		.short	0
+ 1080 0014 1F00     		.short	31
+ 1081 0016 3B00     		.short	59
+ 1082 0018 5A00     		.short	90
+ 1083 001a 7800     		.short	120
+ 1084 001c 9700     		.short	151
+ 1085 001e B500     		.short	181
+ 1086 0020 D400     		.short	212
+ 1087 0022 F300     		.short	243
+ 1088 0024 1101     		.short	273
+ 1089 0026 3001     		.short	304
+ 1090 0028 4E01     		.short	334
+ 1091              		.text
+ 1092              	.Letext0:
+ 1093              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1094              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1095              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1096              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1097              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1098              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1099              		.file 10 "../CMSIS/system_MKL17Z4.h"
+ 1100              		.file 11 "../CMSIS/MKL17Z4.h"
+ 1101              		.file 12 "../drivers/fsl_common.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fsl_rtc.c
+     /tmp/ccjAyySm.s:17     .text.RTC_CheckDatetimeFormat:0000000000000000 $t
+     /tmp/ccjAyySm.s:23     .text.RTC_CheckDatetimeFormat:0000000000000000 RTC_CheckDatetimeFormat
+     /tmp/ccjAyySm.s:151    .text.RTC_CheckDatetimeFormat:0000000000000098 $d
+     /tmp/ccjAyySm.s:157    .text.RTC_ConvertDatetimeToSeconds:0000000000000000 $t
+     /tmp/ccjAyySm.s:163    .text.RTC_ConvertDatetimeToSeconds:0000000000000000 RTC_ConvertDatetimeToSeconds
+     /tmp/ccjAyySm.s:264    .text.RTC_ConvertDatetimeToSeconds:000000000000007c $d
+     /tmp/ccjAyySm.s:271    .text.RTC_ConvertSecondsToDatetime:0000000000000000 $t
+     /tmp/ccjAyySm.s:277    .text.RTC_ConvertSecondsToDatetime:0000000000000000 RTC_ConvertSecondsToDatetime
+     /tmp/ccjAyySm.s:430    .text.RTC_ConvertSecondsToDatetime:00000000000000a4 $d
+     /tmp/ccjAyySm.s:437    .text.RTC_GetDefaultConfig:0000000000000000 $t
+     /tmp/ccjAyySm.s:444    .text.RTC_GetDefaultConfig:0000000000000000 RTC_GetDefaultConfig
+     /tmp/ccjAyySm.s:470    .text.RTC_SetDatetime:0000000000000000 $t
+     /tmp/ccjAyySm.s:477    .text.RTC_SetDatetime:0000000000000000 RTC_SetDatetime
+     /tmp/ccjAyySm.s:521    .text.RTC_GetDatetime:0000000000000000 $t
+     /tmp/ccjAyySm.s:528    .text.RTC_GetDatetime:0000000000000000 RTC_GetDatetime
+     /tmp/ccjAyySm.s:553    .text.RTC_SetAlarm:0000000000000000 $t
+     /tmp/ccjAyySm.s:560    .text.RTC_SetAlarm:0000000000000000 RTC_SetAlarm
+     /tmp/ccjAyySm.s:619    .text.RTC_GetAlarm:0000000000000000 $t
+     /tmp/ccjAyySm.s:626    .text.RTC_GetAlarm:0000000000000000 RTC_GetAlarm
+     /tmp/ccjAyySm.s:651    .text.RTC_EnableInterrupts:0000000000000000 $t
+     /tmp/ccjAyySm.s:658    .text.RTC_EnableInterrupts:0000000000000000 RTC_EnableInterrupts
+     /tmp/ccjAyySm.s:714    .text.RTC_DisableInterrupts:0000000000000000 $t
+     /tmp/ccjAyySm.s:721    .text.RTC_DisableInterrupts:0000000000000000 RTC_DisableInterrupts
+     /tmp/ccjAyySm.s:776    .text.RTC_GetEnabledInterrupts:0000000000000000 $t
+     /tmp/ccjAyySm.s:783    .text.RTC_GetEnabledInterrupts:0000000000000000 RTC_GetEnabledInterrupts
+     /tmp/ccjAyySm.s:840    .text.RTC_GetStatusFlags:0000000000000000 $t
+     /tmp/ccjAyySm.s:847    .text.RTC_GetStatusFlags:0000000000000000 RTC_GetStatusFlags
+     /tmp/ccjAyySm.s:895    .text.RTC_Init:0000000000000000 $t
+     /tmp/ccjAyySm.s:902    .text.RTC_Init:0000000000000000 RTC_Init
+     /tmp/ccjAyySm.s:1011   .text.RTC_Init:000000000000006c $d
+     /tmp/ccjAyySm.s:1017   .text.RTC_ClearStatusFlags:0000000000000000 $t
+     /tmp/ccjAyySm.s:1024   .text.RTC_ClearStatusFlags:0000000000000000 RTC_ClearStatusFlags
+     /tmp/ccjAyySm.s:1060   .rodata:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_uidivmod
+__aeabi_uidiv

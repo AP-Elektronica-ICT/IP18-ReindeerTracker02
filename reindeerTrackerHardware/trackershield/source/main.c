@@ -210,6 +210,7 @@ int main(void) {
 	 * set boost regulator enable pin as output. This pin will control the power to RF modules
 	 */
 	GPIO_PinInit(GPIOB, 11u, &LED_configOutput);
+	GPIO_PinInit(GPIOD, 1u, &LED_configOutput);
 
 	GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
 
@@ -245,11 +246,11 @@ char testLon[11] = ("02534.554");
 	 delay_ms(500);
 	 }
 	 */
-	if (wake == 2) {
+	/*if (wake == 2) {
 		printf("Woken by ACCEL, reindeer is !!!ALIVE!!!\r\n");
 		SMC_PreEnterStopModes();
 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
-	}
+	}*/
 
 	while (1) {
 
@@ -260,7 +261,7 @@ char testLon[11] = ("02534.554");
 		 * Check if a string has arrived from PC (with CR line end)
 		 */
 
-		if (wake == 1) {
+		if (wake == 5) {
 			strcpy(reindeerData.dead, "true");
 			printf("Woken by LPTMR, reindeer is !!!%s!!\r\n",
 					reindeerData.dead);
@@ -304,8 +305,10 @@ char testLon[11] = ("02534.554");
 				printf("Starting Reindeer IoT cycle\r\n");
 				break;
 			} else if (strstr(PC_recBuf, "gpsinfo=1") != NULL) {
+				GPIO_ClearPinsOutput(GPIOD, 1 << 1u);
 				streamGps = 1;
 			} else if (strstr(PC_recBuf, "gpsinfo=0") != NULL) {
+				GPIO_SetPinsOutput(GPIOD, 1 << 1u);
 				streamGps = 0;
 			} else if (strstr(PC_recBuf, "rfoff") != NULL) {
 				GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules

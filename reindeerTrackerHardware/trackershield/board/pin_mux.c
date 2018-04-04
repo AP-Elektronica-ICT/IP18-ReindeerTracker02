@@ -103,6 +103,8 @@ void BOARD_InitPins(void) {
   PORT_SetPinMux(PORTD, 2u, kPORT_MuxAlt3);				// UART2 PIN RX (gps)
   PORT_SetPinMux(PORTD, 3u, kPORT_MuxAlt3);				// UART2 PIN TX (gps)
 
+  PORT_SetPinMux(PORTD, 1u, kPORT_MuxAsGpio);				// UART2 PIN TX (gps)
+
   SIM->SOPT5 = ((SIM->SOPT5 &
     (~(SIM_SOPT5_UART0TXSRC_MASK)))                          /* Mask bits to zero which are setting */
       | SIM_SOPT5_UART0TXSRC(SOPT5_UART0TXSRC_UART_TX)       /* UART 0 transmit data source select: UART0_TX pin */
