@@ -82,7 +82,6 @@ uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer) {
 	uint32_t time_limit = 1000;
 
 	NB_bufPtr = 0;
-	memset(NB_recBuf, 0, 1000);
 
 	sprintf(cmd_buf, "AT+%s%s\r\n", AT_cmd, AT_parameter);
 	NB_send(cmd_buf);
@@ -112,7 +111,7 @@ uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer) {
 		}
 	}
 	NB_bufPtr = 0;
-	memset(NB_recBuf, 0, 1000);
+	memset(NB_recBuf, 0, 600);
 
 	return result;
 }
