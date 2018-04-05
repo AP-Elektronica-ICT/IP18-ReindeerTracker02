@@ -177,6 +177,23 @@
   45              		.loc 1 133 0
   46 001c 4FF4E972 		mov	r2, #466
   47 0020 1A80     		strh	r2, [r3]	@ movhi
+  48 0022 7047     		bx	lr
+  49              	.L3:
+  50              		.align	2
+  51              	.L2:
+  52 0024 00ED00E0 		.word	-536810240
+  53 0028 00200540 		.word	1074077696
+  54              		.cfi_endproc
+  55              	.LFE123:
+  57              		.section	.text.SystemCoreClockUpdate,"ax",%progbits
+  58              		.align	1
+  59              		.global	SystemCoreClockUpdate
+  60              		.syntax unified
+  61              		.thumb
+  62              		.thumb_func
+  63              		.fpu fpv4-sp-d16
+  65              	SystemCoreClockUpdate:
+  66              	.LFB124:
  134:../CMSIS/system_MK64F12.c ****                  WDOG_STCTRLH_WAITEN_MASK |
  135:../CMSIS/system_MK64F12.c ****                  WDOG_STCTRLH_STOPEN_MASK |
  136:../CMSIS/system_MK64F12.c ****                  WDOG_STCTRLH_ALLOWUPDATE_MASK |
@@ -185,62 +202,44 @@
  139:../CMSIS/system_MK64F12.c **** #endif /* (DISABLE_WDOG) */
  140:../CMSIS/system_MK64F12.c **** 
  141:../CMSIS/system_MK64F12.c **** }
-  48              		.loc 1 141 0
-  49 0022 7047     		bx	lr
-  50              	.L3:
-  51              		.align	2
-  52              	.L2:
-  53 0024 00ED00E0 		.word	-536810240
-  54 0028 00200540 		.word	1074077696
-  55              		.cfi_endproc
-  56              	.LFE123:
-  58              		.section	.text.SystemCoreClockUpdate,"ax",%progbits
-  59              		.align	1
-  60              		.global	SystemCoreClockUpdate
-  61              		.syntax unified
-  62              		.thumb
-  63              		.thumb_func
-  64              		.fpu fpv4-sp-d16
-  66              	SystemCoreClockUpdate:
-  67              	.LFB124:
  142:../CMSIS/system_MK64F12.c **** 
  143:../CMSIS/system_MK64F12.c **** /* ----------------------------------------------------------------------------
  144:../CMSIS/system_MK64F12.c ****    -- SystemCoreClockUpdate()
  145:../CMSIS/system_MK64F12.c ****    ---------------------------------------------------------------------------- */
  146:../CMSIS/system_MK64F12.c **** 
  147:../CMSIS/system_MK64F12.c **** void SystemCoreClockUpdate (void) {
-  68              		.loc 1 147 0
-  69              		.cfi_startproc
-  70              		@ args = 0, pretend = 0, frame = 0
-  71              		@ frame_needed = 0, uses_anonymous_args = 0
-  72              		@ link register save eliminated.
+  67              		.loc 1 147 0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 0
+  70              		@ frame_needed = 0, uses_anonymous_args = 0
+  71              		@ link register save eliminated.
  148:../CMSIS/system_MK64F12.c ****   uint32_t MCGOUTClock;                /* Variable to store output clock frequency of the MCG modul
  149:../CMSIS/system_MK64F12.c ****   uint16_t Divider;
  150:../CMSIS/system_MK64F12.c **** 
  151:../CMSIS/system_MK64F12.c ****   if ((MCG->C1 & MCG_C1_CLKS_MASK) == 0x00U) {
-  73              		.loc 1 151 0
-  74 0000 544A     		ldr	r2, .L44
-  75 0002 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-  76 0004 13F0C00F 		tst	r3, #192
-  77 0008 7ED1     		bne	.L5
+  72              		.loc 1 151 0
+  73 0000 544A     		ldr	r2, .L44
+  74 0002 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  75 0004 13F0C00F 		tst	r3, #192
+  76 0008 7ED1     		bne	.L5
  152:../CMSIS/system_MK64F12.c ****     /* Output of FLL or PLL is selected */
  153:../CMSIS/system_MK64F12.c ****     if ((MCG->C6 & MCG_C6_PLLS_MASK) == 0x00U) {
-  78              		.loc 1 153 0
-  79 000a 5379     		ldrb	r3, [r2, #5]	@ zero_extendqisi2
-  80 000c 5806     		lsls	r0, r3, #25
-  81 000e 6ED4     		bmi	.L6
+  77              		.loc 1 153 0
+  78 000a 5379     		ldrb	r3, [r2, #5]	@ zero_extendqisi2
+  79 000c 5806     		lsls	r0, r3, #25
+  80 000e 6ED4     		bmi	.L6
  154:../CMSIS/system_MK64F12.c ****       /* FLL is selected */
  155:../CMSIS/system_MK64F12.c ****       if ((MCG->C1 & MCG_C1_IREFS_MASK) == 0x00U) {
-  82              		.loc 1 155 0
-  83 0010 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-  84 0012 5907     		lsls	r1, r3, #29
-  85 0014 3FD4     		bmi	.L30
+  81              		.loc 1 155 0
+  82 0010 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  83 0012 5907     		lsls	r1, r3, #29
+  84 0014 3FD4     		bmi	.L30
  156:../CMSIS/system_MK64F12.c ****         /* External reference clock is selected */
  157:../CMSIS/system_MK64F12.c ****         switch (MCG->C7 & MCG_C7_OSCSEL_MASK) {
-  86              		.loc 1 157 0
-  87 0016 137B     		ldrb	r3, [r2, #12]	@ zero_extendqisi2
-  88 0018 13F00303 		ands	r3, r3, #3
-  89 001c 1DD0     		beq	.L31
+  85              		.loc 1 157 0
+  86 0016 137B     		ldrb	r3, [r2, #12]	@ zero_extendqisi2
+  87 0018 13F00303 		ands	r3, r3, #3
+  88 001c 1DD0     		beq	.L31
  158:../CMSIS/system_MK64F12.c ****         case 0x00U:
  159:../CMSIS/system_MK64F12.c ****           MCGOUTClock = CPU_XTAL_CLK_HZ; /* System oscillator drives MCG clock */
  160:../CMSIS/system_MK64F12.c ****           break;
@@ -250,35 +249,35 @@
  164:../CMSIS/system_MK64F12.c ****         case 0x02U:
  165:../CMSIS/system_MK64F12.c ****         default:
  166:../CMSIS/system_MK64F12.c ****           MCGOUTClock = CPU_INT_IRC_CLK_HZ; /* IRC 48MHz oscillator drives MCG clock */
-  90              		.loc 1 166 0
-  91 001e 012B     		cmp	r3, #1
-  92 0020 4D48     		ldr	r0, .L44+4
-  93 0022 08BF     		it	eq
-  94 0024 4FF40040 		moveq	r0, #32768
-  95              	.L9:
-  96              	.LVL0:
+  89              		.loc 1 166 0
+  90 001e 012B     		cmp	r3, #1
+  91 0020 4D48     		ldr	r0, .L44+4
+  92 0022 08BF     		it	eq
+  93 0024 4FF40040 		moveq	r0, #32768
+  94              	.L9:
+  95              	.LVL0:
  167:../CMSIS/system_MK64F12.c ****           break;
  168:../CMSIS/system_MK64F12.c ****         }
  169:../CMSIS/system_MK64F12.c ****         if (((MCG->C2 & MCG_C2_RANGE_MASK) != 0x00U) && ((MCG->C7 & MCG_C7_OSCSEL_MASK) != 0x01U)) 
-  97              		.loc 1 169 0
-  98 0028 4A4A     		ldr	r2, .L44
-  99 002a 5378     		ldrb	r3, [r2, #1]	@ zero_extendqisi2
- 100 002c 13F0300F 		tst	r3, #48
- 101 0030 1146     		mov	r1, r2
- 102 0032 28D0     		beq	.L11
- 103              		.loc 1 169 0 is_stmt 0 discriminator 1
- 104 0034 137B     		ldrb	r3, [r2, #12]	@ zero_extendqisi2
- 105 0036 03F00303 		and	r3, r3, #3
- 106 003a 012B     		cmp	r3, #1
- 107 003c 23D0     		beq	.L11
+  96              		.loc 1 169 0
+  97 0028 4A4A     		ldr	r2, .L44
+  98 002a 5378     		ldrb	r3, [r2, #1]	@ zero_extendqisi2
+  99 002c 13F0300F 		tst	r3, #48
+ 100 0030 1146     		mov	r1, r2
+ 101 0032 28D0     		beq	.L11
+ 102              		.loc 1 169 0 is_stmt 0 discriminator 1
+ 103 0034 137B     		ldrb	r3, [r2, #12]	@ zero_extendqisi2
+ 104 0036 03F00303 		and	r3, r3, #3
+ 105 003a 012B     		cmp	r3, #1
+ 106 003c 23D0     		beq	.L11
  170:../CMSIS/system_MK64F12.c ****           switch (MCG->C1 & MCG_C1_FRDIV_MASK) {
- 108              		.loc 1 170 0 is_stmt 1
- 109 003e 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
- 110 0040 01F03801 		and	r1, r1, #56
- 111 0044 3029     		cmp	r1, #48
- 112 0046 0AD0     		beq	.L13
- 113 0048 3829     		cmp	r1, #56
- 114 004a 21D0     		beq	.L32
+ 107              		.loc 1 170 0 is_stmt 1
+ 108 003e 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+ 109 0040 01F03801 		and	r1, r1, #56
+ 110 0044 3029     		cmp	r1, #48
+ 111 0046 0AD0     		beq	.L13
+ 112 0048 3829     		cmp	r1, #56
+ 113 004a 21D0     		beq	.L32
  171:../CMSIS/system_MK64F12.c ****           case 0x38U:
  172:../CMSIS/system_MK64F12.c ****             Divider = 1536U;
  173:../CMSIS/system_MK64F12.c ****             break;
@@ -287,61 +286,61 @@
  176:../CMSIS/system_MK64F12.c ****             break;
  177:../CMSIS/system_MK64F12.c ****           default:
  178:../CMSIS/system_MK64F12.c ****             Divider = (uint16_t)(32LU << ((MCG->C1 & MCG_C1_FRDIV_MASK) >> MCG_C1_FRDIV_SHIFT));
- 115              		.loc 1 178 0
- 116 004c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 117 004e C3F3C202 		ubfx	r2, r3, #3, #3
- 118 0052 2023     		movs	r3, #32
- 119              	.L42:
+ 114              		.loc 1 178 0
+ 115 004c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 116 004e C3F3C202 		ubfx	r2, r3, #3, #3
+ 117 0052 2023     		movs	r3, #32
+ 118              	.L42:
  179:../CMSIS/system_MK64F12.c ****             break;
  180:../CMSIS/system_MK64F12.c ****           }
  181:../CMSIS/system_MK64F12.c ****         } else {/* ((MCG->C2 & MCG_C2_RANGE_MASK) != 0x00U) */
  182:../CMSIS/system_MK64F12.c ****           Divider = (uint16_t)(1LU << ((MCG->C1 & MCG_C1_FRDIV_MASK) >> MCG_C1_FRDIV_SHIFT));
- 120              		.loc 1 182 0
- 121 0054 9340     		lsls	r3, r3, r2
- 122 0056 9BB2     		uxth	r3, r3
- 123              	.LVL1:
- 124 0058 03E0     		b	.L14
- 125              	.LVL2:
- 126              	.L31:
+ 119              		.loc 1 182 0
+ 120 0054 9340     		lsls	r3, r3, r2
+ 121 0056 9BB2     		uxth	r3, r3
+ 122              	.LVL1:
+ 123 0058 03E0     		b	.L14
+ 124              	.LVL2:
+ 125              	.L31:
  159:../CMSIS/system_MK64F12.c ****           break;
- 127              		.loc 1 159 0
- 128 005a 4048     		ldr	r0, .L44+8
- 129 005c E4E7     		b	.L9
- 130              	.LVL3:
- 131              	.L13:
+ 126              		.loc 1 159 0
+ 127 005a 4048     		ldr	r0, .L44+8
+ 128 005c E4E7     		b	.L9
+ 129              	.LVL3:
+ 130              	.L13:
  175:../CMSIS/system_MK64F12.c ****             break;
- 132              		.loc 1 175 0
- 133 005e 4FF4A063 		mov	r3, #1280
- 134              	.L14:
- 135              	.LVL4:
+ 131              		.loc 1 175 0
+ 132 005e 4FF4A063 		mov	r3, #1280
+ 133              	.L14:
+ 134              	.LVL4:
  183:../CMSIS/system_MK64F12.c ****         }
  184:../CMSIS/system_MK64F12.c ****         MCGOUTClock = (MCGOUTClock / Divider); /* Calculate the divided FLL reference clock */
- 136              		.loc 1 184 0
- 137 0062 B0FBF3F3 		udiv	r3, r0, r3
- 138              	.LVL5:
- 139              	.L7:
+ 135              		.loc 1 184 0
+ 136 0062 B0FBF3F3 		udiv	r3, r0, r3
+ 137              	.LVL5:
+ 138              	.L7:
  185:../CMSIS/system_MK64F12.c ****       } else { /* (!((MCG->C1 & MCG_C1_IREFS_MASK) == 0x00U)) */
  186:../CMSIS/system_MK64F12.c ****         MCGOUTClock = CPU_INT_SLOW_CLK_HZ; /* The slow internal reference clock is selected */
  187:../CMSIS/system_MK64F12.c ****       } /* (!((MCG->C1 & MCG_C1_IREFS_MASK) == 0x00U)) */
  188:../CMSIS/system_MK64F12.c ****       /* Select correct multiplier to calculate the MCG output clock  */
  189:../CMSIS/system_MK64F12.c ****       switch (MCG->C4 & (MCG_C4_DMX32_MASK | MCG_C4_DRST_DRS_MASK)) {
- 140              		.loc 1 189 0
- 141 0066 3B4A     		ldr	r2, .L44
- 142 0068 D278     		ldrb	r2, [r2, #3]	@ zero_extendqisi2
- 143 006a 02F0E002 		and	r2, r2, #224
- 144 006e 602A     		cmp	r2, #96
- 145 0070 31D0     		beq	.L16
- 146 0072 13D8     		bhi	.L17
- 147 0074 202A     		cmp	r2, #32
- 148 0076 28D0     		beq	.L18
- 149 0078 402A     		cmp	r2, #64
- 150 007a 29D0     		beq	.L19
- 151 007c 9AB9     		cbnz	r2, .L15
+ 139              		.loc 1 189 0
+ 140 0066 3B4A     		ldr	r2, .L44
+ 141 0068 D278     		ldrb	r2, [r2, #3]	@ zero_extendqisi2
+ 142 006a 02F0E002 		and	r2, r2, #224
+ 143 006e 602A     		cmp	r2, #96
+ 144 0070 31D0     		beq	.L16
+ 145 0072 13D8     		bhi	.L17
+ 146 0074 202A     		cmp	r2, #32
+ 147 0076 28D0     		beq	.L18
+ 148 0078 402A     		cmp	r2, #64
+ 149 007a 29D0     		beq	.L19
+ 150 007c 9AB9     		cbnz	r2, .L15
  190:../CMSIS/system_MK64F12.c ****         case 0x00U:
  191:../CMSIS/system_MK64F12.c ****           MCGOUTClock *= 640U;
- 152              		.loc 1 191 0
- 153 007e 4FF42072 		mov	r2, #640
- 154              	.L43:
+ 151              		.loc 1 191 0
+ 152 007e 4FF42072 		mov	r2, #640
+ 153              	.L43:
  192:../CMSIS/system_MK64F12.c ****           break;
  193:../CMSIS/system_MK64F12.c ****         case 0x20U:
  194:../CMSIS/system_MK64F12.c ****           MCGOUTClock *= 1280U;
@@ -363,42 +362,42 @@
  210:../CMSIS/system_MK64F12.c ****           break;
  211:../CMSIS/system_MK64F12.c ****         case 0xE0U:
  212:../CMSIS/system_MK64F12.c ****           MCGOUTClock *= 2929U;
- 155              		.loc 1 212 0
- 156 0082 5343     		muls	r3, r2, r3
- 157              	.LVL6:
+ 154              		.loc 1 212 0
+ 155 0082 5343     		muls	r3, r2, r3
+ 156              	.LVL6:
  213:../CMSIS/system_MK64F12.c ****           break;
- 158              		.loc 1 213 0
- 159 0084 0FE0     		b	.L15
- 160              	.LVL7:
- 161              	.L11:
+ 157              		.loc 1 213 0
+ 158 0084 0FE0     		b	.L15
+ 159              	.LVL7:
+ 160              	.L11:
  182:../CMSIS/system_MK64F12.c ****         }
- 162              		.loc 1 182 0
- 163 0086 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
- 164 0088 C3F3C202 		ubfx	r2, r3, #3, #3
- 165 008c 0123     		movs	r3, #1
- 166 008e E1E7     		b	.L42
- 167              	.L32:
+ 161              		.loc 1 182 0
+ 162 0086 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 163 0088 C3F3C202 		ubfx	r2, r3, #3, #3
+ 164 008c 0123     		movs	r3, #1
+ 165 008e E1E7     		b	.L42
+ 166              	.L32:
  172:../CMSIS/system_MK64F12.c ****             break;
- 168              		.loc 1 172 0
- 169 0090 4FF4C063 		mov	r3, #1536
- 170 0094 E5E7     		b	.L14
- 171              	.LVL8:
- 172              	.L30:
+ 167              		.loc 1 172 0
+ 168 0090 4FF4C063 		mov	r3, #1536
+ 169 0094 E5E7     		b	.L14
+ 170              	.LVL8:
+ 171              	.L30:
  186:../CMSIS/system_MK64F12.c ****       } /* (!((MCG->C1 & MCG_C1_IREFS_MASK) == 0x00U)) */
- 173              		.loc 1 186 0
- 174 0096 4FF40043 		mov	r3, #32768
- 175 009a E4E7     		b	.L7
- 176              	.LVL9:
- 177              	.L17:
+ 172              		.loc 1 186 0
+ 173 0096 4FF40043 		mov	r3, #32768
+ 174 009a E4E7     		b	.L7
+ 175              	.LVL9:
+ 176              	.L17:
  189:../CMSIS/system_MK64F12.c ****         case 0x00U:
- 178              		.loc 1 189 0
- 179 009c A02A     		cmp	r2, #160
- 180 009e 20D0     		beq	.L21
- 181 00a0 0CD8     		bhi	.L22
- 182 00a2 802A     		cmp	r2, #128
- 183 00a4 1AD0     		beq	.L23
- 184              	.LVL10:
- 185              	.L15:
+ 177              		.loc 1 189 0
+ 178 009c A02A     		cmp	r2, #160
+ 179 009e 20D0     		beq	.L21
+ 180 00a0 0CD8     		bhi	.L22
+ 181 00a2 802A     		cmp	r2, #128
+ 182 00a4 1AD0     		beq	.L23
+ 183              	.LVL10:
+ 184              	.L15:
  214:../CMSIS/system_MK64F12.c ****         default:
  215:../CMSIS/system_MK64F12.c ****           break;
  216:../CMSIS/system_MK64F12.c ****       }
@@ -436,170 +435,168 @@
  248:../CMSIS/system_MK64F12.c ****     return;
  249:../CMSIS/system_MK64F12.c ****   } /* (!((MCG->C1 & MCG_C1_CLKS_MASK) == 0x80U)) */
  250:../CMSIS/system_MK64F12.c ****   SystemCoreClock = (MCGOUTClock / (0x01U + ((SIM->CLKDIV1 & SIM_CLKDIV1_OUTDIV1_MASK) >> SIM_CLKDI
- 186              		.loc 1 250 0
- 187 00a6 2E49     		ldr	r1, .L44+12
- 188 00a8 41F24402 		movw	r2, #4164
- 189 00ac 8A58     		ldr	r2, [r1, r2]
- 190 00ae 120F     		lsrs	r2, r2, #28
- 191 00b0 0132     		adds	r2, r2, #1
- 192 00b2 B3FBF2F3 		udiv	r3, r3, r2
- 193              	.LVL11:
- 194 00b6 2B4A     		ldr	r2, .L44+16
- 195 00b8 1360     		str	r3, [r2]
- 196              	.L4:
- 251:../CMSIS/system_MK64F12.c **** }
- 197              		.loc 1 251 0
- 198 00ba 7047     		bx	lr
- 199              	.LVL12:
- 200              	.L22:
+ 185              		.loc 1 250 0
+ 186 00a6 41F24402 		movw	r2, #4164
+ 187 00aa 2D49     		ldr	r1, .L44+12
+ 188 00ac 8A58     		ldr	r2, [r1, r2]
+ 189 00ae 120F     		lsrs	r2, r2, #28
+ 190 00b0 0132     		adds	r2, r2, #1
+ 191 00b2 B3FBF2F3 		udiv	r3, r3, r2
+ 192              	.LVL11:
+ 193 00b6 2B4A     		ldr	r2, .L44+16
+ 194 00b8 1360     		str	r3, [r2]
+ 195              	.L4:
+ 196 00ba 7047     		bx	lr
+ 197              	.LVL12:
+ 198              	.L22:
  189:../CMSIS/system_MK64F12.c ****         case 0x00U:
- 201              		.loc 1 189 0
- 202 00bc C02A     		cmp	r2, #192
- 203 00be 13D0     		beq	.L24
- 204 00c0 E02A     		cmp	r2, #224
- 205 00c2 F0D1     		bne	.L15
+ 199              		.loc 1 189 0
+ 200 00bc C02A     		cmp	r2, #192
+ 201 00be 13D0     		beq	.L24
+ 202 00c0 E02A     		cmp	r2, #224
+ 203 00c2 F0D1     		bne	.L15
  212:../CMSIS/system_MK64F12.c ****           break;
- 206              		.loc 1 212 0
- 207 00c4 40F67132 		movw	r2, #2929
- 208 00c8 DBE7     		b	.L43
- 209              	.L18:
+ 204              		.loc 1 212 0
+ 205 00c4 40F67132 		movw	r2, #2929
+ 206 00c8 DBE7     		b	.L43
+ 207              	.L18:
  194:../CMSIS/system_MK64F12.c ****           break;
- 210              		.loc 1 194 0
- 211 00ca 4FF4A062 		mov	r2, #1280
- 212 00ce D8E7     		b	.L43
- 213              	.L19:
+ 208              		.loc 1 194 0
+ 209 00ca 4FF4A062 		mov	r2, #1280
+ 210 00ce D8E7     		b	.L43
+ 211              	.L19:
  197:../CMSIS/system_MK64F12.c ****           break;
- 214              		.loc 1 197 0
- 215 00d0 4FF4F062 		mov	r2, #1920
- 216 00d4 D5E7     		b	.L43
- 217              	.L16:
+ 212              		.loc 1 197 0
+ 213 00d0 4FF4F062 		mov	r2, #1920
+ 214 00d4 D5E7     		b	.L43
+ 215              	.L16:
  200:../CMSIS/system_MK64F12.c ****           break;
- 218              		.loc 1 200 0
- 219 00d6 4FF42062 		mov	r2, #2560
- 220 00da D2E7     		b	.L43
- 221              	.L23:
+ 216              		.loc 1 200 0
+ 217 00d6 4FF42062 		mov	r2, #2560
+ 218 00da D2E7     		b	.L43
+ 219              	.L23:
  203:../CMSIS/system_MK64F12.c ****           break;
- 222              		.loc 1 203 0
- 223 00dc 4FF43772 		mov	r2, #732
- 224 00e0 CFE7     		b	.L43
- 225              	.L21:
+ 220              		.loc 1 203 0
+ 221 00dc 4FF43772 		mov	r2, #732
+ 222 00e0 CFE7     		b	.L43
+ 223              	.L21:
  206:../CMSIS/system_MK64F12.c ****           break;
- 226              		.loc 1 206 0
- 227 00e2 4FF4B762 		mov	r2, #1464
- 228 00e6 CCE7     		b	.L43
- 229              	.L24:
+ 224              		.loc 1 206 0
+ 225 00e2 4FF4B762 		mov	r2, #1464
+ 226 00e6 CCE7     		b	.L43
+ 227              	.L24:
  209:../CMSIS/system_MK64F12.c ****           break;
- 230              		.loc 1 209 0
- 231 00e8 40F69502 		movw	r2, #2197
- 232 00ec C9E7     		b	.L43
- 233              	.LVL13:
- 234              	.L6:
+ 228              		.loc 1 209 0
+ 229 00e8 40F69502 		movw	r2, #2197
+ 230 00ec C9E7     		b	.L43
+ 231              	.LVL13:
+ 232              	.L6:
  219:../CMSIS/system_MK64F12.c ****       MCGOUTClock = (uint32_t)(CPU_XTAL_CLK_HZ / Divider); /* Calculate the PLL reference clock */
- 235              		.loc 1 219 0
- 236 00ee 1379     		ldrb	r3, [r2, #4]	@ zero_extendqisi2
- 237              	.LVL14:
+ 233              		.loc 1 219 0
+ 234 00ee 1379     		ldrb	r3, [r2, #4]	@ zero_extendqisi2
+ 235              	.LVL14:
  220:../CMSIS/system_MK64F12.c ****       Divider = (((uint16_t)MCG->C6 & MCG_C6_VDIV0_MASK) + 24U);
- 238              		.loc 1 220 0
- 239 00f0 1A49     		ldr	r1, .L44+8
+ 236              		.loc 1 220 0
+ 237 00f0 1A49     		ldr	r1, .L44+8
  219:../CMSIS/system_MK64F12.c ****       MCGOUTClock = (uint32_t)(CPU_XTAL_CLK_HZ / Divider); /* Calculate the PLL reference clock */
- 240              		.loc 1 219 0
- 241 00f2 03F01F03 		and	r3, r3, #31
- 242              	.LVL15:
+ 238              		.loc 1 219 0
+ 239 00f2 03F01F03 		and	r3, r3, #31
+ 240              	.LVL15:
  220:../CMSIS/system_MK64F12.c ****       Divider = (((uint16_t)MCG->C6 & MCG_C6_VDIV0_MASK) + 24U);
- 243              		.loc 1 220 0
- 244 00f6 0133     		adds	r3, r3, #1
- 245 00f8 B1FBF3F1 		udiv	r1, r1, r3
- 246              	.LVL16:
+ 241              		.loc 1 220 0
+ 242 00f6 0133     		adds	r3, r3, #1
+ 243 00f8 B1FBF3F1 		udiv	r1, r1, r3
+ 244              	.LVL16:
  221:../CMSIS/system_MK64F12.c ****       MCGOUTClock *= Divider;          /* Calculate the MCG output clock */
- 247              		.loc 1 221 0
- 248 00fc 5379     		ldrb	r3, [r2, #5]	@ zero_extendqisi2
- 249              	.LVL17:
- 250 00fe 03F01F03 		and	r3, r3, #31
- 251              	.LVL18:
+ 245              		.loc 1 221 0
+ 246 00fc 5379     		ldrb	r3, [r2, #5]	@ zero_extendqisi2
+ 247              	.LVL17:
+ 248 00fe 03F01F03 		and	r3, r3, #31
+ 249              	.LVL18:
  222:../CMSIS/system_MK64F12.c ****     } /* (!((MCG->C6 & MCG_C6_PLLS_MASK) == 0x00U)) */
- 252              		.loc 1 222 0
- 253 0102 1833     		adds	r3, r3, #24
- 254 0104 4B43     		muls	r3, r1, r3
- 255              	.LVL19:
- 256 0106 CEE7     		b	.L15
- 257              	.LVL20:
- 258              	.L5:
+ 250              		.loc 1 222 0
+ 251 0102 1833     		adds	r3, r3, #24
+ 252 0104 4B43     		muls	r3, r1, r3
+ 253              	.LVL19:
+ 254 0106 CEE7     		b	.L15
+ 255              	.LVL20:
+ 256              	.L5:
  224:../CMSIS/system_MK64F12.c ****     /* Internal reference clock is selected */
- 259              		.loc 1 224 0
- 260 0108 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 261 010a 03F0C003 		and	r3, r3, #192
- 262 010e 402B     		cmp	r3, #64
- 263 0110 0BD1     		bne	.L26
+ 257              		.loc 1 224 0
+ 258 0108 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 259 010a 03F0C003 		and	r3, r3, #192
+ 260 010e 402B     		cmp	r3, #64
+ 261 0110 0BD1     		bne	.L26
  226:../CMSIS/system_MK64F12.c ****       MCGOUTClock = CPU_INT_SLOW_CLK_HZ; /* Slow internal reference clock selected */
- 264              		.loc 1 226 0
- 265 0112 5378     		ldrb	r3, [r2, #1]	@ zero_extendqisi2
- 266 0114 DB07     		lsls	r3, r3, #31
- 267 0116 17D5     		bpl	.L33
+ 262              		.loc 1 226 0
+ 263 0112 5378     		ldrb	r3, [r2, #1]	@ zero_extendqisi2
+ 264 0114 DB07     		lsls	r3, r3, #31
+ 265 0116 17D5     		bpl	.L33
  229:../CMSIS/system_MK64F12.c ****       MCGOUTClock = (uint32_t) (CPU_INT_FAST_CLK_HZ / Divider); /* Fast internal reference clock se
- 268              		.loc 1 229 0
- 269 0118 137A     		ldrb	r3, [r2, #8]	@ zero_extendqisi2
- 270              	.LVL21:
- 271 011a C3F34202 		ubfx	r2, r3, #1, #3
- 272 011e 0123     		movs	r3, #1
- 273              	.LVL22:
- 274 0120 9340     		lsls	r3, r3, r2
+ 266              		.loc 1 229 0
+ 267 0118 137A     		ldrb	r3, [r2, #8]	@ zero_extendqisi2
+ 268              	.LVL21:
+ 269 011a C3F34202 		ubfx	r2, r3, #1, #3
+ 270 011e 0123     		movs	r3, #1
+ 271              	.LVL22:
+ 272 0120 9340     		lsls	r3, r3, r2
  230:../CMSIS/system_MK64F12.c ****     } /* (!((MCG->C2 & MCG_C2_IRCS_MASK) == 0x00U)) */
- 275              		.loc 1 230 0
- 276 0122 114A     		ldr	r2, .L44+20
- 277 0124 B2FBF3F3 		udiv	r3, r2, r3
- 278              	.LVL23:
- 279 0128 BDE7     		b	.L15
- 280              	.LVL24:
- 281              	.L26:
+ 273              		.loc 1 230 0
+ 274 0122 114A     		ldr	r2, .L44+20
+ 275 0124 B2FBF3F3 		udiv	r3, r2, r3
+ 276              	.LVL23:
+ 277 0128 BDE7     		b	.L15
+ 278              	.LVL24:
+ 279              	.L26:
  232:../CMSIS/system_MK64F12.c ****     /* External reference clock is selected */
- 282              		.loc 1 232 0
- 283 012a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 284 012c 03F0C003 		and	r3, r3, #192
- 285 0130 802B     		cmp	r3, #128
- 286 0132 C2D1     		bne	.L4
+ 280              		.loc 1 232 0
+ 281 012a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 282 012c 03F0C003 		and	r3, r3, #192
+ 283 0130 802B     		cmp	r3, #128
+ 284 0132 C2D1     		bne	.L4
  234:../CMSIS/system_MK64F12.c ****     case 0x00U:
- 287              		.loc 1 234 0
- 288 0134 137B     		ldrb	r3, [r2, #12]	@ zero_extendqisi2
- 289 0136 13F00303 		ands	r3, r3, #3
- 290 013a 08D0     		beq	.L34
+ 285              		.loc 1 234 0
+ 286 0134 137B     		ldrb	r3, [r2, #12]	@ zero_extendqisi2
+ 287 0136 13F00303 		ands	r3, r3, #3
+ 288 013a 08D0     		beq	.L34
  243:../CMSIS/system_MK64F12.c ****       break;
- 291              		.loc 1 243 0
- 292 013c 012B     		cmp	r3, #1
- 293 013e 064B     		ldr	r3, .L44+4
- 294 0140 08BF     		it	eq
- 295 0142 4FF40043 		moveq	r3, #32768
- 296 0146 AEE7     		b	.L15
- 297              	.L33:
+ 289              		.loc 1 243 0
+ 290 013c 012B     		cmp	r3, #1
+ 291 013e 064B     		ldr	r3, .L44+4
+ 292 0140 08BF     		it	eq
+ 293 0142 4FF40043 		moveq	r3, #32768
+ 294 0146 AEE7     		b	.L15
+ 295              	.L33:
  227:../CMSIS/system_MK64F12.c ****     } else { /* (!((MCG->C2 & MCG_C2_IRCS_MASK) == 0x00U)) */
- 298              		.loc 1 227 0
- 299 0148 4FF40043 		mov	r3, #32768
- 300 014c ABE7     		b	.L15
- 301              	.L34:
+ 296              		.loc 1 227 0
+ 297 0148 4FF40043 		mov	r3, #32768
+ 298 014c ABE7     		b	.L15
+ 299              	.L34:
  236:../CMSIS/system_MK64F12.c ****       break;
- 302              		.loc 1 236 0
- 303 014e 034B     		ldr	r3, .L44+8
- 304 0150 A9E7     		b	.L15
- 305              	.L45:
- 306 0152 00BF     		.align	2
- 307              	.L44:
- 308 0154 00400640 		.word	1074151424
- 309 0158 006CDC02 		.word	48000000
- 310 015c 80F0FA02 		.word	50000000
- 311 0160 00700440 		.word	1074032640
- 312 0164 00000000 		.word	.LANCHOR0
- 313 0168 00093D00 		.word	4000000
- 314              		.cfi_endproc
- 315              	.LFE124:
- 317              		.global	SystemCoreClock
- 318              		.section	.data.SystemCoreClock,"aw",%progbits
- 319              		.align	2
- 320              		.set	.LANCHOR0,. + 0
- 323              	SystemCoreClock:
- 324 0000 00004001 		.word	20971520
- 325              		.text
- 326              	.Letext0:
- 327              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 328              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 329              		.file 4 "../CMSIS/core_cm4.h"
- 330              		.file 5 "../CMSIS/system_MK64F12.h"
- 331              		.file 6 "../CMSIS/MK64F12.h"
+ 300              		.loc 1 236 0
+ 301 014e 034B     		ldr	r3, .L44+8
+ 302 0150 A9E7     		b	.L15
+ 303              	.L45:
+ 304 0152 00BF     		.align	2
+ 305              	.L44:
+ 306 0154 00400640 		.word	1074151424
+ 307 0158 006CDC02 		.word	48000000
+ 308 015c 80F0FA02 		.word	50000000
+ 309 0160 00700440 		.word	1074032640
+ 310 0164 00000000 		.word	.LANCHOR0
+ 311 0168 00093D00 		.word	4000000
+ 312              		.cfi_endproc
+ 313              	.LFE124:
+ 315              		.global	SystemCoreClock
+ 316              		.section	.data.SystemCoreClock,"aw",%progbits
+ 317              		.align	2
+ 318              		.set	.LANCHOR0,. + 0
+ 321              	SystemCoreClock:
+ 322 0000 00004001 		.word	20971520
+ 323              		.text
+ 324              	.Letext0:
+ 325              		.file 2 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 326              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 327              		.file 4 "../CMSIS/core_cm4.h"
+ 328              		.file 5 "../CMSIS/system_MK64F12.h"
+ 329              		.file 6 "../CMSIS/MK64F12.h"

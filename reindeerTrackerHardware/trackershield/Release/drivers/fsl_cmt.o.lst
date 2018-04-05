@@ -153,35 +153,34 @@
  110:../drivers/fsl_cmt.c ****     config->divider = kCMT_SecondClkDiv1;
   44              		.loc 1 110 0
   45 000a C370     		strb	r3, [r0, #3]
+  46 000c 7047     		bx	lr
+  47              		.cfi_endproc
+  48              	.LFE154:
+  50              		.section	.text.CMT_Init,"ax",%progbits
+  51              		.align	1
+  52              		.global	CMT_Init
+  53              		.syntax unified
+  54              		.thumb
+  55              		.thumb_func
+  56              		.fpu fpv4-sp-d16
+  58              	CMT_Init:
+  59              	.LFB155:
  111:../drivers/fsl_cmt.c **** }
-  46              		.loc 1 111 0
-  47 000c 7047     		bx	lr
-  48              		.cfi_endproc
-  49              	.LFE154:
-  51              		.section	.text.CMT_Init,"ax",%progbits
-  52              		.align	1
-  53              		.global	CMT_Init
-  54              		.syntax unified
-  55              		.thumb
-  56              		.thumb_func
-  57              		.fpu fpv4-sp-d16
-  59              	CMT_Init:
-  60              	.LFB155:
  112:../drivers/fsl_cmt.c **** 
  113:../drivers/fsl_cmt.c **** void CMT_Init(CMT_Type *base, const cmt_config_t *config, uint32_t busClock_Hz)
  114:../drivers/fsl_cmt.c **** {
-  61              		.loc 1 114 0
-  62              		.cfi_startproc
-  63              		@ args = 0, pretend = 0, frame = 0
-  64              		@ frame_needed = 0, uses_anonymous_args = 0
-  65              	.LVL1:
-  66 0000 10B5     		push	{r4, lr}
-  67              		.cfi_def_cfa_offset 8
-  68              		.cfi_offset 4, -8
-  69              		.cfi_offset 14, -4
-  70              	.LBB30:
-  71              	.LBB31:
-  72              		.file 2 "../drivers/fsl_clock.h"
+  60              		.loc 1 114 0
+  61              		.cfi_startproc
+  62              		@ args = 0, pretend = 0, frame = 0
+  63              		@ frame_needed = 0, uses_anonymous_args = 0
+  64              	.LVL1:
+  65 0000 10B5     		push	{r4, lr}
+  66              		.cfi_def_cfa_offset 8
+  67              		.cfi_offset 4, -8
+  68              		.cfi_offset 14, -4
+  69              	.LBB30:
+  70              	.LBB31:
+  71              		.file 2 "../drivers/fsl_clock.h"
    1:../drivers/fsl_clock.h **** /*
    2:../drivers/fsl_clock.h ****  * The Clear BSD License
    3:../drivers/fsl_clock.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
@@ -877,14 +876,14 @@
  693:../drivers/fsl_clock.h **** {
  694:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
  695:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
-  73              		.loc 2 695 0
-  74 0002 144C     		ldr	r4, .L7
-  75 0004 2368     		ldr	r3, [r4]
-  76 0006 43F00403 		orr	r3, r3, #4
-  77 000a 2360     		str	r3, [r4]
-  78              	.LVL2:
-  79              	.LBE31:
-  80              	.LBE30:
+  72              		.loc 2 695 0
+  73 0002 154C     		ldr	r4, .L7
+  74 0004 2368     		ldr	r3, [r4]
+  75 0006 43F00403 		orr	r3, r3, #4
+  76 000a 2360     		str	r3, [r4]
+  77              	.LVL2:
+  78              	.LBE31:
+  79              	.LBE30:
  115:../drivers/fsl_cmt.c ****     assert(config);
  116:../drivers/fsl_cmt.c ****     assert(busClock_Hz >= CMT_INTERMEDIATEFREQUENCY_8MHZ);
  117:../drivers/fsl_cmt.c **** 
@@ -898,54 +897,55 @@
  125:../drivers/fsl_cmt.c ****     /* Sets clock divider. The divider set in pps should be set
  126:../drivers/fsl_cmt.c ****        to make sycClock_Hz/divder = 8MHz */
  127:../drivers/fsl_cmt.c ****     base->PPS = CMT_PPS_PPSDIV(busClock_Hz / CMT_INTERMEDIATEFREQUENCY_8MHZ - 1);
-  81              		.loc 1 127 0
-  82 000c 124B     		ldr	r3, .L7+4
-  83 000e B2FBF3F2 		udiv	r2, r2, r3
-  84              	.LVL3:
-  85 0012 013A     		subs	r2, r2, #1
-  86 0014 02F00F02 		and	r2, r2, #15
-  87 0018 8272     		strb	r2, [r0, #10]
+  80              		.loc 1 127 0
+  81 000c 134B     		ldr	r3, .L7+4
+  82 000e B2FBF3F2 		udiv	r2, r2, r3
+  83              	.LVL3:
+  84 0012 013A     		subs	r2, r2, #1
+  85 0014 02F00F02 		and	r2, r2, #15
+  86 0018 8272     		strb	r2, [r0, #10]
  128:../drivers/fsl_cmt.c ****     divider = base->MSC;
  129:../drivers/fsl_cmt.c ****     divider &= ~CMT_MSC_CMTDIV_MASK;
  130:../drivers/fsl_cmt.c ****     divider |= CMT_MSC_CMTDIV(config->divider);
-  88              		.loc 1 130 0
-  89 001a CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
+  87              		.loc 1 130 0
+  88 001a CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
  128:../drivers/fsl_cmt.c ****     divider = base->MSC;
-  90              		.loc 1 128 0
-  91 001c 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
-  92              	.LVL4:
-  93              		.loc 1 130 0
-  94 001e 5201     		lsls	r2, r2, #5
-  95 0020 02F06002 		and	r2, r2, #96
+  89              		.loc 1 128 0
+  90 001c 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
+  91              	.LVL4:
+  92              		.loc 1 130 0
+  93 001e 5201     		lsls	r2, r2, #5
+  94 0020 02F06002 		and	r2, r2, #96
  129:../drivers/fsl_cmt.c ****     divider |= CMT_MSC_CMTDIV(config->divider);
-  96              		.loc 1 129 0
-  97 0024 03F09F03 		and	r3, r3, #159
-  98              	.LVL5:
-  99              		.loc 1 130 0
- 100 0028 1343     		orrs	r3, r3, r2
- 101              	.LVL6:
+  95              		.loc 1 129 0
+  96 0024 03F09F03 		and	r3, r3, #159
+  97              	.LVL5:
+  98              		.loc 1 130 0
+  99 0028 1343     		orrs	r3, r3, r2
+ 100              	.LVL6:
  131:../drivers/fsl_cmt.c ****     base->MSC = divider;
- 102              		.loc 1 131 0
- 103 002a 4371     		strb	r3, [r0, #5]
+ 101              		.loc 1 131 0
+ 102 002a 4371     		strb	r3, [r0, #5]
  132:../drivers/fsl_cmt.c **** 
  133:../drivers/fsl_cmt.c ****     /* Set the IRO signal. */
  134:../drivers/fsl_cmt.c ****     base->OC = CMT_OC_CMTPOL(config->iroPolarity) | CMT_OC_IROPEN(config->isIroEnabled);
- 104              		.loc 1 134 0
- 105 002c 8B78     		ldrb	r3, [r1, #2]	@ zero_extendqisi2
- 106              	.LVL7:
- 107 002e 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
- 108 0030 9B01     		lsls	r3, r3, #6
- 109 0032 03F04003 		and	r3, r3, #64
- 110 0036 43EA4213 		orr	r3, r3, r2, lsl #5
- 111 003a DBB2     		uxtb	r3, r3
- 112 003c 0371     		strb	r3, [r0, #4]
+ 103              		.loc 1 134 0
+ 104 002c 8B78     		ldrb	r3, [r1, #2]	@ zero_extendqisi2
+ 105              	.LVL7:
+ 106 002e 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+ 107 0030 9B01     		lsls	r3, r3, #6
+ 108 0032 5201     		lsls	r2, r2, #5
+ 109 0034 03F04003 		and	r3, r3, #64
+ 110 0038 02F02002 		and	r2, r2, #32
+ 111 003c 1343     		orrs	r3, r3, r2
+ 112 003e 0371     		strb	r3, [r0, #4]
  113              	.LVL8:
  135:../drivers/fsl_cmt.c **** 
  136:../drivers/fsl_cmt.c ****     /* Set interrupt. */
  137:../drivers/fsl_cmt.c ****     if (config->isInterruptEnabled)
  114              		.loc 1 137 0
- 115 003e 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
- 116 0040 3BB1     		cbz	r3, .L2
+ 115 0040 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 116 0042 3BB1     		cbz	r3, .L2
  117              	.LVL9:
  118              	.LBB32:
  119              	.LBB33:
@@ -1309,9 +1309,9 @@
  357:../drivers/fsl_cmt.h **** {
  358:../drivers/fsl_cmt.h ****     base->MSC |= mask;
  121              		.loc 3 358 0
- 122 0042 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
- 123 0044 43F00203 		orr	r3, r3, #2
- 124 0048 4371     		strb	r3, [r0, #5]
+ 122 0044 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
+ 123 0046 43F00203 		orr	r3, r3, #2
+ 124 004a 4371     		strb	r3, [r0, #5]
  125              	.LVL10:
  126              	.LBE33:
  127              	.LBE32:
@@ -2996,55 +2996,54 @@
 1675:../CMSIS/core_cm4.h ****   {
 1676:../CMSIS/core_cm4.h ****     NVIC->ISER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) &
  132              		.loc 4 1676 0
- 133 004a 044B     		ldr	r3, .L7+8
- 134 004c 4FF40052 		mov	r2, #8192
- 135 0050 5A60     		str	r2, [r3, #4]
+ 133 004c 044B     		ldr	r3, .L7+8
+ 134 004e 4FF40052 		mov	r2, #8192
+ 135 0052 5A60     		str	r2, [r3, #4]
  136              	.LVL11:
  137              	.L2:
- 138              	.LBE36:
- 139              	.LBE35:
- 140              	.LBE34:
+ 138 0054 10BD     		pop	{r4, pc}
+ 139              	.L8:
+ 140 0056 00BF     		.align	2
+ 141              	.L7:
+ 142 0058 34800440 		.word	1074036788
+ 143 005c 00127A00 		.word	8000000
+ 144 0060 00E100E0 		.word	-536813312
+ 145              	.LBE36:
+ 146              	.LBE35:
+ 147              	.LBE34:
+ 148              		.cfi_endproc
+ 149              	.LFE155:
+ 151              		.section	.text.CMT_Deinit,"ax",%progbits
+ 152              		.align	1
+ 153              		.global	CMT_Deinit
+ 154              		.syntax unified
+ 155              		.thumb
+ 156              		.thumb_func
+ 157              		.fpu fpv4-sp-d16
+ 159              	CMT_Deinit:
+ 160              	.LFB156:
  138:../drivers/fsl_cmt.c ****     {
  139:../drivers/fsl_cmt.c ****         CMT_EnableInterrupts(base, kCMT_EndOfCycleInterruptEnable);
  140:../drivers/fsl_cmt.c ****         EnableIRQ(s_cmtIrqs[CMT_GetInstance(base)]);
  141:../drivers/fsl_cmt.c ****     }
  142:../drivers/fsl_cmt.c **** }
- 141              		.loc 1 142 0
- 142 0052 10BD     		pop	{r4, pc}
- 143              	.L8:
- 144              		.align	2
- 145              	.L7:
- 146 0054 34800440 		.word	1074036788
- 147 0058 00127A00 		.word	8000000
- 148 005c 00E100E0 		.word	-536813312
- 149              		.cfi_endproc
- 150              	.LFE155:
- 152              		.section	.text.CMT_Deinit,"ax",%progbits
- 153              		.align	1
- 154              		.global	CMT_Deinit
- 155              		.syntax unified
- 156              		.thumb
- 157              		.thumb_func
- 158              		.fpu fpv4-sp-d16
- 160              	CMT_Deinit:
- 161              	.LFB156:
  143:../drivers/fsl_cmt.c **** 
  144:../drivers/fsl_cmt.c **** void CMT_Deinit(CMT_Type *base)
  145:../drivers/fsl_cmt.c **** {
- 162              		.loc 1 145 0
- 163              		.cfi_startproc
- 164              		@ args = 0, pretend = 0, frame = 0
- 165              		@ frame_needed = 0, uses_anonymous_args = 0
- 166              		@ link register save eliminated.
- 167              	.LVL12:
+ 161              		.loc 1 145 0
+ 162              		.cfi_startproc
+ 163              		@ args = 0, pretend = 0, frame = 0
+ 164              		@ frame_needed = 0, uses_anonymous_args = 0
+ 165              		@ link register save eliminated.
+ 166              	.LVL12:
  146:../drivers/fsl_cmt.c ****     /*Disable the CMT modulator. */
  147:../drivers/fsl_cmt.c ****     base->MSC = 0;
- 168              		.loc 1 147 0
- 169 0000 0023     		movs	r3, #0
- 170 0002 4371     		strb	r3, [r0, #5]
- 171              	.LVL13:
- 172              	.LBB51:
- 173              	.LBB52:
+ 167              		.loc 1 147 0
+ 168 0000 0023     		movs	r3, #0
+ 169 0002 4371     		strb	r3, [r0, #5]
+ 170              	.LVL13:
+ 171              	.LBB51:
+ 172              	.LBB52:
  359:../drivers/fsl_cmt.h **** }
  360:../drivers/fsl_cmt.h **** 
  361:../drivers/fsl_cmt.h **** /*!
@@ -3063,16 +3062,16 @@
  374:../drivers/fsl_cmt.h **** static inline void CMT_DisableInterrupts(CMT_Type *base, uint32_t mask)
  375:../drivers/fsl_cmt.h **** {
  376:../drivers/fsl_cmt.h ****     base->MSC &= ~mask;
- 174              		.loc 3 376 0
- 175 0004 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
- 176 0006 03F0FD03 		and	r3, r3, #253
- 177 000a 4371     		strb	r3, [r0, #5]
- 178              	.LVL14:
- 179              	.LBE52:
- 180              	.LBE51:
- 181              	.LBB53:
- 182              	.LBB54:
- 183              	.LBB55:
+ 173              		.loc 3 376 0
+ 174 0004 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
+ 175 0006 03F0FD03 		and	r3, r3, #253
+ 176 000a 4371     		strb	r3, [r0, #5]
+ 177              	.LVL14:
+ 178              	.LBE52:
+ 179              	.LBE51:
+ 180              	.LBB53:
+ 181              	.LBB54:
+ 182              	.LBB55:
 1677:../CMSIS/core_cm4.h ****   }
 1678:../CMSIS/core_cm4.h **** }
 1679:../CMSIS/core_cm4.h **** 
@@ -3109,13 +3108,13 @@
 1710:../CMSIS/core_cm4.h ****   if ((int32_t)(IRQn) >= 0)
 1711:../CMSIS/core_cm4.h ****   {
 1712:../CMSIS/core_cm4.h ****     NVIC->ICER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) &
- 184              		.loc 4 1712 0
- 185 000c 074B     		ldr	r3, .L10
- 186 000e 4FF40052 		mov	r2, #8192
- 187 0012 C3F88420 		str	r2, [r3, #132]
- 188              	.LBB56:
- 189              	.LBB57:
- 190              		.file 5 "../CMSIS/cmsis_gcc.h"
+ 183              		.loc 4 1712 0
+ 184 000c 074B     		ldr	r3, .L10
+ 185 000e 4FF40052 		mov	r2, #8192
+ 186 0012 C3F88420 		str	r2, [r3, #132]
+ 187              	.LBB56:
+ 188              	.LBB57:
+ 189              		.file 5 "../CMSIS/cmsis_gcc.h"
    1:../CMSIS/cmsis_gcc.h **** /**************************************************************************//**
    2:../CMSIS/cmsis_gcc.h ****  * @file     cmsis_gcc.h
    3:../CMSIS/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
@@ -3949,33 +3948,33 @@
  831:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __DSB(void)
  832:../CMSIS/cmsis_gcc.h **** {
  833:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
- 191              		.loc 5 833 0
- 192              		.syntax unified
- 193              	@ 833 "../CMSIS/cmsis_gcc.h" 1
- 194 0016 BFF34F8F 		dsb 0xF
- 195              	@ 0 "" 2
- 196              		.thumb
- 197              		.syntax unified
- 198              	.LBE57:
- 199              	.LBE56:
- 200              	.LBB58:
- 201              	.LBB59:
+ 190              		.loc 5 833 0
+ 191              		.syntax unified
+ 192              	@ 833 "../CMSIS/cmsis_gcc.h" 1
+ 193 0016 BFF34F8F 		dsb 0xF
+ 194              	@ 0 "" 2
+ 195              		.thumb
+ 196              		.syntax unified
+ 197              	.LBE57:
+ 198              	.LBE56:
+ 199              	.LBB58:
+ 200              	.LBB59:
  822:../CMSIS/cmsis_gcc.h **** }
- 202              		.loc 5 822 0
- 203              		.syntax unified
- 204              	@ 822 "../CMSIS/cmsis_gcc.h" 1
- 205 001a BFF36F8F 		isb 0xF
- 206              	@ 0 "" 2
- 207              	.LVL15:
- 208              		.thumb
- 209              		.syntax unified
- 210              	.LBE59:
- 211              	.LBE58:
- 212              	.LBE55:
- 213              	.LBE54:
- 214              	.LBE53:
- 215              	.LBB60:
- 216              	.LBB61:
+ 201              		.loc 5 822 0
+ 202              		.syntax unified
+ 203              	@ 822 "../CMSIS/cmsis_gcc.h" 1
+ 204 001a BFF36F8F 		isb 0xF
+ 205              	@ 0 "" 2
+ 206              	.LVL15:
+ 207              		.thumb
+ 208              		.syntax unified
+ 209              	.LBE59:
+ 210              	.LBE58:
+ 211              	.LBE55:
+ 212              	.LBE54:
+ 213              	.LBE53:
+ 214              	.LBB60:
+ 215              	.LBB61:
  696:../drivers/fsl_clock.h **** }
  697:../drivers/fsl_clock.h **** 
  698:../drivers/fsl_clock.h **** /*!
@@ -3987,14 +3986,31 @@
  704:../drivers/fsl_clock.h **** {
  705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
  706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
- 217              		.loc 2 706 0
- 218 001e 044A     		ldr	r2, .L10+4
- 219 0020 1368     		ldr	r3, [r2]
- 220 0022 23F00403 		bic	r3, r3, #4
- 221 0026 1360     		str	r3, [r2]
- 222              	.LVL16:
- 223              	.LBE61:
- 224              	.LBE60:
+ 216              		.loc 2 706 0
+ 217 001e 044A     		ldr	r2, .L10+4
+ 218 0020 1368     		ldr	r3, [r2]
+ 219 0022 23F00403 		bic	r3, r3, #4
+ 220 0026 1360     		str	r3, [r2]
+ 221              	.LVL16:
+ 222 0028 7047     		bx	lr
+ 223              	.L11:
+ 224 002a 00BF     		.align	2
+ 225              	.L10:
+ 226 002c 00E100E0 		.word	-536813312
+ 227 0030 34800440 		.word	1074036788
+ 228              	.LBE61:
+ 229              	.LBE60:
+ 230              		.cfi_endproc
+ 231              	.LFE156:
+ 233              		.section	.text.CMT_SetMode,"ax",%progbits
+ 234              		.align	1
+ 235              		.global	CMT_SetMode
+ 236              		.syntax unified
+ 237              		.thumb
+ 238              		.thumb_func
+ 239              		.fpu fpv4-sp-d16
+ 241              	CMT_SetMode:
+ 242              	.LFB157:
  148:../drivers/fsl_cmt.c **** 
  149:../drivers/fsl_cmt.c ****     /* Disable the interrupt. */
  150:../drivers/fsl_cmt.c ****     CMT_DisableInterrupts(base, kCMT_EndOfCycleInterruptEnable);
@@ -4005,105 +4021,87 @@
  155:../drivers/fsl_cmt.c ****     CLOCK_DisableClock(s_cmtClock[CMT_GetInstance(base)]);
  156:../drivers/fsl_cmt.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
  157:../drivers/fsl_cmt.c **** }
- 225              		.loc 1 157 0
- 226 0028 7047     		bx	lr
- 227              	.L11:
- 228 002a 00BF     		.align	2
- 229              	.L10:
- 230 002c 00E100E0 		.word	-536813312
- 231 0030 34800440 		.word	1074036788
- 232              		.cfi_endproc
- 233              	.LFE156:
- 235              		.section	.text.CMT_SetMode,"ax",%progbits
- 236              		.align	1
- 237              		.global	CMT_SetMode
- 238              		.syntax unified
- 239              		.thumb
- 240              		.thumb_func
- 241              		.fpu fpv4-sp-d16
- 243              	CMT_SetMode:
- 244              	.LFB157:
  158:../drivers/fsl_cmt.c **** 
  159:../drivers/fsl_cmt.c **** void CMT_SetMode(CMT_Type *base, cmt_mode_t mode, cmt_modulate_config_t *modulateConfig)
  160:../drivers/fsl_cmt.c **** {
- 245              		.loc 1 160 0
- 246              		.cfi_startproc
- 247              		@ args = 0, pretend = 0, frame = 0
- 248              		@ frame_needed = 0, uses_anonymous_args = 0
- 249              	.LVL17:
+ 243              		.loc 1 160 0
+ 244              		.cfi_startproc
+ 245              		@ args = 0, pretend = 0, frame = 0
+ 246              		@ frame_needed = 0, uses_anonymous_args = 0
+ 247              	.LVL17:
  161:../drivers/fsl_cmt.c ****     uint8_t mscReg = base->MSC;
- 250              		.loc 1 161 0
- 251 0000 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
+ 248              		.loc 1 161 0
+ 249 0000 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
  160:../drivers/fsl_cmt.c ****     uint8_t mscReg = base->MSC;
- 252              		.loc 1 160 0
- 253 0002 30B5     		push	{r4, r5, lr}
- 254              		.cfi_def_cfa_offset 12
- 255              		.cfi_offset 4, -12
- 256              		.cfi_offset 5, -8
- 257              		.cfi_offset 14, -4
- 258              		.loc 1 161 0
- 259 0004 DBB2     		uxtb	r3, r3
- 260              	.LVL18:
+ 250              		.loc 1 160 0
+ 251 0002 30B5     		push	{r4, r5, lr}
+ 252              		.cfi_def_cfa_offset 12
+ 253              		.cfi_offset 4, -12
+ 254              		.cfi_offset 5, -8
+ 255              		.cfi_offset 14, -4
+ 256              		.loc 1 161 0
+ 257 0004 DBB2     		uxtb	r3, r3
+ 258              	.LVL18:
  162:../drivers/fsl_cmt.c **** 
  163:../drivers/fsl_cmt.c ****     /* Judge the mode. */
  164:../drivers/fsl_cmt.c ****     if (mode != kCMT_DirectIROCtl)
- 261              		.loc 1 164 0
- 262 0006 C1B1     		cbz	r1, .L13
+ 259              		.loc 1 164 0
+ 260 0006 C1B1     		cbz	r1, .L13
  165:../drivers/fsl_cmt.c ****     {
  166:../drivers/fsl_cmt.c ****         assert(modulateConfig);
  167:../drivers/fsl_cmt.c **** 
  168:../drivers/fsl_cmt.c ****         /* Set carrier generator. */
  169:../drivers/fsl_cmt.c ****         CMT_SetCarrirGenerateCountOne(base, modulateConfig->highCount1, modulateConfig->lowCount1);
- 263              		.loc 1 169 0
- 264 0008 1578     		ldrb	r5, [r2]	@ zero_extendqisi2
- 265 000a 5478     		ldrb	r4, [r2, #1]	@ zero_extendqisi2
- 266              	.LVL19:
- 267              	.LBB62:
- 268              	.LBB63:
+ 261              		.loc 1 169 0
+ 262 0008 1578     		ldrb	r5, [r2]	@ zero_extendqisi2
+ 263 000a 5478     		ldrb	r4, [r2, #1]	@ zero_extendqisi2
+ 264              	.LVL19:
+ 265              	.LBB62:
+ 266              	.LBB63:
  260:../drivers/fsl_cmt.h ****     base->CGL1 = lowCount;
- 269              		.loc 3 260 0
- 270 000c 0570     		strb	r5, [r0]
- 271              	.LBE63:
- 272              	.LBE62:
+ 267              		.loc 3 260 0
+ 268 000c 0570     		strb	r5, [r0]
+ 269              	.LBE63:
+ 270              	.LBE62:
  170:../drivers/fsl_cmt.c ****         if (mode == kCMT_FSKMode)
- 273              		.loc 1 170 0
- 274 000e 0529     		cmp	r1, #5
- 275              	.LBB65:
- 276              	.LBB64:
+ 271              		.loc 1 170 0
+ 272 000e 0529     		cmp	r1, #5
+ 273              	.LBB65:
+ 274              	.LBB64:
  261:../drivers/fsl_cmt.h **** }
- 277              		.loc 3 261 0
- 278 0010 4470     		strb	r4, [r0, #1]
- 279              	.LVL20:
- 280              	.LBE64:
- 281              	.LBE65:
+ 275              		.loc 3 261 0
+ 276 0010 4470     		strb	r4, [r0, #1]
+ 277              	.LVL20:
+ 278              	.LBE64:
+ 279              	.LBE65:
  171:../drivers/fsl_cmt.c ****         {
  172:../drivers/fsl_cmt.c ****             CMT_SetCarrirGenerateCountTwo(base, modulateConfig->highCount2, modulateConfig->lowCoun
- 282              		.loc 1 172 0
- 283 0012 01BF     		itttt	eq
- 284 0014 9578     		ldrbeq	r5, [r2, #2]	@ zero_extendqisi2
- 285 0016 D478     		ldrbeq	r4, [r2, #3]	@ zero_extendqisi2
- 286              	.LVL21:
- 287              	.LBB66:
- 288              	.LBB67:
+ 280              		.loc 1 172 0
+ 281 0012 01BF     		itttt	eq
+ 282 0014 9578     		ldrbeq	r5, [r2, #2]	@ zero_extendqisi2
+ 283 0016 D478     		ldrbeq	r4, [r2, #3]	@ zero_extendqisi2
+ 284              	.LVL21:
+ 285              	.LBB66:
+ 286              	.LBB67:
  286:../drivers/fsl_cmt.h ****     base->CGL2 = lowCount;
- 289              		.loc 3 286 0
- 290 0018 8570     		strbeq	r5, [r0, #2]
+ 287              		.loc 3 286 0
+ 288 0018 8570     		strbeq	r5, [r0, #2]
  287:../drivers/fsl_cmt.h **** }
- 291              		.loc 3 287 0
- 292 001a C470     		strbeq	r4, [r0, #3]
- 293              	.LBE67:
- 294              	.LBE66:
+ 289              		.loc 3 287 0
+ 290 001a C470     		strbeq	r4, [r0, #3]
+ 291              	.LBE67:
+ 292              	.LBE66:
  173:../drivers/fsl_cmt.c ****         }
  174:../drivers/fsl_cmt.c **** 
  175:../drivers/fsl_cmt.c ****         /* Set carrier modulator. */
  176:../drivers/fsl_cmt.c ****         CMT_SetModulateMarkSpace(base, modulateConfig->markCount, modulateConfig->spaceCount);
- 295              		.loc 1 176 0
- 296 001c 9488     		ldrh	r4, [r2, #4]
- 297              	.LVL22:
- 298 001e D288     		ldrh	r2, [r2, #6]
- 299              	.LVL23:
- 300              	.LBB68:
- 301              	.LBB69:
+ 293              		.loc 1 176 0
+ 294 001c 9488     		ldrh	r4, [r2, #4]
+ 295              	.LVL22:
+ 296 001e D288     		ldrh	r2, [r2, #6]
+ 297              	.LVL23:
+ 298              	.LBB68:
+ 299              	.LBB69:
  177:../drivers/fsl_cmt.c ****         mscReg &= ~ (CMT_MSC_FSK_MASK | CMT_MSC_BASE_MASK);
  178:../drivers/fsl_cmt.c ****         mscReg |= mode;
  179:../drivers/fsl_cmt.c ****     }
@@ -4181,275 +4179,270 @@
  251:../drivers/fsl_cmt.c **** {
  252:../drivers/fsl_cmt.c ****     /* Set modulate mark. */
  253:../drivers/fsl_cmt.c ****     base->CMD1 = (markCount >> CMT_MODULATE_COUNT_WIDTH) & CMT_CMD1_MB_MASK;
- 302              		.loc 1 253 0
- 303 0020 250A     		lsrs	r5, r4, #8
- 304              	.LVL24:
+ 300              		.loc 1 253 0
+ 301 0020 250A     		lsrs	r5, r4, #8
+ 302              	.LVL24:
  254:../drivers/fsl_cmt.c ****     base->CMD2 = (markCount & CMT_CMD2_MB_MASK);
- 305              		.loc 1 254 0
- 306 0022 E4B2     		uxtb	r4, r4
- 307              	.LVL25:
+ 303              		.loc 1 254 0
+ 304 0022 E4B2     		uxtb	r4, r4
+ 305              	.LVL25:
  253:../drivers/fsl_cmt.c ****     base->CMD2 = (markCount & CMT_CMD2_MB_MASK);
- 308              		.loc 1 253 0
- 309 0024 8571     		strb	r5, [r0, #6]
- 310              	.LVL26:
- 311              	.LBE69:
- 312              	.LBE68:
+ 306              		.loc 1 253 0
+ 307 0024 8571     		strb	r5, [r0, #6]
+ 308              	.LVL26:
+ 309              	.LBE69:
+ 310              	.LBE68:
  177:../drivers/fsl_cmt.c ****         mscReg &= ~ (CMT_MSC_FSK_MASK | CMT_MSC_BASE_MASK);
- 313              		.loc 1 177 0
- 314 0026 03F0F303 		and	r3, r3, #243
- 315              	.LVL27:
- 316              	.LBB72:
- 317              	.LBB70:
- 318              		.loc 1 254 0
- 319 002a C471     		strb	r4, [r0, #7]
+ 311              		.loc 1 177 0
+ 312 0026 03F0F303 		and	r3, r3, #243
+ 313              	.LVL27:
+ 314              	.LBB72:
+ 315              	.LBB70:
+ 316              		.loc 1 254 0
+ 317 002a C471     		strb	r4, [r0, #7]
  255:../drivers/fsl_cmt.c ****     /* Set modulate space. */
  256:../drivers/fsl_cmt.c ****     base->CMD3 = (spaceCount >> CMT_MODULATE_COUNT_WIDTH) & CMT_CMD3_SB_MASK;
- 320              		.loc 1 256 0
- 321 002c 140A     		lsrs	r4, r2, #8
+ 318              		.loc 1 256 0
+ 319 002c 140A     		lsrs	r4, r2, #8
  257:../drivers/fsl_cmt.c ****     base->CMD4 = spaceCount & CMT_CMD4_SB_MASK;
- 322              		.loc 1 257 0
- 323 002e D2B2     		uxtb	r2, r2
- 324              	.LVL28:
+ 320              		.loc 1 257 0
+ 321 002e D2B2     		uxtb	r2, r2
+ 322              	.LVL28:
  256:../drivers/fsl_cmt.c ****     base->CMD4 = spaceCount & CMT_CMD4_SB_MASK;
- 325              		.loc 1 256 0
- 326 0030 0472     		strb	r4, [r0, #8]
- 327              	.LBE70:
- 328              	.LBE72:
+ 323              		.loc 1 256 0
+ 324 0030 0472     		strb	r4, [r0, #8]
+ 325              	.LBE70:
+ 326              	.LBE72:
  178:../drivers/fsl_cmt.c ****     }
- 329              		.loc 1 178 0
- 330 0032 0B43     		orrs	r3, r3, r1
- 331              	.LBB73:
- 332              	.LBB71:
- 333              		.loc 1 257 0
- 334 0034 4272     		strb	r2, [r0, #9]
- 335              	.LVL29:
- 336              	.L15:
- 337              	.LBE71:
- 338              	.LBE73:
+ 327              		.loc 1 178 0
+ 328 0032 0B43     		orrs	r3, r3, r1
+ 329              	.LBB73:
+ 330              	.LBB71:
+ 331              		.loc 1 257 0
+ 332 0034 4272     		strb	r2, [r0, #9]
+ 333              	.LVL29:
+ 334              	.L15:
+ 335              	.LBE71:
+ 336              	.LBE73:
  185:../drivers/fsl_cmt.c **** }
- 339              		.loc 1 185 0
- 340 0036 4371     		strb	r3, [r0, #5]
- 186:../drivers/fsl_cmt.c **** 
- 341              		.loc 1 186 0
- 342 0038 30BD     		pop	{r4, r5, pc}
- 343              	.LVL30:
- 344              	.L13:
+ 337              		.loc 1 185 0
+ 338 0036 4371     		strb	r3, [r0, #5]
+ 339 0038 30BD     		pop	{r4, r5, pc}
+ 340              	.LVL30:
+ 341              	.L13:
  182:../drivers/fsl_cmt.c ****     }
- 345              		.loc 1 182 0
- 346 003a 03F0FE03 		and	r3, r3, #254
- 347              	.LVL31:
- 348 003e FAE7     		b	.L15
- 349              		.cfi_endproc
- 350              	.LFE157:
- 352              		.section	.text.CMT_GetMode,"ax",%progbits
- 353              		.align	1
- 354              		.global	CMT_GetMode
- 355              		.syntax unified
- 356              		.thumb
- 357              		.thumb_func
- 358              		.fpu fpv4-sp-d16
- 360              	CMT_GetMode:
- 361              	.LFB158:
+ 342              		.loc 1 182 0
+ 343 003a 03F0FE03 		and	r3, r3, #254
+ 344              	.LVL31:
+ 345 003e FAE7     		b	.L15
+ 346              		.cfi_endproc
+ 347              	.LFE157:
+ 349              		.section	.text.CMT_GetMode,"ax",%progbits
+ 350              		.align	1
+ 351              		.global	CMT_GetMode
+ 352              		.syntax unified
+ 353              		.thumb
+ 354              		.thumb_func
+ 355              		.fpu fpv4-sp-d16
+ 357              	CMT_GetMode:
+ 358              	.LFB158:
  189:../drivers/fsl_cmt.c ****     uint8_t mode = base->MSC;
- 362              		.loc 1 189 0
- 363              		.cfi_startproc
- 364              		@ args = 0, pretend = 0, frame = 0
- 365              		@ frame_needed = 0, uses_anonymous_args = 0
- 366              		@ link register save eliminated.
- 367              	.LVL32:
+ 359              		.loc 1 189 0
+ 360              		.cfi_startproc
+ 361              		@ args = 0, pretend = 0, frame = 0
+ 362              		@ frame_needed = 0, uses_anonymous_args = 0
+ 363              		@ link register save eliminated.
+ 364              	.LVL32:
  190:../drivers/fsl_cmt.c **** 
- 368              		.loc 1 190 0
- 369 0000 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
- 370 0002 DBB2     		uxtb	r3, r3
- 371              	.LVL33:
+ 365              		.loc 1 190 0
+ 366 0000 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
+ 367 0002 DBB2     		uxtb	r3, r3
+ 368              	.LVL33:
  192:../drivers/fsl_cmt.c ****     { /* Carrier modulator disabled and the IRO signal is in direct software control. */
- 372              		.loc 1 192 0
- 373 0004 13F00100 		ands	r0, r3, #1
- 374              	.LVL34:
- 375 0008 08D0     		beq	.L17
+ 369              		.loc 1 192 0
+ 370 0004 13F00100 		ands	r0, r3, #1
+ 371              	.LVL34:
+ 372 0008 08D0     		beq	.L17
  199:../drivers/fsl_cmt.c ****         {
- 376              		.loc 1 199 0
- 377 000a 1A07     		lsls	r2, r3, #28
- 378 000c 05D4     		bmi	.L19
+ 373              		.loc 1 199 0
+ 374 000a 1A07     		lsls	r2, r3, #28
+ 375 000c 05D4     		bmi	.L19
  204:../drivers/fsl_cmt.c ****         {
- 379              		.loc 1 204 0
- 380 000e 13F0040F 		tst	r3, #4
+ 376              		.loc 1 204 0
+ 377 000e 13F0040F 		tst	r3, #4
  212:../drivers/fsl_cmt.c ****         }
- 381              		.loc 1 212 0
- 382 0012 14BF     		ite	ne
- 383 0014 0520     		movne	r0, #5
- 384 0016 0120     		moveq	r0, #1
- 385 0018 7047     		bx	lr
- 386              	.L19:
+ 378              		.loc 1 212 0
+ 379 0012 14BF     		ite	ne
+ 380 0014 0520     		movne	r0, #5
+ 381 0016 0120     		moveq	r0, #1
+ 382 0018 7047     		bx	lr
+ 383              	.L19:
  202:../drivers/fsl_cmt.c ****         }
- 387              		.loc 1 202 0
- 388 001a 0920     		movs	r0, #9
- 389              	.L17:
+ 384              		.loc 1 202 0
+ 385 001a 0920     		movs	r0, #9
+ 386              	.L17:
  215:../drivers/fsl_cmt.c **** 
- 390              		.loc 1 215 0
- 391 001c 7047     		bx	lr
- 392              		.cfi_endproc
- 393              	.LFE158:
- 395              		.section	.text.CMT_GetCMTFrequency,"ax",%progbits
- 396              		.align	1
- 397              		.global	CMT_GetCMTFrequency
- 398              		.syntax unified
- 399              		.thumb
- 400              		.thumb_func
- 401              		.fpu fpv4-sp-d16
- 403              	CMT_GetCMTFrequency:
- 404              	.LFB159:
+ 387              		.loc 1 215 0
+ 388 001c 7047     		bx	lr
+ 389              		.cfi_endproc
+ 390              	.LFE158:
+ 392              		.section	.text.CMT_GetCMTFrequency,"ax",%progbits
+ 393              		.align	1
+ 394              		.global	CMT_GetCMTFrequency
+ 395              		.syntax unified
+ 396              		.thumb
+ 397              		.thumb_func
+ 398              		.fpu fpv4-sp-d16
+ 400              	CMT_GetCMTFrequency:
+ 401              	.LFB159:
  218:../drivers/fsl_cmt.c ****     uint32_t frequency;
- 405              		.loc 1 218 0
- 406              		.cfi_startproc
- 407              		@ args = 0, pretend = 0, frame = 0
- 408              		@ frame_needed = 0, uses_anonymous_args = 0
- 409              		@ link register save eliminated.
- 410              	.LVL35:
+ 402              		.loc 1 218 0
+ 403              		.cfi_startproc
+ 404              		@ args = 0, pretend = 0, frame = 0
+ 405              		@ frame_needed = 0, uses_anonymous_args = 0
+ 406              		@ link register save eliminated.
+ 407              	.LVL35:
  223:../drivers/fsl_cmt.c **** 
- 411              		.loc 1 223 0
- 412 0000 837A     		ldrb	r3, [r0, #10]	@ zero_extendqisi2
- 413 0002 03F00F03 		and	r3, r3, #15
- 414 0006 0133     		adds	r3, r3, #1
- 415 0008 B1FBF3F1 		udiv	r1, r1, r3
- 416              	.LVL36:
+ 408              		.loc 1 223 0
+ 409 0000 837A     		ldrb	r3, [r0, #10]	@ zero_extendqisi2
+ 410 0002 03F00F03 		and	r3, r3, #15
+ 411 0006 0133     		adds	r3, r3, #1
+ 412 0008 B1FBF3F1 		udiv	r1, r1, r3
+ 413              	.LVL36:
  226:../drivers/fsl_cmt.c ****     /* Get CMT frequency. */
- 417              		.loc 1 226 0
- 418 000c 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
- 419              	.LVL37:
- 420 000e C3F34113 		ubfx	r3, r3, #5, #2
- 421              	.LVL38:
+ 414              		.loc 1 226 0
+ 415 000c 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
+ 416              	.LVL37:
+ 417 000e C3F34113 		ubfx	r3, r3, #5, #2
+ 418              	.LVL38:
  228:../drivers/fsl_cmt.c ****     {
- 422              		.loc 1 228 0
- 423 0012 022B     		cmp	r3, #2
- 424 0014 06D0     		beq	.L23
- 425 0016 032B     		cmp	r3, #3
- 426 0018 06D0     		beq	.L24
- 427 001a 012B     		cmp	r3, #1
- 428 001c 00D1     		bne	.L21
+ 419              		.loc 1 228 0
+ 420 0012 022B     		cmp	r3, #2
+ 421 0014 06D0     		beq	.L23
+ 422 0016 032B     		cmp	r3, #3
+ 423 0018 06D0     		beq	.L24
+ 424 001a 012B     		cmp	r3, #1
+ 425 001c 00D1     		bne	.L21
  234:../drivers/fsl_cmt.c ****             break;
- 429              		.loc 1 234 0
- 430 001e 4908     		lsrs	r1, r1, #1
- 431              	.LVL39:
- 432              	.L21:
+ 426              		.loc 1 234 0
+ 427 001e 4908     		lsrs	r1, r1, #1
+ 428              	.LVL39:
+ 429              	.L21:
  248:../drivers/fsl_cmt.c **** 
- 433              		.loc 1 248 0
- 434 0020 0846     		mov	r0, r1
- 435              	.LVL40:
- 436 0022 7047     		bx	lr
- 437              	.LVL41:
- 438              	.L23:
+ 430              		.loc 1 248 0
+ 431 0020 0846     		mov	r0, r1
+ 432              	.LVL40:
+ 433 0022 7047     		bx	lr
+ 434              	.LVL41:
+ 435              	.L23:
  237:../drivers/fsl_cmt.c ****             break;
- 439              		.loc 1 237 0
- 440 0024 8908     		lsrs	r1, r1, #2
- 441              	.LVL42:
+ 436              		.loc 1 237 0
+ 437 0024 8908     		lsrs	r1, r1, #2
+ 438              	.LVL42:
  238:../drivers/fsl_cmt.c ****         case kCMT_SecondClkDiv8:
- 442              		.loc 1 238 0
- 443 0026 FBE7     		b	.L21
- 444              	.L24:
+ 439              		.loc 1 238 0
+ 440 0026 FBE7     		b	.L21
+ 441              	.L24:
  240:../drivers/fsl_cmt.c ****             break;
- 445              		.loc 1 240 0
- 446 0028 C908     		lsrs	r1, r1, #3
- 447              	.LVL43:
+ 442              		.loc 1 240 0
+ 443 0028 C908     		lsrs	r1, r1, #3
+ 444              	.LVL43:
  247:../drivers/fsl_cmt.c **** }
- 448              		.loc 1 247 0
- 449 002a F9E7     		b	.L21
- 450              		.cfi_endproc
- 451              	.LFE159:
- 453              		.section	.text.CMT_SetModulateMarkSpace,"ax",%progbits
- 454              		.align	1
- 455              		.global	CMT_SetModulateMarkSpace
- 456              		.syntax unified
- 457              		.thumb
- 458              		.thumb_func
- 459              		.fpu fpv4-sp-d16
- 461              	CMT_SetModulateMarkSpace:
- 462              	.LFB160:
+ 445              		.loc 1 247 0
+ 446 002a F9E7     		b	.L21
+ 447              		.cfi_endproc
+ 448              	.LFE159:
+ 450              		.section	.text.CMT_SetModulateMarkSpace,"ax",%progbits
+ 451              		.align	1
+ 452              		.global	CMT_SetModulateMarkSpace
+ 453              		.syntax unified
+ 454              		.thumb
+ 455              		.thumb_func
+ 456              		.fpu fpv4-sp-d16
+ 458              	CMT_SetModulateMarkSpace:
+ 459              	.LFB160:
  251:../drivers/fsl_cmt.c ****     /* Set modulate mark. */
- 463              		.loc 1 251 0
- 464              		.cfi_startproc
- 465              		@ args = 0, pretend = 0, frame = 0
- 466              		@ frame_needed = 0, uses_anonymous_args = 0
- 467              		@ link register save eliminated.
- 468              	.LVL44:
+ 460              		.loc 1 251 0
+ 461              		.cfi_startproc
+ 462              		@ args = 0, pretend = 0, frame = 0
+ 463              		@ frame_needed = 0, uses_anonymous_args = 0
+ 464              		@ link register save eliminated.
+ 465              	.LVL44:
  253:../drivers/fsl_cmt.c ****     base->CMD2 = (markCount & CMT_CMD2_MB_MASK);
- 469              		.loc 1 253 0
- 470 0000 C1F30723 		ubfx	r3, r1, #8, #8
- 471 0004 8371     		strb	r3, [r0, #6]
+ 466              		.loc 1 253 0
+ 467 0000 C1F30723 		ubfx	r3, r1, #8, #8
+ 468 0004 8371     		strb	r3, [r0, #6]
  254:../drivers/fsl_cmt.c ****     /* Set modulate space. */
- 472              		.loc 1 254 0
- 473 0006 C9B2     		uxtb	r1, r1
- 474              	.LVL45:
+ 469              		.loc 1 254 0
+ 470 0006 C9B2     		uxtb	r1, r1
+ 471              	.LVL45:
  256:../drivers/fsl_cmt.c ****     base->CMD4 = spaceCount & CMT_CMD4_SB_MASK;
- 475              		.loc 1 256 0
- 476 0008 C2F30723 		ubfx	r3, r2, #8, #8
- 477              		.loc 1 257 0
- 478 000c D2B2     		uxtb	r2, r2
- 479              	.LVL46:
+ 472              		.loc 1 256 0
+ 473 0008 C2F30723 		ubfx	r3, r2, #8, #8
+ 474              		.loc 1 257 0
+ 475 000c D2B2     		uxtb	r2, r2
+ 476              	.LVL46:
  254:../drivers/fsl_cmt.c ****     /* Set modulate space. */
- 480              		.loc 1 254 0
- 481 000e C171     		strb	r1, [r0, #7]
+ 477              		.loc 1 254 0
+ 478 000e C171     		strb	r1, [r0, #7]
  256:../drivers/fsl_cmt.c ****     base->CMD4 = spaceCount & CMT_CMD4_SB_MASK;
- 482              		.loc 1 256 0
- 483 0010 0372     		strb	r3, [r0, #8]
- 484              		.loc 1 257 0
- 485 0012 4272     		strb	r2, [r0, #9]
+ 479              		.loc 1 256 0
+ 480 0010 0372     		strb	r3, [r0, #8]
+ 481              		.loc 1 257 0
+ 482 0012 4272     		strb	r2, [r0, #9]
+ 483 0014 7047     		bx	lr
+ 484              		.cfi_endproc
+ 485              	.LFE160:
+ 487              		.section	.text.CMT_SetIroState,"ax",%progbits
+ 488              		.align	1
+ 489              		.global	CMT_SetIroState
+ 490              		.syntax unified
+ 491              		.thumb
+ 492              		.thumb_func
+ 493              		.fpu fpv4-sp-d16
+ 495              	CMT_SetIroState:
+ 496              	.LFB161:
  258:../drivers/fsl_cmt.c **** }
- 486              		.loc 1 258 0
- 487 0014 7047     		bx	lr
- 488              		.cfi_endproc
- 489              	.LFE160:
- 491              		.section	.text.CMT_SetIroState,"ax",%progbits
- 492              		.align	1
- 493              		.global	CMT_SetIroState
- 494              		.syntax unified
- 495              		.thumb
- 496              		.thumb_func
- 497              		.fpu fpv4-sp-d16
- 499              	CMT_SetIroState:
- 500              	.LFB161:
  259:../drivers/fsl_cmt.c **** 
  260:../drivers/fsl_cmt.c **** void CMT_SetIroState(CMT_Type *base, cmt_infrared_output_state_t state)
  261:../drivers/fsl_cmt.c **** {
- 501              		.loc 1 261 0
- 502              		.cfi_startproc
- 503              		@ args = 0, pretend = 0, frame = 0
- 504              		@ frame_needed = 0, uses_anonymous_args = 0
- 505              		@ link register save eliminated.
- 506              	.LVL47:
+ 497              		.loc 1 261 0
+ 498              		.cfi_startproc
+ 499              		@ args = 0, pretend = 0, frame = 0
+ 500              		@ frame_needed = 0, uses_anonymous_args = 0
+ 501              		@ link register save eliminated.
+ 502              	.LVL47:
  262:../drivers/fsl_cmt.c ****     uint8_t ocReg = base->OC;
- 507              		.loc 1 262 0
- 508 0000 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
- 509              	.LVL48:
+ 503              		.loc 1 262 0
+ 504 0000 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
+ 505              	.LVL48:
  263:../drivers/fsl_cmt.c **** 
  264:../drivers/fsl_cmt.c ****     ocReg &= ~CMT_OC_IROL_MASK;
- 510              		.loc 1 264 0
- 511 0002 03F07F03 		and	r3, r3, #127
- 512              	.LVL49:
+ 506              		.loc 1 264 0
+ 507 0002 03F07F03 		and	r3, r3, #127
+ 508              	.LVL49:
  265:../drivers/fsl_cmt.c ****     ocReg |= CMT_OC_IROL(state);
- 513              		.loc 1 265 0
- 514 0006 43EAC111 		orr	r1, r3, r1, lsl #7
- 515              	.LVL50:
- 516 000a C9B2     		uxtb	r1, r1
- 517              	.LVL51:
+ 509              		.loc 1 265 0
+ 510 0006 43EAC111 		orr	r1, r3, r1, lsl #7
+ 511              	.LVL50:
+ 512 000a C9B2     		uxtb	r1, r1
+ 513              	.LVL51:
  266:../drivers/fsl_cmt.c **** 
  267:../drivers/fsl_cmt.c ****     /* Set the infrared output signal control. */
  268:../drivers/fsl_cmt.c ****     base->OC = ocReg;
- 518              		.loc 1 268 0
- 519 000c 0171     		strb	r1, [r0, #4]
- 269:../drivers/fsl_cmt.c **** }
- 520              		.loc 1 269 0
- 521 000e 7047     		bx	lr
- 522              		.cfi_endproc
- 523              	.LFE161:
- 525              		.text
- 526              	.Letext0:
- 527              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 528              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 529              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 530              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 531              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 532              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 533              		.file 12 "../CMSIS/MK64F12.h"
- 534              		.file 13 "../CMSIS/system_MK64F12.h"
- 535              		.file 14 "../drivers/fsl_common.h"
+ 514              		.loc 1 268 0
+ 515 000c 0171     		strb	r1, [r0, #4]
+ 516 000e 7047     		bx	lr
+ 517              		.cfi_endproc
+ 518              	.LFE161:
+ 520              		.text
+ 521              	.Letext0:
+ 522              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 523              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 524              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 525              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 526              		.file 10 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef
+ 527              		.file 11 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+ 528              		.file 12 "../CMSIS/MK64F12.h"
+ 529              		.file 13 "../CMSIS/system_MK64F12.h"
+ 530              		.file 14 "../drivers/fsl_common.h"

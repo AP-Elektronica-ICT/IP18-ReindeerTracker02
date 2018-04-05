@@ -1172,106 +1172,105 @@
  158              		.loc 3 189 0
  159 007e 4370     		strb	r3, [r0, #1]
  160              	.LVL18:
- 161              	.LBE24:
- 162              	.LBE23:
+ 161 0080 30BD     		pop	{r4, r5, pc}
+ 162              	.LVL19:
+ 163              	.L9:
+ 164              	.LBE24:
+ 165              	.LBE23:
+ 166              	.LBB26:
+ 167              	.LBB17:
+  65:../drivers/fsl_cmp.c ****     {
+ 168              		.loc 1 65 0
+ 169 0082 0023     		movs	r3, #0
+ 170 0084 C8E7     		b	.L2
+ 171              	.LVL20:
+ 172              	.L10:
+ 173 0086 0123     		movs	r3, #1
+ 174 0088 C6E7     		b	.L2
+ 175              	.LVL21:
+ 176              	.L7:
+ 177              	.LBE17:
+ 178              	.LBE26:
+ 179              	.LBB27:
+ 180              	.LBB25:
+ 181              		.loc 3 189 0
+ 182 008a 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 183 008c 03F0FE03 		and	r3, r3, #254
+ 184 0090 F5E7     		b	.L24
+ 185              	.L26:
+ 186 0092 00BF     		.align	2
+ 187              	.L25:
+ 188 0094 00300740 		.word	1074212864
+ 189 0098 00000000 		.word	.LANCHOR0
+ 190              	.LBE25:
+ 191              	.LBE27:
+ 192              		.cfi_endproc
+ 193              	.LFE151:
+ 195              		.section	.text.CMP_Deinit,"ax",%progbits
+ 196              		.align	1
+ 197              		.global	CMP_Deinit
+ 198              		.syntax unified
+ 199              		.thumb
+ 200              		.thumb_func
+ 201              		.fpu fpv4-sp-d16
+ 203              	CMP_Deinit:
+ 204              	.LFB152:
  125:../drivers/fsl_cmp.c **** 
  126:../drivers/fsl_cmp.c ****     CMP_Enable(base, config->enableCmp); /* Enable the CMP module after configured or not. */
  127:../drivers/fsl_cmp.c **** }
- 163              		.loc 1 127 0
- 164 0080 30BD     		pop	{r4, r5, pc}
- 165              	.LVL19:
- 166              	.L9:
- 167              	.LBB26:
- 168              	.LBB17:
-  65:../drivers/fsl_cmp.c ****     {
- 169              		.loc 1 65 0
- 170 0082 0023     		movs	r3, #0
- 171 0084 C8E7     		b	.L2
- 172              	.LVL20:
- 173              	.L10:
- 174 0086 0123     		movs	r3, #1
- 175 0088 C6E7     		b	.L2
- 176              	.LVL21:
- 177              	.L7:
- 178              	.LBE17:
- 179              	.LBE26:
- 180              	.LBB27:
- 181              	.LBB25:
- 182              		.loc 3 189 0
- 183 008a 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
- 184 008c 03F0FE03 		and	r3, r3, #254
- 185 0090 F5E7     		b	.L24
- 186              	.L26:
- 187 0092 00BF     		.align	2
- 188              	.L25:
- 189 0094 00300740 		.word	1074212864
- 190 0098 00000000 		.word	.LANCHOR0
- 191              	.LBE25:
- 192              	.LBE27:
- 193              		.cfi_endproc
- 194              	.LFE151:
- 196              		.section	.text.CMP_Deinit,"ax",%progbits
- 197              		.align	1
- 198              		.global	CMP_Deinit
- 199              		.syntax unified
- 200              		.thumb
- 201              		.thumb_func
- 202              		.fpu fpv4-sp-d16
- 204              	CMP_Deinit:
- 205              	.LFB152:
  128:../drivers/fsl_cmp.c **** 
  129:../drivers/fsl_cmp.c **** void CMP_Deinit(CMP_Type *base)
  130:../drivers/fsl_cmp.c **** {
- 206              		.loc 1 130 0
- 207              		.cfi_startproc
- 208              		@ args = 0, pretend = 0, frame = 0
- 209              		@ frame_needed = 0, uses_anonymous_args = 0
- 210              		@ link register save eliminated.
- 211              	.LVL22:
- 212              	.LBB34:
- 213              	.LBB35:
- 214              		.loc 3 189 0
- 215 0000 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
- 216 0002 03F0FE03 		and	r3, r3, #254
- 217 0006 4370     		strb	r3, [r0, #1]
- 218              	.LVL23:
- 219              	.LBE35:
- 220              	.LBE34:
- 221              	.LBB36:
- 222              	.LBB37:
+ 205              		.loc 1 130 0
+ 206              		.cfi_startproc
+ 207              		@ args = 0, pretend = 0, frame = 0
+ 208              		@ frame_needed = 0, uses_anonymous_args = 0
+ 209              		@ link register save eliminated.
+ 210              	.LVL22:
+ 211              	.LBB34:
+ 212              	.LBB35:
+ 213              		.loc 3 189 0
+ 214 0000 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 215 0002 03F0FE03 		and	r3, r3, #254
+ 216 0006 4370     		strb	r3, [r0, #1]
+ 217              	.LVL23:
+ 218              	.LBE35:
+ 219              	.LBE34:
+ 220              	.LBB36:
+ 221              	.LBB37:
   67:../drivers/fsl_cmp.c ****         {
- 223              		.loc 1 67 0
- 224 0008 0F4B     		ldr	r3, .L32
- 225 000a 9842     		cmp	r0, r3
- 226 000c 18D0     		beq	.L29
- 227              	.LVL24:
- 228 000e 0833     		adds	r3, r3, #8
- 229 0010 9842     		cmp	r0, r3
- 230 0012 17D0     		beq	.L30
- 231              	.LVL25:
+ 222              		.loc 1 67 0
+ 223 0008 0F4B     		ldr	r3, .L32
+ 224 000a 9842     		cmp	r0, r3
+ 225 000c 18D0     		beq	.L29
+ 226              	.LVL24:
+ 227 000e 0833     		adds	r3, r3, #8
+ 228 0010 9842     		cmp	r0, r3
+ 229 0012 17D0     		beq	.L30
+ 230              	.LVL25:
   65:../drivers/fsl_cmp.c ****     {
- 232              		.loc 1 65 0
- 233 0014 0833     		adds	r3, r3, #8
- 234 0016 9842     		cmp	r0, r3
- 235 0018 0CBF     		ite	eq
- 236 001a 0220     		moveq	r0, #2
- 237 001c 0320     		movne	r0, #3
- 238              	.LVL26:
- 239              	.L28:
- 240              	.LBE37:
- 241              	.LBE36:
+ 231              		.loc 1 65 0
+ 232 0014 0833     		adds	r3, r3, #8
+ 233 0016 9842     		cmp	r0, r3
+ 234 0018 0CBF     		ite	eq
+ 235 001a 0220     		moveq	r0, #2
+ 236 001c 0320     		movne	r0, #3
+ 237              	.LVL26:
+ 238              	.L28:
+ 239              	.LBE37:
+ 240              	.LBE36:
  131:../drivers/fsl_cmp.c ****     /* Disable the CMP module. */
  132:../drivers/fsl_cmp.c ****     CMP_Enable(base, false);
  133:../drivers/fsl_cmp.c **** 
  134:../drivers/fsl_cmp.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
  135:../drivers/fsl_cmp.c ****     /* Disable the clock. */
  136:../drivers/fsl_cmp.c ****     CLOCK_DisableClock(s_cmpClocks[CMP_GetInstance(base)]);
- 242              		.loc 1 136 0
- 243 001e 0B4B     		ldr	r3, .L32+4
- 244 0020 53F82020 		ldr	r2, [r3, r0, lsl #2]
- 245              	.LVL27:
- 246              	.LBB39:
- 247              	.LBB40:
+ 241              		.loc 1 136 0
+ 242 001e 0B4B     		ldr	r3, .L32+4
+ 243 0020 53F82020 		ldr	r2, [r3, r0, lsl #2]
+ 244              	.LVL27:
+ 245              	.LBB39:
+ 246              	.LBB40:
  696:../drivers/fsl_clock.h **** }
  697:../drivers/fsl_clock.h **** 
  698:../drivers/fsl_clock.h **** /*!
@@ -1282,221 +1281,217 @@
  703:../drivers/fsl_clock.h **** static inline void CLOCK_DisableClock(clock_ip_name_t name)
  704:../drivers/fsl_clock.h **** {
  705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
- 248              		.loc 2 705 0
- 249 0024 130C     		lsrs	r3, r2, #16
- 250 0026 03F18043 		add	r3, r3, #1073741824
- 251 002a 03F58E23 		add	r3, r3, #290816
+ 247              		.loc 2 705 0
+ 248 0024 130C     		lsrs	r3, r2, #16
+ 249 0026 03F18043 		add	r3, r3, #1073741824
+ 250 002a 03F58E23 		add	r3, r3, #290816
  706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
- 252              		.loc 2 706 0
- 253 002e 92B2     		uxth	r2, r2
- 254              	.LVL28:
- 255 0030 1968     		ldr	r1, [r3]
- 256 0032 0120     		movs	r0, #1
- 257              	.LVL29:
- 258 0034 00FA02F2 		lsl	r2, r0, r2
- 259 0038 21EA0202 		bic	r2, r1, r2
- 260 003c 1A60     		str	r2, [r3]
- 261              	.LBE40:
- 262              	.LBE39:
+ 251              		.loc 2 706 0
+ 252 002e 92B2     		uxth	r2, r2
+ 253              	.LVL28:
+ 254 0030 1968     		ldr	r1, [r3]
+ 255 0032 0120     		movs	r0, #1
+ 256              	.LVL29:
+ 257 0034 00FA02F2 		lsl	r2, r0, r2
+ 258 0038 21EA0202 		bic	r2, r1, r2
+ 259 003c 1A60     		str	r2, [r3]
+ 260 003e 7047     		bx	lr
+ 261              	.LVL30:
+ 262              	.L29:
+ 263              	.LBE40:
+ 264              	.LBE39:
+ 265              	.LBB41:
+ 266              	.LBB38:
+  65:../drivers/fsl_cmp.c ****     {
+ 267              		.loc 1 65 0
+ 268 0040 0020     		movs	r0, #0
+ 269              	.LVL31:
+ 270 0042 ECE7     		b	.L28
+ 271              	.LVL32:
+ 272              	.L30:
+ 273 0044 0120     		movs	r0, #1
+ 274              	.LVL33:
+ 275 0046 EAE7     		b	.L28
+ 276              	.L33:
+ 277              		.align	2
+ 278              	.L32:
+ 279 0048 00300740 		.word	1074212864
+ 280 004c 00000000 		.word	.LANCHOR0
+ 281              	.LBE38:
+ 282              	.LBE41:
+ 283              		.cfi_endproc
+ 284              	.LFE152:
+ 286              		.section	.text.CMP_GetDefaultConfig,"ax",%progbits
+ 287              		.align	1
+ 288              		.global	CMP_GetDefaultConfig
+ 289              		.syntax unified
+ 290              		.thumb
+ 291              		.thumb_func
+ 292              		.fpu fpv4-sp-d16
+ 294              	CMP_GetDefaultConfig:
+ 295              	.LFB153:
  137:../drivers/fsl_cmp.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
  138:../drivers/fsl_cmp.c **** }
- 263              		.loc 1 138 0
- 264 003e 7047     		bx	lr
- 265              	.LVL30:
- 266              	.L29:
- 267              	.LBB41:
- 268              	.LBB38:
-  65:../drivers/fsl_cmp.c ****     {
- 269              		.loc 1 65 0
- 270 0040 0020     		movs	r0, #0
- 271              	.LVL31:
- 272 0042 ECE7     		b	.L28
- 273              	.LVL32:
- 274              	.L30:
- 275 0044 0120     		movs	r0, #1
- 276              	.LVL33:
- 277 0046 EAE7     		b	.L28
- 278              	.L33:
- 279              		.align	2
- 280              	.L32:
- 281 0048 00300740 		.word	1074212864
- 282 004c 00000000 		.word	.LANCHOR0
- 283              	.LBE38:
- 284              	.LBE41:
- 285              		.cfi_endproc
- 286              	.LFE152:
- 288              		.section	.text.CMP_GetDefaultConfig,"ax",%progbits
- 289              		.align	1
- 290              		.global	CMP_GetDefaultConfig
- 291              		.syntax unified
- 292              		.thumb
- 293              		.thumb_func
- 294              		.fpu fpv4-sp-d16
- 296              	CMP_GetDefaultConfig:
- 297              	.LFB153:
  139:../drivers/fsl_cmp.c **** 
  140:../drivers/fsl_cmp.c **** void CMP_GetDefaultConfig(cmp_config_t *config)
  141:../drivers/fsl_cmp.c **** {
- 298              		.loc 1 141 0
- 299              		.cfi_startproc
- 300              		@ args = 0, pretend = 0, frame = 0
- 301              		@ frame_needed = 0, uses_anonymous_args = 0
- 302              		@ link register save eliminated.
- 303              	.LVL34:
+ 296              		.loc 1 141 0
+ 297              		.cfi_startproc
+ 298              		@ args = 0, pretend = 0, frame = 0
+ 299              		@ frame_needed = 0, uses_anonymous_args = 0
+ 300              		@ link register save eliminated.
+ 301              	.LVL34:
  142:../drivers/fsl_cmp.c ****     assert(NULL != config);
  143:../drivers/fsl_cmp.c **** 
  144:../drivers/fsl_cmp.c ****     config->enableCmp = true; /* Enable the CMP module after initialization. */
- 304              		.loc 1 144 0
- 305 0000 0123     		movs	r3, #1
- 306 0002 0370     		strb	r3, [r0]
+ 302              		.loc 1 144 0
+ 303 0000 0123     		movs	r3, #1
+ 304 0002 0370     		strb	r3, [r0]
  145:../drivers/fsl_cmp.c ****     config->hysteresisMode = kCMP_HysteresisLevel0;
- 307              		.loc 1 145 0
- 308 0004 0023     		movs	r3, #0
- 309 0006 4370     		strb	r3, [r0, #1]
+ 305              		.loc 1 145 0
+ 306 0004 0023     		movs	r3, #0
+ 307 0006 4370     		strb	r3, [r0, #1]
  146:../drivers/fsl_cmp.c ****     config->enableHighSpeed = false;
- 310              		.loc 1 146 0
- 311 0008 8370     		strb	r3, [r0, #2]
+ 308              		.loc 1 146 0
+ 309 0008 8370     		strb	r3, [r0, #2]
  147:../drivers/fsl_cmp.c ****     config->enableInvertOutput = false;
- 312              		.loc 1 147 0
- 313 000a C370     		strb	r3, [r0, #3]
+ 310              		.loc 1 147 0
+ 311 000a C370     		strb	r3, [r0, #3]
  148:../drivers/fsl_cmp.c ****     config->useUnfilteredOutput = false;
- 314              		.loc 1 148 0
- 315 000c 0371     		strb	r3, [r0, #4]
+ 312              		.loc 1 148 0
+ 313 000c 0371     		strb	r3, [r0, #4]
  149:../drivers/fsl_cmp.c ****     config->enablePinOut = false;
- 316              		.loc 1 149 0
- 317 000e 4371     		strb	r3, [r0, #5]
+ 314              		.loc 1 149 0
+ 315 000e 4371     		strb	r3, [r0, #5]
+ 316 0010 7047     		bx	lr
+ 317              		.cfi_endproc
+ 318              	.LFE153:
+ 320              		.section	.text.CMP_SetInputChannels,"ax",%progbits
+ 321              		.align	1
+ 322              		.global	CMP_SetInputChannels
+ 323              		.syntax unified
+ 324              		.thumb
+ 325              		.thumb_func
+ 326              		.fpu fpv4-sp-d16
+ 328              	CMP_SetInputChannels:
+ 329              	.LFB154:
  150:../drivers/fsl_cmp.c **** #if defined(FSL_FEATURE_CMP_HAS_TRIGGER_MODE) && FSL_FEATURE_CMP_HAS_TRIGGER_MODE
  151:../drivers/fsl_cmp.c ****     config->enableTriggerMode = false;
  152:../drivers/fsl_cmp.c **** #endif /* FSL_FEATURE_CMP_HAS_TRIGGER_MODE */
  153:../drivers/fsl_cmp.c **** }
- 318              		.loc 1 153 0
- 319 0010 7047     		bx	lr
- 320              		.cfi_endproc
- 321              	.LFE153:
- 323              		.section	.text.CMP_SetInputChannels,"ax",%progbits
- 324              		.align	1
- 325              		.global	CMP_SetInputChannels
- 326              		.syntax unified
- 327              		.thumb
- 328              		.thumb_func
- 329              		.fpu fpv4-sp-d16
- 331              	CMP_SetInputChannels:
- 332              	.LFB154:
  154:../drivers/fsl_cmp.c **** 
  155:../drivers/fsl_cmp.c **** void CMP_SetInputChannels(CMP_Type *base, uint8_t positiveChannel, uint8_t negativeChannel)
  156:../drivers/fsl_cmp.c **** {
- 333              		.loc 1 156 0
- 334              		.cfi_startproc
- 335              		@ args = 0, pretend = 0, frame = 0
- 336              		@ frame_needed = 0, uses_anonymous_args = 0
- 337              		@ link register save eliminated.
- 338              	.LVL35:
+ 330              		.loc 1 156 0
+ 331              		.cfi_startproc
+ 332              		@ args = 0, pretend = 0, frame = 0
+ 333              		@ frame_needed = 0, uses_anonymous_args = 0
+ 334              		@ link register save eliminated.
+ 335              	.LVL35:
  157:../drivers/fsl_cmp.c ****     uint8_t tmp8 = base->MUXCR;
- 339              		.loc 1 157 0
- 340 0000 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
- 341              	.LVL36:
+ 336              		.loc 1 157 0
+ 337 0000 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
+ 338              	.LVL36:
  158:../drivers/fsl_cmp.c **** 
  159:../drivers/fsl_cmp.c ****     tmp8 &= ~(CMP_MUXCR_PSEL_MASK | CMP_MUXCR_MSEL_MASK);
  160:../drivers/fsl_cmp.c ****     tmp8 |= CMP_MUXCR_PSEL(positiveChannel) | CMP_MUXCR_MSEL(negativeChannel);
- 342              		.loc 1 160 0
- 343 0002 C900     		lsls	r1, r1, #3
- 344              	.LVL37:
- 345 0004 01F03801 		and	r1, r1, #56
- 346 0008 02F00702 		and	r2, r2, #7
- 347              	.LVL38:
+ 339              		.loc 1 160 0
+ 340 0002 C900     		lsls	r1, r1, #3
+ 341              	.LVL37:
+ 342 0004 01F03801 		and	r1, r1, #56
+ 343 0008 02F00702 		and	r2, r2, #7
+ 344              	.LVL38:
  159:../drivers/fsl_cmp.c ****     tmp8 |= CMP_MUXCR_PSEL(positiveChannel) | CMP_MUXCR_MSEL(negativeChannel);
- 348              		.loc 1 159 0
- 349 000c 03F0C003 		and	r3, r3, #192
- 350              	.LVL39:
- 351              		.loc 1 160 0
- 352 0010 1143     		orrs	r1, r1, r2
- 353 0012 0B43     		orrs	r3, r3, r1
- 354              	.LVL40:
+ 345              		.loc 1 159 0
+ 346 000c 03F0C003 		and	r3, r3, #192
+ 347              	.LVL39:
+ 348              		.loc 1 160 0
+ 349 0010 1143     		orrs	r1, r1, r2
+ 350 0012 0B43     		orrs	r3, r3, r1
+ 351              	.LVL40:
  161:../drivers/fsl_cmp.c ****     base->MUXCR = tmp8;
- 355              		.loc 1 161 0
- 356 0014 4371     		strb	r3, [r0, #5]
+ 352              		.loc 1 161 0
+ 353 0014 4371     		strb	r3, [r0, #5]
+ 354 0016 7047     		bx	lr
+ 355              		.cfi_endproc
+ 356              	.LFE154:
+ 358              		.section	.text.CMP_EnableDMA,"ax",%progbits
+ 359              		.align	1
+ 360              		.global	CMP_EnableDMA
+ 361              		.syntax unified
+ 362              		.thumb
+ 363              		.thumb_func
+ 364              		.fpu fpv4-sp-d16
+ 366              	CMP_EnableDMA:
+ 367              	.LFB155:
  162:../drivers/fsl_cmp.c **** }
- 357              		.loc 1 162 0
- 358 0016 7047     		bx	lr
- 359              		.cfi_endproc
- 360              	.LFE154:
- 362              		.section	.text.CMP_EnableDMA,"ax",%progbits
- 363              		.align	1
- 364              		.global	CMP_EnableDMA
- 365              		.syntax unified
- 366              		.thumb
- 367              		.thumb_func
- 368              		.fpu fpv4-sp-d16
- 370              	CMP_EnableDMA:
- 371              	.LFB155:
  163:../drivers/fsl_cmp.c **** 
  164:../drivers/fsl_cmp.c **** #if defined(FSL_FEATURE_CMP_HAS_DMA) && FSL_FEATURE_CMP_HAS_DMA
  165:../drivers/fsl_cmp.c **** void CMP_EnableDMA(CMP_Type *base, bool enable)
  166:../drivers/fsl_cmp.c **** {
- 372              		.loc 1 166 0
- 373              		.cfi_startproc
- 374              		@ args = 0, pretend = 0, frame = 0
- 375              		@ frame_needed = 0, uses_anonymous_args = 0
- 376              		@ link register save eliminated.
- 377              	.LVL41:
+ 368              		.loc 1 166 0
+ 369              		.cfi_startproc
+ 370              		@ args = 0, pretend = 0, frame = 0
+ 371              		@ frame_needed = 0, uses_anonymous_args = 0
+ 372              		@ link register save eliminated.
+ 373              	.LVL41:
  167:../drivers/fsl_cmp.c ****     uint8_t tmp8 = base->SCR & ~(CMP_SCR_CFR_MASK | CMP_SCR_CFF_MASK); /* To avoid change the w1c b
- 378              		.loc 1 167 0
- 379 0000 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
- 380 0002 DBB2     		uxtb	r3, r3
- 381              	.LVL42:
+ 374              		.loc 1 167 0
+ 375 0000 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 376 0002 DBB2     		uxtb	r3, r3
+ 377              	.LVL42:
  168:../drivers/fsl_cmp.c **** 
  169:../drivers/fsl_cmp.c ****     if (enable)
- 382              		.loc 1 169 0
- 383 0004 29B1     		cbz	r1, .L37
+ 378              		.loc 1 169 0
+ 379 0004 29B1     		cbz	r1, .L37
  167:../drivers/fsl_cmp.c ****     uint8_t tmp8 = base->SCR & ~(CMP_SCR_CFR_MASK | CMP_SCR_CFF_MASK); /* To avoid change the w1c b
- 384              		.loc 1 167 0
- 385 0006 03F0F903 		and	r3, r3, #249
- 386              	.LVL43:
+ 380              		.loc 1 167 0
+ 381 0006 03F0F903 		and	r3, r3, #249
+ 382              	.LVL43:
  170:../drivers/fsl_cmp.c ****     {
  171:../drivers/fsl_cmp.c ****         tmp8 |= CMP_SCR_DMAEN_MASK;
- 387              		.loc 1 171 0
- 388 000a 43F04003 		orr	r3, r3, #64
- 389              	.LVL44:
- 390              	.L38:
+ 383              		.loc 1 171 0
+ 384 000a 43F04003 		orr	r3, r3, #64
+ 385              	.LVL44:
+ 386              	.L38:
  172:../drivers/fsl_cmp.c ****     }
  173:../drivers/fsl_cmp.c ****     else
  174:../drivers/fsl_cmp.c ****     {
  175:../drivers/fsl_cmp.c ****         tmp8 &= ~CMP_SCR_DMAEN_MASK;
  176:../drivers/fsl_cmp.c ****     }
  177:../drivers/fsl_cmp.c ****     base->SCR = tmp8;
- 391              		.loc 1 177 0
- 392 000e C370     		strb	r3, [r0, #3]
- 178:../drivers/fsl_cmp.c **** }
- 393              		.loc 1 178 0
- 394 0010 7047     		bx	lr
- 395              	.LVL45:
- 396              	.L37:
+ 387              		.loc 1 177 0
+ 388 000e C370     		strb	r3, [r0, #3]
+ 389 0010 7047     		bx	lr
+ 390              	.LVL45:
+ 391              	.L37:
  175:../drivers/fsl_cmp.c ****     }
- 397              		.loc 1 175 0
- 398 0012 03F0B903 		and	r3, r3, #185
- 399              	.LVL46:
- 400 0016 FAE7     		b	.L38
- 401              		.cfi_endproc
- 402              	.LFE155:
- 404              		.section	.text.CMP_SetFilterConfig,"ax",%progbits
- 405              		.align	1
- 406              		.global	CMP_SetFilterConfig
- 407              		.syntax unified
- 408              		.thumb
- 409              		.thumb_func
- 410              		.fpu fpv4-sp-d16
- 412              	CMP_SetFilterConfig:
- 413              	.LFB156:
+ 392              		.loc 1 175 0
+ 393 0012 03F0B903 		and	r3, r3, #185
+ 394              	.LVL46:
+ 395 0016 FAE7     		b	.L38
+ 396              		.cfi_endproc
+ 397              	.LFE155:
+ 399              		.section	.text.CMP_SetFilterConfig,"ax",%progbits
+ 400              		.align	1
+ 401              		.global	CMP_SetFilterConfig
+ 402              		.syntax unified
+ 403              		.thumb
+ 404              		.thumb_func
+ 405              		.fpu fpv4-sp-d16
+ 407              	CMP_SetFilterConfig:
+ 408              	.LFB156:
+ 178:../drivers/fsl_cmp.c **** }
  179:../drivers/fsl_cmp.c **** #endif /* FSL_FEATURE_CMP_HAS_DMA */
  180:../drivers/fsl_cmp.c **** 
  181:../drivers/fsl_cmp.c **** void CMP_SetFilterConfig(CMP_Type *base, const cmp_filter_config_t *config)
  182:../drivers/fsl_cmp.c **** {
- 414              		.loc 1 182 0
- 415              		.cfi_startproc
- 416              		@ args = 0, pretend = 0, frame = 0
- 417              		@ frame_needed = 0, uses_anonymous_args = 0
- 418              		@ link register save eliminated.
- 419              	.LVL47:
+ 409              		.loc 1 182 0
+ 410              		.cfi_startproc
+ 411              		@ args = 0, pretend = 0, frame = 0
+ 412              		@ frame_needed = 0, uses_anonymous_args = 0
+ 413              		@ link register save eliminated.
+ 414              	.LVL47:
  183:../drivers/fsl_cmp.c ****     assert(NULL != config);
  184:../drivers/fsl_cmp.c **** 
  185:../drivers/fsl_cmp.c ****     uint8_t tmp8;
@@ -1504,373 +1499,366 @@
  187:../drivers/fsl_cmp.c **** #if defined(FSL_FEATURE_CMP_HAS_EXTERNAL_SAMPLE_SUPPORT) && FSL_FEATURE_CMP_HAS_EXTERNAL_SAMPLE_SUP
  188:../drivers/fsl_cmp.c ****     /* Choose the clock source for sampling. */
  189:../drivers/fsl_cmp.c ****     if (config->enableSample)
- 420              		.loc 1 189 0
- 421 0000 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
- 422 0002 7BB1     		cbz	r3, .L40
+ 415              		.loc 1 189 0
+ 416 0000 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 417 0002 7BB1     		cbz	r3, .L40
  190:../drivers/fsl_cmp.c ****     {
  191:../drivers/fsl_cmp.c ****         base->CR1 |= CMP_CR1_SE_MASK; /* Choose the external SAMPLE clock. */
- 423              		.loc 1 191 0
- 424 0004 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
- 425 0006 43F08003 		orr	r3, r3, #128
- 426              	.L42:
+ 418              		.loc 1 191 0
+ 419 0004 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 420 0006 43F08003 		orr	r3, r3, #128
+ 421              	.L42:
  192:../drivers/fsl_cmp.c ****     }
  193:../drivers/fsl_cmp.c ****     else
  194:../drivers/fsl_cmp.c ****     {
  195:../drivers/fsl_cmp.c ****         base->CR1 &= ~CMP_CR1_SE_MASK; /* Choose the internal divided bus clock. */
- 427              		.loc 1 195 0
- 428 000a 4370     		strb	r3, [r0, #1]
+ 422              		.loc 1 195 0
+ 423 000a 4370     		strb	r3, [r0, #1]
  196:../drivers/fsl_cmp.c ****     }
  197:../drivers/fsl_cmp.c **** #endif /* FSL_FEATURE_CMP_HAS_EXTERNAL_SAMPLE_SUPPORT */
  198:../drivers/fsl_cmp.c ****     /* Set the filter count. */
  199:../drivers/fsl_cmp.c ****     tmp8 = base->CR0 & ~CMP_CR0_FILTER_CNT_MASK;
  200:../drivers/fsl_cmp.c ****     tmp8 |= CMP_CR0_FILTER_CNT(config->filterCount);
- 429              		.loc 1 200 0
- 430 000c 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+ 424              		.loc 1 200 0
+ 425 000c 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
  199:../drivers/fsl_cmp.c ****     tmp8 |= CMP_CR0_FILTER_CNT(config->filterCount);
- 431              		.loc 1 199 0
- 432 000e 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 426              		.loc 1 199 0
+ 427 000e 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 428              		.loc 1 200 0
+ 429 0010 1201     		lsls	r2, r2, #4
+ 199:../drivers/fsl_cmp.c ****     tmp8 |= CMP_CR0_FILTER_CNT(config->filterCount);
+ 430              		.loc 1 199 0
+ 431 0012 03F08F03 		and	r3, r3, #143
+ 432              	.LVL48:
  433              		.loc 1 200 0
- 434 0010 1201     		lsls	r2, r2, #4
- 199:../drivers/fsl_cmp.c ****     tmp8 |= CMP_CR0_FILTER_CNT(config->filterCount);
- 435              		.loc 1 199 0
- 436 0012 03F08F03 		and	r3, r3, #143
- 437              	.LVL48:
- 438              		.loc 1 200 0
- 439 0016 02F07002 		and	r2, r2, #112
- 440 001a 1343     		orrs	r3, r3, r2
- 441              	.LVL49:
+ 434 0016 02F07002 		and	r2, r2, #112
+ 435 001a 1343     		orrs	r3, r3, r2
+ 436              	.LVL49:
  201:../drivers/fsl_cmp.c ****     base->CR0 = tmp8;
- 442              		.loc 1 201 0
- 443 001c 0370     		strb	r3, [r0]
+ 437              		.loc 1 201 0
+ 438 001c 0370     		strb	r3, [r0]
  202:../drivers/fsl_cmp.c ****     /* Set the filter period. It is used as the divider to bus clock. */
  203:../drivers/fsl_cmp.c ****     base->FPR = CMP_FPR_FILT_PER(config->filterPeriod);
- 444              		.loc 1 203 0
- 445 001e 8B78     		ldrb	r3, [r1, #2]	@ zero_extendqisi2
- 446              	.LVL50:
- 447 0020 8370     		strb	r3, [r0, #2]
- 448              	.LVL51:
- 204:../drivers/fsl_cmp.c **** }
- 449              		.loc 1 204 0
- 450 0022 7047     		bx	lr
- 451              	.L40:
+ 439              		.loc 1 203 0
+ 440 001e 8B78     		ldrb	r3, [r1, #2]	@ zero_extendqisi2
+ 441              	.LVL50:
+ 442 0020 8370     		strb	r3, [r0, #2]
+ 443              	.LVL51:
+ 444 0022 7047     		bx	lr
+ 445              	.L40:
  195:../drivers/fsl_cmp.c ****     }
- 452              		.loc 1 195 0
- 453 0024 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
- 454 0026 03F07F03 		and	r3, r3, #127
- 455 002a EEE7     		b	.L42
- 456              		.cfi_endproc
- 457              	.LFE156:
- 459              		.section	.text.CMP_SetDACConfig,"ax",%progbits
- 460              		.align	1
- 461              		.global	CMP_SetDACConfig
- 462              		.syntax unified
- 463              		.thumb
- 464              		.thumb_func
- 465              		.fpu fpv4-sp-d16
- 467              	CMP_SetDACConfig:
- 468              	.LFB157:
+ 446              		.loc 1 195 0
+ 447 0024 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 448 0026 03F07F03 		and	r3, r3, #127
+ 449 002a EEE7     		b	.L42
+ 450              		.cfi_endproc
+ 451              	.LFE156:
+ 453              		.section	.text.CMP_SetDACConfig,"ax",%progbits
+ 454              		.align	1
+ 455              		.global	CMP_SetDACConfig
+ 456              		.syntax unified
+ 457              		.thumb
+ 458              		.thumb_func
+ 459              		.fpu fpv4-sp-d16
+ 461              	CMP_SetDACConfig:
+ 462              	.LFB157:
+ 204:../drivers/fsl_cmp.c **** }
  205:../drivers/fsl_cmp.c **** 
  206:../drivers/fsl_cmp.c **** void CMP_SetDACConfig(CMP_Type *base, const cmp_dac_config_t *config)
  207:../drivers/fsl_cmp.c **** {
- 469              		.loc 1 207 0
- 470              		.cfi_startproc
- 471              		@ args = 0, pretend = 0, frame = 0
- 472              		@ frame_needed = 0, uses_anonymous_args = 0
- 473              		@ link register save eliminated.
- 474              	.LVL52:
+ 463              		.loc 1 207 0
+ 464              		.cfi_startproc
+ 465              		@ args = 0, pretend = 0, frame = 0
+ 466              		@ frame_needed = 0, uses_anonymous_args = 0
+ 467              		@ link register save eliminated.
+ 468              	.LVL52:
  208:../drivers/fsl_cmp.c ****     uint8_t tmp8 = 0U;
  209:../drivers/fsl_cmp.c **** 
  210:../drivers/fsl_cmp.c ****     if (NULL == config)
- 475              		.loc 1 210 0
- 476 0000 09B9     		cbnz	r1, .L44
+ 469              		.loc 1 210 0
+ 470 0000 09B9     		cbnz	r1, .L44
  211:../drivers/fsl_cmp.c ****     {
  212:../drivers/fsl_cmp.c ****         /* Passing "NULL" as input parameter means no available configuration. So the DAC feature i
  213:../drivers/fsl_cmp.c ****         base->DACCR = 0U;
- 477              		.loc 1 213 0
- 478 0002 0171     		strb	r1, [r0, #4]
+ 471              		.loc 1 213 0
+ 472 0002 0171     		strb	r1, [r0, #4]
  214:../drivers/fsl_cmp.c ****         return;
- 479              		.loc 1 214 0
- 480 0004 7047     		bx	lr
- 481              	.L44:
- 482              	.LVL53:
+ 473              		.loc 1 214 0
+ 474 0004 7047     		bx	lr
+ 475              	.L44:
+ 476              	.LVL53:
  215:../drivers/fsl_cmp.c ****     }
  216:../drivers/fsl_cmp.c ****     /* CMPx_DACCR. */
  217:../drivers/fsl_cmp.c ****     tmp8 |= CMP_DACCR_DACEN_MASK; /* Enable the internal DAC. */
  218:../drivers/fsl_cmp.c ****     if (kCMP_VrefSourceVin2 == config->referenceVoltageSource)
- 483              		.loc 1 218 0
- 484 0006 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 477              		.loc 1 218 0
+ 478 0006 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
  219:../drivers/fsl_cmp.c ****     {
  220:../drivers/fsl_cmp.c ****         tmp8 |= CMP_DACCR_VRSEL_MASK;
  221:../drivers/fsl_cmp.c ****     }
  222:../drivers/fsl_cmp.c ****     tmp8 |= CMP_DACCR_VOSEL(config->DACValue);
- 485              		.loc 1 222 0
- 486 0008 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+ 479              		.loc 1 222 0
+ 480 0008 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
  218:../drivers/fsl_cmp.c ****     {
- 487              		.loc 1 218 0
- 488 000a 012B     		cmp	r3, #1
+ 481              		.loc 1 218 0
+ 482 000a 012B     		cmp	r3, #1
  220:../drivers/fsl_cmp.c ****     }
- 489              		.loc 1 220 0
- 490 000c 14BF     		ite	ne
- 491 000e 8023     		movne	r3, #128
- 492 0010 C023     		moveq	r3, #192
- 493              	.LVL54:
- 494              		.loc 1 222 0
- 495 0012 02F03F02 		and	r2, r2, #63
- 496 0016 1343     		orrs	r3, r3, r2
- 497              	.LVL55:
+ 483              		.loc 1 220 0
+ 484 000c 14BF     		ite	ne
+ 485 000e 8023     		movne	r3, #128
+ 486 0010 C023     		moveq	r3, #192
+ 487              	.LVL54:
+ 488              		.loc 1 222 0
+ 489 0012 02F03F02 		and	r2, r2, #63
+ 490 0016 1343     		orrs	r3, r3, r2
+ 491              	.LVL55:
  223:../drivers/fsl_cmp.c **** 
  224:../drivers/fsl_cmp.c ****     base->DACCR = tmp8;
- 498              		.loc 1 224 0
- 499 0018 0371     		strb	r3, [r0, #4]
+ 492              		.loc 1 224 0
+ 493 0018 0371     		strb	r3, [r0, #4]
+ 494 001a 7047     		bx	lr
+ 495              		.cfi_endproc
+ 496              	.LFE157:
+ 498              		.section	.text.CMP_EnableInterrupts,"ax",%progbits
+ 499              		.align	1
+ 500              		.global	CMP_EnableInterrupts
+ 501              		.syntax unified
+ 502              		.thumb
+ 503              		.thumb_func
+ 504              		.fpu fpv4-sp-d16
+ 506              	CMP_EnableInterrupts:
+ 507              	.LFB158:
  225:../drivers/fsl_cmp.c **** }
- 500              		.loc 1 225 0
- 501 001a 7047     		bx	lr
- 502              		.cfi_endproc
- 503              	.LFE157:
- 505              		.section	.text.CMP_EnableInterrupts,"ax",%progbits
- 506              		.align	1
- 507              		.global	CMP_EnableInterrupts
- 508              		.syntax unified
- 509              		.thumb
- 510              		.thumb_func
- 511              		.fpu fpv4-sp-d16
- 513              	CMP_EnableInterrupts:
- 514              	.LFB158:
  226:../drivers/fsl_cmp.c **** 
  227:../drivers/fsl_cmp.c **** void CMP_EnableInterrupts(CMP_Type *base, uint32_t mask)
  228:../drivers/fsl_cmp.c **** {
- 515              		.loc 1 228 0
- 516              		.cfi_startproc
- 517              		@ args = 0, pretend = 0, frame = 0
- 518              		@ frame_needed = 0, uses_anonymous_args = 0
- 519              		@ link register save eliminated.
- 520              	.LVL56:
+ 508              		.loc 1 228 0
+ 509              		.cfi_startproc
+ 510              		@ args = 0, pretend = 0, frame = 0
+ 511              		@ frame_needed = 0, uses_anonymous_args = 0
+ 512              		@ link register save eliminated.
+ 513              	.LVL56:
  229:../drivers/fsl_cmp.c ****     uint8_t tmp8 = base->SCR & ~(CMP_SCR_CFR_MASK | CMP_SCR_CFF_MASK); /* To avoid change the w1c b
- 521              		.loc 1 229 0
- 522 0000 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 514              		.loc 1 229 0
+ 515 0000 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
  230:../drivers/fsl_cmp.c **** 
  231:../drivers/fsl_cmp.c ****     if (0U != (kCMP_OutputRisingInterruptEnable & mask))
- 523              		.loc 1 231 0
- 524 0002 CA06     		lsls	r2, r1, #27
+ 516              		.loc 1 231 0
+ 517 0002 CA06     		lsls	r2, r1, #27
  229:../drivers/fsl_cmp.c ****     uint8_t tmp8 = base->SCR & ~(CMP_SCR_CFR_MASK | CMP_SCR_CFF_MASK); /* To avoid change the w1c b
- 525              		.loc 1 229 0
- 526 0004 03F0F903 		and	r3, r3, #249
- 527              	.LVL57:
+ 518              		.loc 1 229 0
+ 519 0004 03F0F903 		and	r3, r3, #249
+ 520              	.LVL57:
  232:../drivers/fsl_cmp.c ****     {
  233:../drivers/fsl_cmp.c ****         tmp8 |= CMP_SCR_IER_MASK;
- 528              		.loc 1 233 0
- 529 0008 48BF     		it	mi
- 530 000a 43F01003 		orrmi	r3, r3, #16
- 531              	.LVL58:
+ 521              		.loc 1 233 0
+ 522 0008 48BF     		it	mi
+ 523 000a 43F01003 		orrmi	r3, r3, #16
+ 524              	.LVL58:
  234:../drivers/fsl_cmp.c ****     }
  235:../drivers/fsl_cmp.c ****     if (0U != (kCMP_OutputFallingInterruptEnable & mask))
- 532              		.loc 1 235 0
- 533 000e 0A07     		lsls	r2, r1, #28
+ 525              		.loc 1 235 0
+ 526 000e 0A07     		lsls	r2, r1, #28
  236:../drivers/fsl_cmp.c ****     {
  237:../drivers/fsl_cmp.c ****         tmp8 |= CMP_SCR_IEF_MASK;
- 534              		.loc 1 237 0
- 535 0010 48BF     		it	mi
- 536 0012 43F00803 		orrmi	r3, r3, #8
- 537              	.LVL59:
+ 527              		.loc 1 237 0
+ 528 0010 48BF     		it	mi
+ 529 0012 43F00803 		orrmi	r3, r3, #8
+ 530              	.LVL59:
  238:../drivers/fsl_cmp.c ****     }
  239:../drivers/fsl_cmp.c ****     base->SCR = tmp8;
- 538              		.loc 1 239 0
- 539 0016 C370     		strb	r3, [r0, #3]
+ 531              		.loc 1 239 0
+ 532 0016 C370     		strb	r3, [r0, #3]
+ 533 0018 7047     		bx	lr
+ 534              		.cfi_endproc
+ 535              	.LFE158:
+ 537              		.section	.text.CMP_DisableInterrupts,"ax",%progbits
+ 538              		.align	1
+ 539              		.global	CMP_DisableInterrupts
+ 540              		.syntax unified
+ 541              		.thumb
+ 542              		.thumb_func
+ 543              		.fpu fpv4-sp-d16
+ 545              	CMP_DisableInterrupts:
+ 546              	.LFB159:
  240:../drivers/fsl_cmp.c **** }
- 540              		.loc 1 240 0
- 541 0018 7047     		bx	lr
- 542              		.cfi_endproc
- 543              	.LFE158:
- 545              		.section	.text.CMP_DisableInterrupts,"ax",%progbits
- 546              		.align	1
- 547              		.global	CMP_DisableInterrupts
- 548              		.syntax unified
- 549              		.thumb
- 550              		.thumb_func
- 551              		.fpu fpv4-sp-d16
- 553              	CMP_DisableInterrupts:
- 554              	.LFB159:
  241:../drivers/fsl_cmp.c **** 
  242:../drivers/fsl_cmp.c **** void CMP_DisableInterrupts(CMP_Type *base, uint32_t mask)
  243:../drivers/fsl_cmp.c **** {
- 555              		.loc 1 243 0
- 556              		.cfi_startproc
- 557              		@ args = 0, pretend = 0, frame = 0
- 558              		@ frame_needed = 0, uses_anonymous_args = 0
- 559              		@ link register save eliminated.
- 560              	.LVL60:
+ 547              		.loc 1 243 0
+ 548              		.cfi_startproc
+ 549              		@ args = 0, pretend = 0, frame = 0
+ 550              		@ frame_needed = 0, uses_anonymous_args = 0
+ 551              		@ link register save eliminated.
+ 552              	.LVL60:
  244:../drivers/fsl_cmp.c ****     uint8_t tmp8 = base->SCR & ~(CMP_SCR_CFR_MASK | CMP_SCR_CFF_MASK); /* To avoid change the w1c b
- 561              		.loc 1 244 0
- 562 0000 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 553              		.loc 1 244 0
+ 554 0000 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
  245:../drivers/fsl_cmp.c **** 
  246:../drivers/fsl_cmp.c ****     if (0U != (kCMP_OutputRisingInterruptEnable & mask))
- 563              		.loc 1 246 0
- 564 0002 CA06     		lsls	r2, r1, #27
+ 555              		.loc 1 246 0
+ 556 0002 CA06     		lsls	r2, r1, #27
  244:../drivers/fsl_cmp.c ****     uint8_t tmp8 = base->SCR & ~(CMP_SCR_CFR_MASK | CMP_SCR_CFF_MASK); /* To avoid change the w1c b
- 565              		.loc 1 244 0
- 566 0004 DBB2     		uxtb	r3, r3
- 567              	.LVL61:
+ 557              		.loc 1 244 0
+ 558 0004 DBB2     		uxtb	r3, r3
+ 559              	.LVL61:
  247:../drivers/fsl_cmp.c ****     {
  248:../drivers/fsl_cmp.c ****         tmp8 &= ~CMP_SCR_IER_MASK;
- 568              		.loc 1 248 0
- 569 0006 4CBF     		ite	mi
- 570 0008 03F0E903 		andmi	r3, r3, #233
- 571              	.LVL62:
+ 560              		.loc 1 248 0
+ 561 0006 4CBF     		ite	mi
+ 562 0008 03F0E903 		andmi	r3, r3, #233
+ 563              	.LVL62:
  244:../drivers/fsl_cmp.c **** 
- 572              		.loc 1 244 0
- 573 000c 03F0F903 		andpl	r3, r3, #249
- 574              	.LVL63:
+ 564              		.loc 1 244 0
+ 565 000c 03F0F903 		andpl	r3, r3, #249
+ 566              	.LVL63:
  249:../drivers/fsl_cmp.c ****     }
  250:../drivers/fsl_cmp.c ****     if (0U != (kCMP_OutputFallingInterruptEnable & mask))
- 575              		.loc 1 250 0
- 576 0010 0A07     		lsls	r2, r1, #28
+ 567              		.loc 1 250 0
+ 568 0010 0A07     		lsls	r2, r1, #28
  251:../drivers/fsl_cmp.c ****     {
  252:../drivers/fsl_cmp.c ****         tmp8 &= ~CMP_SCR_IEF_MASK;
- 577              		.loc 1 252 0
- 578 0012 48BF     		it	mi
- 579 0014 03F0F703 		andmi	r3, r3, #247
- 580              	.LVL64:
+ 569              		.loc 1 252 0
+ 570 0012 48BF     		it	mi
+ 571 0014 03F0F703 		andmi	r3, r3, #247
+ 572              	.LVL64:
  253:../drivers/fsl_cmp.c ****     }
  254:../drivers/fsl_cmp.c ****     base->SCR = tmp8;
- 581              		.loc 1 254 0
- 582 0018 C370     		strb	r3, [r0, #3]
+ 573              		.loc 1 254 0
+ 574 0018 C370     		strb	r3, [r0, #3]
+ 575 001a 7047     		bx	lr
+ 576              		.cfi_endproc
+ 577              	.LFE159:
+ 579              		.section	.text.CMP_GetStatusFlags,"ax",%progbits
+ 580              		.align	1
+ 581              		.global	CMP_GetStatusFlags
+ 582              		.syntax unified
+ 583              		.thumb
+ 584              		.thumb_func
+ 585              		.fpu fpv4-sp-d16
+ 587              	CMP_GetStatusFlags:
+ 588              	.LFB160:
  255:../drivers/fsl_cmp.c **** }
- 583              		.loc 1 255 0
- 584 001a 7047     		bx	lr
- 585              		.cfi_endproc
- 586              	.LFE159:
- 588              		.section	.text.CMP_GetStatusFlags,"ax",%progbits
- 589              		.align	1
- 590              		.global	CMP_GetStatusFlags
- 591              		.syntax unified
- 592              		.thumb
- 593              		.thumb_func
- 594              		.fpu fpv4-sp-d16
- 596              	CMP_GetStatusFlags:
- 597              	.LFB160:
  256:../drivers/fsl_cmp.c **** 
  257:../drivers/fsl_cmp.c **** uint32_t CMP_GetStatusFlags(CMP_Type *base)
  258:../drivers/fsl_cmp.c **** {
- 598              		.loc 1 258 0
- 599              		.cfi_startproc
- 600              		@ args = 0, pretend = 0, frame = 0
- 601              		@ frame_needed = 0, uses_anonymous_args = 0
- 602              		@ link register save eliminated.
- 603              	.LVL65:
+ 589              		.loc 1 258 0
+ 590              		.cfi_startproc
+ 591              		@ args = 0, pretend = 0, frame = 0
+ 592              		@ frame_needed = 0, uses_anonymous_args = 0
+ 593              		@ link register save eliminated.
+ 594              	.LVL65:
  259:../drivers/fsl_cmp.c ****     uint32_t ret32 = 0U;
  260:../drivers/fsl_cmp.c **** 
  261:../drivers/fsl_cmp.c ****     if (0U != (CMP_SCR_CFR_MASK & base->SCR))
- 604              		.loc 1 261 0
- 605 0000 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 595              		.loc 1 261 0
+ 596 0000 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
  262:../drivers/fsl_cmp.c ****     {
  263:../drivers/fsl_cmp.c ****         ret32 |= kCMP_OutputRisingEventFlag;
  264:../drivers/fsl_cmp.c ****     }
  265:../drivers/fsl_cmp.c ****     if (0U != (CMP_SCR_CFF_MASK & base->SCR))
- 606              		.loc 1 265 0
- 607 0002 C278     		ldrb	r2, [r0, #3]	@ zero_extendqisi2
- 608 0004 9107     		lsls	r1, r2, #30
+ 597              		.loc 1 265 0
+ 598 0002 C278     		ldrb	r2, [r0, #3]	@ zero_extendqisi2
+ 599 0004 9107     		lsls	r1, r2, #30
  266:../drivers/fsl_cmp.c ****     {
  267:../drivers/fsl_cmp.c ****         ret32 |= kCMP_OutputFallingEventFlag;
  268:../drivers/fsl_cmp.c ****     }
  269:../drivers/fsl_cmp.c ****     if (0U != (CMP_SCR_COUT_MASK & base->SCR))
- 609              		.loc 1 269 0
- 610 0006 C278     		ldrb	r2, [r0, #3]	@ zero_extendqisi2
+ 600              		.loc 1 269 0
+ 601 0006 C278     		ldrb	r2, [r0, #3]	@ zero_extendqisi2
  263:../drivers/fsl_cmp.c ****     }
- 611              		.loc 1 263 0
- 612 0008 03F00403 		and	r3, r3, #4
- 613              	.LVL66:
+ 602              		.loc 1 263 0
+ 603 0008 03F00403 		and	r3, r3, #4
+ 604              	.LVL66:
  267:../drivers/fsl_cmp.c ****     }
- 614              		.loc 1 267 0
- 615 000c 48BF     		it	mi
- 616 000e 43F00203 		orrmi	r3, r3, #2
- 617              	.LVL67:
- 618              		.loc 1 269 0
- 619 0012 D207     		lsls	r2, r2, #31
+ 605              		.loc 1 267 0
+ 606 000c 48BF     		it	mi
+ 607 000e 43F00203 		orrmi	r3, r3, #2
+ 608              	.LVL67:
+ 609              		.loc 1 269 0
+ 610 0012 D207     		lsls	r2, r2, #31
  270:../drivers/fsl_cmp.c ****     {
  271:../drivers/fsl_cmp.c ****         ret32 |= kCMP_OutputAssertEventFlag;
- 620              		.loc 1 271 0
- 621 0014 48BF     		it	mi
- 622 0016 43F00103 		orrmi	r3, r3, #1
- 623              	.LVL68:
+ 611              		.loc 1 271 0
+ 612 0014 48BF     		it	mi
+ 613 0016 43F00103 		orrmi	r3, r3, #1
+ 614              	.LVL68:
  272:../drivers/fsl_cmp.c ****     }
  273:../drivers/fsl_cmp.c ****     return ret32;
  274:../drivers/fsl_cmp.c **** }
- 624              		.loc 1 274 0
- 625 001a 1846     		mov	r0, r3
- 626              	.LVL69:
- 627 001c 7047     		bx	lr
- 628              		.cfi_endproc
- 629              	.LFE160:
- 631              		.section	.text.CMP_ClearStatusFlags,"ax",%progbits
- 632              		.align	1
- 633              		.global	CMP_ClearStatusFlags
- 634              		.syntax unified
- 635              		.thumb
- 636              		.thumb_func
- 637              		.fpu fpv4-sp-d16
- 639              	CMP_ClearStatusFlags:
- 640              	.LFB161:
+ 615              		.loc 1 274 0
+ 616 001a 1846     		mov	r0, r3
+ 617              	.LVL69:
+ 618 001c 7047     		bx	lr
+ 619              		.cfi_endproc
+ 620              	.LFE160:
+ 622              		.section	.text.CMP_ClearStatusFlags,"ax",%progbits
+ 623              		.align	1
+ 624              		.global	CMP_ClearStatusFlags
+ 625              		.syntax unified
+ 626              		.thumb
+ 627              		.thumb_func
+ 628              		.fpu fpv4-sp-d16
+ 630              	CMP_ClearStatusFlags:
+ 631              	.LFB161:
  275:../drivers/fsl_cmp.c **** 
  276:../drivers/fsl_cmp.c **** void CMP_ClearStatusFlags(CMP_Type *base, uint32_t mask)
  277:../drivers/fsl_cmp.c **** {
- 641              		.loc 1 277 0
- 642              		.cfi_startproc
- 643              		@ args = 0, pretend = 0, frame = 0
- 644              		@ frame_needed = 0, uses_anonymous_args = 0
- 645              		@ link register save eliminated.
- 646              	.LVL70:
+ 632              		.loc 1 277 0
+ 633              		.cfi_startproc
+ 634              		@ args = 0, pretend = 0, frame = 0
+ 635              		@ frame_needed = 0, uses_anonymous_args = 0
+ 636              		@ link register save eliminated.
+ 637              	.LVL70:
  278:../drivers/fsl_cmp.c ****     uint8_t tmp8 = base->SCR & ~(CMP_SCR_CFR_MASK | CMP_SCR_CFF_MASK); /* To avoid change the w1c b
- 647              		.loc 1 278 0
- 648 0000 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 638              		.loc 1 278 0
+ 639 0000 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
  279:../drivers/fsl_cmp.c **** 
  280:../drivers/fsl_cmp.c ****     if (0U != (kCMP_OutputRisingEventFlag & mask))
- 649              		.loc 1 280 0
- 650 0002 4A07     		lsls	r2, r1, #29
+ 640              		.loc 1 280 0
+ 641 0002 4A07     		lsls	r2, r1, #29
  278:../drivers/fsl_cmp.c ****     uint8_t tmp8 = base->SCR & ~(CMP_SCR_CFR_MASK | CMP_SCR_CFF_MASK); /* To avoid change the w1c b
- 651              		.loc 1 278 0
- 652 0004 03F0F903 		and	r3, r3, #249
- 653              	.LVL71:
+ 642              		.loc 1 278 0
+ 643 0004 03F0F903 		and	r3, r3, #249
+ 644              	.LVL71:
  281:../drivers/fsl_cmp.c ****     {
  282:../drivers/fsl_cmp.c ****         tmp8 |= CMP_SCR_CFR_MASK;
- 654              		.loc 1 282 0
- 655 0008 48BF     		it	mi
- 656 000a 43F00403 		orrmi	r3, r3, #4
- 657              	.LVL72:
+ 645              		.loc 1 282 0
+ 646 0008 48BF     		it	mi
+ 647 000a 43F00403 		orrmi	r3, r3, #4
+ 648              	.LVL72:
  283:../drivers/fsl_cmp.c ****     }
  284:../drivers/fsl_cmp.c ****     if (0U != (kCMP_OutputFallingEventFlag & mask))
- 658              		.loc 1 284 0
- 659 000e 8A07     		lsls	r2, r1, #30
+ 649              		.loc 1 284 0
+ 650 000e 8A07     		lsls	r2, r1, #30
  285:../drivers/fsl_cmp.c ****     {
  286:../drivers/fsl_cmp.c ****         tmp8 |= CMP_SCR_CFF_MASK;
- 660              		.loc 1 286 0
- 661 0010 48BF     		it	mi
- 662 0012 43F00203 		orrmi	r3, r3, #2
- 663              	.LVL73:
+ 651              		.loc 1 286 0
+ 652 0010 48BF     		it	mi
+ 653 0012 43F00203 		orrmi	r3, r3, #2
+ 654              	.LVL73:
  287:../drivers/fsl_cmp.c ****     }
  288:../drivers/fsl_cmp.c ****     base->SCR = tmp8;
- 664              		.loc 1 288 0
- 665 0016 C370     		strb	r3, [r0, #3]
- 289:../drivers/fsl_cmp.c **** }
- 666              		.loc 1 289 0
- 667 0018 7047     		bx	lr
- 668              		.cfi_endproc
- 669              	.LFE161:
- 671              		.section	.rodata.s_cmpClocks,"a",%progbits
- 672              		.align	2
- 673              		.set	.LANCHOR0,. + 0
- 676              	s_cmpClocks:
- 677 0000 13003410 		.word	271843347
- 678 0004 13003410 		.word	271843347
- 679 0008 13003410 		.word	271843347
- 680              		.text
- 681              	.Letext0:
- 682              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 683              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 684              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 685              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 686              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 687              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 688              		.file 10 "../CMSIS/core_cm4.h"
- 689              		.file 11 "../CMSIS/system_MK64F12.h"
- 690              		.file 12 "../CMSIS/MK64F12.h"
- 691              		.file 13 "../drivers/fsl_common.h"
+ 655              		.loc 1 288 0
+ 656 0016 C370     		strb	r3, [r0, #3]
+ 657 0018 7047     		bx	lr
+ 658              		.cfi_endproc
+ 659              	.LFE161:
+ 661              		.section	.rodata.s_cmpClocks,"a",%progbits
+ 662              		.align	2
+ 663              		.set	.LANCHOR0,. + 0
+ 666              	s_cmpClocks:
+ 667 0000 13003410 		.word	271843347
+ 668 0004 13003410 		.word	271843347
+ 669 0008 13003410 		.word	271843347
+ 670              		.text
+ 671              	.Letext0:
+ 672              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 673              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 674              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 675              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 676              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+ 677              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+ 678              		.file 10 "../CMSIS/core_cm4.h"
+ 679              		.file 11 "../CMSIS/system_MK64F12.h"
+ 680              		.file 12 "../CMSIS/MK64F12.h"

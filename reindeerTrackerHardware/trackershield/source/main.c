@@ -184,6 +184,7 @@ int main(void) {
 	initUART();
 	configure_acc();
 	acc_init();
+
 	initTimer();
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
@@ -230,12 +231,14 @@ int main(void) {
 
 char testLat[11] = ("6500.53");
 char testLon[11] = ("02534.554");
-	strcpy(reindeerData.serialNum, "66666");
+
+	strcpy(reindeerData.serialNum, "11111");
 
 	strcpy(reindeerData.latitude, testLat);
 	strcpy(reindeerData.longitude, testLon);
 	strcpy(reindeerData.dead, "false");
 	reindeerData.batteryLevel = 45;
+
 	/*
 	 while (true) {
 
@@ -250,13 +253,15 @@ char testLon[11] = ("02534.554");
 		printf("Woken by ACCEL, reindeer is !!!ALIVE!!!\r\n");
 		SMC_PreEnterStopModes();
 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
+
 	}*/
+
 
 	while (1) {
 
 		//int16_t acc_val = read_acc_axis(0);
 		//printf("Accelereometer %d\r\n",acc_val);
-		//break;
+		break;
 		/*
 		 * Check if a string has arrived from PC (with CR line end)
 		 */
@@ -405,9 +410,9 @@ char testLon[11] = ("02534.554");
 	uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
 
 	//NB_send_msg(mqttMessage, msgLen);
-
 	NB_create_pdp_send(mqttMessage, msgLen);
 	printf("Roger\r\n");
+
 	//parseData(testLat, testLon);
 }
 /*
