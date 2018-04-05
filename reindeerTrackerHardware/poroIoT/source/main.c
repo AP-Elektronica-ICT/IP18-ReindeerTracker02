@@ -36,7 +36,7 @@ lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
-volatile uint8_t wake=3;
+volatile uint8_t wake = 3;
 volatile uint8_t NB_strReady = 0;
 volatile uint16_t NB_bufPtr = 0;
 
@@ -192,11 +192,10 @@ uint8_t PCprint(char *data)
 int main(void)
 {
 
+	PMC->REGSC |= 0x08;	//acknowledge wake up to voltage regulator module, this is needed with LLWU wake up
 
-PMC->REGSC |= 0x08;	//acknowledge wake up to voltage regulator module, this is needed with LLWU wake up
-
-NVIC_EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode, it means that next MCU
-						 //will jump to the LLWU interrupt vector
+	NVIC_EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode, it means that next MCU
+							  //will jump to the LLWU interrupt vector
 	struct reindeerData_t reindeerData; //create struct for our reindeer data that will be sent
 	char mqttMessage[450];
 
@@ -209,25 +208,20 @@ NVIC_EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode
 	//initAdc();
 	initUART();
 
-
-
 	static const gpio_pin_config_t LED_configOutput =
 	{ kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
 	};
 	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//blue led as output
 
-
 	char buf[30];
 
 	CLOCK_EnableClock(kCLOCK_Lptmr0);
-	sprintf(buf,"lptimer int flag: %lx\r\n", LPTMR0->CSR);
+	sprintf(buf, "lptimer int flag: %lx\r\n", LPTMR0->CSR);
 	PCprint(buf);
 	configure_acc();
 	acc_init();
 	initTimer();
-
-
 
 	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
 	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; //!< Stop submode 1, for VLLS1/LLS1.
@@ -241,7 +235,6 @@ NVIC_EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode
 
 	LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable);//Sets Timer Interrupt Enable bit to 1
 	LPTMR_StartTimer(LPTMR0);
-
 
 	GPIO_PinInit(GPIOA, 19u, &LED_configOutput);
 
@@ -259,6 +252,8 @@ NVIC_EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode
 					"Command \"gpsinfo=1\" or \"gpsinfo=0\" to switch GPS data on/off\r\n");
 	PCprint(
 			"Or enter normal AT commands here for SARA-N2\r\nModules powered on and booting now!\r\n");
+
+
 
 	//GPIO_ClearPinsOutput(GPIOA, 1 << 19u);
 	/*
@@ -292,7 +287,7 @@ NVIC_EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode
 		SMC_PreEnterStopModes();
 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
 	}
-	else if(wake == 0)
+	else if (wake == 0)
 	{
 		PCprint("wake was 0 going to sleep\r\n");
 		SMC_PreEnterStopModes();
@@ -477,9 +472,9 @@ NVIC_EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode
 	NB_create_pdp_send(mqttMessage, msgLen);
 	PCprint("Roger include main.c\r\n");
 
-	AT_send("CFUN=0","","OK");
+	AT_send("CFUN=0", "", "OK");
 
-	while(1)
+	while (1)
 	{
 
 	}
@@ -506,7 +501,8 @@ NVIC_EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode
 void LLWU_IRQHandler()
 {
 
-	GPIO_PortToggle(GPIOA, 1 << 4u);GPIO_PortToggle(GPIOA, 1 << 4u);
+	GPIO_PortToggle(GPIOA, 1 << 4u);
+	GPIO_PortToggle(GPIOA, 1 << 4u);
 	wake = 1;
 
 	/* If wakeup by LPTMR. */
