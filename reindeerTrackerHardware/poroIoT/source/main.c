@@ -35,7 +35,7 @@ smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
 
-volatile uint8_t wake = 1;
+volatile uint8_t wake = 0;
 volatile uint8_t NB_strReady = 0;
 volatile uint16_t NB_bufPtr = 0;
 
@@ -80,9 +80,9 @@ void initTimer() {
 	lptmr_config.bypassPrescaler = true;
 	lptmr_config.value = kLPTMR_Prescale_Glitch_0;
 	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_1;
-	EnableIRQ(LPTMR0_IRQn);
+	//EnableIRQ(LPTMR0_IRQn);
 	LPTMR_Init(LPTMR0, &lptmr_config);
-	LPTMR_SetTimerPeriod(LPTMR0, 7000);  // 3000 for 20hz data rat
+	LPTMR_SetTimerPeriod(LPTMR0, 7000);  // 3000 for 20hz data rate
 }
 
 /*
@@ -105,14 +105,14 @@ void initUART() {
 	lpuart_config.enableTx = true;
 	lpuart_config.enableRx = true;
 
-	CLOCK_SetLpuart1Clock(0x1U);
-	CLOCK_SetLpuart0Clock(0x1U);
+	CLOCK_SetLpuart1Clock(0x3U); //1U on run mode
+	CLOCK_SetLpuart0Clock(0x3U);
 
 	LPUART_Init(LPUART0, &lpuart_config, lpuartClkSrcFreq); //Init LPUART0 for NBiot
 
 	UART_Init(UART2, &uart_config, uartClkSrcFreq); //UART2 for GPS with same settings!
 
-	lpuart_config.baudRate_Bps = 115200;
+	lpuart_config.baudRate_Bps = 9600;
 
 	LPUART_Init(LPUART1, &lpuart_config, lpuartClkSrcFreq); //Init LPUART1 for PCuart
 
@@ -189,7 +189,7 @@ int main(void) {
 	char mqttMessage[450];
 
 	BOARD_InitPins();	//init all physical pins
-	BOARD_BootClockRUN();  //by uncommenting this we can use FRDM 50Mhz external clock, but will not work with modified board
+	BOARD_BootClockVLPR();  //by uncommenting this we can use FRDM 50Mhz external clock, but will not work with modified board
 	//BOARD_InitDebugConsole();
 
 	/*
@@ -205,31 +205,30 @@ int main(void) {
 	initUART();
 	configure_acc();
 	acc_init();
-	//initTimer();
+	initTimer();
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
 	};
 
 
-	/*
+
 	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeVlls);
-	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; /*!< Stop submode 1, for VLLS1/LLS1.
+	smc_power_mode_vlls_config.subMode = kSMC_StopSub1;  //!< Stop submode 1, for VLLS1/LLS1.
 
 	LLWU->ME |= 0x01; 		// enable LLWU wakeup source from LPTMR module
-	LLWU->PE3 |= 0x01; // enable LLWU wakeup source from accelerometer interrupt pin
+	LLWU->PE2 |= 0x04; // enable LLWU wakeup source from accelerometer interrupt pin
 					   // 0x20 for stock frdm pin enable,
-	LLWU->FILT1 |= 0x28;	// set pin wakeup from rising edge, 0x2A for frdm
+	LLWU->FILT1 |= 0x25;	// set pin wakeup from rising edge, 0x2A for frdm
 
-	//EnableIRQ(PORTC_IRQn);
 
 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
 	LPTMR_StartTimer(LPTMR0);
-*/
-	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//blue led as output
+
+	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//red led as output
 	GPIO_PinInit(GPIOA, 19u, &LED_configOutput);
 
-		GPIO_ClearPinsOutput(GPIOA, 1 << 4u);
+		GPIO_ClearPinsOutput(GPIOA, 1 << 4u); //set red led on
 
 
 
@@ -238,8 +237,8 @@ int main(void) {
 	 * set boost regulator enable pin as output. This pin will control the power to RF modules
 	 */
 	GPIO_PinInit(GPIOA, 1u, &LED_configOutput);
-
-	GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
+	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power OFF RF modules
+	//GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
 
 
 	PCprint(
@@ -250,7 +249,7 @@ int main(void) {
 
 
 
-		GPIO_ClearPinsOutput(GPIOA, 1 << 19u);
+		GPIO_SetPinsOutput(GPIOA, 1 << 19u);
 /*
 	while (true) {
 
@@ -290,13 +289,13 @@ int main(void) {
 		 * Check if a string has arrived from PC (with CR line end)
 		 */
 
-		if (wake == 1) {
+		if (wake == 1) {l
 			strcpy(reindeerData.dead, "true");
 			//PCprint("Woken by LPTMR, reindeer is !!!%s!!\r\n",
 			//		reindeerData.dead);
 
 			while (true) {
-				if (GPS_strReady) {
+				if (!GPS_strReady) {
 					PCprint(GPS_recBuf);
 					PCprint("\r\n"); //First print out whole buffer
 
@@ -432,7 +431,10 @@ int main(void) {
 	uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
 
 	//NB_send_msg(mqttMessage, msgLen);
-
+	PCprint("wait 10sec before nb startup\r\n");
+	delay_ms(10000);
+	GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
+	delay_ms(4000);
 	NB_create_pdp_send(mqttMessage, msgLen);
 	PCprint("Roger include main.c\r\n");
 	//parseData(testLat, testLon);
@@ -464,12 +466,12 @@ void LLWU_IRQHandler() {
 
 	}
 
-	else if ( LLWU->F2 & 0x01) {// 0x04 for stock frdm acc wakeup reg, 0x01 for customized
+	else if ( LLWU->F1 & 0x20) {// 0x04 for stock frdm acc wakeup reg, 0x01 for customized
 		wake = 2;
-		LLWU->F2 |= 0x01;
+		LLWU->F1 |= 0x20;
 	}
 
-	LLWU->F2 = 0x01;
+	LLWU->F1 = 0x20;
 }
 
 void LPTMR0_IRQHandler() {
@@ -481,7 +483,7 @@ void LPTMR0_IRQHandler() {
 
 	PMC->REGSC |= 0x08;
 
-	GPIO_PortToggle(GPIOB, 1 << 21u); //light blue LED
+	//GPIO_PortToggle(GPIOB, 1 << 4u); //light blue LED
 }
 
 void LPUART0_IRQHandler () {

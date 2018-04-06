@@ -381,8 +381,6 @@ Discarded input sections
  .text          0x0000000000000000        0x0 ./source/main.o
  .data          0x0000000000000000        0x0 ./source/main.o
  .bss           0x0000000000000000        0x0 ./source/main.o
- .text.initTimer
-                0x0000000000000000       0x3c ./source/main.o
  .text          0x0000000000000000        0x0 ./source/nbiot_func.o
  .data          0x0000000000000000        0x0 ./source/nbiot_func.o
  .bss           0x0000000000000000        0x0 ./source/nbiot_func.o
@@ -1130,24 +1128,8 @@ Discarded input sections
  .text          0x0000000000000000        0x0 ./drivers/fsl_lptmr.o
  .data          0x0000000000000000        0x0 ./drivers/fsl_lptmr.o
  .bss           0x0000000000000000        0x0 ./drivers/fsl_lptmr.o
- .text.LPTMR_Init
-                0x0000000000000000       0x54 ./drivers/fsl_lptmr.o
  .text.LPTMR_Deinit
                 0x0000000000000000       0x18 ./drivers/fsl_lptmr.o
- .text.LPTMR_GetDefaultConfig
-                0x0000000000000000       0x14 ./drivers/fsl_lptmr.o
- .debug_info    0x0000000000000000      0xd91 ./drivers/fsl_lptmr.o
- .debug_abbrev  0x0000000000000000      0x2af ./drivers/fsl_lptmr.o
- .debug_loc     0x0000000000000000       0x81 ./drivers/fsl_lptmr.o
- .debug_aranges
-                0x0000000000000000       0x30 ./drivers/fsl_lptmr.o
- .debug_ranges  0x0000000000000000       0x60 ./drivers/fsl_lptmr.o
- .debug_line    0x0000000000000000      0x243 ./drivers/fsl_lptmr.o
- .debug_str     0x0000000000000000      0xc42 ./drivers/fsl_lptmr.o
- .comment       0x0000000000000000       0x80 ./drivers/fsl_lptmr.o
- .debug_frame   0x0000000000000000       0x4c ./drivers/fsl_lptmr.o
- .ARM.attributes
-                0x0000000000000000       0x32 ./drivers/fsl_lptmr.o
  .text          0x0000000000000000        0x0 ./drivers/fsl_lpuart.o
  .data          0x0000000000000000        0x0 ./drivers/fsl_lpuart.o
  .bss           0x0000000000000000        0x0 ./drivers/fsl_lpuart.o
@@ -1476,8 +1458,6 @@ Discarded input sections
                 0x0000000000000000        0xc ./drivers/fsl_smc.o
  .text.SMC_SetPowerModeStop
                 0x0000000000000000       0x40 ./drivers/fsl_smc.o
- .text.SMC_SetPowerModeVlpr
-                0x0000000000000000       0x12 ./drivers/fsl_smc.o
  .text.SMC_SetPowerModeVlpw
                 0x0000000000000000       0x1c ./drivers/fsl_smc.o
  .text.SMC_SetPowerModeWait
@@ -1751,17 +1731,17 @@ Discarded input sections
  .text          0x0000000000000000        0x0 ./board/clock_config.o
  .data          0x0000000000000000        0x0 ./board/clock_config.o
  .bss           0x0000000000000000        0x0 ./board/clock_config.o
+ .text.BOARD_BootClockRUN
+                0x0000000000000000       0x3c ./board/clock_config.o
  .text.BOARD_InitBootClocks
                 0x0000000000000000        0x8 ./board/clock_config.o
- .text.BOARD_BootClockVLPR
-                0x0000000000000000       0x50 ./board/clock_config.o
- .rodata.mcgliteConfig_BOARD_BootClockVLPR
+ .rodata.mcgliteConfig_BOARD_BootClockRUN
                 0x0000000000000000        0x6 ./board/clock_config.o
  .rodata.oscConfig_BOARD_BootClockRUN
                 0x0000000000000000        0x8 ./board/clock_config.o
  .rodata.oscConfig_BOARD_BootClockVLPR
                 0x0000000000000000        0x8 ./board/clock_config.o
- .rodata.simConfig_BOARD_BootClockVLPR
+ .rodata.simConfig_BOARD_BootClockRUN
                 0x0000000000000000        0x8 ./board/clock_config.o
  .text          0x0000000000000000        0x0 ./board/peripherals.o
  .data          0x0000000000000000        0x0 ./board/peripherals.o
@@ -2262,7 +2242,7 @@ LOAD /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/
  .FlashConfig   0x0000000000000400       0x10 ./startup/startup_MKL17Z4.o
                 0x0000000000000410                . = ALIGN (0x4)
 
-.text           0x0000000000000410     0x308c
+.text           0x0000000000000410     0x31b4
                 0x0000000000000410                . = ALIGN (0x4)
  *(.text)
  .text          0x0000000000000410       0x60 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
@@ -2346,477 +2326,491 @@ LOAD /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/
  .text.accReadReg
                 0x0000000000000ae8       0x78 ./source/i2c_func.o
                 0x0000000000000ae8                accReadReg
+ .text.initTimer
+                0x0000000000000b60       0x30 ./source/main.o
+                0x0000000000000b60                initTimer
  .text.initUART
-                0x0000000000000b60       0xd8 ./source/main.o
-                0x0000000000000b60                initUART
- .text.NB_send  0x0000000000000c38       0x28 ./source/main.o
-                0x0000000000000c38                NB_send
+                0x0000000000000b90       0xc4 ./source/main.o
+                0x0000000000000b90                initUART
+ .text.NB_send  0x0000000000000c54       0x28 ./source/main.o
+                0x0000000000000c54                NB_send
  .text.GPS_send
-                0x0000000000000c60       0x2c ./source/main.o
-                0x0000000000000c60                GPS_send
- .text.PCprint  0x0000000000000c8c       0x28 ./source/main.o
-                0x0000000000000c8c                PCprint
+                0x0000000000000c7c       0x2c ./source/main.o
+                0x0000000000000c7c                GPS_send
+ .text.PCprint  0x0000000000000ca8       0x28 ./source/main.o
+                0x0000000000000ca8                PCprint
  .text.startup.main
-                0x0000000000000cb4      0x398 ./source/main.o
-                0x0000000000000cb4                main
+                0x0000000000000cd0      0x400 ./source/main.o
+                0x0000000000000cd0                main
  .text.LLWU_IRQHandler
-                0x000000000000104c       0x4c ./source/main.o
-                0x000000000000104c                LLWU_IRQHandler
+                0x00000000000010d0       0x4c ./source/main.o
+                0x00000000000010d0                LLWU_IRQHandler
  .text.LPTMR0_IRQHandler
-                0x0000000000001098       0x30 ./source/main.o
-                0x0000000000001098                LPTMR0_IRQHandler
+                0x000000000000111c       0x24 ./source/main.o
+                0x000000000000111c                LPTMR0_IRQHandler
  .text.LPUART0_IRQHandler
-                0x00000000000010c8       0x4c ./source/main.o
-                0x00000000000010c8                LPUART0_IRQHandler
+                0x0000000000001140       0x4c ./source/main.o
+                0x0000000000001140                LPUART0_IRQHandler
  .text.UART2_FLEXIO_IRQHandler
-                0x0000000000001114       0x4c ./source/main.o
-                0x0000000000001114                UART2_FLEXIO_IRQHandler
+                0x000000000000118c       0x4c ./source/main.o
+                0x000000000000118c                UART2_FLEXIO_IRQHandler
  .text.LPUART1_IRQHandler
-                0x0000000000001160       0x40 ./source/main.o
-                0x0000000000001160                LPUART1_IRQHandler
+                0x00000000000011d8       0x40 ./source/main.o
+                0x00000000000011d8                LPUART1_IRQHandler
  .text.assembleMqtt
-                0x00000000000011a0      0x1f0 ./source/nbiot_func.o
-                0x00000000000011a0                assembleMqtt
+                0x0000000000001218      0x1f0 ./source/nbiot_func.o
+                0x0000000000001218                assembleMqtt
  .text.NB_reboot
-                0x0000000000001390       0x4c ./source/nbiot_func.o
-                0x0000000000001390                NB_reboot
+                0x0000000000001408       0x4c ./source/nbiot_func.o
+                0x0000000000001408                NB_reboot
  .text.NB_setPin
-                0x00000000000013dc       0x40 ./source/nbiot_func.o
-                0x00000000000013dc                NB_setPin
+                0x0000000000001454       0x40 ./source/nbiot_func.o
+                0x0000000000001454                NB_setPin
  .text.NB_cops_register
-                0x000000000000141c       0x40 ./source/nbiot_func.o
-                0x000000000000141c                NB_cops_register
+                0x0000000000001494       0x40 ./source/nbiot_func.o
+                0x0000000000001494                NB_cops_register
  .text.NB_cops_deRegister
-                0x000000000000145c       0x40 ./source/nbiot_func.o
-                0x000000000000145c                NB_cops_deRegister
+                0x00000000000014d4       0x40 ./source/nbiot_func.o
+                0x00000000000014d4                NB_cops_deRegister
  .text.NB_network_status
-                0x000000000000149c       0x4c ./source/nbiot_func.o
-                0x000000000000149c                NB_network_status
+                0x0000000000001514       0x4c ./source/nbiot_func.o
+                0x0000000000001514                NB_network_status
  .text.NB_define_pdp
-                0x00000000000014e8       0x48 ./source/nbiot_func.o
-                0x00000000000014e8                NB_define_pdp
+                0x0000000000001560       0x48 ./source/nbiot_func.o
+                0x0000000000001560                NB_define_pdp
  .text.NB_active_pdp
-                0x0000000000001530       0x48 ./source/nbiot_func.o
-                0x0000000000001530                NB_active_pdp
+                0x00000000000015a8       0x48 ./source/nbiot_func.o
+                0x00000000000015a8                NB_active_pdp
  .text.NB_show_ip
-                0x0000000000001578       0x40 ./source/nbiot_func.o
-                0x0000000000001578                NB_show_ip
+                0x00000000000015f0       0x40 ./source/nbiot_func.o
+                0x00000000000015f0                NB_show_ip
  .text.NB_create_socket
-                0x00000000000015b8       0x40 ./source/nbiot_func.o
-                0x00000000000015b8                NB_create_socket
+                0x0000000000001630       0x40 ./source/nbiot_func.o
+                0x0000000000001630                NB_create_socket
  .text.NB_send_msg
-                0x00000000000015f8       0x54 ./source/nbiot_func.o
-                0x00000000000015f8                NB_send_msg
+                0x0000000000001670       0x54 ./source/nbiot_func.o
+                0x0000000000001670                NB_send_msg
  .text.NB_read_msg
-                0x000000000000164c       0x40 ./source/nbiot_func.o
-                0x000000000000164c                NB_read_msg
+                0x00000000000016c4       0x40 ./source/nbiot_func.o
+                0x00000000000016c4                NB_read_msg
  .text.NB_create_pdp_send
-                0x000000000000168c       0x94 ./source/nbiot_func.o
-                0x000000000000168c                NB_create_pdp_send
- .text.millis   0x0000000000001720        0xc ./source/timing.o
-                0x0000000000001720                millis
+                0x0000000000001704       0x94 ./source/nbiot_func.o
+                0x0000000000001704                NB_create_pdp_send
+ .text.millis   0x0000000000001798        0xc ./source/timing.o
+                0x0000000000001798                millis
  .text.SysTick_Handler
-                0x000000000000172c       0x10 ./source/timing.o
-                0x000000000000172c                SysTick_Handler
+                0x00000000000017a4       0x10 ./source/timing.o
+                0x00000000000017a4                SysTick_Handler
  .text.delay_ms
-                0x000000000000173c       0x14 ./source/timing.o
-                0x000000000000173c                delay_ms
+                0x00000000000017b4       0x14 ./source/timing.o
+                0x00000000000017b4                delay_ms
  .text.CLOCK_GetLircClkFreq
-                0x0000000000001750       0x2c ./drivers/fsl_clock.o
+                0x00000000000017c8       0x2c ./drivers/fsl_clock.o
  .text.CLOCK_GetOsc0ErClkFreq
-                0x000000000000177c       0x1c ./drivers/fsl_clock.o
-                0x000000000000177c                CLOCK_GetOsc0ErClkFreq
+                0x00000000000017f4       0x1c ./drivers/fsl_clock.o
+                0x00000000000017f4                CLOCK_GetOsc0ErClkFreq
  .text.CLOCK_GetEr32kClkFreq
-                0x0000000000001798       0x3c ./drivers/fsl_clock.o
-                0x0000000000001798                CLOCK_GetEr32kClkFreq
+                0x0000000000001810       0x3c ./drivers/fsl_clock.o
+                0x0000000000001810                CLOCK_GetEr32kClkFreq
  .text.CLOCK_SetSimConfig
-                0x00000000000017d4       0x2c ./drivers/fsl_clock.o
-                0x00000000000017d4                CLOCK_SetSimConfig
+                0x000000000000184c       0x2c ./drivers/fsl_clock.o
+                0x000000000000184c                CLOCK_SetSimConfig
  .text.CLOCK_GetInternalRefClkFreq
-                0x0000000000001800       0x24 ./drivers/fsl_clock.o
-                0x0000000000001800                CLOCK_GetInternalRefClkFreq
+                0x0000000000001878       0x24 ./drivers/fsl_clock.o
+                0x0000000000001878                CLOCK_GetInternalRefClkFreq
  .text.CLOCK_GetPeriphClkFreq
-                0x0000000000001824       0x20 ./drivers/fsl_clock.o
-                0x0000000000001824                CLOCK_GetPeriphClkFreq
+                0x000000000000189c       0x20 ./drivers/fsl_clock.o
+                0x000000000000189c                CLOCK_GetPeriphClkFreq
  .text.CLOCK_GetOutClkFreq
-                0x0000000000001844       0x3c ./drivers/fsl_clock.o
-                0x0000000000001844                CLOCK_GetOutClkFreq
+                0x00000000000018bc       0x3c ./drivers/fsl_clock.o
+                0x00000000000018bc                CLOCK_GetOutClkFreq
  .text.CLOCK_GetCoreSysClkFreq
-                0x0000000000001880       0x20 ./drivers/fsl_clock.o
-                0x0000000000001880                CLOCK_GetCoreSysClkFreq
+                0x00000000000018f8       0x20 ./drivers/fsl_clock.o
+                0x00000000000018f8                CLOCK_GetCoreSysClkFreq
  .text.CLOCK_GetFreq
-                0x00000000000018a0       0x78 ./drivers/fsl_clock.o
-                0x00000000000018a0                CLOCK_GetFreq
+                0x0000000000001918       0x78 ./drivers/fsl_clock.o
+                0x0000000000001918                CLOCK_GetFreq
  .text.CLOCK_SetMcgliteConfig
-                0x0000000000001918       0x90 ./drivers/fsl_clock.o
-                0x0000000000001918                CLOCK_SetMcgliteConfig
+                0x0000000000001990       0x90 ./drivers/fsl_clock.o
+                0x0000000000001990                CLOCK_SetMcgliteConfig
  .text.DMA_HandleIRQ
-                0x00000000000019a8       0x22 ./drivers/fsl_dma.o
-                0x00000000000019a8                DMA_HandleIRQ
- *fill*         0x00000000000019ca        0x2 
+                0x0000000000001a20       0x22 ./drivers/fsl_dma.o
+                0x0000000000001a20                DMA_HandleIRQ
+ *fill*         0x0000000000001a42        0x2 
  .text.DMA0_DriverIRQHandler
-                0x00000000000019cc       0x10 ./drivers/fsl_dma.o
-                0x00000000000019cc                DMA0_DriverIRQHandler
+                0x0000000000001a44       0x10 ./drivers/fsl_dma.o
+                0x0000000000001a44                DMA0_DriverIRQHandler
  .text.DMA1_DriverIRQHandler
-                0x00000000000019dc       0x10 ./drivers/fsl_dma.o
-                0x00000000000019dc                DMA1_DriverIRQHandler
+                0x0000000000001a54       0x10 ./drivers/fsl_dma.o
+                0x0000000000001a54                DMA1_DriverIRQHandler
  .text.DMA2_DriverIRQHandler
-                0x00000000000019ec       0x10 ./drivers/fsl_dma.o
-                0x00000000000019ec                DMA2_DriverIRQHandler
+                0x0000000000001a64       0x10 ./drivers/fsl_dma.o
+                0x0000000000001a64                DMA2_DriverIRQHandler
  .text.DMA3_DriverIRQHandler
-                0x00000000000019fc       0x10 ./drivers/fsl_dma.o
-                0x00000000000019fc                DMA3_DriverIRQHandler
+                0x0000000000001a74       0x10 ./drivers/fsl_dma.o
+                0x0000000000001a74                DMA3_DriverIRQHandler
  .text.FLASH_PflashSetPrefetchSpeculation
-                0x0000000000001a0c       0x50 ./drivers/fsl_flash.o
-                0x0000000000001a0c                FLASH_PflashSetPrefetchSpeculation
+                0x0000000000001a84       0x50 ./drivers/fsl_flash.o
+                0x0000000000001a84                FLASH_PflashSetPrefetchSpeculation
  .text.FLEXIO_CommonIRQHandler
-                0x0000000000001a5c       0x34 ./drivers/fsl_flexio.o
-                0x0000000000001a5c                FLEXIO_CommonIRQHandler
+                0x0000000000001ad4       0x34 ./drivers/fsl_flexio.o
+                0x0000000000001ad4                FLEXIO_CommonIRQHandler
  .text.UART2_FLEXIO_DriverIRQHandler
-                0x0000000000001a90        0x8 ./drivers/fsl_flexio.o
-                0x0000000000001a90                UART2_FLEXIO_DriverIRQHandler
+                0x0000000000001b08        0x8 ./drivers/fsl_flexio.o
+                0x0000000000001b08                UART2_FLEXIO_DriverIRQHandler
  .text.GPIO_PinInit
-                0x0000000000001a98       0x2e ./drivers/fsl_gpio.o
-                0x0000000000001a98                GPIO_PinInit
- *fill*         0x0000000000001ac6        0x2 
+                0x0000000000001b10       0x2e ./drivers/fsl_gpio.o
+                0x0000000000001b10                GPIO_PinInit
+ *fill*         0x0000000000001b3e        0x2 
  .text.I2C_TransferCommonIRQHandler
-                0x0000000000001ac8       0x28 ./drivers/fsl_i2c.o
+                0x0000000000001b40       0x28 ./drivers/fsl_i2c.o
  .text.I2C_GetInstance
-                0x0000000000001af0       0x20 ./drivers/fsl_i2c.o
-                0x0000000000001af0                I2C_GetInstance
+                0x0000000000001b68       0x20 ./drivers/fsl_i2c.o
+                0x0000000000001b68                I2C_GetInstance
  .text.I2C_MasterGetDefaultConfig
-                0x0000000000001b10       0x14 ./drivers/fsl_i2c.o
-                0x0000000000001b10                I2C_MasterGetDefaultConfig
+                0x0000000000001b88       0x14 ./drivers/fsl_i2c.o
+                0x0000000000001b88                I2C_MasterGetDefaultConfig
  .text.I2C_MasterSetBaudRate
-                0x0000000000001b24       0x70 ./drivers/fsl_i2c.o
-                0x0000000000001b24                I2C_MasterSetBaudRate
+                0x0000000000001b9c       0x70 ./drivers/fsl_i2c.o
+                0x0000000000001b9c                I2C_MasterSetBaudRate
  .text.I2C_MasterInit
-                0x0000000000001b94       0x84 ./drivers/fsl_i2c.o
-                0x0000000000001b94                I2C_MasterInit
+                0x0000000000001c0c       0x84 ./drivers/fsl_i2c.o
+                0x0000000000001c0c                I2C_MasterInit
  .text.I2C_MasterStop
-                0x0000000000001c18       0x14 ./drivers/fsl_i2c.o
-                0x0000000000001c18                I2C_MasterStop
+                0x0000000000001c90       0x14 ./drivers/fsl_i2c.o
+                0x0000000000001c90                I2C_MasterStop
  .text.I2C_MasterGetStatusFlags
-                0x0000000000001c2c       0x20 ./drivers/fsl_i2c.o
-                0x0000000000001c2c                I2C_MasterGetStatusFlags
+                0x0000000000001ca4       0x20 ./drivers/fsl_i2c.o
+                0x0000000000001ca4                I2C_MasterGetStatusFlags
  .text.I2C_MasterStart
-                0x0000000000001c4c       0x3c ./drivers/fsl_i2c.o
-                0x0000000000001c4c                I2C_MasterStart
+                0x0000000000001cc4       0x3c ./drivers/fsl_i2c.o
+                0x0000000000001cc4                I2C_MasterStart
  .text.I2C_MasterRepeatedStart
-                0x0000000000001c88       0x5c ./drivers/fsl_i2c.o
-                0x0000000000001c88                I2C_MasterRepeatedStart
+                0x0000000000001d00       0x5c ./drivers/fsl_i2c.o
+                0x0000000000001d00                I2C_MasterRepeatedStart
  .text.I2C0_DriverIRQHandler
-                0x0000000000001ce4       0x18 ./drivers/fsl_i2c.o
-                0x0000000000001ce4                I2C0_DriverIRQHandler
+                0x0000000000001d5c       0x18 ./drivers/fsl_i2c.o
+                0x0000000000001d5c                I2C0_DriverIRQHandler
  .text.I2C1_DriverIRQHandler
-                0x0000000000001cfc       0x18 ./drivers/fsl_i2c.o
-                0x0000000000001cfc                I2C1_DriverIRQHandler
+                0x0000000000001d74       0x18 ./drivers/fsl_i2c.o
+                0x0000000000001d74                I2C1_DriverIRQHandler
+ .text.LPTMR_Init
+                0x0000000000001d8c       0x54 ./drivers/fsl_lptmr.o
+                0x0000000000001d8c                LPTMR_Init
+ .text.LPTMR_GetDefaultConfig
+                0x0000000000001de0       0x14 ./drivers/fsl_lptmr.o
+                0x0000000000001de0                LPTMR_GetDefaultConfig
  .text.LPUART_GetInstance
-                0x0000000000001d14       0x20 ./drivers/fsl_lpuart.o
-                0x0000000000001d14                LPUART_GetInstance
+                0x0000000000001df4       0x20 ./drivers/fsl_lpuart.o
+                0x0000000000001df4                LPUART_GetInstance
  .text.LPUART_Init
-                0x0000000000001d34      0x188 ./drivers/fsl_lpuart.o
-                0x0000000000001d34                LPUART_Init
+                0x0000000000001e14      0x188 ./drivers/fsl_lpuart.o
+                0x0000000000001e14                LPUART_Init
  .text.LPUART_GetDefaultConfig
-                0x0000000000001ebc       0x1a ./drivers/fsl_lpuart.o
-                0x0000000000001ebc                LPUART_GetDefaultConfig
+                0x0000000000001f9c       0x1a ./drivers/fsl_lpuart.o
+                0x0000000000001f9c                LPUART_GetDefaultConfig
  .text.LPUART_EnableInterrupts
-                0x0000000000001ed6       0x1c ./drivers/fsl_lpuart.o
-                0x0000000000001ed6                LPUART_EnableInterrupts
- *fill*         0x0000000000001ef2        0x2 
+                0x0000000000001fb6       0x1c ./drivers/fsl_lpuart.o
+                0x0000000000001fb6                LPUART_EnableInterrupts
+ *fill*         0x0000000000001fd2        0x2 
  .text.LPUART_ClearStatusFlags
-                0x0000000000001ef4       0x40 ./drivers/fsl_lpuart.o
-                0x0000000000001ef4                LPUART_ClearStatusFlags
+                0x0000000000001fd4       0x40 ./drivers/fsl_lpuart.o
+                0x0000000000001fd4                LPUART_ClearStatusFlags
  .text.LPUART0_DriverIRQHandler
-                0x0000000000001f34       0x1c ./drivers/fsl_lpuart.o
-                0x0000000000001f34                LPUART0_DriverIRQHandler
+                0x0000000000002014       0x1c ./drivers/fsl_lpuart.o
+                0x0000000000002014                LPUART0_DriverIRQHandler
  .text.LPUART1_DriverIRQHandler
-                0x0000000000001f50       0x1c ./drivers/fsl_lpuart.o
-                0x0000000000001f50                LPUART1_DriverIRQHandler
+                0x0000000000002030       0x1c ./drivers/fsl_lpuart.o
+                0x0000000000002030                LPUART1_DriverIRQHandler
  .text.I2S0_DriverIRQHandler
-                0x0000000000001f6c       0x6c ./drivers/fsl_sai.o
-                0x0000000000001f6c                I2S0_DriverIRQHandler
+                0x000000000000204c       0x6c ./drivers/fsl_sai.o
+                0x000000000000204c                I2S0_DriverIRQHandler
  .text.SMC_PreEnterStopModes
-                0x0000000000001fd8       0x2c ./drivers/fsl_smc.o
-                0x0000000000001fd8                SMC_PreEnterStopModes
+                0x00000000000020b8       0x2c ./drivers/fsl_smc.o
+                0x00000000000020b8                SMC_PreEnterStopModes
+ .text.SMC_SetPowerModeVlpr
+                0x00000000000020e4       0x12 ./drivers/fsl_smc.o
+                0x00000000000020e4                SMC_SetPowerModeVlpr
+ *fill*         0x00000000000020f6        0x2 
  .text.SMC_SetPowerModeVlls
-                0x0000000000002004       0x5c ./drivers/fsl_smc.o
-                0x0000000000002004                SMC_SetPowerModeVlls
+                0x00000000000020f8       0x5c ./drivers/fsl_smc.o
+                0x00000000000020f8                SMC_SetPowerModeVlls
  .text.SPI_CommonIRQHandler
-                0x0000000000002060       0x28 ./drivers/fsl_spi.o
+                0x0000000000002154       0x28 ./drivers/fsl_spi.o
  .text.SPI0_DriverIRQHandler
-                0x0000000000002088       0x10 ./drivers/fsl_spi.o
-                0x0000000000002088                SPI0_DriverIRQHandler
+                0x000000000000217c       0x10 ./drivers/fsl_spi.o
+                0x000000000000217c                SPI0_DriverIRQHandler
  .text.SPI1_DriverIRQHandler
-                0x0000000000002098       0x10 ./drivers/fsl_spi.o
-                0x0000000000002098                SPI1_DriverIRQHandler
+                0x000000000000218c       0x10 ./drivers/fsl_spi.o
+                0x000000000000218c                SPI1_DriverIRQHandler
  .text.UART_GetInstance
-                0x00000000000020a8       0x18 ./drivers/fsl_uart.o
-                0x00000000000020a8                UART_GetInstance
+                0x000000000000219c       0x18 ./drivers/fsl_uart.o
+                0x000000000000219c                UART_GetInstance
  .text.UART_Init
-                0x00000000000020c0       0xe4 ./drivers/fsl_uart.o
-                0x00000000000020c0                UART_Init
+                0x00000000000021b4       0xe4 ./drivers/fsl_uart.o
+                0x00000000000021b4                UART_Init
  .text.UART_GetDefaultConfig
-                0x00000000000021a4       0x12 ./drivers/fsl_uart.o
-                0x00000000000021a4                UART_GetDefaultConfig
- *fill*         0x00000000000021b6        0x2 
+                0x0000000000002298       0x12 ./drivers/fsl_uart.o
+                0x0000000000002298                UART_GetDefaultConfig
+ *fill*         0x00000000000022aa        0x2 
  .text.UART_EnableInterrupts
-                0x00000000000021b8       0x24 ./drivers/fsl_uart.o
-                0x00000000000021b8                UART_EnableInterrupts
+                0x00000000000022ac       0x24 ./drivers/fsl_uart.o
+                0x00000000000022ac                UART_EnableInterrupts
  .text.UART_ClearStatusFlags
-                0x00000000000021dc       0x34 ./drivers/fsl_uart.o
-                0x00000000000021dc                UART_ClearStatusFlags
- .text.BOARD_BootClockRUN
-                0x0000000000002210       0x3c ./board/clock_config.o
-                0x0000000000002210                BOARD_BootClockRUN
+                0x00000000000022d0       0x34 ./drivers/fsl_uart.o
+                0x00000000000022d0                UART_ClearStatusFlags
+ .text.BOARD_BootClockVLPR
+                0x0000000000002304       0x50 ./board/clock_config.o
+                0x0000000000002304                BOARD_BootClockVLPR
  .text.BOARD_InitPins
-                0x000000000000224c       0xb8 ./board/pin_mux.o
-                0x000000000000224c                BOARD_InitPins
+                0x0000000000002354       0xb8 ./board/pin_mux.o
+                0x0000000000002354                BOARD_InitPins
  .text.SystemInit
-                0x0000000000002304       0x24 ./CMSIS/system_MKL17Z4.o
-                0x0000000000002304                SystemInit
- .text.atol     0x0000000000002328        0xc /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-atol.o)
-                0x0000000000002328                atol
- .text.exit     0x0000000000002334       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-exit.o)
-                0x0000000000002334                exit
+                0x000000000000240c       0x24 ./CMSIS/system_MKL17Z4.o
+                0x000000000000240c                SystemInit
+ .text.atol     0x0000000000002430        0xc /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-atol.o)
+                0x0000000000002430                atol
+ .text.exit     0x000000000000243c       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-exit.o)
+                0x000000000000243c                exit
  .text.__libc_init_array
-                0x0000000000002360       0x48 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-init.o)
-                0x0000000000002360                __libc_init_array
- .text.memcpy   0x00000000000023a8       0x12 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memcpy-stub.o)
-                0x00000000000023a8                memcpy
- .text.memmove  0x00000000000023ba       0x24 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memmove.o)
-                0x00000000000023ba                memmove
- .text.memset   0x00000000000023de       0x10 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memset.o)
-                0x00000000000023de                memset
- *fill*         0x00000000000023ee        0x2 
- .text.sprintf  0x00000000000023f0       0x44 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sprintf.o)
-                0x00000000000023f0                sprintf
-                0x00000000000023f0                siprintf
- .text.strchr   0x0000000000002434       0x1c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strchr.o)
-                0x0000000000002434                strchr
- .text.strcpy   0x0000000000002450       0x10 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strcpy.o)
-                0x0000000000002450                strcpy
- .text.strstr   0x0000000000002460       0x30 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strstr.o)
-                0x0000000000002460                strstr
+                0x0000000000002468       0x48 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-init.o)
+                0x0000000000002468                __libc_init_array
+ .text.memcpy   0x00000000000024b0       0x12 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memcpy-stub.o)
+                0x00000000000024b0                memcpy
+ .text.memmove  0x00000000000024c2       0x24 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memmove.o)
+                0x00000000000024c2                memmove
+ .text.memset   0x00000000000024e6       0x10 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memset.o)
+                0x00000000000024e6                memset
+ *fill*         0x00000000000024f6        0x2 
+ .text.sprintf  0x00000000000024f8       0x44 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sprintf.o)
+                0x00000000000024f8                sprintf
+                0x00000000000024f8                siprintf
+ .text.strchr   0x000000000000253c       0x1c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strchr.o)
+                0x000000000000253c                strchr
+ .text.strcpy   0x0000000000002558       0x10 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strcpy.o)
+                0x0000000000002558                strcpy
+ .text.strstr   0x0000000000002568       0x30 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strstr.o)
+                0x0000000000002568                strstr
  .text._strtol_l.isra.0
-                0x0000000000002490      0x10c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strtol.o)
- .text.strtol   0x000000000000259c       0x28 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strtol.o)
-                0x000000000000259c                strtol
+                0x0000000000002598      0x10c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strtol.o)
+ .text.strtol   0x00000000000026a4       0x28 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strtol.o)
+                0x00000000000026a4                strtol
  .text.__locale_ctype_ptr_l
-                0x00000000000025c4        0x6 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
-                0x00000000000025c4                __locale_ctype_ptr_l
+                0x00000000000026cc        0x6 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
+                0x00000000000026cc                __locale_ctype_ptr_l
  .text.__ascii_mbtowc
-                0x00000000000025ca       0x24 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mbtowc_r.o)
-                0x00000000000025ca                __ascii_mbtowc
- *fill*         0x00000000000025ee        0x2 
- .text._free_r  0x00000000000025f0       0x94 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-freer.o)
-                0x00000000000025f0                _free_r
+                0x00000000000026d2       0x24 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mbtowc_r.o)
+                0x00000000000026d2                __ascii_mbtowc
+ *fill*         0x00000000000026f6        0x2 
+ .text._free_r  0x00000000000026f8       0x94 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-freer.o)
+                0x00000000000026f8                _free_r
  .text._malloc_r
-                0x0000000000002684       0xbc /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-mallocr.o)
-                0x0000000000002684                _malloc_r
+                0x000000000000278c       0xbc /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-mallocr.o)
+                0x000000000000278c                _malloc_r
  .text.__ssputs_r
-                0x0000000000002740       0xc4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-svfprintf.o)
-                0x0000000000002740                __ssputs_r
+                0x0000000000002848       0xc4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-svfprintf.o)
+                0x0000000000002848                __ssputs_r
  .text._svfprintf_r
-                0x0000000000002804      0x208 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-svfprintf.o)
-                0x0000000000002804                _svfprintf_r
-                0x0000000000002804                _svfiprintf_r
+                0x000000000000290c      0x208 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-svfprintf.o)
+                0x000000000000290c                _svfprintf_r
+                0x000000000000290c                _svfiprintf_r
  .text._printf_common
-                0x0000000000002a0c       0xda /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-vfprintf_i.o)
-                0x0000000000002a0c                _printf_common
- *fill*         0x0000000000002ae6        0x2 
+                0x0000000000002b14       0xda /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-vfprintf_i.o)
+                0x0000000000002b14                _printf_common
+ *fill*         0x0000000000002bee        0x2 
  .text._printf_i
-                0x0000000000002ae8      0x234 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-vfprintf_i.o)
-                0x0000000000002ae8                _printf_i
- .text._sbrk_r  0x0000000000002d1c       0x24 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sbrkr.o)
-                0x0000000000002d1c                _sbrk_r
+                0x0000000000002bf0      0x234 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-vfprintf_i.o)
+                0x0000000000002bf0                _printf_i
+ .text._sbrk_r  0x0000000000002e24       0x24 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sbrkr.o)
+                0x0000000000002e24                _sbrk_r
  .text.__ascii_wctomb
-                0x0000000000002d40       0x18 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-wctomb_r.o)
-                0x0000000000002d40                __ascii_wctomb
- .text.memchr   0x0000000000002d58       0x16 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memchr-stub.o)
-                0x0000000000002d58                memchr
+                0x0000000000002e48       0x18 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-wctomb_r.o)
+                0x0000000000002e48                __ascii_wctomb
+ .text.memchr   0x0000000000002e60       0x16 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memchr-stub.o)
+                0x0000000000002e60                memchr
  .text.__malloc_lock
-                0x0000000000002d6e        0x2 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mlock.o)
-                0x0000000000002d6e                __malloc_lock
+                0x0000000000002e76        0x2 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mlock.o)
+                0x0000000000002e76                __malloc_lock
  .text.__malloc_unlock
-                0x0000000000002d70        0x2 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mlock.o)
-                0x0000000000002d70                __malloc_unlock
+                0x0000000000002e78        0x2 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mlock.o)
+                0x0000000000002e78                __malloc_unlock
  .text._realloc_r
-                0x0000000000002d72       0x4c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-reallocr.o)
-                0x0000000000002d72                _realloc_r
+                0x0000000000002e7a       0x4c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-reallocr.o)
+                0x0000000000002e7a                _realloc_r
  .text._malloc_usable_size_r
-                0x0000000000002dbe       0x10 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-msizer.o)
-                0x0000000000002dbe                _malloc_usable_size_r
- *fill*         0x0000000000002dce        0x2 
- .text._sbrk    0x0000000000002dd0       0x1c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(sbrk.o)
-                0x0000000000002dd0                _sbrk
- .text._exit    0x0000000000002dec        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(_exit.o)
-                0x0000000000002dec                _exit
+                0x0000000000002ec6       0x10 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-msizer.o)
+                0x0000000000002ec6                _malloc_usable_size_r
+ *fill*         0x0000000000002ed6        0x2 
+ .text._sbrk    0x0000000000002ed8       0x1c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(sbrk.o)
+                0x0000000000002ed8                _sbrk
+ .text._exit    0x0000000000002ef4        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(_exit.o)
+                0x0000000000002ef4                _exit
  *(.rodata)
- .rodata        0x0000000000002df0       0x22 ./source/main.o
- .rodata        0x0000000000002e12        0x2 ./drivers/fsl_smc.o
+ .rodata        0x0000000000002ef8       0x22 ./source/main.o
+ .rodata        0x0000000000002f1a        0x2 ./drivers/fsl_smc.o
  *(.rodata*)
  .rodata.AT_send.str1.1
-                0x0000000000002e14       0x27 ./source/at_func.o
+                0x0000000000002f1c       0x27 ./source/at_func.o
  .rodata.breakIfAtOk.str1.1
-                0x0000000000002e3b        0x3 ./source/at_func.o
+                0x0000000000002f43        0x3 ./source/at_func.o
  .rodata.str1.1
-                0x0000000000002e3e       0x83 ./source/at_func.o
+                0x0000000000002f46       0x83 ./source/at_func.o
  .rodata.getGPS.str1.1
-                0x0000000000002ec1       0x3b ./source/gps_func.o
+                0x0000000000002fc9       0x3b ./source/gps_func.o
                                          0x3e (size before relaxing)
  .rodata.parseData.str1.1
-                0x0000000000002efc        0x6 ./source/gps_func.o
+                0x0000000000003004        0x6 ./source/gps_func.o
  .rodata.LED_configOutput.8066
-                0x0000000000002f02        0x2 ./source/main.o
+                0x000000000000300a        0x2 ./source/main.o
  .rodata.main.str1.1
-                0x0000000000002f04      0x1a9 ./source/main.o
-                                        0x1ac (size before relaxing)
+                0x000000000000300c      0x1c8 ./source/main.o
+                                        0x1cb (size before relaxing)
  .rodata.NB_active_pdp.str1.1
-                0x00000000000030ad       0x17 ./source/nbiot_func.o
+                0x00000000000031d4       0x17 ./source/nbiot_func.o
  .rodata.NB_cops_deRegister.str1.1
-                0x00000000000030c4       0x13 ./source/nbiot_func.o
+                0x00000000000031eb       0x13 ./source/nbiot_func.o
  .rodata.NB_cops_register.str1.1
-                0x00000000000030d7        0xd ./source/nbiot_func.o
+                0x00000000000031fe        0xd ./source/nbiot_func.o
                                          0x13 (size before relaxing)
  .rodata.NB_create_socket.str1.1
-                0x00000000000030e4        0xf ./source/nbiot_func.o
+                0x000000000000320b        0xf ./source/nbiot_func.o
  .rodata.NB_define_pdp.str1.1
-                0x00000000000030f3       0x18 ./source/nbiot_func.o
+                0x000000000000321a       0x18 ./source/nbiot_func.o
  .rodata.NB_network_status.str1.1
-                0x000000000000310b       0x17 ./source/nbiot_func.o
+                0x0000000000003232       0x17 ./source/nbiot_func.o
  .rodata.NB_read_msg.str1.1
-                0x0000000000003122        0x7 ./source/nbiot_func.o
+                0x0000000000003249        0x7 ./source/nbiot_func.o
  .rodata.NB_reboot.str1.1
-                0x0000000000003129       0x23 ./source/nbiot_func.o
+                0x0000000000003250       0x23 ./source/nbiot_func.o
                                          0x2c (size before relaxing)
  .rodata.NB_send_msg.str1.1
-                0x000000000000314c       0x25 ./source/nbiot_func.o
+                0x0000000000003273       0x25 ./source/nbiot_func.o
  .rodata.NB_setPin.str1.1
-                0x0000000000003171       0x12 ./source/nbiot_func.o
+                0x0000000000003298       0x12 ./source/nbiot_func.o
  .rodata.NB_show_ip.str1.1
-                0x0000000000003183        0xc ./source/nbiot_func.o
+                0x00000000000032aa        0xc ./source/nbiot_func.o
  .rodata.assembleMqtt.str1.1
-                0x000000000000318f       0x77 ./source/nbiot_func.o
+                0x00000000000032b6       0x77 ./source/nbiot_func.o
  .rodata.str1.1
-                0x0000000000003206       0x26 ./source/nbiot_func.o
+                0x000000000000332d       0x26 ./source/nbiot_func.o
+ *fill*         0x0000000000003353        0x1 
  .rodata.lircFreqs.5628
-                0x000000000000322c        0x8 ./drivers/fsl_clock.o
+                0x0000000000003354        0x8 ./drivers/fsl_clock.o
  .rodata.s_i2cClocks
-                0x0000000000003234        0x8 ./drivers/fsl_i2c.o
+                0x000000000000335c        0x8 ./drivers/fsl_i2c.o
  .rodata.s_i2cDividerTable
-                0x000000000000323c       0x80 ./drivers/fsl_i2c.o
+                0x0000000000003364       0x80 ./drivers/fsl_i2c.o
  .rodata.s_lpuartClock
-                0x00000000000032bc        0x8 ./drivers/fsl_lpuart.o
+                0x00000000000033e4        0x8 ./drivers/fsl_lpuart.o
  .rodata.s_uartClock
-                0x00000000000032c4        0xc ./drivers/fsl_uart.o
- .rodata.mcgliteConfig_BOARD_BootClockRUN
-                0x00000000000032d0        0x6 ./board/clock_config.o
-                0x00000000000032d0                mcgliteConfig_BOARD_BootClockRUN
- *fill*         0x00000000000032d6        0x2 
- .rodata.simConfig_BOARD_BootClockRUN
-                0x00000000000032d8        0x8 ./board/clock_config.o
-                0x00000000000032d8                simConfig_BOARD_BootClockRUN
+                0x00000000000033ec        0xc ./drivers/fsl_uart.o
+ .rodata.mcgliteConfig_BOARD_BootClockVLPR
+                0x00000000000033f8        0x6 ./board/clock_config.o
+                0x00000000000033f8                mcgliteConfig_BOARD_BootClockVLPR
+ *fill*         0x00000000000033fe        0x2 
+ .rodata.simConfig_BOARD_BootClockVLPR
+                0x0000000000003400        0x8 ./board/clock_config.o
+                0x0000000000003400                simConfig_BOARD_BootClockVLPR
  .rodata._global_impure_ptr
-                0x00000000000032e0        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-impure.o)
-                0x00000000000032e0                _global_impure_ptr
+                0x0000000000003408        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-impure.o)
+                0x0000000000003408                _global_impure_ptr
  .rodata.__sf_fake_stderr
-                0x00000000000032e4       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-findfp.o)
-                0x00000000000032e4                __sf_fake_stderr
+                0x000000000000340c       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-findfp.o)
+                0x000000000000340c                __sf_fake_stderr
  .rodata.__sf_fake_stdin
-                0x0000000000003304       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-findfp.o)
-                0x0000000000003304                __sf_fake_stdin
+                0x000000000000342c       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-findfp.o)
+                0x000000000000342c                __sf_fake_stdin
  .rodata.__sf_fake_stdout
-                0x0000000000003324       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-findfp.o)
-                0x0000000000003324                __sf_fake_stdout
+                0x000000000000344c       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-findfp.o)
+                0x000000000000344c                __sf_fake_stdout
  .rodata._setlocale_r.str1.1
-                0x0000000000003344        0x8 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
+                0x000000000000346c        0x8 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
                                           0x9 (size before relaxing)
  .rodata.str1.1
-                0x000000000000334c        0x2 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
+                0x0000000000003474        0x2 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
  .rodata._svfprintf_r.str1.1
-                0x000000000000334e       0x11 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-svfprintf.o)
+                0x0000000000003476       0x11 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-svfprintf.o)
  .rodata._printf_i.str1.1
-                0x000000000000335f       0x22 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-vfprintf_i.o)
+                0x0000000000003487       0x22 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-vfprintf_i.o)
  .rodata._ctype_
-                0x0000000000003381      0x101 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-ctype_.o)
-                0x0000000000003381                _ctype_
+                0x00000000000034a9      0x101 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-ctype_.o)
+                0x00000000000034a9                _ctype_
  *(.glue_7)
- .glue_7        0x0000000000003482        0x0 linker stubs
+ .glue_7        0x00000000000035aa        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x0000000000003482        0x0 linker stubs
+ .glue_7t       0x00000000000035aa        0x0 linker stubs
  *(.eh_frame)
- *fill*         0x0000000000003482        0x2 
- .eh_frame      0x0000000000003484        0x0 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
+ *fill*         0x00000000000035aa        0x2 
+ .eh_frame      0x00000000000035ac        0x0 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
  *(.init)
- .init          0x0000000000003484        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crti.o
-                0x0000000000003484                _init
- .init          0x0000000000003488        0x8 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtn.o
+ .init          0x00000000000035ac        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crti.o
+                0x00000000000035ac                _init
+ .init          0x00000000000035b0        0x8 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtn.o
  *(.fini)
- .fini          0x0000000000003490        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crti.o
-                0x0000000000003490                _fini
- .fini          0x0000000000003494        0x8 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtn.o
-                0x000000000000349c                . = ALIGN (0x4)
+ .fini          0x00000000000035b8        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crti.o
+                0x00000000000035b8                _fini
+ .fini          0x00000000000035bc        0x8 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtn.o
+                0x00000000000035c4                . = ALIGN (0x4)
 
-.vfp11_veneer   0x000000000000349c        0x0
- .vfp11_veneer  0x000000000000349c        0x0 linker stubs
+.vfp11_veneer   0x00000000000035c4        0x0
+ .vfp11_veneer  0x00000000000035c4        0x0 linker stubs
 
-.v4_bx          0x000000000000349c        0x0
- .v4_bx         0x000000000000349c        0x0 linker stubs
+.v4_bx          0x00000000000035c4        0x0
+ .v4_bx         0x00000000000035c4        0x0 linker stubs
 
-.iplt           0x000000000000349c        0x0
- .iplt          0x000000000000349c        0x0 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
+.iplt           0x00000000000035c4        0x0
+ .iplt          0x00000000000035c4        0x0 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
 
-.ARM            0x000000000000349c        0x8
-                0x000000000000349c                __exidx_start = .
+.ARM            0x00000000000035c4        0x8
+                0x00000000000035c4                __exidx_start = .
  *(.ARM.exidx*)
- .ARM.exidx     0x000000000000349c        0x8 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/crt0.o
-                0x00000000000034a4                __exidx_end = .
+ .ARM.exidx     0x00000000000035c4        0x8 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/crt0.o
+                0x00000000000035cc                __exidx_end = .
 
-.rel.dyn        0x00000000000034a4        0x0
- .rel.iplt      0x00000000000034a4        0x0 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
+.rel.dyn        0x00000000000035cc        0x0
+ .rel.iplt      0x00000000000035cc        0x0 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
 
-.ctors          0x00000000000034a4        0x0
-                0x00000000000034a4                __CTOR_LIST__ = .
+.ctors          0x00000000000035cc        0x0
+                0x00000000000035cc                __CTOR_LIST__ = .
  *crtbegin.o(.ctors)
  *crtbegin?.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o *crtend?.o) .ctors)
  *(SORT(.ctors.*))
  *(.ctors)
-                0x00000000000034a4                __CTOR_END__ = .
+                0x00000000000035cc                __CTOR_END__ = .
 
-.dtors          0x00000000000034a4        0x0
-                0x00000000000034a4                __DTOR_LIST__ = .
+.dtors          0x00000000000035cc        0x0
+                0x00000000000035cc                __DTOR_LIST__ = .
  *crtbegin.o(.dtors)
  *crtbegin?.o(.dtors)
  *(EXCLUDE_FILE(*crtend.o *crtend?.o) .dtors)
  *(SORT(.dtors.*))
  *(.dtors)
-                0x00000000000034a4                __DTOR_END__ = .
+                0x00000000000035cc                __DTOR_END__ = .
 
-.preinit_array  0x00000000000034a4        0x0
-                0x00000000000034a4                PROVIDE (__preinit_array_start, .)
+.preinit_array  0x00000000000035cc        0x0
+                0x00000000000035cc                PROVIDE (__preinit_array_start, .)
  *(.preinit_array*)
-                0x00000000000034a4                PROVIDE (__preinit_array_end, .)
+                0x00000000000035cc                PROVIDE (__preinit_array_end, .)
 
-.init_array     0x00000000000034a4        0x4
-                0x00000000000034a4                PROVIDE (__init_array_start, .)
+.init_array     0x00000000000035cc        0x4
+                0x00000000000035cc                PROVIDE (__init_array_start, .)
  *(SORT(.init_array.*))
  *(.init_array*)
- .init_array    0x00000000000034a4        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
-                0x00000000000034a8                PROVIDE (__init_array_end, .)
+ .init_array    0x00000000000035cc        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
+                0x00000000000035d0                PROVIDE (__init_array_end, .)
 
-.fini_array     0x00000000000034a8        0x4
+.fini_array     0x00000000000035d0        0x4
                 [!provide]                        PROVIDE (__fini_array_start, .)
  *(SORT(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x00000000000034a8        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
+ .fini_array    0x00000000000035d0        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end, .)
-                0x00000000000034ac                __etext = .
-                0x00000000000034ac                __DATA_ROM = .
+                0x00000000000035d4                __etext = .
+                0x00000000000035d4                __DATA_ROM = .
 
 .mtb            0x000000001fffe000        0x0
                 0x000000001fffe000                . = ALIGN (0x8)
@@ -2825,7 +2819,7 @@ LOAD /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/
                 0x000000001fffe000                . = ALIGN (0x8)
                 0x000000001fffe000                _mtb_end = .
 
-.data           0x000000001fffe000      0x218 load address 0x00000000000034ac
+.data           0x000000001fffe000      0x214 load address 0x00000000000035d4
                 0x000000001fffe000                . = ALIGN (0x4)
                 0x000000001fffe000                __DATA_RAM = .
                 0x000000001fffe000                __data_start__ = .
@@ -2861,156 +2855,154 @@ LOAD /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/
  .data.moduleResponseTimeout
                 0x000000001fffe028        0x4 ./source/main.o
                 0x000000001fffe028                moduleResponseTimeout
- .data.wake     0x000000001fffe02c        0x1 ./source/main.o
-                0x000000001fffe02c                wake
- *fill*         0x000000001fffe02d        0x3 
  .data.client_id
-                0x000000001fffe030        0x4 ./source/nbiot_func.o
-                0x000000001fffe030                client_id
- .data.passwd   0x000000001fffe034        0x4 ./source/nbiot_func.o
-                0x000000001fffe034                passwd
- .data.topic    0x000000001fffe038        0x4 ./source/nbiot_func.o
-                0x000000001fffe038                topic
+                0x000000001fffe02c        0x4 ./source/nbiot_func.o
+                0x000000001fffe02c                client_id
+ .data.passwd   0x000000001fffe030        0x4 ./source/nbiot_func.o
+                0x000000001fffe030                passwd
+ .data.topic    0x000000001fffe034        0x4 ./source/nbiot_func.o
+                0x000000001fffe034                topic
  .data.username
-                0x000000001fffe03c        0x4 ./source/nbiot_func.o
-                0x000000001fffe03c                username
+                0x000000001fffe038        0x4 ./source/nbiot_func.o
+                0x000000001fffe038                username
  .data.SystemCoreClock
-                0x000000001fffe040        0x4 ./CMSIS/system_MKL17Z4.o
-                0x000000001fffe040                SystemCoreClock
+                0x000000001fffe03c        0x4 ./CMSIS/system_MKL17Z4.o
+                0x000000001fffe03c                SystemCoreClock
  .data._impure_ptr
-                0x000000001fffe044        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-impure.o)
-                0x000000001fffe044                _impure_ptr
+                0x000000001fffe040        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-impure.o)
+                0x000000001fffe040                _impure_ptr
  .data.impure_data
-                0x000000001fffe048       0x60 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-impure.o)
+                0x000000001fffe044       0x60 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-impure.o)
  .data.__global_locale
-                0x000000001fffe0a8      0x16c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
-                0x000000001fffe0a8                __global_locale
+                0x000000001fffe0a4      0x16c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
+                0x000000001fffe0a4                __global_locale
  *(.jcr*)
- .jcr           0x000000001fffe214        0x0 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
- .jcr           0x000000001fffe214        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtend.o
-                0x000000001fffe218                . = ALIGN (0x4)
-                0x000000001fffe218                __data_end__ = .
-                0x00000000000036c4                __DATA_END = (__DATA_ROM + (__data_end__ - __data_start__))
+ .jcr           0x000000001fffe210        0x0 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
+ .jcr           0x000000001fffe210        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtend.o
+                0x000000001fffe214                . = ALIGN (0x4)
+                0x000000001fffe214                __data_end__ = .
+                0x00000000000037e8                __DATA_END = (__DATA_ROM + (__data_end__ - __data_start__))
                 0x0000000000040000                text_end = (ORIGIN (m_text) + LENGTH (m_text))
                 0x0000000000000001                ASSERT ((__DATA_END <= text_end), region m_text overflowed with text and data)
 
-.igot.plt       0x000000001fffe218        0x0 load address 0x00000000000036c4
- .igot.plt      0x000000001fffe218        0x0 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
+.igot.plt       0x000000001fffe214        0x0 load address 0x00000000000037e8
+ .igot.plt      0x000000001fffe214        0x0 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
 
-.bss            0x000000001fffe218      0x7bc load address 0x00000000000036c4
-                0x000000001fffe218                . = ALIGN (0x4)
-                0x000000001fffe218                __START_BSS = .
-                0x000000001fffe218                __bss_start__ = .
+.bss            0x000000001fffe214      0x7bc load address 0x00000000000037e8
+                0x000000001fffe214                . = ALIGN (0x4)
+                0x000000001fffe214                __START_BSS = .
+                0x000000001fffe214                __bss_start__ = .
  *(.bss)
- .bss           0x000000001fffe218       0x1c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
+ .bss           0x000000001fffe214       0x1c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtbegin.o
  *(.bss*)
  .bss.GPS_bufPtr
-                0x000000001fffe234        0x2 ./source/main.o
-                0x000000001fffe234                GPS_bufPtr
+                0x000000001fffe230        0x2 ./source/main.o
+                0x000000001fffe230                GPS_bufPtr
  .bss.GPS_strReady
-                0x000000001fffe236        0x1 ./source/main.o
-                0x000000001fffe236                GPS_strReady
- *fill*         0x000000001fffe237        0x1 
+                0x000000001fffe232        0x1 ./source/main.o
+                0x000000001fffe232                GPS_strReady
+ *fill*         0x000000001fffe233        0x1 
  .bss.NB_bufPtr
-                0x000000001fffe238        0x2 ./source/main.o
-                0x000000001fffe238                NB_bufPtr
+                0x000000001fffe234        0x2 ./source/main.o
+                0x000000001fffe234                NB_bufPtr
  .bss.NB_strReady
-                0x000000001fffe23a        0x1 ./source/main.o
-                0x000000001fffe23a                NB_strReady
- *fill*         0x000000001fffe23b        0x1 
+                0x000000001fffe236        0x1 ./source/main.o
+                0x000000001fffe236                NB_strReady
+ *fill*         0x000000001fffe237        0x1 
  .bss.PC_bufPtr
-                0x000000001fffe23c        0x2 ./source/main.o
-                0x000000001fffe23c                PC_bufPtr
+                0x000000001fffe238        0x2 ./source/main.o
+                0x000000001fffe238                PC_bufPtr
  .bss.PC_recBuf
-                0x000000001fffe23e      0x1f4 ./source/main.o
+                0x000000001fffe23a      0x1f4 ./source/main.o
  .bss.PC_strReady
-                0x000000001fffe432        0x1 ./source/main.o
-                0x000000001fffe432                PC_strReady
+                0x000000001fffe42e        0x1 ./source/main.o
+                0x000000001fffe42e                PC_strReady
  .bss.streamGps
-                0x000000001fffe433        0x1 ./source/main.o
-                0x000000001fffe433                streamGps
+                0x000000001fffe42f        0x1 ./source/main.o
+                0x000000001fffe42f                streamGps
+ .bss.wake      0x000000001fffe430        0x1 ./source/main.o
+                0x000000001fffe430                wake
  .bss.jsonMessage.5809
-                0x000000001fffe434       0x96 ./source/nbiot_func.o
- *fill*         0x000000001fffe4ca        0x2 
- .bss.ticks     0x000000001fffe4cc        0x4 ./source/timing.o
-                0x000000001fffe4cc                ticks
+                0x000000001fffe431       0x96 ./source/nbiot_func.o
+ *fill*         0x000000001fffe4c7        0x1 
+ .bss.ticks     0x000000001fffe4c8        0x4 ./source/timing.o
+                0x000000001fffe4c8                ticks
  .bss.s_DMAHandle
-                0x000000001fffe4d0       0x10 ./drivers/fsl_dma.o
+                0x000000001fffe4cc       0x10 ./drivers/fsl_dma.o
  .bss.s_flexioHandle
-                0x000000001fffe4e0        0x8 ./drivers/fsl_flexio.o
+                0x000000001fffe4dc        0x8 ./drivers/fsl_flexio.o
  .bss.s_flexioIsr
-                0x000000001fffe4e8        0x8 ./drivers/fsl_flexio.o
+                0x000000001fffe4e4        0x8 ./drivers/fsl_flexio.o
  .bss.s_flexioType
-                0x000000001fffe4f0        0x8 ./drivers/fsl_flexio.o
+                0x000000001fffe4ec        0x8 ./drivers/fsl_flexio.o
  .bss.s_i2cHandle
-                0x000000001fffe4f8        0x8 ./drivers/fsl_i2c.o
+                0x000000001fffe4f4        0x8 ./drivers/fsl_i2c.o
  .bss.s_i2cMasterIsr
-                0x000000001fffe500        0x4 ./drivers/fsl_i2c.o
+                0x000000001fffe4fc        0x4 ./drivers/fsl_i2c.o
  .bss.s_i2cSlaveIsr
-                0x000000001fffe504        0x4 ./drivers/fsl_i2c.o
+                0x000000001fffe500        0x4 ./drivers/fsl_i2c.o
  .bss.s_lpuartHandle
-                0x000000001fffe508        0x8 ./drivers/fsl_lpuart.o
+                0x000000001fffe504        0x8 ./drivers/fsl_lpuart.o
  .bss.s_lpuartIsr
-                0x000000001fffe510        0x4 ./drivers/fsl_lpuart.o
+                0x000000001fffe50c        0x4 ./drivers/fsl_lpuart.o
  .bss.s_saiRxIsr
-                0x000000001fffe514        0x4 ./drivers/fsl_sai.o
+                0x000000001fffe510        0x4 ./drivers/fsl_sai.o
  .bss.s_saiTxIsr
-                0x000000001fffe518        0x4 ./drivers/fsl_sai.o
+                0x000000001fffe514        0x4 ./drivers/fsl_sai.o
  .bss.g_savedPrimask
-                0x000000001fffe51c        0x4 ./drivers/fsl_smc.o
+                0x000000001fffe518        0x4 ./drivers/fsl_smc.o
  .bss.s_spiHandle
-                0x000000001fffe520        0x8 ./drivers/fsl_spi.o
+                0x000000001fffe51c        0x8 ./drivers/fsl_spi.o
  .bss.s_spiMasterIsr
-                0x000000001fffe528        0x4 ./drivers/fsl_spi.o
+                0x000000001fffe524        0x4 ./drivers/fsl_spi.o
  .bss.s_spiSlaveIsr
-                0x000000001fffe52c        0x4 ./drivers/fsl_spi.o
+                0x000000001fffe528        0x4 ./drivers/fsl_spi.o
  .bss.__malloc_free_list
-                0x000000001fffe530        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-mallocr.o)
-                0x000000001fffe530                __malloc_free_list
+                0x000000001fffe52c        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-mallocr.o)
+                0x000000001fffe52c                __malloc_free_list
  .bss.__malloc_sbrk_start
-                0x000000001fffe534        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-mallocr.o)
-                0x000000001fffe534                __malloc_sbrk_start
+                0x000000001fffe530        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-mallocr.o)
+                0x000000001fffe530                __malloc_sbrk_start
  .bss.heap_end.4116
-                0x000000001fffe538        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(sbrk.o)
+                0x000000001fffe534        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(sbrk.o)
  *(COMMON)
- COMMON         0x000000001fffe53c      0x481 ./source/main.o
-                0x000000001fffe53c                GPS_recBuf
-                0x000000001fffe794                parsedLat
-                0x000000001fffe7a4                uart_config
-                0x000000001fffe7ac                parsedLon
-                0x000000001fffe7bc                ms_ticks
-                0x000000001fffe7c0                NB_recBuf
-                0x000000001fffe9b4                smc_power_mode_vlls_config
-                0x000000001fffe9b6                lptmr_config
- COMMON         0x000000001fffe9bd        0x1 ./source/nbiot_func.o
-                0x000000001fffe9bd                res
- *fill*         0x000000001fffe9be        0x2 
- COMMON         0x000000001fffe9c0        0x8 ./drivers/fsl_clock.o
-                0x000000001fffe9c0                g_xtal32Freq
-                0x000000001fffe9c4                g_xtal0Freq
- COMMON         0x000000001fffe9c8        0x8 ./drivers/fsl_sai.o
-                0x000000001fffe9c8                s_saiHandle
- COMMON         0x000000001fffe9d0        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-reent.o)
-                0x000000001fffe9d0                errno
-                0x000000001fffe9d4                . = ALIGN (0x4)
-                0x000000001fffe9d4                __bss_end__ = .
-                0x000000001fffe9d4                __END_BSS = .
+ COMMON         0x000000001fffe538      0x481 ./source/main.o
+                0x000000001fffe538                GPS_recBuf
+                0x000000001fffe790                parsedLat
+                0x000000001fffe7a0                uart_config
+                0x000000001fffe7a8                parsedLon
+                0x000000001fffe7b8                ms_ticks
+                0x000000001fffe7bc                NB_recBuf
+                0x000000001fffe9b0                smc_power_mode_vlls_config
+                0x000000001fffe9b2                lptmr_config
+ COMMON         0x000000001fffe9b9        0x1 ./source/nbiot_func.o
+                0x000000001fffe9b9                res
+ *fill*         0x000000001fffe9ba        0x2 
+ COMMON         0x000000001fffe9bc        0x8 ./drivers/fsl_clock.o
+                0x000000001fffe9bc                g_xtal32Freq
+                0x000000001fffe9c0                g_xtal0Freq
+ COMMON         0x000000001fffe9c4        0x8 ./drivers/fsl_sai.o
+                0x000000001fffe9c4                s_saiHandle
+ COMMON         0x000000001fffe9cc        0x4 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-reent.o)
+                0x000000001fffe9cc                errno
+                0x000000001fffe9d0                . = ALIGN (0x4)
+                0x000000001fffe9d0                __bss_end__ = .
+                0x000000001fffe9d0                __END_BSS = .
 
-.heap           0x000000001fffe9d4      0x404 load address 0x0000000000003e80
-                0x000000001fffe9d8                . = ALIGN (0x8)
- *fill*         0x000000001fffe9d4        0x4 
-                0x000000001fffe9d8                __end__ = .
-                0x000000001fffe9d8                PROVIDE (end, .)
-                0x000000001fffe9d8                __HeapBase = .
-                0x000000001fffedd8                . = (. + HEAP_SIZE)
- *fill*         0x000000001fffe9d8      0x400 
-                0x000000001fffedd8                __HeapLimit = .
-                0x000000001fffedd8                __heap_limit = .
+.heap           0x000000001fffe9d0      0x400 load address 0x0000000000003fa4
+                0x000000001fffe9d0                . = ALIGN (0x8)
+                0x000000001fffe9d0                __end__ = .
+                0x000000001fffe9d0                PROVIDE (end, .)
+                0x000000001fffe9d0                __HeapBase = .
+                0x000000001fffedd0                . = (. + HEAP_SIZE)
+ *fill*         0x000000001fffe9d0      0x400 
+                0x000000001fffedd0                __HeapLimit = .
+                0x000000001fffedd0                __heap_limit = .
 
-.stack          0x000000001fffedd8      0x400 load address 0x0000000000004284
-                0x000000001fffedd8                . = ALIGN (0x8)
-                0x000000001ffff1d8                . = (. + STACK_SIZE)
- *fill*         0x000000001fffedd8      0x400 
+.stack          0x000000001fffedd0      0x400 load address 0x00000000000043a4
+                0x000000001fffedd0                . = ALIGN (0x8)
+                0x000000001ffff1d0                . = (. + STACK_SIZE)
+ *fill*         0x000000001fffedd0      0x400 
                 0x0000000020006000                __StackTop = (ORIGIN (m_data) + LENGTH (m_data))
                 0x0000000020005c00                __StackLimit = (__StackTop - STACK_SIZE)
                 0x0000000020006000                PROVIDE (__stack, __StackTop)
@@ -3053,167 +3045,172 @@ LOAD /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/
  .ARM.attributes
                 0x00000000000002d8       0x32 ./drivers/fsl_i2c.o
  .ARM.attributes
-                0x000000000000030a       0x32 ./drivers/fsl_lpuart.o
+                0x000000000000030a       0x32 ./drivers/fsl_lptmr.o
  .ARM.attributes
-                0x000000000000033c       0x32 ./drivers/fsl_sai.o
+                0x000000000000033c       0x32 ./drivers/fsl_lpuart.o
  .ARM.attributes
-                0x000000000000036e       0x32 ./drivers/fsl_smc.o
+                0x000000000000036e       0x32 ./drivers/fsl_sai.o
  .ARM.attributes
-                0x00000000000003a0       0x32 ./drivers/fsl_spi.o
+                0x00000000000003a0       0x32 ./drivers/fsl_smc.o
  .ARM.attributes
-                0x00000000000003d2       0x32 ./drivers/fsl_uart.o
+                0x00000000000003d2       0x32 ./drivers/fsl_spi.o
  .ARM.attributes
-                0x0000000000000404       0x32 ./board/clock_config.o
+                0x0000000000000404       0x32 ./drivers/fsl_uart.o
  .ARM.attributes
-                0x0000000000000436       0x32 ./board/pin_mux.o
+                0x0000000000000436       0x32 ./board/clock_config.o
  .ARM.attributes
-                0x0000000000000468       0x32 ./CMSIS/system_MKL17Z4.o
+                0x0000000000000468       0x32 ./board/pin_mux.o
  .ARM.attributes
-                0x000000000000049a       0x1e /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/libgcc.a(_thumb1_case_uqi.o)
+                0x000000000000049a       0x32 ./CMSIS/system_MKL17Z4.o
  .ARM.attributes
-                0x00000000000004b8       0x1e /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/libgcc.a(_udivsi3.o)
+                0x00000000000004cc       0x1e /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/libgcc.a(_thumb1_case_uqi.o)
  .ARM.attributes
-                0x00000000000004d6       0x1e /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/libgcc.a(_dvmd_tls.o)
+                0x00000000000004ea       0x1e /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/libgcc.a(_udivsi3.o)
  .ARM.attributes
-                0x00000000000004f4       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-atol.o)
+                0x0000000000000508       0x1e /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/libgcc.a(_dvmd_tls.o)
  .ARM.attributes
-                0x0000000000000520       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-exit.o)
+                0x0000000000000526       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-atol.o)
  .ARM.attributes
-                0x000000000000054c       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-impure.o)
+                0x0000000000000552       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-exit.o)
  .ARM.attributes
-                0x0000000000000578       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-init.o)
+                0x000000000000057e       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-impure.o)
  .ARM.attributes
-                0x00000000000005a4       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memcpy-stub.o)
+                0x00000000000005aa       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-init.o)
  .ARM.attributes
-                0x00000000000005d0       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memmove.o)
+                0x00000000000005d6       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memcpy-stub.o)
  .ARM.attributes
-                0x00000000000005fc       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memset.o)
+                0x0000000000000602       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memmove.o)
  .ARM.attributes
-                0x0000000000000628       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sprintf.o)
+                0x000000000000062e       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memset.o)
  .ARM.attributes
-                0x0000000000000654       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strchr.o)
+                0x000000000000065a       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sprintf.o)
  .ARM.attributes
-                0x0000000000000680       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strcpy.o)
+                0x0000000000000686       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strchr.o)
  .ARM.attributes
-                0x00000000000006ac       0x1c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strlen.o)
+                0x00000000000006b2       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strcpy.o)
  .ARM.attributes
-                0x00000000000006c8       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strstr.o)
+                0x00000000000006de       0x1c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strlen.o)
  .ARM.attributes
-                0x00000000000006f4       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strtol.o)
+                0x00000000000006fa       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strstr.o)
  .ARM.attributes
-                0x0000000000000720       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-findfp.o)
+                0x0000000000000726       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strtol.o)
  .ARM.attributes
-                0x000000000000074c       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
+                0x0000000000000752       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-findfp.o)
  .ARM.attributes
-                0x0000000000000778       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mbtowc_r.o)
+                0x000000000000077e       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
  .ARM.attributes
-                0x00000000000007a4       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-freer.o)
+                0x00000000000007aa       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mbtowc_r.o)
  .ARM.attributes
-                0x00000000000007d0       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-mallocr.o)
+                0x00000000000007d6       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-freer.o)
  .ARM.attributes
-                0x00000000000007fc       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-svfprintf.o)
+                0x0000000000000802       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-mallocr.o)
  .ARM.attributes
-                0x0000000000000828       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-vfprintf_i.o)
+                0x000000000000082e       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-svfprintf.o)
  .ARM.attributes
-                0x0000000000000854       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sbrkr.o)
+                0x000000000000085a       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-vfprintf_i.o)
  .ARM.attributes
-                0x0000000000000880       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-wctomb_r.o)
+                0x0000000000000886       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sbrkr.o)
  .ARM.attributes
-                0x00000000000008ac       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-ctype_.o)
+                0x00000000000008b2       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-wctomb_r.o)
  .ARM.attributes
-                0x00000000000008d8       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memchr-stub.o)
+                0x00000000000008de       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-ctype_.o)
  .ARM.attributes
-                0x0000000000000904       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mlock.o)
+                0x000000000000090a       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memchr-stub.o)
  .ARM.attributes
-                0x0000000000000930       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-reallocr.o)
+                0x0000000000000936       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mlock.o)
  .ARM.attributes
-                0x000000000000095c       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-reent.o)
+                0x0000000000000962       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-reallocr.o)
  .ARM.attributes
-                0x0000000000000988       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-msizer.o)
+                0x000000000000098e       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-reent.o)
  .ARM.attributes
-                0x00000000000009b4       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(sbrk.o)
+                0x00000000000009ba       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-msizer.o)
  .ARM.attributes
-                0x00000000000009e0       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(_exit.o)
+                0x00000000000009e6       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(sbrk.o)
  .ARM.attributes
-                0x0000000000000a0c       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtend.o
+                0x0000000000000a12       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(_exit.o)
  .ARM.attributes
-                0x0000000000000a38       0x1e /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtn.o
+                0x0000000000000a3e       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtend.o
+ .ARM.attributes
+                0x0000000000000a6a       0x1e /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/crtn.o
                 0x0000000000000001                ASSERT ((__StackLimit >= __HeapLimit), region m_data overflowed with stack and heap)
 OUTPUT(poroIoT.elf elf32-littlearm)
 
-.debug_line     0x0000000000000000     0x5963
+.debug_line     0x0000000000000000     0x5c09
  .debug_line    0x0000000000000000       0xce ./startup/startup_MKL17Z4.o
  .debug_line    0x00000000000000ce      0x1de ./source/acc_func.o
  .debug_line    0x00000000000002ac      0x247 ./source/at_func.o
  .debug_line    0x00000000000004f3      0x2df ./source/gps_func.o
  .debug_line    0x00000000000007d2      0x294 ./source/i2c_func.o
- .debug_line    0x0000000000000a66      0x5e2 ./source/main.o
- .debug_line    0x0000000000001048      0x457 ./source/nbiot_func.o
- .debug_line    0x000000000000149f      0x132 ./source/timing.o
- .debug_line    0x00000000000015d1      0x3b3 ./drivers/fsl_clock.o
- .debug_line    0x0000000000001984      0x3d3 ./drivers/fsl_dma.o
- .debug_line    0x0000000000001d57      0x6e6 ./drivers/fsl_flash.o
- .debug_line    0x000000000000243d      0x36d ./drivers/fsl_flexio.o
- .debug_line    0x00000000000027aa      0x29c ./drivers/fsl_gpio.o
- .debug_line    0x0000000000002a46      0x94a ./drivers/fsl_i2c.o
- .debug_line    0x0000000000003390      0x637 ./drivers/fsl_lpuart.o
- .debug_line    0x00000000000039c7      0x8fe ./drivers/fsl_sai.o
- .debug_line    0x00000000000042c5      0x3ca ./drivers/fsl_smc.o
- .debug_line    0x000000000000468f      0x6ef ./drivers/fsl_spi.o
- .debug_line    0x0000000000004d7e      0x631 ./drivers/fsl_uart.o
- .debug_line    0x00000000000053af      0x26b ./board/clock_config.o
- .debug_line    0x000000000000561a      0x206 ./board/pin_mux.o
- .debug_line    0x0000000000005820      0x143 ./CMSIS/system_MKL17Z4.o
+ .debug_line    0x0000000000000a66      0x645 ./source/main.o
+ .debug_line    0x00000000000010ab      0x457 ./source/nbiot_func.o
+ .debug_line    0x0000000000001502      0x132 ./source/timing.o
+ .debug_line    0x0000000000001634      0x3b3 ./drivers/fsl_clock.o
+ .debug_line    0x00000000000019e7      0x3d3 ./drivers/fsl_dma.o
+ .debug_line    0x0000000000001dba      0x6e6 ./drivers/fsl_flash.o
+ .debug_line    0x00000000000024a0      0x36d ./drivers/fsl_flexio.o
+ .debug_line    0x000000000000280d      0x29c ./drivers/fsl_gpio.o
+ .debug_line    0x0000000000002aa9      0x94a ./drivers/fsl_i2c.o
+ .debug_line    0x00000000000033f3      0x243 ./drivers/fsl_lptmr.o
+ .debug_line    0x0000000000003636      0x637 ./drivers/fsl_lpuart.o
+ .debug_line    0x0000000000003c6d      0x8fe ./drivers/fsl_sai.o
+ .debug_line    0x000000000000456b      0x3ca ./drivers/fsl_smc.o
+ .debug_line    0x0000000000004935      0x6ef ./drivers/fsl_spi.o
+ .debug_line    0x0000000000005024      0x631 ./drivers/fsl_uart.o
+ .debug_line    0x0000000000005655      0x26b ./board/clock_config.o
+ .debug_line    0x00000000000058c0      0x206 ./board/pin_mux.o
+ .debug_line    0x0000000000005ac6      0x143 ./CMSIS/system_MKL17Z4.o
 
-.debug_info     0x0000000000000000    0x1e697
+.debug_info     0x0000000000000000    0x1f588
  .debug_info    0x0000000000000000       0x9d ./startup/startup_MKL17Z4.o
  .debug_info    0x000000000000009d      0xaea ./source/acc_func.o
  .debug_info    0x0000000000000b87      0xcce ./source/at_func.o
  .debug_info    0x0000000000001855      0xe00 ./source/gps_func.o
  .debug_info    0x0000000000002655      0xf23 ./source/i2c_func.o
- .debug_info    0x0000000000003578     0x3075 ./source/main.o
- .debug_info    0x00000000000065ed     0x167f ./source/nbiot_func.o
- .debug_info    0x0000000000007c6c      0x114 ./source/timing.o
- .debug_info    0x0000000000007d80     0x156e ./drivers/fsl_clock.o
- .debug_info    0x00000000000092ee     0x1694 ./drivers/fsl_dma.o
- .debug_info    0x000000000000a982     0x283d ./drivers/fsl_flash.o
- .debug_info    0x000000000000d1bf     0x17fd ./drivers/fsl_flexio.o
- .debug_info    0x000000000000e9bc     0x10c7 ./drivers/fsl_gpio.o
- .debug_info    0x000000000000fa83     0x29b7 ./drivers/fsl_i2c.o
- .debug_info    0x000000000001243a     0x204b ./drivers/fsl_lpuart.o
- .debug_info    0x0000000000014485     0x271c ./drivers/fsl_sai.o
- .debug_info    0x0000000000016ba1     0x1251 ./drivers/fsl_smc.o
- .debug_info    0x0000000000017df2     0x2265 ./drivers/fsl_spi.o
- .debug_info    0x000000000001a057     0x2246 ./drivers/fsl_uart.o
- .debug_info    0x000000000001c29d     0x1189 ./board/clock_config.o
- .debug_info    0x000000000001d426      0xe3c ./board/pin_mux.o
- .debug_info    0x000000000001e262      0x435 ./CMSIS/system_MKL17Z4.o
+ .debug_info    0x0000000000003578     0x31d5 ./source/main.o
+ .debug_info    0x000000000000674d     0x167f ./source/nbiot_func.o
+ .debug_info    0x0000000000007dcc      0x114 ./source/timing.o
+ .debug_info    0x0000000000007ee0     0x156e ./drivers/fsl_clock.o
+ .debug_info    0x000000000000944e     0x1694 ./drivers/fsl_dma.o
+ .debug_info    0x000000000000aae2     0x283d ./drivers/fsl_flash.o
+ .debug_info    0x000000000000d31f     0x17fd ./drivers/fsl_flexio.o
+ .debug_info    0x000000000000eb1c     0x10c7 ./drivers/fsl_gpio.o
+ .debug_info    0x000000000000fbe3     0x29b7 ./drivers/fsl_i2c.o
+ .debug_info    0x000000000001259a      0xd91 ./drivers/fsl_lptmr.o
+ .debug_info    0x000000000001332b     0x204b ./drivers/fsl_lpuart.o
+ .debug_info    0x0000000000015376     0x271c ./drivers/fsl_sai.o
+ .debug_info    0x0000000000017a92     0x1251 ./drivers/fsl_smc.o
+ .debug_info    0x0000000000018ce3     0x2265 ./drivers/fsl_spi.o
+ .debug_info    0x000000000001af48     0x2246 ./drivers/fsl_uart.o
+ .debug_info    0x000000000001d18e     0x1189 ./board/clock_config.o
+ .debug_info    0x000000000001e317      0xe3c ./board/pin_mux.o
+ .debug_info    0x000000000001f153      0x435 ./CMSIS/system_MKL17Z4.o
 
-.debug_abbrev   0x0000000000000000     0x485e
+.debug_abbrev   0x0000000000000000     0x4b57
  .debug_abbrev  0x0000000000000000       0x14 ./startup/startup_MKL17Z4.o
  .debug_abbrev  0x0000000000000014      0x225 ./source/acc_func.o
  .debug_abbrev  0x0000000000000239      0x2aa ./source/at_func.o
  .debug_abbrev  0x00000000000004e3      0x2da ./source/gps_func.o
  .debug_abbrev  0x00000000000007bd      0x31f ./source/i2c_func.o
- .debug_abbrev  0x0000000000000adc      0x4aa ./source/main.o
- .debug_abbrev  0x0000000000000f86      0x32e ./source/nbiot_func.o
- .debug_abbrev  0x00000000000012b4       0xcd ./source/timing.o
- .debug_abbrev  0x0000000000001381      0x469 ./drivers/fsl_clock.o
- .debug_abbrev  0x00000000000017ea      0x3f5 ./drivers/fsl_dma.o
- .debug_abbrev  0x0000000000001bdf      0x43a ./drivers/fsl_flash.o
- .debug_abbrev  0x0000000000002019      0x357 ./drivers/fsl_flexio.o
- .debug_abbrev  0x0000000000002370      0x30d ./drivers/fsl_gpio.o
- .debug_abbrev  0x000000000000267d      0x512 ./drivers/fsl_i2c.o
- .debug_abbrev  0x0000000000002b8f      0x480 ./drivers/fsl_lpuart.o
- .debug_abbrev  0x000000000000300f      0x4e5 ./drivers/fsl_sai.o
- .debug_abbrev  0x00000000000034f4      0x3ab ./drivers/fsl_smc.o
- .debug_abbrev  0x000000000000389f      0x4b8 ./drivers/fsl_spi.o
- .debug_abbrev  0x0000000000003d57      0x4a1 ./drivers/fsl_uart.o
- .debug_abbrev  0x00000000000041f8      0x2ae ./board/clock_config.o
- .debug_abbrev  0x00000000000044a6      0x2a5 ./board/pin_mux.o
- .debug_abbrev  0x000000000000474b      0x113 ./CMSIS/system_MKL17Z4.o
+ .debug_abbrev  0x0000000000000adc      0x4f4 ./source/main.o
+ .debug_abbrev  0x0000000000000fd0      0x32e ./source/nbiot_func.o
+ .debug_abbrev  0x00000000000012fe       0xcd ./source/timing.o
+ .debug_abbrev  0x00000000000013cb      0x469 ./drivers/fsl_clock.o
+ .debug_abbrev  0x0000000000001834      0x3f5 ./drivers/fsl_dma.o
+ .debug_abbrev  0x0000000000001c29      0x43a ./drivers/fsl_flash.o
+ .debug_abbrev  0x0000000000002063      0x357 ./drivers/fsl_flexio.o
+ .debug_abbrev  0x00000000000023ba      0x30d ./drivers/fsl_gpio.o
+ .debug_abbrev  0x00000000000026c7      0x512 ./drivers/fsl_i2c.o
+ .debug_abbrev  0x0000000000002bd9      0x2af ./drivers/fsl_lptmr.o
+ .debug_abbrev  0x0000000000002e88      0x480 ./drivers/fsl_lpuart.o
+ .debug_abbrev  0x0000000000003308      0x4e5 ./drivers/fsl_sai.o
+ .debug_abbrev  0x00000000000037ed      0x3ab ./drivers/fsl_smc.o
+ .debug_abbrev  0x0000000000003b98      0x4b8 ./drivers/fsl_spi.o
+ .debug_abbrev  0x0000000000004050      0x4a1 ./drivers/fsl_uart.o
+ .debug_abbrev  0x00000000000044f1      0x2ae ./board/clock_config.o
+ .debug_abbrev  0x000000000000479f      0x2a5 ./board/pin_mux.o
+ .debug_abbrev  0x0000000000004a44      0x113 ./CMSIS/system_MKL17Z4.o
 
-.debug_aranges  0x0000000000000000      0xb40
+.debug_aranges  0x0000000000000000      0xb70
  .debug_aranges
                 0x0000000000000000       0x20 ./startup/startup_MKL17Z4.o
  .debug_aranges
@@ -3243,69 +3240,73 @@ OUTPUT(poroIoT.elf elf32-littlearm)
  .debug_aranges
                 0x0000000000000510      0x118 ./drivers/fsl_i2c.o
  .debug_aranges
-                0x0000000000000628       0xe8 ./drivers/fsl_lpuart.o
+                0x0000000000000628       0x30 ./drivers/fsl_lptmr.o
  .debug_aranges
-                0x0000000000000710      0x138 ./drivers/fsl_sai.o
+                0x0000000000000658       0xe8 ./drivers/fsl_lpuart.o
  .debug_aranges
-                0x0000000000000848       0x70 ./drivers/fsl_smc.o
+                0x0000000000000740      0x138 ./drivers/fsl_sai.o
  .debug_aranges
-                0x00000000000008b8      0x120 ./drivers/fsl_spi.o
+                0x0000000000000878       0x70 ./drivers/fsl_smc.o
  .debug_aranges
-                0x00000000000009d8       0xe8 ./drivers/fsl_uart.o
+                0x00000000000008e8      0x120 ./drivers/fsl_spi.o
  .debug_aranges
-                0x0000000000000ac0       0x30 ./board/clock_config.o
+                0x0000000000000a08       0xe8 ./drivers/fsl_uart.o
  .debug_aranges
-                0x0000000000000af0       0x28 ./board/pin_mux.o
+                0x0000000000000af0       0x30 ./board/clock_config.o
  .debug_aranges
-                0x0000000000000b18       0x28 ./CMSIS/system_MKL17Z4.o
+                0x0000000000000b20       0x28 ./board/pin_mux.o
+ .debug_aranges
+                0x0000000000000b48       0x28 ./CMSIS/system_MKL17Z4.o
 
-.debug_loc      0x0000000000000000     0xa68f
+.debug_loc      0x0000000000000000     0xa7a9
  .debug_loc     0x0000000000000000      0x18c ./source/acc_func.o
  .debug_loc     0x000000000000018c      0x164 ./source/at_func.o
  .debug_loc     0x00000000000002f0      0x3ea ./source/gps_func.o
  .debug_loc     0x00000000000006da      0x180 ./source/i2c_func.o
- .debug_loc     0x000000000000085a      0x538 ./source/main.o
- .debug_loc     0x0000000000000d92      0x72d ./source/nbiot_func.o
- .debug_loc     0x00000000000014bf       0x21 ./source/timing.o
- .debug_loc     0x00000000000014e0      0x324 ./drivers/fsl_clock.o
- .debug_loc     0x0000000000001804      0x585 ./drivers/fsl_dma.o
- .debug_loc     0x0000000000001d89     0x1670 ./drivers/fsl_flash.o
- .debug_loc     0x00000000000033f9      0x3b2 ./drivers/fsl_flexio.o
- .debug_loc     0x00000000000037ab      0x48c ./drivers/fsl_gpio.o
- .debug_loc     0x0000000000003c37     0x1d9e ./drivers/fsl_i2c.o
- .debug_loc     0x00000000000059d5     0x10c8 ./drivers/fsl_lpuart.o
- .debug_loc     0x0000000000006a9d     0x189c ./drivers/fsl_sai.o
- .debug_loc     0x0000000000008339      0x253 ./drivers/fsl_smc.o
- .debug_loc     0x000000000000858c      0xf6c ./drivers/fsl_spi.o
- .debug_loc     0x00000000000094f8      0xdf4 ./drivers/fsl_uart.o
- .debug_loc     0x000000000000a2ec       0x2d ./board/clock_config.o
- .debug_loc     0x000000000000a319      0x348 ./board/pin_mux.o
- .debug_loc     0x000000000000a661       0x2e ./CMSIS/system_MKL17Z4.o
+ .debug_loc     0x000000000000085a      0x5d1 ./source/main.o
+ .debug_loc     0x0000000000000e2b      0x72d ./source/nbiot_func.o
+ .debug_loc     0x0000000000001558       0x21 ./source/timing.o
+ .debug_loc     0x0000000000001579      0x324 ./drivers/fsl_clock.o
+ .debug_loc     0x000000000000189d      0x585 ./drivers/fsl_dma.o
+ .debug_loc     0x0000000000001e22     0x1670 ./drivers/fsl_flash.o
+ .debug_loc     0x0000000000003492      0x3b2 ./drivers/fsl_flexio.o
+ .debug_loc     0x0000000000003844      0x48c ./drivers/fsl_gpio.o
+ .debug_loc     0x0000000000003cd0     0x1d9e ./drivers/fsl_i2c.o
+ .debug_loc     0x0000000000005a6e       0x81 ./drivers/fsl_lptmr.o
+ .debug_loc     0x0000000000005aef     0x10c8 ./drivers/fsl_lpuart.o
+ .debug_loc     0x0000000000006bb7     0x189c ./drivers/fsl_sai.o
+ .debug_loc     0x0000000000008453      0x253 ./drivers/fsl_smc.o
+ .debug_loc     0x00000000000086a6      0xf6c ./drivers/fsl_spi.o
+ .debug_loc     0x0000000000009612      0xdf4 ./drivers/fsl_uart.o
+ .debug_loc     0x000000000000a406       0x2d ./board/clock_config.o
+ .debug_loc     0x000000000000a433      0x348 ./board/pin_mux.o
+ .debug_loc     0x000000000000a77b       0x2e ./CMSIS/system_MKL17Z4.o
 
-.debug_ranges   0x0000000000000000     0x1178
+.debug_ranges   0x0000000000000000     0x1240
  .debug_ranges  0x0000000000000000       0x20 ./source/acc_func.o
  .debug_ranges  0x0000000000000020       0x20 ./source/at_func.o
  .debug_ranges  0x0000000000000040       0x60 ./source/gps_func.o
  .debug_ranges  0x00000000000000a0       0x58 ./source/i2c_func.o
- .debug_ranges  0x00000000000000f8      0x178 ./source/main.o
- .debug_ranges  0x0000000000000270       0xa0 ./source/nbiot_func.o
- .debug_ranges  0x0000000000000310       0x20 ./source/timing.o
- .debug_ranges  0x0000000000000330       0xd8 ./drivers/fsl_clock.o
- .debug_ranges  0x0000000000000408       0xe8 ./drivers/fsl_dma.o
- .debug_ranges  0x00000000000004f0      0x1f8 ./drivers/fsl_flash.o
- .debug_ranges  0x00000000000006e8       0xb8 ./drivers/fsl_flexio.o
- .debug_ranges  0x00000000000007a0       0x68 ./drivers/fsl_gpio.o
- .debug_ranges  0x0000000000000808      0x230 ./drivers/fsl_i2c.o
- .debug_ranges  0x0000000000000a38       0xf0 ./drivers/fsl_lpuart.o
- .debug_ranges  0x0000000000000b28      0x2c0 ./drivers/fsl_sai.o
- .debug_ranges  0x0000000000000de8       0x60 ./drivers/fsl_smc.o
- .debug_ranges  0x0000000000000e48      0x160 ./drivers/fsl_spi.o
- .debug_ranges  0x0000000000000fa8       0xf0 ./drivers/fsl_uart.o
- .debug_ranges  0x0000000000001098       0x50 ./board/clock_config.o
- .debug_ranges  0x00000000000010e8       0x78 ./board/pin_mux.o
- .debug_ranges  0x0000000000001160       0x18 ./CMSIS/system_MKL17Z4.o
+ .debug_ranges  0x00000000000000f8      0x1e0 ./source/main.o
+ .debug_ranges  0x00000000000002d8       0xa0 ./source/nbiot_func.o
+ .debug_ranges  0x0000000000000378       0x20 ./source/timing.o
+ .debug_ranges  0x0000000000000398       0xd8 ./drivers/fsl_clock.o
+ .debug_ranges  0x0000000000000470       0xe8 ./drivers/fsl_dma.o
+ .debug_ranges  0x0000000000000558      0x1f8 ./drivers/fsl_flash.o
+ .debug_ranges  0x0000000000000750       0xb8 ./drivers/fsl_flexio.o
+ .debug_ranges  0x0000000000000808       0x68 ./drivers/fsl_gpio.o
+ .debug_ranges  0x0000000000000870      0x230 ./drivers/fsl_i2c.o
+ .debug_ranges  0x0000000000000aa0       0x60 ./drivers/fsl_lptmr.o
+ .debug_ranges  0x0000000000000b00       0xf0 ./drivers/fsl_lpuart.o
+ .debug_ranges  0x0000000000000bf0      0x2c0 ./drivers/fsl_sai.o
+ .debug_ranges  0x0000000000000eb0       0x60 ./drivers/fsl_smc.o
+ .debug_ranges  0x0000000000000f10      0x160 ./drivers/fsl_spi.o
+ .debug_ranges  0x0000000000001070       0xf0 ./drivers/fsl_uart.o
+ .debug_ranges  0x0000000000001160       0x50 ./board/clock_config.o
+ .debug_ranges  0x00000000000011b0       0x78 ./board/pin_mux.o
+ .debug_ranges  0x0000000000001228       0x18 ./CMSIS/system_MKL17Z4.o
 
-.debug_str      0x0000000000000000     0x8df8
+.debug_str      0x0000000000000000     0x8e71
  .debug_str     0x0000000000000000      0x5b0 ./source/acc_func.o
                                         0x640 (size before relaxing)
  .debug_str     0x00000000000005b0      0x15e ./source/at_func.o
@@ -3314,39 +3315,41 @@ OUTPUT(poroIoT.elf elf32-littlearm)
                                         0x7ba (size before relaxing)
  .debug_str     0x000000000000086f      0x52b ./source/i2c_func.o
                                         0xb0b (size before relaxing)
- .debug_str     0x0000000000000d9a     0x20ff ./source/main.o
-                                       0x2b71 (size before relaxing)
- .debug_str     0x0000000000002e99      0x1b8 ./source/nbiot_func.o
+ .debug_str     0x0000000000000d9a     0x21d0 ./source/main.o
+                                       0x2c43 (size before relaxing)
+ .debug_str     0x0000000000002f6a      0x1af ./source/nbiot_func.o
                                         0x8e8 (size before relaxing)
- .debug_str     0x0000000000003051       0x29 ./source/timing.o
+ .debug_str     0x0000000000003119       0x29 ./source/timing.o
                                         0x1eb (size before relaxing)
- .debug_str     0x000000000000307a      0x287 ./drivers/fsl_clock.o
+ .debug_str     0x0000000000003142      0x287 ./drivers/fsl_clock.o
                                        0x13b8 (size before relaxing)
- .debug_str     0x0000000000003301      0x754 ./drivers/fsl_dma.o
+ .debug_str     0x00000000000033c9      0x754 ./drivers/fsl_dma.o
                                        0x1217 (size before relaxing)
- .debug_str     0x0000000000003a55     0x155e ./drivers/fsl_flash.o
+ .debug_str     0x0000000000003b1d     0x155e ./drivers/fsl_flash.o
                                        0x2261 (size before relaxing)
- .debug_str     0x0000000000004fb3     0x11d7 ./drivers/fsl_flexio.o
+ .debug_str     0x000000000000507b     0x11d7 ./drivers/fsl_flexio.o
                                        0x2020 (size before relaxing)
- .debug_str     0x000000000000618a       0xcd ./drivers/fsl_gpio.o
+ .debug_str     0x0000000000006252       0xcd ./drivers/fsl_gpio.o
                                         0xd59 (size before relaxing)
- .debug_str     0x0000000000006257      0xa07 ./drivers/fsl_i2c.o
+ .debug_str     0x000000000000631f      0xa07 ./drivers/fsl_i2c.o
                                        0x1c7c (size before relaxing)
- .debug_str     0x0000000000006c5e      0x6a5 ./drivers/fsl_lpuart.o
+ .debug_str     0x0000000000006d26       0x51 ./drivers/fsl_lptmr.o
+                                        0xc42 (size before relaxing)
+ .debug_str     0x0000000000006d77      0x6a5 ./drivers/fsl_lpuart.o
                                        0x1813 (size before relaxing)
- .debug_str     0x0000000000007303      0xa28 ./drivers/fsl_sai.o
+ .debug_str     0x000000000000741c      0xa28 ./drivers/fsl_sai.o
                                        0x15c6 (size before relaxing)
- .debug_str     0x0000000000007d2b      0x25d ./drivers/fsl_smc.o
+ .debug_str     0x0000000000007e44      0x25d ./drivers/fsl_smc.o
                                        0x10b3 (size before relaxing)
- .debug_str     0x0000000000007f88      0x8f6 ./drivers/fsl_spi.o
+ .debug_str     0x00000000000080a1      0x8f6 ./drivers/fsl_spi.o
                                        0x19f8 (size before relaxing)
- .debug_str     0x000000000000887e      0x2da ./drivers/fsl_uart.o
+ .debug_str     0x0000000000008997      0x2da ./drivers/fsl_uart.o
                                        0x1b29 (size before relaxing)
- .debug_str     0x0000000000008b58      0x22b ./board/clock_config.o
+ .debug_str     0x0000000000008c71      0x18b ./board/clock_config.o
                                        0x123c (size before relaxing)
- .debug_str     0x0000000000008d83       0x26 ./board/pin_mux.o
+ .debug_str     0x0000000000008dfc       0x26 ./board/pin_mux.o
                                         0x8f7 (size before relaxing)
- .debug_str     0x0000000000008da9       0x4f ./CMSIS/system_MKL17Z4.o
+ .debug_str     0x0000000000008e22       0x4f ./CMSIS/system_MKL17Z4.o
                                         0x362 (size before relaxing)
 
 .comment        0x0000000000000000       0x7f
@@ -3364,6 +3367,7 @@ OUTPUT(poroIoT.elf elf32-littlearm)
  .comment       0x000000000000007f       0x80 ./drivers/fsl_flexio.o
  .comment       0x000000000000007f       0x80 ./drivers/fsl_gpio.o
  .comment       0x000000000000007f       0x80 ./drivers/fsl_i2c.o
+ .comment       0x000000000000007f       0x80 ./drivers/fsl_lptmr.o
  .comment       0x000000000000007f       0x80 ./drivers/fsl_lpuart.o
  .comment       0x000000000000007f       0x80 ./drivers/fsl_sai.o
  .comment       0x000000000000007f       0x80 ./drivers/fsl_smc.o
@@ -3373,7 +3377,7 @@ OUTPUT(poroIoT.elf elf32-littlearm)
  .comment       0x000000000000007f       0x80 ./board/pin_mux.o
  .comment       0x000000000000007f       0x80 ./CMSIS/system_MKL17Z4.o
 
-.debug_frame    0x0000000000000000     0x249c
+.debug_frame    0x0000000000000000     0x24e8
  .debug_frame   0x0000000000000000       0x5c ./source/acc_func.o
  .debug_frame   0x000000000000005c       0x5c ./source/at_func.o
  .debug_frame   0x00000000000000b8       0x78 ./source/gps_func.o
@@ -3387,42 +3391,43 @@ OUTPUT(poroIoT.elf elf32-littlearm)
  .debug_frame   0x0000000000000ac8      0x160 ./drivers/fsl_flexio.o
  .debug_frame   0x0000000000000c28       0x80 ./drivers/fsl_gpio.o
  .debug_frame   0x0000000000000ca8      0x360 ./drivers/fsl_i2c.o
- .debug_frame   0x0000000000001008      0x26c ./drivers/fsl_lpuart.o
- .debug_frame   0x0000000000001274      0x3a4 ./drivers/fsl_sai.o
- .debug_frame   0x0000000000001618       0xf8 ./drivers/fsl_smc.o
- .debug_frame   0x0000000000001710      0x354 ./drivers/fsl_spi.o
- .debug_frame   0x0000000000001a64      0x264 ./drivers/fsl_uart.o
- .debug_frame   0x0000000000001cc8       0x58 ./board/clock_config.o
- .debug_frame   0x0000000000001d20       0x3c ./board/pin_mux.o
- .debug_frame   0x0000000000001d5c       0x38 ./CMSIS/system_MKL17Z4.o
- .debug_frame   0x0000000000001d94       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/libgcc.a(_udivsi3.o)
- .debug_frame   0x0000000000001db4       0x40 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-atol.o)
- .debug_frame   0x0000000000001df4       0x28 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-exit.o)
- .debug_frame   0x0000000000001e1c       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-init.o)
- .debug_frame   0x0000000000001e48       0x28 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memcpy-stub.o)
- .debug_frame   0x0000000000001e70       0x28 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memmove.o)
- .debug_frame   0x0000000000001e98       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memset.o)
- .debug_frame   0x0000000000001eb8       0x50 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sprintf.o)
- .debug_frame   0x0000000000001f08       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strchr.o)
- .debug_frame   0x0000000000001f28       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strcpy.o)
- .debug_frame   0x0000000000001f48       0x28 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strstr.o)
- .debug_frame   0x0000000000001f70       0x88 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strtol.o)
- .debug_frame   0x0000000000001ff8      0x140 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-findfp.o)
- .debug_frame   0x0000000000002138       0x74 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
- .debug_frame   0x00000000000021ac       0x44 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mbtowc_r.o)
- .debug_frame   0x00000000000021f0       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-freer.o)
- .debug_frame   0x000000000000221c       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-mallocr.o)
- .debug_frame   0x0000000000002248       0x74 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-svfprintf.o)
- .debug_frame   0x00000000000022bc       0x54 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_frame   0x0000000000002310       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sbrkr.o)
- .debug_frame   0x000000000000233c       0x38 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-wctomb_r.o)
- .debug_frame   0x0000000000002374       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memchr-stub.o)
- .debug_frame   0x0000000000002394       0x30 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mlock.o)
- .debug_frame   0x00000000000023c4       0x30 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-reallocr.o)
- .debug_frame   0x00000000000023f4       0x48 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-reent.o)
- .debug_frame   0x000000000000243c       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-msizer.o)
- .debug_frame   0x000000000000245c       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(sbrk.o)
- .debug_frame   0x000000000000247c       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(_exit.o)
+ .debug_frame   0x0000000000001008       0x4c ./drivers/fsl_lptmr.o
+ .debug_frame   0x0000000000001054      0x26c ./drivers/fsl_lpuart.o
+ .debug_frame   0x00000000000012c0      0x3a4 ./drivers/fsl_sai.o
+ .debug_frame   0x0000000000001664       0xf8 ./drivers/fsl_smc.o
+ .debug_frame   0x000000000000175c      0x354 ./drivers/fsl_spi.o
+ .debug_frame   0x0000000000001ab0      0x264 ./drivers/fsl_uart.o
+ .debug_frame   0x0000000000001d14       0x58 ./board/clock_config.o
+ .debug_frame   0x0000000000001d6c       0x3c ./board/pin_mux.o
+ .debug_frame   0x0000000000001da8       0x38 ./CMSIS/system_MKL17Z4.o
+ .debug_frame   0x0000000000001de0       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v6-m/libgcc.a(_udivsi3.o)
+ .debug_frame   0x0000000000001e00       0x40 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-atol.o)
+ .debug_frame   0x0000000000001e40       0x28 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-exit.o)
+ .debug_frame   0x0000000000001e68       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-init.o)
+ .debug_frame   0x0000000000001e94       0x28 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memcpy-stub.o)
+ .debug_frame   0x0000000000001ebc       0x28 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memmove.o)
+ .debug_frame   0x0000000000001ee4       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memset.o)
+ .debug_frame   0x0000000000001f04       0x50 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sprintf.o)
+ .debug_frame   0x0000000000001f54       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strchr.o)
+ .debug_frame   0x0000000000001f74       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strcpy.o)
+ .debug_frame   0x0000000000001f94       0x28 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strstr.o)
+ .debug_frame   0x0000000000001fbc       0x88 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-strtol.o)
+ .debug_frame   0x0000000000002044      0x140 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-findfp.o)
+ .debug_frame   0x0000000000002184       0x74 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-locale.o)
+ .debug_frame   0x00000000000021f8       0x44 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mbtowc_r.o)
+ .debug_frame   0x000000000000223c       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-freer.o)
+ .debug_frame   0x0000000000002268       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-mallocr.o)
+ .debug_frame   0x0000000000002294       0x74 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-svfprintf.o)
+ .debug_frame   0x0000000000002308       0x54 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_frame   0x000000000000235c       0x2c /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-sbrkr.o)
+ .debug_frame   0x0000000000002388       0x38 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-wctomb_r.o)
+ .debug_frame   0x00000000000023c0       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-memchr-stub.o)
+ .debug_frame   0x00000000000023e0       0x30 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-mlock.o)
+ .debug_frame   0x0000000000002410       0x30 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-reallocr.o)
+ .debug_frame   0x0000000000002440       0x48 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-reent.o)
+ .debug_frame   0x0000000000002488       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libg_nano.a(lib_a-nano-msizer.o)
+ .debug_frame   0x00000000000024a8       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(sbrk.o)
+ .debug_frame   0x00000000000024c8       0x20 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(_exit.o)
 
 .stabstr        0x0000000000000000       0xe3
  .stabstr       0x0000000000000000       0xe3 /usr/local/gcc-arm-none-eabi-6-2017-q2-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/libnosys.a(close.o)
