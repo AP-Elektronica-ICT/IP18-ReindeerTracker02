@@ -216,11 +216,6 @@ int main(void)
 	};
 	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//blue led as output
 
-	char buf[30];
-
-	//CLOCK_EnableClock(kCLOCK_Lptmr0);
-	//sprintf(buf, "lptimer int flag: %lx\r\n", LPTMR0->CSR);
-	PCprint(buf);
 
 	initTimer();
 
@@ -516,12 +511,12 @@ void LLWU_IRQHandler()
 {
 
 	/* If wakeup by LPTMR. */
-	if (LLWU_GetInternalWakeupModuleFlag(LLWU, 0U))
-	{
-		LPTMR_DisableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable);
-		LPTMR_ClearStatusFlags(LPTMR0, kLPTMR_TimerCompareFlag);
-		LPTMR_StopTimer(LPTMR0);
+	if ( LLWU->F3 & 0x01)
+	{	// 1 = LPTMR interrupt, 2 = Accel interrupt, 0 = No interrupts
 		wake = 1;
+		CLOCK_EnableClock(kCLOCK_Lptmr0);
+		LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
+
 	}
 
 	else if ( LLWU->F1 & 0x20)
