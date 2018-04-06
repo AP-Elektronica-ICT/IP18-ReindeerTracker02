@@ -36,8 +36,3 @@ uint8_t breakIfAtOk();
 
 #endif /* AT_COMMANDS_H_ */
 
-/*int *GPS_comm_table[] =
-{
-	&AT_GPSDBG_ON[0],
-	&AT_GPSTST_ON[0]
-};*/

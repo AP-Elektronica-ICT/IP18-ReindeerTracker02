@@ -13,26 +13,21 @@
 #include "at_func.h"
 extern uint8_t PCprint(char *data);
 
-
-
 /*
  *
  * Print UBX response message as hex numbers
  * cannot print it normally by PCprint because it contains 0x00 as data
  */
 
-void printUbxResponseHex(char* data, uint8_t dataLength)
-{
+void printUbxResponseHex(char* data, uint8_t dataLength) {
 	char buffer[5];
-	for (uint8_t n = 0; n < dataLength; n++)
-	{
-		sprintf(buffer,"%02x", (uint8_t) (*(data + n)));
+	for (uint8_t n = 0; n < dataLength; n++) {
+		sprintf(buffer, "%02x", (uint8_t) (*(data + n)));
 		PCprint(buffer);
 	}
 }
 
-uint8_t calcUbxCrc(char *data)
-{
+uint8_t calcUbxCrc(char *data) {
 
 	uint8_t ck_a = 0, ck_b = 0, n = 0;
 
@@ -43,8 +38,7 @@ uint8_t calcUbxCrc(char *data)
 
 	uint8_t dataLength = n;
 
-	for (n = 0; n < dataLength; n++)//calculate checksum for dataLength bytes
-	{
+	for (n = 0; n < dataLength; n++) {	//calculate checksum for dataLength bytes
 		ck_a = ck_a + data[n];
 		ck_b = ck_b + ck_a;
 	}
@@ -53,16 +47,10 @@ uint8_t calcUbxCrc(char *data)
 	data[n + 1] = ck_b;
 	data[n + 2] = 0;	//add a zero to terminate string
 
-	for (n = 0; n < (dataLength + 2); n++) //debug print our complete message
-	{
-		//PCprint("%02x ", (uint8_t) data[n]);
-	}
-
 	return dataLength + 4;
 }
 
-uint8_t getGPS()
-{
+uint8_t getGPS() {
 
 	uint8_t counter = 0;
 
@@ -76,9 +64,8 @@ uint8_t getGPS()
 	char posMode[2];	// Positioning mode according to NMEA protocol
 	char checkSum[10];
 
-	char* GPS_dataPtrs[9] =
-	{ GLL_ID, latitude, northSouth, longitude, eastWest, time, status, posMode,
-			checkSum };
+	char* GPS_dataPtrs[9] = { GLL_ID, latitude, northSouth, longitude, eastWest,
+			time, status, posMode, checkSum };
 
 	char* gllStart = strstr(GPS_recBuf, "NGLL"); //get starting pointer of GLL string
 	char* gsvStart = strstr(GPS_recBuf, "PGSV"); //get start of GSV string(sats in view)
@@ -95,18 +82,17 @@ uint8_t getGPS()
 			//PCprint("GLL string %s\r\n", gllStart);
 		}
 
-		uint8_t gllLength = strlen(gllStart);
+		//uint8_t gllLength = strlen(gllStart);
 		char* gllStringPtr = gllStart;
 
 		/*
 		 * Here own function is used instead of strtok to splice the string
 		 *
 		 */
-		while (*gllStringPtr)
-		{
+		while (*gllStringPtr) {
 
 			if (*gllStringPtr == ',') //if comma is found
-			{
+					{
 				*gllStringPtr = 0; //put 0 to comma's place
 				GPS_dataPtrs[counter] = gllStart; //save this string token to variable
 				counter++;
@@ -118,31 +104,22 @@ uint8_t getGPS()
 
 		}
 
-		if (strstr(GPS_dataPtrs[6], "A") != NULL)
-		{
+		if (strstr(GPS_dataPtrs[6], "A") != NULL) {
 			PCprint("Got GPS\r\n");
 			parseData(GPS_dataPtrs[1], GPS_dataPtrs[3]);
 			return 1;
 		}
 
-		else if (strstr(GPS_dataPtrs[6], "V") != NULL)
-		{
+		else if (strstr(GPS_dataPtrs[6], "V") != NULL) {
 			PCprint("Data invalid, waiting for valid data\r\n");
 		}
-
-		for (uint8_t cnr = 0; cnr < 7; cnr++)
-		{
-			//PCprint("%s\r\n", GPS_dataPtrs[cnr]);
-		}
-
 	}
 
 	if (gsvStart != NULL) //if GSV string is found, print it
 	{
 		char* gsvEnd = strstr(gsvStart, "\r\n");
 
-		if (gsvEnd != NULL)
-		{
+		if (gsvEnd != NULL) {
 
 			*(gsvEnd + 2) = 0;
 			//PCprint("GSV string %s\r\n", gsvStart);
@@ -151,11 +128,9 @@ uint8_t getGPS()
 	}
 
 	return 0;
-	//}
 }
 
-void parseData(char* latStr, char* lonStr)
-{
+void parseData(char* latStr, char* lonStr) {
 
 	uint8_t d_ptr = 0;
 
@@ -175,20 +150,20 @@ void parseData(char* latStr, char* lonStr)
 	lonStr[4] = lonStr[3];
 	lonStr[3] = '.';
 
-	//PCprint("latstr %s lonstr %s\r\n",latStr,lonStr);
-
-	while (latStr[d_ptr] == '0')
-	{		// Skip all zeroes from beginning of string
+	while (latStr[d_ptr] == '0')	// Skip all zeroes from beginning of string
+	{
 		d_ptr++;
 	}
 
-	strcpy(parsedLat, latStr + d_ptr);// Copy string without zeroes to new string
+	strcpy(parsedLat, latStr + d_ptr); // Copy string without zeroes to new string
 
 	d_ptr = 0;
 
 	delPtr = strchr(parsedLat, s);
 	delPtr++;
-	while(*delPtr == '0'){	delPtr++;} //LOOP2: If there is zeroes in minutes part, skip them
+	while (*delPtr == '0') {
+		delPtr++;
+	} //LOOP2: If there is zeroes in minutes part, skip them
 
 	uint32_t latMinutes = atol(delPtr);
 	latMinutes = latMinutes / 6; //Convert minutes to decimal degrees
@@ -196,10 +171,7 @@ void parseData(char* latStr, char* lonStr)
 	sprintf(delPtr, "%ld\r\n", latMinutes); //here because of LOOP2 delPtr points after the original zeroes(if there were any)
 											//and decimal problem is fixed
 
-	//PCprint("latmin: %ld\r\n",latMinutes);
-
-	while (lonStr[d_ptr] == '0')
-	{
+	while (lonStr[d_ptr] == '0') {
 		d_ptr++;
 	}
 
@@ -207,14 +179,14 @@ void parseData(char* latStr, char* lonStr)
 
 	delPtr = strchr(parsedLon, s);
 	delPtr++;
-	while(*delPtr == '0'){	delPtr++;} //LOOP3: If there is zeroes in minutes part, skip them
+	while (*delPtr == '0') {
+		delPtr++;
+	} //LOOP3: If there is zeroes in minutes part, skip them
 
 	uint32_t lonMinutes = atol(delPtr);
 	lonMinutes = lonMinutes / 6;
 
-	sprintf(delPtr, "%ld\r\n", lonMinutes);//here because of LOOP3 delPtr points after the original zeroes(if there were any)
+	sprintf(delPtr, "%ld\r\n", lonMinutes); //here because of LOOP3 delPtr points after the original zeroes(if there were any)
 											//and decimal problem is fixed
 
-	//PCprint("Parsed latitude: %s", parsedLon);
-	//PCprint("Parsed longitude: %s", parsedLat);
 }
