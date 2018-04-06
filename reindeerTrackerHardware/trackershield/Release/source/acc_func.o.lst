@@ -22,7 +22,7 @@
   22              		.thumb_func
   23              		.fpu fpv4-sp-d16
   25              	acc_init:
-  26              	.LFB1:
+  26              	.LFB3:
   27              		.file 1 "../source/acc_func.c"
    1:../source/acc_func.c **** /*
    2:../source/acc_func.c ****  * acc_func.c
@@ -43,7 +43,7 @@
   17:../source/acc_func.c **** 
   18:../source/acc_func.c **** unsigned char buffer[50];
   19:../source/acc_func.c **** 
-  20:../source/acc_func.c **** void acc_init() {
+  20:../source/acc_func.c **** void acc_init(){
   28              		.loc 1 20 0
   29              		.cfi_startproc
   30              		@ args = 0, pretend = 0, frame = 0
@@ -52,310 +52,323 @@
   33              		.cfi_def_cfa_offset 8
   34              		.cfi_offset 3, -8
   35              		.cfi_offset 14, -4
-  21:../source/acc_func.c **** 	accWriteReg(0x2a, 0x1d); //write accelerometer CTRL_REG1 (active mode)
+  21:../source/acc_func.c **** 	 accWriteReg(0x2a,0x1c); //write accelerometer CTRL_REG1 (active mode)
   36              		.loc 1 21 0
-  37 0002 1D21     		movs	r1, #29
+  37 0002 1C21     		movs	r1, #28
   38 0004 2A20     		movs	r0, #42
   39 0006 FFF7FEFF 		bl	accWriteReg
   40              	.LVL0:
-  22:../source/acc_func.c **** 	accWriteReg(0x5B, 0x03); //Acc temperature sensor enable
+  22:../source/acc_func.c **** 	 accWriteReg(0x2a,0x1d); //write accelerometer CTRL_REG1 (active mode)
   41              		.loc 1 22 0
-  42 000a 0321     		movs	r1, #3
-  43 000c 5B20     		movs	r0, #91
-  23:../source/acc_func.c **** 
-  24:../source/acc_func.c **** }
-  44              		.loc 1 24 0
-  45 000e BDE80840 		pop	{r3, lr}
-  46              		.cfi_restore 14
-  47              		.cfi_restore 3
-  48              		.cfi_def_cfa_offset 0
-  22:../source/acc_func.c **** 	accWriteReg(0x5B, 0x03); //Acc temperature sensor enable
-  49              		.loc 1 22 0
-  50 0012 FFF7FEBF 		b	accWriteReg
-  51              	.LVL1:
-  52              		.cfi_endproc
-  53              	.LFE1:
-  55              		.section	.text.configure_acc,"ax",%progbits
-  56              		.align	1
-  57              		.global	configure_acc
-  58              		.syntax unified
-  59              		.thumb
-  60              		.thumb_func
-  61              		.fpu fpv4-sp-d16
-  63              	configure_acc:
-  64              	.LFB2:
-  25:../source/acc_func.c **** 
-  26:../source/acc_func.c **** void configure_acc() {
-  65              		.loc 1 26 0
-  66              		.cfi_startproc
-  67              		@ args = 0, pretend = 0, frame = 0
-  68              		@ frame_needed = 0, uses_anonymous_args = 0
-  69              	.LVL2:
-  70 0000 08B5     		push	{r3, lr}
-  71              		.cfi_def_cfa_offset 8
-  72              		.cfi_offset 3, -8
-  73              		.cfi_offset 14, -4
-  27:../source/acc_func.c **** 
-  28:../source/acc_func.c **** 	uint8_t tmp = 0;
-  29:../source/acc_func.c **** 
-  30:../source/acc_func.c **** 	tmp = accReadReg(FXOS8700Q_CTRL_REG4); //read old contents of CTRL REG 4 to tmp
-  74              		.loc 1 30 0
-  75 0002 2D20     		movs	r0, #45
-  76 0004 FFF7FEFF 		bl	accReadReg
-  77              	.LVL3:
-  31:../source/acc_func.c **** 	tmp |= 0x84; //make changes to it
-  78              		.loc 1 31 0
-  79 0008 60F07B01 		orn	r1, r0, #123
-  32:../source/acc_func.c **** 	accWriteReg(FXOS8700Q_CTRL_REG4, tmp); //write it back
-  80              		.loc 1 32 0
-  81 000c C9B2     		uxtb	r1, r1
-  82 000e 2D20     		movs	r0, #45
-  83              	.LVL4:
-  84 0010 FFF7FEFF 		bl	accWriteReg
-  85              	.LVL5:
-  33:../source/acc_func.c **** 
-  34:../source/acc_func.c **** 	tmp = accReadReg(FXOS8700Q_CTRL_REG5);
-  86              		.loc 1 34 0
-  87 0014 2E20     		movs	r0, #46
-  88 0016 FFF7FEFF 		bl	accReadReg
-  89              	.LVL6:
-  35:../source/acc_func.c **** 	tmp |= 0x04;
-  90              		.loc 1 35 0
-  91 001a 40F00401 		orr	r1, r0, #4
-  36:../source/acc_func.c **** 	accWriteReg(FXOS8700Q_CTRL_REG5, tmp);
-  92              		.loc 1 36 0
-  93 001e C9B2     		uxtb	r1, r1
-  94 0020 2E20     		movs	r0, #46
-  95              	.LVL7:
-  96 0022 FFF7FEFF 		bl	accWriteReg
-  97              	.LVL8:
-  37:../source/acc_func.c **** 
-  38:../source/acc_func.c **** 	tmp = accReadReg(FXOS8700Q_CTRL_REG3);
-  98              		.loc 1 38 0
-  99 0026 2C20     		movs	r0, #44
- 100 0028 FFF7FEFF 		bl	accReadReg
- 101              	.LVL9:
-  39:../source/acc_func.c **** 	tmp |= 0x08;
- 102              		.loc 1 39 0
- 103 002c 40F00801 		orr	r1, r0, #8
-  40:../source/acc_func.c **** 	accWriteReg(FXOS8700Q_CTRL_REG3, tmp);
- 104              		.loc 1 40 0
- 105 0030 C9B2     		uxtb	r1, r1
- 106 0032 2C20     		movs	r0, #44
- 107              	.LVL10:
- 108 0034 FFF7FEFF 		bl	accWriteReg
- 109              	.LVL11:
-  41:../source/acc_func.c **** 
-  42:../source/acc_func.c **** 	tmp = accReadReg( FXOS8700Q_A_FFMT_CFG);
- 110              		.loc 1 42 0
- 111 0038 1520     		movs	r0, #21
- 112 003a FFF7FEFF 		bl	accReadReg
- 113              	.LVL12:
-  43:../source/acc_func.c **** 	tmp |= 0x78;
- 114              		.loc 1 43 0
- 115 003e 40F07801 		orr	r1, r0, #120
-  44:../source/acc_func.c **** 	accWriteReg(FXOS8700Q_A_FFMT_CFG, tmp);
- 116              		.loc 1 44 0
- 117 0042 C9B2     		uxtb	r1, r1
- 118 0044 1520     		movs	r0, #21
- 119              	.LVL13:
- 120 0046 FFF7FEFF 		bl	accWriteReg
- 121              	.LVL14:
-  45:../source/acc_func.c **** 
-  46:../source/acc_func.c **** 	tmp = accReadReg( FXOS8700Q_A_FFMT_THS);
- 122              		.loc 1 46 0
- 123 004a 1720     		movs	r0, #23
- 124 004c FFF7FEFF 		bl	accReadReg
- 125              	.LVL15:
-  47:../source/acc_func.c **** 	tmp |= 0x8F;
- 126              		.loc 1 47 0
- 127 0050 60F07001 		orn	r1, r0, #112
-  48:../source/acc_func.c **** 	accWriteReg(FXOS8700Q_A_FFMT_THS, tmp);
- 128              		.loc 1 48 0
- 129 0054 C9B2     		uxtb	r1, r1
- 130 0056 1720     		movs	r0, #23
- 131              	.LVL16:
-  49:../source/acc_func.c **** 
-  50:../source/acc_func.c **** }
- 132              		.loc 1 50 0
- 133 0058 BDE80840 		pop	{r3, lr}
- 134              		.cfi_restore 14
- 135              		.cfi_restore 3
- 136              		.cfi_def_cfa_offset 0
-  48:../source/acc_func.c **** 	accWriteReg(FXOS8700Q_A_FFMT_THS, tmp);
- 137              		.loc 1 48 0
- 138 005c FFF7FEBF 		b	accWriteReg
- 139              	.LVL17:
- 140              		.cfi_endproc
- 141              	.LFE2:
- 143              		.section	.text.read_acc_axis,"ax",%progbits
- 144              		.align	1
- 145              		.global	read_acc_axis
- 146              		.syntax unified
- 147              		.thumb
- 148              		.thumb_func
- 149              		.fpu fpv4-sp-d16
- 151              	read_acc_axis:
- 152              	.LFB3:
-  51:../source/acc_func.c **** 
-  52:../source/acc_func.c **** int16_t read_acc_axis(uint8_t axis) {
- 153              		.loc 1 52 0
- 154              		.cfi_startproc
- 155              		@ args = 0, pretend = 0, frame = 0
- 156              		@ frame_needed = 0, uses_anonymous_args = 0
- 157              	.LVL18:
- 158 0000 38B5     		push	{r3, r4, r5, lr}
- 159              		.cfi_def_cfa_offset 16
- 160              		.cfi_offset 3, -16
- 161              		.cfi_offset 4, -12
- 162              		.cfi_offset 5, -8
- 163              		.cfi_offset 14, -4
- 164              		.loc 1 52 0
- 165 0002 0546     		mov	r5, r0
-  53:../source/acc_func.c **** 	int8_t acc_temp = 0;
+  42 000a 1D21     		movs	r1, #29
+  43 000c 2A20     		movs	r0, #42
+  44 000e FFF7FEFF 		bl	accWriteReg
+  45              	.LVL1:
+  23:../source/acc_func.c **** 	 accWriteReg(0x5B,0x03); //Acc temperature sensor enable
+  46              		.loc 1 23 0
+  47 0012 0321     		movs	r1, #3
+  48 0014 5B20     		movs	r0, #91
+  24:../source/acc_func.c **** 
+  25:../source/acc_func.c **** }
+  49              		.loc 1 25 0
+  50 0016 BDE80840 		pop	{r3, lr}
+  51              		.cfi_restore 14
+  52              		.cfi_restore 3
+  53              		.cfi_def_cfa_offset 0
+  23:../source/acc_func.c **** 	 accWriteReg(0x5B,0x03); //Acc temperature sensor enable
+  54              		.loc 1 23 0
+  55 001a FFF7FEBF 		b	accWriteReg
+  56              	.LVL2:
+  57              		.cfi_endproc
+  58              	.LFE3:
+  60              		.section	.text.configure_acc,"ax",%progbits
+  61              		.align	1
+  62              		.global	configure_acc
+  63              		.syntax unified
+  64              		.thumb
+  65              		.thumb_func
+  66              		.fpu fpv4-sp-d16
+  68              	configure_acc:
+  69              	.LFB4:
+  26:../source/acc_func.c **** 
+  27:../source/acc_func.c **** void configure_acc() {
+  70              		.loc 1 27 0
+  71              		.cfi_startproc
+  72              		@ args = 0, pretend = 0, frame = 0
+  73              		@ frame_needed = 0, uses_anonymous_args = 0
+  74              	.LVL3:
+  75 0000 08B5     		push	{r3, lr}
+  76              		.cfi_def_cfa_offset 8
+  77              		.cfi_offset 3, -8
+  78              		.cfi_offset 14, -4
+  28:../source/acc_func.c **** 
+  29:../source/acc_func.c **** 	uint8_t tmp = 0;
+  30:../source/acc_func.c **** 
+  31:../source/acc_func.c **** 	tmp = accReadReg(FXOS8700Q_CTRL_REG4); //read old contents of CTRL REG 4 to tmp
+  79              		.loc 1 31 0
+  80 0002 2D20     		movs	r0, #45
+  81 0004 FFF7FEFF 		bl	accReadReg
+  82              	.LVL4:
+  32:../source/acc_func.c **** 	tmp |= 0x84; //make changes to it
+  83              		.loc 1 32 0
+  84 0008 60F07B01 		orn	r1, r0, #123
+  33:../source/acc_func.c **** 	accWriteReg(FXOS8700Q_CTRL_REG4, tmp); //write it back
+  85              		.loc 1 33 0
+  86 000c C9B2     		uxtb	r1, r1
+  87 000e 2D20     		movs	r0, #45
+  88              	.LVL5:
+  89 0010 FFF7FEFF 		bl	accWriteReg
+  90              	.LVL6:
+  34:../source/acc_func.c **** 
+  35:../source/acc_func.c **** 	tmp = accReadReg(FXOS8700Q_CTRL_REG5);
+  91              		.loc 1 35 0
+  92 0014 2E20     		movs	r0, #46
+  93 0016 FFF7FEFF 		bl	accReadReg
+  94              	.LVL7:
+  36:../source/acc_func.c **** 	tmp |= 0x04;
+  95              		.loc 1 36 0
+  96 001a 40F00401 		orr	r1, r0, #4
+  37:../source/acc_func.c **** 	accWriteReg(FXOS8700Q_CTRL_REG5, tmp);
+  97              		.loc 1 37 0
+  98 001e C9B2     		uxtb	r1, r1
+  99 0020 2E20     		movs	r0, #46
+ 100              	.LVL8:
+ 101 0022 FFF7FEFF 		bl	accWriteReg
+ 102              	.LVL9:
+  38:../source/acc_func.c **** 
+  39:../source/acc_func.c **** 	tmp = accReadReg(FXOS8700Q_CTRL_REG3);
+ 103              		.loc 1 39 0
+ 104 0026 2C20     		movs	r0, #44
+ 105 0028 FFF7FEFF 		bl	accReadReg
+ 106              	.LVL10:
+  40:../source/acc_func.c **** 	tmp |= 0x08;
+ 107              		.loc 1 40 0
+ 108 002c 40F00801 		orr	r1, r0, #8
+  41:../source/acc_func.c **** 	accWriteReg(FXOS8700Q_CTRL_REG3, tmp);
+ 109              		.loc 1 41 0
+ 110 0030 C9B2     		uxtb	r1, r1
+ 111 0032 2C20     		movs	r0, #44
+ 112              	.LVL11:
+ 113 0034 FFF7FEFF 		bl	accWriteReg
+ 114              	.LVL12:
+  42:../source/acc_func.c **** 
+  43:../source/acc_func.c ****   tmp = accReadReg( FXOS8700Q_A_FFMT_THS);
+ 115              		.loc 1 43 0
+ 116 0038 1720     		movs	r0, #23
+ 117 003a FFF7FEFF 		bl	accReadReg
+ 118              	.LVL13:
+  44:../source/acc_func.c **** 
+  45:../source/acc_func.c ****   tmp |= 0x81;
+ 119              		.loc 1 45 0
+ 120 003e 60F07E01 		orn	r1, r0, #126
+  46:../source/acc_func.c ****   accWriteReg(FXOS8700Q_A_FFMT_THS, tmp);
+ 121              		.loc 1 46 0
+ 122 0042 C9B2     		uxtb	r1, r1
+ 123 0044 1720     		movs	r0, #23
+ 124              	.LVL14:
+ 125 0046 FFF7FEFF 		bl	accWriteReg
+ 126              	.LVL15:
+  47:../source/acc_func.c **** 
+  48:../source/acc_func.c **** 
+  49:../source/acc_func.c **** 	tmp = accReadReg( FXOS8700Q_A_FFMT_THS);
+ 127              		.loc 1 49 0
+ 128 004a 1720     		movs	r0, #23
+ 129 004c FFF7FEFF 		bl	accReadReg
+ 130              	.LVL16:
+  50:../source/acc_func.c **** 	tmp |= 0x8F;
+ 131              		.loc 1 50 0
+ 132 0050 60F07001 		orn	r1, r0, #112
+  51:../source/acc_func.c **** 	accWriteReg(FXOS8700Q_A_FFMT_THS, tmp);
+ 133              		.loc 1 51 0
+ 134 0054 C9B2     		uxtb	r1, r1
+ 135 0056 1720     		movs	r0, #23
+ 136              	.LVL17:
+  52:../source/acc_func.c **** 
+  53:../source/acc_func.c ****   //accWriteReg(0x0f, 0x20);
   54:../source/acc_func.c **** 
-  55:../source/acc_func.c **** 	switch (axis) {
- 166              		.loc 1 55 0
- 167 0004 0328     		cmp	r0, #3
- 168 0006 04D8     		bhi	.L5
- 169 0008 DFE800F0 		tbb	[pc, r0]
- 170              	.L6:
- 171 000c 22       		.byte	(.L12-.L6)/2
- 172 000d 02       		.byte	(.L7-.L6)/2
- 173 000e 1B       		.byte	(.L8-.L6)/2
- 174 000f 1D       		.byte	(.L9-.L6)/2
- 175              		.p2align 1
- 176              	.L7:
-  56:../source/acc_func.c **** 	case 0:
-  57:../source/acc_func.c **** 		axis = 0x01;
-  58:../source/acc_func.c **** 		break;
-  59:../source/acc_func.c **** 
-  60:../source/acc_func.c **** 	case 1:
-  61:../source/acc_func.c **** 		axis = 0x03;
- 177              		.loc 1 61 0
- 178 0010 0325     		movs	r5, #3
- 179              	.LVL19:
- 180              	.L5:
-  62:../source/acc_func.c **** 		break;
-  63:../source/acc_func.c **** 
-  64:../source/acc_func.c **** 	case 2:
-  65:../source/acc_func.c **** 		axis = 0x05;
-  66:../source/acc_func.c **** 		break;
-  67:../source/acc_func.c **** 
-  68:../source/acc_func.c **** 	case 3:
-  69:../source/acc_func.c **** 		acc_temp = accReadReg(0x51);
-  70:../source/acc_func.c **** 		return (int16_t) acc_temp;
-  71:../source/acc_func.c **** 		break;
-  72:../source/acc_func.c **** 
-  73:../source/acc_func.c **** 	}
-  74:../source/acc_func.c **** 
-  75:../source/acc_func.c **** 	uint16_t acc_val = 0; //init a 16-bit variable to store 14-bit acceleration value
-  76:../source/acc_func.c **** 
-  77:../source/acc_func.c **** 	uint8_t acc_buf = accReadReg(axis); //read MSB bits of acceleration value
- 181              		.loc 1 77 0
- 182 0012 2846     		mov	r0, r5
- 183 0014 FFF7FEFF 		bl	accReadReg
+  55:../source/acc_func.c **** 
+  56:../source/acc_func.c **** }
+ 137              		.loc 1 56 0
+ 138 0058 BDE80840 		pop	{r3, lr}
+ 139              		.cfi_restore 14
+ 140              		.cfi_restore 3
+ 141              		.cfi_def_cfa_offset 0
+  51:../source/acc_func.c **** 	accWriteReg(FXOS8700Q_A_FFMT_THS, tmp);
+ 142              		.loc 1 51 0
+ 143 005c FFF7FEBF 		b	accWriteReg
+ 144              	.LVL18:
+ 145              		.cfi_endproc
+ 146              	.LFE4:
+ 148              		.section	.text.read_acc_axis,"ax",%progbits
+ 149              		.align	1
+ 150              		.global	read_acc_axis
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 154              		.fpu fpv4-sp-d16
+ 156              	read_acc_axis:
+ 157              	.LFB5:
+  57:../source/acc_func.c **** 
+  58:../source/acc_func.c **** int16_t read_acc_axis(uint8_t axis) {
+ 158              		.loc 1 58 0
+ 159              		.cfi_startproc
+ 160              		@ args = 0, pretend = 0, frame = 0
+ 161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 162              	.LVL19:
+ 163 0000 38B5     		push	{r3, r4, r5, lr}
+ 164              		.cfi_def_cfa_offset 16
+ 165              		.cfi_offset 3, -16
+ 166              		.cfi_offset 4, -12
+ 167              		.cfi_offset 5, -8
+ 168              		.cfi_offset 14, -4
+ 169              		.loc 1 58 0
+ 170 0002 0546     		mov	r5, r0
+  59:../source/acc_func.c **** 	int8_t acc_temp = 0;
+  60:../source/acc_func.c **** 
+  61:../source/acc_func.c **** 	switch (axis) {
+ 171              		.loc 1 61 0
+ 172 0004 0328     		cmp	r0, #3
+ 173 0006 04D8     		bhi	.L7
+ 174 0008 DFE800F0 		tbb	[pc, r0]
+ 175              	.L6:
+ 176 000c 02       		.byte	(.L5-.L6)/2
+ 177 000d 22       		.byte	(.L12-.L6)/2
+ 178 000e 1B       		.byte	(.L8-.L6)/2
+ 179 000f 1D       		.byte	(.L9-.L6)/2
+ 180              		.p2align 1
+ 181              	.L5:
+  62:../source/acc_func.c **** 	case 0:
+  63:../source/acc_func.c **** 		axis = 0x01;
+ 182              		.loc 1 63 0
+ 183 0010 0125     		movs	r5, #1
  184              	.LVL20:
+ 185              	.L7:
+  64:../source/acc_func.c **** 		break;
+  65:../source/acc_func.c **** 
+  66:../source/acc_func.c **** 	case 1:
+  67:../source/acc_func.c **** 		axis = 0x03;
+  68:../source/acc_func.c **** 		break;
+  69:../source/acc_func.c **** 
+  70:../source/acc_func.c **** 	case 2:
+  71:../source/acc_func.c **** 		axis = 0x05;
+  72:../source/acc_func.c **** 		break;
+  73:../source/acc_func.c **** 
+  74:../source/acc_func.c **** 	case 3:
+  75:../source/acc_func.c **** 		acc_temp = accReadReg(0x51);
+  76:../source/acc_func.c **** 		return (int16_t) acc_temp;
+  77:../source/acc_func.c **** 		break;
   78:../source/acc_func.c **** 
-  79:../source/acc_func.c **** 	acc_val = acc_buf; //read MSB bits to the 16 bit variable
+  79:../source/acc_func.c **** 	}
   80:../source/acc_func.c **** 
-  81:../source/acc_func.c **** 	//0000 0000 MMMM MMMM at this stage acc_val looks like this in memory
+  81:../source/acc_func.c **** 	uint16_t acc_val = 0; //init a 16-bit variable to store 14-bit acceleration value
   82:../source/acc_func.c **** 
-  83:../source/acc_func.c **** 	acc_val <<= 8; // shift MSB bits left to have them in right place
- 185              		.loc 1 83 0
- 186 0018 0002     		lsls	r0, r0, #8
- 187              	.LVL21:
- 188 001a 00F47F44 		and	r4, r0, #65280
- 189              	.LVL22:
+  83:../source/acc_func.c **** 	uint8_t acc_buf = accReadReg(axis); //read MSB bits of acceleration value
+ 186              		.loc 1 83 0
+ 187 0012 2846     		mov	r0, r5
+ 188 0014 FFF7FEFF 		bl	accReadReg
+ 189              	.LVL21:
   84:../source/acc_func.c **** 
-  85:../source/acc_func.c **** 	//MMMM MMMM 0000 0000
+  85:../source/acc_func.c **** 	acc_val = acc_buf; //read MSB bits to the 16 bit variable
   86:../source/acc_func.c **** 
-  87:../source/acc_func.c **** 	acc_buf = accReadReg(axis + 1); //read LSB values to buffer
- 190              		.loc 1 87 0
- 191 001e 681C     		adds	r0, r5, #1
- 192 0020 C0B2     		uxtb	r0, r0
- 193 0022 FFF7FEFF 		bl	accReadReg
+  87:../source/acc_func.c **** 	//0000 0000 MMMM MMMM at this stage acc_val looks like this in memory
+  88:../source/acc_func.c **** 
+  89:../source/acc_func.c **** 	acc_val <<= 8; // shift MSB bits left to have them in right place
+ 190              		.loc 1 89 0
+ 191 0018 0002     		lsls	r0, r0, #8
+ 192              	.LVL22:
+ 193 001a 00F47F44 		and	r4, r0, #65280
  194              	.LVL23:
-  88:../source/acc_func.c **** 	acc_val |= acc_buf; //OR LSB values to the acc_value
- 195              		.loc 1 88 0
- 196 0026 2043     		orrs	r0, r0, r4
- 197              	.LVL24:
-  89:../source/acc_func.c **** 
-  90:../source/acc_func.c **** 	//MMMM MMMM LLLL LL00
-  91:../source/acc_func.c **** 	acc_val >>= 2; //shift right 2 bits to right-justify
- 198              		.loc 1 91 0
- 199 0028 C0F38D00 		ubfx	r0, r0, #2, #14
- 200              	.LVL25:
+  90:../source/acc_func.c **** 
+  91:../source/acc_func.c **** 	//MMMM MMMM 0000 0000
   92:../source/acc_func.c **** 
-  93:../source/acc_func.c **** 	//00MM MMMM MMLL LLLLpaskaa
-  94:../source/acc_func.c **** 
-  95:../source/acc_func.c **** 	int16_t out = 0;
-  96:../source/acc_func.c **** 
-  97:../source/acc_func.c **** 	if (acc_val & (1 << 13)) //test if value is negative by masking 14th bit
- 201              		.loc 1 97 0
- 202 002c 8304     		lsls	r3, r0, #18
- 203              	.LVL26:
-  98:../source/acc_func.c **** 			{
-  99:../source/acc_func.c **** 		acc_val = 0xffff - acc_val + 1;
- 204              		.loc 1 99 0
- 205 002e 41BF     		itttt	mi
- 206 0030 4042     		rsbmi	r0, r0, #0
- 207              	.LVL27:
- 100:../source/acc_func.c **** 		out = 0 - (acc_val & 0x1fff);
- 208              		.loc 1 100 0
- 209 0032 C0F30C00 		ubfxmi	r0, r0, #0, #13
- 210 0036 4042     		rsbmi	r0, r0, #0
- 211 0038 00B2     		sxthmi	r0, r0
+  93:../source/acc_func.c **** 	acc_buf = accReadReg(axis + 1); //read LSB values to buffer
+ 195              		.loc 1 93 0
+ 196 001e 681C     		adds	r0, r5, #1
+ 197 0020 C0B2     		uxtb	r0, r0
+ 198 0022 FFF7FEFF 		bl	accReadReg
+ 199              	.LVL24:
+  94:../source/acc_func.c **** 	acc_val |= acc_buf; //OR LSB values to the acc_value
+ 200              		.loc 1 94 0
+ 201 0026 2043     		orrs	r0, r0, r4
+ 202              	.LVL25:
+  95:../source/acc_func.c **** 
+  96:../source/acc_func.c **** 	//MMMM MMMM LLLL LL00
+  97:../source/acc_func.c **** 	acc_val >>= 2; //shift right 2 bits to right-justify
+ 203              		.loc 1 97 0
+ 204 0028 C0F38D00 		ubfx	r0, r0, #2, #14
+ 205              	.LVL26:
+  98:../source/acc_func.c **** 
+  99:../source/acc_func.c **** 	//00MM MMMM MMLL LLLLpaskaa
+ 100:../source/acc_func.c **** 
+ 101:../source/acc_func.c **** 	int16_t out = 0;
+ 102:../source/acc_func.c **** 
+ 103:../source/acc_func.c **** 	if (acc_val & (1 << 13)) //test if value is negative by masking 14th bit
+ 206              		.loc 1 103 0
+ 207 002c 8304     		lsls	r3, r0, #18
+ 208              	.LVL27:
+ 104:../source/acc_func.c **** 			{
+ 105:../source/acc_func.c **** 		acc_val = 0xffff - acc_val + 1;
+ 209              		.loc 1 105 0
+ 210 002e 41BF     		itttt	mi
+ 211 0030 4042     		rsbmi	r0, r0, #0
  212              	.LVL28:
- 101:../source/acc_func.c **** 
- 102:../source/acc_func.c **** 	}
- 103:../source/acc_func.c **** 
- 104:../source/acc_func.c **** 	else {
- 105:../source/acc_func.c **** 		out = acc_val & 0x1fff;
- 213              		.loc 1 105 0
- 214 003a 58BF     		it	pl
- 215 003c C0F30C00 		ubfxpl	r0, r0, #0, #13
- 216              	.LVL29:
- 106:../source/acc_func.c **** 	}
- 107:../source/acc_func.c **** 	return out;
- 108:../source/acc_func.c **** }
- 217              		.loc 1 108 0
- 218 0040 38BD     		pop	{r3, r4, r5, pc}
- 219              	.LVL30:
- 220              	.L8:
-  65:../source/acc_func.c **** 		break;
- 221              		.loc 1 65 0
- 222 0042 0525     		movs	r5, #5
-  66:../source/acc_func.c **** 
- 223              		.loc 1 66 0
- 224 0044 E5E7     		b	.L5
- 225              	.LVL31:
- 226              	.L9:
-  69:../source/acc_func.c **** 		return (int16_t) acc_temp;
- 227              		.loc 1 69 0
- 228 0046 5120     		movs	r0, #81
+ 106:../source/acc_func.c **** 		out = 0 - (acc_val & 0x1fff);
+ 213              		.loc 1 106 0
+ 214 0032 C0F30C00 		ubfxmi	r0, r0, #0, #13
+ 215 0036 4042     		rsbmi	r0, r0, #0
+ 216 0038 00B2     		sxthmi	r0, r0
+ 217              	.LVL29:
+ 107:../source/acc_func.c **** 
+ 108:../source/acc_func.c **** 	}
+ 109:../source/acc_func.c **** 
+ 110:../source/acc_func.c **** 	else {
+ 111:../source/acc_func.c **** 		out = acc_val & 0x1fff;
+ 218              		.loc 1 111 0
+ 219 003a 58BF     		it	pl
+ 220 003c C0F30C00 		ubfxpl	r0, r0, #0, #13
+ 221              	.LVL30:
+ 222 0040 05E0     		b	.L10
+ 223              	.LVL31:
+ 224              	.L8:
+  71:../source/acc_func.c **** 		break;
+ 225              		.loc 1 71 0
+ 226 0042 0525     		movs	r5, #5
+  72:../source/acc_func.c **** 
+ 227              		.loc 1 72 0
+ 228 0044 E5E7     		b	.L7
  229              	.LVL32:
- 230 0048 FFF7FEFF 		bl	accReadReg
- 231              	.LVL33:
-  70:../source/acc_func.c **** 		break;
- 232              		.loc 1 70 0
- 233 004c 40B2     		sxtb	r0, r0
- 234 004e 38BD     		pop	{r3, r4, r5, pc}
+ 230              	.L9:
+  75:../source/acc_func.c **** 		return (int16_t) acc_temp;
+ 231              		.loc 1 75 0
+ 232 0046 5120     		movs	r0, #81
+ 233              	.LVL33:
+ 234 0048 FFF7FEFF 		bl	accReadReg
  235              	.LVL34:
- 236              	.L12:
-  57:../source/acc_func.c **** 		break;
- 237              		.loc 1 57 0
- 238 0050 0125     		movs	r5, #1
- 239 0052 DEE7     		b	.L5
- 240              		.cfi_endproc
- 241              	.LFE3:
- 243              		.comm	buffer,50,1
- 244              		.text
- 245              	.Letext0:
- 246              		.file 2 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 247              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 248              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 249              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 250              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 251              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 252              		.file 8 "../source/i2c_func.h"
+  76:../source/acc_func.c **** 		break;
+ 236              		.loc 1 76 0
+ 237 004c 40B2     		sxtb	r0, r0
+ 238              	.LVL35:
+ 239              	.L10:
+ 112:../source/acc_func.c **** 	}
+ 113:../source/acc_func.c **** 	return out;
+ 114:../source/acc_func.c **** }
+ 240              		.loc 1 114 0
+ 241 004e 38BD     		pop	{r3, r4, r5, pc}
+ 242              	.LVL36:
+ 243              	.L12:
+  67:../source/acc_func.c **** 		break;
+ 244              		.loc 1 67 0
+ 245 0050 0325     		movs	r5, #3
+ 246 0052 DEE7     		b	.L7
+ 247              		.cfi_endproc
+ 248              	.LFE5:
+ 250              		.comm	buffer,50,1
+ 251              		.text
+ 252              	.Letext0:
+ 253              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 254              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 255              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 256              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 257              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 258              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 259              		.file 8 "../source/i2c_func.h"

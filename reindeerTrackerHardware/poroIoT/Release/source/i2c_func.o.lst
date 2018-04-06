@@ -1,0 +1,1291 @@
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"i2c_func.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.initI2C,"ax",%progbits
+  16              		.align	1
+  17              		.global	initI2C
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	initI2C:
+  24              	.LFB66:
+  25              		.file 1 "../source/i2c_func.c"
+   1:../source/i2c_func.c **** /*
+   2:../source/i2c_func.c ****  * i2c_func.c
+   3:../source/i2c_func.c ****  *
+   4:../source/i2c_func.c ****  *  Created on: Feb 9, 2018
+   5:../source/i2c_func.c ****  *      Author: root
+   6:../source/i2c_func.c ****  */
+   7:../source/i2c_func.c **** 
+   8:../source/i2c_func.c **** #include "i2c_func.h"
+   9:../source/i2c_func.c **** #include <stdint.h>
+  10:../source/i2c_func.c **** #include "fsl_i2c.h"
+  11:../source/i2c_func.c **** #include "fsl_port.h"
+  12:../source/i2c_func.c **** 
+  13:../source/i2c_func.c **** #define FRDM_ACC_SADDR 0x1D
+  14:../source/i2c_func.c **** #define TRACKER_ACC_SADDR 0x1C
+  15:../source/i2c_func.c **** 
+  16:../source/i2c_func.c **** #define ACC_SADDR FRDM_ACC_SADDR
+  17:../source/i2c_func.c **** 
+  18:../source/i2c_func.c **** void initI2C()
+  19:../source/i2c_func.c **** {
+  26              		.loc 1 19 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 16
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30 0000 30B5     		push	{r4, r5, lr}
+  31              		.cfi_def_cfa_offset 12
+  32              		.cfi_offset 4, -12
+  33              		.cfi_offset 5, -8
+  34              		.cfi_offset 14, -4
+  35 0002 85B0     		sub	sp, sp, #20
+  36              		.cfi_def_cfa_offset 32
+  37              	.LVL0:
+  38              	.LBB10:
+  39              	.LBB11:
+  40              		.file 2 "../drivers/fsl_clock.h"
+   1:../drivers/fsl_clock.h **** /*
+   2:../drivers/fsl_clock.h ****  * The Clear BSD License
+   3:../drivers/fsl_clock.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_clock.h ****  * Copyright (c) 2016 - 2017 , NXP
+   5:../drivers/fsl_clock.h ****  * All rights reserved.
+   6:../drivers/fsl_clock.h ****  *
+   7:../drivers/fsl_clock.h ****  *
+   8:../drivers/fsl_clock.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   9:../drivers/fsl_clock.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+  10:../drivers/fsl_clock.h ****  * that the following conditions are met:
+  11:../drivers/fsl_clock.h ****  *
+  12:../drivers/fsl_clock.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  13:../drivers/fsl_clock.h ****  *   of conditions and the following disclaimer.
+  14:../drivers/fsl_clock.h ****  *
+  15:../drivers/fsl_clock.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  16:../drivers/fsl_clock.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  17:../drivers/fsl_clock.h ****  *   other materials provided with the distribution.
+  18:../drivers/fsl_clock.h ****  *
+  19:../drivers/fsl_clock.h ****  * o Neither the name of copyright holder nor the names of its
+  20:../drivers/fsl_clock.h ****  *   contributors may be used to endorse or promote products derived from this
+  21:../drivers/fsl_clock.h ****  *   software without specific prior written permission.
+  22:../drivers/fsl_clock.h ****  *
+  23:../drivers/fsl_clock.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  24:../drivers/fsl_clock.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  25:../drivers/fsl_clock.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  26:../drivers/fsl_clock.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  27:../drivers/fsl_clock.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  28:../drivers/fsl_clock.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  29:../drivers/fsl_clock.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  30:../drivers/fsl_clock.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  31:../drivers/fsl_clock.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  32:../drivers/fsl_clock.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  33:../drivers/fsl_clock.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  34:../drivers/fsl_clock.h ****  */
+  35:../drivers/fsl_clock.h **** 
+  36:../drivers/fsl_clock.h **** #ifndef _FSL_CLOCK_H_
+  37:../drivers/fsl_clock.h **** #define _FSL_CLOCK_H_
+  38:../drivers/fsl_clock.h **** 
+  39:../drivers/fsl_clock.h **** #include "fsl_common.h"
+  40:../drivers/fsl_clock.h **** 
+  41:../drivers/fsl_clock.h **** /*! @addtogroup clock */
+  42:../drivers/fsl_clock.h **** /*! @{ */
+  43:../drivers/fsl_clock.h **** 
+  44:../drivers/fsl_clock.h **** /*! @file */
+  45:../drivers/fsl_clock.h **** 
+  46:../drivers/fsl_clock.h **** /*******************************************************************************
+  47:../drivers/fsl_clock.h ****  * Configurations
+  48:../drivers/fsl_clock.h ****  ******************************************************************************/
+  49:../drivers/fsl_clock.h **** 
+  50:../drivers/fsl_clock.h **** /*! @brief Configure whether driver controls clock
+  51:../drivers/fsl_clock.h ****  *
+  52:../drivers/fsl_clock.h ****  * When set to 0, peripheral drivers will enable clock in initialize function
+  53:../drivers/fsl_clock.h ****  * and disable clock in de-initialize function. When set to 1, peripheral
+  54:../drivers/fsl_clock.h ****  * driver will not control the clock, application could contol the clock out of
+  55:../drivers/fsl_clock.h ****  * the driver.
+  56:../drivers/fsl_clock.h ****  *
+  57:../drivers/fsl_clock.h ****  * @note All drivers share this feature switcher. If it is set to 1, application
+  58:../drivers/fsl_clock.h ****  * should handle clock enable and disable for all drivers.
+  59:../drivers/fsl_clock.h ****  */
+  60:../drivers/fsl_clock.h **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL))
+  61:../drivers/fsl_clock.h **** #define FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL 0
+  62:../drivers/fsl_clock.h **** #endif
+  63:../drivers/fsl_clock.h **** 
+  64:../drivers/fsl_clock.h **** /*******************************************************************************
+  65:../drivers/fsl_clock.h ****  * Definitions
+  66:../drivers/fsl_clock.h ****  ******************************************************************************/
+  67:../drivers/fsl_clock.h **** 
+  68:../drivers/fsl_clock.h **** /*! @name Driver version */
+  69:../drivers/fsl_clock.h **** /*@{*/
+  70:../drivers/fsl_clock.h **** /*! @brief CLOCK driver version 2.1.1. */
+  71:../drivers/fsl_clock.h **** #define FSL_CLOCK_DRIVER_VERSION (MAKE_VERSION(2, 1, 1))
+  72:../drivers/fsl_clock.h **** /*@}*/
+  73:../drivers/fsl_clock.h **** 
+  74:../drivers/fsl_clock.h **** /*! @brief External XTAL0 (OSC0) clock frequency.
+  75:../drivers/fsl_clock.h ****  *
+  76:../drivers/fsl_clock.h ****  * The XTAL0/EXTAL0 (OSC0) clock frequency in Hz. When the clock is set up, use the
+  77:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal0Freq to set the value in the clock driver. For example,
+  78:../drivers/fsl_clock.h ****  * if XTAL0 is 8 MHz:
+  79:../drivers/fsl_clock.h ****  * @code
+  80:../drivers/fsl_clock.h ****  * CLOCK_InitOsc0(...); // Set up the OSC0
+  81:../drivers/fsl_clock.h ****  * CLOCK_SetXtal0Freq(80000000); // Set the XTAL0 value to clock driver.
+  82:../drivers/fsl_clock.h ****  * @endcode
+  83:../drivers/fsl_clock.h ****  *
+  84:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where one core needs to set up the
+  85:../drivers/fsl_clock.h ****  * OSC0 using the CLOCK_InitOsc0. All other cores need to call the CLOCK_SetXtal0Freq
+  86:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+  87:../drivers/fsl_clock.h ****  */
+  88:../drivers/fsl_clock.h **** extern uint32_t g_xtal0Freq;
+  89:../drivers/fsl_clock.h **** 
+  90:../drivers/fsl_clock.h **** /*! @brief The external XTAL32/EXTAL32/RTC_CLKIN clock frequency.
+  91:../drivers/fsl_clock.h ****  *
+  92:../drivers/fsl_clock.h ****  * The XTAL32/EXTAL32/RTC_CLKIN clock frequency in Hz. When the clock is set up, use the
+  93:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal32Freq to set the value in the clock driver.
+  94:../drivers/fsl_clock.h ****  *
+  95:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where one core needs to set up
+  96:../drivers/fsl_clock.h ****  * the clock. All other cores need to call the CLOCK_SetXtal32Freq
+  97:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+  98:../drivers/fsl_clock.h ****  */
+  99:../drivers/fsl_clock.h **** extern uint32_t g_xtal32Freq;
+ 100:../drivers/fsl_clock.h **** 
+ 101:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DMAMUX. */
+ 102:../drivers/fsl_clock.h **** #define DMAMUX_CLOCKS  \
+ 103:../drivers/fsl_clock.h ****     {                  \
+ 104:../drivers/fsl_clock.h ****         kCLOCK_Dmamux0 \
+ 105:../drivers/fsl_clock.h ****     }
+ 106:../drivers/fsl_clock.h **** 
+ 107:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for RTC. */
+ 108:../drivers/fsl_clock.h **** #define RTC_CLOCKS  \
+ 109:../drivers/fsl_clock.h ****     {               \
+ 110:../drivers/fsl_clock.h ****         kCLOCK_Rtc0 \
+ 111:../drivers/fsl_clock.h ****     }
+ 112:../drivers/fsl_clock.h **** 
+ 113:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SAI. */
+ 114:../drivers/fsl_clock.h **** #define SAI_CLOCKS  \
+ 115:../drivers/fsl_clock.h ****     {               \
+ 116:../drivers/fsl_clock.h ****         kCLOCK_Sai0 \
+ 117:../drivers/fsl_clock.h ****     }
+ 118:../drivers/fsl_clock.h **** 
+ 119:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SPI. */
+ 120:../drivers/fsl_clock.h **** #define SPI_CLOCKS               \
+ 121:../drivers/fsl_clock.h ****     {                            \
+ 122:../drivers/fsl_clock.h ****         kCLOCK_Spi0, kCLOCK_Spi1 \
+ 123:../drivers/fsl_clock.h ****     }
+ 124:../drivers/fsl_clock.h **** 
+ 125:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PIT. */
+ 126:../drivers/fsl_clock.h **** #define PIT_CLOCKS  \
+ 127:../drivers/fsl_clock.h ****     {               \
+ 128:../drivers/fsl_clock.h ****         kCLOCK_Pit0 \
+ 129:../drivers/fsl_clock.h ****     }
+ 130:../drivers/fsl_clock.h **** 
+ 131:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PORT. */
+ 132:../drivers/fsl_clock.h **** #define PORT_CLOCKS                                                          \
+ 133:../drivers/fsl_clock.h ****     {                                                                        \
+ 134:../drivers/fsl_clock.h ****         kCLOCK_PortA, kCLOCK_PortB, kCLOCK_PortC, kCLOCK_PortD, kCLOCK_PortE \
+ 135:../drivers/fsl_clock.h ****     }
+ 136:../drivers/fsl_clock.h **** 
+ 137:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for LPUART. */
+ 138:../drivers/fsl_clock.h **** #define LPUART_CLOCKS                  \
+ 139:../drivers/fsl_clock.h ****     {                                  \
+ 140:../drivers/fsl_clock.h ****         kCLOCK_Lpuart0, kCLOCK_Lpuart1 \
+ 141:../drivers/fsl_clock.h ****     }
+ 142:../drivers/fsl_clock.h **** 
+ 143:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DAC. */
+ 144:../drivers/fsl_clock.h **** #define DAC_CLOCKS  \
+ 145:../drivers/fsl_clock.h ****     {               \
+ 146:../drivers/fsl_clock.h ****         kCLOCK_Dac0 \
+ 147:../drivers/fsl_clock.h ****     }
+ 148:../drivers/fsl_clock.h **** 
+ 149:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for LPTMR. */
+ 150:../drivers/fsl_clock.h **** #define LPTMR_CLOCKS  \
+ 151:../drivers/fsl_clock.h ****     {                 \
+ 152:../drivers/fsl_clock.h ****         kCLOCK_Lptmr0 \
+ 153:../drivers/fsl_clock.h ****     }
+ 154:../drivers/fsl_clock.h **** 
+ 155:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for ADC16. */
+ 156:../drivers/fsl_clock.h **** #define ADC16_CLOCKS \
+ 157:../drivers/fsl_clock.h ****     {                \
+ 158:../drivers/fsl_clock.h ****         kCLOCK_Adc0  \
+ 159:../drivers/fsl_clock.h ****     }
+ 160:../drivers/fsl_clock.h **** 
+ 161:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FLEXIO. */
+ 162:../drivers/fsl_clock.h **** #define FLEXIO_CLOCKS  \
+ 163:../drivers/fsl_clock.h ****     {                  \
+ 164:../drivers/fsl_clock.h ****         kCLOCK_Flexio0 \
+ 165:../drivers/fsl_clock.h ****     }
+ 166:../drivers/fsl_clock.h **** 
+ 167:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for VREF. */
+ 168:../drivers/fsl_clock.h **** #define VREF_CLOCKS  \
+ 169:../drivers/fsl_clock.h ****     {                \
+ 170:../drivers/fsl_clock.h ****         kCLOCK_Vref0 \
+ 171:../drivers/fsl_clock.h ****     }
+ 172:../drivers/fsl_clock.h **** 
+ 173:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DMA. */
+ 174:../drivers/fsl_clock.h **** #define DMA_CLOCKS  \
+ 175:../drivers/fsl_clock.h ****     {               \
+ 176:../drivers/fsl_clock.h ****         kCLOCK_Dma0 \
+ 177:../drivers/fsl_clock.h ****     }
+ 178:../drivers/fsl_clock.h **** 
+ 179:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for UART. */
+ 180:../drivers/fsl_clock.h **** #define UART_CLOCKS                                      \
+ 181:../drivers/fsl_clock.h ****     {                                                    \
+ 182:../drivers/fsl_clock.h ****         kCLOCK_IpInvalid, kCLOCK_IpInvalid, kCLOCK_Uart2 \
+ 183:../drivers/fsl_clock.h ****     }
+ 184:../drivers/fsl_clock.h **** 
+ 185:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for TPM. */
+ 186:../drivers/fsl_clock.h **** #define TPM_CLOCKS                            \
+ 187:../drivers/fsl_clock.h ****     {                                         \
+ 188:../drivers/fsl_clock.h ****         kCLOCK_Tpm0, kCLOCK_Tpm1, kCLOCK_Tpm2 \
+ 189:../drivers/fsl_clock.h ****     }
+ 190:../drivers/fsl_clock.h **** 
+ 191:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for I2C. */
+ 192:../drivers/fsl_clock.h **** #define I2C_CLOCKS               \
+ 193:../drivers/fsl_clock.h ****     {                            \
+ 194:../drivers/fsl_clock.h ****         kCLOCK_I2c0, kCLOCK_I2c1 \
+ 195:../drivers/fsl_clock.h ****     }
+ 196:../drivers/fsl_clock.h **** 
+ 197:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FTF. */
+ 198:../drivers/fsl_clock.h **** #define FTF_CLOCKS  \
+ 199:../drivers/fsl_clock.h ****     {               \
+ 200:../drivers/fsl_clock.h ****         kCLOCK_Ftf0 \
+ 201:../drivers/fsl_clock.h ****     }
+ 202:../drivers/fsl_clock.h **** 
+ 203:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CMP. */
+ 204:../drivers/fsl_clock.h **** #define CMP_CLOCKS  \
+ 205:../drivers/fsl_clock.h ****     {               \
+ 206:../drivers/fsl_clock.h ****         kCLOCK_Cmp0 \
+ 207:../drivers/fsl_clock.h ****     }
+ 208:../drivers/fsl_clock.h **** 
+ 209:../drivers/fsl_clock.h **** /*!
+ 210:../drivers/fsl_clock.h ****  * @brief LPO clock frequency.
+ 211:../drivers/fsl_clock.h ****  */
+ 212:../drivers/fsl_clock.h **** #define LPO_CLK_FREQ 1000U
+ 213:../drivers/fsl_clock.h **** 
+ 214:../drivers/fsl_clock.h **** /*! @brief Peripherals clock source definition. */
+ 215:../drivers/fsl_clock.h **** #define SYS_CLK kCLOCK_CoreSysClk
+ 216:../drivers/fsl_clock.h **** #define BUS_CLK kCLOCK_BusClk
+ 217:../drivers/fsl_clock.h **** 
+ 218:../drivers/fsl_clock.h **** #define I2C0_CLK_SRC SYS_CLK
+ 219:../drivers/fsl_clock.h **** #define I2C1_CLK_SRC SYS_CLK
+ 220:../drivers/fsl_clock.h **** #define SPI0_CLK_SRC BUS_CLK
+ 221:../drivers/fsl_clock.h **** #define SPI1_CLK_SRC SYS_CLK
+ 222:../drivers/fsl_clock.h **** #define UART2_CLK_SRC BUS_CLK
+ 223:../drivers/fsl_clock.h **** 
+ 224:../drivers/fsl_clock.h **** /*! @brief Clock name used to get clock frequency. */
+ 225:../drivers/fsl_clock.h **** typedef enum _clock_name
+ 226:../drivers/fsl_clock.h **** {
+ 227:../drivers/fsl_clock.h **** 
+ 228:../drivers/fsl_clock.h ****     /* ----------------------------- System layer clock -------------------------------*/
+ 229:../drivers/fsl_clock.h ****     kCLOCK_CoreSysClk,    /*!< Core/system clock                                         */
+ 230:../drivers/fsl_clock.h ****     kCLOCK_PlatClk,       /*!< Platform clock                                            */
+ 231:../drivers/fsl_clock.h ****     kCLOCK_BusClk,        /*!< Bus clock                                                 */
+ 232:../drivers/fsl_clock.h ****     kCLOCK_FlexBusClk,    /*!< FlexBus clock                                             */
+ 233:../drivers/fsl_clock.h ****     kCLOCK_FlashClk,      /*!< Flash clock                                               */
+ 234:../drivers/fsl_clock.h ****     kCLOCK_FastPeriphClk, /*!< Fast peripheral clock                                     */
+ 235:../drivers/fsl_clock.h ****     kCLOCK_PllFllSelClk,  /*!< The clock after SIM[PLLFLLSEL].                           */
+ 236:../drivers/fsl_clock.h **** 
+ 237:../drivers/fsl_clock.h ****     /* ---------------------------------- OSC clock -----------------------------------*/
+ 238:../drivers/fsl_clock.h ****     kCLOCK_Er32kClk,       /*!< External reference 32K clock (ERCLK32K)                   */
+ 239:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClk,      /*!< OSC0 external reference clock (OSC0ERCLK)                 */
+ 240:../drivers/fsl_clock.h ****     kCLOCK_Osc1ErClk,      /*!< OSC1 external reference clock (OSC1ERCLK)                 */
+ 241:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClkUndiv, /*!< OSC0 external reference undivided clock(OSC0ERCLK_UNDIV). */
+ 242:../drivers/fsl_clock.h **** 
+ 243:../drivers/fsl_clock.h ****     /* ----------------------------- MCG and MCG-Lite clock ---------------------------*/
+ 244:../drivers/fsl_clock.h ****     kCLOCK_McgFixedFreqClk,   /*!< MCG fixed frequency clock (MCGFFCLK)                      */
+ 245:../drivers/fsl_clock.h ****     kCLOCK_McgInternalRefClk, /*!< MCG internal reference clock (MCGIRCLK)                   */
+ 246:../drivers/fsl_clock.h ****     kCLOCK_McgFllClk,         /*!< MCGFLLCLK                                                 */
+ 247:../drivers/fsl_clock.h ****     kCLOCK_McgPll0Clk,        /*!< MCGPLL0CLK                                                */
+ 248:../drivers/fsl_clock.h ****     kCLOCK_McgPll1Clk,        /*!< MCGPLL1CLK                                                */
+ 249:../drivers/fsl_clock.h ****     kCLOCK_McgExtPllClk,      /*!< EXT_PLLCLK                                                */
+ 250:../drivers/fsl_clock.h ****     kCLOCK_McgPeriphClk,      /*!< MCG peripheral clock (MCGPCLK)                            */
+ 251:../drivers/fsl_clock.h ****     kCLOCK_McgIrc48MClk,      /*!< MCG IRC48M clock                                          */
+ 252:../drivers/fsl_clock.h **** 
+ 253:../drivers/fsl_clock.h ****     /* --------------------------------- Other clock ----------------------------------*/
+ 254:../drivers/fsl_clock.h ****     kCLOCK_LpoClk, /*!< LPO clock                                                 */
+ 255:../drivers/fsl_clock.h **** 
+ 256:../drivers/fsl_clock.h **** } clock_name_t;
+ 257:../drivers/fsl_clock.h **** 
+ 258:../drivers/fsl_clock.h **** /*------------------------------------------------------------------------------
+ 259:../drivers/fsl_clock.h **** 
+ 260:../drivers/fsl_clock.h ****  clock_gate_t definition:
+ 261:../drivers/fsl_clock.h **** 
+ 262:../drivers/fsl_clock.h ****  31                              16                              0
+ 263:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 264:../drivers/fsl_clock.h ****  | SIM_SCGC register offset       |   control bit offset in SCGC |
+ 265:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 266:../drivers/fsl_clock.h **** 
+ 267:../drivers/fsl_clock.h ****  For example, the SDHC clock gate is controlled by SIM_SCGC3[17], the
+ 268:../drivers/fsl_clock.h ****  SIM_SCGC3 offset in SIM is 0x1030, then kCLOCK_GateSdhc0 is defined as
+ 269:../drivers/fsl_clock.h **** 
+ 270:../drivers/fsl_clock.h ****               kCLOCK_GateSdhc0 = (0x1030 << 16) | 17;
+ 271:../drivers/fsl_clock.h **** 
+ 272:../drivers/fsl_clock.h **** ------------------------------------------------------------------------------*/
+ 273:../drivers/fsl_clock.h **** 
+ 274:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_SHIFT 16U
+ 275:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_MASK 0xFFFF0000U
+ 276:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_SHIFT 0U
+ 277:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_MASK 0x0000FFFFU
+ 278:../drivers/fsl_clock.h **** 
+ 279:../drivers/fsl_clock.h **** #define CLK_GATE_DEFINE(reg_offset, bit_shift)                                  \
+ 280:../drivers/fsl_clock.h ****     ((((reg_offset) << CLK_GATE_REG_OFFSET_SHIFT) & CLK_GATE_REG_OFFSET_MASK) | \
+ 281:../drivers/fsl_clock.h ****      (((bit_shift) << CLK_GATE_BIT_SHIFT_SHIFT) & CLK_GATE_BIT_SHIFT_MASK))
+ 282:../drivers/fsl_clock.h **** 
+ 283:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_REG_OFFSET(x) (((x)&CLK_GATE_REG_OFFSET_MASK) >> CLK_GATE_REG_OFFSET_SHIF
+ 284:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_BITS_SHIFT(x) (((x)&CLK_GATE_BIT_SHIFT_MASK) >> CLK_GATE_BIT_SHIFT_SHIFT)
+ 285:../drivers/fsl_clock.h **** 
+ 286:../drivers/fsl_clock.h **** /*! @brief Clock gate name used for CLOCK_EnableClock/CLOCK_DisableClock. */
+ 287:../drivers/fsl_clock.h **** typedef enum _clock_ip_name
+ 288:../drivers/fsl_clock.h **** {
+ 289:../drivers/fsl_clock.h ****     kCLOCK_IpInvalid = 0U,
+ 290:../drivers/fsl_clock.h ****     kCLOCK_I2c0 = CLK_GATE_DEFINE(0x1034U, 6U),
+ 291:../drivers/fsl_clock.h ****     kCLOCK_I2c1 = CLK_GATE_DEFINE(0x1034U, 7U),
+ 292:../drivers/fsl_clock.h ****     kCLOCK_Uart2 = CLK_GATE_DEFINE(0x1034U, 12U),
+ 293:../drivers/fsl_clock.h ****     kCLOCK_Cmp0 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 294:../drivers/fsl_clock.h ****     kCLOCK_Vref0 = CLK_GATE_DEFINE(0x1034U, 20U),
+ 295:../drivers/fsl_clock.h ****     kCLOCK_Spi0 = CLK_GATE_DEFINE(0x1034U, 22U),
+ 296:../drivers/fsl_clock.h ****     kCLOCK_Spi1 = CLK_GATE_DEFINE(0x1034U, 23U),
+ 297:../drivers/fsl_clock.h **** 
+ 298:../drivers/fsl_clock.h ****     kCLOCK_Lptmr0 = CLK_GATE_DEFINE(0x1038U, 0U),
+ 299:../drivers/fsl_clock.h ****     kCLOCK_PortA = CLK_GATE_DEFINE(0x1038U, 9U),
+ 300:../drivers/fsl_clock.h ****     kCLOCK_PortB = CLK_GATE_DEFINE(0x1038U, 10U),
+ 301:../drivers/fsl_clock.h ****     kCLOCK_PortC = CLK_GATE_DEFINE(0x1038U, 11U),
+ 302:../drivers/fsl_clock.h ****     kCLOCK_PortD = CLK_GATE_DEFINE(0x1038U, 12U),
+ 303:../drivers/fsl_clock.h ****     kCLOCK_PortE = CLK_GATE_DEFINE(0x1038U, 13U),
+ 304:../drivers/fsl_clock.h ****     kCLOCK_Lpuart0 = CLK_GATE_DEFINE(0x1038U, 20U),
+ 305:../drivers/fsl_clock.h ****     kCLOCK_Lpuart1 = CLK_GATE_DEFINE(0x1038U, 21U),
+ 306:../drivers/fsl_clock.h ****     kCLOCK_Flexio0 = CLK_GATE_DEFINE(0x1038U, 31U),
+ 307:../drivers/fsl_clock.h **** 
+ 308:../drivers/fsl_clock.h ****     kCLOCK_Ftf0 = CLK_GATE_DEFINE(0x103CU, 0U),
+ 309:../drivers/fsl_clock.h ****     kCLOCK_Dmamux0 = CLK_GATE_DEFINE(0x103CU, 1U),
+ 310:../drivers/fsl_clock.h ****     kCLOCK_Sai0 = CLK_GATE_DEFINE(0x103CU, 15U),
+ 311:../drivers/fsl_clock.h ****     kCLOCK_Pit0 = CLK_GATE_DEFINE(0x103CU, 23U),
+ 312:../drivers/fsl_clock.h ****     kCLOCK_Tpm0 = CLK_GATE_DEFINE(0x103CU, 24U),
+ 313:../drivers/fsl_clock.h ****     kCLOCK_Tpm1 = CLK_GATE_DEFINE(0x103CU, 25U),
+ 314:../drivers/fsl_clock.h ****     kCLOCK_Tpm2 = CLK_GATE_DEFINE(0x103CU, 26U),
+ 315:../drivers/fsl_clock.h ****     kCLOCK_Adc0 = CLK_GATE_DEFINE(0x103CU, 27U),
+ 316:../drivers/fsl_clock.h ****     kCLOCK_Rtc0 = CLK_GATE_DEFINE(0x103CU, 29U),
+ 317:../drivers/fsl_clock.h ****     kCLOCK_Dac0 = CLK_GATE_DEFINE(0x103CU, 31U),
+ 318:../drivers/fsl_clock.h **** 
+ 319:../drivers/fsl_clock.h ****     kCLOCK_Dma0 = CLK_GATE_DEFINE(0x1040U, 8U),
+ 320:../drivers/fsl_clock.h **** } clock_ip_name_t;
+ 321:../drivers/fsl_clock.h **** 
+ 322:../drivers/fsl_clock.h **** /*!@brief SIM configuration structure for clock setting. */
+ 323:../drivers/fsl_clock.h **** typedef struct _sim_clock_config
+ 324:../drivers/fsl_clock.h **** {
+ 325:../drivers/fsl_clock.h ****     uint8_t er32kSrc; /*!< ERCLK32K source selection.   */
+ 326:../drivers/fsl_clock.h ****     uint32_t clkdiv1; /*!< SIM_CLKDIV1.                 */
+ 327:../drivers/fsl_clock.h **** } sim_clock_config_t;
+ 328:../drivers/fsl_clock.h **** 
+ 329:../drivers/fsl_clock.h **** /*! @brief Oscillator capacitor load setting.*/
+ 330:../drivers/fsl_clock.h **** enum _osc_cap_load
+ 331:../drivers/fsl_clock.h **** {
+ 332:../drivers/fsl_clock.h ****     kOSC_Cap2P = OSC_CR_SC2P_MASK,  /*!< 2  pF capacitor load */
+ 333:../drivers/fsl_clock.h ****     kOSC_Cap4P = OSC_CR_SC4P_MASK,  /*!< 4  pF capacitor load */
+ 334:../drivers/fsl_clock.h ****     kOSC_Cap8P = OSC_CR_SC8P_MASK,  /*!< 8  pF capacitor load */
+ 335:../drivers/fsl_clock.h ****     kOSC_Cap16P = OSC_CR_SC16P_MASK /*!< 16 pF capacitor load */
+ 336:../drivers/fsl_clock.h **** };
+ 337:../drivers/fsl_clock.h **** 
+ 338:../drivers/fsl_clock.h **** /*! @brief OSCERCLK enable mode. */
+ 339:../drivers/fsl_clock.h **** enum _oscer_enable_mode
+ 340:../drivers/fsl_clock.h **** {
+ 341:../drivers/fsl_clock.h ****     kOSC_ErClkEnable = OSC_CR_ERCLKEN_MASK,       /*!< Enable.              */
+ 342:../drivers/fsl_clock.h ****     kOSC_ErClkEnableInStop = OSC_CR_EREFSTEN_MASK /*!< Enable in stop mode. */
+ 343:../drivers/fsl_clock.h **** };
+ 344:../drivers/fsl_clock.h **** 
+ 345:../drivers/fsl_clock.h **** /*! @brief The OSC configuration for OSCERCLK. */
+ 346:../drivers/fsl_clock.h **** typedef struct _oscer_config
+ 347:../drivers/fsl_clock.h **** {
+ 348:../drivers/fsl_clock.h ****     uint8_t enableMode; /*!< OSCERCLK enable mode. OR'ed value of \ref _oscer_enable_mode. */
+ 349:../drivers/fsl_clock.h **** 
+ 350:../drivers/fsl_clock.h **** } oscer_config_t;
+ 351:../drivers/fsl_clock.h **** 
+ 352:../drivers/fsl_clock.h **** /*! @brief The OSC work mode. */
+ 353:../drivers/fsl_clock.h **** typedef enum _osc_mode
+ 354:../drivers/fsl_clock.h **** {
+ 355:../drivers/fsl_clock.h ****     kOSC_ModeExt = 0U,                                            /*!< Use external clock.   */
+ 356:../drivers/fsl_clock.h ****     kOSC_ModeOscLowPower = MCG_C2_EREFS0_MASK,                    /*!< Oscillator low power. */
+ 357:../drivers/fsl_clock.h ****     kOSC_ModeOscHighGain = MCG_C2_EREFS0_MASK | MCG_C2_HGO0_MASK, /*!< Oscillator high gain. */
+ 358:../drivers/fsl_clock.h **** } osc_mode_t;
+ 359:../drivers/fsl_clock.h **** 
+ 360:../drivers/fsl_clock.h **** /*!
+ 361:../drivers/fsl_clock.h ****  * @brief OSC Initialization Configuration Structure
+ 362:../drivers/fsl_clock.h ****  *
+ 363:../drivers/fsl_clock.h ****  * Defines the configuration data structure to initialize the OSC.
+ 364:../drivers/fsl_clock.h ****  * When porting to a new board, set the following members
+ 365:../drivers/fsl_clock.h ****  * according to the board settings:
+ 366:../drivers/fsl_clock.h ****  * 1. freq: The external frequency.
+ 367:../drivers/fsl_clock.h ****  * 2. workMode: The OSC module mode.
+ 368:../drivers/fsl_clock.h ****  */
+ 369:../drivers/fsl_clock.h **** typedef struct _osc_config
+ 370:../drivers/fsl_clock.h **** {
+ 371:../drivers/fsl_clock.h ****     uint32_t freq;              /*!< External clock frequency.    */
+ 372:../drivers/fsl_clock.h ****     uint8_t capLoad;            /*!< Capacitor load setting.      */
+ 373:../drivers/fsl_clock.h ****     osc_mode_t workMode;        /*!< OSC work mode setting.       */
+ 374:../drivers/fsl_clock.h ****     oscer_config_t oscerConfig; /*!< Configuration for OSCERCLK.  */
+ 375:../drivers/fsl_clock.h **** } osc_config_t;
+ 376:../drivers/fsl_clock.h **** 
+ 377:../drivers/fsl_clock.h **** /*! @brief MCG_Lite clock source selection. */
+ 378:../drivers/fsl_clock.h **** typedef enum _mcglite_clkout_src
+ 379:../drivers/fsl_clock.h **** {
+ 380:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcHirc, /*!< MCGOUTCLK source is HIRC */
+ 381:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcLirc, /*!< MCGOUTCLK source is LIRC */
+ 382:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcExt,  /*!< MCGOUTCLK source is external clock source */
+ 383:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcReserved
+ 384:../drivers/fsl_clock.h **** } mcglite_clkout_src_t;
+ 385:../drivers/fsl_clock.h **** 
+ 386:../drivers/fsl_clock.h **** /*! @brief MCG_Lite LIRC select. */
+ 387:../drivers/fsl_clock.h **** typedef enum _mcglite_lirc_mode
+ 388:../drivers/fsl_clock.h **** {
+ 389:../drivers/fsl_clock.h ****     kMCGLITE_Lirc2M, /*!< Slow internal reference(LIRC) 2 MHz clock selected */
+ 390:../drivers/fsl_clock.h ****     kMCGLITE_Lirc8M, /*!< Slow internal reference(LIRC) 8 MHz clock selected */
+ 391:../drivers/fsl_clock.h **** } mcglite_lirc_mode_t;
+ 392:../drivers/fsl_clock.h **** 
+ 393:../drivers/fsl_clock.h **** /*! @brief MCG_Lite divider factor selection for clock source*/
+ 394:../drivers/fsl_clock.h **** typedef enum _mcglite_lirc_div
+ 395:../drivers/fsl_clock.h **** {
+ 396:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy1 = 0U, /*!< Divider is 1    */
+ 397:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy2,      /*!< Divider is 2    */
+ 398:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy4,      /*!< Divider is 4    */
+ 399:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy8,      /*!< Divider is 8    */
+ 400:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy16,     /*!< Divider is 16   */
+ 401:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy32,     /*!< Divider is 32   */
+ 402:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy64,     /*!< Divider is 64   */
+ 403:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy128     /*!< Divider is 128  */
+ 404:../drivers/fsl_clock.h **** } mcglite_lirc_div_t;
+ 405:../drivers/fsl_clock.h **** 
+ 406:../drivers/fsl_clock.h **** /*! @brief MCG_Lite clock mode definitions */
+ 407:../drivers/fsl_clock.h **** typedef enum _mcglite_mode
+ 408:../drivers/fsl_clock.h **** {
+ 409:../drivers/fsl_clock.h ****     kMCGLITE_ModeHirc48M, /*!< Clock mode is HIRC 48 M  */
+ 410:../drivers/fsl_clock.h ****     kMCGLITE_ModeLirc8M,  /*!< Clock mode is LIRC 8 M   */
+ 411:../drivers/fsl_clock.h ****     kMCGLITE_ModeLirc2M,  /*!< Clock mode is LIRC 2 M   */
+ 412:../drivers/fsl_clock.h ****     kMCGLITE_ModeExt,     /*!< Clock mode is EXT       */
+ 413:../drivers/fsl_clock.h ****     kMCGLITE_ModeError    /*!< Unknown mode            */
+ 414:../drivers/fsl_clock.h **** } mcglite_mode_t;
+ 415:../drivers/fsl_clock.h **** 
+ 416:../drivers/fsl_clock.h **** /*! @brief MCG internal reference clock (MCGIRCLK) enable mode definition. */
+ 417:../drivers/fsl_clock.h **** enum _mcglite_irclk_enable_mode
+ 418:../drivers/fsl_clock.h **** {
+ 419:../drivers/fsl_clock.h ****     kMCGLITE_IrclkEnable = MCG_C1_IRCLKEN_MASK,       /*!< MCGIRCLK enable.              */
+ 420:../drivers/fsl_clock.h ****     kMCGLITE_IrclkEnableInStop = MCG_C1_IREFSTEN_MASK /*!< MCGIRCLK enable in stop mode. */
+ 421:../drivers/fsl_clock.h **** };
+ 422:../drivers/fsl_clock.h **** 
+ 423:../drivers/fsl_clock.h **** /*! @brief MCG_Lite configure structure for mode change. */
+ 424:../drivers/fsl_clock.h **** typedef struct _mcglite_config
+ 425:../drivers/fsl_clock.h **** {
+ 426:../drivers/fsl_clock.h ****     mcglite_clkout_src_t outSrc;  /*!< MCGOUT clock select.                */
+ 427:../drivers/fsl_clock.h ****     uint8_t irclkEnableMode;      /*!< MCGIRCLK enable mode, OR'ed value of _mcglite_irclk_enable_m
+ 428:../drivers/fsl_clock.h ****     mcglite_lirc_mode_t ircs;     /*!< MCG_C2[IRCS].                       */
+ 429:../drivers/fsl_clock.h ****     mcglite_lirc_div_t fcrdiv;    /*!< MCG_SC[FCRDIV].                     */
+ 430:../drivers/fsl_clock.h ****     mcglite_lirc_div_t lircDiv2;  /*!< MCG_MC[LIRC_DIV2].                  */
+ 431:../drivers/fsl_clock.h ****     bool hircEnableInNotHircMode; /*!< HIRC enable when not in HIRC mode.  */
+ 432:../drivers/fsl_clock.h **** } mcglite_config_t;
+ 433:../drivers/fsl_clock.h **** 
+ 434:../drivers/fsl_clock.h **** /*******************************************************************************
+ 435:../drivers/fsl_clock.h ****  * API
+ 436:../drivers/fsl_clock.h ****  ******************************************************************************/
+ 437:../drivers/fsl_clock.h **** 
+ 438:../drivers/fsl_clock.h **** #if defined(__cplusplus)
+ 439:../drivers/fsl_clock.h **** extern "C" {
+ 440:../drivers/fsl_clock.h **** #endif /* __cplusplus */
+ 441:../drivers/fsl_clock.h **** 
+ 442:../drivers/fsl_clock.h **** /*!
+ 443:../drivers/fsl_clock.h ****  * @brief Enable the clock for specific IP.
+ 444:../drivers/fsl_clock.h ****  *
+ 445:../drivers/fsl_clock.h ****  * @param name  Which clock to enable, see \ref clock_ip_name_t.
+ 446:../drivers/fsl_clock.h ****  */
+ 447:../drivers/fsl_clock.h **** static inline void CLOCK_EnableClock(clock_ip_name_t name)
+ 448:../drivers/fsl_clock.h **** {
+ 449:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+ 450:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+  41              		.loc 2 450 0
+  42 0004 154A     		ldr	r2, .L2
+  43 0006 1368     		ldr	r3, [r2]
+  44 0008 4021     		movs	r1, #64
+  45 000a 0B43     		orrs	r3, r1
+  46 000c 1360     		str	r3, [r2]
+  47              	.LVL1:
+  48              	.LBE11:
+  49              	.LBE10:
+  50              	.LBB12:
+  51              	.LBB13:
+  52 000e 144A     		ldr	r2, .L2+4
+  53 0010 1168     		ldr	r1, [r2]
+  54 0012 8023     		movs	r3, #128
+  55 0014 9B01     		lsls	r3, r3, #6
+  56 0016 0B43     		orrs	r3, r1
+  57 0018 1360     		str	r3, [r2]
+  58              	.LVL2:
+  59              	.LBE13:
+  60              	.LBE12:
+  20:../source/i2c_func.c **** 
+  21:../source/i2c_func.c **** 	CLOCK_EnableClock(kCLOCK_I2c0);
+  22:../source/i2c_func.c **** 	CLOCK_EnableClock(kCLOCK_PortE);
+  23:../source/i2c_func.c **** 	i2c_master_config_t config;
+  24:../source/i2c_func.c **** 
+  25:../source/i2c_func.c **** 	uint32_t ClkSrcFreq = CLOCK_GetCoreSysClkFreq();
+  61              		.loc 1 25 0
+  62 001a FFF7FEFF 		bl	CLOCK_GetCoreSysClkFreq
+  63              	.LVL3:
+  64 001e 0500     		movs	r5, r0
+  65              	.LVL4:
+  26:../source/i2c_func.c **** 
+  27:../source/i2c_func.c **** 	I2C_MasterGetDefaultConfig(&config);
+  66              		.loc 1 27 0
+  67 0020 01AC     		add	r4, sp, #4
+  68 0022 2000     		movs	r0, r4
+  69              	.LVL5:
+  70 0024 FFF7FEFF 		bl	I2C_MasterGetDefaultConfig
+  71              	.LVL6:
+  28:../source/i2c_func.c **** 
+  29:../source/i2c_func.c **** 	config.enableMaster = true;
+  72              		.loc 1 29 0
+  73 0028 0123     		movs	r3, #1
+  74 002a 2370     		strb	r3, [r4]
+  30:../source/i2c_func.c ****     config.enableStopHold = false;
+  75              		.loc 1 30 0
+  76 002c 0023     		movs	r3, #0
+  77 002e 6370     		strb	r3, [r4, #1]
+  31:../source/i2c_func.c ****     config.baudRate_Bps = 200000;
+  78              		.loc 1 31 0
+  79 0030 0C4A     		ldr	r2, .L2+8
+  80 0032 6260     		str	r2, [r4, #4]
+  32:../source/i2c_func.c ****     config.glitchFilterWidth = 0;
+  81              		.loc 1 32 0
+  82 0034 2372     		strb	r3, [r4, #8]
+  33:../source/i2c_func.c **** 
+  34:../source/i2c_func.c **** 	I2C_MasterInit(I2C0, &config, ClkSrcFreq);
+  83              		.loc 1 34 0
+  84 0036 2A00     		movs	r2, r5
+  85 0038 2100     		movs	r1, r4
+  86 003a 0B48     		ldr	r0, .L2+12
+  87 003c FFF7FEFF 		bl	I2C_MasterInit
+  88              	.LVL7:
+  89              	.LBB14:
+  90              	.LBB15:
+  91              		.file 3 "../drivers/fsl_port.h"
+   1:../drivers/fsl_port.h **** /*
+   2:../drivers/fsl_port.h ****  * The Clear BSD License
+   3:../drivers/fsl_port.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_port.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_port.h ****  * All rights reserved.
+   6:../drivers/fsl_port.h ****  *
+   7:../drivers/fsl_port.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_port.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_port.h ****  * that the following conditions are met:
+  10:../drivers/fsl_port.h ****  *
+  11:../drivers/fsl_port.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_port.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_port.h ****  *
+  14:../drivers/fsl_port.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_port.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_port.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_port.h ****  *
+  18:../drivers/fsl_port.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_port.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_port.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_port.h ****  *
+  22:../drivers/fsl_port.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_port.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_port.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_port.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_port.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_port.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_port.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_port.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_port.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_port.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_port.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_port.h ****  */
+  34:../drivers/fsl_port.h **** #ifndef _FSL_PORT_H_
+  35:../drivers/fsl_port.h **** #define _FSL_PORT_H_
+  36:../drivers/fsl_port.h **** 
+  37:../drivers/fsl_port.h **** #include "fsl_common.h"
+  38:../drivers/fsl_port.h **** 
+  39:../drivers/fsl_port.h **** /*!
+  40:../drivers/fsl_port.h ****  * @addtogroup port
+  41:../drivers/fsl_port.h ****  * @{
+  42:../drivers/fsl_port.h ****  */
+  43:../drivers/fsl_port.h **** 
+  44:../drivers/fsl_port.h **** /*******************************************************************************
+  45:../drivers/fsl_port.h ****  * Definitions
+  46:../drivers/fsl_port.h ****  ******************************************************************************/
+  47:../drivers/fsl_port.h **** 
+  48:../drivers/fsl_port.h **** /*! @name Driver version */
+  49:../drivers/fsl_port.h **** /*@{*/
+  50:../drivers/fsl_port.h **** /*! Version 2.0.2. */
+  51:../drivers/fsl_port.h **** #define FSL_PORT_DRIVER_VERSION (MAKE_VERSION(2, 0, 2))
+  52:../drivers/fsl_port.h **** /*@}*/
+  53:../drivers/fsl_port.h **** 
+  54:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_PULL_ENABLE) && FSL_FEATURE_PORT_HAS_PULL_ENABLE
+  55:../drivers/fsl_port.h **** /*! @brief Internal resistor pull feature selection */
+  56:../drivers/fsl_port.h **** enum _port_pull
+  57:../drivers/fsl_port.h **** {
+  58:../drivers/fsl_port.h ****     kPORT_PullDisable = 0U, /*!< Internal pull-up/down resistor is disabled. */
+  59:../drivers/fsl_port.h ****     kPORT_PullDown = 2U,    /*!< Internal pull-down resistor is enabled. */
+  60:../drivers/fsl_port.h ****     kPORT_PullUp = 3U,      /*!< Internal pull-up resistor is enabled. */
+  61:../drivers/fsl_port.h **** };
+  62:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_HAS_PULL_ENABLE */
+  63:../drivers/fsl_port.h **** 
+  64:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_SLEW_RATE) && FSL_FEATURE_PORT_HAS_SLEW_RATE
+  65:../drivers/fsl_port.h **** /*! @brief Slew rate selection */
+  66:../drivers/fsl_port.h **** enum _port_slew_rate
+  67:../drivers/fsl_port.h **** {
+  68:../drivers/fsl_port.h ****     kPORT_FastSlewRate = 0U, /*!< Fast slew rate is configured. */
+  69:../drivers/fsl_port.h ****     kPORT_SlowSlewRate = 1U, /*!< Slow slew rate is configured. */
+  70:../drivers/fsl_port.h **** };
+  71:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_HAS_SLEW_RATE */
+  72:../drivers/fsl_port.h **** 
+  73:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_OPEN_DRAIN) && FSL_FEATURE_PORT_HAS_OPEN_DRAIN
+  74:../drivers/fsl_port.h **** /*! @brief Open Drain feature enable/disable */
+  75:../drivers/fsl_port.h **** enum _port_open_drain_enable
+  76:../drivers/fsl_port.h **** {
+  77:../drivers/fsl_port.h ****     kPORT_OpenDrainDisable = 0U, /*!< Open drain output is disabled. */
+  78:../drivers/fsl_port.h ****     kPORT_OpenDrainEnable = 1U,  /*!< Open drain output is enabled. */
+  79:../drivers/fsl_port.h **** };
+  80:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_HAS_OPEN_DRAIN */
+  81:../drivers/fsl_port.h **** 
+  82:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_PASSIVE_FILTER) && FSL_FEATURE_PORT_HAS_PASSIVE_FILTER
+  83:../drivers/fsl_port.h **** /*! @brief Passive filter feature enable/disable */
+  84:../drivers/fsl_port.h **** enum _port_passive_filter_enable
+  85:../drivers/fsl_port.h **** {
+  86:../drivers/fsl_port.h ****     kPORT_PassiveFilterDisable = 0U, /*!< Passive input filter is disabled. */
+  87:../drivers/fsl_port.h ****     kPORT_PassiveFilterEnable = 1U,  /*!< Passive input filter is enabled. */
+  88:../drivers/fsl_port.h **** };
+  89:../drivers/fsl_port.h **** #endif
+  90:../drivers/fsl_port.h **** 
+  91:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_DRIVE_STRENGTH) && FSL_FEATURE_PORT_HAS_DRIVE_STRENGTH
+  92:../drivers/fsl_port.h **** /*! @brief Configures the drive strength. */
+  93:../drivers/fsl_port.h **** enum _port_drive_strength
+  94:../drivers/fsl_port.h **** {
+  95:../drivers/fsl_port.h ****     kPORT_LowDriveStrength = 0U,  /*!< Low-drive strength is configured. */
+  96:../drivers/fsl_port.h ****     kPORT_HighDriveStrength = 1U, /*!< High-drive strength is configured. */
+  97:../drivers/fsl_port.h **** };
+  98:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_HAS_DRIVE_STRENGTH */
+  99:../drivers/fsl_port.h **** 
+ 100:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_PIN_CONTROL_LOCK) && FSL_FEATURE_PORT_HAS_PIN_CONTROL_LOCK
+ 101:../drivers/fsl_port.h **** /*! @brief Unlock/lock the pin control register field[15:0] */
+ 102:../drivers/fsl_port.h **** enum _port_lock_register
+ 103:../drivers/fsl_port.h **** {
+ 104:../drivers/fsl_port.h ****     kPORT_UnlockRegister = 0U, /*!< Pin Control Register fields [15:0] are not locked. */
+ 105:../drivers/fsl_port.h ****     kPORT_LockRegister = 1U,   /*!< Pin Control Register fields [15:0] are locked. */
+ 106:../drivers/fsl_port.h **** };
+ 107:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_HAS_PIN_CONTROL_LOCK */
+ 108:../drivers/fsl_port.h **** 
+ 109:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_PCR_MUX_WIDTH) && FSL_FEATURE_PORT_PCR_MUX_WIDTH
+ 110:../drivers/fsl_port.h **** /*! @brief Pin mux selection */
+ 111:../drivers/fsl_port.h **** typedef enum _port_mux
+ 112:../drivers/fsl_port.h **** {
+ 113:../drivers/fsl_port.h ****     kPORT_PinDisabledOrAnalog = 0U, /*!< Corresponding pin is disabled, but is used as an analog pi
+ 114:../drivers/fsl_port.h ****     kPORT_MuxAsGpio = 1U,           /*!< Corresponding pin is configured as GPIO. */
+ 115:../drivers/fsl_port.h ****     kPORT_MuxAlt2 = 2U,             /*!< Chip-specific */
+ 116:../drivers/fsl_port.h ****     kPORT_MuxAlt3 = 3U,             /*!< Chip-specific */
+ 117:../drivers/fsl_port.h ****     kPORT_MuxAlt4 = 4U,             /*!< Chip-specific */
+ 118:../drivers/fsl_port.h ****     kPORT_MuxAlt5 = 5U,             /*!< Chip-specific */
+ 119:../drivers/fsl_port.h ****     kPORT_MuxAlt6 = 6U,             /*!< Chip-specific */
+ 120:../drivers/fsl_port.h ****     kPORT_MuxAlt7 = 7U,             /*!< Chip-specific */
+ 121:../drivers/fsl_port.h ****     kPORT_MuxAlt8 = 8U,             /*!< Chip-specific */
+ 122:../drivers/fsl_port.h ****     kPORT_MuxAlt9 = 9U,             /*!< Chip-specific */
+ 123:../drivers/fsl_port.h ****     kPORT_MuxAlt10 = 10U,           /*!< Chip-specific */
+ 124:../drivers/fsl_port.h ****     kPORT_MuxAlt11 = 11U,           /*!< Chip-specific */
+ 125:../drivers/fsl_port.h ****     kPORT_MuxAlt12 = 12U,           /*!< Chip-specific */
+ 126:../drivers/fsl_port.h ****     kPORT_MuxAlt13 = 13U,           /*!< Chip-specific */
+ 127:../drivers/fsl_port.h ****     kPORT_MuxAlt14 = 14U,           /*!< Chip-specific */
+ 128:../drivers/fsl_port.h ****     kPORT_MuxAlt15 = 15U,           /*!< Chip-specific */
+ 129:../drivers/fsl_port.h **** } port_mux_t;
+ 130:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_PCR_MUX_WIDTH */
+ 131:../drivers/fsl_port.h **** 
+ 132:../drivers/fsl_port.h **** /*! @brief Configures the interrupt generation condition. */
+ 133:../drivers/fsl_port.h **** typedef enum _port_interrupt
+ 134:../drivers/fsl_port.h **** {
+ 135:../drivers/fsl_port.h ****     kPORT_InterruptOrDMADisabled = 0x0U, /*!< Interrupt/DMA request is disabled. */
+ 136:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_DMA_REQUEST) && FSL_FEATURE_PORT_HAS_DMA_REQUEST
+ 137:../drivers/fsl_port.h ****     kPORT_DMARisingEdge = 0x1U,  /*!< DMA request on rising edge. */
+ 138:../drivers/fsl_port.h ****     kPORT_DMAFallingEdge = 0x2U, /*!< DMA request on falling edge. */
+ 139:../drivers/fsl_port.h ****     kPORT_DMAEitherEdge = 0x3U,  /*!< DMA request on either edge. */
+ 140:../drivers/fsl_port.h **** #endif
+ 141:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_IRQC_FLAG) && FSL_FEATURE_PORT_HAS_IRQC_FLAG
+ 142:../drivers/fsl_port.h ****     kPORT_FlagRisingEdge = 0x05U,  /*!< Flag sets on rising edge. */
+ 143:../drivers/fsl_port.h ****     kPORT_FlagFallingEdge = 0x06U, /*!< Flag sets on falling edge. */
+ 144:../drivers/fsl_port.h ****     kPORT_FlagEitherEdge = 0x07U,  /*!< Flag sets on either edge. */
+ 145:../drivers/fsl_port.h **** #endif
+ 146:../drivers/fsl_port.h ****     kPORT_InterruptLogicZero = 0x8U,   /*!< Interrupt when logic zero. */
+ 147:../drivers/fsl_port.h ****     kPORT_InterruptRisingEdge = 0x9U,  /*!< Interrupt on rising edge. */
+ 148:../drivers/fsl_port.h ****     kPORT_InterruptFallingEdge = 0xAU, /*!< Interrupt on falling edge. */
+ 149:../drivers/fsl_port.h ****     kPORT_InterruptEitherEdge = 0xBU,  /*!< Interrupt on either edge. */
+ 150:../drivers/fsl_port.h ****     kPORT_InterruptLogicOne = 0xCU,    /*!< Interrupt when logic one. */
+ 151:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_IRQC_TRIGGER) && FSL_FEATURE_PORT_HAS_IRQC_TRIGGER
+ 152:../drivers/fsl_port.h ****     kPORT_ActiveHighTriggerOutputEnable = 0xDU, /*!< Enable active high-trigger output. */
+ 153:../drivers/fsl_port.h ****     kPORT_ActiveLowTriggerOutputEnable = 0xEU,  /*!< Enable active low-trigger output. */
+ 154:../drivers/fsl_port.h **** #endif
+ 155:../drivers/fsl_port.h **** } port_interrupt_t;
+ 156:../drivers/fsl_port.h **** 
+ 157:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_DIGITAL_FILTER) && FSL_FEATURE_PORT_HAS_DIGITAL_FILTER
+ 158:../drivers/fsl_port.h **** /*! @brief Digital filter clock source selection */
+ 159:../drivers/fsl_port.h **** typedef enum _port_digital_filter_clock_source
+ 160:../drivers/fsl_port.h **** {
+ 161:../drivers/fsl_port.h ****     kPORT_BusClock = 0U, /*!< Digital filters are clocked by the bus clock. */
+ 162:../drivers/fsl_port.h ****     kPORT_LpoClock = 1U, /*!< Digital filters are clocked by the 1 kHz LPO clock. */
+ 163:../drivers/fsl_port.h **** } port_digital_filter_clock_source_t;
+ 164:../drivers/fsl_port.h **** 
+ 165:../drivers/fsl_port.h **** /*! @brief PORT digital filter feature configuration definition */
+ 166:../drivers/fsl_port.h **** typedef struct _port_digital_filter_config
+ 167:../drivers/fsl_port.h **** {
+ 168:../drivers/fsl_port.h ****     uint32_t digitalFilterWidth;                    /*!< Set digital filter width */
+ 169:../drivers/fsl_port.h ****     port_digital_filter_clock_source_t clockSource; /*!< Set digital filter clockSource */
+ 170:../drivers/fsl_port.h **** } port_digital_filter_config_t;
+ 171:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_HAS_DIGITAL_FILTER */
+ 172:../drivers/fsl_port.h **** 
+ 173:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_PCR_MUX_WIDTH) && FSL_FEATURE_PORT_PCR_MUX_WIDTH
+ 174:../drivers/fsl_port.h **** /*! @brief PORT pin configuration structure */
+ 175:../drivers/fsl_port.h **** typedef struct _port_pin_config
+ 176:../drivers/fsl_port.h **** {
+ 177:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_PULL_ENABLE) && FSL_FEATURE_PORT_HAS_PULL_ENABLE
+ 178:../drivers/fsl_port.h ****     uint16_t pullSelect : 2; /*!< No-pull/pull-down/pull-up select */
+ 179:../drivers/fsl_port.h **** #else
+ 180:../drivers/fsl_port.h ****     uint16_t : 2;
+ 181:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_HAS_PULL_ENABLE */
+ 182:../drivers/fsl_port.h **** 
+ 183:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_SLEW_RATE) && FSL_FEATURE_PORT_HAS_SLEW_RATE
+ 184:../drivers/fsl_port.h ****     uint16_t slewRate : 1; /*!< Fast/slow slew rate Configure */
+ 185:../drivers/fsl_port.h **** #else
+ 186:../drivers/fsl_port.h ****     uint16_t : 1;
+ 187:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_HAS_SLEW_RATE */
+ 188:../drivers/fsl_port.h **** 
+ 189:../drivers/fsl_port.h ****     uint16_t : 1;
+ 190:../drivers/fsl_port.h **** 
+ 191:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_PASSIVE_FILTER) && FSL_FEATURE_PORT_HAS_PASSIVE_FILTER
+ 192:../drivers/fsl_port.h ****     uint16_t passiveFilterEnable : 1; /*!< Passive filter enable/disable */
+ 193:../drivers/fsl_port.h **** #else
+ 194:../drivers/fsl_port.h ****     uint16_t : 1;
+ 195:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_HAS_PASSIVE_FILTER */
+ 196:../drivers/fsl_port.h **** 
+ 197:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_OPEN_DRAIN) && FSL_FEATURE_PORT_HAS_OPEN_DRAIN
+ 198:../drivers/fsl_port.h ****     uint16_t openDrainEnable : 1; /*!< Open drain enable/disable */
+ 199:../drivers/fsl_port.h **** #else
+ 200:../drivers/fsl_port.h ****     uint16_t : 1;
+ 201:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_HAS_OPEN_DRAIN */
+ 202:../drivers/fsl_port.h **** 
+ 203:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_DRIVE_STRENGTH) && FSL_FEATURE_PORT_HAS_DRIVE_STRENGTH
+ 204:../drivers/fsl_port.h ****     uint16_t driveStrength : 1; /*!< Fast/slow drive strength configure */
+ 205:../drivers/fsl_port.h **** #else
+ 206:../drivers/fsl_port.h ****     uint16_t : 1;
+ 207:../drivers/fsl_port.h **** #endif
+ 208:../drivers/fsl_port.h **** 
+ 209:../drivers/fsl_port.h ****     uint16_t : 1;
+ 210:../drivers/fsl_port.h **** 
+ 211:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_PCR_MUX_WIDTH) && (FSL_FEATURE_PORT_PCR_MUX_WIDTH == 3)
+ 212:../drivers/fsl_port.h ****     uint16_t mux : 3; /*!< Pin mux Configure */
+ 213:../drivers/fsl_port.h ****     uint16_t : 4;
+ 214:../drivers/fsl_port.h **** #elif defined(FSL_FEATURE_PORT_PCR_MUX_WIDTH) && (FSL_FEATURE_PORT_PCR_MUX_WIDTH == 4)
+ 215:../drivers/fsl_port.h ****     uint16_t mux : 4; /*!< Pin mux Configure */
+ 216:../drivers/fsl_port.h ****     uint16_t : 3;
+ 217:../drivers/fsl_port.h **** #else
+ 218:../drivers/fsl_port.h ****     uint16_t : 7,
+ 219:../drivers/fsl_port.h **** #endif
+ 220:../drivers/fsl_port.h **** 
+ 221:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_PIN_CONTROL_LOCK) && FSL_FEATURE_PORT_HAS_PIN_CONTROL_LOCK
+ 222:../drivers/fsl_port.h ****     uint16_t lockRegister : 1; /*!< Lock/unlock the PCR field[15:0] */
+ 223:../drivers/fsl_port.h **** #else
+ 224:../drivers/fsl_port.h ****     uint16_t : 1;
+ 225:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_HAS_PIN_CONTROL_LOCK */
+ 226:../drivers/fsl_port.h **** } port_pin_config_t;
+ 227:../drivers/fsl_port.h **** #endif /* FSL_FEATURE_PORT_PCR_MUX_WIDTH */
+ 228:../drivers/fsl_port.h **** 
+ 229:../drivers/fsl_port.h **** /*******************************************************************************
+ 230:../drivers/fsl_port.h **** * API
+ 231:../drivers/fsl_port.h **** ******************************************************************************/
+ 232:../drivers/fsl_port.h **** 
+ 233:../drivers/fsl_port.h **** #if defined(__cplusplus)
+ 234:../drivers/fsl_port.h **** extern "C" {
+ 235:../drivers/fsl_port.h **** #endif
+ 236:../drivers/fsl_port.h **** 
+ 237:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_PCR_MUX_WIDTH) && FSL_FEATURE_PORT_PCR_MUX_WIDTH
+ 238:../drivers/fsl_port.h **** /*! @name Configuration */
+ 239:../drivers/fsl_port.h **** /*@{*/
+ 240:../drivers/fsl_port.h **** 
+ 241:../drivers/fsl_port.h **** /*!
+ 242:../drivers/fsl_port.h ****  * @brief Sets the port PCR register.
+ 243:../drivers/fsl_port.h ****  *
+ 244:../drivers/fsl_port.h ****  * This is an example to define an input pin or output pin PCR configuration.
+ 245:../drivers/fsl_port.h ****  * @code
+ 246:../drivers/fsl_port.h ****  * // Define a digital input pin PCR configuration
+ 247:../drivers/fsl_port.h ****  * port_pin_config_t config = {
+ 248:../drivers/fsl_port.h ****  *      kPORT_PullUp,
+ 249:../drivers/fsl_port.h ****  *      kPORT_FastSlewRate,
+ 250:../drivers/fsl_port.h ****  *      kPORT_PassiveFilterDisable,
+ 251:../drivers/fsl_port.h ****  *      kPORT_OpenDrainDisable,
+ 252:../drivers/fsl_port.h ****  *      kPORT_LowDriveStrength,
+ 253:../drivers/fsl_port.h ****  *      kPORT_MuxAsGpio,
+ 254:../drivers/fsl_port.h ****  *      kPORT_UnLockRegister,
+ 255:../drivers/fsl_port.h ****  * };
+ 256:../drivers/fsl_port.h ****  * @endcode
+ 257:../drivers/fsl_port.h ****  *
+ 258:../drivers/fsl_port.h ****  * @param base   PORT peripheral base pointer.
+ 259:../drivers/fsl_port.h ****  * @param pin    PORT pin number.
+ 260:../drivers/fsl_port.h ****  * @param config PORT PCR register configuration structure.
+ 261:../drivers/fsl_port.h ****  */
+ 262:../drivers/fsl_port.h **** static inline void PORT_SetPinConfig(PORT_Type *base, uint32_t pin, const port_pin_config_t *config
+ 263:../drivers/fsl_port.h **** {
+ 264:../drivers/fsl_port.h ****     assert(config);
+ 265:../drivers/fsl_port.h ****     uint32_t addr = (uint32_t)&base->PCR[pin];
+ 266:../drivers/fsl_port.h ****     *(volatile uint16_t *)(addr) = *((const uint16_t *)config);
+ 267:../drivers/fsl_port.h **** }
+ 268:../drivers/fsl_port.h **** 
+ 269:../drivers/fsl_port.h **** /*!
+ 270:../drivers/fsl_port.h ****  * @brief Sets the port PCR register for multiple pins.
+ 271:../drivers/fsl_port.h ****  *
+ 272:../drivers/fsl_port.h ****  * This is an example to define input pins or output pins PCR configuration.
+ 273:../drivers/fsl_port.h ****  * @code
+ 274:../drivers/fsl_port.h ****  * // Define a digital input pin PCR configuration
+ 275:../drivers/fsl_port.h ****  * port_pin_config_t config = {
+ 276:../drivers/fsl_port.h ****  *      kPORT_PullUp ,
+ 277:../drivers/fsl_port.h ****  *      kPORT_PullEnable,
+ 278:../drivers/fsl_port.h ****  *      kPORT_FastSlewRate,
+ 279:../drivers/fsl_port.h ****  *      kPORT_PassiveFilterDisable,
+ 280:../drivers/fsl_port.h ****  *      kPORT_OpenDrainDisable,
+ 281:../drivers/fsl_port.h ****  *      kPORT_LowDriveStrength,
+ 282:../drivers/fsl_port.h ****  *      kPORT_MuxAsGpio,
+ 283:../drivers/fsl_port.h ****  *      kPORT_UnlockRegister,
+ 284:../drivers/fsl_port.h ****  * };
+ 285:../drivers/fsl_port.h ****  * @endcode
+ 286:../drivers/fsl_port.h ****  *
+ 287:../drivers/fsl_port.h ****  * @param base   PORT peripheral base pointer.
+ 288:../drivers/fsl_port.h ****  * @param mask   PORT pin number macro.
+ 289:../drivers/fsl_port.h ****  * @param config PORT PCR register configuration structure.
+ 290:../drivers/fsl_port.h ****  */
+ 291:../drivers/fsl_port.h **** static inline void PORT_SetMultiplePinsConfig(PORT_Type *base, uint32_t mask, const port_pin_config
+ 292:../drivers/fsl_port.h **** {
+ 293:../drivers/fsl_port.h ****     assert(config);
+ 294:../drivers/fsl_port.h **** 
+ 295:../drivers/fsl_port.h ****     uint16_t pcrl = *((const uint16_t *)config);
+ 296:../drivers/fsl_port.h **** 
+ 297:../drivers/fsl_port.h ****     if (mask & 0xffffU)
+ 298:../drivers/fsl_port.h ****     {
+ 299:../drivers/fsl_port.h ****         base->GPCLR = ((mask & 0xffffU) << 16) | pcrl;
+ 300:../drivers/fsl_port.h ****     }
+ 301:../drivers/fsl_port.h ****     if (mask >> 16)
+ 302:../drivers/fsl_port.h ****     {
+ 303:../drivers/fsl_port.h ****         base->GPCHR = (mask & 0xffff0000U) | pcrl;
+ 304:../drivers/fsl_port.h ****     }
+ 305:../drivers/fsl_port.h **** }
+ 306:../drivers/fsl_port.h **** 
+ 307:../drivers/fsl_port.h **** #if defined(FSL_FEATURE_PORT_HAS_MULTIPLE_IRQ_CONFIG) && FSL_FEATURE_PORT_HAS_MULTIPLE_IRQ_CONFIG
+ 308:../drivers/fsl_port.h **** /*!
+ 309:../drivers/fsl_port.h ****  * @brief Sets the port interrupt configuration in PCR register for multiple pins.
+ 310:../drivers/fsl_port.h ****  *
+ 311:../drivers/fsl_port.h ****  * @param base   PORT peripheral base pointer.
+ 312:../drivers/fsl_port.h ****  * @param mask   PORT pin number macro.
+ 313:../drivers/fsl_port.h ****  * @param config  PORT pin interrupt configuration.
+ 314:../drivers/fsl_port.h ****  *        - #kPORT_InterruptOrDMADisabled: Interrupt/DMA request disabled.
+ 315:../drivers/fsl_port.h ****  *        - #kPORT_DMARisingEdge : DMA request on rising edge(if the DMA requests exit).
+ 316:../drivers/fsl_port.h ****  *        - #kPORT_DMAFallingEdge: DMA request on falling edge(if the DMA requests exit).
+ 317:../drivers/fsl_port.h ****  *        - #kPORT_DMAEitherEdge : DMA request on either edge(if the DMA requests exit).
+ 318:../drivers/fsl_port.h ****  *        - #kPORT_FlagRisingEdge : Flag sets on rising edge(if the Flag states exit).
+ 319:../drivers/fsl_port.h ****  *        - #kPORT_FlagFallingEdge : Flag sets on falling edge(if the Flag states exit).
+ 320:../drivers/fsl_port.h ****  *        - #kPORT_FlagEitherEdge : Flag sets on either edge(if the Flag states exit).
+ 321:../drivers/fsl_port.h ****  *        - #kPORT_InterruptLogicZero  : Interrupt when logic zero.
+ 322:../drivers/fsl_port.h ****  *        - #kPORT_InterruptRisingEdge : Interrupt on rising edge.
+ 323:../drivers/fsl_port.h ****  *        - #kPORT_InterruptFallingEdge: Interrupt on falling edge.
+ 324:../drivers/fsl_port.h ****  *        - #kPORT_InterruptEitherEdge : Interrupt on either edge.
+ 325:../drivers/fsl_port.h ****  *        - #kPORT_InterruptLogicOne   : Interrupt when logic one.
+ 326:../drivers/fsl_port.h ****  *        - #kPORT_ActiveHighTriggerOutputEnable : Enable active high-trigger output (if the trigge
+ 327:../drivers/fsl_port.h ****  *        - #kPORT_ActiveLowTriggerOutputEnable  : Enable active low-trigger output (if the trigger
+ 328:../drivers/fsl_port.h ****  */
+ 329:../drivers/fsl_port.h **** static inline void PORT_SetMultipleInterruptPinsConfig(PORT_Type *base, uint32_t mask, port_interru
+ 330:../drivers/fsl_port.h **** {
+ 331:../drivers/fsl_port.h ****     assert(config);
+ 332:../drivers/fsl_port.h **** 
+ 333:../drivers/fsl_port.h ****     if (mask & 0xffffU)
+ 334:../drivers/fsl_port.h ****     {
+ 335:../drivers/fsl_port.h ****         base->GICLR = (config << 16) | (mask & 0xffffU);
+ 336:../drivers/fsl_port.h ****     }
+ 337:../drivers/fsl_port.h ****     if (mask >> 16)
+ 338:../drivers/fsl_port.h ****     {
+ 339:../drivers/fsl_port.h ****         base->GICHR = (config << 16) | (mask & 0xffff0000U);
+ 340:../drivers/fsl_port.h ****     }
+ 341:../drivers/fsl_port.h **** }
+ 342:../drivers/fsl_port.h **** #endif
+ 343:../drivers/fsl_port.h **** 
+ 344:../drivers/fsl_port.h **** /*!
+ 345:../drivers/fsl_port.h ****  * @brief Configures the pin muxing.
+ 346:../drivers/fsl_port.h ****  *
+ 347:../drivers/fsl_port.h ****  * @param base  PORT peripheral base pointer.
+ 348:../drivers/fsl_port.h ****  * @param pin   PORT pin number.
+ 349:../drivers/fsl_port.h ****  * @param mux   pin muxing slot selection.
+ 350:../drivers/fsl_port.h ****  *        - #kPORT_PinDisabledOrAnalog: Pin disabled or work in analog function.
+ 351:../drivers/fsl_port.h ****  *        - #kPORT_MuxAsGpio          : Set as GPIO.
+ 352:../drivers/fsl_port.h ****  *        - #kPORT_MuxAlt2            : chip-specific.
+ 353:../drivers/fsl_port.h ****  *        - #kPORT_MuxAlt3            : chip-specific.
+ 354:../drivers/fsl_port.h ****  *        - #kPORT_MuxAlt4            : chip-specific.
+ 355:../drivers/fsl_port.h ****  *        - #kPORT_MuxAlt5            : chip-specific.
+ 356:../drivers/fsl_port.h ****  *        - #kPORT_MuxAlt6            : chip-specific.
+ 357:../drivers/fsl_port.h ****  *        - #kPORT_MuxAlt7            : chip-specific.
+ 358:../drivers/fsl_port.h ****  * @Note : This function is NOT recommended to use together with the PORT_SetPinsConfig, because
+ 359:../drivers/fsl_port.h ****  *         the PORT_SetPinsConfig need to configure the pin mux anyway (Otherwise the pin mux is
+ 360:../drivers/fsl_port.h ****  *         reset to zero : kPORT_PinDisabledOrAnalog).
+ 361:../drivers/fsl_port.h ****  *        This function is recommended to use to reset the pin mux
+ 362:../drivers/fsl_port.h ****  *
+ 363:../drivers/fsl_port.h ****  */
+ 364:../drivers/fsl_port.h **** static inline void PORT_SetPinMux(PORT_Type *base, uint32_t pin, port_mux_t mux)
+ 365:../drivers/fsl_port.h **** {
+ 366:../drivers/fsl_port.h ****     base->PCR[pin] = (base->PCR[pin] & ~PORT_PCR_MUX_MASK) | PORT_PCR_MUX(mux);
+  92              		.loc 3 366 0
+  93 0040 0A4A     		ldr	r2, .L2+16
+  94 0042 136E     		ldr	r3, [r2, #96]
+  95 0044 0A48     		ldr	r0, .L2+20
+  96 0046 0340     		ands	r3, r0
+  97 0048 A021     		movs	r1, #160
+  98 004a C900     		lsls	r1, r1, #3
+  99 004c 0B43     		orrs	r3, r1
+ 100 004e 1366     		str	r3, [r2, #96]
+ 101              	.LVL8:
+ 102              	.LBE15:
+ 103              	.LBE14:
+ 104              	.LBB16:
+ 105              	.LBB17:
+ 106 0050 536E     		ldr	r3, [r2, #100]
+ 107 0052 0340     		ands	r3, r0
+ 108 0054 1943     		orrs	r1, r3
+ 109 0056 5166     		str	r1, [r2, #100]
+ 110              	.LVL9:
+ 111              	.LBE17:
+ 112              	.LBE16:
+  35:../source/i2c_func.c **** 
+  36:../source/i2c_func.c **** 	PORT_SetPinMux(PORTE, 24u, kPORT_MuxAlt5);
+  37:../source/i2c_func.c **** 	PORT_SetPinMux(PORTE, 25u, kPORT_MuxAlt5);
+  38:../source/i2c_func.c **** }
+ 113              		.loc 1 38 0
+ 114 0058 05B0     		add	sp, sp, #20
+ 115              		@ sp needed
+ 116              	.LVL10:
+ 117 005a 30BD     		pop	{r4, r5, pc}
+ 118              	.L3:
+ 119              		.align	2
+ 120              	.L2:
+ 121 005c 34800440 		.word	1074036788
+ 122 0060 38800440 		.word	1074036792
+ 123 0064 400D0300 		.word	200000
+ 124 0068 00600640 		.word	1074159616
+ 125 006c 00D00440 		.word	1074057216
+ 126 0070 FFF8FFFF 		.word	-1793
+ 127              		.cfi_endproc
+ 128              	.LFE66:
+ 130              		.section	.text.accWriteReg,"ax",%progbits
+ 131              		.align	1
+ 132              		.global	accWriteReg
+ 133              		.syntax unified
+ 134              		.code	16
+ 135              		.thumb_func
+ 136              		.fpu softvfp
+ 138              	accWriteReg:
+ 139              	.LFB67:
+  39:../source/i2c_func.c **** 
+  40:../source/i2c_func.c **** void accWriteReg(uint8_t reg, uint8_t data)
+  41:../source/i2c_func.c **** {
+ 140              		.loc 1 41 0
+ 141              		.cfi_startproc
+ 142              		@ args = 0, pretend = 0, frame = 0
+ 143              		@ frame_needed = 0, uses_anonymous_args = 0
+ 144              	.LVL11:
+ 145 0000 70B5     		push	{r4, r5, r6, lr}
+ 146              		.cfi_def_cfa_offset 16
+ 147              		.cfi_offset 4, -16
+ 148              		.cfi_offset 5, -12
+ 149              		.cfi_offset 6, -8
+ 150              		.cfi_offset 14, -4
+ 151 0002 0500     		movs	r5, r0
+ 152 0004 0C00     		movs	r4, r1
+  42:../source/i2c_func.c **** 
+  43:../source/i2c_func.c **** 	I2C_MasterStart(I2C0, ACC_SADDR, kI2C_Write);
+ 153              		.loc 1 43 0
+ 154 0006 0022     		movs	r2, #0
+ 155 0008 1D21     		movs	r1, #29
+ 156              	.LVL12:
+ 157 000a 1348     		ldr	r0, .L8
+ 158              	.LVL13:
+ 159 000c FFF7FEFF 		bl	I2C_MasterStart
+ 160              	.LVL14:
+ 161              	.L5:
+  44:../source/i2c_func.c **** 
+  45:../source/i2c_func.c **** 	/* Wait until the data register is ready for transmit. */
+  46:../source/i2c_func.c ****     while (!(I2C0->S & kI2C_IntPendingFlag)){}
+ 162              		.loc 1 46 0 discriminator 1
+ 163 0010 114B     		ldr	r3, .L8
+ 164 0012 DB78     		ldrb	r3, [r3, #3]
+ 165 0014 9B07     		lsls	r3, r3, #30
+ 166 0016 FBD5     		bpl	.L5
+  47:../source/i2c_func.c **** 	/* Clear the IICIF flag. */
+  48:../source/i2c_func.c ****     I2C0->S |= kI2C_IntPendingFlag;
+ 167              		.loc 1 48 0
+ 168 0018 0F4B     		ldr	r3, .L8
+ 169 001a DA78     		ldrb	r2, [r3, #3]
+ 170 001c 0221     		movs	r1, #2
+ 171 001e 0A43     		orrs	r2, r1
+ 172 0020 DA70     		strb	r2, [r3, #3]
+  49:../source/i2c_func.c **** 
+  50:../source/i2c_func.c ****     //select transmit mode
+  51:../source/i2c_func.c ****     I2C0 ->C1 |= I2C_C1_TX_MASK;
+ 173              		.loc 1 51 0
+ 174 0022 9A78     		ldrb	r2, [r3, #2]
+ 175 0024 1021     		movs	r1, #16
+ 176 0026 0A43     		orrs	r2, r1
+ 177 0028 9A70     		strb	r2, [r3, #2]
+  52:../source/i2c_func.c **** 
+  53:../source/i2c_func.c ****     I2C0 ->D = reg;
+ 178              		.loc 1 53 0
+ 179 002a 1D71     		strb	r5, [r3, #4]
+ 180              	.L6:
+  54:../source/i2c_func.c ****     /* Wait until data transfer complete. */
+  55:../source/i2c_func.c **** 	while (!(I2C0->S & kI2C_IntPendingFlag))
+ 181              		.loc 1 55 0 discriminator 1
+ 182 002c 0A4B     		ldr	r3, .L8
+ 183 002e DB78     		ldrb	r3, [r3, #3]
+ 184 0030 9B07     		lsls	r3, r3, #30
+ 185 0032 FBD5     		bpl	.L6
+  56:../source/i2c_func.c **** 	{
+  57:../source/i2c_func.c **** 	}
+  58:../source/i2c_func.c **** 	I2C0->S |= kI2C_IntPendingFlag;
+ 186              		.loc 1 58 0
+ 187 0034 084B     		ldr	r3, .L8
+ 188 0036 DA78     		ldrb	r2, [r3, #3]
+ 189 0038 0221     		movs	r1, #2
+ 190 003a 0A43     		orrs	r2, r1
+ 191 003c DA70     		strb	r2, [r3, #3]
+  59:../source/i2c_func.c **** 
+  60:../source/i2c_func.c **** 	I2C0 ->D = data;
+ 192              		.loc 1 60 0
+ 193 003e 1C71     		strb	r4, [r3, #4]
+ 194              	.L7:
+  61:../source/i2c_func.c ****     /* Wait until data transfer complete. */
+  62:../source/i2c_func.c **** 	while (!(I2C0->S & kI2C_IntPendingFlag))
+ 195              		.loc 1 62 0 discriminator 1
+ 196 0040 054B     		ldr	r3, .L8
+ 197 0042 DB78     		ldrb	r3, [r3, #3]
+ 198 0044 9B07     		lsls	r3, r3, #30
+ 199 0046 FBD5     		bpl	.L7
+  63:../source/i2c_func.c **** 	{
+  64:../source/i2c_func.c **** 	}
+  65:../source/i2c_func.c **** 	I2C0->S |= kI2C_IntPendingFlag;
+ 200              		.loc 1 65 0
+ 201 0048 0348     		ldr	r0, .L8
+ 202 004a C378     		ldrb	r3, [r0, #3]
+ 203 004c 0222     		movs	r2, #2
+ 204 004e 1343     		orrs	r3, r2
+ 205 0050 C370     		strb	r3, [r0, #3]
+  66:../source/i2c_func.c **** 
+  67:../source/i2c_func.c **** 
+  68:../source/i2c_func.c **** 	I2C_MasterStop(I2C0);
+ 206              		.loc 1 68 0
+ 207 0052 FFF7FEFF 		bl	I2C_MasterStop
+ 208              	.LVL15:
+  69:../source/i2c_func.c **** }
+ 209              		.loc 1 69 0
+ 210              		@ sp needed
+ 211 0056 70BD     		pop	{r4, r5, r6, pc}
+ 212              	.L9:
+ 213              		.align	2
+ 214              	.L8:
+ 215 0058 00600640 		.word	1074159616
+ 216              		.cfi_endproc
+ 217              	.LFE67:
+ 219              		.section	.text.accReadReg,"ax",%progbits
+ 220              		.align	1
+ 221              		.global	accReadReg
+ 222              		.syntax unified
+ 223              		.code	16
+ 224              		.thumb_func
+ 225              		.fpu softvfp
+ 227              	accReadReg:
+ 228              	.LFB68:
+  70:../source/i2c_func.c **** 
+  71:../source/i2c_func.c **** uint8_t accReadReg(uint8_t reg)
+  72:../source/i2c_func.c **** {
+ 229              		.loc 1 72 0
+ 230              		.cfi_startproc
+ 231              		@ args = 0, pretend = 0, frame = 0
+ 232              		@ frame_needed = 0, uses_anonymous_args = 0
+ 233              	.LVL16:
+ 234 0000 10B5     		push	{r4, lr}
+ 235              		.cfi_def_cfa_offset 8
+ 236              		.cfi_offset 4, -8
+ 237              		.cfi_offset 14, -4
+ 238 0002 0400     		movs	r4, r0
+ 239              	.LVL17:
+  73:../source/i2c_func.c **** 	uint8_t data = 0;
+  74:../source/i2c_func.c **** 
+  75:../source/i2c_func.c **** 	I2C_MasterStart(I2C0, ACC_SADDR, kI2C_Write); //do START condition and send slave address
+ 240              		.loc 1 75 0
+ 241 0004 0022     		movs	r2, #0
+ 242 0006 1D21     		movs	r1, #29
+ 243 0008 1D48     		ldr	r0, .L15
+ 244              	.LVL18:
+ 245 000a FFF7FEFF 		bl	I2C_MasterStart
+ 246              	.LVL19:
+ 247              	.L11:
+  76:../source/i2c_func.c **** 
+  77:../source/i2c_func.c **** 	/* Wait until the data register is ready for transmit. */
+  78:../source/i2c_func.c ****     while (!(I2C0->S & kI2C_IntPendingFlag)){}
+ 248              		.loc 1 78 0 discriminator 1
+ 249 000e 1C4B     		ldr	r3, .L15
+ 250 0010 DB78     		ldrb	r3, [r3, #3]
+ 251 0012 9B07     		lsls	r3, r3, #30
+ 252 0014 FBD5     		bpl	.L11
+  79:../source/i2c_func.c **** 	/* Clear the IICIF flag. */
+  80:../source/i2c_func.c ****     I2C0->S |= kI2C_IntPendingFlag;
+ 253              		.loc 1 80 0
+ 254 0016 1A4B     		ldr	r3, .L15
+ 255 0018 DA78     		ldrb	r2, [r3, #3]
+ 256 001a 0221     		movs	r1, #2
+ 257 001c 0A43     		orrs	r2, r1
+ 258 001e DA70     		strb	r2, [r3, #3]
+  81:../source/i2c_func.c **** 
+  82:../source/i2c_func.c ****     //select transmit mode
+  83:../source/i2c_func.c ****     I2C0 ->C1 |= I2C_C1_TX_MASK;
+ 259              		.loc 1 83 0
+ 260 0020 9A78     		ldrb	r2, [r3, #2]
+ 261 0022 1021     		movs	r1, #16
+ 262 0024 0A43     		orrs	r2, r1
+ 263 0026 9A70     		strb	r2, [r3, #2]
+  84:../source/i2c_func.c **** 
+  85:../source/i2c_func.c ****     I2C0 ->D = reg;
+ 264              		.loc 1 85 0
+ 265 0028 1C71     		strb	r4, [r3, #4]
+ 266              	.L12:
+  86:../source/i2c_func.c ****     /* Wait until data transfer complete. */
+  87:../source/i2c_func.c **** 	while (!(I2C0->S & kI2C_IntPendingFlag))
+ 267              		.loc 1 87 0 discriminator 1
+ 268 002a 154B     		ldr	r3, .L15
+ 269 002c DB78     		ldrb	r3, [r3, #3]
+ 270 002e 9B07     		lsls	r3, r3, #30
+ 271 0030 FBD5     		bpl	.L12
+  88:../source/i2c_func.c **** 	{
+  89:../source/i2c_func.c **** 	}
+  90:../source/i2c_func.c **** 	I2C0->S |= kI2C_IntPendingFlag;
+ 272              		.loc 1 90 0
+ 273 0032 1348     		ldr	r0, .L15
+ 274 0034 C378     		ldrb	r3, [r0, #3]
+ 275 0036 0222     		movs	r2, #2
+ 276 0038 1343     		orrs	r3, r2
+ 277 003a C370     		strb	r3, [r0, #3]
+  91:../source/i2c_func.c **** 
+  92:../source/i2c_func.c **** 	I2C_MasterRepeatedStart(I2C0, ACC_SADDR, kI2C_Read);
+ 278              		.loc 1 92 0
+ 279 003c 0122     		movs	r2, #1
+ 280 003e 1D21     		movs	r1, #29
+ 281 0040 FFF7FEFF 		bl	I2C_MasterRepeatedStart
+ 282              	.LVL20:
+ 283              	.L13:
+  93:../source/i2c_func.c **** 
+  94:../source/i2c_func.c **** 	while (!(I2C0->S & kI2C_IntPendingFlag))  {}
+ 284              		.loc 1 94 0 discriminator 1
+ 285 0044 0E4B     		ldr	r3, .L15
+ 286 0046 DB78     		ldrb	r3, [r3, #3]
+ 287 0048 9B07     		lsls	r3, r3, #30
+ 288 004a FBD5     		bpl	.L13
+  95:../source/i2c_func.c **** 	/* Clear the IICIF flag. */
+  96:../source/i2c_func.c ****     I2C0->S = kI2C_IntPendingFlag;
+ 289              		.loc 1 96 0
+ 290 004c 0C4B     		ldr	r3, .L15
+ 291 004e 0222     		movs	r2, #2
+ 292 0050 DA70     		strb	r2, [r3, #3]
+  97:../source/i2c_func.c **** 
+  98:../source/i2c_func.c ****     /* Setup the I2C peripheral to receive data. */
+  99:../source/i2c_func.c ****     I2C0->C1 &= ~(I2C_C1_TX_MASK | I2C_C1_TXAK_MASK);
+ 293              		.loc 1 99 0
+ 294 0052 9A78     		ldrb	r2, [r3, #2]
+ 295 0054 1821     		movs	r1, #24
+ 296 0056 8A43     		bics	r2, r1
+ 297 0058 9A70     		strb	r2, [r3, #2]
+ 100:../source/i2c_func.c ****     I2C0 ->C1 |= I2C_C1_TXAK_MASK; //set TXAK to send NACK after receiving byte
+ 298              		.loc 1 100 0
+ 299 005a 9A78     		ldrb	r2, [r3, #2]
+ 300 005c 0821     		movs	r1, #8
+ 301 005e 0A43     		orrs	r2, r1
+ 302 0060 9A70     		strb	r2, [r3, #2]
+ 101:../source/i2c_func.c **** 
+ 102:../source/i2c_func.c ****     data = I2C0 ->D; //dummy read to initiate receiving
+ 303              		.loc 1 102 0
+ 304 0062 1B79     		ldrb	r3, [r3, #4]
+ 305              	.LVL21:
+ 306              	.L14:
+ 103:../source/i2c_func.c **** 
+ 104:../source/i2c_func.c ****     while (!(I2C0->S & kI2C_IntPendingFlag)){}
+ 307              		.loc 1 104 0 discriminator 1
+ 308 0064 064B     		ldr	r3, .L15
+ 309 0066 DB78     		ldrb	r3, [r3, #3]
+ 310 0068 9B07     		lsls	r3, r3, #30
+ 311 006a FBD5     		bpl	.L14
+ 105:../source/i2c_func.c ****     /* Clear the IICIF flag. */
+ 106:../source/i2c_func.c ****     I2C0->S = kI2C_IntPendingFlag;
+ 312              		.loc 1 106 0
+ 313 006c 044C     		ldr	r4, .L15
+ 314 006e 0223     		movs	r3, #2
+ 315 0070 E370     		strb	r3, [r4, #3]
+ 107:../source/i2c_func.c **** 
+ 108:../source/i2c_func.c ****     /*
+ 109:../source/i2c_func.c ****      * Send STOP before reading received byte. Apparently Kinetis I2C
+ 110:../source/i2c_func.c ****      * will signal the slave to send a next data byte when the data register is read,
+ 111:../source/i2c_func.c ****      * so the slave device will jam the bus if we read it too early and do not read any more bytes
+ 112:../source/i2c_func.c ****      */
+ 113:../source/i2c_func.c ****     I2C_MasterStop(I2C0);
+ 316              		.loc 1 113 0
+ 317 0072 2000     		movs	r0, r4
+ 318 0074 FFF7FEFF 		bl	I2C_MasterStop
+ 319              	.LVL22:
+ 114:../source/i2c_func.c **** 
+ 115:../source/i2c_func.c **** 	data = I2C0 ->D; //read the received byte
+ 320              		.loc 1 115 0
+ 321 0078 2079     		ldrb	r0, [r4, #4]
+ 322 007a C0B2     		uxtb	r0, r0
+ 323              	.LVL23:
+ 116:../source/i2c_func.c **** 	return data;
+ 117:../source/i2c_func.c **** 
+ 118:../source/i2c_func.c **** }
+ 324              		.loc 1 118 0
+ 325              		@ sp needed
+ 326 007c 10BD     		pop	{r4, pc}
+ 327              	.L16:
+ 328 007e C046     		.align	2
+ 329              	.L15:
+ 330 0080 00600640 		.word	1074159616
+ 331              		.cfi_endproc
+ 332              	.LFE68:
+ 334              		.text
+ 335              	.Letext0:
+ 336              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 337              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 338              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 339              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 340              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 341              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 342              		.file 10 "../CMSIS/system_MKL17Z4.h"
+ 343              		.file 11 "../CMSIS/MKL17Z4.h"
+ 344              		.file 12 "../drivers/fsl_i2c.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 i2c_func.c
+     /tmp/ccKYt42j.s:16     .text.initI2C:0000000000000000 $t
+     /tmp/ccKYt42j.s:23     .text.initI2C:0000000000000000 initI2C
+     /tmp/ccKYt42j.s:121    .text.initI2C:000000000000005c $d
+     /tmp/ccKYt42j.s:131    .text.accWriteReg:0000000000000000 $t
+     /tmp/ccKYt42j.s:138    .text.accWriteReg:0000000000000000 accWriteReg
+     /tmp/ccKYt42j.s:215    .text.accWriteReg:0000000000000058 $d
+     /tmp/ccKYt42j.s:220    .text.accReadReg:0000000000000000 $t
+     /tmp/ccKYt42j.s:227    .text.accReadReg:0000000000000000 accReadReg
+     /tmp/ccKYt42j.s:330    .text.accReadReg:0000000000000080 $d
+
+UNDEFINED SYMBOLS
+CLOCK_GetCoreSysClkFreq
+I2C_MasterGetDefaultConfig
+I2C_MasterInit
+I2C_MasterStart
+I2C_MasterStop
+I2C_MasterRepeatedStart

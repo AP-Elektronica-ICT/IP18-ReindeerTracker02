@@ -79,23 +79,24 @@
   62 0002 1368     		ldr	r3, [r2]
   63 0004 0133     		adds	r3, r3, #1
   64 0006 1360     		str	r3, [r2]
-  65 0008 7047     		bx	lr
-  66              	.L6:
-  67 000a 00BF     		.align	2
-  68              	.L5:
-  69 000c 00000000 		.word	.LANCHOR0
-  70              		.cfi_endproc
-  71              	.LFE1:
-  73              		.section	.text.delay_ms,"ax",%progbits
-  74              		.align	1
-  75              		.global	delay_ms
-  76              		.syntax unified
-  77              		.thumb
-  78              		.thumb_func
-  79              		.fpu fpv4-sp-d16
-  81              	delay_ms:
-  82              	.LFB2:
   21:../source/timing.c **** }
+  65              		.loc 1 21 0
+  66 0008 7047     		bx	lr
+  67              	.L6:
+  68 000a 00BF     		.align	2
+  69              	.L5:
+  70 000c 00000000 		.word	.LANCHOR0
+  71              		.cfi_endproc
+  72              	.LFE1:
+  74              		.section	.text.delay_ms,"ax",%progbits
+  75              		.align	1
+  76              		.global	delay_ms
+  77              		.syntax unified
+  78              		.thumb
+  79              		.thumb_func
+  80              		.fpu fpv4-sp-d16
+  82              	delay_ms:
+  83              	.LFB2:
   22:../source/timing.c **** 
   23:../source/timing.c **** 
   24:../source/timing.c **** /*
@@ -103,57 +104,57 @@
   26:../source/timing.c ****  */
   27:../source/timing.c **** void delay_ms(uint32_t del)
   28:../source/timing.c **** {
-  83              		.loc 1 28 0
-  84              		.cfi_startproc
-  85              		@ args = 0, pretend = 0, frame = 0
-  86              		@ frame_needed = 0, uses_anonymous_args = 0
-  87              		@ link register save eliminated.
-  88              	.LVL0:
-  89              	.LBB6:
-  90              	.LBB7:
+  84              		.loc 1 28 0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              		@ link register save eliminated.
+  89              	.LVL0:
+  90              	.LBB6:
+  91              	.LBB7:
   14:../source/timing.c **** }
-  91              		.loc 1 14 0
-  92 0000 034B     		ldr	r3, .L10
-  93 0002 1A68     		ldr	r2, [r3]
-  94              	.LBE7:
-  95              	.LBE6:
+  92              		.loc 1 14 0
+  93 0000 034B     		ldr	r3, .L10
+  94 0002 1A68     		ldr	r2, [r3]
+  95              	.LBE7:
+  96              	.LBE6:
   29:../source/timing.c **** 
   30:../source/timing.c **** 	uint32_t otime = millis()+del;
-  96              		.loc 1 30 0
-  97 0004 1044     		add	r0, r0, r2
-  98              	.LVL1:
-  99              	.L8:
- 100              	.LBB8:
- 101              	.LBB9:
+  97              		.loc 1 30 0
+  98 0004 1044     		add	r0, r0, r2
+  99              	.LVL1:
+ 100              	.L8:
+ 101              	.LBB8:
+ 102              	.LBB9:
   14:../source/timing.c **** }
- 102              		.loc 1 14 0 discriminator 1
- 103 0006 1A68     		ldr	r2, [r3]
- 104              	.LBE9:
- 105              	.LBE8:
+ 103              		.loc 1 14 0 discriminator 1
+ 104 0006 1A68     		ldr	r2, [r3]
+ 105              	.LBE9:
+ 106              	.LBE8:
   31:../source/timing.c **** 
   32:../source/timing.c **** 	while(millis() < otime)
- 106              		.loc 1 32 0 discriminator 1
- 107 0008 9042     		cmp	r0, r2
- 108 000a FCD8     		bhi	.L8
+ 107              		.loc 1 32 0 discriminator 1
+ 108 0008 9042     		cmp	r0, r2
+ 109 000a FCD8     		bhi	.L8
   33:../source/timing.c **** 	{
   34:../source/timing.c **** 
   35:../source/timing.c **** 	}
   36:../source/timing.c **** }
- 109              		.loc 1 36 0
- 110 000c 7047     		bx	lr
- 111              	.L11:
- 112 000e 00BF     		.align	2
- 113              	.L10:
- 114 0010 00000000 		.word	.LANCHOR0
- 115              		.cfi_endproc
- 116              	.LFE2:
- 118              		.global	ticks
- 119              		.section	.bss.ticks,"aw",%nobits
- 120              		.align	2
- 121              		.set	.LANCHOR0,. + 0
- 124              	ticks:
- 125 0000 00000000 		.space	4
- 126              		.text
- 127              	.Letext0:
- 128              		.file 2 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 129              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 110              		.loc 1 36 0
+ 111 000c 7047     		bx	lr
+ 112              	.L11:
+ 113 000e 00BF     		.align	2
+ 114              	.L10:
+ 115 0010 00000000 		.word	.LANCHOR0
+ 116              		.cfi_endproc
+ 117              	.LFE2:
+ 119              		.global	ticks
+ 120              		.section	.bss.ticks,"aw",%nobits
+ 121              		.align	2
+ 122              		.set	.LANCHOR0,. + 0
+ 125              	ticks:
+ 126 0000 00000000 		.space	4
+ 127              		.text
+ 128              	.Letext0:
+ 129              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 130              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"

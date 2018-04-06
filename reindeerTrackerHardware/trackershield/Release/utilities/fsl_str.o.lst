@@ -467,15 +467,25 @@
  374:../utilities/fsl_str.c ****     int32_t done;
  375:../utilities/fsl_str.c ****     int32_t count = 0;
   95              		.loc 1 375 0
-  96 0006 0DF13009 		add	r9, sp, #48
-  97 000a 0025     		movs	r5, #0
-  98 000c 49F8285D 		str	r5, [r9, #-40]!
+  96 0006 0025     		movs	r5, #0
  365:../utilities/fsl_str.c ****     /* va_list ap; */
-  99              		.loc 1 365 0
- 100 0010 9246     		mov	r10, r2
- 101 0012 9B46     		mov	fp, r3
- 102 0014 8846     		mov	r8, r1
- 103              	.LVL9:
+  97              		.loc 1 365 0
+  98 0008 8346     		mov	fp, r0
+  99 000a 9046     		mov	r8, r2
+ 100 000c 9946     		mov	r9, r3
+ 101 000e 8A46     		mov	r10, r1
+ 102              	.LVL9:
+ 103              		.loc 1 375 0
+ 104 0010 0295     		str	r5, [sp, #8]
+ 105              	.LVL10:
+ 372:../utilities/fsl_str.c **** 
+ 106              		.loc 1 372 0
+ 107 0012 2E46     		mov	r6, r5
+ 371:../utilities/fsl_str.c ****     int32_t vlen = 0;
+ 108              		.loc 1 371 0
+ 109 0014 2C46     		mov	r4, r5
+ 110              	.LVL11:
+ 111              	.L8:
  376:../utilities/fsl_str.c **** 
  377:../utilities/fsl_str.c ****     uint32_t field_width;
  378:../utilities/fsl_str.c ****     uint32_t precision_width;
@@ -501,22 +511,11 @@
  398:../utilities/fsl_str.c **** 
  399:../utilities/fsl_str.c ****     /* Start parsing apart the format string and display appropriate formats and data. */
  400:../utilities/fsl_str.c ****     for (p = (char *)fmt; (c = *p) != 0; p++)
- 104              		.loc 1 400 0
- 105 0016 0090     		str	r0, [sp]
- 372:../utilities/fsl_str.c **** 
- 106              		.loc 1 372 0
- 107 0018 2E46     		mov	r6, r5
- 371:../utilities/fsl_str.c ****     int32_t vlen = 0;
- 108              		.loc 1 371 0
- 109 001a 2C46     		mov	r4, r5
- 110              	.LVL10:
- 111              	.L8:
  112              		.loc 1 400 0 discriminator 1
- 113 001c 009B     		ldr	r3, [sp]
- 114 001e 93F90020 		ldrsb	r2, [r3]
- 115              	.LVL11:
- 116 0022 1AB9     		cbnz	r2, .L49
- 117              	.LVL12:
+ 113 0016 9BF90020 		ldrsb	r2, [fp]
+ 114              	.LVL12:
+ 115 001a 1AB9     		cbnz	r2, .L47
+ 116              	.LVL13:
  401:../utilities/fsl_str.c ****     {
  402:../utilities/fsl_str.c ****         /*
  403:../utilities/fsl_str.c ****          * All formats begin with a '%' marker.  Special chars like
@@ -991,668 +990,666 @@
  872:../utilities/fsl_str.c **** 
  873:../utilities/fsl_str.c ****     return count;
  874:../utilities/fsl_str.c **** }
- 118              		.loc 1 874 0
- 119 0024 0298     		ldr	r0, [sp, #8]
- 120 0026 0DB0     		add	sp, sp, #52
- 121              		.cfi_remember_state
- 122              		.cfi_def_cfa_offset 36
- 123              	.LVL13:
- 124              		@ sp needed
- 125 0028 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
- 126              	.LVL14:
- 127              	.L49:
- 128              		.cfi_restore_state
+ 117              		.loc 1 874 0
+ 118 001c 0298     		ldr	r0, [sp, #8]
+ 119 001e 0DB0     		add	sp, sp, #52
+ 120              		.cfi_remember_state
+ 121              		.cfi_def_cfa_offset 36
+ 122              		@ sp needed
+ 123 0020 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 124              	.LVL14:
+ 125              	.L47:
+ 126              		.cfi_restore_state
  408:../utilities/fsl_str.c ****         {
- 129              		.loc 1 408 0
- 130 002c 252A     		cmp	r2, #37
- 131 002e 40F00B81 		bne	.L46
- 132 0032 009A     		ldr	r2, [sp]
+ 127              		.loc 1 408 0
+ 128 0024 252A     		cmp	r2, #37
+ 129 0026 00F09280 		beq	.L48
+ 410:../utilities/fsl_str.c ****             /* By using 'continue', the next iteration of the loop is used, skipping the code that 
+ 130              		.loc 1 410 0
+ 131 002a 0123     		movs	r3, #1
+ 132 002c 02A9     		add	r1, sp, #8
  133              	.LVL15:
- 134 0034 0023     		movs	r3, #0
- 135              	.LVL16:
- 457:../utilities/fsl_str.c ****             }
- 136              		.loc 1 457 0
- 137 0036 0A27     		movs	r7, #10
- 138              	.LVL17:
- 139              	.L10:
- 454:../utilities/fsl_str.c ****             if ((c >= '0') && (c <= '9'))
- 140              		.loc 1 454 0
- 141 0038 92F90110 		ldrsb	r1, [r2, #1]
- 142              	.LVL18:
- 455:../utilities/fsl_str.c ****             {
- 143              		.loc 1 455 0
- 144 003c A1F1300E 		sub	lr, r1, #48
- 145 0040 BEF1090F 		cmp	lr, #9
- 454:../utilities/fsl_str.c ****             if ((c >= '0') && (c <= '9'))
- 146              		.loc 1 454 0
- 147 0044 02F10100 		add	r0, r2, #1
- 148              	.LVL19:
- 455:../utilities/fsl_str.c ****             {
- 149              		.loc 1 455 0
- 150 0048 76D9     		bls	.L12
- 151              	.LVL20:
- 477:../utilities/fsl_str.c ****         {
- 152              		.loc 1 477 0
- 153 004a 2E29     		cmp	r1, #46
- 154 004c 06D1     		bne	.L13
- 155              	.LVL21:
- 156              	.L50:
- 157 004e 0246     		mov	r2, r0
- 158              	.LVL22:
- 484:../utilities/fsl_str.c ****                 if ((c >= '0') && (c <= '9'))
- 159              		.loc 1 484 0
- 160 0050 0130     		adds	r0, r0, #1
- 161              	.LVL23:
- 485:../utilities/fsl_str.c ****                 {
- 162              		.loc 1 485 0
- 163 0052 92F90110 		ldrsb	r1, [r2, #1]
- 164              	.LVL24:
- 165 0056 3039     		subs	r1, r1, #48
- 166              	.LVL25:
- 167 0058 0929     		cmp	r1, #9
- 168 005a F8D9     		bls	.L50
- 169              	.LVL26:
- 170              	.L13:
- 547:../utilities/fsl_str.c ****         {
- 171              		.loc 1 547 0
- 172 005c 511C     		adds	r1, r2, #1
- 173 005e 92F90120 		ldrsb	r2, [r2, #1]
- 174              	.LVL27:
- 175 0062 0091     		str	r1, [sp]
- 176              	.LVL28:
- 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
- 177              		.loc 1 549 0
- 178 0064 642A     		cmp	r2, #100
- 179 0066 13D0     		beq	.L15
- 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
- 180              		.loc 1 549 0 is_stmt 0 discriminator 3
- 181 0068 22F02001 		bic	r1, r2, #32
- 182              	.LVL29:
- 183 006c 4629     		cmp	r1, #70
- 184 006e 0DD0     		beq	.L16
- 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
- 185              		.loc 1 549 0 discriminator 5
- 186 0070 5829     		cmp	r1, #88
- 187 0072 0BD0     		beq	.L16
- 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
- 188              		.loc 1 549 0 discriminator 6
- 189 0074 A2F16201 		sub	r1, r2, #98
- 190 0078 C9B2     		uxtb	r1, r1
- 191 007a 1329     		cmp	r1, #19
- 192 007c 00F2B980 		bhi	.L17
- 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
- 193              		.loc 1 549 0 discriminator 7
- 194 0080 7448     		ldr	r0, .L74
- 195 0082 20FA01F1 		lsr	r1, r0, r1
- 196 0086 C807     		lsls	r0, r1, #31
- 197 0088 40F1B380 		bpl	.L17
- 198              	.L16:
- 552:../utilities/fsl_str.c ****                 {
- 199              		.loc 1 552 0 is_stmt 1 discriminator 1
- 200 008c 692A     		cmp	r2, #105
- 201 008e 6BD1     		bne	.L51
- 202              	.L15:
- 203              	.LBB8:
- 204              	.LBB9:
- 183:../utilities/fsl_str.c **** 
- 205              		.loc 1 183 0
- 206 0090 0CAC     		add	r4, sp, #48
- 207              	.LVL30:
- 208              	.LBE9:
- 209              	.LBE8:
- 562:../utilities/fsl_str.c ****                     }
- 210              		.loc 1 562 0
- 211 0092 D8F80010 		ldr	r1, [r8]
- 212              	.LBB13:
- 213              	.LBB10:
- 183:../utilities/fsl_str.c **** 
- 214              		.loc 1 183 0
- 215 0096 0020     		movs	r0, #0
- 216              	.LBE10:
- 217              	.LBE13:
- 562:../utilities/fsl_str.c ****                     }
- 218              		.loc 1 562 0
- 219 0098 08F10407 		add	r7, r8, #4
- 220              	.LVL31:
- 221              	.LBB14:
- 222              	.LBB11:
- 183:../utilities/fsl_str.c **** 
- 223              		.loc 1 183 0
- 224 009c 04F8240D 		strb	r0, [r4, #-36]!
- 192:../utilities/fsl_str.c ****         {
- 225              		.loc 1 192 0
- 226 00a0 0029     		cmp	r1, #0
- 227 00a2 4ED1     		bne	.L19
- 194:../utilities/fsl_str.c ****             ++nlen;
- 228              		.loc 1 194 0
- 229 00a4 3021     		movs	r1, #48
- 230 00a6 8DF80D10 		strb	r1, [sp, #13]
- 231              	.LVL32:
- 196:../utilities/fsl_str.c ****         }
- 232              		.loc 1 196 0
- 233 00aa 0126     		movs	r6, #1
- 234              	.LVL33:
- 235              	.L20:
- 236              	.LBE11:
- 237              	.LBE14:
- 565:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
- 238              		.loc 1 565 0
- 239 00ac 3444     		add	r4, r4, r6
- 240              	.LVL34:
- 241              	.L18:
- 688:../utilities/fsl_str.c ****                 {
- 242              		.loc 1 688 0
- 243 00ae 582A     		cmp	r2, #88
- 244 00b0 5CD0     		beq	.L52
- 688:../utilities/fsl_str.c ****                 {
- 245              		.loc 1 688 0 is_stmt 0 discriminator 1
- 246 00b2 782A     		cmp	r2, #120
- 247 00b4 74D1     		bne	.L53
- 692:../utilities/fsl_str.c ****                     }
- 248              		.loc 1 692 0 is_stmt 1
- 249 00b6 0021     		movs	r1, #0
- 250              	.L73:
- 415:../utilities/fsl_str.c **** 
- 251              		.loc 1 415 0
- 252 00b8 0191     		str	r1, [sp, #4]
- 253              	.LVL35:
- 254              	.LBB15:
- 255              	.LBB16:
- 183:../utilities/fsl_str.c **** 
- 256              		.loc 1 183 0
- 257 00ba 0CAC     		add	r4, sp, #48
- 258              	.LVL36:
- 259              	.LBE16:
- 260              	.LBE15:
- 702:../utilities/fsl_str.c ****                     }
- 261              		.loc 1 702 0
- 262 00bc 3968     		ldr	r1, [r7]
- 263              	.LBB20:
- 264              	.LBB17:
- 183:../utilities/fsl_str.c **** 
- 265              		.loc 1 183 0
- 266 00be 0026     		movs	r6, #0
- 267              	.LVL37:
- 268              	.LBE17:
- 269              	.LBE20:
- 702:../utilities/fsl_str.c ****                     }
- 270              		.loc 1 702 0
- 271 00c0 07F10408 		add	r8, r7, #4
- 272              	.LVL38:
- 273              	.LBB21:
- 274              	.LBB18:
- 183:../utilities/fsl_str.c **** 
- 275              		.loc 1 183 0
- 276 00c4 04F8246D 		strb	r6, [r4, #-36]!
- 233:../utilities/fsl_str.c ****         {
- 277              		.loc 1 233 0
- 278 00c8 0029     		cmp	r1, #0
- 279 00ca 51D1     		bne	.L26
- 235:../utilities/fsl_str.c ****             ++nlen;
- 280              		.loc 1 235 0
- 281 00cc 3021     		movs	r1, #48
- 282 00ce 8DF80D10 		strb	r1, [sp, #13]
- 283              	.LVL39:
- 237:../utilities/fsl_str.c ****         }
- 284              		.loc 1 237 0
- 285 00d2 0126     		movs	r6, #1
- 286              	.LVL40:
- 287              	.L27:
- 288              	.LBE18:
- 289              	.LBE21:
- 705:../utilities/fsl_str.c **** 
- 290              		.loc 1 705 0
- 291 00d4 3444     		add	r4, r4, r6
- 292              	.LVL41:
- 702:../utilities/fsl_str.c ****                     }
- 293              		.loc 1 702 0
- 294 00d6 4746     		mov	r7, r8
- 295              	.LVL42:
- 296              	.L25:
- 746:../utilities/fsl_str.c ****                 {
- 297              		.loc 1 746 0
- 298 00d8 A2F16201 		sub	r1, r2, #98
- 299 00dc C9B2     		uxtb	r1, r1
- 300 00de 1329     		cmp	r1, #19
- 301 00e0 19D8     		bhi	.L31
- 746:../utilities/fsl_str.c ****                 {
- 302              		.loc 1 746 0 is_stmt 0 discriminator 1
- 303 00e2 5D48     		ldr	r0, .L74+4
- 304 00e4 20FA01F1 		lsr	r1, r0, r1
- 305 00e8 C907     		lsls	r1, r1, #31
- 306 00ea 14D5     		bpl	.L31
- 758:../utilities/fsl_str.c ****                     {
- 307              		.loc 1 758 0 is_stmt 1
- 308 00ec 6F2A     		cmp	r2, #111
- 756:../utilities/fsl_str.c ****                     }
- 309              		.loc 1 756 0
- 310 00ee 07F1040E 		add	lr, r7, #4
- 311              	.LVL43:
- 312 00f2 3968     		ldr	r1, [r7]
- 758:../utilities/fsl_str.c ****                     {
- 313              		.loc 1 758 0
- 314 00f4 5FD0     		beq	.L54
- 315 00f6 56DC     		bgt	.L34
- 764:../utilities/fsl_str.c ****                             break;
- 316              		.loc 1 764 0
- 317 00f8 622A     		cmp	r2, #98
- 318 00fa 08BF     		it	eq
- 319 00fc 0225     		moveq	r5, #2
- 320              	.LVL44:
- 321              	.L33:
- 322              	.LBB22:
- 323              	.LBB23:
- 183:../utilities/fsl_str.c **** 
- 324              		.loc 1 183 0
- 325 00fe 0CAC     		add	r4, sp, #48
- 326              	.LVL45:
- 327 0100 0022     		movs	r2, #0
- 328              	.LVL46:
- 329 0102 04F8242D 		strb	r2, [r4, #-36]!
- 233:../utilities/fsl_str.c ****         {
- 330              		.loc 1 233 0
- 331 0106 0029     		cmp	r1, #0
- 332 0108 57D1     		bne	.L38
- 235:../utilities/fsl_str.c ****             ++nlen;
- 333              		.loc 1 235 0
- 334 010a 3022     		movs	r2, #48
- 335 010c 8DF80D20 		strb	r2, [sp, #13]
- 336              	.LVL47:
- 237:../utilities/fsl_str.c ****         }
- 337              		.loc 1 237 0
- 338 0110 0126     		movs	r6, #1
- 339              	.LVL48:
- 340              	.L39:
- 341              	.LBE23:
- 342              	.LBE22:
- 774:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
- 343              		.loc 1 774 0
- 344 0112 3444     		add	r4, r4, r6
- 345              	.LVL49:
- 756:../utilities/fsl_str.c ****                     }
- 346              		.loc 1 756 0
- 347 0114 7746     		mov	r7, lr
- 348              	.LVL50:
- 349              	.L31:
- 791:../utilities/fsl_str.c **** #endif /* !PRINTF_ADVANCED_ENABLE */
- 350              		.loc 1 791 0
- 351 0116 9B1B     		subs	r3, r3, r6
- 352              	.LVL51:
- 353 0118 2022     		movs	r2, #32
- 354 011a 4946     		mov	r1, r9
- 355 011c 5046     		mov	r0, r10
- 356 011e D847     		blx	fp
- 357              	.LVL52:
- 793:../utilities/fsl_str.c ****                 {
- 358              		.loc 1 793 0
- 359 0120 2CB1     		cbz	r4, .L11
- 360 0122 A046     		mov	r8, r4
- 361              	.LVL53:
- 362              	.L43:
- 363 0124 4446     		mov	r4, r8
- 364              	.LVL54:
- 795:../utilities/fsl_str.c ****                     {
- 365              		.loc 1 795 0
- 366 0126 18F90129 		ldrsb	r2, [r8], #-1
- 367 012a 002A     		cmp	r2, #0
- 368 012c 5CD1     		bne	.L44
- 369              	.LVL55:
- 370              	.L11:
+ 134 002e 4046     		mov	r0, r8
+ 135 0030 C847     		blx	r9
+ 136              	.LVL16:
+ 412:../utilities/fsl_str.c ****         }
+ 137              		.loc 1 412 0
+ 138 0032 5746     		mov	r7, r10
+ 139 0034 CDF800B0 		str	fp, [sp]
+ 140              	.LVL17:
+ 141              	.L10:
  400:../utilities/fsl_str.c ****     {
- 371              		.loc 1 400 0 discriminator 2
- 372 012e 009B     		ldr	r3, [sp]
- 373 0130 0133     		adds	r3, r3, #1
- 374 0132 0093     		str	r3, [sp]
- 375              	.LVL56:
- 376 0134 B846     		mov	r8, r7
- 377 0136 71E7     		b	.L8
- 378              	.LVL57:
- 379              	.L12:
- 380 0138 07FB0313 		mla	r3, r7, r3, r1
- 381              	.LVL58:
+ 142              		.loc 1 400 0 discriminator 2
+ 143 0038 009B     		ldr	r3, [sp]
+ 144 003a BA46     		mov	r10, r7
+ 145 003c 03F1010B 		add	fp, r3, #1
+ 146              	.LVL18:
+ 147 0040 E9E7     		b	.L8
+ 148              	.LVL19:
+ 149              	.L11:
+ 150 0042 07FB0313 		mla	r3, r7, r3, r1
+ 151              	.LVL20:
  457:../utilities/fsl_str.c ****             }
- 382              		.loc 1 457 0
- 383 013c 303B     		subs	r3, r3, #48
- 384              	.LVL59:
- 385 013e 0246     		mov	r2, r0
- 386 0140 7AE7     		b	.L10
- 387              	.LVL60:
- 388              	.L19:
- 389              	.LBB25:
- 390              	.LBB12:
+ 152              		.loc 1 457 0
+ 153 0046 303B     		subs	r3, r3, #48
+ 154              	.LVL21:
+ 155 0048 9346     		mov	fp, r2
+ 156              	.LVL22:
+ 157              	.L9:
+ 454:../utilities/fsl_str.c ****             if ((c >= '0') && (c <= '9'))
+ 158              		.loc 1 454 0
+ 159 004a 9BF90110 		ldrsb	r1, [fp, #1]
+ 160              	.LVL23:
+ 455:../utilities/fsl_str.c ****             {
+ 161              		.loc 1 455 0
+ 162 004e A1F13000 		sub	r0, r1, #48
+ 163 0052 0928     		cmp	r0, #9
+ 454:../utilities/fsl_str.c ****             if ((c >= '0') && (c <= '9'))
+ 164              		.loc 1 454 0
+ 165 0054 0BF10102 		add	r2, fp, #1
+ 166              	.LVL24:
+ 455:../utilities/fsl_str.c ****             {
+ 167              		.loc 1 455 0
+ 168 0058 F3D9     		bls	.L11
+ 169              	.LVL25:
+ 477:../utilities/fsl_str.c ****         {
+ 170              		.loc 1 477 0
+ 171 005a 2E29     		cmp	r1, #46
+ 172 005c 07D1     		bne	.L12
+ 173              	.LVL26:
+ 174              	.L13:
+ 485:../utilities/fsl_str.c ****                 {
+ 175              		.loc 1 485 0
+ 176 005e 92F90110 		ldrsb	r1, [r2, #1]
+ 177 0062 3039     		subs	r1, r1, #48
+ 178 0064 0929     		cmp	r1, #9
+ 484:../utilities/fsl_str.c ****                 if ((c >= '0') && (c <= '9'))
+ 179              		.loc 1 484 0
+ 180 0066 02F10100 		add	r0, r2, #1
+ 181              	.LVL27:
+ 485:../utilities/fsl_str.c ****                 {
+ 182              		.loc 1 485 0
+ 183 006a 73D9     		bls	.L49
+ 184 006c 9346     		mov	fp, r2
+ 185              	.LVL28:
+ 186              	.L12:
+ 547:../utilities/fsl_str.c ****         {
+ 187              		.loc 1 547 0
+ 188 006e 0BF10102 		add	r2, fp, #1
+ 189 0072 0092     		str	r2, [sp]
+ 190              	.LVL29:
+ 191 0074 9BF90120 		ldrsb	r2, [fp, #1]
+ 192              	.LVL30:
+ 193 0078 A2F16200 		sub	r0, r2, #98
+ 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
+ 194              		.loc 1 549 0
+ 195 007c 642A     		cmp	r2, #100
+ 196 007e C0B2     		uxtb	r0, r0
+ 197 0080 0FD0     		beq	.L14
+ 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
+ 198              		.loc 1 549 0 is_stmt 0 discriminator 3
+ 199 0082 22F02001 		bic	r1, r2, #32
+ 200 0086 4629     		cmp	r1, #70
+ 201 0088 09D0     		beq	.L15
+ 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
+ 202              		.loc 1 549 0 discriminator 5
+ 203 008a 5829     		cmp	r1, #88
+ 204 008c 07D0     		beq	.L15
+ 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
+ 205              		.loc 1 549 0 discriminator 6
+ 206 008e 1328     		cmp	r0, #19
+ 207 0090 00F2BC80 		bhi	.L16
+ 549:../utilities/fsl_str.c ****                 (c == 'b') || (c == 'p') || (c == 'u'))
+ 208              		.loc 1 549 0 discriminator 7
+ 209 0094 7649     		ldr	r1, .L73
+ 210 0096 C140     		lsrs	r1, r1, r0
+ 211 0098 CF07     		lsls	r7, r1, #31
+ 212 009a 40F1B780 		bpl	.L16
+ 213              	.L15:
+ 552:../utilities/fsl_str.c ****                 {
+ 214              		.loc 1 552 0 is_stmt 1 discriminator 1
+ 215 009e 692A     		cmp	r2, #105
+ 216 00a0 70D1     		bne	.L50
+ 217              	.L14:
+ 218              	.LBB8:
+ 219              	.LBB9:
+ 183:../utilities/fsl_str.c **** 
+ 220              		.loc 1 183 0
+ 221 00a2 0CAC     		add	r4, sp, #48
+ 222              	.LVL31:
+ 223              	.LBE9:
+ 224              	.LBE8:
+ 562:../utilities/fsl_str.c ****                     }
+ 225              		.loc 1 562 0
+ 226 00a4 DAF80010 		ldr	r1, [r10]
+ 227              	.LBB13:
+ 228              	.LBB10:
+ 183:../utilities/fsl_str.c **** 
+ 229              		.loc 1 183 0
+ 230 00a8 4FF00006 		mov	r6, #0
+ 231              	.LVL32:
+ 232              	.LBE10:
+ 233              	.LBE13:
+ 562:../utilities/fsl_str.c ****                     }
+ 234              		.loc 1 562 0
+ 235 00ac 0AF10407 		add	r7, r10, #4
+ 236              	.LVL33:
+ 237              	.LBB14:
+ 238              	.LBB11:
+ 183:../utilities/fsl_str.c **** 
+ 239              		.loc 1 183 0
+ 240 00b0 04F8246D 		strb	r6, [r4, #-36]!
  192:../utilities/fsl_str.c ****         {
- 391              		.loc 1 192 0
- 392 0142 0120     		movs	r0, #1
+ 241              		.loc 1 192 0
+ 242 00b4 0029     		cmp	r1, #0
+ 243 00b6 4FD1     		bne	.L51
+ 194:../utilities/fsl_str.c ****             ++nlen;
+ 244              		.loc 1 194 0
+ 245 00b8 3021     		movs	r1, #48
+ 246 00ba 8DF80D10 		strb	r1, [sp, #13]
+ 247              	.LVL34:
+ 196:../utilities/fsl_str.c ****         }
+ 248              		.loc 1 196 0
+ 249 00be 0126     		movs	r6, #1
+ 250              	.LVL35:
+ 251              	.L19:
+ 252              	.LBE11:
+ 253              	.LBE14:
+ 565:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 254              		.loc 1 565 0
+ 255 00c0 3444     		add	r4, r4, r6
+ 256              	.LVL36:
+ 257              	.L17:
+ 688:../utilities/fsl_str.c ****                 {
+ 258              		.loc 1 688 0
+ 259 00c2 582A     		cmp	r2, #88
+ 260 00c4 60D0     		beq	.L52
+ 688:../utilities/fsl_str.c ****                 {
+ 261              		.loc 1 688 0 is_stmt 0 discriminator 1
+ 262 00c6 782A     		cmp	r2, #120
+ 263 00c8 7BD1     		bne	.L53
+ 692:../utilities/fsl_str.c ****                     }
+ 264              		.loc 1 692 0 is_stmt 1
+ 265 00ca 4FF0000C 		mov	ip, #0
+ 266              	.L22:
+ 267              	.LVL37:
+ 702:../utilities/fsl_str.c ****                     }
+ 268              		.loc 1 702 0
+ 269 00ce 3968     		ldr	r1, [r7]
+ 270              	.LBB15:
+ 271              	.LBB16:
+ 183:../utilities/fsl_str.c **** 
+ 272              		.loc 1 183 0
+ 273 00d0 4FF00004 		mov	r4, #0
+ 274              	.LVL38:
+ 275              	.LBE16:
+ 276              	.LBE15:
+ 702:../utilities/fsl_str.c ****                     }
+ 277              		.loc 1 702 0
+ 278 00d4 07F1040E 		add	lr, r7, #4
+ 279              	.LVL39:
+ 280              	.LBB19:
+ 281              	.LBB17:
+ 183:../utilities/fsl_str.c **** 
+ 282              		.loc 1 183 0
+ 283 00d8 8DF80C40 		strb	r4, [sp, #12]
+ 233:../utilities/fsl_str.c ****         {
+ 284              		.loc 1 233 0
+ 285 00dc 0029     		cmp	r1, #0
+ 286 00de 56D1     		bne	.L24
+ 235:../utilities/fsl_str.c ****             ++nlen;
+ 287              		.loc 1 235 0
+ 288 00e0 3021     		movs	r1, #48
+ 289 00e2 8DF80D10 		strb	r1, [sp, #13]
+ 290              	.LVL40:
+ 237:../utilities/fsl_str.c ****         }
+ 291              		.loc 1 237 0
+ 292 00e6 0126     		movs	r6, #1
+ 293              	.LVL41:
+ 294              	.L25:
+ 295              	.LBE17:
+ 296              	.LBE19:
+ 705:../utilities/fsl_str.c **** 
+ 297              		.loc 1 705 0
+ 298 00e8 03A9     		add	r1, sp, #12
+ 299 00ea 8C19     		adds	r4, r1, r6
+ 300              	.LVL42:
+ 702:../utilities/fsl_str.c ****                     }
+ 301              		.loc 1 702 0
+ 302 00ec 7746     		mov	r7, lr
+ 303              	.LVL43:
+ 304              	.L23:
+ 746:../utilities/fsl_str.c ****                 {
+ 305              		.loc 1 746 0
+ 306 00ee 1328     		cmp	r0, #19
+ 307 00f0 1AD8     		bhi	.L29
+ 746:../utilities/fsl_str.c ****                 {
+ 308              		.loc 1 746 0 is_stmt 0 discriminator 1
+ 309 00f2 6049     		ldr	r1, .L73+4
+ 310 00f4 21FA00F0 		lsr	r0, r1, r0
+ 311 00f8 C107     		lsls	r1, r0, #31
+ 312 00fa 15D5     		bpl	.L29
+ 758:../utilities/fsl_str.c ****                     {
+ 313              		.loc 1 758 0 is_stmt 1
+ 314 00fc 6F2A     		cmp	r2, #111
+ 756:../utilities/fsl_str.c ****                     }
+ 315              		.loc 1 756 0
+ 316 00fe 07F10400 		add	r0, r7, #4
+ 317              	.LVL44:
+ 318 0102 3968     		ldr	r1, [r7]
+ 758:../utilities/fsl_str.c ****                     {
+ 319              		.loc 1 758 0
+ 320 0104 68D0     		beq	.L54
+ 321 0106 5FDC     		bgt	.L32
+ 764:../utilities/fsl_str.c ****                             break;
+ 322              		.loc 1 764 0
+ 323 0108 622A     		cmp	r2, #98
+ 324 010a 08BF     		it	eq
+ 325 010c 0225     		moveq	r5, #2
+ 326              	.LVL45:
+ 327              	.L31:
+ 328              	.LBB20:
+ 329              	.LBB21:
+ 183:../utilities/fsl_str.c **** 
+ 330              		.loc 1 183 0
+ 331 010e 0CAC     		add	r4, sp, #48
+ 332              	.LVL46:
+ 333 0110 4FF00002 		mov	r2, #0
+ 334              	.LVL47:
+ 335 0114 04F8242D 		strb	r2, [r4, #-36]!
+ 233:../utilities/fsl_str.c ****         {
+ 336              		.loc 1 233 0
+ 337 0118 0029     		cmp	r1, #0
+ 338 011a 5FD1     		bne	.L36
+ 235:../utilities/fsl_str.c ****             ++nlen;
+ 339              		.loc 1 235 0
+ 340 011c 3022     		movs	r2, #48
+ 341 011e 8DF80D20 		strb	r2, [sp, #13]
+ 342              	.LVL48:
+ 237:../utilities/fsl_str.c ****         }
+ 343              		.loc 1 237 0
+ 344 0122 0126     		movs	r6, #1
+ 345              	.LVL49:
+ 346              	.L37:
+ 347              	.LBE21:
+ 348              	.LBE20:
+ 774:../utilities/fsl_str.c **** #if PRINTF_ADVANCED_ENABLE
+ 349              		.loc 1 774 0
+ 350 0124 3444     		add	r4, r4, r6
+ 351              	.LVL50:
+ 756:../utilities/fsl_str.c ****                     }
+ 352              		.loc 1 756 0
+ 353 0126 0746     		mov	r7, r0
+ 354              	.LVL51:
+ 355              	.L29:
+ 791:../utilities/fsl_str.c **** #endif /* !PRINTF_ADVANCED_ENABLE */
+ 356              		.loc 1 791 0
+ 357 0128 9B1B     		subs	r3, r3, r6
+ 358              	.LVL52:
+ 359 012a 2022     		movs	r2, #32
+ 360 012c 02A9     		add	r1, sp, #8
+ 361 012e 4046     		mov	r0, r8
+ 362 0130 C847     		blx	r9
+ 363              	.LVL53:
+ 793:../utilities/fsl_str.c ****                 {
+ 364              		.loc 1 793 0
+ 365 0132 002C     		cmp	r4, #0
+ 366 0134 80D0     		beq	.L10
+ 367 0136 A246     		mov	r10, r4
+ 368              	.LVL54:
+ 369              	.L41:
+ 370 0138 5446     		mov	r4, r10
+ 371              	.LVL55:
+ 795:../utilities/fsl_str.c ****                     {
+ 372              		.loc 1 795 0
+ 373 013a 1AF90129 		ldrsb	r2, [r10], #-1
+ 374 013e 002A     		cmp	r2, #0
+ 375 0140 3FF47AAF 		beq	.L10
+ 376              	.LVL56:
+ 797:../utilities/fsl_str.c ****                     }
+ 377              		.loc 1 797 0
+ 378 0144 0123     		movs	r3, #1
+ 379 0146 02A9     		add	r1, sp, #8
+ 380 0148 4046     		mov	r0, r8
+ 381 014a C847     		blx	r9
+ 382              	.LVL57:
+ 383 014c F4E7     		b	.L41
+ 384              	.LVL58:
+ 385              	.L48:
+ 450:../utilities/fsl_str.c ****         done = false;
+ 386              		.loc 1 450 0
+ 387 014e 0023     		movs	r3, #0
+ 457:../utilities/fsl_str.c ****             }
+ 388              		.loc 1 457 0
+ 389 0150 0A27     		movs	r7, #10
+ 390 0152 7AE7     		b	.L9
+ 391              	.LVL59:
+ 392              	.L49:
+ 393 0154 0246     		mov	r2, r0
+ 394 0156 82E7     		b	.L13
+ 395              	.LVL60:
+ 396              	.L51:
+ 397              	.LBB23:
+ 398              	.LBB12:
+ 192:../utilities/fsl_str.c ****         {
+ 399              		.loc 1 192 0
+ 400 0158 4FF0010C 		mov	ip, #1
  209:../utilities/fsl_str.c ****             c = a - (b * radix);
- 393              		.loc 1 209 0
- 394 0144 4FF00A0C 		mov	ip, #10
- 395              	.LVL61:
- 396              	.L23:
- 397 0148 91FBFCFE 		sdiv	lr, r1, ip
- 398              	.LVL62:
- 399 014c 0CFB1E11 		mls	r1, ip, lr, r1
- 400              	.LVL63:
+ 401              		.loc 1 209 0
+ 402 015c 4FF00A0A 		mov	r10, #10
+ 403              	.LVL61:
+ 404              	.L18:
+ 405 0160 91FBFAFE 		sdiv	lr, r1, r10
+ 406              	.LVL62:
+ 407 0164 0AFB1E11 		mls	r1, r10, lr, r1
+ 408              	.LVL63:
  211:../utilities/fsl_str.c ****             {
- 401              		.loc 1 211 0
- 402 0150 0029     		cmp	r1, #0
- 403              	.LVL64:
+ 409              		.loc 1 211 0
+ 410 0168 0029     		cmp	r1, #0
+ 411              	.LVL64:
  214:../utilities/fsl_str.c ****             }
- 404              		.loc 1 214 0
- 405 0152 B4BF     		ite	lt
- 406 0154 C1F13001 		rsblt	r1, r1, #48
- 407              	.LVL65:
+ 412              		.loc 1 214 0
+ 413 016a B4BF     		ite	lt
+ 414 016c C1F13001 		rsblt	r1, r1, #48
+ 415              	.LVL65:
  219:../utilities/fsl_str.c ****             }
- 408              		.loc 1 219 0
- 409 0158 3031     		addge	r1, r1, #48
- 410              	.LVL66:
+ 416              		.loc 1 219 0
+ 417 0170 3031     		addge	r1, r1, #48
+ 418              	.LVL66:
  222:../utilities/fsl_str.c ****             ++nlen;
- 411              		.loc 1 222 0
- 412 015a 2154     		strb	r1, [r4, r0]
- 198:../utilities/fsl_str.c ****         {
- 413              		.loc 1 198 0
- 414 015c 7146     		mov	r1, lr
- 415              	.LVL67:
- 223:../utilities/fsl_str.c ****         }
- 416              		.loc 1 223 0
- 417 015e 0646     		mov	r6, r0
- 418              	.LVL68:
- 419 0160 0130     		adds	r0, r0, #1
- 420              	.LVL69:
+ 419              		.loc 1 222 0
+ 420 0172 04F80C10 		strb	r1, [r4, ip]
  198:../utilities/fsl_str.c ****         {
  421              		.loc 1 198 0
- 422 0162 0029     		cmp	r1, #0
- 423 0164 F0D1     		bne	.L23
- 424 0166 A1E7     		b	.L20
- 425              	.LVL70:
- 426              	.L51:
- 427              	.LBE12:
- 428              	.LBE25:
- 429 0168 4746     		mov	r7, r8
- 430 016a A0E7     		b	.L18
- 431              	.LVL71:
- 432              	.L52:
+ 422 0176 7146     		mov	r1, lr
+ 423              	.LVL67:
+ 223:../utilities/fsl_str.c ****         }
+ 424              		.loc 1 223 0
+ 425 0178 6646     		mov	r6, ip
+ 426              	.LVL68:
+ 427 017a 0CF1010C 		add	ip, ip, #1
+ 428              	.LVL69:
+ 198:../utilities/fsl_str.c ****         {
+ 429              		.loc 1 198 0
+ 430 017e 0029     		cmp	r1, #0
+ 431 0180 EED1     		bne	.L18
+ 432 0182 9DE7     		b	.L19
+ 433              	.LVL70:
+ 434              	.L50:
+ 435              	.LBE12:
+ 436              	.LBE23:
+ 437 0184 5746     		mov	r7, r10
+ 438 0186 9CE7     		b	.L17
+ 439              	.LVL71:
+ 440              	.L52:
  415:../utilities/fsl_str.c **** 
- 433              		.loc 1 415 0
- 434 016c 0121     		movs	r1, #1
- 435 016e A3E7     		b	.L73
- 436              	.LVL72:
- 437              	.L26:
- 438 0170 0198     		ldr	r0, [sp, #4]
- 439 0172 0028     		cmp	r0, #0
- 440              	.LBB26:
- 441              	.LBB19:
+ 441              		.loc 1 415 0
+ 442 0188 4FF0010C 		mov	ip, #1
+ 443 018c 9FE7     		b	.L22
+ 444              	.LVL72:
+ 445              	.L24:
+ 446 018e BCF1000F 		cmp	ip, #0
+ 447              	.LBB24:
+ 448              	.LBB18:
  233:../utilities/fsl_str.c ****         {
- 442              		.loc 1 233 0
- 443 0174 4FF00107 		mov	r7, #1
+ 449              		.loc 1 233 0
+ 450 0192 4FF00104 		mov	r4, #1
  255:../utilities/fsl_str.c ****             }
- 444              		.loc 1 255 0
- 445 0178 14BF     		ite	ne
- 446 017a 4FF0370C 		movne	ip, #55
- 447 017e 4FF0570C 		moveq	ip, #87
- 448              	.LVL73:
- 449              	.L30:
- 245:../utilities/fsl_str.c ****             uc = ua - (ub * (uint32_t)radix);
- 450              		.loc 1 245 0
- 451 0182 4FEA111E 		lsr	lr, r1, #4
- 452              	.LVL74:
- 453 0186 01F00F01 		and	r1, r1, #15
- 454              	.LVL75:
- 249:../utilities/fsl_str.c ****             {
- 455              		.loc 1 249 0
- 456 018a 0929     		cmp	r1, #9
- 251:../utilities/fsl_str.c ****             }
- 457              		.loc 1 251 0
- 458 018c 94BF     		ite	ls
- 459 018e 3031     		addls	r1, r1, #48
- 460              	.LVL76:
- 255:../utilities/fsl_str.c ****             }
- 461              		.loc 1 255 0
- 462 0190 6144     		addhi	r1, r1, ip
- 463              	.LVL77:
+ 451              		.loc 1 255 0
+ 452 0196 14BF     		ite	ne
+ 453 0198 4FF0370B 		movne	fp, #55
+ 454 019c 4FF0570B 		moveq	fp, #87
  258:../utilities/fsl_str.c ****             ++nlen;
- 464              		.loc 1 258 0
- 465 0192 E155     		strb	r1, [r4, r7]
- 239:../utilities/fsl_str.c ****         {
- 466              		.loc 1 239 0
- 467 0194 7146     		mov	r1, lr
- 468              	.LVL78:
+ 455              		.loc 1 258 0
+ 456 01a0 0DF10C0A 		add	r10, sp, #12
+ 457              	.LVL73:
+ 458              	.L28:
+ 245:../utilities/fsl_str.c ****             uc = ua - (ub * (uint32_t)radix);
+ 459              		.loc 1 245 0
+ 460 01a4 0F09     		lsrs	r7, r1, #4
+ 461              	.LVL74:
+ 462 01a6 01F00F01 		and	r1, r1, #15
+ 463              	.LVL75:
+ 249:../utilities/fsl_str.c ****             {
+ 464              		.loc 1 249 0
+ 465 01aa 0929     		cmp	r1, #9
+ 251:../utilities/fsl_str.c ****             }
+ 466              		.loc 1 251 0
+ 467 01ac 94BF     		ite	ls
+ 468 01ae 3031     		addls	r1, r1, #48
+ 469              	.LVL76:
+ 255:../utilities/fsl_str.c ****             }
+ 470              		.loc 1 255 0
+ 471 01b0 5944     		addhi	r1, r1, fp
+ 472              	.LVL77:
+ 258:../utilities/fsl_str.c ****             ++nlen;
+ 473              		.loc 1 258 0
+ 474 01b2 04F80A10 		strb	r1, [r4, r10]
  259:../utilities/fsl_str.c ****         }
- 469              		.loc 1 259 0
- 470 0196 3E46     		mov	r6, r7
- 471              	.LVL79:
- 472 0198 0137     		adds	r7, r7, #1
- 473              	.LVL80:
+ 475              		.loc 1 259 0
+ 476 01b6 2646     		mov	r6, r4
+ 477              	.LVL78:
  239:../utilities/fsl_str.c ****         {
- 474              		.loc 1 239 0
- 475 019a 0029     		cmp	r1, #0
- 476 019c F1D1     		bne	.L30
- 477 019e 99E7     		b	.L27
- 478              	.LVL81:
- 479              	.L53:
- 480              	.LBE19:
- 481              	.LBE26:
+ 478              		.loc 1 239 0
+ 479 01b8 3946     		mov	r1, r7
+ 480              	.LVL79:
+ 481 01ba 0134     		adds	r4, r4, #1
+ 482              	.LVL80:
+ 483 01bc 002F     		cmp	r7, #0
+ 484 01be F1D1     		bne	.L28
+ 485 01c0 92E7     		b	.L25
+ 486              	.LVL81:
+ 487              	.L53:
+ 488              	.LBE18:
+ 489              	.LBE24:
  415:../utilities/fsl_str.c **** 
- 482              		.loc 1 415 0
- 483 01a0 0121     		movs	r1, #1
- 484 01a2 0191     		str	r1, [sp, #4]
- 485 01a4 98E7     		b	.L25
- 486              	.LVL82:
- 487              	.L34:
+ 490              		.loc 1 415 0
+ 491 01c2 4FF0010C 		mov	ip, #1
+ 492 01c6 92E7     		b	.L23
+ 493              	.LVL82:
+ 494              	.L32:
  758:../utilities/fsl_str.c ****                     {
- 488              		.loc 1 758 0
- 489 01a6 702A     		cmp	r2, #112
- 490 01a8 03D0     		beq	.L36
+ 495              		.loc 1 758 0
+ 496 01c8 702A     		cmp	r2, #112
+ 497 01ca 03D0     		beq	.L34
  770:../utilities/fsl_str.c ****                             break;
- 491              		.loc 1 770 0
- 492 01aa 752A     		cmp	r2, #117
- 493 01ac 08BF     		it	eq
- 494 01ae 0A25     		moveq	r5, #10
- 495              	.LVL83:
- 496 01b0 A5E7     		b	.L33
- 497              	.LVL84:
- 498              	.L36:
+ 498              		.loc 1 770 0
+ 499 01cc 752A     		cmp	r2, #117
+ 500 01ce 08BF     		it	eq
+ 501 01d0 0A25     		moveq	r5, #10
+ 502              	.LVL83:
+ 503 01d2 9CE7     		b	.L31
+ 504              	.LVL84:
+ 505              	.L34:
  767:../utilities/fsl_str.c ****                             break;
- 499              		.loc 1 767 0
- 500 01b2 1025     		movs	r5, #16
+ 506              		.loc 1 767 0
+ 507 01d4 1025     		movs	r5, #16
  768:../utilities/fsl_str.c ****                         case 'u':
- 501              		.loc 1 768 0
- 502 01b4 A3E7     		b	.L33
- 503              	.LVL85:
- 504              	.L54:
+ 508              		.loc 1 768 0
+ 509 01d6 9AE7     		b	.L31
+ 510              	.LVL85:
+ 511              	.L54:
  761:../utilities/fsl_str.c ****                             break;
- 505              		.loc 1 761 0
- 506 01b6 0825     		movs	r5, #8
- 507              	.LVL86:
- 508 01b8 A1E7     		b	.L33
- 509              	.LVL87:
- 510              	.L38:
- 511 01ba 019A     		ldr	r2, [sp, #4]
- 512 01bc 002A     		cmp	r2, #0
- 513              	.LBB27:
- 514              	.LBB24:
- 255:../utilities/fsl_str.c ****             }
- 515              		.loc 1 255 0
- 516 01be 18BF     		it	ne
- 517 01c0 3727     		movne	r7, #55
+ 512              		.loc 1 761 0
+ 513 01d8 0825     		movs	r5, #8
+ 514              	.LVL86:
+ 515 01da 98E7     		b	.L31
+ 516              	.LVL87:
+ 517              	.L36:
+ 518 01dc BCF1000F 		cmp	ip, #0
+ 519              	.LBB25:
+ 520              	.LBB22:
  233:../utilities/fsl_str.c ****         {
- 518              		.loc 1 233 0
- 519 01c2 4FF00102 		mov	r2, #1
+ 521              		.loc 1 233 0
+ 522 01e0 4FF00102 		mov	r2, #1
  255:../utilities/fsl_str.c ****             }
- 520              		.loc 1 255 0
- 521 01c6 08BF     		it	eq
- 522 01c8 5727     		moveq	r7, #87
- 523              	.LVL88:
- 524              	.L42:
+ 523              		.loc 1 255 0
+ 524 01e4 14BF     		ite	ne
+ 525 01e6 4FF0370C 		movne	ip, #55
+ 526              	.LVL88:
+ 527 01ea 4FF0570C 		moveq	ip, #87
+ 528              	.LVL89:
+ 529              	.L40:
  245:../utilities/fsl_str.c ****             uc = ua - (ub * (uint32_t)radix);
- 525              		.loc 1 245 0
- 526 01ca B1FBF5F0 		udiv	r0, r1, r5
- 527              	.LVL89:
- 528 01ce 05FB1011 		mls	r1, r5, r0, r1
- 529              	.LVL90:
+ 530              		.loc 1 245 0
+ 531 01ee B1FBF5F7 		udiv	r7, r1, r5
+ 532              	.LVL90:
+ 533 01f2 05FB1711 		mls	r1, r5, r7, r1
+ 534              	.LVL91:
  249:../utilities/fsl_str.c ****             {
- 530              		.loc 1 249 0
- 531 01d2 0929     		cmp	r1, #9
+ 535              		.loc 1 249 0
+ 536 01f6 0929     		cmp	r1, #9
  251:../utilities/fsl_str.c ****             }
- 532              		.loc 1 251 0
- 533 01d4 94BF     		ite	ls
- 534 01d6 3031     		addls	r1, r1, #48
- 535              	.LVL91:
+ 537              		.loc 1 251 0
+ 538 01f8 94BF     		ite	ls
+ 539 01fa 3031     		addls	r1, r1, #48
+ 540              	.LVL92:
  255:../utilities/fsl_str.c ****             }
- 536              		.loc 1 255 0
- 537 01d8 C919     		addhi	r1, r1, r7
- 538              	.LVL92:
- 258:../utilities/fsl_str.c ****             ++nlen;
- 539              		.loc 1 258 0
- 540 01da A154     		strb	r1, [r4, r2]
- 259:../utilities/fsl_str.c ****         }
- 541              		.loc 1 259 0
- 542 01dc 1646     		mov	r6, r2
+ 541              		.loc 1 255 0
+ 542 01fc 6144     		addhi	r1, r1, ip
  543              	.LVL93:
+ 258:../utilities/fsl_str.c ****             ++nlen;
+ 544              		.loc 1 258 0
+ 545 01fe A154     		strb	r1, [r4, r2]
+ 259:../utilities/fsl_str.c ****         }
+ 546              		.loc 1 259 0
+ 547 0200 1646     		mov	r6, r2
+ 548              	.LVL94:
  239:../utilities/fsl_str.c ****         {
- 544              		.loc 1 239 0
- 545 01de 0146     		mov	r1, r0
- 546              	.LVL94:
- 547 01e0 0132     		adds	r2, r2, #1
- 548              	.LVL95:
- 549 01e2 0028     		cmp	r0, #0
- 550 01e4 F1D1     		bne	.L42
- 551 01e6 94E7     		b	.L39
- 552              	.LVL96:
- 553              	.L44:
- 554              	.LBE24:
- 555              	.LBE27:
- 797:../utilities/fsl_str.c ****                     }
- 556              		.loc 1 797 0
- 557 01e8 0123     		movs	r3, #1
- 558 01ea 4946     		mov	r1, r9
- 559 01ec 5046     		mov	r0, r10
- 560 01ee D847     		blx	fp
- 561              	.LVL97:
- 562 01f0 98E7     		b	.L43
- 563              	.LVL98:
- 564              	.L17:
+ 549              		.loc 1 239 0
+ 550 0202 3946     		mov	r1, r7
+ 551              	.LVL95:
+ 552 0204 0132     		adds	r2, r2, #1
+ 553              	.LVL96:
+ 554 0206 002F     		cmp	r7, #0
+ 555 0208 F1D1     		bne	.L40
+ 556 020a 8BE7     		b	.L37
+ 557              	.LVL97:
+ 558              	.L16:
+ 559              	.LBE22:
+ 560              	.LBE25:
  807:../utilities/fsl_str.c ****             {
- 565              		.loc 1 807 0
- 566 01f2 632A     		cmp	r2, #99
- 567 01f4 08D1     		bne	.L45
+ 561              		.loc 1 807 0
+ 562 020c 632A     		cmp	r2, #99
+ 563 020e 08D1     		bne	.L43
  810:../utilities/fsl_str.c ****             }
- 568              		.loc 1 810 0
- 569 01f6 0123     		movs	r3, #1
- 570              	.LVL99:
- 571 01f8 98F90020 		ldrsb	r2, [r8]
- 572              	.LVL100:
- 573 01fc 4946     		mov	r1, r9
- 574 01fe 5046     		mov	r0, r10
+ 564              		.loc 1 810 0
+ 565 0210 0123     		movs	r3, #1
+ 566              	.LVL98:
+ 567 0212 9AF90020 		ldrsb	r2, [r10]
+ 568              	.LVL99:
+ 569 0216 02A9     		add	r1, sp, #8
+ 570 0218 4046     		mov	r0, r8
  809:../utilities/fsl_str.c ****                 cb(buf, &count, cval, 1);
- 575              		.loc 1 809 0
- 576 0200 08F10407 		add	r7, r8, #4
- 577              	.LVL101:
+ 571              		.loc 1 809 0
+ 572 021a 0AF10407 		add	r7, r10, #4
+ 573              	.LVL100:
  810:../utilities/fsl_str.c ****             }
- 578              		.loc 1 810 0
- 579 0204 D847     		blx	fp
- 580              	.LVL102:
- 581 0206 92E7     		b	.L11
- 582              	.LVL103:
- 583              	.L45:
+ 574              		.loc 1 810 0
+ 575 021e C847     		blx	r9
+ 576              	.LVL101:
+ 577 0220 0AE7     		b	.L10
+ 578              	.LVL102:
+ 579              	.L43:
  812:../utilities/fsl_str.c ****             {
- 584              		.loc 1 812 0
- 585 0208 732A     		cmp	r2, #115
- 586 020a 1DD1     		bne	.L46
+ 580              		.loc 1 812 0
+ 581 0222 732A     		cmp	r2, #115
+ 582 0224 1ED1     		bne	.L44
  814:../utilities/fsl_str.c ****                 if (sval)
- 587              		.loc 1 814 0
- 588 020c 08F10407 		add	r7, r8, #4
- 589              	.LVL104:
- 590 0210 D8F80080 		ldr	r8, [r8]
- 591 0214 0193     		str	r3, [sp, #4]
+ 583              		.loc 1 814 0
+ 584 0226 0AF10407 		add	r7, r10, #4
+ 585              	.LVL103:
+ 586 022a DAF800A0 		ldr	r10, [r10]
+ 587 022e 0193     		str	r3, [sp, #4]
  815:../utilities/fsl_str.c ****                 {
- 592              		.loc 1 815 0
- 593 0216 B8F1000F 		cmp	r8, #0
- 594 021a 88D0     		beq	.L11
+ 588              		.loc 1 815 0
+ 589 0230 BAF1000F 		cmp	r10, #0
+ 590 0234 3FF400AF 		beq	.L10
  827:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
- 595              		.loc 1 827 0
- 596 021c 4046     		mov	r0, r8
- 597 021e FFF7FEFF 		bl	strlen
- 598              	.LVL105:
+ 591              		.loc 1 827 0
+ 592 0238 5046     		mov	r0, r10
+ 593 023a FFF7FEFF 		bl	strlen
+ 594              	.LVL104:
  833:../utilities/fsl_str.c ****                     }
- 599              		.loc 1 833 0
- 600 0222 019B     		ldr	r3, [sp, #4]
+ 595              		.loc 1 833 0
+ 596 023e 019B     		ldr	r3, [sp, #4]
  827:../utilities/fsl_str.c **** #endif /* PRINTF_ADVANCED_ENABLE */
- 601              		.loc 1 827 0
- 602 0224 0646     		mov	r6, r0
- 603              	.LVL106:
+ 597              		.loc 1 827 0
+ 598 0240 0646     		mov	r6, r0
+ 599              	.LVL105:
  833:../utilities/fsl_str.c ****                     }
- 604              		.loc 1 833 0
- 605 0226 1B1A     		subs	r3, r3, r0
- 606 0228 2022     		movs	r2, #32
- 607 022a 4946     		mov	r1, r9
- 608 022c 5046     		mov	r0, r10
- 609              	.LVL107:
- 610 022e D847     		blx	fp
- 611              	.LVL108:
- 612 0230 08F1FF38 		add	r8, r8, #-1
- 613              	.L47:
- 614              	.LVL109:
+ 600              		.loc 1 833 0
+ 601 0242 1B1A     		subs	r3, r3, r0
+ 602 0244 2022     		movs	r2, #32
+ 603 0246 02A9     		add	r1, sp, #8
+ 604 0248 4046     		mov	r0, r8
+ 605              	.LVL106:
+ 606 024a C847     		blx	r9
+ 607              	.LVL107:
+ 608 024c 0AF1FF3A 		add	r10, r10, #-1
+ 609              	.L45:
+ 610              	.LVL108:
  850:../utilities/fsl_str.c ****                         {
- 615              		.loc 1 850 0
- 616 0234 18F9012F 		ldrsb	r2, [r8, #1]!
- 617              	.LVL110:
- 618 0238 002A     		cmp	r2, #0
- 619 023a 3FF478AF 		beq	.L11
- 620              	.LVL111:
+ 611              		.loc 1 850 0
+ 612 0250 1AF9012F 		ldrsb	r2, [r10, #1]!
+ 613              	.LVL109:
+ 614 0254 002A     		cmp	r2, #0
+ 615 0256 3FF4EFAE 		beq	.L10
+ 616              	.LVL110:
  852:../utilities/fsl_str.c ****                         }
- 621              		.loc 1 852 0
- 622 023e 0123     		movs	r3, #1
- 623 0240 4946     		mov	r1, r9
- 624 0242 5046     		mov	r0, r10
- 625 0244 D847     		blx	fp
- 626              	.LVL112:
- 627 0246 F5E7     		b	.L47
- 628              	.LVL113:
- 629              	.L46:
+ 617              		.loc 1 852 0
+ 618 025a 0123     		movs	r3, #1
+ 619 025c 02A9     		add	r1, sp, #8
+ 620 025e 4046     		mov	r0, r8
+ 621 0260 C847     		blx	r9
+ 622              	.LVL111:
+ 623 0262 F5E7     		b	.L45
+ 624              	.LVL112:
+ 625              	.L44:
  868:../utilities/fsl_str.c ****             }
- 630              		.loc 1 868 0
- 631 0248 0123     		movs	r3, #1
- 632 024a 4946     		mov	r1, r9
- 633              	.LVL114:
- 634 024c 5046     		mov	r0, r10
- 635 024e D847     		blx	fp
- 636              	.LVL115:
- 637 0250 4746     		mov	r7, r8
- 638 0252 6CE7     		b	.L11
- 639              	.L75:
- 640              		.align	2
- 641              	.L74:
- 642 0254 81600800 		.word	548993
- 643 0258 01600800 		.word	548865
- 644              		.cfi_endproc
- 645              	.LFE149:
- 647              		.section	.text.StrFormatScanf,"ax",%progbits
- 648              		.align	1
- 649              		.global	StrFormatScanf
- 650              		.syntax unified
- 651              		.thumb
- 652              		.thumb_func
- 653              		.fpu fpv4-sp-d16
- 655              	StrFormatScanf:
- 656              	.LFB150:
+ 626              		.loc 1 868 0
+ 627 0264 0123     		movs	r3, #1
+ 628              	.LVL113:
+ 629 0266 02A9     		add	r1, sp, #8
+ 630 0268 4046     		mov	r0, r8
+ 631 026a C847     		blx	r9
+ 632              	.LVL114:
+ 633 026c 5746     		mov	r7, r10
+ 634 026e E3E6     		b	.L10
+ 635              	.L74:
+ 636              		.align	2
+ 637              	.L73:
+ 638 0270 81600800 		.word	548993
+ 639 0274 01600800 		.word	548865
+ 640              		.cfi_endproc
+ 641              	.LFE149:
+ 643              		.section	.text.StrFormatScanf,"ax",%progbits
+ 644              		.align	1
+ 645              		.global	StrFormatScanf
+ 646              		.syntax unified
+ 647              		.thumb
+ 648              		.thumb_func
+ 649              		.fpu fpv4-sp-d16
+ 651              	StrFormatScanf:
+ 652              	.LFB150:
  875:../utilities/fsl_str.c **** 
  876:../utilities/fsl_str.c **** int StrFormatScanf(const char *line_ptr, char *format, va_list args_ptr)
  877:../utilities/fsl_str.c **** {
- 657              		.loc 1 877 0
- 658              		.cfi_startproc
- 659              		@ args = 0, pretend = 0, frame = 8
- 660              		@ frame_needed = 0, uses_anonymous_args = 0
- 661              	.LVL116:
- 662 0000 2DE9F743 		push	{r0, r1, r2, r4, r5, r6, r7, r8, r9, lr}
- 663              		.cfi_def_cfa_offset 40
- 664              		.cfi_offset 4, -28
- 665              		.cfi_offset 5, -24
- 666              		.cfi_offset 6, -20
- 667              		.cfi_offset 7, -16
- 668              		.cfi_offset 8, -12
- 669              		.cfi_offset 9, -8
- 670              		.cfi_offset 14, -4
- 671              	.LVL117:
+ 653              		.loc 1 877 0
+ 654              		.cfi_startproc
+ 655              		@ args = 0, pretend = 0, frame = 8
+ 656              		@ frame_needed = 0, uses_anonymous_args = 0
+ 657              	.LVL115:
+ 658 0000 2DE9F743 		push	{r0, r1, r2, r4, r5, r6, r7, r8, r9, lr}
+ 659              		.cfi_def_cfa_offset 40
+ 660              		.cfi_offset 4, -28
+ 661              		.cfi_offset 5, -24
+ 662              		.cfi_offset 6, -20
+ 663              		.cfi_offset 7, -16
+ 664              		.cfi_offset 8, -12
+ 665              		.cfi_offset 9, -8
+ 666              		.cfi_offset 14, -4
+ 667              	.LVL116:
  878:../utilities/fsl_str.c ****     uint8_t base;
  879:../utilities/fsl_str.c ****     int8_t neg;
  880:../utilities/fsl_str.c ****     /* Identifier for the format string. */
@@ -1676,23 +1673,22 @@
  898:../utilities/fsl_str.c **** 
  899:../utilities/fsl_str.c ****     /* Return EOF error before any conversion. */
  900:../utilities/fsl_str.c ****     if (*p == '\0')
- 672              		.loc 1 900 0
- 673 0004 90F90030 		ldrsb	r3, [r0]
- 881:../utilities/fsl_str.c ****     char temp;
- 674              		.loc 1 881 0
- 675 0008 0091     		str	r1, [sp]
- 676              	.LVL118:
+ 668              		.loc 1 900 0
+ 669 0004 90F90030 		ldrsb	r3, [r0]
+ 670              	.LVL117:
  877:../utilities/fsl_str.c ****     uint8_t base;
- 677              		.loc 1 877 0
- 678 000a 1746     		mov	r7, r2
- 679              	.LVL119:
+ 671              		.loc 1 877 0
+ 672 0008 1746     		mov	r7, r2
+ 673              	.LVL118:
  897:../utilities/fsl_str.c **** 
- 680              		.loc 1 897 0
- 681 000c 0190     		str	r0, [sp, #4]
- 682              		.loc 1 900 0
- 683 000e 002B     		cmp	r3, #0
- 684 0010 00F03481 		beq	.L137
- 685 0014 0026     		movs	r6, #0
+ 674              		.loc 1 897 0
+ 675 000a CDE90010 		strd	r1, r0, [sp]
+ 676              		.loc 1 900 0
+ 677 000e 002B     		cmp	r3, #0
+ 678 0010 00F03381 		beq	.L131
+ 889:../utilities/fsl_str.c ****     /* How many characters are read from the input streams. */
+ 679              		.loc 1 889 0
+ 680 0014 0026     		movs	r6, #0
  901:../utilities/fsl_str.c ****     {
  902:../utilities/fsl_str.c ****         return -1;
  903:../utilities/fsl_str.c ****     }
@@ -1819,104 +1815,103 @@
 1024:../utilities/fsl_str.c ****                         base = 10;
 1025:../utilities/fsl_str.c ****                         flag |= kSCANF_TypeSinged;
 1026:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
- 686              		.loc 1 1026 0
- 687 0016 42F22005 		movw	r5, #8224
- 688              	.LVL120:
- 689              	.L78:
+ 681              		.loc 1 1026 0
+ 682 0016 42F22005 		movw	r5, #8224
+ 683              	.LVL119:
+ 684              	.L77:
  906:../utilities/fsl_str.c ****     {
- 690              		.loc 1 906 0
- 691 001a 009B     		ldr	r3, [sp]
- 692 001c 93F90030 		ldrsb	r3, [r3]
- 693 0020 002B     		cmp	r3, #0
- 694 0022 00F09D80 		beq	.L76
+ 685              		.loc 1 906 0
+ 686 001a 009B     		ldr	r3, [sp]
+ 687 001c 93F90030 		ldrsb	r3, [r3]
+ 688 0020 002B     		cmp	r3, #0
+ 689 0022 00F09E80 		beq	.L75
  906:../utilities/fsl_str.c ****     {
- 695              		.loc 1 906 0 is_stmt 0 discriminator 1
- 696 0026 019B     		ldr	r3, [sp, #4]
- 697 0028 93F90030 		ldrsb	r3, [r3]
- 698 002c 002B     		cmp	r3, #0
- 699 002e 00F09780 		beq	.L76
+ 690              		.loc 1 906 0 is_stmt 0 discriminator 1
+ 691 0026 019B     		ldr	r3, [sp, #4]
+ 692 0028 93F90030 		ldrsb	r3, [r3]
+ 693 002c 002B     		cmp	r3, #0
+ 694 002e 00F09880 		beq	.L75
  909:../utilities/fsl_str.c ****         {
- 700              		.loc 1 909 0 is_stmt 1
- 701 0032 6846     		mov	r0, sp
- 702 0034 FFF7FEFF 		bl	ScanIgnoreWhiteSpace
- 703              	.LVL121:
- 704 0038 0446     		mov	r4, r0
- 705 003a 28B1     		cbz	r0, .L79
+ 695              		.loc 1 909 0 is_stmt 1
+ 696 0032 6846     		mov	r0, sp
+ 697 0034 FFF7FEFF 		bl	ScanIgnoreWhiteSpace
+ 698              	.LVL120:
+ 699 0038 0446     		mov	r4, r0
+ 700 003a 28B1     		cbz	r0, .L78
  911:../utilities/fsl_str.c ****         }
- 706              		.loc 1 911 0
- 707 003c 01A8     		add	r0, sp, #4
- 708 003e FFF7FEFF 		bl	ScanIgnoreWhiteSpace
- 709              	.LVL122:
- 710              	.L166:
+ 701              		.loc 1 911 0
+ 702 003c 01A8     		add	r0, sp, #4
+ 703 003e FFF7FEFF 		bl	ScanIgnoreWhiteSpace
+ 704              	.LVL121:
+ 705              	.L162:
  917:../utilities/fsl_str.c ****             {
- 711              		.loc 1 917 0
- 712 0042 3B46     		mov	r3, r7
- 713              	.LVL123:
- 714              	.L80:
- 715 0044 1F46     		mov	r7, r3
- 716 0046 E8E7     		b	.L78
- 717              	.LVL124:
- 718              	.L79:
+ 706              		.loc 1 917 0
+ 707 0042 3B46     		mov	r3, r7
+ 708              	.LVL122:
+ 709              	.L79:
+ 710 0044 1F46     		mov	r7, r3
+ 711 0046 E8E7     		b	.L77
+ 712              	.LVL123:
+ 713              	.L78:
  913:../utilities/fsl_str.c ****         {
- 719              		.loc 1 913 0
- 720 0048 009B     		ldr	r3, [sp]
- 721 004a 1A46     		mov	r2, r3
- 722 004c 12F9011B 		ldrsb	r1, [r2], #1
- 723 0050 2529     		cmp	r1, #37
- 724 0052 03D1     		bne	.L81
+ 714              		.loc 1 913 0
+ 715 0048 009B     		ldr	r3, [sp]
+ 716 004a 93F90010 		ldrsb	r1, [r3]
+ 717 004e 2529     		cmp	r1, #37
+ 718 0050 03F10102 		add	r2, r3, #1
+ 719 0054 03D1     		bne	.L80
  913:../utilities/fsl_str.c ****         {
- 725              		.loc 1 913 0 is_stmt 0 discriminator 1
- 726 0054 93F90110 		ldrsb	r1, [r3, #1]
- 727 0058 2529     		cmp	r1, #37
- 728 005a 0CD1     		bne	.L82
- 729              	.L81:
+ 720              		.loc 1 913 0 is_stmt 0 discriminator 1
+ 721 0056 93F90110 		ldrsb	r1, [r3, #1]
+ 722 005a 2529     		cmp	r1, #37
+ 723 005c 0CD1     		bne	.L81
+ 724              	.L80:
  916:../utilities/fsl_str.c ****             if (*p == *c)
- 730              		.loc 1 916 0 is_stmt 1
- 731 005c 0092     		str	r2, [sp]
+ 725              		.loc 1 916 0 is_stmt 1
+ 726 005e 0092     		str	r2, [sp]
  917:../utilities/fsl_str.c ****             {
- 732              		.loc 1 917 0
- 733 005e 019A     		ldr	r2, [sp, #4]
- 734 0060 93F90110 		ldrsb	r1, [r3, #1]
- 735 0064 92F90000 		ldrsb	r0, [r2]
- 736 0068 8842     		cmp	r0, r1
- 737 006a 79D1     		bne	.L76
+ 727              		.loc 1 917 0
+ 728 0060 019A     		ldr	r2, [sp, #4]
+ 729 0062 93F90110 		ldrsb	r1, [r3, #1]
+ 730 0066 92F90000 		ldrsb	r0, [r2]
+ 731 006a 8842     		cmp	r0, r1
+ 732 006c 79D1     		bne	.L75
  920:../utilities/fsl_str.c ****                 c++;
- 738              		.loc 1 920 0
- 739 006c 0132     		adds	r2, r2, #1
+ 733              		.loc 1 920 0
+ 734 006e 0132     		adds	r2, r2, #1
  921:../utilities/fsl_str.c ****             }
- 740              		.loc 1 921 0
- 741 006e 0233     		adds	r3, r3, #2
+ 735              		.loc 1 921 0
+ 736 0070 0233     		adds	r3, r3, #2
  920:../utilities/fsl_str.c ****                 c++;
- 742              		.loc 1 920 0
- 743 0070 0192     		str	r2, [sp, #4]
+ 737              		.loc 1 920 0
+ 738 0072 0192     		str	r2, [sp, #4]
  921:../utilities/fsl_str.c ****             }
- 744              		.loc 1 921 0
- 745 0072 0093     		str	r3, [sp]
- 746 0074 E5E7     		b	.L166
- 747              	.L82:
+ 739              		.loc 1 921 0
+ 740 0074 0093     		str	r3, [sp]
+ 741 0076 E4E7     		b	.L162
+ 742              	.L81:
  933:../utilities/fsl_str.c ****             /* Reset. */
- 748              		.loc 1 933 0
- 749 0076 0092     		str	r2, [sp]
- 750              	.LVL125:
+ 743              		.loc 1 933 0
+ 744 0078 0092     		str	r2, [sp]
+ 745              	.LVL124:
  935:../utilities/fsl_str.c ****             field_width = 0;
- 751              		.loc 1 935 0
- 752 0078 8046     		mov	r8, r0
+ 746              		.loc 1 935 0
+ 747 007a 8046     		mov	r8, r0
  937:../utilities/fsl_str.c **** 
- 753              		.loc 1 937 0
- 754 007a 8146     		mov	r9, r0
-1024:../utilities/fsl_str.c ****                         flag |= kSCANF_TypeSinged;
- 755              		.loc 1 1024 0
- 756 007c 0A22     		movs	r2, #10
- 757              	.LVL126:
- 758              	.L84:
+ 748              		.loc 1 937 0
+ 749 007c 8146     		mov	r9, r0
+1019:../utilities/fsl_str.c ****                             c++;
+ 750              		.loc 1 1019 0
+ 751 007e 0A22     		movs	r2, #10
+ 752              	.LVL125:
+ 753              	.L83:
  940:../utilities/fsl_str.c ****             {
- 759              		.loc 1 940 0
- 760 007e 009B     		ldr	r3, [sp]
- 761 0080 93F90010 		ldrsb	r1, [r3]
- 762 0084 08F07C00 		and	r0, r8, #124
- 763 0088 0029     		cmp	r1, #0
- 764 008a 5ED1     		bne	.L101
- 765              	.L105:
+ 754              		.loc 1 940 0
+ 755 0080 009B     		ldr	r3, [sp]
+ 756 0082 93F90010 		ldrsb	r1, [r3]
+ 757 0086 08F07C00 		and	r0, r8, #124
+ 758 008a 0029     		cmp	r1, #0
+ 759 008c 5ED1     		bne	.L99
 1027:../utilities/fsl_str.c ****                         c++;
 1028:../utilities/fsl_str.c ****                         break;
 1029:../utilities/fsl_str.c ****                     case 'u':
@@ -1971,9 +1966,10 @@
 1078:../utilities/fsl_str.c ****             }
 1079:../utilities/fsl_str.c **** 
 1080:../utilities/fsl_str.c ****             if (!(flag & kSCANF_DestMask))
- 766              		.loc 1 1080 0
- 767 008c 0028     		cmp	r0, #0
- 768 008e 67D0     		beq	.L76
+ 760              		.loc 1 1080 0
+ 761 008e 0028     		cmp	r0, #0
+ 762 0090 67D0     		beq	.L75
+ 763              	.L101:
 1081:../utilities/fsl_str.c ****             {
 1082:../utilities/fsl_str.c ****                 /* Format strings are exhausted. */
 1083:../utilities/fsl_str.c ****                 return nassigned;
@@ -1983,47 +1979,47 @@
 1087:../utilities/fsl_str.c ****             {
 1088:../utilities/fsl_str.c ****                 /* Large than length of a line. */
 1089:../utilities/fsl_str.c ****                 field_width = 99;
- 769              		.loc 1 1089 0
- 770 0090 002C     		cmp	r4, #0
- 771 0092 08BF     		it	eq
- 772 0094 6324     		moveq	r4, #99
+ 764              		.loc 1 1089 0
+ 765 0092 002C     		cmp	r4, #0
+ 766 0094 08BF     		it	eq
+ 767 0096 6324     		moveq	r4, #99
 1090:../utilities/fsl_str.c ****             }
 1091:../utilities/fsl_str.c **** 
 1092:../utilities/fsl_str.c ****             /* Matching strings in input streams and assign to argument. */
 1093:../utilities/fsl_str.c ****             switch (flag & kSCANF_DestMask)
- 773              		.loc 1 1093 0
- 774 0096 0828     		cmp	r0, #8
- 775 0098 6DD0     		beq	.L108
- 776 009a 2028     		cmp	r0, #32
- 777 009c 00F08C80 		beq	.L109
- 778 00a0 0428     		cmp	r0, #4
- 779 00a2 5DD1     		bne	.L76
+ 768              		.loc 1 1093 0
+ 769 0098 0828     		cmp	r0, #8
+ 770 009a 6DD0     		beq	.L105
+ 771 009c 2028     		cmp	r0, #32
+ 772 009e 00F08C80 		beq	.L106
+ 773 00a2 0428     		cmp	r0, #4
+ 774 00a4 5DD1     		bne	.L75
 1094:../utilities/fsl_str.c ****             {
 1095:../utilities/fsl_str.c ****                 case kSCANF_DestChar:
 1096:../utilities/fsl_str.c ****                     s = (const char *)p;
 1097:../utilities/fsl_str.c ****                     buf = va_arg(args_ptr, char *);
- 780              		.loc 1 1097 0
- 781 00a4 3968     		ldr	r1, [r7]
+ 775              		.loc 1 1097 0
+ 776 00a6 3968     		ldr	r1, [r7]
 1096:../utilities/fsl_str.c ****                     buf = va_arg(args_ptr, char *);
- 782              		.loc 1 1096 0
- 783 00a6 0198     		ldr	r0, [sp, #4]
- 784              	.LVL127:
- 785              		.loc 1 1097 0
- 786 00a8 3B1D     		adds	r3, r7, #4
- 787              	.LVL128:
- 788 00aa 0C44     		add	r4, r4, r1
- 789              	.L111:
- 790              	.LVL129:
+ 777              		.loc 1 1096 0
+ 778 00a8 0198     		ldr	r0, [sp, #4]
+ 779              	.LVL126:
+ 780              		.loc 1 1097 0
+ 781 00aa 3B1D     		adds	r3, r7, #4
+ 782              	.LVL127:
+ 783 00ac 0C44     		add	r4, r4, r1
+ 784              	.L108:
+ 785              	.LVL128:
 1098:../utilities/fsl_str.c ****                     while ((field_width--) && (*p))
- 791              		.loc 1 1098 0
- 792 00ac A142     		cmp	r1, r4
- 793 00ae 019A     		ldr	r2, [sp, #4]
- 794 00b0 03D0     		beq	.L112
- 795              		.loc 1 1098 0 is_stmt 0 discriminator 1
- 796 00b2 92F90070 		ldrsb	r7, [r2]
- 797 00b6 002F     		cmp	r7, #0
- 798 00b8 56D1     		bne	.L113
- 799              	.L112:
+ 786              		.loc 1 1098 0
+ 787 00ae A142     		cmp	r1, r4
+ 788 00b0 019A     		ldr	r2, [sp, #4]
+ 789 00b2 03D0     		beq	.L109
+ 790              		.loc 1 1098 0 is_stmt 0 discriminator 1
+ 791 00b4 92F90070 		ldrsb	r7, [r2]
+ 792 00b8 002F     		cmp	r7, #0
+ 793 00ba 56D1     		bne	.L110
+ 794              	.L109:
 1099:../utilities/fsl_str.c ****                     {
 1100:../utilities/fsl_str.c ****                         if (!(flag & kSCANF_Suppress))
 1101:../utilities/fsl_str.c ****                         {
@@ -2037,11 +2033,11 @@
 1109:../utilities/fsl_str.c ****                     }
 1110:../utilities/fsl_str.c **** 
 1111:../utilities/fsl_str.c ****                     if ((!(flag & kSCANF_Suppress)) && (s != p))
- 800              		.loc 1 1111 0 is_stmt 1 discriminator 1
- 801 00ba 9042     		cmp	r0, r2
- 802 00bc C2D0     		beq	.L80
- 803              	.LVL130:
- 804              	.L165:
+ 795              		.loc 1 1111 0 is_stmt 1 discriminator 1
+ 796 00bc 9042     		cmp	r0, r2
+ 797 00be C1D0     		beq	.L79
+ 798              	.LVL129:
+ 799              	.L128:
 1112:../utilities/fsl_str.c ****                     {
 1113:../utilities/fsl_str.c ****                         nassigned++;
 1114:../utilities/fsl_str.c ****                     }
@@ -2220,187 +2216,187 @@
 1287:../utilities/fsl_str.c ****                         }
 1288:../utilities/fsl_str.c **** #endif /* SCANF_ADVANCED_ENABLE */
 1289:../utilities/fsl_str.c ****                         nassigned++;
- 805              		.loc 1 1289 0
- 806 00be 0136     		adds	r6, r6, #1
- 807              	.LVL131:
- 808 00c0 C0E7     		b	.L80
- 809              	.LVL132:
- 810              	.L89:
+ 800              		.loc 1 1289 0
+ 801 00c0 0136     		adds	r6, r6, #1
+ 802              	.LVL130:
+ 803 00c2 BFE7     		b	.L79
+ 804              	.LVL131:
+ 805              	.L88:
  942:../utilities/fsl_str.c ****                 {
- 811              		.loc 1 942 0
- 812 00c2 6329     		cmp	r1, #99
- 813 00c4 4CD1     		bne	.L76
+ 806              		.loc 1 942 0
+ 807 00c4 6329     		cmp	r1, #99
+ 808 00c6 4CD1     		bne	.L75
+1067:../utilities/fsl_str.c ****                         }
+ 809              		.loc 1 1067 0
+ 810 00c8 002C     		cmp	r4, #0
+1064:../utilities/fsl_str.c ****                         if (!field_width)
+ 811              		.loc 1 1064 0
+ 812 00ca 48F00408 		orr	r8, r8, #4
+ 813              	.LVL132:
 1067:../utilities/fsl_str.c ****                         }
  814              		.loc 1 1067 0
- 815 00c6 002C     		cmp	r4, #0
-1064:../utilities/fsl_str.c ****                         if (!field_width)
- 816              		.loc 1 1064 0
- 817 00c8 48F00408 		orr	r8, r8, #4
- 818              	.LVL133:
-1067:../utilities/fsl_str.c ****                         }
- 819              		.loc 1 1067 0
- 820 00cc 08BF     		it	eq
- 821 00ce 0124     		moveq	r4, #1
- 822              	.LVL134:
- 823              	.L162:
+ 815 00ce 08BF     		it	eq
+ 816 00d0 0124     		moveq	r4, #1
+ 817              	.LVL133:
+ 818              	.L159:
 1073:../utilities/fsl_str.c ****                         break;
- 824              		.loc 1 1073 0
- 825 00d0 0133     		adds	r3, r3, #1
- 826 00d2 0093     		str	r3, [sp]
+ 819              		.loc 1 1073 0
+ 820 00d2 0133     		adds	r3, r3, #1
+ 821 00d4 0093     		str	r3, [sp]
 1074:../utilities/fsl_str.c ****                     default:
- 827              		.loc 1 1074 0
- 828 00d4 D3E7     		b	.L84
- 829              	.L87:
+ 822              		.loc 1 1074 0
+ 823 00d6 D3E7     		b	.L83
+ 824              	.L86:
  942:../utilities/fsl_str.c ****                 {
- 830              		.loc 1 942 0
- 831 00d6 7329     		cmp	r1, #115
- 832 00d8 34D0     		beq	.L92
- 833 00da 0ADC     		bgt	.L93
- 834 00dc 6929     		cmp	r1, #105
- 835 00de 2BD0     		beq	.L94
- 836 00e0 6F29     		cmp	r1, #111
- 837 00e2 3DD1     		bne	.L76
+ 825              		.loc 1 942 0
+ 826 00d8 7329     		cmp	r1, #115
+ 827 00da 34D0     		beq	.L91
+ 828 00dc 0ADC     		bgt	.L92
+ 829 00de 6929     		cmp	r1, #105
+ 830 00e0 2BD0     		beq	.L93
+ 831 00e2 6F29     		cmp	r1, #111
+ 832 00e4 3DD1     		bne	.L75
+ 833              	.LVL134:
+1037:../utilities/fsl_str.c ****                         break;
+ 834              		.loc 1 1037 0
+ 835 00e6 0133     		adds	r3, r3, #1
+1036:../utilities/fsl_str.c ****                         c++;
+ 836              		.loc 1 1036 0
+ 837 00e8 48F02008 		orr	r8, r8, #32
  838              	.LVL135:
 1037:../utilities/fsl_str.c ****                         break;
  839              		.loc 1 1037 0
- 840 00e4 0133     		adds	r3, r3, #1
-1036:../utilities/fsl_str.c ****                         c++;
- 841              		.loc 1 1036 0
- 842 00e6 48F02008 		orr	r8, r8, #32
- 843              	.LVL136:
-1037:../utilities/fsl_str.c ****                         break;
- 844              		.loc 1 1037 0
- 845 00ea 0093     		str	r3, [sp]
+ 840 00ec 0093     		str	r3, [sp]
 1035:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
- 846              		.loc 1 1035 0
- 847 00ec 4FF00809 		mov	r9, #8
+ 841              		.loc 1 1035 0
+ 842 00ee 4FF00809 		mov	r9, #8
 1038:../utilities/fsl_str.c ****                     case 'x':
- 848              		.loc 1 1038 0
- 849 00f0 C5E7     		b	.L84
- 850              	.LVL137:
- 851              	.L93:
+ 843              		.loc 1 1038 0
+ 844 00f2 C5E7     		b	.L83
+ 845              	.LVL136:
+ 846              	.L92:
  942:../utilities/fsl_str.c ****                 {
- 852              		.loc 1 942 0
- 853 00f2 7529     		cmp	r1, #117
- 854 00f4 1DD0     		beq	.L96
- 855 00f6 7829     		cmp	r1, #120
- 856 00f8 32D1     		bne	.L76
- 857              	.L88:
+ 847              		.loc 1 942 0
+ 848 00f4 7529     		cmp	r1, #117
+ 849 00f6 1DD0     		beq	.L95
+ 850 00f8 7829     		cmp	r1, #120
+ 851 00fa 32D1     		bne	.L75
+ 852              	.L87:
+ 853              	.LVL137:
+1043:../utilities/fsl_str.c ****                         break;
+ 854              		.loc 1 1043 0
+ 855 00fc 0133     		adds	r3, r3, #1
+1042:../utilities/fsl_str.c ****                         c++;
+ 856              		.loc 1 1042 0
+ 857 00fe 48F02008 		orr	r8, r8, #32
  858              	.LVL138:
 1043:../utilities/fsl_str.c ****                         break;
  859              		.loc 1 1043 0
- 860 00fa 0133     		adds	r3, r3, #1
-1042:../utilities/fsl_str.c ****                         c++;
- 861              		.loc 1 1042 0
- 862 00fc 48F02008 		orr	r8, r8, #32
- 863              	.LVL139:
-1043:../utilities/fsl_str.c ****                         break;
- 864              		.loc 1 1043 0
- 865 0100 0093     		str	r3, [sp]
+ 860 0102 0093     		str	r3, [sp]
 1041:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
- 866              		.loc 1 1041 0
- 867 0102 4FF01009 		mov	r9, #16
+ 861              		.loc 1 1041 0
+ 862 0104 4FF01009 		mov	r9, #16
 1044:../utilities/fsl_str.c ****                     case 'i':
- 868              		.loc 1 1044 0
- 869 0106 BAE7     		b	.L84
- 870              	.LVL140:
- 871              	.L157:
+ 863              		.loc 1 1044 0
+ 864 0108 BAE7     		b	.L83
+ 865              	.LVL139:
+ 866              	.L156:
 1012:../utilities/fsl_str.c ****                         {
- 872              		.loc 1 1012 0
- 873 0108 54BB     		cbnz	r4, .L76
- 874              	.L98:
+ 867              		.loc 1 1012 0
+ 868 010a 54BB     		cbnz	r4, .L75
+ 869              	.L96:
 1019:../utilities/fsl_str.c ****                             c++;
- 875              		.loc 1 1019 0 discriminator 1
- 876 010a 0099     		ldr	r1, [sp]
- 877 010c 0B46     		mov	r3, r1
- 878 010e 5443     		muls	r4, r2, r4
- 879 0110 13F9010B 		ldrsb	r0, [r3], #1
+ 870              		.loc 1 1019 0 discriminator 1
+ 871 010c 0099     		ldr	r1, [sp]
+ 872 010e 0B46     		mov	r3, r1
+ 873 0110 5443     		muls	r4, r2, r4
+ 874 0112 13F9010B 		ldrsb	r0, [r3], #1
 1020:../utilities/fsl_str.c ****                         } while ((*c >= '0') && (*c <= '9'));
- 880              		.loc 1 1020 0 discriminator 1
- 881 0114 0093     		str	r3, [sp]
+ 875              		.loc 1 1020 0 discriminator 1
+ 876 0116 0093     		str	r3, [sp]
 1021:../utilities/fsl_str.c ****                         break;
- 882              		.loc 1 1021 0 discriminator 1
- 883 0116 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
- 884 0118 303B     		subs	r3, r3, #48
- 885 011a 303C     		subs	r4, r4, #48
- 886              	.LVL141:
- 887 011c 092B     		cmp	r3, #9
+ 877              		.loc 1 1021 0 discriminator 1
+ 878 0118 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
+ 879 011a 303B     		subs	r3, r3, #48
+ 880 011c 303C     		subs	r4, r4, #48
+ 881              	.LVL140:
+ 882 011e 092B     		cmp	r3, #9
 1019:../utilities/fsl_str.c ****                             c++;
- 888              		.loc 1 1019 0 discriminator 1
- 889 011e 0444     		add	r4, r4, r0
- 890              	.LVL142:
+ 883              		.loc 1 1019 0 discriminator 1
+ 884 0120 0444     		add	r4, r4, r0
+ 885              	.LVL141:
 1021:../utilities/fsl_str.c ****                         break;
- 891              		.loc 1 1021 0 discriminator 1
- 892 0120 F3D9     		bls	.L98
- 893 0122 ACE7     		b	.L84
- 894              	.LVL143:
- 895              	.L86:
+ 886              		.loc 1 1021 0 discriminator 1
+ 887 0122 F3D9     		bls	.L96
+ 888 0124 ACE7     		b	.L83
+ 889              	.LVL142:
+ 890              	.L85:
 1026:../utilities/fsl_str.c ****                         c++;
- 896              		.loc 1 1026 0
- 897 0124 48EA0508 		orr	r8, r8, r5
- 898              	.LVL144:
- 899              	.L163:
+ 891              		.loc 1 1026 0
+ 892 0126 48EA0508 		orr	r8, r8, r5
+ 893              	.LVL143:
+ 894              	.L160:
 1032:../utilities/fsl_str.c ****                         break;
- 900              		.loc 1 1032 0
- 901 0128 0133     		adds	r3, r3, #1
- 902 012a 0093     		str	r3, [sp]
+ 895              		.loc 1 1032 0
+ 896 012a 0133     		adds	r3, r3, #1
+ 897 012c 0093     		str	r3, [sp]
 1030:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
- 903              		.loc 1 1030 0
- 904 012c 4FF00A09 		mov	r9, #10
+ 898              		.loc 1 1030 0
+ 899 012e 4FF00A09 		mov	r9, #10
 1033:../utilities/fsl_str.c ****                     case 'o':
- 905              		.loc 1 1033 0
- 906 0130 A5E7     		b	.L84
- 907              	.LVL145:
- 908              	.L96:
+ 900              		.loc 1 1033 0
+ 901 0132 A5E7     		b	.L83
+ 902              	.LVL144:
+ 903              	.L95:
 1031:../utilities/fsl_str.c ****                         c++;
- 909              		.loc 1 1031 0
- 910 0132 48F02008 		orr	r8, r8, #32
- 911              	.LVL146:
- 912 0136 F7E7     		b	.L163
- 913              	.LVL147:
- 914              	.L94:
+ 904              		.loc 1 1031 0
+ 905 0134 48F02008 		orr	r8, r8, #32
+ 906              	.LVL145:
+ 907 0138 F7E7     		b	.L160
+ 908              	.LVL146:
+ 909              	.L93:
+1048:../utilities/fsl_str.c ****                         break;
+ 910              		.loc 1 1048 0
+ 911 013a 0133     		adds	r3, r3, #1
+1047:../utilities/fsl_str.c ****                         c++;
+ 912              		.loc 1 1047 0
+ 913 013c 48F02008 		orr	r8, r8, #32
+ 914              	.LVL147:
 1048:../utilities/fsl_str.c ****                         break;
  915              		.loc 1 1048 0
- 916 0138 0133     		adds	r3, r3, #1
-1047:../utilities/fsl_str.c ****                         c++;
- 917              		.loc 1 1047 0
- 918 013a 48F02008 		orr	r8, r8, #32
- 919              	.LVL148:
-1048:../utilities/fsl_str.c ****                         break;
- 920              		.loc 1 1048 0
- 921 013e 0093     		str	r3, [sp]
+ 916 0140 0093     		str	r3, [sp]
 1046:../utilities/fsl_str.c ****                         flag |= kSCANF_DestInt;
- 922              		.loc 1 1046 0
- 923 0140 8146     		mov	r9, r0
+ 917              		.loc 1 1046 0
+ 918 0142 8146     		mov	r9, r0
 1049:../utilities/fsl_str.c **** #if SCANF_FLOAT_ENABLE
- 924              		.loc 1 1049 0
- 925 0142 9CE7     		b	.L84
- 926              	.LVL149:
- 927              	.L92:
+ 919              		.loc 1 1049 0
+ 920 0144 9CE7     		b	.L83
+ 921              	.LVL148:
+ 922              	.L91:
 1072:../utilities/fsl_str.c ****                         c++;
- 928              		.loc 1 1072 0
- 929 0144 48F00808 		orr	r8, r8, #8
- 930              	.LVL150:
- 931 0148 C2E7     		b	.L162
- 932              	.LVL151:
- 933              	.L101:
+ 923              		.loc 1 1072 0
+ 924 0146 48F00808 		orr	r8, r8, #8
+ 925              	.LVL149:
+ 926 014a C2E7     		b	.L159
+ 927              	.LVL150:
+ 928              	.L99:
  940:../utilities/fsl_str.c ****             {
- 934              		.loc 1 940 0 discriminator 1
- 935 014a 0028     		cmp	r0, #0
- 936 014c 9ED1     		bne	.L105
+ 929              		.loc 1 940 0 discriminator 1
+ 930 014c 0028     		cmp	r0, #0
+ 931 014e A0D1     		bne	.L101
  942:../utilities/fsl_str.c ****                 {
- 937              		.loc 1 942 0
- 938 014e 6429     		cmp	r1, #100
- 939 0150 E8D0     		beq	.L86
- 940 0152 C0DC     		bgt	.L87
- 941 0154 5829     		cmp	r1, #88
- 942 0156 D0D0     		beq	.L88
- 943 0158 B3DC     		bgt	.L89
- 944 015a 3039     		subs	r1, r1, #48
- 945 015c 0929     		cmp	r1, #9
- 946 015e D3D9     		bls	.L157
- 947              	.LVL152:
- 948              	.L76:
+ 932              		.loc 1 942 0
+ 933 0150 6429     		cmp	r1, #100
+ 934 0152 E8D0     		beq	.L85
+ 935 0154 C0DC     		bgt	.L86
+ 936 0156 5829     		cmp	r1, #88
+ 937 0158 D0D0     		beq	.L87
+ 938 015a B3DC     		bgt	.L88
+ 939 015c 3039     		subs	r1, r1, #48
+ 940 015e 0929     		cmp	r1, #9
+ 941 0160 D3D9     		bls	.L156
+ 942              	.LVL151:
+ 943              	.L75:
 1290:../utilities/fsl_str.c ****                     }
 1291:../utilities/fsl_str.c ****                     break;
 1292:../utilities/fsl_str.c **** #if SCANF_FLOAT_ENABLE
@@ -2436,288 +2432,290 @@
 1322:../utilities/fsl_str.c ****     }
 1323:../utilities/fsl_str.c ****     return nassigned;
 1324:../utilities/fsl_str.c **** }
- 949              		.loc 1 1324 0
- 950 0160 3046     		mov	r0, r6
- 951 0162 03B0     		add	sp, sp, #12
- 952              		.cfi_remember_state
- 953              		.cfi_def_cfa_offset 28
- 954              		@ sp needed
- 955 0164 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
- 956              	.LVL153:
- 957              	.L113:
- 958              		.cfi_restore_state
+ 944              		.loc 1 1324 0
+ 945 0162 3046     		mov	r0, r6
+ 946 0164 03B0     		add	sp, sp, #12
+ 947              		.cfi_remember_state
+ 948              		.cfi_def_cfa_offset 28
+ 949              		@ sp needed
+ 950 0166 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 951              	.LVL152:
+ 952              	.L110:
+ 953              		.cfi_restore_state
 1102:../utilities/fsl_str.c ****                         }
- 959              		.loc 1 1102 0
- 960 0168 571C     		adds	r7, r2, #1
- 961 016a 0197     		str	r7, [sp, #4]
- 962 016c 92F90020 		ldrsb	r2, [r2]
- 963 0170 01F8012B 		strb	r2, [r1], #1
- 964              	.LVL154:
- 965 0174 9AE7     		b	.L111
- 966              	.LVL155:
- 967              	.L108:
+ 954              		.loc 1 1102 0
+ 955 016a 571C     		adds	r7, r2, #1
+ 956 016c 0197     		str	r7, [sp, #4]
+ 957 016e 92F90020 		ldrsb	r2, [r2]
+ 958 0172 01F8012B 		strb	r2, [r1], #1
+ 959              	.LVL153:
+ 960 0176 9AE7     		b	.L108
+ 961              	.LVL154:
+ 962              	.L105:
 1117:../utilities/fsl_str.c ****                     s = p;
- 968              		.loc 1 1117 0
- 969 0176 01A8     		add	r0, sp, #4
- 970 0178 FFF7FEFF 		bl	ScanIgnoreWhiteSpace
+ 963              		.loc 1 1117 0
+ 964 0178 01A8     		add	r0, sp, #4
+ 965 017a FFF7FEFF 		bl	ScanIgnoreWhiteSpace
+ 966              	.LVL155:
+1119:../utilities/fsl_str.c ****                     while ((field_width--) && (*p != '\0') && (*p != ' ') && (*p != '\t') && (*p !=
+ 967              		.loc 1 1119 0
+ 968 017e 3968     		ldr	r1, [r7]
+1118:../utilities/fsl_str.c ****                     buf = va_arg(args_ptr, char *);
+ 969              		.loc 1 1118 0
+ 970 0180 DDF804C0 		ldr	ip, [sp, #4]
  971              	.LVL156:
 1119:../utilities/fsl_str.c ****                     while ((field_width--) && (*p != '\0') && (*p != ' ') && (*p != '\t') && (*p !=
  972              		.loc 1 1119 0
- 973 017c 3968     		ldr	r1, [r7]
-1118:../utilities/fsl_str.c ****                     buf = va_arg(args_ptr, char *);
- 974              		.loc 1 1118 0
- 975 017e DDF804E0 		ldr	lr, [sp, #4]
- 976              	.LVL157:
-1119:../utilities/fsl_str.c ****                     while ((field_width--) && (*p != '\0') && (*p != ' ') && (*p != '\t') && (*p !=
- 977              		.loc 1 1119 0
- 978 0182 3B1D     		adds	r3, r7, #4
- 979              	.LVL158:
- 980 0184 0C44     		add	r4, r4, r1
- 981              	.L114:
- 982              	.LVL159:
+ 973 0184 3B1D     		adds	r3, r7, #4
+ 974              	.LVL157:
+ 975 0186 0C44     		add	r4, r4, r1
+ 976              	.L111:
+ 977              	.LVL158:
 1120:../utilities/fsl_str.c ****                            (*p != '\r') && (*p != '\v') && (*p != '\f'))
- 983              		.loc 1 1120 0
- 984 0186 A142     		cmp	r1, r4
- 985 0188 0198     		ldr	r0, [sp, #4]
- 986 018a 05D1     		bne	.L115
- 987              	.L117:
+ 978              		.loc 1 1120 0
+ 979 0188 A142     		cmp	r1, r4
+ 980 018a 0198     		ldr	r0, [sp, #4]
+ 981 018c 08D0     		beq	.L112
+1120:../utilities/fsl_str.c ****                            (*p != '\r') && (*p != '\v') && (*p != '\f'))
+ 982              		.loc 1 1120 0 is_stmt 0 discriminator 1
+ 983 018e 90F90020 		ldrsb	r2, [r0]
+ 984 0192 32F02007 		bics	r7, r2, #32
+ 985 0196 03D0     		beq	.L112
+1120:../utilities/fsl_str.c ****                            (*p != '\r') && (*p != '\v') && (*p != '\f'))
+ 986              		.loc 1 1120 0 discriminator 3
+ 987 0198 093A     		subs	r2, r2, #9
+ 988 019a D2B2     		uxtb	r2, r2
+ 989 019c 042A     		cmp	r2, #4
+ 990 019e 05D8     		bhi	.L113
+ 991              	.L112:
 1134:../utilities/fsl_str.c ****                     {
- 988              		.loc 1 1134 0
- 989 018c 8645     		cmp	lr, r0
- 990 018e 3FF459AF 		beq	.L80
+ 992              		.loc 1 1134 0 is_stmt 1 discriminator 1
+ 993 01a0 8445     		cmp	ip, r0
+ 994 01a2 3FF44FAF 		beq	.L79
 1137:../utilities/fsl_str.c ****                         nassigned++;
- 991              		.loc 1 1137 0
- 992 0192 0022     		movs	r2, #0
- 993 0194 0A70     		strb	r2, [r1]
- 994 0196 92E7     		b	.L165
- 995              	.L115:
-1120:../utilities/fsl_str.c ****                            (*p != '\r') && (*p != '\v') && (*p != '\f'))
- 996              		.loc 1 1120 0 discriminator 1
- 997 0198 90F90020 		ldrsb	r2, [r0]
- 998 019c 32F02007 		bics	r7, r2, #32
- 999 01a0 F4D0     		beq	.L117
-1120:../utilities/fsl_str.c ****                            (*p != '\r') && (*p != '\v') && (*p != '\f'))
- 1000              		.loc 1 1120 0 is_stmt 0 discriminator 3
- 1001 01a2 093A     		subs	r2, r2, #9
- 1002 01a4 D2B2     		uxtb	r2, r2
- 1003 01a6 042A     		cmp	r2, #4
- 1004 01a8 F0D9     		bls	.L117
+ 995              		.loc 1 1137 0
+ 996 01a6 0022     		movs	r2, #0
+ 997 01a8 0A70     		strb	r2, [r1]
+ 998 01aa 89E7     		b	.L128
+ 999              	.L113:
 1129:../utilities/fsl_str.c ****                         }
- 1005              		.loc 1 1129 0 is_stmt 1
- 1006 01aa 421C     		adds	r2, r0, #1
- 1007 01ac 0192     		str	r2, [sp, #4]
- 1008 01ae 90F90020 		ldrsb	r2, [r0]
- 1009 01b2 01F8012B 		strb	r2, [r1], #1
- 1010              	.LVL160:
- 1011 01b6 E6E7     		b	.L114
- 1012              	.LVL161:
- 1013              	.L109:
+ 1000              		.loc 1 1129 0
+ 1001 01ac 421C     		adds	r2, r0, #1
+ 1002 01ae 0192     		str	r2, [sp, #4]
+ 1003 01b0 90F90020 		ldrsb	r2, [r0]
+ 1004 01b4 01F8012B 		strb	r2, [r1], #1
+ 1005              	.LVL159:
+ 1006 01b8 E6E7     		b	.L111
+ 1007              	.LVL160:
+ 1008              	.L106:
 1142:../utilities/fsl_str.c ****                     s = p;
- 1014              		.loc 1 1142 0
- 1015 01b8 01A8     		add	r0, sp, #4
- 1016 01ba FFF7FEFF 		bl	ScanIgnoreWhiteSpace
- 1017              	.LVL162:
+ 1009              		.loc 1 1142 0
+ 1010 01ba 01A8     		add	r0, sp, #4
+ 1011 01bc FFF7FEFF 		bl	ScanIgnoreWhiteSpace
+ 1012              	.LVL161:
 1145:../utilities/fsl_str.c ****                     {
- 1018              		.loc 1 1145 0
- 1019 01be 19F00A0F 		tst	r9, #10
- 1020 01c2 0FD1     		bne	.L119
+ 1013              		.loc 1 1145 0
+ 1014 01c0 19F0EF0F 		tst	r9, #239
+ 1015 01c4 0FD1     		bne	.L114
 1143:../utilities/fsl_str.c ****                     val = 0;
- 1021              		.loc 1 1143 0
- 1022 01c4 019B     		ldr	r3, [sp, #4]
+ 1016              		.loc 1 1143 0
+ 1017 01c6 019B     		ldr	r3, [sp, #4]
 1147:../utilities/fsl_str.c ****                         {
- 1023              		.loc 1 1147 0
- 1024 01c6 93F90010 		ldrsb	r1, [r3]
- 1025 01ca 3029     		cmp	r1, #48
- 1026 01cc 31D1     		bne	.L120
+ 1018              		.loc 1 1147 0
+ 1019 01c8 93F90020 		ldrsb	r2, [r3]
+ 1020 01cc 302A     		cmp	r2, #48
+ 1021 01ce 57D1     		bne	.L115
 1147:../utilities/fsl_str.c ****                         {
- 1027              		.loc 1 1147 0 is_stmt 0 discriminator 1
- 1028 01ce 93F90120 		ldrsb	r2, [r3, #1]
- 1029 01d2 22F02002 		bic	r2, r2, #32
- 1030 01d6 582A     		cmp	r2, #88
- 1031 01d8 2BD1     		bne	.L120
- 1032              	.LVL163:
+ 1022              		.loc 1 1147 0 is_stmt 0 discriminator 1
+ 1023 01d0 93F90120 		ldrsb	r2, [r3, #1]
+ 1024 01d4 22F02002 		bic	r2, r2, #32
+ 1025 01d8 582A     		cmp	r2, #88
+ 1026 01da 14D1     		bne	.L116
+ 1027              	.LVL162:
 1152:../utilities/fsl_str.c ****                                 n_decode += 2;
- 1033              		.loc 1 1152 0 is_stmt 1
- 1034 01da 0233     		adds	r3, r3, #2
- 1035 01dc 0193     		str	r3, [sp, #4]
- 1036              	.LVL164:
+ 1028              		.loc 1 1152 0 is_stmt 1
+ 1029 01dc 0233     		adds	r3, r3, #2
+ 1030 01de 0193     		str	r3, [sp, #4]
+ 1031              	.LVL163:
 1154:../utilities/fsl_str.c ****                             }
- 1037              		.loc 1 1154 0
- 1038 01de 023C     		subs	r4, r4, #2
- 1039              	.LVL165:
+ 1032              		.loc 1 1154 0
+ 1033 01e0 023C     		subs	r4, r4, #2
+ 1034              	.LVL164:
 1149:../utilities/fsl_str.c ****                             if (field_width >= 1)
- 1040              		.loc 1 1149 0
- 1041 01e0 4FF01009 		mov	r9, #16
- 1042              	.LVL166:
- 1043              	.L119:
+ 1035              		.loc 1 1149 0
+ 1036 01e2 4FF01009 		mov	r9, #16
+ 1037              	.LVL165:
+ 1038              	.L114:
 1172:../utilities/fsl_str.c ****                     {
- 1044              		.loc 1 1172 0
- 1045 01e4 019B     		ldr	r3, [sp, #4]
- 1046 01e6 93F90020 		ldrsb	r2, [r3]
- 1047 01ea 2B2A     		cmp	r2, #43
- 1048 01ec 2BD0     		beq	.L122
- 1049 01ee 2D2A     		cmp	r2, #45
- 1050 01f0 2CD1     		bne	.L160
- 1051              	.LVL167:
+ 1039              		.loc 1 1172 0
+ 1040 01e6 019B     		ldr	r3, [sp, #4]
+ 1041 01e8 93F90020 		ldrsb	r2, [r3]
+ 1042 01ec 2B2A     		cmp	r2, #43
+ 1043 01ee 10D0     		beq	.L118
+ 1044 01f0 2D2A     		cmp	r2, #45
+ 1045 01f2 11D1     		bne	.L158
+ 1046              	.LVL166:
 1177:../utilities/fsl_str.c ****                             field_width--;
- 1052              		.loc 1 1177 0
- 1053 01f2 0133     		adds	r3, r3, #1
- 1054 01f4 0193     		str	r3, [sp, #4]
- 1055              	.LVL168:
+ 1047              		.loc 1 1177 0
+ 1048 01f4 0133     		adds	r3, r3, #1
+ 1049 01f6 0193     		str	r3, [sp, #4]
+ 1050              	.LVL167:
 1178:../utilities/fsl_str.c ****                             break;
- 1056              		.loc 1 1178 0
- 1057 01f6 013C     		subs	r4, r4, #1
- 1058              	.LVL169:
+ 1051              		.loc 1 1178 0
+ 1052 01f8 013C     		subs	r4, r4, #1
+ 1053              	.LVL168:
 1175:../utilities/fsl_str.c ****                             n_decode++;
- 1059              		.loc 1 1175 0
- 1060 01f8 4FF0FF30 		mov	r0, #-1
- 1061              	.LVL170:
- 1062              	.L121:
- 1063 01fc 0022     		movs	r2, #0
+ 1054              		.loc 1 1175 0
+ 1055 01fa 4FF0FF30 		mov	r0, #-1
+ 1056              	.LVL169:
+ 1057              	.L117:
+1175:../utilities/fsl_str.c ****                             n_decode++;
+ 1058              		.loc 1 1175 0 is_stmt 0 discriminator 1
+ 1059 01fe 0022     		movs	r2, #0
 1206:../utilities/fsl_str.c ****                         }
- 1064              		.loc 1 1206 0
- 1065 01fe 4FFA89FE 		sxtb	lr, r9
- 1066              	.LVL171:
- 1067              	.L124:
-1190:../utilities/fsl_str.c ****                     {
- 1068              		.loc 1 1190 0
- 1069 0202 0199     		ldr	r1, [sp, #4]
- 1070 0204 91F90030 		ldrsb	r3, [r1]
- 1071 0208 73B1     		cbz	r3, .L132
-1190:../utilities/fsl_str.c ****                     {
- 1072              		.loc 1 1190 0 is_stmt 0 discriminator 1
- 1073 020a 6CB1     		cbz	r4, .L132
-1192:../utilities/fsl_str.c ****                         {
- 1074              		.loc 1 1192 0 is_stmt 1
- 1075 020c DBB2     		uxtb	r3, r3
- 1076 020e A3F1300C 		sub	ip, r3, #48
- 1077 0212 5FFA8CFC 		uxtb	ip, ip
- 1078 0216 BCF1090F 		cmp	ip, #9
- 1079 021a 19D8     		bhi	.L125
-1194:../utilities/fsl_str.c ****                         }
- 1080              		.loc 1 1194 0
- 1081 021c 4FFA8CF3 		sxtb	r3, ip
- 1082              	.LVL172:
- 1083              	.L126:
-1209:../utilities/fsl_str.c ****                         {
- 1084              		.loc 1 1209 0
- 1085 0220 4B45     		cmp	r3, r9
- 1086 0222 04F1FF34 		add	r4, r4, #-1
- 1087              	.LVL173:
- 1088 0226 24DB     		blt	.L129
- 1089              	.LVL174:
- 1090              	.L132:
-1286:../utilities/fsl_str.c ****                         }
- 1091              		.loc 1 1286 0
- 1092 0228 3968     		ldr	r1, [r7]
-1220:../utilities/fsl_str.c ****                     if (!(flag & kSCANF_Suppress))
- 1093              		.loc 1 1220 0
- 1094 022a 4243     		muls	r2, r0, r2
- 1095              	.LVL175:
- 1096 022c 3B1D     		adds	r3, r7, #4
- 1097              	.LVL176:
-1286:../utilities/fsl_str.c ****                         }
- 1098              		.loc 1 1286 0
- 1099 022e 0A60     		str	r2, [r1]
- 1100 0230 45E7     		b	.L165
- 1101              	.LVL177:
- 1102              	.L120:
-1159:../utilities/fsl_str.c ****                     {
- 1103              		.loc 1 1159 0
- 1104 0232 B9F1000F 		cmp	r9, #0
- 1105 0236 D5D1     		bne	.L119
- 1106              	.LVL178:
-1167:../utilities/fsl_str.c ****                         }
- 1107              		.loc 1 1167 0
- 1108 0238 3029     		cmp	r1, #48
- 1109 023a 0CBF     		ite	eq
- 1110 023c 4FF00809 		moveq	r9, #8
- 1111 0240 4FF00A09 		movne	r9, #10
- 1112 0244 CEE7     		b	.L119
- 1113              	.LVL179:
- 1114              	.L122:
+ 1060              		.loc 1 1206 0 is_stmt 1 discriminator 1
+ 1061 0200 4FFA89FC 		sxtb	ip, r9
+ 1062 0204 1CE0     		b	.L125
+ 1063              	.LVL170:
+ 1064              	.L116:
+1163:../utilities/fsl_str.c ****                         }
+ 1065              		.loc 1 1163 0
+ 1066 0206 B9F1000F 		cmp	r9, #0
+ 1067 020a 08BF     		it	eq
+ 1068 020c 4FF00809 		moveq	r9, #8
+ 1069              	.LVL171:
+ 1070 0210 E9E7     		b	.L114
+ 1071              	.LVL172:
+ 1072              	.L118:
 1183:../utilities/fsl_str.c ****                             field_width--;
- 1115              		.loc 1 1183 0
- 1116 0246 0133     		adds	r3, r3, #1
- 1117 0248 0193     		str	r3, [sp, #4]
- 1118              	.LVL180:
+ 1073              		.loc 1 1183 0
+ 1074 0212 0133     		adds	r3, r3, #1
+ 1075 0214 0193     		str	r3, [sp, #4]
+ 1076              	.LVL173:
 1184:../utilities/fsl_str.c ****                             break;
- 1119              		.loc 1 1184 0
- 1120 024a 013C     		subs	r4, r4, #1
- 1121              	.LVL181:
- 1122              	.L160:
+ 1077              		.loc 1 1184 0
+ 1078 0216 013C     		subs	r4, r4, #1
+ 1079              	.LVL174:
+ 1080              	.L158:
 1171:../utilities/fsl_str.c ****                     switch (*p)
- 1123              		.loc 1 1171 0
- 1124 024c 0120     		movs	r0, #1
- 1125 024e D5E7     		b	.L121
- 1126              	.LVL182:
- 1127              	.L125:
-1196:../utilities/fsl_str.c ****                         {
- 1128              		.loc 1 1196 0
- 1129 0250 A3F1610C 		sub	ip, r3, #97
- 1130 0254 BCF1050F 		cmp	ip, #5
- 1131 0258 02D8     		bhi	.L127
-1198:../utilities/fsl_str.c ****                         }
- 1132              		.loc 1 1198 0
- 1133 025a 573B     		subs	r3, r3, #87
- 1134              	.L164:
-1202:../utilities/fsl_str.c ****                         }
- 1135              		.loc 1 1202 0
- 1136 025c 5BB2     		sxtb	r3, r3
- 1137              	.LVL183:
- 1138 025e DFE7     		b	.L126
- 1139              	.LVL184:
- 1140              	.L127:
-1200:../utilities/fsl_str.c ****                         {
- 1141              		.loc 1 1200 0
- 1142 0260 A3F1410C 		sub	ip, r3, #65
- 1143 0264 BCF1050F 		cmp	ip, #5
- 1144 0268 01D8     		bhi	.L128
-1202:../utilities/fsl_str.c ****                         }
- 1145              		.loc 1 1202 0
- 1146 026a 373B     		subs	r3, r3, #55
- 1147 026c F6E7     		b	.L164
- 1148              	.L128:
-1206:../utilities/fsl_str.c ****                         }
- 1149              		.loc 1 1206 0
- 1150 026e 7346     		mov	r3, lr
- 1151              	.LVL185:
- 1152 0270 D6E7     		b	.L126
- 1153              	.LVL186:
- 1154              	.L129:
+ 1081              		.loc 1 1171 0
+ 1082 0218 0120     		movs	r0, #1
+ 1083 021a F0E7     		b	.L117
+ 1084              	.LVL175:
+ 1085              	.L126:
+1192:../utilities/fsl_str.c ****                         {
+ 1086              		.loc 1 1192 0
+ 1087 021c DBB2     		uxtb	r3, r3
+ 1088 021e A3F1300E 		sub	lr, r3, #48
+ 1089 0222 5FFA8EFE 		uxtb	lr, lr
+ 1090 0226 BEF1090F 		cmp	lr, #9
+ 1091 022a 15D8     		bhi	.L120
+1194:../utilities/fsl_str.c ****                         }
+ 1092              		.loc 1 1194 0
+ 1093 022c 4FFA8EF3 		sxtb	r3, lr
+ 1094              	.LVL176:
+ 1095              	.L121:
+1209:../utilities/fsl_str.c ****                         {
+ 1096              		.loc 1 1209 0
+ 1097 0230 4B45     		cmp	r3, r9
+ 1098 0232 04F1FF34 		add	r4, r4, #-1
+ 1099              	.LVL177:
+ 1100 0236 09DA     		bge	.L124
 1217:../utilities/fsl_str.c ****                         n_decode++;
- 1155              		.loc 1 1217 0
- 1156 0272 0131     		adds	r1, r1, #1
+ 1101              		.loc 1 1217 0
+ 1102 0238 0131     		adds	r1, r1, #1
 1215:../utilities/fsl_str.c ****                         }
- 1157              		.loc 1 1215 0
- 1158 0274 09FB0232 		mla	r2, r9, r2, r3
- 1159              	.LVL187:
+ 1103              		.loc 1 1215 0
+ 1104 023a 02FB0932 		mla	r2, r2, r9, r3
+ 1105              	.LVL178:
 1217:../utilities/fsl_str.c ****                         n_decode++;
- 1160              		.loc 1 1217 0
- 1161 0278 0191     		str	r1, [sp, #4]
- 1162 027a C2E7     		b	.L124
- 1163              	.LVL188:
- 1164              	.L137:
+ 1106              		.loc 1 1217 0
+ 1107 023e 0191     		str	r1, [sp, #4]
+ 1108              	.LVL179:
+ 1109              	.L125:
+1190:../utilities/fsl_str.c ****                     {
+ 1110              		.loc 1 1190 0 discriminator 1
+ 1111 0240 0199     		ldr	r1, [sp, #4]
+ 1112 0242 91F90030 		ldrsb	r3, [r1]
+ 1113 0246 0BB1     		cbz	r3, .L124
+1190:../utilities/fsl_str.c ****                     {
+ 1114              		.loc 1 1190 0 is_stmt 0 discriminator 2
+ 1115 0248 002C     		cmp	r4, #0
+ 1116 024a E7D1     		bne	.L126
+ 1117              	.L124:
+ 1118 024c 3B46     		mov	r3, r7
+1220:../utilities/fsl_str.c ****                     if (!(flag & kSCANF_Suppress))
+ 1119              		.loc 1 1220 0 is_stmt 1
+ 1120 024e 4243     		muls	r2, r0, r2
+ 1121              	.LVL180:
+ 1122 0250 53F8041B 		ldr	r1, [r3], #4
+1282:../utilities/fsl_str.c ****                         }
+ 1123              		.loc 1 1282 0
+ 1124 0254 0A60     		str	r2, [r1]
+ 1125 0256 33E7     		b	.L128
+ 1126              	.L120:
+1196:../utilities/fsl_str.c ****                         {
+ 1127              		.loc 1 1196 0
+ 1128 0258 A3F1610E 		sub	lr, r3, #97
+ 1129 025c BEF1050F 		cmp	lr, #5
+ 1130 0260 02D8     		bhi	.L122
+1198:../utilities/fsl_str.c ****                         }
+ 1131              		.loc 1 1198 0
+ 1132 0262 573B     		subs	r3, r3, #87
+ 1133              	.L161:
+1202:../utilities/fsl_str.c ****                         }
+ 1134              		.loc 1 1202 0
+ 1135 0264 5BB2     		sxtb	r3, r3
+ 1136              	.LVL181:
+ 1137 0266 E3E7     		b	.L121
+ 1138              	.LVL182:
+ 1139              	.L122:
+1200:../utilities/fsl_str.c ****                         {
+ 1140              		.loc 1 1200 0
+ 1141 0268 A3F1410E 		sub	lr, r3, #65
+ 1142 026c BEF1050F 		cmp	lr, #5
+ 1143 0270 01D8     		bhi	.L123
+1202:../utilities/fsl_str.c ****                         }
+ 1144              		.loc 1 1202 0
+ 1145 0272 373B     		subs	r3, r3, #55
+ 1146 0274 F6E7     		b	.L161
+ 1147              	.L123:
+1206:../utilities/fsl_str.c ****                         }
+ 1148              		.loc 1 1206 0
+ 1149 0276 6346     		mov	r3, ip
+ 1150              	.LVL183:
+ 1151 0278 DAE7     		b	.L121
+ 1152              	.LVL184:
+ 1153              	.L131:
  902:../utilities/fsl_str.c ****     }
- 1165              		.loc 1 902 0
- 1166 027c 4FF0FF36 		mov	r6, #-1
- 1167 0280 6EE7     		b	.L76
- 1168              		.cfi_endproc
- 1169              	.LFE150:
- 1171              		.text
- 1172              	.Letext0:
- 1173              		.file 2 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 1174              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 1175              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 1176              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 1177              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 1178              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/math.h"
- 1179              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stdarg.
- 1180              		.file 9 "<built-in>"
- 1181              		.file 10 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/stdlib.h"
- 1182              		.file 11 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 1183              		.file 12 "../CMSIS/core_cm4.h"
- 1184              		.file 13 "../CMSIS/system_MK64F12.h"
- 1185              		.file 14 "../drivers/fsl_clock.h"
- 1186              		.file 15 "../utilities/fsl_str.h"
- 1187              		.file 16 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/string.h"
+ 1154              		.loc 1 902 0
+ 1155 027a 4FF0FF36 		mov	r6, #-1
+ 1156 027e 70E7     		b	.L75
+ 1157              	.LVL185:
+ 1158              	.L115:
+1167:../utilities/fsl_str.c ****                         }
+ 1159              		.loc 1 1167 0
+ 1160 0280 B9F1000F 		cmp	r9, #0
+ 1161 0284 08BF     		it	eq
+ 1162 0286 4FF00A09 		moveq	r9, #10
+ 1163              	.LVL186:
+ 1164 028a ACE7     		b	.L114
+ 1165              		.cfi_endproc
+ 1166              	.LFE150:
+ 1168              		.text
+ 1169              	.Letext0:
+ 1170              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1171              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1172              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1173              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1174              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1175              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/math.h"
+ 1176              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stdarg.h"
+ 1177              		.file 9 "<built-in>"
+ 1178              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 1179              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1180              		.file 12 "../CMSIS/core_cm4.h"
+ 1181              		.file 13 "../CMSIS/system_MK64F12.h"
+ 1182              		.file 14 "../drivers/fsl_clock.h"
+ 1183              		.file 15 "../utilities/fsl_str.h"
+ 1184              		.file 16 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
