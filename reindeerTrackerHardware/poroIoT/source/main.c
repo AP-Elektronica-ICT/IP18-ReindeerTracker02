@@ -36,7 +36,7 @@ lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
-volatile uint8_t wake = 3;
+volatile uint8_t wake = 0;
 volatile uint8_t NB_strReady = 0;
 volatile uint16_t NB_bufPtr = 0;
 
@@ -77,15 +77,13 @@ void initTimer()
 	 * Init dead reindeer timer. LPTIMER interrupt will wake up MCU after a certain time, IF accelerometer interrupt
 	 * has not waked it earlier (and reset the timer)
 	 */
-	NVIC_ClearPendingIRQ(LPTMR0_IRQn);
 	LPTMR_GetDefaultConfig(&lptmr_config);
 	lptmr_config.bypassPrescaler = true;
 	lptmr_config.value = kLPTMR_Prescale_Glitch_0;
 	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_1;
 	LPTMR_Init(LPTMR0, &lptmr_config);
-	LPTMR_SetTimerPeriod(LPTMR0, 7000);  // 3000 for 20hz data rat
+	LPTMR_SetTimerPeriod(LPTMR0, 5000);  // 3000 for 20hz data rat
 
-	EnableIRQ(LPTMR0_IRQn);
 }
 
 /*
@@ -206,9 +204,9 @@ int main(void)
 
 	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay functions(see timing.h)
 
-	/*initI2C();
+	initI2C();
 	configure_acc();
-	acc_init();*/
+	acc_init();
 	//initAdc();
 	initUART();
 
@@ -220,8 +218,8 @@ int main(void)
 
 	char buf[30];
 
-	CLOCK_EnableClock(kCLOCK_Lptmr0);
-	sprintf(buf, "lptimer int flag: %lx\r\n", LPTMR0->CSR);
+	//CLOCK_EnableClock(kCLOCK_Lptmr0);
+	//sprintf(buf, "lptimer int flag: %lx\r\n", LPTMR0->CSR);
 	PCprint(buf);
 
 	initTimer();
@@ -293,6 +291,12 @@ int main(void)
 	else if (wake == 0)
 	{
 		PCprint("wake was 0 going to sleep\r\n");
+		SMC_PreEnterStopModes();
+		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
+	}
+	else if (wake == 1)
+	{
+		PCprint("wake on 1 jeesus tulee\r\n");
 		SMC_PreEnterStopModes();
 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
 	}
@@ -511,10 +515,6 @@ int main(void)
 void LLWU_IRQHandler()
 {
 
-	GPIO_PortToggle(GPIOA, 1 << 4u);
-	GPIO_PortToggle(GPIOA, 1 << 4u);
-	wake = 1;
-
 	/* If wakeup by LPTMR. */
 	if (LLWU_GetInternalWakeupModuleFlag(LLWU, 0U))
 	{
@@ -524,13 +524,13 @@ void LLWU_IRQHandler()
 		wake = 1;
 	}
 
-	else if ( LLWU->F2 & 0x20)
+	else if ( LLWU->F1 & 0x20)
 	{	// 0x04 for stock frdm acc wakeup reg, 0x01 for customized
 		wake = 2;
-		LLWU->F2 |= 0x20;
+		LLWU->F1 |= 0x20;
 	}
 
-	LLWU->F2 = 0x20;
+	LLWU->F1 = 0x20;
 }
 
 void LPTMR0_IRQHandler()
