@@ -100,6 +100,8 @@ void initUART() {
 	uart_config.baudRate_Bps = 9600;
 	uart_config.enableTx = true;
 	uart_config.enableRx = true;
+
+
 	lpuart_config.baudRate_Bps = 57600;
 	lpuart_config.enableTx = true;
 	lpuart_config.enableRx = true;
@@ -199,7 +201,7 @@ int main(void) {
 	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; /*!< Stop submode 1, for VLLS1/LLS1.
 
 	LLWU->ME |= 0x01; 		// enable LLWU wakeup source from LPTMR module
-	LLWU->PE3 |= 0x01; // enable LLWU wakeup source from accelerometer interrupt pin
+	LLWU->PE2 |= 0x04; // enable LLWU wakeup source from accelerometer interrupt pin
 					   // 0x20 for stock frdm pin enable,
 	LLWU->FILT1 |= 0x28;	// set pin wakeup from rising edge, 0x2A for frdm
 
@@ -221,10 +223,6 @@ int main(void) {
 	GPIO_PinInit(GPIOA, 1u, &LED_configOutput);
 
 	GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
-
-	//fletcher8(PMC_set, 14);
-	//fletcher8(ubx_cfg_prt, 7);
-	//ubx_send(ubx_cfg_prt);
 
 	printf(
 			"Reindeer IoT has started\r\nCommand \"iot\" to start executing reindeer track cycle\r\n"
