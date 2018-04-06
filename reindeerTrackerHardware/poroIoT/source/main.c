@@ -36,7 +36,7 @@ lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
-volatile uint8_t wake = 0;
+volatile uint8_t wake = 5;
 volatile uint8_t NB_strReady = 0;
 volatile uint16_t NB_bufPtr = 0;
 
@@ -241,7 +241,7 @@ int main(void)
 	 */
 	GPIO_PinInit(GPIOA, 1u, &LED_configOutput);
 
-	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
+	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power off RF modules
 
 	PCprint(
 			"Reindeer IoT has started\r\nCommand \"iot\" to start executing reindeer track cycle\r\n"
@@ -289,12 +289,7 @@ int main(void)
 		SMC_PreEnterStopModes();
 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
 	}
-	else if (wake == 1)
-	{
-		PCprint("wake on 1 jeesus tulee\r\n");
-		SMC_PreEnterStopModes();
-		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
-	}
+
 
 	while (1)
 	{
@@ -464,6 +459,9 @@ int main(void)
 		}
 
 	}
+
+	GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
+	NB_reboot();
 
 	/*
 	 * Assemble data to json format and then to POST message
