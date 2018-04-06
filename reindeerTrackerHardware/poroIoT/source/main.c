@@ -97,6 +97,8 @@ void initUART()
 {
 
 	lpuart_config_t lpuart_config;
+
+	SystemCoreClockUpdate();
 	uint32_t uartClkSrcFreq = CLOCK_GetFreq(kCLOCK_BusClk); //get MCU clock frequency for setting correct baudrate
 	uint32_t lpuartClkSrcFreq = CLOCK_GetFreq(BOARD_DEBUG_UART_CLKSRC);
 
@@ -114,7 +116,7 @@ void initUART()
 
 	LPUART_Init(LPUART0, &lpuart_config, lpuartClkSrcFreq); //Init LPUART0 for NBiot
 
-	//UART_Init(UART2, &uart_config, uartClkSrcFreq); //UART2 for GPS with same settings!
+	UART_Init(UART2, &uart_config, uartClkSrcFreq); //UART2 for GPS with same settings!
 
 	lpuart_config.baudRate_Bps = 9600;
 
@@ -124,7 +126,7 @@ void initUART()
 
 	EnableIRQ(LPUART0_IRQn);
 
-	//UART_EnableInterrupts(UART2, kUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from GPS
+	UART_EnableInterrupts(UART2, kUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from GPS
 	EnableIRQ(UART2_FLEXIO_IRQn);
 
 	LPUART_EnableInterrupts(LPUART1, kLPUART_RxDataRegFullInterruptEnable); //enable UART0 receive interrupt to receive data from PC
@@ -204,7 +206,9 @@ int main(void)
 
 	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay functions(see timing.h)
 
-	initI2C();
+	/*initI2C();
+	configure_acc();
+	acc_init();*/
 	//initAdc();
 	initUART();
 
@@ -219,8 +223,7 @@ int main(void)
 	CLOCK_EnableClock(kCLOCK_Lptmr0);
 	sprintf(buf, "lptimer int flag: %lx\r\n", LPTMR0->CSR);
 	PCprint(buf);
-	configure_acc();
-	acc_init();
+
 	initTimer();
 
 	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
@@ -238,7 +241,7 @@ int main(void)
 
 	GPIO_PinInit(GPIOA, 19u, &LED_configOutput);
 
-	GPIO_ClearPinsOutput(GPIOA, 1 << 4u);
+	//GPIO_ClearPinsOutput(GPIOA, 1 << 4u);
 
 	/*
 	 * set boost regulator enable pin as output. This pin will control the power to RF modules
@@ -358,10 +361,12 @@ int main(void)
 			else if (strstr(PC_recBuf, "gpsinfo=1") != NULL)
 			{
 				streamGps = 1;
+				GPIO_ClearPinsOutput(GPIOA, 1 << 19u);
 			}
 			else if (strstr(PC_recBuf, "gpsinfo=0") != NULL)
 			{
 				streamGps = 0;
+				GPIO_SetPinsOutput(GPIOA, 1 << 19u);
 			}
 			else if (strstr(PC_recBuf, "rfoff") != NULL)
 			{
@@ -418,8 +423,8 @@ int main(void)
 		if (GPS_strReady && streamGps)
 		{
 
-			//PCprint(GPS_recBuf);
-			//PCprint("\r\n"); //First print out whole buffer
+			PCprint(GPS_recBuf);
+			PCprint("\r\n"); //First print out whole buffer
 
 			if (getGPS())
 			{
@@ -473,6 +478,11 @@ int main(void)
 	PCprint("Roger include main.c\r\n");
 
 	AT_send("CFUN=0", "", "OK");
+
+	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
+
+	SMC_PreEnterStopModes();
+		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
 
 	while (1)
 	{
@@ -597,12 +607,12 @@ void LPUART1_IRQHandler()
 {
 
 	uint8_t uartData = LPUART1->DATA;
-	GPIO_PortToggle(GPIOA, 1 << 4u);
+	//GPIO_PortToggle(GPIOA, 1 << 4u);
 
 	PC_recBuf[PC_bufPtr] = uartData;
 	PC_bufPtr++;
 
-	if (uartData == 0x0a)
+	if (uartData == 0x0d)
 	{
 		PC_strReady = 1;
 		PC_bufPtr = 0;

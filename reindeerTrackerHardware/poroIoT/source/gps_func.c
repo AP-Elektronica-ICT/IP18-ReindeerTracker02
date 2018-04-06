@@ -23,9 +23,11 @@ extern uint8_t PCprint(char *data);
 
 void printUbxResponseHex(char* data, uint8_t dataLength)
 {
+	char buffer[5];
 	for (uint8_t n = 0; n < dataLength; n++)
 	{
-		//PCprint("%02x ", (uint8_t) (*(data + n)));
+		sprintf(buffer,"%02x", (uint8_t) (*(data + n)));
+		PCprint(buffer);
 	}
 }
 

@@ -5,7 +5,7 @@
    5              		.eabi_attribute 24, 1
    6              		.eabi_attribute 25, 1
    7              		.eabi_attribute 26, 1
-   8              		.eabi_attribute 30, 1
+   8              		.eabi_attribute 30, 4
    9              		.eabi_attribute 34, 0
   10              		.eabi_attribute 18, 4
   11              		.file	"at_func.c"
@@ -32,38 +32,40 @@
    8:../source/at_func.c **** 
    9:../source/at_func.c **** extern void NB_send(char* data);
   10:../source/at_func.c **** 
-  11:../source/at_func.c **** extern volatile uint8_t NB_strReady;
+  11:../source/at_func.c **** extern uint8_t PCprint(char *data);
   12:../source/at_func.c **** 
-  13:../source/at_func.c **** extern char NB_recBuf[];
-  14:../source/at_func.c **** extern volatile uint16_t NB_bufPtr;
-  15:../source/at_func.c **** 
-  16:../source/at_func.c **** char* AT_REQ = "AT";
+  13:../source/at_func.c **** extern volatile uint8_t NB_strReady;
+  14:../source/at_func.c **** 
+  15:../source/at_func.c **** extern char NB_recBuf[];
+  16:../source/at_func.c **** extern volatile uint16_t NB_bufPtr;
   17:../source/at_func.c **** 
-  18:../source/at_func.c **** char* AT_CGMI = "CGMI";  // check manufacturer
-  19:../source/at_func.c **** char* AT_NPIN = "NPIN=0,\"1234\"";  // sets, the PIN-code
-  20:../source/at_func.c **** char* AT_COPS = "COPS";            //Register to operator network
-  21:../source/at_func.c **** char* AT_CEREG = "CEREG?";  //connection status
-  22:../source/at_func.c **** char* AT_NRB = "NRB";
-  23:../source/at_func.c **** char* AT_CGDCONT = "CGDCONT=1,\"IP\",\"\",\"\"";
-  24:../source/at_func.c **** char* AT_CGACT = "CGACT";
-  25:../source/at_func.c **** char* AT_CSQ = "CSQ";  //Signal quality
-  26:../source/at_func.c **** char* AT_CGPADDR = "CGPADDR";        //shows module ip address
-  27:../source/at_func.c **** char* AT_NSOCR = "NSOCR=\"DGRAM\",17,42000,1"; //create UDP socket, port 420000
-  28:../source/at_func.c **** //char AT_NSOST[] = "NSOST=0,\"195.34.89.241\",7,2,\"f8f8\"";
-  29:../source/at_func.c **** char* AT_NSOST = "NSOST=";
-  30:../source/at_func.c **** 
-  31:../source/at_func.c **** char* AT_NSORF = "NSORF=0,2";    //show received data, =<socket>, <data_length>
-  32:../source/at_func.c **** char* AT_CMEE = "CMEE=";
-  33:../source/at_func.c **** char* AT_CFUN = "CFUN"; // sets functionality mode, edit this to change power mode
-  34:../source/at_func.c **** 
-  35:../source/at_func.c **** char* AT_CCLK = "CCLK"; // sets and reads rtc example: AT+CCLK="14/07/01,15:00:00+01"
+  18:../source/at_func.c **** char* AT_REQ = "AT";
+  19:../source/at_func.c **** 
+  20:../source/at_func.c **** char* AT_CGMI = "CGMI";  // check manufacturer
+  21:../source/at_func.c **** char* AT_NPIN = "NPIN=0,\"1234\"";  // sets, the PIN-code
+  22:../source/at_func.c **** char* AT_COPS = "COPS";            //Register to operator network
+  23:../source/at_func.c **** char* AT_CEREG = "CEREG?";  //connection status
+  24:../source/at_func.c **** char* AT_NRB = "NRB";
+  25:../source/at_func.c **** char* AT_CGDCONT = "CGDCONT=1,\"IP\",\"\",\"\"";
+  26:../source/at_func.c **** char* AT_CGACT = "CGACT";
+  27:../source/at_func.c **** char* AT_CSQ = "CSQ";  //Signal quality
+  28:../source/at_func.c **** char* AT_CGPADDR = "CGPADDR";        //shows module ip address
+  29:../source/at_func.c **** char* AT_NSOCR = "NSOCR=\"DGRAM\",17,42000,1"; //create UDP socket, port 420000
+  30:../source/at_func.c **** //char AT_NSOST[] = "NSOST=0,\"195.34.89.241\",7,2,\"f8f8\"";
+  31:../source/at_func.c **** char* AT_NSOST = "NSOST=";
+  32:../source/at_func.c **** 
+  33:../source/at_func.c **** char* AT_NSORF = "NSORF=0,2";    //show received data, =<socket>, <data_length>
+  34:../source/at_func.c **** char* AT_CMEE = "CMEE=";
+  35:../source/at_func.c **** char* AT_CFUN = "CFUN"; // sets functionality mode, edit this to change power mode
   36:../source/at_func.c **** 
-  37:../source/at_func.c **** /*
-  38:../source/at_func.c ****  * Small function to check if NBiot receive buffer contains OK
-  39:../source/at_func.c ****  * we can use this to break from response waiting loop if we already got OK answer
-  40:../source/at_func.c ****  */
-  41:../source/at_func.c **** uint8_t breakIfAtOk() {
-  26              		.loc 1 41 0
+  37:../source/at_func.c **** char* AT_CCLK = "CCLK"; // sets and reads rtc example: AT+CCLK="14/07/01,15:00:00+01"
+  38:../source/at_func.c **** 
+  39:../source/at_func.c **** /*
+  40:../source/at_func.c ****  * Small function to check if NBiot receive buffer contains OK
+  41:../source/at_func.c ****  * we can use this to break from response waiting loop if we already got OK answer
+  42:../source/at_func.c ****  */
+  43:../source/at_func.c **** uint8_t breakIfAtOk() {
+  26              		.loc 1 43 0
   27              		.cfi_startproc
   28              		@ args = 0, pretend = 0, frame = 0
   29              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -71,587 +73,498 @@
   31              		.cfi_def_cfa_offset 8
   32              		.cfi_offset 4, -8
   33              		.cfi_offset 14, -4
-  42:../source/at_func.c **** 	if (strstr(NB_recBuf, "OK") != NULL) {
-  34              		.loc 1 42 0
-  35 0002 0549     		ldr	r1, .L4
-  36 0004 0548     		ldr	r0, .L4+4
+  44:../source/at_func.c **** 	if (strstr(NB_recBuf, "OK") != NULL) {
+  34              		.loc 1 44 0
+  35 0002 0449     		ldr	r1, .L2
+  36 0004 0448     		ldr	r0, .L2+4
   37 0006 FFF7FEFF 		bl	strstr
   38              	.LVL0:
-  39 000a 0028     		cmp	r0, #0
-  40 000c 01D0     		beq	.L3
-  43:../source/at_func.c **** 		return 1;
-  41              		.loc 1 43 0
-  42 000e 0120     		movs	r0, #1
-  43              	.L2:
-  44:../source/at_func.c **** 	}
-  45:../source/at_func.c **** 	return 0;
-  46:../source/at_func.c **** }
-  44              		.loc 1 46 0
-  45              		@ sp needed
-  46 0010 10BD     		pop	{r4, pc}
-  47              	.L3:
-  45:../source/at_func.c **** }
-  48              		.loc 1 45 0
-  49 0012 0020     		movs	r0, #0
-  50 0014 FCE7     		b	.L2
-  51              	.L5:
-  52 0016 C046     		.align	2
-  53              	.L4:
-  54 0018 00000000 		.word	.LC0
-  55 001c 00000000 		.word	NB_recBuf
-  56              		.cfi_endproc
-  57              	.LFE3:
-  59              		.section	.text.AT_checkResult,"ax",%progbits
-  60              		.align	1
-  61              		.global	AT_checkResult
-  62              		.syntax unified
-  63              		.code	16
-  64              		.thumb_func
-  65              		.fpu softvfp
-  67              	AT_checkResult:
-  68              	.LFB4:
-  47:../source/at_func.c **** 
-  48:../source/at_func.c **** /*
-  49:../source/at_func.c ****  * Check AT command return result and print related ok message or error message.
-  50:../source/at_func.c ****  *
-  51:../source/at_func.c ****  * res = AT command return code. 0 = command succeeded, 1 = module responded with ERROR, 2 = there 
-  52:../source/at_func.c ****  * *subject = string that specifies the command
-  53:../source/at_func.c ****  */
-  54:../source/at_func.c **** 
-  55:../source/at_func.c **** void AT_checkResult(uint8_t res, char *subject) {
-  69              		.loc 1 55 0
-  70              		.cfi_startproc
-  71              		@ args = 0, pretend = 0, frame = 0
-  72              		@ frame_needed = 0, uses_anonymous_args = 0
-  73              	.LVL1:
-  74 0000 10B5     		push	{r4, lr}
-  75              		.cfi_def_cfa_offset 8
-  76              		.cfi_offset 4, -8
-  77              		.cfi_offset 14, -4
+  39 000a 431E     		subs	r3, r0, #1
+  40 000c 9841     		sbcs	r0, r0, r3
+  45:../source/at_func.c **** 		return 1;
+  46:../source/at_func.c **** 	}
+  47:../source/at_func.c **** 	return 0;
+  48:../source/at_func.c **** }
+  41              		.loc 1 48 0
+  42              		@ sp needed
+  43 000e C0B2     		uxtb	r0, r0
+  44 0010 10BD     		pop	{r4, pc}
+  45              	.L3:
+  46 0012 C046     		.align	2
+  47              	.L2:
+  48 0014 00000000 		.word	.LC0
+  49 0018 00000000 		.word	NB_recBuf
+  50              		.cfi_endproc
+  51              	.LFE3:
+  53              		.section	.text.AT_checkResult,"ax",%progbits
+  54              		.align	1
+  55              		.global	AT_checkResult
+  56              		.syntax unified
+  57              		.code	16
+  58              		.thumb_func
+  59              		.fpu softvfp
+  61              	AT_checkResult:
+  62              	.LFB4:
+  49:../source/at_func.c **** 
+  50:../source/at_func.c **** /*
+  51:../source/at_func.c ****  * Check AT command return result and print related ok message or error message.
+  52:../source/at_func.c ****  *
+  53:../source/at_func.c ****  * res = AT command return code. 0 = command succeeded, 1 = module responded with ERROR, 2 = there 
+  54:../source/at_func.c ****  * *subject = string that specifies the command
+  55:../source/at_func.c ****  */
   56:../source/at_func.c **** 
-  57:../source/at_func.c **** 	if (res == 0) {
-  78              		.loc 1 57 0
-  79 0002 0028     		cmp	r0, #0
-  80 0004 05D0     		beq	.L10
-  58:../source/at_func.c **** 		printf("%s OK\r\n", subject);
-  59:../source/at_func.c **** 	} else if (res == 1) {
-  81              		.loc 1 59 0
-  82 0006 0128     		cmp	r0, #1
-  83 0008 07D0     		beq	.L11
-  60:../source/at_func.c **** 		printf("%s ERROR\r\n", subject);
-  61:../source/at_func.c **** 	} else {
-  62:../source/at_func.c **** 		printf("%s NO RESPONSE\r\n", subject);
-  84              		.loc 1 62 0
-  85 000a 0648     		ldr	r0, .L12
-  86              	.LVL2:
-  87 000c FFF7FEFF 		bl	printf
-  88              	.LVL3:
-  89              	.L6:
-  63:../source/at_func.c **** 	}
-  64:../source/at_func.c **** }
-  90              		.loc 1 64 0
-  91              		@ sp needed
-  92 0010 10BD     		pop	{r4, pc}
-  93              	.LVL4:
-  94              	.L10:
-  58:../source/at_func.c **** 	} else if (res == 1) {
-  95              		.loc 1 58 0
-  96 0012 0548     		ldr	r0, .L12+4
-  97              	.LVL5:
-  98 0014 FFF7FEFF 		bl	printf
-  99              	.LVL6:
- 100 0018 FAE7     		b	.L6
- 101              	.LVL7:
- 102              	.L11:
-  60:../source/at_func.c **** 		printf("%s ERROR\r\n", subject);
- 103              		.loc 1 60 0
- 104 001a 0448     		ldr	r0, .L12+8
- 105              	.LVL8:
- 106 001c FFF7FEFF 		bl	printf
- 107              	.LVL9:
- 108 0020 F6E7     		b	.L6
- 109              	.L13:
- 110 0022 C046     		.align	2
- 111              	.L12:
- 112 0024 14000000 		.word	.LC7
- 113 0028 00000000 		.word	.LC3
- 114 002c 08000000 		.word	.LC5
- 115              		.cfi_endproc
- 116              	.LFE4:
- 118              		.section	.text.AT_send,"ax",%progbits
- 119              		.align	1
- 120              		.global	AT_send
- 121              		.syntax unified
- 122              		.code	16
- 123              		.thumb_func
- 124              		.fpu softvfp
- 126              	AT_send:
- 127              	.LFB5:
-  65:../source/at_func.c **** 
-  66:../source/at_func.c **** /*
-  67:../source/at_func.c ****  *
-  68:../source/at_func.c ****  * Send AT command to module.
-  69:../source/at_func.c ****  * Parameter:
-  70:../source/at_func.c ****  *
-  71:../source/at_func.c ****  * *AT_cmd = pointer to AT command suffix (the part after "AT+"
-  72:../source/at_func.c ****  * *AT_parameter = parameters to add to the command
-  73:../source/at_func.c ****  * *AT_exptAnswer = expected answer string that module should answer to the command
-  74:../source/at_func.c ****  *
-  75:../source/at_func.c ****  */
-  76:../source/at_func.c **** uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer) {
- 128              		.loc 1 76 0
- 129              		.cfi_startproc
- 130              		@ args = 0, pretend = 0, frame = 504
- 131              		@ frame_needed = 0, uses_anonymous_args = 0
- 132              	.LVL10:
- 133 0000 70B5     		push	{r4, r5, r6, lr}
- 134              		.cfi_def_cfa_offset 16
- 135              		.cfi_offset 4, -16
- 136              		.cfi_offset 5, -12
- 137              		.cfi_offset 6, -8
- 138              		.cfi_offset 14, -4
- 139 0002 FEB0     		sub	sp, sp, #504
- 140              		.cfi_def_cfa_offset 520
- 141 0004 0500     		movs	r5, r0
- 142 0006 0E00     		movs	r6, r1
- 143 0008 1400     		movs	r4, r2
- 144              	.LVL11:
-  77:../source/at_func.c **** 
-  78:../source/at_func.c **** 	char cmd_buf[500];
-  79:../source/at_func.c **** 	uint8_t result = 2;
-  80:../source/at_func.c **** 	uint32_t time_limit = 1000;
-  81:../source/at_func.c **** 
-  82:../source/at_func.c **** 	NB_bufPtr = 0;
- 145              		.loc 1 82 0
- 146 000a 274B     		ldr	r3, .L26
- 147 000c 0022     		movs	r2, #0
- 148              	.LVL12:
- 149 000e 1A80     		strh	r2, [r3]
-  83:../source/at_func.c **** 	memset(NB_recBuf, 0, 1000);
- 150              		.loc 1 83 0
- 151 0010 FA32     		adds	r2, r2, #250
- 152 0012 9200     		lsls	r2, r2, #2
- 153 0014 0021     		movs	r1, #0
- 154              	.LVL13:
- 155 0016 2548     		ldr	r0, .L26+4
- 156              	.LVL14:
- 157 0018 FFF7FEFF 		bl	memset
- 158              	.LVL15:
-  84:../source/at_func.c **** 
-  85:../source/at_func.c **** 	sprintf(cmd_buf, "AT+%s%s\r\n", AT_cmd, AT_parameter);
- 159              		.loc 1 85 0
- 160 001c 3300     		movs	r3, r6
- 161 001e 2A00     		movs	r2, r5
- 162 0020 2349     		ldr	r1, .L26+8
- 163 0022 01A8     		add	r0, sp, #4
- 164 0024 FFF7FEFF 		bl	sprintf
- 165              	.LVL16:
-  86:../source/at_func.c **** 	NB_send(cmd_buf);
- 166              		.loc 1 86 0
- 167 0028 01A8     		add	r0, sp, #4
- 168 002a FFF7FEFF 		bl	NB_send
- 169              	.LVL17:
-  87:../source/at_func.c **** 	printf("send to module: %s\r\n", cmd_buf);
- 170              		.loc 1 87 0
- 171 002e 01A9     		add	r1, sp, #4
- 172 0030 2048     		ldr	r0, .L26+12
- 173 0032 FFF7FEFF 		bl	printf
- 174              	.LVL18:
+  57:../source/at_func.c **** void AT_checkResult(uint8_t res, char *subject) {
+  63              		.loc 1 57 0
+  64              		.cfi_startproc
+  65              		@ args = 0, pretend = 0, frame = 0
+  66              		@ frame_needed = 0, uses_anonymous_args = 0
+  67              		@ link register save eliminated.
+  68              	.LVL1:
+  58:../source/at_func.c **** 
+  59:../source/at_func.c **** 	if (res == 0) {
+  60:../source/at_func.c **** 		//PCprint("%s OK\r\n", subject);
+  61:../source/at_func.c **** 	} else if (res == 1) {
+  62:../source/at_func.c **** 		//PCprint("%s ERROR\r\n", subject);
+  63:../source/at_func.c **** 	} else {
+  64:../source/at_func.c **** 		//PCprint("%s NO RESPONSE\r\n", subject);
+  65:../source/at_func.c **** 	}
+  66:../source/at_func.c **** }
+  69              		.loc 1 66 0
+  70              		@ sp needed
+  71 0000 7047     		bx	lr
+  72              		.cfi_endproc
+  73              	.LFE4:
+  75              		.section	.text.AT_send,"ax",%progbits
+  76              		.align	1
+  77              		.global	AT_send
+  78              		.syntax unified
+  79              		.code	16
+  80              		.thumb_func
+  81              		.fpu softvfp
+  83              	AT_send:
+  84              	.LFB5:
+  67:../source/at_func.c **** 
+  68:../source/at_func.c **** /*
+  69:../source/at_func.c ****  *
+  70:../source/at_func.c ****  * Send AT command to module.
+  71:../source/at_func.c ****  * Parameter:
+  72:../source/at_func.c ****  *
+  73:../source/at_func.c ****  * *AT_cmd = pointer to AT command suffix (the part after "AT+"
+  74:../source/at_func.c ****  * *AT_parameter = parameters to add to the command
+  75:../source/at_func.c ****  * *AT_exptAnswer = expected answer string that module should answer to the command
+  76:../source/at_func.c ****  *
+  77:../source/at_func.c ****  */
+  78:../source/at_func.c **** uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer) {
+  85              		.loc 1 78 0
+  86              		.cfi_startproc
+  87              		@ args = 0, pretend = 0, frame = 512
+  88              		@ frame_needed = 0, uses_anonymous_args = 0
+  89              	.LVL2:
+  90 0000 F3B5     		push	{r0, r1, r4, r5, r6, r7, lr}
+  91              		.cfi_def_cfa_offset 28
+  92              		.cfi_offset 0, -28
+  93              		.cfi_offset 1, -24
+  94              		.cfi_offset 4, -20
+  95              		.cfi_offset 5, -16
+  96              		.cfi_offset 6, -12
+  97              		.cfi_offset 7, -8
+  98              		.cfi_offset 14, -4
+  99 0002 1700     		movs	r7, r2
+  79:../source/at_func.c **** 
+  80:../source/at_func.c **** 	char cmd_buf[500];
+  81:../source/at_func.c **** 	uint8_t result = 2;
+  82:../source/at_func.c **** 	uint32_t time_limit = 1000;
+  83:../source/at_func.c **** 
+  84:../source/at_func.c **** 	NB_bufPtr = 0;
+ 100              		.loc 1 84 0
+ 101 0004 0022     		movs	r2, #0
+ 102              	.LVL3:
+ 103 0006 254D     		ldr	r5, .L16
+  78:../source/at_func.c **** 
+ 104              		.loc 1 78 0
+ 105 0008 FFB0     		sub	sp, sp, #508
+ 106              		.cfi_def_cfa_offset 536
+  78:../source/at_func.c **** 
+ 107              		.loc 1 78 0
+ 108 000a 0B00     		movs	r3, r1
+ 109              		.loc 1 84 0
+ 110 000c 2A80     		strh	r2, [r5]
+  85:../source/at_func.c **** 
+  86:../source/at_func.c **** 	sprintf(cmd_buf, "AT+%s%s\r\n", AT_cmd, AT_parameter);
+ 111              		.loc 1 86 0
+ 112 000e 2449     		ldr	r1, .L16+4
+ 113              	.LVL4:
+ 114 0010 0200     		movs	r2, r0
+ 115 0012 03A8     		add	r0, sp, #12
+ 116              	.LVL5:
+ 117 0014 FFF7FEFF 		bl	sprintf
+ 118              	.LVL6:
+  87:../source/at_func.c **** 	NB_send(cmd_buf);
+ 119              		.loc 1 87 0
+ 120 0018 03A8     		add	r0, sp, #12
+ 121 001a FFF7FEFF 		bl	NB_send
+ 122              	.LVL7:
   88:../source/at_func.c **** 
-  89:../source/at_func.c **** 	if (strstr(cmd_buf, "NRB") != NULL) {
- 175              		.loc 1 89 0
- 176 0036 2049     		ldr	r1, .L26+16
- 177 0038 01A8     		add	r0, sp, #4
- 178 003a FFF7FEFF 		bl	strstr
- 179              	.LVL19:
- 180 003e 0028     		cmp	r0, #0
- 181 0040 1BD0     		beq	.L23
-  90:../source/at_func.c **** 		time_limit = 10000;
- 182              		.loc 1 90 0
- 183 0042 1E4D     		ldr	r5, .L26+20
- 184              	.LVL20:
- 185              	.L15:
-  91:../source/at_func.c **** 	}
-  92:../source/at_func.c **** 
-  93:../source/at_func.c **** 	time_limit = millis() + time_limit;
- 186              		.loc 1 93 0
- 187 0044 FFF7FEFF 		bl	millis
- 188              	.LVL21:
- 189 0048 4519     		adds	r5, r0, r5
- 190              	.LVL22:
- 191              	.L17:
-  94:../source/at_func.c **** 	while (millis() < time_limit) {
- 192              		.loc 1 94 0
- 193 004a FFF7FEFF 		bl	millis
- 194              	.LVL23:
- 195 004e A842     		cmp	r0, r5
- 196 0050 1BD2     		bcs	.L24
-  95:../source/at_func.c **** 		if (NB_strReady) {
- 197              		.loc 1 95 0
- 198 0052 1B4B     		ldr	r3, .L26+24
- 199 0054 1B78     		ldrb	r3, [r3]
- 200 0056 002B     		cmp	r3, #0
- 201 0058 F7D0     		beq	.L17
-  96:../source/at_func.c **** 			//NB_strReady = 0;
-  97:../source/at_func.c **** 			if (strstr(NB_recBuf, AT_exptAnswer) != NULL) //if received buffer contains expected answer
- 202              		.loc 1 97 0
- 203 005a 2100     		movs	r1, r4
- 204 005c 1348     		ldr	r0, .L26+4
- 205 005e FFF7FEFF 		bl	strstr
- 206              	.LVL24:
- 207 0062 0028     		cmp	r0, #0
- 208 0064 0CD1     		bne	.L25
-  98:../source/at_func.c **** 			{
-  99:../source/at_func.c **** 				printf(NB_recBuf);
- 100:../source/at_func.c **** 				result = 0;
- 101:../source/at_func.c **** 				break;
- 102:../source/at_func.c **** 			} else if (strstr(NB_recBuf, "ERROR") != NULL) {
- 209              		.loc 1 102 0
- 210 0066 1749     		ldr	r1, .L26+28
- 211 0068 1048     		ldr	r0, .L26+4
- 212 006a FFF7FEFF 		bl	strstr
- 213              	.LVL25:
- 214 006e 0028     		cmp	r0, #0
- 215 0070 18D1     		bne	.L22
- 103:../source/at_func.c **** 
- 104:../source/at_func.c **** 				result = 1;
- 105:../source/at_func.c **** 				break;
- 106:../source/at_func.c **** 			}
- 107:../source/at_func.c **** 			NB_strReady = 0;
- 216              		.loc 1 107 0
- 217 0072 134B     		ldr	r3, .L26+24
- 218 0074 0022     		movs	r2, #0
- 219 0076 1A70     		strb	r2, [r3]
- 220 0078 E7E7     		b	.L17
- 221              	.LVL26:
- 222              	.L23:
-  80:../source/at_func.c **** 
- 223              		.loc 1 80 0
- 224 007a FA25     		movs	r5, #250
- 225              	.LVL27:
- 226 007c AD00     		lsls	r5, r5, #2
- 227 007e E1E7     		b	.L15
- 228              	.LVL28:
- 229              	.L25:
-  99:../source/at_func.c **** 				result = 0;
- 230              		.loc 1 99 0
- 231 0080 0A48     		ldr	r0, .L26+4
- 232 0082 FFF7FEFF 		bl	printf
- 233              	.LVL29:
- 100:../source/at_func.c **** 				break;
- 234              		.loc 1 100 0
- 235 0086 0024     		movs	r4, #0
- 236              	.LVL30:
- 101:../source/at_func.c **** 			} else if (strstr(NB_recBuf, "ERROR") != NULL) {
- 237              		.loc 1 101 0
- 238 0088 00E0     		b	.L19
- 239              	.LVL31:
- 240              	.L24:
-  79:../source/at_func.c **** 	uint32_t time_limit = 1000;
- 241              		.loc 1 79 0
- 242 008a 0224     		movs	r4, #2
- 243              	.LVL32:
- 244              	.L19:
- 108:../source/at_func.c **** 		}
- 109:../source/at_func.c **** 	}
- 110:../source/at_func.c **** 	NB_bufPtr = 0;
- 245              		.loc 1 110 0
- 246 008c 064B     		ldr	r3, .L26
- 247 008e 0022     		movs	r2, #0
- 248 0090 1A80     		strh	r2, [r3]
- 111:../source/at_func.c **** 	memset(NB_recBuf, 0, 1000);
- 249              		.loc 1 111 0
- 250 0092 FA32     		adds	r2, r2, #250
- 251 0094 9200     		lsls	r2, r2, #2
- 252 0096 0021     		movs	r1, #0
- 253 0098 0448     		ldr	r0, .L26+4
- 254 009a FFF7FEFF 		bl	memset
- 255              	.LVL33:
- 112:../source/at_func.c **** 
- 113:../source/at_func.c **** 	return result;
- 114:../source/at_func.c **** }
- 256              		.loc 1 114 0
- 257 009e 2000     		movs	r0, r4
- 258 00a0 7EB0     		add	sp, sp, #504
- 259              		@ sp needed
- 260              	.LVL34:
- 261              	.LVL35:
- 262              	.LVL36:
- 263 00a2 70BD     		pop	{r4, r5, r6, pc}
- 264              	.LVL37:
- 265              	.L22:
+  89:../source/at_func.c **** 	PCprint("send to module: \r\n");
+ 123              		.loc 1 89 0
+ 124 001e 2148     		ldr	r0, .L16+8
+ 125 0020 FFF7FEFF 		bl	PCprint
+ 126              	.LVL8:
+  90:../source/at_func.c **** 	PCprint(cmd_buf);
+ 127              		.loc 1 90 0
+ 128 0024 03A8     		add	r0, sp, #12
+ 129 0026 FFF7FEFF 		bl	PCprint
+ 130              	.LVL9:
+  91:../source/at_func.c **** 
+  92:../source/at_func.c **** 	if (strstr(cmd_buf, "NRB") != NULL) {
+ 131              		.loc 1 92 0
+ 132 002a 1F49     		ldr	r1, .L16+12
+ 133 002c 03A8     		add	r0, sp, #12
+ 134 002e FFF7FEFF 		bl	strstr
+ 135              	.LVL10:
+  93:../source/at_func.c **** 		time_limit = 10000;
+ 136              		.loc 1 93 0
+ 137 0032 4442     		rsbs	r4, r0, #0
+ 138 0034 4441     		adcs	r4, r4, r0
+ 139 0036 1D48     		ldr	r0, .L16+16
+ 140 0038 1D4B     		ldr	r3, .L16+20
+ 141 003a 6442     		rsbs	r4, r4, #0
+ 142 003c 0440     		ands	r4, r0
+ 143 003e E418     		adds	r4, r4, r3
+ 144              	.LVL11:
+  94:../source/at_func.c **** 	}
+  95:../source/at_func.c **** 
+  96:../source/at_func.c **** 	time_limit = millis() + time_limit;
+ 145              		.loc 1 96 0
+ 146 0040 FFF7FEFF 		bl	millis
+ 147              	.LVL12:
+ 148 0044 0319     		adds	r3, r0, r4
+ 149 0046 0193     		str	r3, [sp, #4]
+ 150              	.LVL13:
+ 151              	.L8:
+  97:../source/at_func.c **** 	while (millis() < time_limit) {
+ 152              		.loc 1 97 0
+ 153 0048 FFF7FEFF 		bl	millis
+ 154              	.LVL14:
+ 155 004c 019B     		ldr	r3, [sp, #4]
+ 156 004e 9842     		cmp	r0, r3
+ 157 0050 01D3     		bcc	.L11
+  81:../source/at_func.c **** 	uint32_t time_limit = 1000;
+ 158              		.loc 1 81 0
+ 159 0052 0224     		movs	r4, #2
+ 160 0054 0EE0     		b	.L10
+ 161              	.L11:
+  98:../source/at_func.c **** 		if (NB_strReady) {
+ 162              		.loc 1 98 0
+ 163 0056 174E     		ldr	r6, .L16+24
+ 164 0058 3378     		ldrb	r3, [r6]
+ 165 005a 002B     		cmp	r3, #0
+ 166 005c F4D0     		beq	.L8
+  99:../source/at_func.c **** 
+ 100:../source/at_func.c **** 			if (strstr(NB_recBuf, AT_exptAnswer) != NULL) //if received buffer contains expected answer
+ 167              		.loc 1 100 0
+ 168 005e 164C     		ldr	r4, .L16+28
+ 169 0060 3900     		movs	r1, r7
+ 170 0062 2000     		movs	r0, r4
+ 171 0064 FFF7FEFF 		bl	strstr
+ 172              	.LVL15:
+ 173 0068 0028     		cmp	r0, #0
+ 174 006a 0DD0     		beq	.L9
+ 101:../source/at_func.c **** 			{
+ 102:../source/at_func.c **** 				PCprint(NB_recBuf);
+ 175              		.loc 1 102 0
+ 176 006c 2000     		movs	r0, r4
+ 177 006e FFF7FEFF 		bl	PCprint
+ 178              	.LVL16:
+ 103:../source/at_func.c **** 				result = 0;
+ 179              		.loc 1 103 0
+ 180 0072 0024     		movs	r4, #0
+ 181              	.LVL17:
+ 182              	.L10:
  104:../source/at_func.c **** 				break;
- 266              		.loc 1 104 0
- 267 00a4 0124     		movs	r4, #1
- 268              	.LVL38:
- 269 00a6 F1E7     		b	.L19
- 270              	.L27:
- 271              		.align	2
- 272              	.L26:
- 273 00a8 00000000 		.word	NB_bufPtr
- 274 00ac 00000000 		.word	NB_recBuf
- 275 00b0 00000000 		.word	.LC11
- 276 00b4 0C000000 		.word	.LC13
- 277 00b8 24000000 		.word	.LC15
- 278 00bc 10270000 		.word	10000
- 279 00c0 00000000 		.word	NB_strReady
- 280 00c4 28000000 		.word	.LC18
- 281              		.cfi_endproc
- 282              	.LFE5:
- 284              		.global	AT_CCLK
- 285              		.global	AT_CFUN
- 286              		.global	AT_CMEE
- 287              		.global	AT_NSORF
- 288              		.global	AT_NSOST
- 289              		.global	AT_NSOCR
- 290              		.global	AT_CGPADDR
- 291              		.global	AT_CSQ
- 292              		.global	AT_CGACT
- 293              		.global	AT_CGDCONT
- 294              		.global	AT_NRB
- 295              		.global	AT_CEREG
- 296              		.global	AT_COPS
- 297              		.global	AT_NPIN
- 298              		.global	AT_CGMI
- 299              		.global	AT_REQ
- 300              		.section	.data.AT_CCLK,"aw",%progbits
- 301              		.align	2
- 304              	AT_CCLK:
- 305 0000 00000000 		.word	.LC20
- 306              		.section	.data.AT_CEREG,"aw",%progbits
- 307              		.align	2
- 310              	AT_CEREG:
- 311 0000 74000000 		.word	.LC30
- 312              		.section	.data.AT_CFUN,"aw",%progbits
- 313              		.align	2
- 316              	AT_CFUN:
- 317 0000 08000000 		.word	.LC21
- 318              		.section	.data.AT_CGACT,"aw",%progbits
- 319              		.align	2
- 322              	AT_CGACT:
- 323 0000 54000000 		.word	.LC28
- 324              		.section	.data.AT_CGDCONT,"aw",%progbits
- 325              		.align	2
- 328              	AT_CGDCONT:
- 329 0000 5C000000 		.word	.LC29
- 330              		.section	.data.AT_CGMI,"aw",%progbits
- 331              		.align	2
- 334              	AT_CGMI:
- 335 0000 94000000 		.word	.LC33
- 336              		.section	.data.AT_CGPADDR,"aw",%progbits
- 337              		.align	2
- 340              	AT_CGPADDR:
- 341 0000 48000000 		.word	.LC26
- 342              		.section	.data.AT_CMEE,"aw",%progbits
- 343              		.align	2
- 346              	AT_CMEE:
- 347 0000 10000000 		.word	.LC22
- 348              		.section	.data.AT_COPS,"aw",%progbits
- 349              		.align	2
- 352              	AT_COPS:
- 353 0000 7C000000 		.word	.LC31
- 354              		.section	.data.AT_CSQ,"aw",%progbits
- 355              		.align	2
- 358              	AT_CSQ:
- 359 0000 50000000 		.word	.LC27
- 360              		.section	.data.AT_NPIN,"aw",%progbits
- 361              		.align	2
- 364              	AT_NPIN:
- 365 0000 84000000 		.word	.LC32
- 366              		.section	.data.AT_NRB,"aw",%progbits
- 367              		.align	2
- 370              	AT_NRB:
- 371 0000 24000000 		.word	.LC15
- 372              		.section	.data.AT_NSOCR,"aw",%progbits
- 373              		.align	2
- 376              	AT_NSOCR:
- 377 0000 2C000000 		.word	.LC25
- 378              		.section	.data.AT_NSORF,"aw",%progbits
- 379              		.align	2
- 382              	AT_NSORF:
- 383 0000 18000000 		.word	.LC23
- 384              		.section	.data.AT_NSOST,"aw",%progbits
- 385              		.align	2
- 388              	AT_NSOST:
- 389 0000 24000000 		.word	.LC24
- 390              		.section	.data.AT_REQ,"aw",%progbits
- 391              		.align	2
- 394              	AT_REQ:
- 395 0000 9C000000 		.word	.LC34
- 396              		.section	.rodata.AT_checkResult.str1.4,"aMS",%progbits,1
- 397              		.align	2
- 398              	.LC3:
- 399 0000 2573204F 		.ascii	"%s OK\015\012\000"
- 399      4B0D0A00 
- 400              	.LC5:
- 401 0008 25732045 		.ascii	"%s ERROR\015\012\000"
- 401      52524F52 
- 401      0D0A00
- 402 0013 00       		.space	1
- 403              	.LC7:
- 404 0014 2573204E 		.ascii	"%s NO RESPONSE\015\012\000"
- 404      4F205245 
- 404      53504F4E 
- 404      53450D0A 
- 404      00
- 405              		.section	.rodata.AT_send.str1.4,"aMS",%progbits,1
- 406              		.align	2
- 407              	.LC11:
- 408 0000 41542B25 		.ascii	"AT+%s%s\015\012\000"
- 408      7325730D 
- 408      0A00
- 409 000a 0000     		.space	2
- 410              	.LC13:
- 411 000c 73656E64 		.ascii	"send to module: %s\015\012\000"
- 411      20746F20 
- 411      6D6F6475 
- 411      6C653A20 
- 411      25730D0A 
- 412 0021 000000   		.space	3
- 413              	.LC15:
- 414 0024 4E524200 		.ascii	"NRB\000"
- 415              	.LC18:
- 416 0028 4552524F 		.ascii	"ERROR\000"
- 416      5200
- 417              		.section	.rodata.breakIfAtOk.str1.4,"aMS",%progbits,1
- 418              		.align	2
- 419              	.LC0:
- 420 0000 4F4B00   		.ascii	"OK\000"
- 421              		.section	.rodata.str1.4,"aMS",%progbits,1
- 422              		.align	2
- 423              	.LC20:
- 424 0000 43434C4B 		.ascii	"CCLK\000"
- 424      00
- 425 0005 000000   		.space	3
- 426              	.LC21:
- 427 0008 4346554E 		.ascii	"CFUN\000"
- 427      00
- 428 000d 000000   		.space	3
- 429              	.LC22:
- 430 0010 434D4545 		.ascii	"CMEE=\000"
- 430      3D00
- 431 0016 0000     		.space	2
- 432              	.LC23:
- 433 0018 4E534F52 		.ascii	"NSORF=0,2\000"
- 433      463D302C 
- 433      3200
- 434 0022 0000     		.space	2
- 435              	.LC24:
- 436 0024 4E534F53 		.ascii	"NSOST=\000"
- 436      543D00
- 437 002b 00       		.space	1
- 438              	.LC25:
- 439 002c 4E534F43 		.ascii	"NSOCR=\"DGRAM\",17,42000,1\000"
- 439      523D2244 
- 439      4752414D 
- 439      222C3137 
- 439      2C343230 
- 440 0045 000000   		.space	3
- 441              	.LC26:
- 442 0048 43475041 		.ascii	"CGPADDR\000"
- 442      44445200 
- 443              	.LC27:
- 444 0050 43535100 		.ascii	"CSQ\000"
- 445              	.LC28:
- 446 0054 43474143 		.ascii	"CGACT\000"
- 446      5400
- 447 005a 0000     		.space	2
- 448              	.LC29:
- 449 005c 43474443 		.ascii	"CGDCONT=1,\"IP\",\"\",\"\"\000"
- 449      4F4E543D 
- 449      312C2249 
- 449      50222C22 
- 449      222C2222 
- 450 0071 000000   		.space	3
- 451              	.LC30:
- 452 0074 43455245 		.ascii	"CEREG?\000"
- 452      473F00
- 453 007b 00       		.space	1
- 454              	.LC31:
- 455 007c 434F5053 		.ascii	"COPS\000"
- 455      00
- 456 0081 000000   		.space	3
- 457              	.LC32:
- 458 0084 4E50494E 		.ascii	"NPIN=0,\"1234\"\000"
- 458      3D302C22 
- 458      31323334 
- 458      2200
- 459 0092 0000     		.space	2
- 460              	.LC33:
- 461 0094 43474D49 		.ascii	"CGMI\000"
- 461      00
- 462 0099 000000   		.space	3
- 463              	.LC34:
- 464 009c 415400   		.ascii	"AT\000"
- 465              		.text
- 466              	.Letext0:
- 467              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 468              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 469              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 470              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 471              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 472              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 473              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
- 474              		.file 9 "../source/at_func.h"
- 475              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
- 476              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
- 477              		.file 12 "../source/timing.h"
- 478              		.file 13 "<built-in>"
+ 105:../source/at_func.c **** 			} else if (strstr(NB_recBuf, "ERROR") != NULL) {
+ 106:../source/at_func.c **** 
+ 107:../source/at_func.c **** 				result = 1;
+ 108:../source/at_func.c **** 				break;
+ 109:../source/at_func.c **** 			}
+ 110:../source/at_func.c **** 			NB_strReady = 0;
+ 111:../source/at_func.c **** 		}
+ 112:../source/at_func.c **** 	}
+ 113:../source/at_func.c **** 	NB_bufPtr = 0;
+ 114:../source/at_func.c **** 	memset(NB_recBuf, 0, 600);
+ 183              		.loc 1 114 0
+ 184 0074 9622     		movs	r2, #150
+ 113:../source/at_func.c **** 	memset(NB_recBuf, 0, 600);
+ 185              		.loc 1 113 0
+ 186 0076 0021     		movs	r1, #0
+ 187              		.loc 1 114 0
+ 188 0078 9200     		lsls	r2, r2, #2
+ 189 007a 0F48     		ldr	r0, .L16+28
+ 113:../source/at_func.c **** 	memset(NB_recBuf, 0, 600);
+ 190              		.loc 1 113 0
+ 191 007c 2980     		strh	r1, [r5]
+ 192              		.loc 1 114 0
+ 193 007e FFF7FEFF 		bl	memset
+ 194              	.LVL18:
+ 115:../source/at_func.c **** 
+ 116:../source/at_func.c **** 	return result;
+ 117:../source/at_func.c **** }
+ 195              		.loc 1 117 0
+ 196 0082 2000     		movs	r0, r4
+ 197 0084 7FB0     		add	sp, sp, #508
+ 198              		@ sp needed
+ 199              	.LVL19:
+ 200              	.LVL20:
+ 201 0086 F6BD     		pop	{r1, r2, r4, r5, r6, r7, pc}
+ 202              	.LVL21:
+ 203              	.L9:
+ 105:../source/at_func.c **** 
+ 204              		.loc 1 105 0
+ 205 0088 0C49     		ldr	r1, .L16+32
+ 206 008a 2000     		movs	r0, r4
+ 207 008c FFF7FEFF 		bl	strstr
+ 208              	.LVL22:
+ 209 0090 0028     		cmp	r0, #0
+ 210 0092 01D1     		bne	.L13
+ 110:../source/at_func.c **** 		}
+ 211              		.loc 1 110 0
+ 212 0094 3070     		strb	r0, [r6]
+ 213 0096 D7E7     		b	.L8
+ 214              	.L13:
+ 107:../source/at_func.c **** 				break;
+ 215              		.loc 1 107 0
+ 216 0098 0124     		movs	r4, #1
+ 217 009a EBE7     		b	.L10
+ 218              	.L17:
+ 219              		.align	2
+ 220              	.L16:
+ 221 009c 00000000 		.word	NB_bufPtr
+ 222 00a0 00000000 		.word	.LC4
+ 223 00a4 0A000000 		.word	.LC6
+ 224 00a8 1D000000 		.word	.LC8
+ 225 00ac D8DCFFFF 		.word	-9000
+ 226 00b0 10270000 		.word	10000
+ 227 00b4 00000000 		.word	NB_strReady
+ 228 00b8 00000000 		.word	NB_recBuf
+ 229 00bc 21000000 		.word	.LC12
+ 230              		.cfi_endproc
+ 231              	.LFE5:
+ 233              		.global	AT_CCLK
+ 234              		.global	AT_CFUN
+ 235              		.global	AT_CMEE
+ 236              		.global	AT_NSORF
+ 237              		.global	AT_NSOST
+ 238              		.global	AT_NSOCR
+ 239              		.global	AT_CGPADDR
+ 240              		.global	AT_CSQ
+ 241              		.global	AT_CGACT
+ 242              		.global	AT_CGDCONT
+ 243              		.global	AT_NRB
+ 244              		.global	AT_CEREG
+ 245              		.global	AT_COPS
+ 246              		.global	AT_NPIN
+ 247              		.global	AT_CGMI
+ 248              		.global	AT_REQ
+ 249              		.section	.data.AT_CCLK,"aw",%progbits
+ 250              		.align	2
+ 253              	AT_CCLK:
+ 254 0000 00000000 		.word	.LC14
+ 255              		.section	.data.AT_CEREG,"aw",%progbits
+ 256              		.align	2
+ 259              	AT_CEREG:
+ 260 0000 61000000 		.word	.LC24
+ 261              		.section	.data.AT_CFUN,"aw",%progbits
+ 262              		.align	2
+ 265              	AT_CFUN:
+ 266 0000 05000000 		.word	.LC15
+ 267              		.section	.data.AT_CGACT,"aw",%progbits
+ 268              		.align	2
+ 271              	AT_CGACT:
+ 272 0000 46000000 		.word	.LC22
+ 273              		.section	.data.AT_CGDCONT,"aw",%progbits
+ 274              		.align	2
+ 277              	AT_CGDCONT:
+ 278 0000 4C000000 		.word	.LC23
+ 279              		.section	.data.AT_CGMI,"aw",%progbits
+ 280              		.align	2
+ 283              	AT_CGMI:
+ 284 0000 7B000000 		.word	.LC27
+ 285              		.section	.data.AT_CGPADDR,"aw",%progbits
+ 286              		.align	2
+ 289              	AT_CGPADDR:
+ 290 0000 3A000000 		.word	.LC20
+ 291              		.section	.data.AT_CMEE,"aw",%progbits
+ 292              		.align	2
+ 295              	AT_CMEE:
+ 296 0000 0A000000 		.word	.LC16
+ 297              		.section	.data.AT_COPS,"aw",%progbits
+ 298              		.align	2
+ 301              	AT_COPS:
+ 302 0000 68000000 		.word	.LC25
+ 303              		.section	.data.AT_CSQ,"aw",%progbits
+ 304              		.align	2
+ 307              	AT_CSQ:
+ 308 0000 42000000 		.word	.LC21
+ 309              		.section	.data.AT_NPIN,"aw",%progbits
+ 310              		.align	2
+ 313              	AT_NPIN:
+ 314 0000 6D000000 		.word	.LC26
+ 315              		.section	.data.AT_NRB,"aw",%progbits
+ 316              		.align	2
+ 319              	AT_NRB:
+ 320 0000 1D000000 		.word	.LC8
+ 321              		.section	.data.AT_NSOCR,"aw",%progbits
+ 322              		.align	2
+ 325              	AT_NSOCR:
+ 326 0000 21000000 		.word	.LC19
+ 327              		.section	.data.AT_NSORF,"aw",%progbits
+ 328              		.align	2
+ 331              	AT_NSORF:
+ 332 0000 10000000 		.word	.LC17
+ 333              		.section	.data.AT_NSOST,"aw",%progbits
+ 334              		.align	2
+ 337              	AT_NSOST:
+ 338 0000 1A000000 		.word	.LC18
+ 339              		.section	.data.AT_REQ,"aw",%progbits
+ 340              		.align	2
+ 343              	AT_REQ:
+ 344 0000 80000000 		.word	.LC28
+ 345              		.section	.rodata.AT_send.str1.1,"aMS",%progbits,1
+ 346              	.LC4:
+ 347 0000 41542B25 		.ascii	"AT+%s%s\015\012\000"
+ 347      7325730D 
+ 347      0A00
+ 348              	.LC6:
+ 349 000a 73656E64 		.ascii	"send to module: \015\012\000"
+ 349      20746F20 
+ 349      6D6F6475 
+ 349      6C653A20 
+ 349      0D0A00
+ 350              	.LC8:
+ 351 001d 4E524200 		.ascii	"NRB\000"
+ 352              	.LC12:
+ 353 0021 4552524F 		.ascii	"ERROR\000"
+ 353      5200
+ 354              		.section	.rodata.breakIfAtOk.str1.1,"aMS",%progbits,1
+ 355              	.LC0:
+ 356 0000 4F4B00   		.ascii	"OK\000"
+ 357              		.section	.rodata.str1.1,"aMS",%progbits,1
+ 358              	.LC14:
+ 359 0000 43434C4B 		.ascii	"CCLK\000"
+ 359      00
+ 360              	.LC15:
+ 361 0005 4346554E 		.ascii	"CFUN\000"
+ 361      00
+ 362              	.LC16:
+ 363 000a 434D4545 		.ascii	"CMEE=\000"
+ 363      3D00
+ 364              	.LC17:
+ 365 0010 4E534F52 		.ascii	"NSORF=0,2\000"
+ 365      463D302C 
+ 365      3200
+ 366              	.LC18:
+ 367 001a 4E534F53 		.ascii	"NSOST=\000"
+ 367      543D00
+ 368              	.LC19:
+ 369 0021 4E534F43 		.ascii	"NSOCR=\"DGRAM\",17,42000,1\000"
+ 369      523D2244 
+ 369      4752414D 
+ 369      222C3137 
+ 369      2C343230 
+ 370              	.LC20:
+ 371 003a 43475041 		.ascii	"CGPADDR\000"
+ 371      44445200 
+ 372              	.LC21:
+ 373 0042 43535100 		.ascii	"CSQ\000"
+ 374              	.LC22:
+ 375 0046 43474143 		.ascii	"CGACT\000"
+ 375      5400
+ 376              	.LC23:
+ 377 004c 43474443 		.ascii	"CGDCONT=1,\"IP\",\"\",\"\"\000"
+ 377      4F4E543D 
+ 377      312C2249 
+ 377      50222C22 
+ 377      222C2222 
+ 378              	.LC24:
+ 379 0061 43455245 		.ascii	"CEREG?\000"
+ 379      473F00
+ 380              	.LC25:
+ 381 0068 434F5053 		.ascii	"COPS\000"
+ 381      00
+ 382              	.LC26:
+ 383 006d 4E50494E 		.ascii	"NPIN=0,\"1234\"\000"
+ 383      3D302C22 
+ 383      31323334 
+ 383      2200
+ 384              	.LC27:
+ 385 007b 43474D49 		.ascii	"CGMI\000"
+ 385      00
+ 386              	.LC28:
+ 387 0080 415400   		.ascii	"AT\000"
+ 388              		.text
+ 389              	.Letext0:
+ 390              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 391              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 392              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 393              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 394              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 395              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 396              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 397              		.file 9 "../source/at_func.h"
+ 398              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
+ 399              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ 400              		.file 12 "../source/timing.h"
+ 401              		.file 13 "<built-in>"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 at_func.c
-     /tmp/ccjAeVxd.s:16     .text.breakIfAtOk:0000000000000000 $t
-     /tmp/ccjAeVxd.s:23     .text.breakIfAtOk:0000000000000000 breakIfAtOk
-     /tmp/ccjAeVxd.s:54     .text.breakIfAtOk:0000000000000018 $d
-     /tmp/ccjAeVxd.s:60     .text.AT_checkResult:0000000000000000 $t
-     /tmp/ccjAeVxd.s:67     .text.AT_checkResult:0000000000000000 AT_checkResult
-     /tmp/ccjAeVxd.s:112    .text.AT_checkResult:0000000000000024 $d
-     /tmp/ccjAeVxd.s:119    .text.AT_send:0000000000000000 $t
-     /tmp/ccjAeVxd.s:126    .text.AT_send:0000000000000000 AT_send
-     /tmp/ccjAeVxd.s:273    .text.AT_send:00000000000000a8 $d
-     /tmp/ccjAeVxd.s:304    .data.AT_CCLK:0000000000000000 AT_CCLK
-     /tmp/ccjAeVxd.s:316    .data.AT_CFUN:0000000000000000 AT_CFUN
-     /tmp/ccjAeVxd.s:346    .data.AT_CMEE:0000000000000000 AT_CMEE
-     /tmp/ccjAeVxd.s:382    .data.AT_NSORF:0000000000000000 AT_NSORF
-     /tmp/ccjAeVxd.s:388    .data.AT_NSOST:0000000000000000 AT_NSOST
-     /tmp/ccjAeVxd.s:376    .data.AT_NSOCR:0000000000000000 AT_NSOCR
-     /tmp/ccjAeVxd.s:340    .data.AT_CGPADDR:0000000000000000 AT_CGPADDR
-     /tmp/ccjAeVxd.s:358    .data.AT_CSQ:0000000000000000 AT_CSQ
-     /tmp/ccjAeVxd.s:322    .data.AT_CGACT:0000000000000000 AT_CGACT
-     /tmp/ccjAeVxd.s:328    .data.AT_CGDCONT:0000000000000000 AT_CGDCONT
-     /tmp/ccjAeVxd.s:370    .data.AT_NRB:0000000000000000 AT_NRB
-     /tmp/ccjAeVxd.s:310    .data.AT_CEREG:0000000000000000 AT_CEREG
-     /tmp/ccjAeVxd.s:352    .data.AT_COPS:0000000000000000 AT_COPS
-     /tmp/ccjAeVxd.s:364    .data.AT_NPIN:0000000000000000 AT_NPIN
-     /tmp/ccjAeVxd.s:334    .data.AT_CGMI:0000000000000000 AT_CGMI
-     /tmp/ccjAeVxd.s:394    .data.AT_REQ:0000000000000000 AT_REQ
-     /tmp/ccjAeVxd.s:301    .data.AT_CCLK:0000000000000000 $d
-     /tmp/ccjAeVxd.s:307    .data.AT_CEREG:0000000000000000 $d
-     /tmp/ccjAeVxd.s:313    .data.AT_CFUN:0000000000000000 $d
-     /tmp/ccjAeVxd.s:319    .data.AT_CGACT:0000000000000000 $d
-     /tmp/ccjAeVxd.s:325    .data.AT_CGDCONT:0000000000000000 $d
-     /tmp/ccjAeVxd.s:331    .data.AT_CGMI:0000000000000000 $d
-     /tmp/ccjAeVxd.s:337    .data.AT_CGPADDR:0000000000000000 $d
-     /tmp/ccjAeVxd.s:343    .data.AT_CMEE:0000000000000000 $d
-     /tmp/ccjAeVxd.s:349    .data.AT_COPS:0000000000000000 $d
-     /tmp/ccjAeVxd.s:355    .data.AT_CSQ:0000000000000000 $d
-     /tmp/ccjAeVxd.s:361    .data.AT_NPIN:0000000000000000 $d
-     /tmp/ccjAeVxd.s:367    .data.AT_NRB:0000000000000000 $d
-     /tmp/ccjAeVxd.s:373    .data.AT_NSOCR:0000000000000000 $d
-     /tmp/ccjAeVxd.s:379    .data.AT_NSORF:0000000000000000 $d
-     /tmp/ccjAeVxd.s:385    .data.AT_NSOST:0000000000000000 $d
-     /tmp/ccjAeVxd.s:391    .data.AT_REQ:0000000000000000 $d
-     /tmp/ccjAeVxd.s:397    .rodata.AT_checkResult.str1.4:0000000000000000 $d
-     /tmp/ccjAeVxd.s:406    .rodata.AT_send.str1.4:0000000000000000 $d
-     /tmp/ccjAeVxd.s:418    .rodata.breakIfAtOk.str1.4:0000000000000000 $d
-     /tmp/ccjAeVxd.s:422    .rodata.str1.4:0000000000000000 $d
+     /tmp/ccpp0C3F.s:16     .text.breakIfAtOk:0000000000000000 $t
+     /tmp/ccpp0C3F.s:23     .text.breakIfAtOk:0000000000000000 breakIfAtOk
+     /tmp/ccpp0C3F.s:48     .text.breakIfAtOk:0000000000000014 $d
+     /tmp/ccpp0C3F.s:54     .text.AT_checkResult:0000000000000000 $t
+     /tmp/ccpp0C3F.s:61     .text.AT_checkResult:0000000000000000 AT_checkResult
+     /tmp/ccpp0C3F.s:76     .text.AT_send:0000000000000000 $t
+     /tmp/ccpp0C3F.s:83     .text.AT_send:0000000000000000 AT_send
+     /tmp/ccpp0C3F.s:221    .text.AT_send:000000000000009c $d
+     /tmp/ccpp0C3F.s:253    .data.AT_CCLK:0000000000000000 AT_CCLK
+     /tmp/ccpp0C3F.s:265    .data.AT_CFUN:0000000000000000 AT_CFUN
+     /tmp/ccpp0C3F.s:295    .data.AT_CMEE:0000000000000000 AT_CMEE
+     /tmp/ccpp0C3F.s:331    .data.AT_NSORF:0000000000000000 AT_NSORF
+     /tmp/ccpp0C3F.s:337    .data.AT_NSOST:0000000000000000 AT_NSOST
+     /tmp/ccpp0C3F.s:325    .data.AT_NSOCR:0000000000000000 AT_NSOCR
+     /tmp/ccpp0C3F.s:289    .data.AT_CGPADDR:0000000000000000 AT_CGPADDR
+     /tmp/ccpp0C3F.s:307    .data.AT_CSQ:0000000000000000 AT_CSQ
+     /tmp/ccpp0C3F.s:271    .data.AT_CGACT:0000000000000000 AT_CGACT
+     /tmp/ccpp0C3F.s:277    .data.AT_CGDCONT:0000000000000000 AT_CGDCONT
+     /tmp/ccpp0C3F.s:319    .data.AT_NRB:0000000000000000 AT_NRB
+     /tmp/ccpp0C3F.s:259    .data.AT_CEREG:0000000000000000 AT_CEREG
+     /tmp/ccpp0C3F.s:301    .data.AT_COPS:0000000000000000 AT_COPS
+     /tmp/ccpp0C3F.s:313    .data.AT_NPIN:0000000000000000 AT_NPIN
+     /tmp/ccpp0C3F.s:283    .data.AT_CGMI:0000000000000000 AT_CGMI
+     /tmp/ccpp0C3F.s:343    .data.AT_REQ:0000000000000000 AT_REQ
+     /tmp/ccpp0C3F.s:250    .data.AT_CCLK:0000000000000000 $d
+     /tmp/ccpp0C3F.s:256    .data.AT_CEREG:0000000000000000 $d
+     /tmp/ccpp0C3F.s:262    .data.AT_CFUN:0000000000000000 $d
+     /tmp/ccpp0C3F.s:268    .data.AT_CGACT:0000000000000000 $d
+     /tmp/ccpp0C3F.s:274    .data.AT_CGDCONT:0000000000000000 $d
+     /tmp/ccpp0C3F.s:280    .data.AT_CGMI:0000000000000000 $d
+     /tmp/ccpp0C3F.s:286    .data.AT_CGPADDR:0000000000000000 $d
+     /tmp/ccpp0C3F.s:292    .data.AT_CMEE:0000000000000000 $d
+     /tmp/ccpp0C3F.s:298    .data.AT_COPS:0000000000000000 $d
+     /tmp/ccpp0C3F.s:304    .data.AT_CSQ:0000000000000000 $d
+     /tmp/ccpp0C3F.s:310    .data.AT_NPIN:0000000000000000 $d
+     /tmp/ccpp0C3F.s:316    .data.AT_NRB:0000000000000000 $d
+     /tmp/ccpp0C3F.s:322    .data.AT_NSOCR:0000000000000000 $d
+     /tmp/ccpp0C3F.s:328    .data.AT_NSORF:0000000000000000 $d
+     /tmp/ccpp0C3F.s:334    .data.AT_NSOST:0000000000000000 $d
+     /tmp/ccpp0C3F.s:340    .data.AT_REQ:0000000000000000 $d
 
 UNDEFINED SYMBOLS
 strstr
 NB_recBuf
-printf
-memset
 sprintf
 NB_send
+PCprint
 millis
+memset
 NB_bufPtr
 NB_strReady

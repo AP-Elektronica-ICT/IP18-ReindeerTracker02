@@ -220,6 +220,8 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 	uint8_t reSend_msg = 0;
 
 	//NB_reboot();
+
+	AT_send("CFUN=1","","OK");
 	NB_setPin();
 
 	delay_ms(200);  //viivettä pitää olla
