@@ -11,20 +11,21 @@
 
 #include "gps_func.h"
 #include "at_func.h"
+extern uint8_t PCprint(char *data);
 
 
 
 /*
  *
  * Print UBX response message as hex numbers
- * cannot print it normally by printf because it contains 0x00 as data
+ * cannot print it normally by PCprint because it contains 0x00 as data
  */
 
 void printUbxResponseHex(char* data, uint8_t dataLength)
 {
 	for (uint8_t n = 0; n < dataLength; n++)
 	{
-		printf("%02x ", (uint8_t) (*(data + n)));
+		//PCprint("%02x ", (uint8_t) (*(data + n)));
 	}
 }
 
@@ -52,7 +53,7 @@ uint8_t calcUbxCrc(char *data)
 
 	for (n = 0; n < (dataLength + 2); n++) //debug print our complete message
 	{
-		printf("%02x ", (uint8_t) data[n]);
+		//PCprint("%02x ", (uint8_t) data[n]);
 	}
 
 	return dataLength + 4;
@@ -89,7 +90,7 @@ uint8_t getGPS()
 
 		{
 			*(gllEnd + 2) = 0; //write 0 to end of GLL string so string functions will stop correctly
-			printf("GLL string %s\r\n", gllStart);
+			//PCprint("GLL string %s\r\n", gllStart);
 		}
 
 		uint8_t gllLength = strlen(gllStart);
@@ -117,19 +118,19 @@ uint8_t getGPS()
 
 		if (strstr(GPS_dataPtrs[6], "A") != NULL)
 		{
-			printf("Got GPS\r\n");
+			PCprint("Got GPS\r\n");
 			parseData(GPS_dataPtrs[1], GPS_dataPtrs[3]);
 			return 1;
 		}
 
 		else if (strstr(GPS_dataPtrs[6], "V") != NULL)
 		{
-			printf("Data invalid, waiting for valid data\r\n");
+			PCprint("Data invalid, waiting for valid data\r\n");
 		}
 
 		for (uint8_t cnr = 0; cnr < 7; cnr++)
 		{
-			printf("%s\r\n", GPS_dataPtrs[cnr]);
+			//PCprint("%s\r\n", GPS_dataPtrs[cnr]);
 		}
 
 	}
@@ -142,7 +143,7 @@ uint8_t getGPS()
 		{
 
 			*(gsvEnd + 2) = 0;
-			printf("GSV string %s\r\n", gsvStart);
+			//PCprint("GSV string %s\r\n", gsvStart);
 
 		}
 	}
@@ -172,7 +173,7 @@ void parseData(char* latStr, char* lonStr)
 	lonStr[4] = lonStr[3];
 	lonStr[3] = '.';
 
-	printf("latstr %s lonstr %s\r\n",latStr,lonStr);
+	//PCprint("latstr %s lonstr %s\r\n",latStr,lonStr);
 
 	while (latStr[d_ptr] == '0')
 	{		// Skip all zeroes from beginning of string
@@ -193,7 +194,7 @@ void parseData(char* latStr, char* lonStr)
 	sprintf(delPtr, "%ld\r\n", latMinutes); //here because of LOOP2 delPtr points after the original zeroes(if there were any)
 											//and decimal problem is fixed
 
-	printf("latmin: %ld\r\n",latMinutes);
+	//PCprint("latmin: %ld\r\n",latMinutes);
 
 	while (lonStr[d_ptr] == '0')
 	{
@@ -212,6 +213,6 @@ void parseData(char* latStr, char* lonStr)
 	sprintf(delPtr, "%ld\r\n", lonMinutes);//here because of LOOP3 delPtr points after the original zeroes(if there were any)
 											//and decimal problem is fixed
 
-	//printf("Parsed latitude: %s", parsedLon);
-	//printf("Parsed longitude: %s", parsedLat);
+	//PCprint("Parsed latitude: %s", parsedLon);
+	//PCprint("Parsed longitude: %s", parsedLat);
 }
