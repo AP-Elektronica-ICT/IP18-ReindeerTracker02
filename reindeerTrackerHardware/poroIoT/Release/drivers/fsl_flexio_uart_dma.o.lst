@@ -1,0 +1,3085 @@
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"fsl_flexio_uart_dma.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.FLEXIO_UART_TransferSendDMACallback,"ax",%progbits
+  16              		.align	1
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	FLEXIO_UART_TransferSendDMACallback:
+  23              	.LFB90:
+  24              		.file 1 "../drivers/fsl_flexio_uart_dma.c"
+   1:../drivers/fsl_flexio_uart_dma.c **** /*
+   2:../drivers/fsl_flexio_uart_dma.c ****  * The Clear BSD License
+   3:../drivers/fsl_flexio_uart_dma.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_flexio_uart_dma.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_flexio_uart_dma.c ****  * All rights reserved.
+   6:../drivers/fsl_flexio_uart_dma.c ****  *
+   7:../drivers/fsl_flexio_uart_dma.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_flexio_uart_dma.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_flexio_uart_dma.c ****  * that the following conditions are met:
+  10:../drivers/fsl_flexio_uart_dma.c ****  *
+  11:../drivers/fsl_flexio_uart_dma.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_flexio_uart_dma.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_flexio_uart_dma.c ****  *
+  14:../drivers/fsl_flexio_uart_dma.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_flexio_uart_dma.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_flexio_uart_dma.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_flexio_uart_dma.c ****  *
+  18:../drivers/fsl_flexio_uart_dma.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_flexio_uart_dma.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_flexio_uart_dma.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_flexio_uart_dma.c ****  *
+  22:../drivers/fsl_flexio_uart_dma.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_flexio_uart_dma.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_flexio_uart_dma.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_flexio_uart_dma.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_flexio_uart_dma.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_flexio_uart_dma.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_flexio_uart_dma.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_flexio_uart_dma.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_flexio_uart_dma.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_flexio_uart_dma.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_flexio_uart_dma.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_flexio_uart_dma.c ****  */
+  34:../drivers/fsl_flexio_uart_dma.c **** 
+  35:../drivers/fsl_flexio_uart_dma.c **** #include "fsl_flexio_uart_dma.h"
+  36:../drivers/fsl_flexio_uart_dma.c **** 
+  37:../drivers/fsl_flexio_uart_dma.c **** /*******************************************************************************
+  38:../drivers/fsl_flexio_uart_dma.c ****  * Definitions
+  39:../drivers/fsl_flexio_uart_dma.c ****  ******************************************************************************/
+  40:../drivers/fsl_flexio_uart_dma.c **** 
+  41:../drivers/fsl_flexio_uart_dma.c **** /*<! @brief Structure definition for DMA callback param pass in. */
+  42:../drivers/fsl_flexio_uart_dma.c **** typedef struct _flexio_uart_dma_private_handle
+  43:../drivers/fsl_flexio_uart_dma.c **** {
+  44:../drivers/fsl_flexio_uart_dma.c ****     FLEXIO_UART_Type *base;
+  45:../drivers/fsl_flexio_uart_dma.c ****     flexio_uart_dma_handle_t *handle;
+  46:../drivers/fsl_flexio_uart_dma.c **** } flexio_uart_dma_private_handle_t;
+  47:../drivers/fsl_flexio_uart_dma.c **** 
+  48:../drivers/fsl_flexio_uart_dma.c **** /*<! @brief uart transfer state. */
+  49:../drivers/fsl_flexio_uart_dma.c **** enum _flexio_uart_dma_transfer_states
+  50:../drivers/fsl_flexio_uart_dma.c **** {
+  51:../drivers/fsl_flexio_uart_dma.c ****     kFLEXIO_UART_TxIdle, /* TX idle. */
+  52:../drivers/fsl_flexio_uart_dma.c ****     kFLEXIO_UART_TxBusy, /* TX busy. */
+  53:../drivers/fsl_flexio_uart_dma.c ****     kFLEXIO_UART_RxIdle, /* RX idle. */
+  54:../drivers/fsl_flexio_uart_dma.c ****     kFLEXIO_UART_RxBusy  /* RX busy. */
+  55:../drivers/fsl_flexio_uart_dma.c **** };
+  56:../drivers/fsl_flexio_uart_dma.c **** 
+  57:../drivers/fsl_flexio_uart_dma.c **** /*******************************************************************************
+  58:../drivers/fsl_flexio_uart_dma.c ****  * Variables
+  59:../drivers/fsl_flexio_uart_dma.c ****  ******************************************************************************/
+  60:../drivers/fsl_flexio_uart_dma.c **** 
+  61:../drivers/fsl_flexio_uart_dma.c **** /*< @brief user configurable flexio uart handle count. */
+  62:../drivers/fsl_flexio_uart_dma.c **** #define FLEXIO_UART_HANDLE_COUNT 2
+  63:../drivers/fsl_flexio_uart_dma.c **** 
+  64:../drivers/fsl_flexio_uart_dma.c **** /*<! Private handle only used for internally. */
+  65:../drivers/fsl_flexio_uart_dma.c **** static flexio_uart_dma_private_handle_t s_dmaPrivateHandle[FLEXIO_UART_HANDLE_COUNT];
+  66:../drivers/fsl_flexio_uart_dma.c **** 
+  67:../drivers/fsl_flexio_uart_dma.c **** /*******************************************************************************
+  68:../drivers/fsl_flexio_uart_dma.c ****  * Prototypes
+  69:../drivers/fsl_flexio_uart_dma.c ****  ******************************************************************************/
+  70:../drivers/fsl_flexio_uart_dma.c **** 
+  71:../drivers/fsl_flexio_uart_dma.c **** /*!
+  72:../drivers/fsl_flexio_uart_dma.c ****  * @brief FLEXIO UART DMA send finished callback function.
+  73:../drivers/fsl_flexio_uart_dma.c ****  *
+  74:../drivers/fsl_flexio_uart_dma.c ****  * This function is called when FLEXIO UART DMA send finished. It disables the UART
+  75:../drivers/fsl_flexio_uart_dma.c ****  * TX DMA request and sends @ref kStatus_FLEXIO_UART_TxIdle to FLEXIO UART callback.
+  76:../drivers/fsl_flexio_uart_dma.c ****  *
+  77:../drivers/fsl_flexio_uart_dma.c ****  * @param handle The DMA handle.
+  78:../drivers/fsl_flexio_uart_dma.c ****  * @param param Callback function parameter.
+  79:../drivers/fsl_flexio_uart_dma.c ****  */
+  80:../drivers/fsl_flexio_uart_dma.c **** static void FLEXIO_UART_TransferSendDMACallback(dma_handle_t *handle, void *param);
+  81:../drivers/fsl_flexio_uart_dma.c **** 
+  82:../drivers/fsl_flexio_uart_dma.c **** /*!
+  83:../drivers/fsl_flexio_uart_dma.c ****  * @brief FLEXIO UART DMA receive finished callback function.
+  84:../drivers/fsl_flexio_uart_dma.c ****  *
+  85:../drivers/fsl_flexio_uart_dma.c ****  * This function is called when FLEXIO UART DMA receive finished. It disables the FLEXIO
+  86:../drivers/fsl_flexio_uart_dma.c ****  * UART RX DMA request and sends @ref kStatus_FLEXIO_UART_RxIdle to UART callback.
+  87:../drivers/fsl_flexio_uart_dma.c ****  *
+  88:../drivers/fsl_flexio_uart_dma.c ****  * @param handle The DMA handle.
+  89:../drivers/fsl_flexio_uart_dma.c ****  * @param param Callback function parameter.
+  90:../drivers/fsl_flexio_uart_dma.c ****  */
+  91:../drivers/fsl_flexio_uart_dma.c **** static void FLEXIO_UART_TransferReceiveDMACallback(dma_handle_t *handle, void *param);
+  92:../drivers/fsl_flexio_uart_dma.c **** 
+  93:../drivers/fsl_flexio_uart_dma.c **** /*******************************************************************************
+  94:../drivers/fsl_flexio_uart_dma.c ****  * Code
+  95:../drivers/fsl_flexio_uart_dma.c ****  ******************************************************************************/
+  96:../drivers/fsl_flexio_uart_dma.c **** 
+  97:../drivers/fsl_flexio_uart_dma.c **** static void FLEXIO_UART_TransferSendDMACallback(dma_handle_t *handle, void *param)
+  98:../drivers/fsl_flexio_uart_dma.c **** {
+  25              		.loc 1 98 0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 0
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  29              	.LVL0:
+  30 0000 70B5     		push	{r4, r5, r6, lr}
+  31              		.cfi_def_cfa_offset 16
+  32              		.cfi_offset 4, -16
+  33              		.cfi_offset 5, -12
+  34              		.cfi_offset 6, -8
+  35              		.cfi_offset 14, -4
+  36              	.LVL1:
+  99:../drivers/fsl_flexio_uart_dma.c ****     flexio_uart_dma_private_handle_t *uartPrivateHandle = (flexio_uart_dma_private_handle_t *)param
+ 100:../drivers/fsl_flexio_uart_dma.c **** 
+ 101:../drivers/fsl_flexio_uart_dma.c ****     /* Disable UART TX DMA. */
+ 102:../drivers/fsl_flexio_uart_dma.c ****     FLEXIO_UART_EnableTxDMA(uartPrivateHandle->base, false);
+  37              		.loc 1 102 0
+  38 0002 0B68     		ldr	r3, [r1]
+  39              	.LVL2:
+  40              	.LBB66:
+  41              	.LBB67:
+  42              		.file 2 "../drivers/fsl_flexio_uart.h"
+   1:../drivers/fsl_flexio_uart.h **** /*
+   2:../drivers/fsl_flexio_uart.h ****  * The Clear BSD License
+   3:../drivers/fsl_flexio_uart.h ****  * Copyright (c) 2015-2016, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_flexio_uart.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_flexio_uart.h ****  * All rights reserved.
+   6:../drivers/fsl_flexio_uart.h ****  *
+   7:../drivers/fsl_flexio_uart.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_flexio_uart.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_flexio_uart.h ****  * that the following conditions are met:
+  10:../drivers/fsl_flexio_uart.h ****  *
+  11:../drivers/fsl_flexio_uart.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_flexio_uart.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_flexio_uart.h ****  *
+  14:../drivers/fsl_flexio_uart.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_flexio_uart.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_flexio_uart.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_flexio_uart.h ****  *
+  18:../drivers/fsl_flexio_uart.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_flexio_uart.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_flexio_uart.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_flexio_uart.h ****  *
+  22:../drivers/fsl_flexio_uart.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_flexio_uart.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_flexio_uart.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_flexio_uart.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_flexio_uart.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_flexio_uart.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_flexio_uart.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_flexio_uart.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_flexio_uart.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_flexio_uart.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_flexio_uart.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_flexio_uart.h ****  */
+  34:../drivers/fsl_flexio_uart.h **** 
+  35:../drivers/fsl_flexio_uart.h **** #ifndef _FSL_FLEXIO_UART_H_
+  36:../drivers/fsl_flexio_uart.h **** #define _FSL_FLEXIO_UART_H_
+  37:../drivers/fsl_flexio_uart.h **** 
+  38:../drivers/fsl_flexio_uart.h **** #include "fsl_common.h"
+  39:../drivers/fsl_flexio_uart.h **** #include "fsl_flexio.h"
+  40:../drivers/fsl_flexio_uart.h **** 
+  41:../drivers/fsl_flexio_uart.h **** /*!
+  42:../drivers/fsl_flexio_uart.h ****  * @addtogroup flexio_uart
+  43:../drivers/fsl_flexio_uart.h ****  * @{
+  44:../drivers/fsl_flexio_uart.h ****  */
+  45:../drivers/fsl_flexio_uart.h **** 
+  46:../drivers/fsl_flexio_uart.h **** /*******************************************************************************
+  47:../drivers/fsl_flexio_uart.h ****  * Definitions
+  48:../drivers/fsl_flexio_uart.h ****  ******************************************************************************/
+  49:../drivers/fsl_flexio_uart.h **** 
+  50:../drivers/fsl_flexio_uart.h **** /*! @name Driver version */
+  51:../drivers/fsl_flexio_uart.h **** /*@{*/
+  52:../drivers/fsl_flexio_uart.h **** /*! @brief FlexIO UART driver version 2.1.3. */
+  53:../drivers/fsl_flexio_uart.h **** #define FSL_FLEXIO_UART_DRIVER_VERSION (MAKE_VERSION(2, 1, 3))
+  54:../drivers/fsl_flexio_uart.h **** /*@}*/
+  55:../drivers/fsl_flexio_uart.h **** 
+  56:../drivers/fsl_flexio_uart.h **** /*! @brief Error codes for the UART driver. */
+  57:../drivers/fsl_flexio_uart.h **** enum _flexio_uart_status
+  58:../drivers/fsl_flexio_uart.h **** {
+  59:../drivers/fsl_flexio_uart.h ****     kStatus_FLEXIO_UART_TxBusy = MAKE_STATUS(kStatusGroup_FLEXIO_UART, 0), /*!< Transmitter is busy
+  60:../drivers/fsl_flexio_uart.h ****     kStatus_FLEXIO_UART_RxBusy = MAKE_STATUS(kStatusGroup_FLEXIO_UART, 1), /*!< Receiver is busy. *
+  61:../drivers/fsl_flexio_uart.h ****     kStatus_FLEXIO_UART_TxIdle = MAKE_STATUS(kStatusGroup_FLEXIO_UART, 2), /*!< UART transmitter is
+  62:../drivers/fsl_flexio_uart.h ****     kStatus_FLEXIO_UART_RxIdle = MAKE_STATUS(kStatusGroup_FLEXIO_UART, 3), /*!< UART receiver is id
+  63:../drivers/fsl_flexio_uart.h ****     kStatus_FLEXIO_UART_ERROR = MAKE_STATUS(kStatusGroup_FLEXIO_UART, 4),  /*!< ERROR happens on UA
+  64:../drivers/fsl_flexio_uart.h ****     kStatus_FLEXIO_UART_RxRingBufferOverrun =
+  65:../drivers/fsl_flexio_uart.h ****         MAKE_STATUS(kStatusGroup_FLEXIO_UART, 5), /*!< UART RX software ring buffer overrun. */
+  66:../drivers/fsl_flexio_uart.h ****     kStatus_FLEXIO_UART_RxHardwareOverrun = MAKE_STATUS(kStatusGroup_FLEXIO_UART, 6) /*!< UART RX r
+  67:../drivers/fsl_flexio_uart.h **** };
+  68:../drivers/fsl_flexio_uart.h **** 
+  69:../drivers/fsl_flexio_uart.h **** /*! @brief FlexIO UART bit count per char. */
+  70:../drivers/fsl_flexio_uart.h **** typedef enum _flexio_uart_bit_count_per_char
+  71:../drivers/fsl_flexio_uart.h **** {
+  72:../drivers/fsl_flexio_uart.h ****     kFLEXIO_UART_7BitsPerChar = 7U, /*!< 7-bit data characters */
+  73:../drivers/fsl_flexio_uart.h ****     kFLEXIO_UART_8BitsPerChar = 8U, /*!< 8-bit data characters */
+  74:../drivers/fsl_flexio_uart.h ****     kFLEXIO_UART_9BitsPerChar = 9U, /*!< 9-bit data characters */
+  75:../drivers/fsl_flexio_uart.h **** } flexio_uart_bit_count_per_char_t;
+  76:../drivers/fsl_flexio_uart.h **** 
+  77:../drivers/fsl_flexio_uart.h **** /*! @brief Define FlexIO UART interrupt mask. */
+  78:../drivers/fsl_flexio_uart.h **** enum _flexio_uart_interrupt_enable
+  79:../drivers/fsl_flexio_uart.h **** {
+  80:../drivers/fsl_flexio_uart.h ****     kFLEXIO_UART_TxDataRegEmptyInterruptEnable = 0x1U, /*!< Transmit buffer empty interrupt enable.
+  81:../drivers/fsl_flexio_uart.h ****     kFLEXIO_UART_RxDataRegFullInterruptEnable = 0x2U,  /*!< Receive buffer full interrupt enable. *
+  82:../drivers/fsl_flexio_uart.h **** };
+  83:../drivers/fsl_flexio_uart.h **** 
+  84:../drivers/fsl_flexio_uart.h **** /*! @brief Define FlexIO UART status mask. */
+  85:../drivers/fsl_flexio_uart.h **** enum _flexio_uart_status_flags
+  86:../drivers/fsl_flexio_uart.h **** {
+  87:../drivers/fsl_flexio_uart.h ****     kFLEXIO_UART_TxDataRegEmptyFlag = 0x1U, /*!< Transmit buffer empty flag. */
+  88:../drivers/fsl_flexio_uart.h ****     kFLEXIO_UART_RxDataRegFullFlag = 0x2U,  /*!< Receive buffer full flag. */
+  89:../drivers/fsl_flexio_uart.h ****     kFLEXIO_UART_RxOverRunFlag = 0x4U,      /*!< Receive buffer over run flag. */
+  90:../drivers/fsl_flexio_uart.h **** };
+  91:../drivers/fsl_flexio_uart.h **** 
+  92:../drivers/fsl_flexio_uart.h **** /*! @brief Define FlexIO UART access structure typedef. */
+  93:../drivers/fsl_flexio_uart.h **** typedef struct _flexio_uart_type
+  94:../drivers/fsl_flexio_uart.h **** {
+  95:../drivers/fsl_flexio_uart.h ****     FLEXIO_Type *flexioBase; /*!< FlexIO base pointer. */
+  96:../drivers/fsl_flexio_uart.h ****     uint8_t TxPinIndex;      /*!< Pin select for UART_Tx. */
+  97:../drivers/fsl_flexio_uart.h ****     uint8_t RxPinIndex;      /*!< Pin select for UART_Rx. */
+  98:../drivers/fsl_flexio_uart.h ****     uint8_t shifterIndex[2]; /*!< Shifter index used in FlexIO UART. */
+  99:../drivers/fsl_flexio_uart.h ****     uint8_t timerIndex[2];   /*!< Timer index used in FlexIO UART. */
+ 100:../drivers/fsl_flexio_uart.h **** } FLEXIO_UART_Type;
+ 101:../drivers/fsl_flexio_uart.h **** 
+ 102:../drivers/fsl_flexio_uart.h **** /*! @brief Define FlexIO UART user configuration structure. */
+ 103:../drivers/fsl_flexio_uart.h **** typedef struct _flexio_uart_config
+ 104:../drivers/fsl_flexio_uart.h **** {
+ 105:../drivers/fsl_flexio_uart.h ****     bool enableUart;                                  /*!< Enable/disable FlexIO UART TX & RX. */
+ 106:../drivers/fsl_flexio_uart.h ****     bool enableInDoze;                                /*!< Enable/disable FlexIO operation in doze 
+ 107:../drivers/fsl_flexio_uart.h ****     bool enableInDebug;                               /*!< Enable/disable FlexIO operation in debug
+ 108:../drivers/fsl_flexio_uart.h ****     bool enableFastAccess;                            /*!< Enable/disable fast access to FlexIO reg
+ 109:../drivers/fsl_flexio_uart.h ****                                                        fast access requires the FlexIO clock to be 
+ 110:../drivers/fsl_flexio_uart.h ****                                                        twice the frequency of the bus clock. */
+ 111:../drivers/fsl_flexio_uart.h ****     uint32_t baudRate_Bps;                            /*!< Baud rate in Bps. */
+ 112:../drivers/fsl_flexio_uart.h ****     flexio_uart_bit_count_per_char_t bitCountPerChar; /*!< number of bits, 7/8/9 -bit */
+ 113:../drivers/fsl_flexio_uart.h **** } flexio_uart_config_t;
+ 114:../drivers/fsl_flexio_uart.h **** 
+ 115:../drivers/fsl_flexio_uart.h **** /*! @brief Define FlexIO UART transfer structure. */
+ 116:../drivers/fsl_flexio_uart.h **** typedef struct _flexio_uart_transfer
+ 117:../drivers/fsl_flexio_uart.h **** {
+ 118:../drivers/fsl_flexio_uart.h ****     uint8_t *data;   /*!< Transfer buffer*/
+ 119:../drivers/fsl_flexio_uart.h ****     size_t dataSize; /*!< Transfer size*/
+ 120:../drivers/fsl_flexio_uart.h **** } flexio_uart_transfer_t;
+ 121:../drivers/fsl_flexio_uart.h **** 
+ 122:../drivers/fsl_flexio_uart.h **** /* Forward declaration of the handle typedef. */
+ 123:../drivers/fsl_flexio_uart.h **** typedef struct _flexio_uart_handle flexio_uart_handle_t;
+ 124:../drivers/fsl_flexio_uart.h **** 
+ 125:../drivers/fsl_flexio_uart.h **** /*! @brief FlexIO UART transfer callback function. */
+ 126:../drivers/fsl_flexio_uart.h **** typedef void (*flexio_uart_transfer_callback_t)(FLEXIO_UART_Type *base,
+ 127:../drivers/fsl_flexio_uart.h ****                                                 flexio_uart_handle_t *handle,
+ 128:../drivers/fsl_flexio_uart.h ****                                                 status_t status,
+ 129:../drivers/fsl_flexio_uart.h ****                                                 void *userData);
+ 130:../drivers/fsl_flexio_uart.h **** 
+ 131:../drivers/fsl_flexio_uart.h **** /*! @brief Define FLEXIO UART handle structure*/
+ 132:../drivers/fsl_flexio_uart.h **** struct _flexio_uart_handle
+ 133:../drivers/fsl_flexio_uart.h **** {
+ 134:../drivers/fsl_flexio_uart.h ****     uint8_t *volatile txData;   /*!< Address of remaining data to send. */
+ 135:../drivers/fsl_flexio_uart.h ****     volatile size_t txDataSize; /*!< Size of the remaining data to send. */
+ 136:../drivers/fsl_flexio_uart.h ****     uint8_t *volatile rxData;   /*!< Address of remaining data to receive. */
+ 137:../drivers/fsl_flexio_uart.h ****     volatile size_t rxDataSize; /*!< Size of the remaining data to receive. */
+ 138:../drivers/fsl_flexio_uart.h ****     size_t txDataSizeAll;       /*!< Total bytes to be sent. */
+ 139:../drivers/fsl_flexio_uart.h ****     size_t rxDataSizeAll;       /*!< Total bytes to be received. */
+ 140:../drivers/fsl_flexio_uart.h **** 
+ 141:../drivers/fsl_flexio_uart.h ****     uint8_t *rxRingBuffer;              /*!< Start address of the receiver ring buffer. */
+ 142:../drivers/fsl_flexio_uart.h ****     size_t rxRingBufferSize;            /*!< Size of the ring buffer. */
+ 143:../drivers/fsl_flexio_uart.h ****     volatile uint16_t rxRingBufferHead; /*!< Index for the driver to store received data into ring 
+ 144:../drivers/fsl_flexio_uart.h ****     volatile uint16_t rxRingBufferTail; /*!< Index for the user to get data from the ring buffer. *
+ 145:../drivers/fsl_flexio_uart.h **** 
+ 146:../drivers/fsl_flexio_uart.h ****     flexio_uart_transfer_callback_t callback; /*!< Callback function. */
+ 147:../drivers/fsl_flexio_uart.h ****     void *userData;                           /*!< UART callback function parameter.*/
+ 148:../drivers/fsl_flexio_uart.h **** 
+ 149:../drivers/fsl_flexio_uart.h ****     volatile uint8_t txState; /*!< TX transfer state. */
+ 150:../drivers/fsl_flexio_uart.h ****     volatile uint8_t rxState; /*!< RX transfer state */
+ 151:../drivers/fsl_flexio_uart.h **** };
+ 152:../drivers/fsl_flexio_uart.h **** 
+ 153:../drivers/fsl_flexio_uart.h **** /*******************************************************************************
+ 154:../drivers/fsl_flexio_uart.h ****  * API
+ 155:../drivers/fsl_flexio_uart.h ****  ******************************************************************************/
+ 156:../drivers/fsl_flexio_uart.h **** 
+ 157:../drivers/fsl_flexio_uart.h **** #if defined(__cplusplus)
+ 158:../drivers/fsl_flexio_uart.h **** extern "C" {
+ 159:../drivers/fsl_flexio_uart.h **** #endif /*_cplusplus*/
+ 160:../drivers/fsl_flexio_uart.h **** 
+ 161:../drivers/fsl_flexio_uart.h **** /*!
+ 162:../drivers/fsl_flexio_uart.h ****  * @name Initialization and deinitialization
+ 163:../drivers/fsl_flexio_uart.h ****  * @{
+ 164:../drivers/fsl_flexio_uart.h ****  */
+ 165:../drivers/fsl_flexio_uart.h **** 
+ 166:../drivers/fsl_flexio_uart.h **** /*!
+ 167:../drivers/fsl_flexio_uart.h ****  * @brief Ungates the FlexIO clock, resets the FlexIO module, configures FlexIO UART
+ 168:../drivers/fsl_flexio_uart.h ****  * hardware, and configures the FlexIO UART with FlexIO UART configuration.
+ 169:../drivers/fsl_flexio_uart.h ****  * The configuration structure can be filled by the user or be set with
+ 170:../drivers/fsl_flexio_uart.h ****  * default values by FLEXIO_UART_GetDefaultConfig().
+ 171:../drivers/fsl_flexio_uart.h ****  *
+ 172:../drivers/fsl_flexio_uart.h ****  * Example
+ 173:../drivers/fsl_flexio_uart.h ****    @code
+ 174:../drivers/fsl_flexio_uart.h ****    FLEXIO_UART_Type base = {
+ 175:../drivers/fsl_flexio_uart.h ****    .flexioBase = FLEXIO,
+ 176:../drivers/fsl_flexio_uart.h ****    .TxPinIndex = 0,
+ 177:../drivers/fsl_flexio_uart.h ****    .RxPinIndex = 1,
+ 178:../drivers/fsl_flexio_uart.h ****    .shifterIndex = {0,1},
+ 179:../drivers/fsl_flexio_uart.h ****    .timerIndex = {0,1}
+ 180:../drivers/fsl_flexio_uart.h ****    };
+ 181:../drivers/fsl_flexio_uart.h ****    flexio_uart_config_t config = {
+ 182:../drivers/fsl_flexio_uart.h ****    .enableInDoze = false,
+ 183:../drivers/fsl_flexio_uart.h ****    .enableInDebug = true,
+ 184:../drivers/fsl_flexio_uart.h ****    .enableFastAccess = false,
+ 185:../drivers/fsl_flexio_uart.h ****    .baudRate_Bps = 115200U,
+ 186:../drivers/fsl_flexio_uart.h ****    .bitCountPerChar = 8
+ 187:../drivers/fsl_flexio_uart.h ****    };
+ 188:../drivers/fsl_flexio_uart.h ****    FLEXIO_UART_Init(base, &config, srcClock_Hz);
+ 189:../drivers/fsl_flexio_uart.h ****    @endcode
+ 190:../drivers/fsl_flexio_uart.h ****  *
+ 191:../drivers/fsl_flexio_uart.h ****  * @param base Pointer to the FLEXIO_UART_Type structure.
+ 192:../drivers/fsl_flexio_uart.h ****  * @param userConfig Pointer to the flexio_uart_config_t structure.
+ 193:../drivers/fsl_flexio_uart.h ****  * @param srcClock_Hz FlexIO source clock in Hz.
+ 194:../drivers/fsl_flexio_uart.h ****  * @retval kStatus_Success Configuration success
+ 195:../drivers/fsl_flexio_uart.h ****  * @retval kStatus_InvalidArgument Buadrate configuration out of range
+ 196:../drivers/fsl_flexio_uart.h **** */
+ 197:../drivers/fsl_flexio_uart.h **** status_t FLEXIO_UART_Init(FLEXIO_UART_Type *base, const flexio_uart_config_t *userConfig, uint32_t 
+ 198:../drivers/fsl_flexio_uart.h **** 
+ 199:../drivers/fsl_flexio_uart.h **** /*!
+ 200:../drivers/fsl_flexio_uart.h ****  * @brief Resets the FlexIO UART shifter and timer config.
+ 201:../drivers/fsl_flexio_uart.h ****  *
+ 202:../drivers/fsl_flexio_uart.h ****  * @note After calling this API, call the FLEXO_UART_Init to use the FlexIO UART module.
+ 203:../drivers/fsl_flexio_uart.h ****  *
+ 204:../drivers/fsl_flexio_uart.h ****  * @param base Pointer to FLEXIO_UART_Type structure
+ 205:../drivers/fsl_flexio_uart.h **** */
+ 206:../drivers/fsl_flexio_uart.h **** void FLEXIO_UART_Deinit(FLEXIO_UART_Type *base);
+ 207:../drivers/fsl_flexio_uart.h **** 
+ 208:../drivers/fsl_flexio_uart.h **** /*!
+ 209:../drivers/fsl_flexio_uart.h ****  * @brief Gets the default configuration to configure the FlexIO UART. The configuration
+ 210:../drivers/fsl_flexio_uart.h ****  * can be used directly for calling the FLEXIO_UART_Init().
+ 211:../drivers/fsl_flexio_uart.h ****  * Example:
+ 212:../drivers/fsl_flexio_uart.h ****    @code
+ 213:../drivers/fsl_flexio_uart.h ****    flexio_uart_config_t config;
+ 214:../drivers/fsl_flexio_uart.h ****    FLEXIO_UART_GetDefaultConfig(&userConfig);
+ 215:../drivers/fsl_flexio_uart.h ****    @endcode
+ 216:../drivers/fsl_flexio_uart.h ****  * @param userConfig Pointer to the flexio_uart_config_t structure.
+ 217:../drivers/fsl_flexio_uart.h **** */
+ 218:../drivers/fsl_flexio_uart.h **** void FLEXIO_UART_GetDefaultConfig(flexio_uart_config_t *userConfig);
+ 219:../drivers/fsl_flexio_uart.h **** 
+ 220:../drivers/fsl_flexio_uart.h **** /* @} */
+ 221:../drivers/fsl_flexio_uart.h **** 
+ 222:../drivers/fsl_flexio_uart.h **** /*!
+ 223:../drivers/fsl_flexio_uart.h ****  * @name Status
+ 224:../drivers/fsl_flexio_uart.h ****  * @{
+ 225:../drivers/fsl_flexio_uart.h ****  */
+ 226:../drivers/fsl_flexio_uart.h **** 
+ 227:../drivers/fsl_flexio_uart.h **** /*!
+ 228:../drivers/fsl_flexio_uart.h ****  * @brief Gets the FlexIO UART status flags.
+ 229:../drivers/fsl_flexio_uart.h ****  *
+ 230:../drivers/fsl_flexio_uart.h ****  * @param base Pointer to the FLEXIO_UART_Type structure.
+ 231:../drivers/fsl_flexio_uart.h ****  * @return FlexIO UART status flags.
+ 232:../drivers/fsl_flexio_uart.h **** */
+ 233:../drivers/fsl_flexio_uart.h **** 
+ 234:../drivers/fsl_flexio_uart.h **** uint32_t FLEXIO_UART_GetStatusFlags(FLEXIO_UART_Type *base);
+ 235:../drivers/fsl_flexio_uart.h **** 
+ 236:../drivers/fsl_flexio_uart.h **** /*!
+ 237:../drivers/fsl_flexio_uart.h ****  * @brief Gets the FlexIO UART status flags.
+ 238:../drivers/fsl_flexio_uart.h ****  *
+ 239:../drivers/fsl_flexio_uart.h ****  * @param base Pointer to the FLEXIO_UART_Type structure.
+ 240:../drivers/fsl_flexio_uart.h ****  * @param mask Status flag.
+ 241:../drivers/fsl_flexio_uart.h ****  *      The parameter can be any combination of the following values:
+ 242:../drivers/fsl_flexio_uart.h ****  *          @arg kFLEXIO_UART_TxDataRegEmptyFlag
+ 243:../drivers/fsl_flexio_uart.h ****  *          @arg kFLEXIO_UART_RxEmptyFlag
+ 244:../drivers/fsl_flexio_uart.h ****  *          @arg kFLEXIO_UART_RxOverRunFlag
+ 245:../drivers/fsl_flexio_uart.h **** */
+ 246:../drivers/fsl_flexio_uart.h **** 
+ 247:../drivers/fsl_flexio_uart.h **** void FLEXIO_UART_ClearStatusFlags(FLEXIO_UART_Type *base, uint32_t mask);
+ 248:../drivers/fsl_flexio_uart.h **** 
+ 249:../drivers/fsl_flexio_uart.h **** /* @} */
+ 250:../drivers/fsl_flexio_uart.h **** 
+ 251:../drivers/fsl_flexio_uart.h **** /*!
+ 252:../drivers/fsl_flexio_uart.h ****  * @name Interrupts
+ 253:../drivers/fsl_flexio_uart.h ****  * @{
+ 254:../drivers/fsl_flexio_uart.h ****  */
+ 255:../drivers/fsl_flexio_uart.h **** 
+ 256:../drivers/fsl_flexio_uart.h **** /*!
+ 257:../drivers/fsl_flexio_uart.h ****  * @brief Enables the FlexIO UART interrupt.
+ 258:../drivers/fsl_flexio_uart.h ****  *
+ 259:../drivers/fsl_flexio_uart.h ****  * This function enables the FlexIO UART interrupt.
+ 260:../drivers/fsl_flexio_uart.h ****  *
+ 261:../drivers/fsl_flexio_uart.h ****  * @param base Pointer to the FLEXIO_UART_Type structure.
+ 262:../drivers/fsl_flexio_uart.h ****  * @param mask Interrupt source.
+ 263:../drivers/fsl_flexio_uart.h ****  */
+ 264:../drivers/fsl_flexio_uart.h **** void FLEXIO_UART_EnableInterrupts(FLEXIO_UART_Type *base, uint32_t mask);
+ 265:../drivers/fsl_flexio_uart.h **** 
+ 266:../drivers/fsl_flexio_uart.h **** /*!
+ 267:../drivers/fsl_flexio_uart.h ****  * @brief Disables the FlexIO UART interrupt.
+ 268:../drivers/fsl_flexio_uart.h ****  *
+ 269:../drivers/fsl_flexio_uart.h ****  * This function disables the FlexIO UART interrupt.
+ 270:../drivers/fsl_flexio_uart.h ****  *
+ 271:../drivers/fsl_flexio_uart.h ****  * @param base Pointer to the FLEXIO_UART_Type structure.
+ 272:../drivers/fsl_flexio_uart.h ****  * @param mask Interrupt source.
+ 273:../drivers/fsl_flexio_uart.h ****  */
+ 274:../drivers/fsl_flexio_uart.h **** void FLEXIO_UART_DisableInterrupts(FLEXIO_UART_Type *base, uint32_t mask);
+ 275:../drivers/fsl_flexio_uart.h **** 
+ 276:../drivers/fsl_flexio_uart.h **** /* @} */
+ 277:../drivers/fsl_flexio_uart.h **** 
+ 278:../drivers/fsl_flexio_uart.h **** /*!
+ 279:../drivers/fsl_flexio_uart.h ****  * @name DMA Control
+ 280:../drivers/fsl_flexio_uart.h ****  * @{
+ 281:../drivers/fsl_flexio_uart.h ****  */
+ 282:../drivers/fsl_flexio_uart.h **** 
+ 283:../drivers/fsl_flexio_uart.h **** /*!
+ 284:../drivers/fsl_flexio_uart.h ****  * @brief Gets the FlexIO UARt transmit data register address.
+ 285:../drivers/fsl_flexio_uart.h ****  *
+ 286:../drivers/fsl_flexio_uart.h ****  * This function returns the UART data register address, which is mainly used by DMA/eDMA.
+ 287:../drivers/fsl_flexio_uart.h ****  *
+ 288:../drivers/fsl_flexio_uart.h ****  * @param base Pointer to the FLEXIO_UART_Type structure.
+ 289:../drivers/fsl_flexio_uart.h ****  * @return FlexIO UART transmit data register address.
+ 290:../drivers/fsl_flexio_uart.h ****  */
+ 291:../drivers/fsl_flexio_uart.h **** static inline uint32_t FLEXIO_UART_GetTxDataRegisterAddress(FLEXIO_UART_Type *base)
+ 292:../drivers/fsl_flexio_uart.h **** {
+ 293:../drivers/fsl_flexio_uart.h ****     return FLEXIO_GetShifterBufferAddress(base->flexioBase, kFLEXIO_ShifterBuffer, base->shifterInd
+ 294:../drivers/fsl_flexio_uart.h **** }
+ 295:../drivers/fsl_flexio_uart.h **** 
+ 296:../drivers/fsl_flexio_uart.h **** /*!
+ 297:../drivers/fsl_flexio_uart.h ****  * @brief Gets the FlexIO UART receive data register address.
+ 298:../drivers/fsl_flexio_uart.h ****  *
+ 299:../drivers/fsl_flexio_uart.h ****  * This function returns the UART data register address, which is mainly used by DMA/eDMA.
+ 300:../drivers/fsl_flexio_uart.h ****  *
+ 301:../drivers/fsl_flexio_uart.h ****  * @param base Pointer to the FLEXIO_UART_Type structure.
+ 302:../drivers/fsl_flexio_uart.h ****  * @return FlexIO UART receive data register address.
+ 303:../drivers/fsl_flexio_uart.h ****  */
+ 304:../drivers/fsl_flexio_uart.h **** static inline uint32_t FLEXIO_UART_GetRxDataRegisterAddress(FLEXIO_UART_Type *base)
+ 305:../drivers/fsl_flexio_uart.h **** {
+ 306:../drivers/fsl_flexio_uart.h ****     return FLEXIO_GetShifterBufferAddress(base->flexioBase, kFLEXIO_ShifterBufferByteSwapped, base-
+ 307:../drivers/fsl_flexio_uart.h **** }
+ 308:../drivers/fsl_flexio_uart.h **** 
+ 309:../drivers/fsl_flexio_uart.h **** /*!
+ 310:../drivers/fsl_flexio_uart.h ****  * @brief Enables/disables the FlexIO UART transmit DMA.
+ 311:../drivers/fsl_flexio_uart.h ****  * This function enables/disables the FlexIO UART Tx DMA,
+ 312:../drivers/fsl_flexio_uart.h ****  * which means asserting the kFLEXIO_UART_TxDataRegEmptyFlag does/doesn't trigger the DMA request.
+ 313:../drivers/fsl_flexio_uart.h ****  *
+ 314:../drivers/fsl_flexio_uart.h ****  * @param base Pointer to the FLEXIO_UART_Type structure.
+ 315:../drivers/fsl_flexio_uart.h ****  * @param enable True to enable, false to disable.
+ 316:../drivers/fsl_flexio_uart.h ****  */
+ 317:../drivers/fsl_flexio_uart.h **** static inline void FLEXIO_UART_EnableTxDMA(FLEXIO_UART_Type *base, bool enable)
+ 318:../drivers/fsl_flexio_uart.h **** {
+ 319:../drivers/fsl_flexio_uart.h ****     FLEXIO_EnableShifterStatusDMA(base->flexioBase, 1 << base->shifterIndex[0], enable);
+  43              		.loc 2 319 0
+  44 0004 1C68     		ldr	r4, [r3]
+  45 0006 9B79     		ldrb	r3, [r3, #6]
+  46              	.LVL3:
+  47 0008 0122     		movs	r2, #1
+  48 000a 9A40     		lsls	r2, r2, r3
+  49              	.LVL4:
+  50              	.LBB68:
+  51              	.LBB69:
+  52              		.file 3 "../drivers/fsl_flexio.h"
+   1:../drivers/fsl_flexio.h **** /*
+   2:../drivers/fsl_flexio.h ****  * The Clear BSD License
+   3:../drivers/fsl_flexio.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_flexio.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_flexio.h ****  * All rights reserved.
+   6:../drivers/fsl_flexio.h ****  *
+   7:../drivers/fsl_flexio.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_flexio.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_flexio.h ****  * that the following conditions are met:
+  10:../drivers/fsl_flexio.h ****  *
+  11:../drivers/fsl_flexio.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_flexio.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_flexio.h ****  *
+  14:../drivers/fsl_flexio.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_flexio.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_flexio.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_flexio.h ****  *
+  18:../drivers/fsl_flexio.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_flexio.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_flexio.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_flexio.h ****  *
+  22:../drivers/fsl_flexio.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_flexio.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_flexio.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_flexio.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_flexio.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_flexio.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_flexio.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_flexio.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_flexio.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_flexio.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_flexio.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_flexio.h ****  */
+  34:../drivers/fsl_flexio.h **** #ifndef _FSL_FLEXIO_H_
+  35:../drivers/fsl_flexio.h **** #define _FSL_FLEXIO_H_
+  36:../drivers/fsl_flexio.h **** 
+  37:../drivers/fsl_flexio.h **** #include "fsl_common.h"
+  38:../drivers/fsl_flexio.h **** 
+  39:../drivers/fsl_flexio.h **** /*!
+  40:../drivers/fsl_flexio.h ****  * @addtogroup flexio_driver
+  41:../drivers/fsl_flexio.h ****  * @{
+  42:../drivers/fsl_flexio.h ****  */
+  43:../drivers/fsl_flexio.h **** 
+  44:../drivers/fsl_flexio.h **** /*******************************************************************************
+  45:../drivers/fsl_flexio.h ****  * Definitions
+  46:../drivers/fsl_flexio.h ****  ******************************************************************************/
+  47:../drivers/fsl_flexio.h **** 
+  48:../drivers/fsl_flexio.h **** /*! @name Driver version */
+  49:../drivers/fsl_flexio.h **** /*@{*/
+  50:../drivers/fsl_flexio.h **** /*! @brief FlexIO driver version 2.0.2. */
+  51:../drivers/fsl_flexio.h **** #define FSL_FLEXIO_DRIVER_VERSION (MAKE_VERSION(2, 0, 2))
+  52:../drivers/fsl_flexio.h **** /*@}*/
+  53:../drivers/fsl_flexio.h **** 
+  54:../drivers/fsl_flexio.h **** /*! @brief Calculate FlexIO timer trigger.*/
+  55:../drivers/fsl_flexio.h **** #define FLEXIO_TIMER_TRIGGER_SEL_PININPUT(x) ((uint32_t)(x) << 1U)
+  56:../drivers/fsl_flexio.h **** #define FLEXIO_TIMER_TRIGGER_SEL_SHIFTnSTAT(x) (((uint32_t)(x) << 2U) | 0x1U)
+  57:../drivers/fsl_flexio.h **** #define FLEXIO_TIMER_TRIGGER_SEL_TIMn(x) (((uint32_t)(x) << 2U) | 0x3U)
+  58:../drivers/fsl_flexio.h **** 
+  59:../drivers/fsl_flexio.h **** /*! @brief Define time of timer trigger polarity.*/
+  60:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_trigger_polarity
+  61:../drivers/fsl_flexio.h **** {
+  62:../drivers/fsl_flexio.h ****     kFLEXIO_TimerTriggerPolarityActiveHigh = 0x0U, /*!< Active high. */
+  63:../drivers/fsl_flexio.h ****     kFLEXIO_TimerTriggerPolarityActiveLow = 0x1U,  /*!< Active low. */
+  64:../drivers/fsl_flexio.h **** } flexio_timer_trigger_polarity_t;
+  65:../drivers/fsl_flexio.h **** 
+  66:../drivers/fsl_flexio.h **** /*! @brief Define type of timer trigger source.*/
+  67:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_trigger_source
+  68:../drivers/fsl_flexio.h **** {
+  69:../drivers/fsl_flexio.h ****     kFLEXIO_TimerTriggerSourceExternal = 0x0U, /*!< External trigger selected. */
+  70:../drivers/fsl_flexio.h ****     kFLEXIO_TimerTriggerSourceInternal = 0x1U, /*!< Internal trigger selected. */
+  71:../drivers/fsl_flexio.h **** } flexio_timer_trigger_source_t;
+  72:../drivers/fsl_flexio.h **** 
+  73:../drivers/fsl_flexio.h **** /*! @brief Define type of timer/shifter pin configuration.*/
+  74:../drivers/fsl_flexio.h **** typedef enum _flexio_pin_config
+  75:../drivers/fsl_flexio.h **** {
+  76:../drivers/fsl_flexio.h ****     kFLEXIO_PinConfigOutputDisabled = 0x0U,         /*!< Pin output disabled. */
+  77:../drivers/fsl_flexio.h ****     kFLEXIO_PinConfigOpenDrainOrBidirection = 0x1U, /*!< Pin open drain or bidirectional output ena
+  78:../drivers/fsl_flexio.h ****     kFLEXIO_PinConfigBidirectionOutputData = 0x2U,  /*!< Pin bidirectional output data. */
+  79:../drivers/fsl_flexio.h ****     kFLEXIO_PinConfigOutput = 0x3U,                 /*!< Pin output. */
+  80:../drivers/fsl_flexio.h **** } flexio_pin_config_t;
+  81:../drivers/fsl_flexio.h **** 
+  82:../drivers/fsl_flexio.h **** /*! @brief Definition of pin polarity.*/
+  83:../drivers/fsl_flexio.h **** typedef enum _flexio_pin_polarity
+  84:../drivers/fsl_flexio.h **** {
+  85:../drivers/fsl_flexio.h ****     kFLEXIO_PinActiveHigh = 0x0U, /*!< Active high. */
+  86:../drivers/fsl_flexio.h ****     kFLEXIO_PinActiveLow = 0x1U,  /*!< Active low. */
+  87:../drivers/fsl_flexio.h **** } flexio_pin_polarity_t;
+  88:../drivers/fsl_flexio.h **** 
+  89:../drivers/fsl_flexio.h **** /*! @brief Define type of timer work mode.*/
+  90:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_mode
+  91:../drivers/fsl_flexio.h **** {
+  92:../drivers/fsl_flexio.h ****     kFLEXIO_TimerModeDisabled = 0x0U,        /*!< Timer Disabled. */
+  93:../drivers/fsl_flexio.h ****     kFLEXIO_TimerModeDual8BitBaudBit = 0x1U, /*!< Dual 8-bit counters baud/bit mode. */
+  94:../drivers/fsl_flexio.h ****     kFLEXIO_TimerModeDual8BitPWM = 0x2U,     /*!< Dual 8-bit counters PWM mode. */
+  95:../drivers/fsl_flexio.h ****     kFLEXIO_TimerModeSingle16Bit = 0x3U,     /*!< Single 16-bit counter mode. */
+  96:../drivers/fsl_flexio.h **** } flexio_timer_mode_t;
+  97:../drivers/fsl_flexio.h **** 
+  98:../drivers/fsl_flexio.h **** /*! @brief Define type of timer initial output or timer reset condition.*/
+  99:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_output
+ 100:../drivers/fsl_flexio.h **** {
+ 101:../drivers/fsl_flexio.h ****     kFLEXIO_TimerOutputOneNotAffectedByReset = 0x0U,  /*!< Logic one when enabled and is not affect
+ 102:../drivers/fsl_flexio.h ****                                                        reset. */
+ 103:../drivers/fsl_flexio.h ****     kFLEXIO_TimerOutputZeroNotAffectedByReset = 0x1U, /*!< Logic zero when enabled and is not affec
+ 104:../drivers/fsl_flexio.h ****                                                        reset. */
+ 105:../drivers/fsl_flexio.h ****     kFLEXIO_TimerOutputOneAffectedByReset = 0x2U,     /*!< Logic one when enabled and on timer rese
+ 106:../drivers/fsl_flexio.h ****     kFLEXIO_TimerOutputZeroAffectedByReset = 0x3U,    /*!< Logic zero when enabled and on timer res
+ 107:../drivers/fsl_flexio.h **** } flexio_timer_output_t;
+ 108:../drivers/fsl_flexio.h **** 
+ 109:../drivers/fsl_flexio.h **** /*! @brief Define type of timer decrement.*/
+ 110:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_decrement_source
+ 111:../drivers/fsl_flexio.h **** {
+ 112:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDecSrcOnFlexIOClockShiftTimerOutput = 0x0U,   /*!< Decrement counter on FlexIO clo
+ 113:../drivers/fsl_flexio.h ****                                                                 equals Timer output. */
+ 114:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDecSrcOnTriggerInputShiftTimerOutput = 0x1U,  /*!< Decrement counter on Trigger in
+ 115:../drivers/fsl_flexio.h ****                                                                 Shift clock equals Timer output. */
+ 116:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDecSrcOnPinInputShiftPinInput = 0x2U,         /*!< Decrement counter on Pin input 
+ 117:../drivers/fsl_flexio.h ****                                                                 Shift clock equals Pin input. */
+ 118:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDecSrcOnTriggerInputShiftTriggerInput = 0x3U, /*!< Decrement counter on Trigger in
+ 119:../drivers/fsl_flexio.h ****                                                                 Shift clock equals Trigger input. *
+ 120:../drivers/fsl_flexio.h **** } flexio_timer_decrement_source_t;
+ 121:../drivers/fsl_flexio.h **** 
+ 122:../drivers/fsl_flexio.h **** /*! @brief Define type of timer reset condition.*/
+ 123:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_reset_condition
+ 124:../drivers/fsl_flexio.h **** {
+ 125:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetNever = 0x0U,                            /*!< Timer never reset. */
+ 126:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetOnTimerPinEqualToTimerOutput = 0x2U,     /*!< Timer reset on Timer Pin equal 
+ 127:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetOnTimerTriggerEqualToTimerOutput = 0x3U, /*!< Timer reset on Timer Trigger eq
+ 128:../drivers/fsl_flexio.h ****                                                                 Timer Output. */
+ 129:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetOnTimerPinRisingEdge = 0x4U,             /*!< Timer reset on Timer Pin rising
+ 130:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetOnTimerTriggerRisingEdge = 0x6U,         /*!< Timer reset on Trigger rising e
+ 131:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetOnTimerTriggerBothEdge = 0x7U,           /*!< Timer reset on Trigger rising o
+ 132:../drivers/fsl_flexio.h **** } flexio_timer_reset_condition_t;
+ 133:../drivers/fsl_flexio.h **** 
+ 134:../drivers/fsl_flexio.h **** /*! @brief Define type of timer disable condition.*/
+ 135:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_disable_condition
+ 136:../drivers/fsl_flexio.h **** {
+ 137:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableNever = 0x0U,                    /*!< Timer never disabled. */
+ 138:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnPreTimerDisable = 0x1U,        /*!< Timer disabled on Timer N-1 disable. 
+ 139:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnTimerCompare = 0x2U,           /*!< Timer disabled on Timer compare. */
+ 140:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnTimerCompareTriggerLow = 0x3U, /*!< Timer disabled on Timer compare and T
+ 141:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnPinBothEdge = 0x4U,            /*!< Timer disabled on Pin rising or falli
+ 142:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnPinBothEdgeTriggerHigh = 0x5U, /*!< Timer disabled on Pin rising or falli
+ 143:../drivers/fsl_flexio.h ****                                                           Trigger is high. */
+ 144:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnTriggerFallingEdge = 0x6U,     /*!< Timer disabled on Trigger falling edg
+ 145:../drivers/fsl_flexio.h **** } flexio_timer_disable_condition_t;
+ 146:../drivers/fsl_flexio.h **** 
+ 147:../drivers/fsl_flexio.h **** /*! @brief Define type of timer enable condition.*/
+ 148:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_enable_condition
+ 149:../drivers/fsl_flexio.h **** {
+ 150:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnabledAlways = 0x0U,                    /*!< Timer always enabled. */
+ 151:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnPrevTimerEnable = 0x1U,          /*!< Timer enabled on Timer N-1 enable. *
+ 152:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnTriggerHigh = 0x2U,              /*!< Timer enabled on Trigger high. */
+ 153:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnTriggerHighPinHigh = 0x3U,       /*!< Timer enabled on Trigger high and Pi
+ 154:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnPinRisingEdge = 0x4U,            /*!< Timer enabled on Pin rising edge. */
+ 155:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnPinRisingEdgeTriggerHigh = 0x5U, /*!< Timer enabled on Pin rising edge and
+ 156:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnTriggerRisingEdge = 0x6U,        /*!< Timer enabled on Trigger rising edge
+ 157:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnTriggerBothEdge = 0x7U,          /*!< Timer enabled on Trigger rising or f
+ 158:../drivers/fsl_flexio.h **** } flexio_timer_enable_condition_t;
+ 159:../drivers/fsl_flexio.h **** 
+ 160:../drivers/fsl_flexio.h **** /*! @brief Define type of timer stop bit generate condition.*/
+ 161:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_stop_bit_condition
+ 162:../drivers/fsl_flexio.h **** {
+ 163:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStopBitDisabled = 0x0U,                    /*!< Stop bit disabled. */
+ 164:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStopBitEnableOnTimerCompare = 0x1U,        /*!< Stop bit is enabled on timer compa
+ 165:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStopBitEnableOnTimerDisable = 0x2U,        /*!< Stop bit is enabled on timer disab
+ 166:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStopBitEnableOnTimerCompareDisable = 0x3U, /*!< Stop bit is enabled on timer compa
+ 167:../drivers/fsl_flexio.h ****                                                              disable. */
+ 168:../drivers/fsl_flexio.h **** } flexio_timer_stop_bit_condition_t;
+ 169:../drivers/fsl_flexio.h **** 
+ 170:../drivers/fsl_flexio.h **** /*! @brief Define type of timer start bit generate condition.*/
+ 171:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_start_bit_condition
+ 172:../drivers/fsl_flexio.h **** {
+ 173:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStartBitDisabled = 0x0U, /*!< Start bit disabled. */
+ 174:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStartBitEnabled = 0x1U,  /*!< Start bit enabled. */
+ 175:../drivers/fsl_flexio.h **** } flexio_timer_start_bit_condition_t;
+ 176:../drivers/fsl_flexio.h **** 
+ 177:../drivers/fsl_flexio.h **** /*! @brief Define type of timer polarity for shifter control. */
+ 178:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_timer_polarity
+ 179:../drivers/fsl_flexio.h **** {
+ 180:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterTimerPolarityOnPositive = 0x0U, /* Shift on positive edge of shift clock. */
+ 181:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterTimerPolarityOnNegitive = 0x1U, /* Shift on negative edge of shift clock. */
+ 182:../drivers/fsl_flexio.h **** } flexio_shifter_timer_polarity_t;
+ 183:../drivers/fsl_flexio.h **** 
+ 184:../drivers/fsl_flexio.h **** /*! @brief Define type of shifter working mode.*/
+ 185:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_mode
+ 186:../drivers/fsl_flexio.h **** {
+ 187:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterDisabled = 0x0U,            /*!< Shifter is disabled. */
+ 188:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeReceive = 0x1U,         /*!< Receive mode. */
+ 189:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeTransmit = 0x2U,        /*!< Transmit mode. */
+ 190:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeMatchStore = 0x4U,      /*!< Match store mode. */
+ 191:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeMatchContinuous = 0x5U, /*!< Match continuous mode. */
+ 192:../drivers/fsl_flexio.h **** #if FSL_FEATURE_FLEXIO_HAS_STATE_MODE
+ 193:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeState = 0x6U, /*!< SHIFTBUF contents are used for storing
+ 194:../drivers/fsl_flexio.h ****                                       programmable state attributes. */
+ 195:../drivers/fsl_flexio.h **** #endif                               /* FSL_FEATURE_FLEXIO_HAS_STATE_MODE */
+ 196:../drivers/fsl_flexio.h **** #if FSL_FEATURE_FLEXIO_HAS_LOGIC_MODE
+ 197:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeLogic = 0x7U, /*!< SHIFTBUF contents are used for implementing
+ 198:../drivers/fsl_flexio.h ****                                      programmable logic look up table. */
+ 199:../drivers/fsl_flexio.h **** #endif                               /* FSL_FEATURE_FLEXIO_HAS_LOGIC_MODE */
+ 200:../drivers/fsl_flexio.h **** } flexio_shifter_mode_t;
+ 201:../drivers/fsl_flexio.h **** 
+ 202:../drivers/fsl_flexio.h **** /*! @brief Define type of shifter input source.*/
+ 203:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_input_source
+ 204:../drivers/fsl_flexio.h **** {
+ 205:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterInputFromPin = 0x0U,               /*!< Shifter input from pin. */
+ 206:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterInputFromNextShifterOutput = 0x1U, /*!< Shifter input from Shifter N+1. */
+ 207:../drivers/fsl_flexio.h **** } flexio_shifter_input_source_t;
+ 208:../drivers/fsl_flexio.h **** 
+ 209:../drivers/fsl_flexio.h **** /*! @brief Define of STOP bit configuration.*/
+ 210:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_stop_bit
+ 211:../drivers/fsl_flexio.h **** {
+ 212:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStopBitDisable = 0x0U, /*!< Disable shifter stop bit. */
+ 213:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStopBitLow = 0x2U,     /*!< Set shifter stop bit to logic low level. */
+ 214:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStopBitHigh = 0x3U,    /*!< Set shifter stop bit to logic high level. */
+ 215:../drivers/fsl_flexio.h **** } flexio_shifter_stop_bit_t;
+ 216:../drivers/fsl_flexio.h **** 
+ 217:../drivers/fsl_flexio.h **** /*! @brief Define type of START bit configuration.*/
+ 218:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_start_bit
+ 219:../drivers/fsl_flexio.h **** {
+ 220:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStartBitDisabledLoadDataOnEnable = 0x0U, /*!< Disable shifter start bit, transmi
+ 221:../drivers/fsl_flexio.h ****                                                              data on enable. */
+ 222:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStartBitDisabledLoadDataOnShift = 0x1U,  /*!< Disable shifter start bit, transmi
+ 223:../drivers/fsl_flexio.h ****                                                              data on first shift. */
+ 224:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStartBitLow = 0x2U,                      /*!< Set shifter start bit to logic low
+ 225:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStartBitHigh = 0x3U,                     /*!< Set shifter start bit to logic hig
+ 226:../drivers/fsl_flexio.h **** } flexio_shifter_start_bit_t;
+ 227:../drivers/fsl_flexio.h **** 
+ 228:../drivers/fsl_flexio.h **** /*! @brief Define FlexIO shifter buffer type*/
+ 229:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_buffer_type
+ 230:../drivers/fsl_flexio.h **** {
+ 231:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBuffer = 0x0U,               /*!< Shifter Buffer N Register. */
+ 232:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferBitSwapped = 0x1U,     /*!< Shifter Buffer N Bit Byte Swapped Register. */
+ 233:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferByteSwapped = 0x2U,    /*!< Shifter Buffer N Byte Swapped Register. */
+ 234:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferBitByteSwapped = 0x3U, /*!< Shifter Buffer N Bit Swapped Register. */
+ 235:../drivers/fsl_flexio.h **** #if defined(FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFER_NIBBLE_BYTE_SWAP) && FSL_FEATURE_FLEXIO_HAS_SHFT_BUF
+ 236:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferNibbleByteSwapped = 0x4U, /*!< Shifter Buffer N Nibble Byte Swapped Regist
+ 237:../drivers/fsl_flexio.h **** #endif                                             /*FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFER_NIBBLE_BYTE
+ 238:../drivers/fsl_flexio.h **** #if defined(FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFER_HALF_WORD_SWAP) && FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFE
+ 239:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferHalfWordSwapped = 0x5U, /*!< Shifter Buffer N Half Word Swapped Register. 
+ 240:../drivers/fsl_flexio.h **** #endif
+ 241:../drivers/fsl_flexio.h **** #if defined(FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFER_NIBBLE_SWAP) && FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFER_N
+ 242:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferNibbleSwapped = 0x6U, /*!< Shifter Buffer N Nibble Swapped Register. */
+ 243:../drivers/fsl_flexio.h **** #endif
+ 244:../drivers/fsl_flexio.h **** } flexio_shifter_buffer_type_t;
+ 245:../drivers/fsl_flexio.h **** 
+ 246:../drivers/fsl_flexio.h **** /*! @brief Define FlexIO user configuration structure. */
+ 247:../drivers/fsl_flexio.h **** typedef struct _flexio_config_
+ 248:../drivers/fsl_flexio.h **** {
+ 249:../drivers/fsl_flexio.h ****     bool enableFlexio;     /*!< Enable/disable FlexIO module */
+ 250:../drivers/fsl_flexio.h ****     bool enableInDoze;     /*!< Enable/disable FlexIO operation in doze mode */
+ 251:../drivers/fsl_flexio.h ****     bool enableInDebug;    /*!< Enable/disable FlexIO operation in debug mode */
+ 252:../drivers/fsl_flexio.h ****     bool enableFastAccess; /*!< Enable/disable fast access to FlexIO registers, fast access require
+ 253:../drivers/fsl_flexio.h ****                            the FlexIO clock to be at least twice the frequency of the bus clock. */
+ 254:../drivers/fsl_flexio.h **** } flexio_config_t;
+ 255:../drivers/fsl_flexio.h **** 
+ 256:../drivers/fsl_flexio.h **** /*! @brief Define FlexIO timer configuration structure. */
+ 257:../drivers/fsl_flexio.h **** typedef struct _flexio_timer_config
+ 258:../drivers/fsl_flexio.h **** {
+ 259:../drivers/fsl_flexio.h ****     /* Trigger. */
+ 260:../drivers/fsl_flexio.h ****     uint32_t triggerSelect;                          /*!< The internal trigger selection number usi
+ 261:../drivers/fsl_flexio.h ****     flexio_timer_trigger_polarity_t triggerPolarity; /*!< Trigger Polarity. */
+ 262:../drivers/fsl_flexio.h ****     flexio_timer_trigger_source_t triggerSource;     /*!< Trigger Source, internal (see 'trgsel') o
+ 263:../drivers/fsl_flexio.h ****     /* Pin. */
+ 264:../drivers/fsl_flexio.h ****     flexio_pin_config_t pinConfig;     /*!< Timer Pin Configuration. */
+ 265:../drivers/fsl_flexio.h ****     uint32_t pinSelect;                /*!< Timer Pin number Select. */
+ 266:../drivers/fsl_flexio.h ****     flexio_pin_polarity_t pinPolarity; /*!< Timer Pin Polarity. */
+ 267:../drivers/fsl_flexio.h ****     /* Timer. */
+ 268:../drivers/fsl_flexio.h ****     flexio_timer_mode_t timerMode;                  /*!< Timer work Mode. */
+ 269:../drivers/fsl_flexio.h ****     flexio_timer_output_t timerOutput;              /*!< Configures the initial state of the Timer 
+ 270:../drivers/fsl_flexio.h ****                                                     whether it is affected by the Timer reset. */
+ 271:../drivers/fsl_flexio.h ****     flexio_timer_decrement_source_t timerDecrement; /*!< Configures the source of the Timer decreme
+ 272:../drivers/fsl_flexio.h ****                                                     source of the Shift clock. */
+ 273:../drivers/fsl_flexio.h ****     flexio_timer_reset_condition_t timerReset;      /*!< Configures the condition that causes the t
+ 274:../drivers/fsl_flexio.h ****                                                     (and optionally the timer output) to be reset. 
+ 275:../drivers/fsl_flexio.h ****     flexio_timer_disable_condition_t timerDisable;  /*!< Configures the condition that causes the T
+ 276:../drivers/fsl_flexio.h ****                                                     disabled and stop decrementing. */
+ 277:../drivers/fsl_flexio.h ****     flexio_timer_enable_condition_t timerEnable;    /*!< Configures the condition that causes the T
+ 278:../drivers/fsl_flexio.h ****                                                     enabled and start decrementing. */
+ 279:../drivers/fsl_flexio.h ****     flexio_timer_stop_bit_condition_t timerStop;    /*!< Timer STOP Bit generation. */
+ 280:../drivers/fsl_flexio.h ****     flexio_timer_start_bit_condition_t timerStart;  /*!< Timer STRAT Bit generation. */
+ 281:../drivers/fsl_flexio.h ****     uint32_t timerCompare;                          /*!< Value for Timer Compare N Register. */
+ 282:../drivers/fsl_flexio.h **** } flexio_timer_config_t;
+ 283:../drivers/fsl_flexio.h **** 
+ 284:../drivers/fsl_flexio.h **** /*! @brief Define FlexIO shifter configuration structure. */
+ 285:../drivers/fsl_flexio.h **** typedef struct _flexio_shifter_config
+ 286:../drivers/fsl_flexio.h **** {
+ 287:../drivers/fsl_flexio.h ****     /* Timer. */
+ 288:../drivers/fsl_flexio.h ****     uint32_t timerSelect;                          /*!< Selects which Timer is used for controlling
+ 289:../drivers/fsl_flexio.h ****                                                     logic/shift register and generating the Shift c
+ 290:../drivers/fsl_flexio.h ****     flexio_shifter_timer_polarity_t timerPolarity; /*!< Timer Polarity. */
+ 291:../drivers/fsl_flexio.h ****     /* Pin. */
+ 292:../drivers/fsl_flexio.h ****     flexio_pin_config_t pinConfig;     /*!< Shifter Pin Configuration. */
+ 293:../drivers/fsl_flexio.h ****     uint32_t pinSelect;                /*!< Shifter Pin number Select. */
+ 294:../drivers/fsl_flexio.h ****     flexio_pin_polarity_t pinPolarity; /*!< Shifter Pin Polarity. */
+ 295:../drivers/fsl_flexio.h ****     /* Shifter. */
+ 296:../drivers/fsl_flexio.h ****     flexio_shifter_mode_t shifterMode; /*!< Configures the mode of the Shifter. */
+ 297:../drivers/fsl_flexio.h **** #if FSL_FEATURE_FLEXIO_HAS_PARALLEL_WIDTH
+ 298:../drivers/fsl_flexio.h ****     uint32_t parallelWidth;                    /*!< Configures the parallel width when using parall
+ 299:../drivers/fsl_flexio.h **** #endif                                         /* FSL_FEATURE_FLEXIO_HAS_PARALLEL_WIDTH */
+ 300:../drivers/fsl_flexio.h ****     flexio_shifter_input_source_t inputSource; /*!< Selects the input source for the shifter. */
+ 301:../drivers/fsl_flexio.h ****     flexio_shifter_stop_bit_t shifterStop;     /*!< Shifter STOP bit. */
+ 302:../drivers/fsl_flexio.h ****     flexio_shifter_start_bit_t shifterStart;   /*!< Shifter START bit. */
+ 303:../drivers/fsl_flexio.h **** } flexio_shifter_config_t;
+ 304:../drivers/fsl_flexio.h **** 
+ 305:../drivers/fsl_flexio.h **** /*! @brief typedef for FlexIO simulated driver interrupt handler.*/
+ 306:../drivers/fsl_flexio.h **** typedef void (*flexio_isr_t)(void *base, void *handle);
+ 307:../drivers/fsl_flexio.h **** 
+ 308:../drivers/fsl_flexio.h **** /*******************************************************************************
+ 309:../drivers/fsl_flexio.h ****  * API
+ 310:../drivers/fsl_flexio.h ****  ******************************************************************************/
+ 311:../drivers/fsl_flexio.h **** 
+ 312:../drivers/fsl_flexio.h **** #if defined(__cplusplus)
+ 313:../drivers/fsl_flexio.h **** extern "C" {
+ 314:../drivers/fsl_flexio.h **** #endif /*_cplusplus*/
+ 315:../drivers/fsl_flexio.h **** 
+ 316:../drivers/fsl_flexio.h **** /*!
+ 317:../drivers/fsl_flexio.h ****  * @name FlexIO Initialization and De-initialization
+ 318:../drivers/fsl_flexio.h ****  * @{
+ 319:../drivers/fsl_flexio.h ****  */
+ 320:../drivers/fsl_flexio.h **** 
+ 321:../drivers/fsl_flexio.h **** /*!
+ 322:../drivers/fsl_flexio.h ****  * @brief Gets the default configuration to configure the FlexIO module. The configuration
+ 323:../drivers/fsl_flexio.h ****  * can used directly to call the FLEXIO_Configure().
+ 324:../drivers/fsl_flexio.h ****  *
+ 325:../drivers/fsl_flexio.h ****  * Example:
+ 326:../drivers/fsl_flexio.h ****    @code
+ 327:../drivers/fsl_flexio.h ****    flexio_config_t config;
+ 328:../drivers/fsl_flexio.h ****    FLEXIO_GetDefaultConfig(&config);
+ 329:../drivers/fsl_flexio.h ****    @endcode
+ 330:../drivers/fsl_flexio.h ****  *
+ 331:../drivers/fsl_flexio.h ****  * @param userConfig pointer to flexio_config_t structure
+ 332:../drivers/fsl_flexio.h **** */
+ 333:../drivers/fsl_flexio.h **** void FLEXIO_GetDefaultConfig(flexio_config_t *userConfig);
+ 334:../drivers/fsl_flexio.h **** 
+ 335:../drivers/fsl_flexio.h **** /*!
+ 336:../drivers/fsl_flexio.h ****  * @brief Configures the FlexIO with a FlexIO configuration. The configuration structure
+ 337:../drivers/fsl_flexio.h ****  * can be filled by the user or be set with default values by FLEXIO_GetDefaultConfig().
+ 338:../drivers/fsl_flexio.h ****  *
+ 339:../drivers/fsl_flexio.h ****  * Example
+ 340:../drivers/fsl_flexio.h ****    @code
+ 341:../drivers/fsl_flexio.h ****    flexio_config_t config = {
+ 342:../drivers/fsl_flexio.h ****    .enableFlexio = true,
+ 343:../drivers/fsl_flexio.h ****    .enableInDoze = false,
+ 344:../drivers/fsl_flexio.h ****    .enableInDebug = true,
+ 345:../drivers/fsl_flexio.h ****    .enableFastAccess = false
+ 346:../drivers/fsl_flexio.h ****    };
+ 347:../drivers/fsl_flexio.h ****    FLEXIO_Configure(base, &config);
+ 348:../drivers/fsl_flexio.h ****    @endcode
+ 349:../drivers/fsl_flexio.h ****  *
+ 350:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 351:../drivers/fsl_flexio.h ****  * @param userConfig pointer to flexio_config_t structure
+ 352:../drivers/fsl_flexio.h **** */
+ 353:../drivers/fsl_flexio.h **** void FLEXIO_Init(FLEXIO_Type *base, const flexio_config_t *userConfig);
+ 354:../drivers/fsl_flexio.h **** 
+ 355:../drivers/fsl_flexio.h **** /*!
+ 356:../drivers/fsl_flexio.h ****  * @brief Gates the FlexIO clock. Call this API to stop the FlexIO clock.
+ 357:../drivers/fsl_flexio.h ****  *
+ 358:../drivers/fsl_flexio.h ****  * @note After calling this API, call the FLEXO_Init to use the FlexIO module.
+ 359:../drivers/fsl_flexio.h ****  *
+ 360:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 361:../drivers/fsl_flexio.h **** */
+ 362:../drivers/fsl_flexio.h **** void FLEXIO_Deinit(FLEXIO_Type *base);
+ 363:../drivers/fsl_flexio.h **** 
+ 364:../drivers/fsl_flexio.h **** /* @} */
+ 365:../drivers/fsl_flexio.h **** 
+ 366:../drivers/fsl_flexio.h **** /*!
+ 367:../drivers/fsl_flexio.h ****  * @name FlexIO Basic Operation
+ 368:../drivers/fsl_flexio.h ****  * @{
+ 369:../drivers/fsl_flexio.h ****  */
+ 370:../drivers/fsl_flexio.h **** 
+ 371:../drivers/fsl_flexio.h **** /*!
+ 372:../drivers/fsl_flexio.h ****  * @brief Resets the FlexIO module.
+ 373:../drivers/fsl_flexio.h ****  *
+ 374:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 375:../drivers/fsl_flexio.h **** */
+ 376:../drivers/fsl_flexio.h **** void FLEXIO_Reset(FLEXIO_Type *base);
+ 377:../drivers/fsl_flexio.h **** 
+ 378:../drivers/fsl_flexio.h **** /*!
+ 379:../drivers/fsl_flexio.h ****  * @brief Enables the FlexIO module operation.
+ 380:../drivers/fsl_flexio.h ****  *
+ 381:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 382:../drivers/fsl_flexio.h ****  * @param enable true to enable, false to disable.
+ 383:../drivers/fsl_flexio.h **** */
+ 384:../drivers/fsl_flexio.h **** static inline void FLEXIO_Enable(FLEXIO_Type *base, bool enable)
+ 385:../drivers/fsl_flexio.h **** {
+ 386:../drivers/fsl_flexio.h ****     if (enable)
+ 387:../drivers/fsl_flexio.h ****     {
+ 388:../drivers/fsl_flexio.h ****         base->CTRL |= FLEXIO_CTRL_FLEXEN_MASK;
+ 389:../drivers/fsl_flexio.h ****     }
+ 390:../drivers/fsl_flexio.h ****     else
+ 391:../drivers/fsl_flexio.h ****     {
+ 392:../drivers/fsl_flexio.h ****         base->CTRL &= ~FLEXIO_CTRL_FLEXEN_MASK;
+ 393:../drivers/fsl_flexio.h ****     }
+ 394:../drivers/fsl_flexio.h **** }
+ 395:../drivers/fsl_flexio.h **** 
+ 396:../drivers/fsl_flexio.h **** #if defined(FSL_FEATURE_FLEXIO_HAS_PIN_STATUS) && FSL_FEATURE_FLEXIO_HAS_PIN_STATUS
+ 397:../drivers/fsl_flexio.h **** /*!
+ 398:../drivers/fsl_flexio.h ****  * @brief Reads the input data on each of the FlexIO pins.
+ 399:../drivers/fsl_flexio.h ****  *
+ 400:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 401:../drivers/fsl_flexio.h ****  * @return FlexIO pin input data
+ 402:../drivers/fsl_flexio.h **** */
+ 403:../drivers/fsl_flexio.h **** static inline uint32_t FLEXIO_ReadPinInput(FLEXIO_Type *base)
+ 404:../drivers/fsl_flexio.h **** {
+ 405:../drivers/fsl_flexio.h ****     return base->PIN;
+ 406:../drivers/fsl_flexio.h **** }
+ 407:../drivers/fsl_flexio.h **** #endif /*FSL_FEATURE_FLEXIO_HAS_PIN_STATUS*/
+ 408:../drivers/fsl_flexio.h **** 
+ 409:../drivers/fsl_flexio.h **** #if defined(FSL_FEATURE_FLEXIO_HAS_STATE_MODE) && FSL_FEATURE_FLEXIO_HAS_STATE_MODE
+ 410:../drivers/fsl_flexio.h **** /*!
+ 411:../drivers/fsl_flexio.h ****  * @brief Gets the current state pointer for state mode use.
+ 412:../drivers/fsl_flexio.h ****  *
+ 413:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 414:../drivers/fsl_flexio.h ****  * @return current State pointer
+ 415:../drivers/fsl_flexio.h **** */
+ 416:../drivers/fsl_flexio.h **** static inline uint8_t FLEXIO_GetShifterState(FLEXIO_Type *base)
+ 417:../drivers/fsl_flexio.h **** {
+ 418:../drivers/fsl_flexio.h ****     return ((base->SHIFTSTATE) & FLEXIO_SHIFTSTATE_STATE_MASK);
+ 419:../drivers/fsl_flexio.h **** }
+ 420:../drivers/fsl_flexio.h **** #endif /*FSL_FEATURE_FLEXIO_HAS_STATE_MODE*/
+ 421:../drivers/fsl_flexio.h **** 
+ 422:../drivers/fsl_flexio.h **** /*!
+ 423:../drivers/fsl_flexio.h ****  * @brief Configures the shifter with the shifter configuration. The configuration structure
+ 424:../drivers/fsl_flexio.h ****  * covers both the SHIFTCTL and SHIFTCFG registers. To configure the shifter to the proper
+ 425:../drivers/fsl_flexio.h ****  * mode, select which timer controls the shifter to shift, whether to generate start bit/stop
+ 426:../drivers/fsl_flexio.h ****  *  bit, and the polarity of start bit and stop bit.
+ 427:../drivers/fsl_flexio.h ****  *
+ 428:../drivers/fsl_flexio.h ****  * Example
+ 429:../drivers/fsl_flexio.h ****    @code
+ 430:../drivers/fsl_flexio.h ****    flexio_shifter_config_t config = {
+ 431:../drivers/fsl_flexio.h ****    .timerSelect = 0,
+ 432:../drivers/fsl_flexio.h ****    .timerPolarity = kFLEXIO_ShifterTimerPolarityOnPositive,
+ 433:../drivers/fsl_flexio.h ****    .pinConfig = kFLEXIO_PinConfigOpenDrainOrBidirection,
+ 434:../drivers/fsl_flexio.h ****    .pinPolarity = kFLEXIO_PinActiveLow,
+ 435:../drivers/fsl_flexio.h ****    .shifterMode = kFLEXIO_ShifterModeTransmit,
+ 436:../drivers/fsl_flexio.h ****    .inputSource = kFLEXIO_ShifterInputFromPin,
+ 437:../drivers/fsl_flexio.h ****    .shifterStop = kFLEXIO_ShifterStopBitHigh,
+ 438:../drivers/fsl_flexio.h ****    .shifterStart = kFLEXIO_ShifterStartBitLow
+ 439:../drivers/fsl_flexio.h ****    };
+ 440:../drivers/fsl_flexio.h ****    FLEXIO_SetShifterConfig(base, &config);
+ 441:../drivers/fsl_flexio.h ****    @endcode
+ 442:../drivers/fsl_flexio.h ****  *
+ 443:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 444:../drivers/fsl_flexio.h ****  * @param index Shifter index
+ 445:../drivers/fsl_flexio.h ****  * @param shifterConfig Pointer to flexio_shifter_config_t structure
+ 446:../drivers/fsl_flexio.h **** */
+ 447:../drivers/fsl_flexio.h **** void FLEXIO_SetShifterConfig(FLEXIO_Type *base, uint8_t index, const flexio_shifter_config_t *shift
+ 448:../drivers/fsl_flexio.h **** /*!
+ 449:../drivers/fsl_flexio.h ****  * @brief Configures the timer with the timer configuration. The configuration structure
+ 450:../drivers/fsl_flexio.h ****  * covers both the TIMCTL and TIMCFG registers. To configure the timer to the proper
+ 451:../drivers/fsl_flexio.h ****  * mode, select trigger source for timer and the timer pin output and the timing for timer.
+ 452:../drivers/fsl_flexio.h ****  *
+ 453:../drivers/fsl_flexio.h ****  * Example
+ 454:../drivers/fsl_flexio.h ****    @code
+ 455:../drivers/fsl_flexio.h ****    flexio_timer_config_t config = {
+ 456:../drivers/fsl_flexio.h ****    .triggerSelect = FLEXIO_TIMER_TRIGGER_SEL_SHIFTnSTAT(0),
+ 457:../drivers/fsl_flexio.h ****    .triggerPolarity = kFLEXIO_TimerTriggerPolarityActiveLow,
+ 458:../drivers/fsl_flexio.h ****    .triggerSource = kFLEXIO_TimerTriggerSourceInternal,
+ 459:../drivers/fsl_flexio.h ****    .pinConfig = kFLEXIO_PinConfigOpenDrainOrBidirection,
+ 460:../drivers/fsl_flexio.h ****    .pinSelect = 0,
+ 461:../drivers/fsl_flexio.h ****    .pinPolarity = kFLEXIO_PinActiveHigh,
+ 462:../drivers/fsl_flexio.h ****    .timerMode = kFLEXIO_TimerModeDual8BitBaudBit,
+ 463:../drivers/fsl_flexio.h ****    .timerOutput = kFLEXIO_TimerOutputZeroNotAffectedByReset,
+ 464:../drivers/fsl_flexio.h ****    .timerDecrement = kFLEXIO_TimerDecSrcOnFlexIOClockShiftTimerOutput,
+ 465:../drivers/fsl_flexio.h ****    .timerReset = kFLEXIO_TimerResetOnTimerPinEqualToTimerOutput,
+ 466:../drivers/fsl_flexio.h ****    .timerDisable = kFLEXIO_TimerDisableOnTimerCompare,
+ 467:../drivers/fsl_flexio.h ****    .timerEnable = kFLEXIO_TimerEnableOnTriggerHigh,
+ 468:../drivers/fsl_flexio.h ****    .timerStop = kFLEXIO_TimerStopBitEnableOnTimerDisable,
+ 469:../drivers/fsl_flexio.h ****    .timerStart = kFLEXIO_TimerStartBitEnabled
+ 470:../drivers/fsl_flexio.h ****    };
+ 471:../drivers/fsl_flexio.h ****    FLEXIO_SetTimerConfig(base, &config);
+ 472:../drivers/fsl_flexio.h ****    @endcode
+ 473:../drivers/fsl_flexio.h ****  *
+ 474:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 475:../drivers/fsl_flexio.h ****  * @param index Timer index
+ 476:../drivers/fsl_flexio.h ****  * @param timerConfig Pointer to the flexio_timer_config_t structure
+ 477:../drivers/fsl_flexio.h **** */
+ 478:../drivers/fsl_flexio.h **** void FLEXIO_SetTimerConfig(FLEXIO_Type *base, uint8_t index, const flexio_timer_config_t *timerConf
+ 479:../drivers/fsl_flexio.h **** 
+ 480:../drivers/fsl_flexio.h **** /* @} */
+ 481:../drivers/fsl_flexio.h **** 
+ 482:../drivers/fsl_flexio.h **** /*!
+ 483:../drivers/fsl_flexio.h ****  * @name FlexIO Interrupt Operation
+ 484:../drivers/fsl_flexio.h ****  * @{
+ 485:../drivers/fsl_flexio.h ****  */
+ 486:../drivers/fsl_flexio.h **** 
+ 487:../drivers/fsl_flexio.h **** /*!
+ 488:../drivers/fsl_flexio.h ****  * @brief Enables the shifter status interrupt. The interrupt generates when the corresponding SSF 
+ 489:../drivers/fsl_flexio.h ****  *
+ 490:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 491:../drivers/fsl_flexio.h ****  * @param mask The shifter status mask which can be calculated by (1 << shifter index)
+ 492:../drivers/fsl_flexio.h ****  * @note For multiple shifter status interrupt enable, for example, two shifter status enable, can 
+ 493:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 494:../drivers/fsl_flexio.h **** */
+ 495:../drivers/fsl_flexio.h **** static inline void FLEXIO_EnableShifterStatusInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 496:../drivers/fsl_flexio.h **** {
+ 497:../drivers/fsl_flexio.h ****     base->SHIFTSIEN |= mask;
+ 498:../drivers/fsl_flexio.h **** }
+ 499:../drivers/fsl_flexio.h **** 
+ 500:../drivers/fsl_flexio.h **** /*!
+ 501:../drivers/fsl_flexio.h ****  * @brief Disables the shifter status interrupt. The interrupt won't generate when the correspondin
+ 502:../drivers/fsl_flexio.h ****  *
+ 503:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 504:../drivers/fsl_flexio.h ****  * @param mask The shifter status mask which can be calculated by (1 << shifter index)
+ 505:../drivers/fsl_flexio.h ****  * @note For multiple shifter status interrupt enable, for example, two shifter status enable, can 
+ 506:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 507:../drivers/fsl_flexio.h **** */
+ 508:../drivers/fsl_flexio.h **** static inline void FLEXIO_DisableShifterStatusInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 509:../drivers/fsl_flexio.h **** {
+ 510:../drivers/fsl_flexio.h ****     base->SHIFTSIEN &= ~mask;
+ 511:../drivers/fsl_flexio.h **** }
+ 512:../drivers/fsl_flexio.h **** 
+ 513:../drivers/fsl_flexio.h **** /*!
+ 514:../drivers/fsl_flexio.h ****  * @brief Enables the shifter error interrupt. The interrupt generates when the corresponding SEF i
+ 515:../drivers/fsl_flexio.h ****  *
+ 516:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 517:../drivers/fsl_flexio.h ****  * @param mask The shifter error mask which can be calculated by (1 << shifter index)
+ 518:../drivers/fsl_flexio.h ****  * @note For multiple shifter error interrupt enable, for example, two shifter error enable, can ca
+ 519:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 520:../drivers/fsl_flexio.h **** */
+ 521:../drivers/fsl_flexio.h **** static inline void FLEXIO_EnableShifterErrorInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 522:../drivers/fsl_flexio.h **** {
+ 523:../drivers/fsl_flexio.h ****     base->SHIFTEIEN |= mask;
+ 524:../drivers/fsl_flexio.h **** }
+ 525:../drivers/fsl_flexio.h **** 
+ 526:../drivers/fsl_flexio.h **** /*!
+ 527:../drivers/fsl_flexio.h ****  * @brief Disables the shifter error interrupt. The interrupt won't generate when the corresponding
+ 528:../drivers/fsl_flexio.h ****  *
+ 529:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 530:../drivers/fsl_flexio.h ****  * @param mask The shifter error mask which can be calculated by (1 << shifter index)
+ 531:../drivers/fsl_flexio.h ****  * @note For multiple shifter error interrupt enable, for example, two shifter error enable, can ca
+ 532:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 533:../drivers/fsl_flexio.h **** */
+ 534:../drivers/fsl_flexio.h **** static inline void FLEXIO_DisableShifterErrorInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 535:../drivers/fsl_flexio.h **** {
+ 536:../drivers/fsl_flexio.h ****     base->SHIFTEIEN &= ~mask;
+ 537:../drivers/fsl_flexio.h **** }
+ 538:../drivers/fsl_flexio.h **** 
+ 539:../drivers/fsl_flexio.h **** /*!
+ 540:../drivers/fsl_flexio.h ****  * @brief Enables the timer status interrupt. The interrupt generates when the corresponding SSF is
+ 541:../drivers/fsl_flexio.h ****  *
+ 542:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 543:../drivers/fsl_flexio.h ****  * @param mask The timer status mask which can be calculated by (1 << timer index)
+ 544:../drivers/fsl_flexio.h ****  * @note For multiple timer status interrupt enable, for example, two timer status enable, can calc
+ 545:../drivers/fsl_flexio.h ****  * the mask by using ((1 << timer index0) | (1 << timer index1))
+ 546:../drivers/fsl_flexio.h **** */
+ 547:../drivers/fsl_flexio.h **** static inline void FLEXIO_EnableTimerStatusInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 548:../drivers/fsl_flexio.h **** {
+ 549:../drivers/fsl_flexio.h ****     base->TIMIEN |= mask;
+ 550:../drivers/fsl_flexio.h **** }
+ 551:../drivers/fsl_flexio.h **** 
+ 552:../drivers/fsl_flexio.h **** /*!
+ 553:../drivers/fsl_flexio.h ****  * @brief Disables the timer status interrupt. The interrupt won't generate when the corresponding 
+ 554:../drivers/fsl_flexio.h ****  *
+ 555:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 556:../drivers/fsl_flexio.h ****  * @param mask The timer status mask which can be calculated by (1 << timer index)
+ 557:../drivers/fsl_flexio.h ****  * @note For multiple timer status interrupt enable, for example, two timer status enable, can calc
+ 558:../drivers/fsl_flexio.h ****  * the mask by using ((1 << timer index0) | (1 << timer index1))
+ 559:../drivers/fsl_flexio.h **** */
+ 560:../drivers/fsl_flexio.h **** static inline void FLEXIO_DisableTimerStatusInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 561:../drivers/fsl_flexio.h **** {
+ 562:../drivers/fsl_flexio.h ****     base->TIMIEN &= ~mask;
+ 563:../drivers/fsl_flexio.h **** }
+ 564:../drivers/fsl_flexio.h **** 
+ 565:../drivers/fsl_flexio.h **** /* @} */
+ 566:../drivers/fsl_flexio.h **** 
+ 567:../drivers/fsl_flexio.h **** /*!
+ 568:../drivers/fsl_flexio.h ****  * @name FlexIO Status Operation
+ 569:../drivers/fsl_flexio.h ****  * @{
+ 570:../drivers/fsl_flexio.h ****  */
+ 571:../drivers/fsl_flexio.h **** 
+ 572:../drivers/fsl_flexio.h **** /*!
+ 573:../drivers/fsl_flexio.h ****  * @brief Gets the shifter status flags.
+ 574:../drivers/fsl_flexio.h ****  *
+ 575:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 576:../drivers/fsl_flexio.h ****  * @return Shifter status flags
+ 577:../drivers/fsl_flexio.h **** */
+ 578:../drivers/fsl_flexio.h **** static inline uint32_t FLEXIO_GetShifterStatusFlags(FLEXIO_Type *base)
+ 579:../drivers/fsl_flexio.h **** {
+ 580:../drivers/fsl_flexio.h ****     return ((base->SHIFTSTAT) & FLEXIO_SHIFTSTAT_SSF_MASK);
+ 581:../drivers/fsl_flexio.h **** }
+ 582:../drivers/fsl_flexio.h **** 
+ 583:../drivers/fsl_flexio.h **** /*!
+ 584:../drivers/fsl_flexio.h ****  * @brief Clears the shifter status flags.
+ 585:../drivers/fsl_flexio.h ****  *
+ 586:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 587:../drivers/fsl_flexio.h ****  * @param mask The shifter status mask which can be calculated by (1 << shifter index)
+ 588:../drivers/fsl_flexio.h ****  * @note For clearing multiple shifter status flags, for example, two shifter status flags, can cal
+ 589:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 590:../drivers/fsl_flexio.h **** */
+ 591:../drivers/fsl_flexio.h **** static inline void FLEXIO_ClearShifterStatusFlags(FLEXIO_Type *base, uint32_t mask)
+ 592:../drivers/fsl_flexio.h **** {
+ 593:../drivers/fsl_flexio.h ****     base->SHIFTSTAT = mask;
+ 594:../drivers/fsl_flexio.h **** }
+ 595:../drivers/fsl_flexio.h **** 
+ 596:../drivers/fsl_flexio.h **** /*!
+ 597:../drivers/fsl_flexio.h ****  * @brief Gets the shifter error flags.
+ 598:../drivers/fsl_flexio.h ****  *
+ 599:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 600:../drivers/fsl_flexio.h ****  * @return Shifter error flags
+ 601:../drivers/fsl_flexio.h **** */
+ 602:../drivers/fsl_flexio.h **** static inline uint32_t FLEXIO_GetShifterErrorFlags(FLEXIO_Type *base)
+ 603:../drivers/fsl_flexio.h **** {
+ 604:../drivers/fsl_flexio.h ****     return ((base->SHIFTERR) & FLEXIO_SHIFTERR_SEF_MASK);
+ 605:../drivers/fsl_flexio.h **** }
+ 606:../drivers/fsl_flexio.h **** 
+ 607:../drivers/fsl_flexio.h **** /*!
+ 608:../drivers/fsl_flexio.h ****  * @brief Clears the shifter error flags.
+ 609:../drivers/fsl_flexio.h ****  *
+ 610:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 611:../drivers/fsl_flexio.h ****  * @param mask The shifter error mask which can be calculated by (1 << shifter index)
+ 612:../drivers/fsl_flexio.h ****  * @note For clearing multiple shifter error flags, for example, two shifter error flags, can calcu
+ 613:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 614:../drivers/fsl_flexio.h **** */
+ 615:../drivers/fsl_flexio.h **** static inline void FLEXIO_ClearShifterErrorFlags(FLEXIO_Type *base, uint32_t mask)
+ 616:../drivers/fsl_flexio.h **** {
+ 617:../drivers/fsl_flexio.h ****     base->SHIFTERR = mask;
+ 618:../drivers/fsl_flexio.h **** }
+ 619:../drivers/fsl_flexio.h **** 
+ 620:../drivers/fsl_flexio.h **** /*!
+ 621:../drivers/fsl_flexio.h ****  * @brief Gets the timer status flags.
+ 622:../drivers/fsl_flexio.h ****  *
+ 623:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 624:../drivers/fsl_flexio.h ****  * @return Timer status flags
+ 625:../drivers/fsl_flexio.h **** */
+ 626:../drivers/fsl_flexio.h **** static inline uint32_t FLEXIO_GetTimerStatusFlags(FLEXIO_Type *base)
+ 627:../drivers/fsl_flexio.h **** {
+ 628:../drivers/fsl_flexio.h ****     return ((base->TIMSTAT) & FLEXIO_TIMSTAT_TSF_MASK);
+ 629:../drivers/fsl_flexio.h **** }
+ 630:../drivers/fsl_flexio.h **** 
+ 631:../drivers/fsl_flexio.h **** /*!
+ 632:../drivers/fsl_flexio.h ****  * @brief Clears the timer status flags.
+ 633:../drivers/fsl_flexio.h ****  *
+ 634:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 635:../drivers/fsl_flexio.h ****  * @param mask The timer status mask which can be calculated by (1 << timer index)
+ 636:../drivers/fsl_flexio.h ****  * @note For clearing multiple timer status flags, for example, two timer status flags, can calcula
+ 637:../drivers/fsl_flexio.h ****  * the mask by using ((1 << timer index0) | (1 << timer index1))
+ 638:../drivers/fsl_flexio.h **** */
+ 639:../drivers/fsl_flexio.h **** static inline void FLEXIO_ClearTimerStatusFlags(FLEXIO_Type *base, uint32_t mask)
+ 640:../drivers/fsl_flexio.h **** {
+ 641:../drivers/fsl_flexio.h ****     base->TIMSTAT = mask;
+ 642:../drivers/fsl_flexio.h **** }
+ 643:../drivers/fsl_flexio.h **** 
+ 644:../drivers/fsl_flexio.h **** /* @} */
+ 645:../drivers/fsl_flexio.h **** 
+ 646:../drivers/fsl_flexio.h **** /*!
+ 647:../drivers/fsl_flexio.h ****  * @name FlexIO DMA Operation
+ 648:../drivers/fsl_flexio.h ****  * @{
+ 649:../drivers/fsl_flexio.h ****  */
+ 650:../drivers/fsl_flexio.h **** 
+ 651:../drivers/fsl_flexio.h **** /*!
+ 652:../drivers/fsl_flexio.h ****  * @brief Enables/disables the shifter status DMA. The DMA request  generates when the correspondin
+ 653:../drivers/fsl_flexio.h ****  *
+ 654:../drivers/fsl_flexio.h ****  * @note For multiple shifter status DMA enables, for example, calculate
+ 655:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 656:../drivers/fsl_flexio.h ****  *
+ 657:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 658:../drivers/fsl_flexio.h ****  * @param mask The shifter status mask which can be calculated by (1 << shifter index)
+ 659:../drivers/fsl_flexio.h ****  * @param enable True to enable, false to disable.
+ 660:../drivers/fsl_flexio.h **** */
+ 661:../drivers/fsl_flexio.h **** static inline void FLEXIO_EnableShifterStatusDMA(FLEXIO_Type *base, uint32_t mask, bool enable)
+ 662:../drivers/fsl_flexio.h **** {
+ 663:../drivers/fsl_flexio.h ****     if (enable)
+ 664:../drivers/fsl_flexio.h ****     {
+ 665:../drivers/fsl_flexio.h ****         base->SHIFTSDEN |= mask;
+ 666:../drivers/fsl_flexio.h ****     }
+ 667:../drivers/fsl_flexio.h ****     else
+ 668:../drivers/fsl_flexio.h ****     {
+ 669:../drivers/fsl_flexio.h ****         base->SHIFTSDEN &= ~mask;
+  53              		.loc 3 669 0
+  54 000c 236B     		ldr	r3, [r4, #48]
+  55 000e 9343     		bics	r3, r2
+  56 0010 2363     		str	r3, [r4, #48]
+  57              	.LVL5:
+  58              	.LBE69:
+  59              	.LBE68:
+  60              	.LBE67:
+  61              	.LBE66:
+ 103:../drivers/fsl_flexio_uart_dma.c **** 
+ 104:../drivers/fsl_flexio_uart_dma.c ****     /* Disable interrupt. */
+ 105:../drivers/fsl_flexio_uart_dma.c ****     DMA_DisableInterrupts(handle->base, handle->channel);
+  62              		.loc 1 105 0
+  63 0012 0368     		ldr	r3, [r0]
+  64 0014 0279     		ldrb	r2, [r0, #4]
+  65              	.LVL6:
+  66              	.LBB70:
+  67              	.LBB71:
+  68              		.file 4 "../drivers/fsl_dma.h"
+   1:../drivers/fsl_dma.h **** /*
+   2:../drivers/fsl_dma.h ****  * The Clear BSD License
+   3:../drivers/fsl_dma.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_dma.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_dma.h ****  * All rights reserved.
+   6:../drivers/fsl_dma.h ****  *
+   7:../drivers/fsl_dma.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_dma.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_dma.h ****  * that the following conditions are met:
+  10:../drivers/fsl_dma.h ****  *
+  11:../drivers/fsl_dma.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_dma.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_dma.h ****  *
+  14:../drivers/fsl_dma.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_dma.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_dma.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_dma.h ****  *
+  18:../drivers/fsl_dma.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_dma.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_dma.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_dma.h ****  *
+  22:../drivers/fsl_dma.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_dma.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_dma.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_dma.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_dma.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_dma.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_dma.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_dma.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_dma.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_dma.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_dma.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_dma.h ****  */
+  34:../drivers/fsl_dma.h **** 
+  35:../drivers/fsl_dma.h **** #ifndef _FSL_DMA_H_
+  36:../drivers/fsl_dma.h **** #define _FSL_DMA_H_
+  37:../drivers/fsl_dma.h **** 
+  38:../drivers/fsl_dma.h **** #include "fsl_common.h"
+  39:../drivers/fsl_dma.h **** 
+  40:../drivers/fsl_dma.h **** /*!
+  41:../drivers/fsl_dma.h ****  * @addtogroup dma
+  42:../drivers/fsl_dma.h ****  * @{
+  43:../drivers/fsl_dma.h ****  */
+  44:../drivers/fsl_dma.h **** 
+  45:../drivers/fsl_dma.h **** 
+  46:../drivers/fsl_dma.h **** /*******************************************************************************
+  47:../drivers/fsl_dma.h ****  * Definitions
+  48:../drivers/fsl_dma.h ****  ******************************************************************************/
+  49:../drivers/fsl_dma.h **** 
+  50:../drivers/fsl_dma.h **** /*! @name Driver version */
+  51:../drivers/fsl_dma.h **** /*@{*/
+  52:../drivers/fsl_dma.h **** /*! @brief DMA driver version 2.0.1. */
+  53:../drivers/fsl_dma.h **** #define FSL_DMA_DRIVER_VERSION (MAKE_VERSION(2, 0, 1))
+  54:../drivers/fsl_dma.h **** /*@}*/
+  55:../drivers/fsl_dma.h **** 
+  56:../drivers/fsl_dma.h **** /*! @brief status flag for the DMA driver. */
+  57:../drivers/fsl_dma.h **** enum _dma_channel_status_flags
+  58:../drivers/fsl_dma.h **** {
+  59:../drivers/fsl_dma.h ****     kDMA_TransactionsBCRFlag = DMA_DSR_BCR_BCR_MASK,       /*!< Contains the number of bytes yet to
+  60:../drivers/fsl_dma.h ****                                                                 transferred for a given block */
+  61:../drivers/fsl_dma.h ****     kDMA_TransactionsDoneFlag = DMA_DSR_BCR_DONE_MASK,     /*!< Transactions Done */
+  62:../drivers/fsl_dma.h ****     kDMA_TransactionsBusyFlag = DMA_DSR_BCR_BSY_MASK,      /*!< Transactions Busy */
+  63:../drivers/fsl_dma.h ****     kDMA_TransactionsRequestFlag = DMA_DSR_BCR_REQ_MASK,   /*!< Transactions Request */
+  64:../drivers/fsl_dma.h ****     kDMA_BusErrorOnDestinationFlag = DMA_DSR_BCR_BED_MASK, /*!< Bus Error on Destination */
+  65:../drivers/fsl_dma.h ****     kDMA_BusErrorOnSourceFlag = DMA_DSR_BCR_BES_MASK,      /*!< Bus Error on Source */
+  66:../drivers/fsl_dma.h ****     kDMA_ConfigurationErrorFlag = DMA_DSR_BCR_CE_MASK,     /*!< Configuration Error */
+  67:../drivers/fsl_dma.h **** };
+  68:../drivers/fsl_dma.h **** 
+  69:../drivers/fsl_dma.h **** /*! @brief DMA transfer size type*/
+  70:../drivers/fsl_dma.h **** typedef enum _dma_transfer_size
+  71:../drivers/fsl_dma.h **** {
+  72:../drivers/fsl_dma.h ****     kDMA_Transfersize32bits = 0x0U, /*!< 32 bits are transferred for every read/write */
+  73:../drivers/fsl_dma.h ****     kDMA_Transfersize8bits,         /*!< 8 bits are transferred for every read/write */
+  74:../drivers/fsl_dma.h ****     kDMA_Transfersize16bits,        /*!< 16b its are transferred for every read/write */
+  75:../drivers/fsl_dma.h **** } dma_transfer_size_t;
+  76:../drivers/fsl_dma.h **** 
+  77:../drivers/fsl_dma.h **** /*! @brief Configuration type for the DMA modulo */
+  78:../drivers/fsl_dma.h **** typedef enum _dma_modulo
+  79:../drivers/fsl_dma.h **** {
+  80:../drivers/fsl_dma.h ****     kDMA_ModuloDisable = 0x0U, /*!< Buffer disabled */
+  81:../drivers/fsl_dma.h ****     kDMA_Modulo16Bytes,        /*!< Circular buffer size is 16 bytes. */
+  82:../drivers/fsl_dma.h ****     kDMA_Modulo32Bytes,        /*!< Circular buffer size is 32 bytes. */
+  83:../drivers/fsl_dma.h ****     kDMA_Modulo64Bytes,        /*!< Circular buffer size is 64 bytes. */
+  84:../drivers/fsl_dma.h ****     kDMA_Modulo128Bytes,       /*!< Circular buffer size is 128 bytes. */
+  85:../drivers/fsl_dma.h ****     kDMA_Modulo256Bytes,       /*!< Circular buffer size is 256 bytes. */
+  86:../drivers/fsl_dma.h ****     kDMA_Modulo512Bytes,       /*!< Circular buffer size is 512 bytes. */
+  87:../drivers/fsl_dma.h ****     kDMA_Modulo1KBytes,        /*!< Circular buffer size is 1 KB. */
+  88:../drivers/fsl_dma.h ****     kDMA_Modulo2KBytes,        /*!< Circular buffer size is 2 KB. */
+  89:../drivers/fsl_dma.h ****     kDMA_Modulo4KBytes,        /*!< Circular buffer size is 4 KB. */
+  90:../drivers/fsl_dma.h ****     kDMA_Modulo8KBytes,        /*!< Circular buffer size is 8 KB. */
+  91:../drivers/fsl_dma.h ****     kDMA_Modulo16KBytes,       /*!< Circular buffer size is 16 KB. */
+  92:../drivers/fsl_dma.h ****     kDMA_Modulo32KBytes,       /*!< Circular buffer size is 32 KB. */
+  93:../drivers/fsl_dma.h ****     kDMA_Modulo64KBytes,       /*!< Circular buffer size is 64 KB. */
+  94:../drivers/fsl_dma.h ****     kDMA_Modulo128KBytes,      /*!< Circular buffer size is 128 KB. */
+  95:../drivers/fsl_dma.h ****     kDMA_Modulo256KBytes,      /*!< Circular buffer size is 256 KB. */
+  96:../drivers/fsl_dma.h **** } dma_modulo_t;
+  97:../drivers/fsl_dma.h **** 
+  98:../drivers/fsl_dma.h **** /*! @brief DMA channel link type */
+  99:../drivers/fsl_dma.h **** typedef enum _dma_channel_link_type
+ 100:../drivers/fsl_dma.h **** {
+ 101:../drivers/fsl_dma.h ****     kDMA_ChannelLinkDisable = 0x0U,      /*!< No channel link. */
+ 102:../drivers/fsl_dma.h ****     kDMA_ChannelLinkChannel1AndChannel2, /*!< Perform a link to channel LCH1 after each cycle-steal
+ 103:../drivers/fsl_dma.h ****                                               followed by a link to LCH2 after the BCR decrements t
+ 104:../drivers/fsl_dma.h ****     kDMA_ChannelLinkChannel1,            /*!< Perform a link to LCH1 after each cycle-steal transfe
+ 105:../drivers/fsl_dma.h ****     kDMA_ChannelLinkChannel1AfterBCR0,   /*!< Perform a link to LCH1 after the BCR decrements. */
+ 106:../drivers/fsl_dma.h **** } dma_channel_link_type_t;
+ 107:../drivers/fsl_dma.h **** 
+ 108:../drivers/fsl_dma.h **** /*! @brief DMA transfer type */
+ 109:../drivers/fsl_dma.h **** typedef enum _dma_transfer_type
+ 110:../drivers/fsl_dma.h **** {
+ 111:../drivers/fsl_dma.h ****     kDMA_MemoryToMemory = 0x0U, /*!< Memory to Memory transfer. */
+ 112:../drivers/fsl_dma.h ****     kDMA_PeripheralToMemory,    /*!< Peripheral to Memory transfer. */
+ 113:../drivers/fsl_dma.h ****     kDMA_MemoryToPeripheral,    /*!< Memory to Peripheral transfer. */
+ 114:../drivers/fsl_dma.h **** } dma_transfer_type_t;
+ 115:../drivers/fsl_dma.h **** 
+ 116:../drivers/fsl_dma.h **** /*! @brief DMA transfer options */
+ 117:../drivers/fsl_dma.h **** typedef enum _dma_transfer_options
+ 118:../drivers/fsl_dma.h **** {
+ 119:../drivers/fsl_dma.h ****     kDMA_NoOptions = 0x0U, /*!< Transfer without options. */
+ 120:../drivers/fsl_dma.h ****     kDMA_EnableInterrupt,  /*!< Enable interrupt while transfer complete. */
+ 121:../drivers/fsl_dma.h **** } dma_transfer_options_t;
+ 122:../drivers/fsl_dma.h **** 
+ 123:../drivers/fsl_dma.h **** /*! @brief DMA transfer status */
+ 124:../drivers/fsl_dma.h **** enum _dma_transfer_status
+ 125:../drivers/fsl_dma.h **** {
+ 126:../drivers/fsl_dma.h ****     kStatus_DMA_Busy = MAKE_STATUS(kStatusGroup_DMA, 0),
+ 127:../drivers/fsl_dma.h **** };
+ 128:../drivers/fsl_dma.h **** 
+ 129:../drivers/fsl_dma.h **** /*! @brief DMA transfer configuration structure */
+ 130:../drivers/fsl_dma.h **** typedef struct _dma_transfer_config
+ 131:../drivers/fsl_dma.h **** {
+ 132:../drivers/fsl_dma.h ****     uint32_t srcAddr;             /*!< DMA transfer source address. */
+ 133:../drivers/fsl_dma.h ****     uint32_t destAddr;            /*!< DMA destination address.*/
+ 134:../drivers/fsl_dma.h ****     bool enableSrcIncrement;      /*!< Source address increase after each transfer. */
+ 135:../drivers/fsl_dma.h ****     dma_transfer_size_t srcSize;  /*!< Source transfer size unit. */
+ 136:../drivers/fsl_dma.h ****     bool enableDestIncrement;     /*!< Destination address increase after each transfer. */
+ 137:../drivers/fsl_dma.h ****     dma_transfer_size_t destSize; /*!< Destination transfer unit.*/
+ 138:../drivers/fsl_dma.h ****     uint32_t transferSize;        /*!< The number of bytes to be transferred. */
+ 139:../drivers/fsl_dma.h **** } dma_transfer_config_t;
+ 140:../drivers/fsl_dma.h **** 
+ 141:../drivers/fsl_dma.h **** /*! @brief DMA transfer configuration structure */
+ 142:../drivers/fsl_dma.h **** typedef struct _dma_channel_link_config
+ 143:../drivers/fsl_dma.h **** {
+ 144:../drivers/fsl_dma.h ****     dma_channel_link_type_t linkType; /*!< Channel link type. */
+ 145:../drivers/fsl_dma.h ****     uint32_t channel1;                /*!< The index of channel 1. */
+ 146:../drivers/fsl_dma.h ****     uint32_t channel2;                /*!< The index of channel 2. */
+ 147:../drivers/fsl_dma.h **** } dma_channel_link_config_t;
+ 148:../drivers/fsl_dma.h **** 
+ 149:../drivers/fsl_dma.h **** struct _dma_handle;
+ 150:../drivers/fsl_dma.h **** /*! @brief Callback function prototype for the DMA driver. */
+ 151:../drivers/fsl_dma.h **** typedef void (*dma_callback)(struct _dma_handle *handle, void *userData);
+ 152:../drivers/fsl_dma.h **** 
+ 153:../drivers/fsl_dma.h **** /*! @brief DMA DMA handle structure */
+ 154:../drivers/fsl_dma.h **** typedef struct _dma_handle
+ 155:../drivers/fsl_dma.h **** {
+ 156:../drivers/fsl_dma.h ****     DMA_Type *base;        /*!< DMA peripheral address. */
+ 157:../drivers/fsl_dma.h ****     uint8_t channel;       /*!< DMA channel used. */
+ 158:../drivers/fsl_dma.h ****     dma_callback callback; /*!< DMA callback function.*/
+ 159:../drivers/fsl_dma.h ****     void *userData;        /*!< Callback parameter. */
+ 160:../drivers/fsl_dma.h **** } dma_handle_t;
+ 161:../drivers/fsl_dma.h **** 
+ 162:../drivers/fsl_dma.h **** /*******************************************************************************
+ 163:../drivers/fsl_dma.h ****  * API
+ 164:../drivers/fsl_dma.h ****  ******************************************************************************/
+ 165:../drivers/fsl_dma.h **** #if defined(__cplusplus)
+ 166:../drivers/fsl_dma.h **** extern "C" {
+ 167:../drivers/fsl_dma.h **** #endif /* __cplusplus */
+ 168:../drivers/fsl_dma.h **** 
+ 169:../drivers/fsl_dma.h **** /*!
+ 170:../drivers/fsl_dma.h ****  * @name DMA Initialization and De-initialization
+ 171:../drivers/fsl_dma.h ****  * @{
+ 172:../drivers/fsl_dma.h ****  */
+ 173:../drivers/fsl_dma.h **** 
+ 174:../drivers/fsl_dma.h **** /*!
+ 175:../drivers/fsl_dma.h ****  * @brief Initializes the DMA peripheral.
+ 176:../drivers/fsl_dma.h ****  *
+ 177:../drivers/fsl_dma.h ****  * This function ungates the DMA clock.
+ 178:../drivers/fsl_dma.h ****  *
+ 179:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 180:../drivers/fsl_dma.h ****  */
+ 181:../drivers/fsl_dma.h **** void DMA_Init(DMA_Type *base);
+ 182:../drivers/fsl_dma.h **** 
+ 183:../drivers/fsl_dma.h **** /*!
+ 184:../drivers/fsl_dma.h ****  * @brief Deinitializes the DMA peripheral.
+ 185:../drivers/fsl_dma.h ****  *
+ 186:../drivers/fsl_dma.h ****  * This function gates the DMA clock.
+ 187:../drivers/fsl_dma.h ****  *
+ 188:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 189:../drivers/fsl_dma.h ****  */
+ 190:../drivers/fsl_dma.h **** void DMA_Deinit(DMA_Type *base);
+ 191:../drivers/fsl_dma.h **** 
+ 192:../drivers/fsl_dma.h **** /* @} */
+ 193:../drivers/fsl_dma.h **** /*!
+ 194:../drivers/fsl_dma.h ****  * @name DMA Channel Operation
+ 195:../drivers/fsl_dma.h ****  * @{
+ 196:../drivers/fsl_dma.h ****  */
+ 197:../drivers/fsl_dma.h **** 
+ 198:../drivers/fsl_dma.h **** /*!
+ 199:../drivers/fsl_dma.h ****  * @brief Resets the DMA channel.
+ 200:../drivers/fsl_dma.h ****  *
+ 201:../drivers/fsl_dma.h ****  * Sets all register values to reset values and enables
+ 202:../drivers/fsl_dma.h ****  * the cycle steal and auto stop channel request features.
+ 203:../drivers/fsl_dma.h ****  *
+ 204:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 205:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 206:../drivers/fsl_dma.h ****  */
+ 207:../drivers/fsl_dma.h **** void DMA_ResetChannel(DMA_Type *base, uint32_t channel);
+ 208:../drivers/fsl_dma.h **** 
+ 209:../drivers/fsl_dma.h **** /*!
+ 210:../drivers/fsl_dma.h ****  * @brief Configures the DMA transfer attribute.
+ 211:../drivers/fsl_dma.h ****  *
+ 212:../drivers/fsl_dma.h ****  * This function configures the transfer attribute including the source address,
+ 213:../drivers/fsl_dma.h ****  * destination address, transfer size, and so on.
+ 214:../drivers/fsl_dma.h ****  * This example shows how to set up the the dma_transfer_config_t
+ 215:../drivers/fsl_dma.h ****  * parameters and how to call the DMA_ConfigBasicTransfer function.
+ 216:../drivers/fsl_dma.h ****  * @code
+ 217:../drivers/fsl_dma.h ****  *   dma_transfer_config_t transferConfig;
+ 218:../drivers/fsl_dma.h ****  *   memset(&transferConfig, 0, sizeof(transferConfig));
+ 219:../drivers/fsl_dma.h ****  *   transferConfig.srcAddr = (uint32_t)srcAddr;
+ 220:../drivers/fsl_dma.h ****  *   transferConfig.destAddr = (uint32_t)destAddr;
+ 221:../drivers/fsl_dma.h ****  *   transferConfig.enbaleSrcIncrement = true;
+ 222:../drivers/fsl_dma.h ****  *   transferConfig.enableDestIncrement = true;
+ 223:../drivers/fsl_dma.h ****  *   transferConfig.srcSize = kDMA_Transfersize32bits;
+ 224:../drivers/fsl_dma.h ****  *   transferConfig.destSize = kDMA_Transfersize32bits;
+ 225:../drivers/fsl_dma.h ****  *   transferConfig.transferSize = sizeof(uint32_t) * BUFF_LENGTH;
+ 226:../drivers/fsl_dma.h ****  *   DMA_SetTransferConfig(DMA0, 0, &transferConfig);
+ 227:../drivers/fsl_dma.h ****  * @endcode
+ 228:../drivers/fsl_dma.h ****  *
+ 229:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 230:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 231:../drivers/fsl_dma.h ****  * @param config Pointer to the DMA transfer configuration structure.
+ 232:../drivers/fsl_dma.h ****  */
+ 233:../drivers/fsl_dma.h **** void DMA_SetTransferConfig(DMA_Type *base, uint32_t channel, const dma_transfer_config_t *config);
+ 234:../drivers/fsl_dma.h **** 
+ 235:../drivers/fsl_dma.h **** /*!
+ 236:../drivers/fsl_dma.h ****  * @brief Configures the DMA channel link feature.
+ 237:../drivers/fsl_dma.h ****  *
+ 238:../drivers/fsl_dma.h ****  * This function allows DMA channels to have their transfers linked. The current DMA channel
+ 239:../drivers/fsl_dma.h ****  * triggers a DMA request to the linked channels (LCH1 or LCH2) depending on the channel link
+ 240:../drivers/fsl_dma.h ****  * type.
+ 241:../drivers/fsl_dma.h ****  * Perform a link to channel LCH1 after each cycle-steal transfer followed by a link to LCH2
+ 242:../drivers/fsl_dma.h ****  * after the BCR decrements to 0 if the type is kDMA_ChannelLinkChannel1AndChannel2.
+ 243:../drivers/fsl_dma.h ****  * Perform a link to LCH1 after each cycle-steal transfer if the type is kDMA_ChannelLinkChannel1.
+ 244:../drivers/fsl_dma.h ****  * Perform a link to LCH1 after the BCR decrements to 0 if the type is kDMA_ChannelLinkChannel1Afte
+ 245:../drivers/fsl_dma.h ****  *
+ 246:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 247:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 248:../drivers/fsl_dma.h ****  * @param config Pointer to the channel link configuration structure.
+ 249:../drivers/fsl_dma.h ****  */
+ 250:../drivers/fsl_dma.h **** void DMA_SetChannelLinkConfig(DMA_Type *base, uint32_t channel, const dma_channel_link_config_t *co
+ 251:../drivers/fsl_dma.h **** 
+ 252:../drivers/fsl_dma.h **** /*!
+ 253:../drivers/fsl_dma.h ****  * @brief Sets the DMA source address for the DMA transfer.
+ 254:../drivers/fsl_dma.h ****  *
+ 255:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 256:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 257:../drivers/fsl_dma.h ****  * @param srcAddr DMA source address.
+ 258:../drivers/fsl_dma.h ****  */
+ 259:../drivers/fsl_dma.h **** static inline void DMA_SetSourceAddress(DMA_Type *base, uint32_t channel, uint32_t srcAddr)
+ 260:../drivers/fsl_dma.h **** {
+ 261:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 262:../drivers/fsl_dma.h **** 
+ 263:../drivers/fsl_dma.h ****     base->DMA[channel].SAR = srcAddr;
+ 264:../drivers/fsl_dma.h **** }
+ 265:../drivers/fsl_dma.h **** 
+ 266:../drivers/fsl_dma.h **** /*!
+ 267:../drivers/fsl_dma.h ****  * @brief Sets the DMA destination address for the DMA transfer.
+ 268:../drivers/fsl_dma.h ****  *
+ 269:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 270:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 271:../drivers/fsl_dma.h ****  * @param destAddr DMA destination address.
+ 272:../drivers/fsl_dma.h ****  */
+ 273:../drivers/fsl_dma.h **** static inline void DMA_SetDestinationAddress(DMA_Type *base, uint32_t channel, uint32_t destAddr)
+ 274:../drivers/fsl_dma.h **** {
+ 275:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 276:../drivers/fsl_dma.h **** 
+ 277:../drivers/fsl_dma.h ****     base->DMA[channel].DAR = destAddr;
+ 278:../drivers/fsl_dma.h **** }
+ 279:../drivers/fsl_dma.h **** 
+ 280:../drivers/fsl_dma.h **** /*!
+ 281:../drivers/fsl_dma.h ****  * @brief Sets the DMA transfer size for the DMA transfer.
+ 282:../drivers/fsl_dma.h ****  *
+ 283:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 284:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 285:../drivers/fsl_dma.h ****  * @param size The number of bytes to be transferred.
+ 286:../drivers/fsl_dma.h ****  */
+ 287:../drivers/fsl_dma.h **** static inline void DMA_SetTransferSize(DMA_Type *base, uint32_t channel, uint32_t size)
+ 288:../drivers/fsl_dma.h **** {
+ 289:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 290:../drivers/fsl_dma.h **** 
+ 291:../drivers/fsl_dma.h ****     base->DMA[channel].DSR_BCR = DMA_DSR_BCR_BCR(size);
+ 292:../drivers/fsl_dma.h **** }
+ 293:../drivers/fsl_dma.h **** 
+ 294:../drivers/fsl_dma.h **** /*!
+ 295:../drivers/fsl_dma.h ****  * @brief Sets the DMA modulo for the DMA transfer.
+ 296:../drivers/fsl_dma.h ****  *
+ 297:../drivers/fsl_dma.h ****  * This function defines a specific address range specified to be the value after (SAR + SSIZE)/(DA
+ 298:../drivers/fsl_dma.h ****  * calculation is performed or the original register value. It provides the ability to implement a 
+ 299:../drivers/fsl_dma.h ****  * data queue easily.
+ 300:../drivers/fsl_dma.h ****  *
+ 301:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 302:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 303:../drivers/fsl_dma.h ****  * @param srcModulo source address modulo.
+ 304:../drivers/fsl_dma.h ****  * @param destModulo destination address modulo.
+ 305:../drivers/fsl_dma.h ****  */
+ 306:../drivers/fsl_dma.h **** void DMA_SetModulo(DMA_Type *base, uint32_t channel, dma_modulo_t srcModulo, dma_modulo_t destModul
+ 307:../drivers/fsl_dma.h **** 
+ 308:../drivers/fsl_dma.h **** /*!
+ 309:../drivers/fsl_dma.h ****  * @brief Enables the DMA cycle steal for the DMA transfer.
+ 310:../drivers/fsl_dma.h ****  *
+ 311:../drivers/fsl_dma.h ****  * If the cycle steal feature is enabled (true), the DMA controller forces a single read/write tran
+ 312:../drivers/fsl_dma.h ****  *  or it continuously makes read/write transfers until the BCR decrements to 0.
+ 313:../drivers/fsl_dma.h ****  *
+ 314:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 315:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 316:../drivers/fsl_dma.h ****  * @param enable The command for enable (true) or disable (false).
+ 317:../drivers/fsl_dma.h ****  */
+ 318:../drivers/fsl_dma.h **** static inline void DMA_EnableCycleSteal(DMA_Type *base, uint32_t channel, bool enable)
+ 319:../drivers/fsl_dma.h **** {
+ 320:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 321:../drivers/fsl_dma.h **** 
+ 322:../drivers/fsl_dma.h ****     base->DMA[channel].DCR = (base->DMA[channel].DCR & (~DMA_DCR_CS_MASK)) | DMA_DCR_CS(enable);
+ 323:../drivers/fsl_dma.h **** }
+ 324:../drivers/fsl_dma.h **** 
+ 325:../drivers/fsl_dma.h **** /*!
+ 326:../drivers/fsl_dma.h ****  * @brief Enables the DMA auto align for the DMA transfer.
+ 327:../drivers/fsl_dma.h ****  *
+ 328:../drivers/fsl_dma.h ****  * If the auto align feature is enabled (true), the appropriate address register increments
+ 329:../drivers/fsl_dma.h ****  * regardless of DINC or SINC.
+ 330:../drivers/fsl_dma.h ****  *
+ 331:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 332:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 333:../drivers/fsl_dma.h ****  * @param enable The command for enable (true) or disable (false).
+ 334:../drivers/fsl_dma.h ****  */
+ 335:../drivers/fsl_dma.h **** static inline void DMA_EnableAutoAlign(DMA_Type *base, uint32_t channel, bool enable)
+ 336:../drivers/fsl_dma.h **** {
+ 337:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 338:../drivers/fsl_dma.h **** 
+ 339:../drivers/fsl_dma.h ****     base->DMA[channel].DCR = (base->DMA[channel].DCR & (~DMA_DCR_AA_MASK)) | DMA_DCR_AA(enable);
+ 340:../drivers/fsl_dma.h **** }
+ 341:../drivers/fsl_dma.h **** 
+ 342:../drivers/fsl_dma.h **** /*!
+ 343:../drivers/fsl_dma.h ****  * @brief Enables the DMA async request for the DMA transfer.
+ 344:../drivers/fsl_dma.h ****  *
+ 345:../drivers/fsl_dma.h ****  * If the async request feature is enabled (true), the DMA supports asynchronous DREQs
+ 346:../drivers/fsl_dma.h ****  * while the MCU is in stop mode.
+ 347:../drivers/fsl_dma.h ****  *
+ 348:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 349:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 350:../drivers/fsl_dma.h ****  * @param enable The command for enable (true) or disable (false).
+ 351:../drivers/fsl_dma.h ****  */
+ 352:../drivers/fsl_dma.h **** static inline void DMA_EnableAsyncRequest(DMA_Type *base, uint32_t channel, bool enable)
+ 353:../drivers/fsl_dma.h **** {
+ 354:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 355:../drivers/fsl_dma.h **** 
+ 356:../drivers/fsl_dma.h ****     base->DMA[channel].DCR = (base->DMA[channel].DCR & (~DMA_DCR_EADREQ_MASK)) | DMA_DCR_EADREQ(ena
+ 357:../drivers/fsl_dma.h **** }
+ 358:../drivers/fsl_dma.h **** 
+ 359:../drivers/fsl_dma.h **** /*!
+ 360:../drivers/fsl_dma.h ****  * @brief Enables an interrupt for the DMA transfer.
+ 361:../drivers/fsl_dma.h ****  *
+ 362:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 363:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 364:../drivers/fsl_dma.h ****  */
+ 365:../drivers/fsl_dma.h **** static inline void DMA_EnableInterrupts(DMA_Type *base, uint32_t channel)
+ 366:../drivers/fsl_dma.h **** {
+ 367:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 368:../drivers/fsl_dma.h **** 
+ 369:../drivers/fsl_dma.h ****     base->DMA[channel].DCR |= DMA_DCR_EINT(true);
+ 370:../drivers/fsl_dma.h **** }
+ 371:../drivers/fsl_dma.h **** 
+ 372:../drivers/fsl_dma.h **** /*!
+ 373:../drivers/fsl_dma.h ****  * @brief Disables an interrupt for the DMA transfer.
+ 374:../drivers/fsl_dma.h ****  *
+ 375:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 376:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 377:../drivers/fsl_dma.h ****  */
+ 378:../drivers/fsl_dma.h **** static inline void DMA_DisableInterrupts(DMA_Type *base, uint32_t channel)
+ 379:../drivers/fsl_dma.h **** {
+ 380:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 381:../drivers/fsl_dma.h **** 
+ 382:../drivers/fsl_dma.h ****     base->DMA[channel].DCR &= ~DMA_DCR_EINT_MASK;
+  69              		.loc 4 382 0
+  70 0016 1201     		lsls	r2, r2, #4
+  71              	.LVL7:
+  72 0018 9B18     		adds	r3, r3, r2
+  73              	.LVL8:
+  74 001a 0D33     		adds	r3, r3, #13
+  75 001c FF33     		adds	r3, r3, #255
+  76 001e 1A68     		ldr	r2, [r3]
+  77 0020 5200     		lsls	r2, r2, #1
+  78 0022 5208     		lsrs	r2, r2, #1
+  79 0024 1A60     		str	r2, [r3]
+  80              	.LVL9:
+  81              	.LBE71:
+  82              	.LBE70:
+ 106:../drivers/fsl_flexio_uart_dma.c **** 
+ 107:../drivers/fsl_flexio_uart_dma.c ****     uartPrivateHandle->handle->txState = kFLEXIO_UART_TxIdle;
+  83              		.loc 1 107 0
+  84 0026 0023     		movs	r3, #0
+  85 0028 4A68     		ldr	r2, [r1, #4]
+  86 002a 1376     		strb	r3, [r2, #24]
+ 108:../drivers/fsl_flexio_uart_dma.c **** 
+ 109:../drivers/fsl_flexio_uart_dma.c ****     if (uartPrivateHandle->handle->callback)
+  87              		.loc 1 109 0
+  88 002c 4C68     		ldr	r4, [r1, #4]
+  89 002e 2568     		ldr	r5, [r4]
+  90 0030 002D     		cmp	r5, #0
+  91 0032 04D0     		beq	.L1
+ 110:../drivers/fsl_flexio_uart_dma.c ****     {
+ 111:../drivers/fsl_flexio_uart_dma.c ****         uartPrivateHandle->handle->callback(uartPrivateHandle->base, uartPrivateHandle->handle,
+  92              		.loc 1 111 0
+  93 0034 0868     		ldr	r0, [r1]
+  94              	.LVL10:
+  95 0036 6368     		ldr	r3, [r4, #4]
+  96 0038 014A     		ldr	r2, .L3
+  97 003a 2100     		movs	r1, r4
+  98              	.LVL11:
+  99 003c A847     		blx	r5
+ 100              	.LVL12:
+ 101              	.L1:
+ 112:../drivers/fsl_flexio_uart_dma.c ****                                             kStatus_FLEXIO_UART_TxIdle, uartPrivateHandle->handle->
+ 113:../drivers/fsl_flexio_uart_dma.c ****     }
+ 114:../drivers/fsl_flexio_uart_dma.c **** }
+ 102              		.loc 1 114 0
+ 103              		@ sp needed
+ 104 003e 70BD     		pop	{r4, r5, r6, pc}
+ 105              	.L4:
+ 106              		.align	2
+ 107              	.L3:
+ 108 0040 BE020000 		.word	702
+ 109              		.cfi_endproc
+ 110              	.LFE90:
+ 112              		.section	.text.FLEXIO_UART_TransferReceiveDMACallback,"ax",%progbits
+ 113              		.align	1
+ 114              		.syntax unified
+ 115              		.code	16
+ 116              		.thumb_func
+ 117              		.fpu softvfp
+ 119              	FLEXIO_UART_TransferReceiveDMACallback:
+ 120              	.LFB91:
+ 115:../drivers/fsl_flexio_uart_dma.c **** 
+ 116:../drivers/fsl_flexio_uart_dma.c **** static void FLEXIO_UART_TransferReceiveDMACallback(dma_handle_t *handle, void *param)
+ 117:../drivers/fsl_flexio_uart_dma.c **** {
+ 121              		.loc 1 117 0
+ 122              		.cfi_startproc
+ 123              		@ args = 0, pretend = 0, frame = 0
+ 124              		@ frame_needed = 0, uses_anonymous_args = 0
+ 125              	.LVL13:
+ 126 0000 70B5     		push	{r4, r5, r6, lr}
+ 127              		.cfi_def_cfa_offset 16
+ 128              		.cfi_offset 4, -16
+ 129              		.cfi_offset 5, -12
+ 130              		.cfi_offset 6, -8
+ 131              		.cfi_offset 14, -4
+ 132              	.LVL14:
+ 118:../drivers/fsl_flexio_uart_dma.c ****     flexio_uart_dma_private_handle_t *uartPrivateHandle = (flexio_uart_dma_private_handle_t *)param
+ 119:../drivers/fsl_flexio_uart_dma.c **** 
+ 120:../drivers/fsl_flexio_uart_dma.c ****     /* Disable UART RX DMA. */
+ 121:../drivers/fsl_flexio_uart_dma.c ****     FLEXIO_UART_EnableRxDMA(uartPrivateHandle->base, false);
+ 133              		.loc 1 121 0
+ 134 0002 0B68     		ldr	r3, [r1]
+ 135              	.LVL15:
+ 136              	.LBB72:
+ 137              	.LBB73:
+ 320:../drivers/fsl_flexio_uart.h **** }
+ 321:../drivers/fsl_flexio_uart.h **** 
+ 322:../drivers/fsl_flexio_uart.h **** /*!
+ 323:../drivers/fsl_flexio_uart.h ****  * @brief Enables/disables the FlexIO UART receive DMA.
+ 324:../drivers/fsl_flexio_uart.h ****  * This function enables/disables the FlexIO UART Rx DMA,
+ 325:../drivers/fsl_flexio_uart.h ****  * which means asserting kFLEXIO_UART_RxDataRegFullFlag does/doesn't trigger the DMA request.
+ 326:../drivers/fsl_flexio_uart.h ****  *
+ 327:../drivers/fsl_flexio_uart.h ****  * @param base Pointer to the FLEXIO_UART_Type structure.
+ 328:../drivers/fsl_flexio_uart.h ****  * @param enable True to enable, false to disable.
+ 329:../drivers/fsl_flexio_uart.h ****  */
+ 330:../drivers/fsl_flexio_uart.h **** static inline void FLEXIO_UART_EnableRxDMA(FLEXIO_UART_Type *base, bool enable)
+ 331:../drivers/fsl_flexio_uart.h **** {
+ 332:../drivers/fsl_flexio_uart.h ****     FLEXIO_EnableShifterStatusDMA(base->flexioBase, 1 << base->shifterIndex[1], enable);
+ 138              		.loc 2 332 0
+ 139 0004 1C68     		ldr	r4, [r3]
+ 140 0006 DB79     		ldrb	r3, [r3, #7]
+ 141              	.LVL16:
+ 142 0008 0122     		movs	r2, #1
+ 143 000a 9A40     		lsls	r2, r2, r3
+ 144              	.LVL17:
+ 145              	.LBB74:
+ 146              	.LBB75:
+ 147              		.loc 3 669 0
+ 148 000c 236B     		ldr	r3, [r4, #48]
+ 149 000e 9343     		bics	r3, r2
+ 150 0010 2363     		str	r3, [r4, #48]
+ 151              	.LVL18:
+ 152              	.LBE75:
+ 153              	.LBE74:
+ 154              	.LBE73:
+ 155              	.LBE72:
+ 122:../drivers/fsl_flexio_uart_dma.c **** 
+ 123:../drivers/fsl_flexio_uart_dma.c ****     /* Disable interrupt. */
+ 124:../drivers/fsl_flexio_uart_dma.c ****     DMA_DisableInterrupts(handle->base, handle->channel);
+ 156              		.loc 1 124 0
+ 157 0012 0368     		ldr	r3, [r0]
+ 158 0014 0279     		ldrb	r2, [r0, #4]
+ 159              	.LVL19:
+ 160              	.LBB76:
+ 161              	.LBB77:
+ 162              		.loc 4 382 0
+ 163 0016 1201     		lsls	r2, r2, #4
+ 164              	.LVL20:
+ 165 0018 9B18     		adds	r3, r3, r2
+ 166              	.LVL21:
+ 167 001a 0D33     		adds	r3, r3, #13
+ 168 001c FF33     		adds	r3, r3, #255
+ 169 001e 1A68     		ldr	r2, [r3]
+ 170 0020 5200     		lsls	r2, r2, #1
+ 171 0022 5208     		lsrs	r2, r2, #1
+ 172 0024 1A60     		str	r2, [r3]
+ 173              	.LVL22:
+ 174              	.LBE77:
+ 175              	.LBE76:
+ 125:../drivers/fsl_flexio_uart_dma.c **** 
+ 126:../drivers/fsl_flexio_uart_dma.c ****     uartPrivateHandle->handle->rxState = kFLEXIO_UART_RxIdle;
+ 176              		.loc 1 126 0
+ 177 0026 0223     		movs	r3, #2
+ 178 0028 4A68     		ldr	r2, [r1, #4]
+ 179 002a 5376     		strb	r3, [r2, #25]
+ 127:../drivers/fsl_flexio_uart_dma.c **** 
+ 128:../drivers/fsl_flexio_uart_dma.c ****     if (uartPrivateHandle->handle->callback)
+ 180              		.loc 1 128 0
+ 181 002c 4C68     		ldr	r4, [r1, #4]
+ 182 002e 2568     		ldr	r5, [r4]
+ 183 0030 002D     		cmp	r5, #0
+ 184 0032 04D0     		beq	.L5
+ 129:../drivers/fsl_flexio_uart_dma.c ****     {
+ 130:../drivers/fsl_flexio_uart_dma.c ****         uartPrivateHandle->handle->callback(uartPrivateHandle->base, uartPrivateHandle->handle,
+ 185              		.loc 1 130 0
+ 186 0034 0868     		ldr	r0, [r1]
+ 187              	.LVL23:
+ 188 0036 6368     		ldr	r3, [r4, #4]
+ 189 0038 014A     		ldr	r2, .L7
+ 190 003a 2100     		movs	r1, r4
+ 191              	.LVL24:
+ 192 003c A847     		blx	r5
+ 193              	.LVL25:
+ 194              	.L5:
+ 131:../drivers/fsl_flexio_uart_dma.c ****                                             kStatus_FLEXIO_UART_RxIdle, uartPrivateHandle->handle->
+ 132:../drivers/fsl_flexio_uart_dma.c ****     }
+ 133:../drivers/fsl_flexio_uart_dma.c **** }
+ 195              		.loc 1 133 0
+ 196              		@ sp needed
+ 197 003e 70BD     		pop	{r4, r5, r6, pc}
+ 198              	.L8:
+ 199              		.align	2
+ 200              	.L7:
+ 201 0040 BF020000 		.word	703
+ 202              		.cfi_endproc
+ 203              	.LFE91:
+ 205              		.section	.text.FLEXIO_UART_TransferCreateHandleDMA,"ax",%progbits
+ 206              		.align	1
+ 207              		.global	FLEXIO_UART_TransferCreateHandleDMA
+ 208              		.syntax unified
+ 209              		.code	16
+ 210              		.thumb_func
+ 211              		.fpu softvfp
+ 213              	FLEXIO_UART_TransferCreateHandleDMA:
+ 214              	.LFB92:
+ 134:../drivers/fsl_flexio_uart_dma.c **** 
+ 135:../drivers/fsl_flexio_uart_dma.c **** status_t FLEXIO_UART_TransferCreateHandleDMA(FLEXIO_UART_Type *base,
+ 136:../drivers/fsl_flexio_uart_dma.c ****                                              flexio_uart_dma_handle_t *handle,
+ 137:../drivers/fsl_flexio_uart_dma.c ****                                              flexio_uart_dma_transfer_callback_t callback,
+ 138:../drivers/fsl_flexio_uart_dma.c ****                                              void *userData,
+ 139:../drivers/fsl_flexio_uart_dma.c ****                                              dma_handle_t *txDmaHandle,
+ 140:../drivers/fsl_flexio_uart_dma.c ****                                              dma_handle_t *rxDmaHandle)
+ 141:../drivers/fsl_flexio_uart_dma.c **** {
+ 215              		.loc 1 141 0
+ 216              		.cfi_startproc
+ 217              		@ args = 8, pretend = 0, frame = 24
+ 218              		@ frame_needed = 0, uses_anonymous_args = 0
+ 219              	.LVL26:
+ 220 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 221              		.cfi_def_cfa_offset 20
+ 222              		.cfi_offset 4, -20
+ 223              		.cfi_offset 5, -16
+ 224              		.cfi_offset 6, -12
+ 225              		.cfi_offset 7, -8
+ 226              		.cfi_offset 14, -4
+ 227 0002 D646     		mov	lr, r10
+ 228 0004 00B5     		push	{lr}
+ 229              		.cfi_def_cfa_offset 24
+ 230              		.cfi_offset 10, -24
+ 231 0006 86B0     		sub	sp, sp, #24
+ 232              		.cfi_def_cfa_offset 48
+ 233 0008 0600     		movs	r6, r0
+ 234 000a 0F00     		movs	r7, r1
+ 235 000c 0092     		str	r2, [sp]
+ 236 000e 0193     		str	r3, [sp, #4]
+ 237 0010 0C9B     		ldr	r3, [sp, #48]
+ 238              	.LVL27:
+ 239 0012 9A46     		mov	r10, r3
+ 240 0014 0D9D     		ldr	r5, [sp, #52]
+ 241              	.LVL28:
+ 142:../drivers/fsl_flexio_uart_dma.c ****     assert(handle);
+ 143:../drivers/fsl_flexio_uart_dma.c **** 
+ 144:../drivers/fsl_flexio_uart_dma.c ****     dma_transfer_config_t dmaXferConfig;
+ 145:../drivers/fsl_flexio_uart_dma.c ****     uint8_t index = 0;
+ 146:../drivers/fsl_flexio_uart_dma.c **** 
+ 147:../drivers/fsl_flexio_uart_dma.c ****     /* Find the an empty handle pointer to store the handle. */
+ 148:../drivers/fsl_flexio_uart_dma.c ****     for (index = 0; index < FLEXIO_UART_HANDLE_COUNT; index++)
+ 242              		.loc 1 148 0
+ 243 0016 0024     		movs	r4, #0
+ 244              	.LVL29:
+ 245              	.L10:
+ 246              		.loc 1 148 0 is_stmt 0 discriminator 1
+ 247 0018 012C     		cmp	r4, #1
+ 248 001a 0BD8     		bhi	.L12
+ 149:../drivers/fsl_flexio_uart_dma.c ****     {
+ 150:../drivers/fsl_flexio_uart_dma.c ****         if (s_dmaPrivateHandle[index].base == NULL)
+ 249              		.loc 1 150 0 is_stmt 1
+ 250 001c E300     		lsls	r3, r4, #3
+ 251 001e 3649     		ldr	r1, .L19
+ 252 0020 5B58     		ldr	r3, [r3, r1]
+ 253 0022 002B     		cmp	r3, #0
+ 254 0024 02D0     		beq	.L18
+ 148:../drivers/fsl_flexio_uart_dma.c ****     {
+ 255              		.loc 1 148 0 discriminator 2
+ 256 0026 0134     		adds	r4, r4, #1
+ 257              	.LVL30:
+ 258 0028 E4B2     		uxtb	r4, r4
+ 259              	.LVL31:
+ 260 002a F5E7     		b	.L10
+ 261              	.L18:
+ 151:../drivers/fsl_flexio_uart_dma.c ****         {
+ 152:../drivers/fsl_flexio_uart_dma.c ****             s_dmaPrivateHandle[index].base = base;
+ 262              		.loc 1 152 0
+ 263 002c E200     		lsls	r2, r4, #3
+ 264              	.LVL32:
+ 265 002e 5650     		str	r6, [r2, r1]
+ 153:../drivers/fsl_flexio_uart_dma.c ****             s_dmaPrivateHandle[index].handle = handle;
+ 266              		.loc 1 153 0
+ 267 0030 8A18     		adds	r2, r1, r2
+ 268 0032 5760     		str	r7, [r2, #4]
+ 269              	.L12:
+ 154:../drivers/fsl_flexio_uart_dma.c ****             break;
+ 155:../drivers/fsl_flexio_uart_dma.c ****         }
+ 156:../drivers/fsl_flexio_uart_dma.c ****     }
+ 157:../drivers/fsl_flexio_uart_dma.c **** 
+ 158:../drivers/fsl_flexio_uart_dma.c ****     if (index == FLEXIO_UART_HANDLE_COUNT)
+ 270              		.loc 1 158 0
+ 271 0034 022C     		cmp	r4, #2
+ 272 0036 5BD0     		beq	.L16
+ 159:../drivers/fsl_flexio_uart_dma.c ****     {
+ 160:../drivers/fsl_flexio_uart_dma.c ****         return kStatus_OutOfRange;
+ 161:../drivers/fsl_flexio_uart_dma.c ****     }
+ 162:../drivers/fsl_flexio_uart_dma.c **** 
+ 163:../drivers/fsl_flexio_uart_dma.c ****     memset(handle, 0, sizeof(*handle));
+ 273              		.loc 1 163 0
+ 274 0038 3800     		movs	r0, r7
+ 275              	.LVL33:
+ 276 003a 0830     		adds	r0, r0, #8
+ 277 003c 1422     		movs	r2, #20
+ 278 003e 0021     		movs	r1, #0
+ 279 0040 FFF7FEFF 		bl	memset
+ 280              	.LVL34:
+ 164:../drivers/fsl_flexio_uart_dma.c **** 
+ 165:../drivers/fsl_flexio_uart_dma.c ****     handle->rxState = kFLEXIO_UART_RxIdle;
+ 281              		.loc 1 165 0
+ 282 0044 0223     		movs	r3, #2
+ 283 0046 7B76     		strb	r3, [r7, #25]
+ 166:../drivers/fsl_flexio_uart_dma.c ****     handle->txState = kFLEXIO_UART_TxIdle;
+ 284              		.loc 1 166 0
+ 285 0048 0023     		movs	r3, #0
+ 286 004a 3B76     		strb	r3, [r7, #24]
+ 167:../drivers/fsl_flexio_uart_dma.c **** 
+ 168:../drivers/fsl_flexio_uart_dma.c ****     handle->callback = callback;
+ 287              		.loc 1 168 0
+ 288 004c 009B     		ldr	r3, [sp]
+ 289 004e 3B60     		str	r3, [r7]
+ 169:../drivers/fsl_flexio_uart_dma.c ****     handle->userData = userData;
+ 290              		.loc 1 169 0
+ 291 0050 019B     		ldr	r3, [sp, #4]
+ 292 0052 7B60     		str	r3, [r7, #4]
+ 170:../drivers/fsl_flexio_uart_dma.c **** 
+ 171:../drivers/fsl_flexio_uart_dma.c ****     handle->rxDmaHandle = rxDmaHandle;
+ 293              		.loc 1 171 0
+ 294 0054 7D61     		str	r5, [r7, #20]
+ 172:../drivers/fsl_flexio_uart_dma.c ****     handle->txDmaHandle = txDmaHandle;
+ 295              		.loc 1 172 0
+ 296 0056 5346     		mov	r3, r10
+ 297 0058 3B61     		str	r3, [r7, #16]
+ 173:../drivers/fsl_flexio_uart_dma.c **** 
+ 174:../drivers/fsl_flexio_uart_dma.c ****     /* Set DMA channel configuration. */
+ 175:../drivers/fsl_flexio_uart_dma.c ****     memset(&dmaXferConfig, 0, sizeof(dmaXferConfig));
+ 298              		.loc 1 175 0
+ 299 005a 1022     		movs	r2, #16
+ 300 005c 0021     		movs	r1, #0
+ 301 005e 02A8     		add	r0, sp, #8
+ 302 0060 FFF7FEFF 		bl	memset
+ 303              	.LVL35:
+ 176:../drivers/fsl_flexio_uart_dma.c ****     dmaXferConfig.srcSize = kDMA_Transfersize8bits;
+ 304              		.loc 1 176 0
+ 305 0064 0123     		movs	r3, #1
+ 306 0066 02AA     		add	r2, sp, #8
+ 307 0068 5372     		strb	r3, [r2, #9]
+ 177:../drivers/fsl_flexio_uart_dma.c ****     dmaXferConfig.destSize = kDMA_Transfersize8bits;
+ 308              		.loc 1 177 0
+ 309 006a D372     		strb	r3, [r2, #11]
+ 178:../drivers/fsl_flexio_uart_dma.c **** 
+ 179:../drivers/fsl_flexio_uart_dma.c ****     /* Configure TX. */
+ 180:../drivers/fsl_flexio_uart_dma.c ****     if (txDmaHandle)
+ 310              		.loc 1 180 0
+ 311 006c 5346     		mov	r3, r10
+ 312 006e 002B     		cmp	r3, #0
+ 313 0070 1BD0     		beq	.L15
+ 181:../drivers/fsl_flexio_uart_dma.c ****     {
+ 182:../drivers/fsl_flexio_uart_dma.c ****         DMA_SetCallback(txDmaHandle, FLEXIO_UART_TransferSendDMACallback, &s_dmaPrivateHandle[index
+ 314              		.loc 1 182 0
+ 315 0072 E300     		lsls	r3, r4, #3
+ 316 0074 204A     		ldr	r2, .L19
+ 317 0076 D218     		adds	r2, r2, r3
+ 318 0078 2049     		ldr	r1, .L19+4
+ 319 007a 5046     		mov	r0, r10
+ 320 007c FFF7FEFF 		bl	DMA_SetCallback
+ 321              	.LVL36:
+ 183:../drivers/fsl_flexio_uart_dma.c **** 
+ 184:../drivers/fsl_flexio_uart_dma.c ****         DMA_ResetChannel(txDmaHandle->base, txDmaHandle->channel);
+ 322              		.loc 1 184 0
+ 323 0080 5346     		mov	r3, r10
+ 324 0082 1979     		ldrb	r1, [r3, #4]
+ 325 0084 1868     		ldr	r0, [r3]
+ 326 0086 FFF7FEFF 		bl	DMA_ResetChannel
+ 327              	.LVL37:
+ 328              	.LBB78:
+ 329              	.LBB79:
+ 293:../drivers/fsl_flexio_uart.h **** }
+ 330              		.loc 2 293 0
+ 331 008a B279     		ldrb	r2, [r6, #6]
+ 332 008c 0021     		movs	r1, #0
+ 333 008e 3068     		ldr	r0, [r6]
+ 334 0090 FFF7FEFF 		bl	FLEXIO_GetShifterBufferAddress
+ 335              	.LVL38:
+ 336              	.LBE79:
+ 337              	.LBE78:
+ 185:../drivers/fsl_flexio_uart_dma.c **** 
+ 186:../drivers/fsl_flexio_uart_dma.c ****         dmaXferConfig.destAddr = FLEXIO_UART_GetTxDataRegisterAddress(base);
+ 338              		.loc 1 186 0
+ 339 0094 0390     		str	r0, [sp, #12]
+ 187:../drivers/fsl_flexio_uart_dma.c ****         dmaXferConfig.enableSrcIncrement = true;
+ 340              		.loc 1 187 0
+ 341 0096 0123     		movs	r3, #1
+ 342 0098 02AA     		add	r2, sp, #8
+ 343 009a 1372     		strb	r3, [r2, #8]
+ 188:../drivers/fsl_flexio_uart_dma.c ****         dmaXferConfig.enableDestIncrement = false;
+ 344              		.loc 1 188 0
+ 345 009c 0023     		movs	r3, #0
+ 346 009e 9372     		strb	r3, [r2, #10]
+ 189:../drivers/fsl_flexio_uart_dma.c ****         DMA_SetTransferConfig(txDmaHandle->base, txDmaHandle->channel, &dmaXferConfig);
+ 347              		.loc 1 189 0
+ 348 00a0 5346     		mov	r3, r10
+ 349 00a2 1979     		ldrb	r1, [r3, #4]
+ 350 00a4 1868     		ldr	r0, [r3]
+ 351 00a6 FFF7FEFF 		bl	DMA_SetTransferConfig
+ 352              	.LVL39:
+ 353              	.L15:
+ 190:../drivers/fsl_flexio_uart_dma.c ****     }
+ 191:../drivers/fsl_flexio_uart_dma.c **** 
+ 192:../drivers/fsl_flexio_uart_dma.c ****     /* Configure RX. */
+ 193:../drivers/fsl_flexio_uart_dma.c ****     if (rxDmaHandle)
+ 354              		.loc 1 193 0
+ 355 00aa 002D     		cmp	r5, #0
+ 356 00ac 22D0     		beq	.L17
+ 194:../drivers/fsl_flexio_uart_dma.c ****     {
+ 195:../drivers/fsl_flexio_uart_dma.c ****         DMA_SetCallback(rxDmaHandle, FLEXIO_UART_TransferReceiveDMACallback, &s_dmaPrivateHandle[in
+ 357              		.loc 1 195 0
+ 358 00ae E400     		lsls	r4, r4, #3
+ 359              	.LVL40:
+ 360 00b0 114A     		ldr	r2, .L19
+ 361 00b2 1219     		adds	r2, r2, r4
+ 362 00b4 1249     		ldr	r1, .L19+8
+ 363 00b6 2800     		movs	r0, r5
+ 364 00b8 FFF7FEFF 		bl	DMA_SetCallback
+ 365              	.LVL41:
+ 196:../drivers/fsl_flexio_uart_dma.c **** 
+ 197:../drivers/fsl_flexio_uart_dma.c ****         DMA_ResetChannel(rxDmaHandle->base, rxDmaHandle->channel);
+ 366              		.loc 1 197 0
+ 367 00bc 2979     		ldrb	r1, [r5, #4]
+ 368 00be 2868     		ldr	r0, [r5]
+ 369 00c0 FFF7FEFF 		bl	DMA_ResetChannel
+ 370              	.LVL42:
+ 198:../drivers/fsl_flexio_uart_dma.c **** 
+ 199:../drivers/fsl_flexio_uart_dma.c ****         dmaXferConfig.destAddr = 0U;
+ 371              		.loc 1 199 0
+ 372 00c4 0024     		movs	r4, #0
+ 373 00c6 0394     		str	r4, [sp, #12]
+ 374              	.LVL43:
+ 375              	.LBB80:
+ 376              	.LBB81:
+ 306:../drivers/fsl_flexio_uart.h **** }
+ 377              		.loc 2 306 0
+ 378 00c8 F279     		ldrb	r2, [r6, #7]
+ 379 00ca 3068     		ldr	r0, [r6]
+ 380 00cc 0221     		movs	r1, #2
+ 381 00ce FFF7FEFF 		bl	FLEXIO_GetShifterBufferAddress
+ 382              	.LVL44:
+ 383              	.LBE81:
+ 384              	.LBE80:
+ 200:../drivers/fsl_flexio_uart_dma.c ****         dmaXferConfig.srcAddr = FLEXIO_UART_GetRxDataRegisterAddress(base);
+ 385              		.loc 1 200 0
+ 386 00d2 0290     		str	r0, [sp, #8]
+ 201:../drivers/fsl_flexio_uart_dma.c ****         dmaXferConfig.enableSrcIncrement = false;
+ 387              		.loc 1 201 0
+ 388 00d4 02AB     		add	r3, sp, #8
+ 389 00d6 1C72     		strb	r4, [r3, #8]
+ 202:../drivers/fsl_flexio_uart_dma.c ****         dmaXferConfig.enableDestIncrement = true;
+ 390              		.loc 1 202 0
+ 391 00d8 0123     		movs	r3, #1
+ 392 00da 02AA     		add	r2, sp, #8
+ 393 00dc 9372     		strb	r3, [r2, #10]
+ 203:../drivers/fsl_flexio_uart_dma.c ****         DMA_SetTransferConfig(rxDmaHandle->base, rxDmaHandle->channel, &dmaXferConfig);
+ 394              		.loc 1 203 0
+ 395 00de 2979     		ldrb	r1, [r5, #4]
+ 396 00e0 2868     		ldr	r0, [r5]
+ 397 00e2 FFF7FEFF 		bl	DMA_SetTransferConfig
+ 398              	.LVL45:
+ 204:../drivers/fsl_flexio_uart_dma.c ****     }
+ 205:../drivers/fsl_flexio_uart_dma.c **** 
+ 206:../drivers/fsl_flexio_uart_dma.c ****     return kStatus_Success;
+ 399              		.loc 1 206 0
+ 400 00e6 0020     		movs	r0, #0
+ 401              	.L9:
+ 207:../drivers/fsl_flexio_uart_dma.c **** }
+ 402              		.loc 1 207 0
+ 403 00e8 06B0     		add	sp, sp, #24
+ 404              	.LVL46:
+ 405              		@ sp needed
+ 406              	.LVL47:
+ 407              	.LVL48:
+ 408 00ea 04BC     		pop	{r2}
+ 409 00ec 9246     		mov	r10, r2
+ 410 00ee F0BD     		pop	{r4, r5, r6, r7, pc}
+ 411              	.LVL49:
+ 412              	.L16:
+ 160:../drivers/fsl_flexio_uart_dma.c ****     }
+ 413              		.loc 1 160 0
+ 414 00f0 0320     		movs	r0, #3
+ 415              	.LVL50:
+ 416 00f2 F9E7     		b	.L9
+ 417              	.L17:
+ 206:../drivers/fsl_flexio_uart_dma.c **** }
+ 418              		.loc 1 206 0
+ 419 00f4 0020     		movs	r0, #0
+ 420 00f6 F7E7     		b	.L9
+ 421              	.L20:
+ 422              		.align	2
+ 423              	.L19:
+ 424 00f8 00000000 		.word	.LANCHOR0
+ 425 00fc 00000000 		.word	FLEXIO_UART_TransferSendDMACallback
+ 426 0100 00000000 		.word	FLEXIO_UART_TransferReceiveDMACallback
+ 427              		.cfi_endproc
+ 428              	.LFE92:
+ 430              		.section	.text.FLEXIO_UART_TransferSendDMA,"ax",%progbits
+ 431              		.align	1
+ 432              		.global	FLEXIO_UART_TransferSendDMA
+ 433              		.syntax unified
+ 434              		.code	16
+ 435              		.thumb_func
+ 436              		.fpu softvfp
+ 438              	FLEXIO_UART_TransferSendDMA:
+ 439              	.LFB93:
+ 208:../drivers/fsl_flexio_uart_dma.c **** 
+ 209:../drivers/fsl_flexio_uart_dma.c **** status_t FLEXIO_UART_TransferSendDMA(FLEXIO_UART_Type *base,
+ 210:../drivers/fsl_flexio_uart_dma.c ****                                      flexio_uart_dma_handle_t *handle,
+ 211:../drivers/fsl_flexio_uart_dma.c ****                                      flexio_uart_transfer_t *xfer)
+ 212:../drivers/fsl_flexio_uart_dma.c **** {
+ 440              		.loc 1 212 0
+ 441              		.cfi_startproc
+ 442              		@ args = 0, pretend = 0, frame = 0
+ 443              		@ frame_needed = 0, uses_anonymous_args = 0
+ 444              	.LVL51:
+ 445 0000 70B5     		push	{r4, r5, r6, lr}
+ 446              		.cfi_def_cfa_offset 16
+ 447              		.cfi_offset 4, -16
+ 448              		.cfi_offset 5, -12
+ 449              		.cfi_offset 6, -8
+ 450              		.cfi_offset 14, -4
+ 213:../drivers/fsl_flexio_uart_dma.c ****     assert(handle->txDmaHandle);
+ 214:../drivers/fsl_flexio_uart_dma.c **** 
+ 215:../drivers/fsl_flexio_uart_dma.c ****     status_t status;
+ 216:../drivers/fsl_flexio_uart_dma.c **** 
+ 217:../drivers/fsl_flexio_uart_dma.c ****     /* Return error if xfer invalid. */
+ 218:../drivers/fsl_flexio_uart_dma.c ****     if ((0U == xfer->dataSize) || (NULL == xfer->data))
+ 451              		.loc 1 218 0
+ 452 0002 5368     		ldr	r3, [r2, #4]
+ 453 0004 002B     		cmp	r3, #0
+ 454 0006 3BD0     		beq	.L23
+ 455              		.loc 1 218 0 is_stmt 0 discriminator 1
+ 456 0008 1368     		ldr	r3, [r2]
+ 457 000a 002B     		cmp	r3, #0
+ 458 000c 3AD0     		beq	.L24
+ 219:../drivers/fsl_flexio_uart_dma.c ****     {
+ 220:../drivers/fsl_flexio_uart_dma.c ****         return kStatus_InvalidArgument;
+ 221:../drivers/fsl_flexio_uart_dma.c ****     }
+ 222:../drivers/fsl_flexio_uart_dma.c **** 
+ 223:../drivers/fsl_flexio_uart_dma.c ****     /* If previous TX not finished. */
+ 224:../drivers/fsl_flexio_uart_dma.c ****     if (kFLEXIO_UART_TxBusy == handle->txState)
+ 459              		.loc 1 224 0 is_stmt 1
+ 460 000e 0B7E     		ldrb	r3, [r1, #24]
+ 461 0010 012B     		cmp	r3, #1
+ 462 0012 39D0     		beq	.L25
+ 225:../drivers/fsl_flexio_uart_dma.c ****     {
+ 226:../drivers/fsl_flexio_uart_dma.c ****         status = kStatus_FLEXIO_UART_TxBusy;
+ 227:../drivers/fsl_flexio_uart_dma.c ****     }
+ 228:../drivers/fsl_flexio_uart_dma.c ****     else
+ 229:../drivers/fsl_flexio_uart_dma.c ****     {
+ 230:../drivers/fsl_flexio_uart_dma.c ****         handle->txState = kFLEXIO_UART_TxBusy;
+ 463              		.loc 1 230 0
+ 464 0014 0123     		movs	r3, #1
+ 465 0016 0B76     		strb	r3, [r1, #24]
+ 231:../drivers/fsl_flexio_uart_dma.c ****         handle->txDataSizeAll = xfer->dataSize;
+ 466              		.loc 1 231 0
+ 467 0018 5468     		ldr	r4, [r2, #4]
+ 468 001a 8C60     		str	r4, [r1, #8]
+ 232:../drivers/fsl_flexio_uart_dma.c **** 
+ 233:../drivers/fsl_flexio_uart_dma.c ****         /* Set transfer data address and data size. */
+ 234:../drivers/fsl_flexio_uart_dma.c ****         DMA_SetSourceAddress(handle->txDmaHandle->base, handle->txDmaHandle->channel, (uint32_t)xfe
+ 469              		.loc 1 234 0
+ 470 001c 0C69     		ldr	r4, [r1, #16]
+ 471 001e 2568     		ldr	r5, [r4]
+ 472 0020 2479     		ldrb	r4, [r4, #4]
+ 473              	.LVL52:
+ 474              	.LBB82:
+ 475              	.LBB83:
+ 263:../drivers/fsl_dma.h **** }
+ 476              		.loc 4 263 0
+ 477 0022 1034     		adds	r4, r4, #16
+ 478              	.LVL53:
+ 479 0024 2401     		lsls	r4, r4, #4
+ 480              	.LVL54:
+ 481 0026 1668     		ldr	r6, [r2]
+ 482 0028 6651     		str	r6, [r4, r5]
+ 483              	.LVL55:
+ 484              	.LBE83:
+ 485              	.LBE82:
+ 235:../drivers/fsl_flexio_uart_dma.c ****         DMA_SetTransferSize(handle->txDmaHandle->base, handle->txDmaHandle->channel, xfer->dataSize
+ 486              		.loc 1 235 0
+ 487 002a 0D69     		ldr	r5, [r1, #16]
+ 488 002c 2C68     		ldr	r4, [r5]
+ 489 002e 2E79     		ldrb	r6, [r5, #4]
+ 490 0030 5568     		ldr	r5, [r2, #4]
+ 491              	.LVL56:
+ 492              	.LBB84:
+ 493              	.LBB85:
+ 291:../drivers/fsl_dma.h **** }
+ 494              		.loc 4 291 0
+ 495 0032 2D02     		lsls	r5, r5, #8
+ 496              	.LVL57:
+ 497 0034 2D0A     		lsrs	r5, r5, #8
+ 498 0036 3201     		lsls	r2, r6, #4
+ 499              	.LVL58:
+ 500 0038 A218     		adds	r2, r4, r2
+ 501 003a 0932     		adds	r2, r2, #9
+ 502 003c FF32     		adds	r2, r2, #255
+ 503 003e 1560     		str	r5, [r2]
+ 504              	.LVL59:
+ 505              	.LBE85:
+ 506              	.LBE84:
+ 507              	.LBB86:
+ 508              	.LBB87:
+ 319:../drivers/fsl_flexio_uart.h **** }
+ 509              		.loc 2 319 0
+ 510 0040 0268     		ldr	r2, [r0]
+ 511 0042 8079     		ldrb	r0, [r0, #6]
+ 512              	.LVL60:
+ 513 0044 8340     		lsls	r3, r3, r0
+ 514              	.LVL61:
+ 515              	.LBB88:
+ 516              	.LBB89:
+ 665:../drivers/fsl_flexio.h ****     }
+ 517              		.loc 3 665 0
+ 518 0046 106B     		ldr	r0, [r2, #48]
+ 519 0048 0343     		orrs	r3, r0
+ 520              	.LVL62:
+ 521 004a 1363     		str	r3, [r2, #48]
+ 522              	.LVL63:
+ 523              	.LBE89:
+ 524              	.LBE88:
+ 525              	.LBE87:
+ 526              	.LBE86:
+ 236:../drivers/fsl_flexio_uart_dma.c **** 
+ 237:../drivers/fsl_flexio_uart_dma.c ****         /* Enable FLEXIO UART TX DMA. */
+ 238:../drivers/fsl_flexio_uart_dma.c ****         FLEXIO_UART_EnableTxDMA(base, true);
+ 239:../drivers/fsl_flexio_uart_dma.c **** 
+ 240:../drivers/fsl_flexio_uart_dma.c ****         /* Enable DMA transfer complete interrupt and start transfer. */
+ 241:../drivers/fsl_flexio_uart_dma.c ****         DMA_EnableInterrupts(handle->txDmaHandle->base, handle->txDmaHandle->channel);
+ 527              		.loc 1 241 0
+ 528 004c 0A69     		ldr	r2, [r1, #16]
+ 529 004e 1368     		ldr	r3, [r2]
+ 530 0050 1279     		ldrb	r2, [r2, #4]
+ 531              	.LVL64:
+ 532              	.LBB90:
+ 533              	.LBB91:
+ 369:../drivers/fsl_dma.h **** }
+ 534              		.loc 4 369 0
+ 535 0052 1201     		lsls	r2, r2, #4
+ 536              	.LVL65:
+ 537 0054 9B18     		adds	r3, r3, r2
+ 538              	.LVL66:
+ 539 0056 0D33     		adds	r3, r3, #13
+ 540 0058 FF33     		adds	r3, r3, #255
+ 541 005a 1868     		ldr	r0, [r3]
+ 542 005c 8022     		movs	r2, #128
+ 543 005e 1206     		lsls	r2, r2, #24
+ 544 0060 0243     		orrs	r2, r0
+ 545 0062 1A60     		str	r2, [r3]
+ 546              	.LVL67:
+ 547              	.LBE91:
+ 548              	.LBE90:
+ 242:../drivers/fsl_flexio_uart_dma.c ****         DMA_EnableChannelRequest(handle->txDmaHandle->base, handle->txDmaHandle->channel);
+ 549              		.loc 1 242 0
+ 550 0064 0A69     		ldr	r2, [r1, #16]
+ 551 0066 1368     		ldr	r3, [r2]
+ 552 0068 1279     		ldrb	r2, [r2, #4]
+ 553              	.LVL68:
+ 554              	.LBB92:
+ 555              	.LBB93:
+ 383:../drivers/fsl_dma.h **** }
+ 384:../drivers/fsl_dma.h **** 
+ 385:../drivers/fsl_dma.h **** /* @} */
+ 386:../drivers/fsl_dma.h **** /*!
+ 387:../drivers/fsl_dma.h ****  * @name DMA Channel Transfer Operation
+ 388:../drivers/fsl_dma.h ****  * @{
+ 389:../drivers/fsl_dma.h ****  */
+ 390:../drivers/fsl_dma.h **** 
+ 391:../drivers/fsl_dma.h **** /*!
+ 392:../drivers/fsl_dma.h ****  * @brief Enables the DMA hardware channel request.
+ 393:../drivers/fsl_dma.h ****  *
+ 394:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 395:../drivers/fsl_dma.h ****  * @param channel The DMA channel number.
+ 396:../drivers/fsl_dma.h ****  */
+ 397:../drivers/fsl_dma.h **** static inline void DMA_EnableChannelRequest(DMA_Type *base, uint32_t channel)
+ 398:../drivers/fsl_dma.h **** {
+ 399:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 400:../drivers/fsl_dma.h **** 
+ 401:../drivers/fsl_dma.h ****     base->DMA[channel].DCR |= DMA_DCR_ERQ_MASK;
+ 556              		.loc 4 401 0
+ 557 006a 1201     		lsls	r2, r2, #4
+ 558              	.LVL69:
+ 559 006c 9B18     		adds	r3, r3, r2
+ 560              	.LVL70:
+ 561 006e 0D33     		adds	r3, r3, #13
+ 562 0070 FF33     		adds	r3, r3, #255
+ 563 0072 1968     		ldr	r1, [r3]
+ 564              	.LVL71:
+ 565 0074 8022     		movs	r2, #128
+ 566 0076 D205     		lsls	r2, r2, #23
+ 567 0078 0A43     		orrs	r2, r1
+ 568 007a 1A60     		str	r2, [r3]
+ 569              	.LVL72:
+ 570              	.LBE93:
+ 571              	.LBE92:
+ 243:../drivers/fsl_flexio_uart_dma.c **** 
+ 244:../drivers/fsl_flexio_uart_dma.c ****         status = kStatus_Success;
+ 572              		.loc 1 244 0
+ 573 007c 0020     		movs	r0, #0
+ 574              	.LVL73:
+ 575              	.L21:
+ 245:../drivers/fsl_flexio_uart_dma.c ****     }
+ 246:../drivers/fsl_flexio_uart_dma.c **** 
+ 247:../drivers/fsl_flexio_uart_dma.c ****     return status;
+ 248:../drivers/fsl_flexio_uart_dma.c **** }
+ 576              		.loc 1 248 0
+ 577              		@ sp needed
+ 578 007e 70BD     		pop	{r4, r5, r6, pc}
+ 579              	.LVL74:
+ 580              	.L23:
+ 220:../drivers/fsl_flexio_uart_dma.c ****     }
+ 581              		.loc 1 220 0
+ 582 0080 0420     		movs	r0, #4
+ 583              	.LVL75:
+ 584 0082 FCE7     		b	.L21
+ 585              	.LVL76:
+ 586              	.L24:
+ 587 0084 0420     		movs	r0, #4
+ 588              	.LVL77:
+ 589 0086 FAE7     		b	.L21
+ 590              	.LVL78:
+ 591              	.L25:
+ 226:../drivers/fsl_flexio_uart_dma.c ****     }
+ 592              		.loc 1 226 0
+ 593 0088 AF20     		movs	r0, #175
+ 594              	.LVL79:
+ 595 008a 8000     		lsls	r0, r0, #2
+ 596 008c F7E7     		b	.L21
+ 597              		.cfi_endproc
+ 598              	.LFE93:
+ 600              		.section	.text.FLEXIO_UART_TransferReceiveDMA,"ax",%progbits
+ 601              		.align	1
+ 602              		.global	FLEXIO_UART_TransferReceiveDMA
+ 603              		.syntax unified
+ 604              		.code	16
+ 605              		.thumb_func
+ 606              		.fpu softvfp
+ 608              	FLEXIO_UART_TransferReceiveDMA:
+ 609              	.LFB94:
+ 249:../drivers/fsl_flexio_uart_dma.c **** 
+ 250:../drivers/fsl_flexio_uart_dma.c **** status_t FLEXIO_UART_TransferReceiveDMA(FLEXIO_UART_Type *base,
+ 251:../drivers/fsl_flexio_uart_dma.c ****                                         flexio_uart_dma_handle_t *handle,
+ 252:../drivers/fsl_flexio_uart_dma.c ****                                         flexio_uart_transfer_t *xfer)
+ 253:../drivers/fsl_flexio_uart_dma.c **** {
+ 610              		.loc 1 253 0
+ 611              		.cfi_startproc
+ 612              		@ args = 0, pretend = 0, frame = 0
+ 613              		@ frame_needed = 0, uses_anonymous_args = 0
+ 614              	.LVL80:
+ 615 0000 30B5     		push	{r4, r5, lr}
+ 616              		.cfi_def_cfa_offset 12
+ 617              		.cfi_offset 4, -12
+ 618              		.cfi_offset 5, -8
+ 619              		.cfi_offset 14, -4
+ 254:../drivers/fsl_flexio_uart_dma.c ****     assert(handle->rxDmaHandle);
+ 255:../drivers/fsl_flexio_uart_dma.c **** 
+ 256:../drivers/fsl_flexio_uart_dma.c ****     status_t status;
+ 257:../drivers/fsl_flexio_uart_dma.c **** 
+ 258:../drivers/fsl_flexio_uart_dma.c ****     /* Return error if xfer invalid. */
+ 259:../drivers/fsl_flexio_uart_dma.c ****     if ((0U == xfer->dataSize) || (NULL == xfer->data))
+ 620              		.loc 1 259 0
+ 621 0002 5368     		ldr	r3, [r2, #4]
+ 622 0004 002B     		cmp	r3, #0
+ 623 0006 3DD0     		beq	.L28
+ 624              		.loc 1 259 0 is_stmt 0 discriminator 1
+ 625 0008 1368     		ldr	r3, [r2]
+ 626 000a 002B     		cmp	r3, #0
+ 627 000c 3CD0     		beq	.L29
+ 260:../drivers/fsl_flexio_uart_dma.c ****     {
+ 261:../drivers/fsl_flexio_uart_dma.c ****         return kStatus_InvalidArgument;
+ 262:../drivers/fsl_flexio_uart_dma.c ****     }
+ 263:../drivers/fsl_flexio_uart_dma.c **** 
+ 264:../drivers/fsl_flexio_uart_dma.c ****     /* If previous RX not finished. */
+ 265:../drivers/fsl_flexio_uart_dma.c ****     if (kFLEXIO_UART_RxBusy == handle->rxState)
+ 628              		.loc 1 265 0 is_stmt 1
+ 629 000e 4B7E     		ldrb	r3, [r1, #25]
+ 630 0010 032B     		cmp	r3, #3
+ 631 0012 3BD0     		beq	.L30
+ 266:../drivers/fsl_flexio_uart_dma.c ****     {
+ 267:../drivers/fsl_flexio_uart_dma.c ****         status = kStatus_FLEXIO_UART_RxBusy;
+ 268:../drivers/fsl_flexio_uart_dma.c ****     }
+ 269:../drivers/fsl_flexio_uart_dma.c ****     else
+ 270:../drivers/fsl_flexio_uart_dma.c ****     {
+ 271:../drivers/fsl_flexio_uart_dma.c ****         handle->rxState = kFLEXIO_UART_RxBusy;
+ 632              		.loc 1 271 0
+ 633 0014 0323     		movs	r3, #3
+ 634 0016 4B76     		strb	r3, [r1, #25]
+ 272:../drivers/fsl_flexio_uart_dma.c ****         handle->rxDataSizeAll = xfer->dataSize;
+ 635              		.loc 1 272 0
+ 636 0018 5368     		ldr	r3, [r2, #4]
+ 637 001a CB60     		str	r3, [r1, #12]
+ 273:../drivers/fsl_flexio_uart_dma.c **** 
+ 274:../drivers/fsl_flexio_uart_dma.c ****         /* Set transfer data address and data size. */
+ 275:../drivers/fsl_flexio_uart_dma.c ****         DMA_SetDestinationAddress(handle->rxDmaHandle->base, handle->rxDmaHandle->channel, (uint32_
+ 638              		.loc 1 275 0
+ 639 001c 4B69     		ldr	r3, [r1, #20]
+ 640 001e 1D68     		ldr	r5, [r3]
+ 641 0020 1B79     		ldrb	r3, [r3, #4]
+ 642              	.LVL81:
+ 643              	.LBB94:
+ 644              	.LBB95:
+ 277:../drivers/fsl_dma.h **** }
+ 645              		.loc 4 277 0
+ 646 0022 1033     		adds	r3, r3, #16
+ 647              	.LVL82:
+ 648 0024 1B01     		lsls	r3, r3, #4
+ 649              	.LVL83:
+ 650 0026 EB18     		adds	r3, r5, r3
+ 651 0028 1468     		ldr	r4, [r2]
+ 652 002a 5C60     		str	r4, [r3, #4]
+ 653              	.LVL84:
+ 654              	.LBE95:
+ 655              	.LBE94:
+ 276:../drivers/fsl_flexio_uart_dma.c ****         DMA_SetTransferSize(handle->rxDmaHandle->base, handle->rxDmaHandle->channel, xfer->dataSize
+ 656              		.loc 1 276 0
+ 657 002c 4C69     		ldr	r4, [r1, #20]
+ 658 002e 2368     		ldr	r3, [r4]
+ 659 0030 2479     		ldrb	r4, [r4, #4]
+ 660 0032 5268     		ldr	r2, [r2, #4]
+ 661              	.LVL85:
+ 662              	.LBB96:
+ 663              	.LBB97:
+ 291:../drivers/fsl_dma.h **** }
+ 664              		.loc 4 291 0
+ 665 0034 1202     		lsls	r2, r2, #8
+ 666              	.LVL86:
+ 667 0036 120A     		lsrs	r2, r2, #8
+ 668 0038 2401     		lsls	r4, r4, #4
+ 669              	.LVL87:
+ 670 003a 1B19     		adds	r3, r3, r4
+ 671              	.LVL88:
+ 672 003c 0933     		adds	r3, r3, #9
+ 673 003e FF33     		adds	r3, r3, #255
+ 674 0040 1A60     		str	r2, [r3]
+ 675              	.LVL89:
+ 676              	.LBE97:
+ 677              	.LBE96:
+ 678              	.LBB98:
+ 679              	.LBB99:
+ 680              		.loc 2 332 0
+ 681 0042 0268     		ldr	r2, [r0]
+ 682 0044 C079     		ldrb	r0, [r0, #7]
+ 683              	.LVL90:
+ 684 0046 0123     		movs	r3, #1
+ 685 0048 8340     		lsls	r3, r3, r0
+ 686              	.LVL91:
+ 687              	.LBB100:
+ 688              	.LBB101:
+ 665:../drivers/fsl_flexio.h ****     }
+ 689              		.loc 3 665 0
+ 690 004a 106B     		ldr	r0, [r2, #48]
+ 691 004c 0343     		orrs	r3, r0
+ 692              	.LVL92:
+ 693 004e 1363     		str	r3, [r2, #48]
+ 694              	.LVL93:
+ 695              	.LBE101:
+ 696              	.LBE100:
+ 697              	.LBE99:
+ 698              	.LBE98:
+ 277:../drivers/fsl_flexio_uart_dma.c **** 
+ 278:../drivers/fsl_flexio_uart_dma.c ****         /* Enable FLEXIO UART RX DMA. */
+ 279:../drivers/fsl_flexio_uart_dma.c ****         FLEXIO_UART_EnableRxDMA(base, true);
+ 280:../drivers/fsl_flexio_uart_dma.c **** 
+ 281:../drivers/fsl_flexio_uart_dma.c ****         /* Enable DMA transfer complete interrupt and start transfer. */
+ 282:../drivers/fsl_flexio_uart_dma.c ****         DMA_EnableInterrupts(handle->rxDmaHandle->base, handle->rxDmaHandle->channel);
+ 699              		.loc 1 282 0
+ 700 0050 4A69     		ldr	r2, [r1, #20]
+ 701 0052 1368     		ldr	r3, [r2]
+ 702 0054 1279     		ldrb	r2, [r2, #4]
+ 703              	.LVL94:
+ 704              	.LBB102:
+ 705              	.LBB103:
+ 369:../drivers/fsl_dma.h **** }
+ 706              		.loc 4 369 0
+ 707 0056 1201     		lsls	r2, r2, #4
+ 708              	.LVL95:
+ 709 0058 9B18     		adds	r3, r3, r2
+ 710              	.LVL96:
+ 711 005a 0D33     		adds	r3, r3, #13
+ 712 005c FF33     		adds	r3, r3, #255
+ 713 005e 1868     		ldr	r0, [r3]
+ 714 0060 8022     		movs	r2, #128
+ 715 0062 1206     		lsls	r2, r2, #24
+ 716 0064 0243     		orrs	r2, r0
+ 717 0066 1A60     		str	r2, [r3]
+ 718              	.LVL97:
+ 719              	.LBE103:
+ 720              	.LBE102:
+ 283:../drivers/fsl_flexio_uart_dma.c ****         DMA_EnableChannelRequest(handle->rxDmaHandle->base, handle->rxDmaHandle->channel);
+ 721              		.loc 1 283 0
+ 722 0068 4A69     		ldr	r2, [r1, #20]
+ 723 006a 1368     		ldr	r3, [r2]
+ 724 006c 1279     		ldrb	r2, [r2, #4]
+ 725              	.LVL98:
+ 726              	.LBB104:
+ 727              	.LBB105:
+ 728              		.loc 4 401 0
+ 729 006e 1201     		lsls	r2, r2, #4
+ 730              	.LVL99:
+ 731 0070 9B18     		adds	r3, r3, r2
+ 732              	.LVL100:
+ 733 0072 0D33     		adds	r3, r3, #13
+ 734 0074 FF33     		adds	r3, r3, #255
+ 735 0076 1968     		ldr	r1, [r3]
+ 736              	.LVL101:
+ 737 0078 8022     		movs	r2, #128
+ 738 007a D205     		lsls	r2, r2, #23
+ 739 007c 0A43     		orrs	r2, r1
+ 740 007e 1A60     		str	r2, [r3]
+ 741              	.LVL102:
+ 742              	.LBE105:
+ 743              	.LBE104:
+ 284:../drivers/fsl_flexio_uart_dma.c **** 
+ 285:../drivers/fsl_flexio_uart_dma.c ****         status = kStatus_Success;
+ 744              		.loc 1 285 0
+ 745 0080 0020     		movs	r0, #0
+ 746              	.LVL103:
+ 747              	.L26:
+ 286:../drivers/fsl_flexio_uart_dma.c ****     }
+ 287:../drivers/fsl_flexio_uart_dma.c **** 
+ 288:../drivers/fsl_flexio_uart_dma.c ****     return status;
+ 289:../drivers/fsl_flexio_uart_dma.c **** }
+ 748              		.loc 1 289 0
+ 749              		@ sp needed
+ 750 0082 30BD     		pop	{r4, r5, pc}
+ 751              	.LVL104:
+ 752              	.L28:
+ 261:../drivers/fsl_flexio_uart_dma.c ****     }
+ 753              		.loc 1 261 0
+ 754 0084 0420     		movs	r0, #4
+ 755              	.LVL105:
+ 756 0086 FCE7     		b	.L26
+ 757              	.LVL106:
+ 758              	.L29:
+ 759 0088 0420     		movs	r0, #4
+ 760              	.LVL107:
+ 761 008a FAE7     		b	.L26
+ 762              	.LVL108:
+ 763              	.L30:
+ 267:../drivers/fsl_flexio_uart_dma.c ****     }
+ 764              		.loc 1 267 0
+ 765 008c 0048     		ldr	r0, .L31
+ 766              	.LVL109:
+ 767 008e F8E7     		b	.L26
+ 768              	.L32:
+ 769              		.align	2
+ 770              	.L31:
+ 771 0090 BD020000 		.word	701
+ 772              		.cfi_endproc
+ 773              	.LFE94:
+ 775              		.section	.text.FLEXIO_UART_TransferAbortSendDMA,"ax",%progbits
+ 776              		.align	1
+ 777              		.global	FLEXIO_UART_TransferAbortSendDMA
+ 778              		.syntax unified
+ 779              		.code	16
+ 780              		.thumb_func
+ 781              		.fpu softvfp
+ 783              	FLEXIO_UART_TransferAbortSendDMA:
+ 784              	.LFB95:
+ 290:../drivers/fsl_flexio_uart_dma.c **** 
+ 291:../drivers/fsl_flexio_uart_dma.c **** void FLEXIO_UART_TransferAbortSendDMA(FLEXIO_UART_Type *base, flexio_uart_dma_handle_t *handle)
+ 292:../drivers/fsl_flexio_uart_dma.c **** {
+ 785              		.loc 1 292 0
+ 786              		.cfi_startproc
+ 787              		@ args = 0, pretend = 0, frame = 0
+ 788              		@ frame_needed = 0, uses_anonymous_args = 0
+ 789              	.LVL110:
+ 790 0000 10B5     		push	{r4, lr}
+ 791              		.cfi_def_cfa_offset 8
+ 792              		.cfi_offset 4, -8
+ 793              		.cfi_offset 14, -4
+ 794              	.LVL111:
+ 795              	.LBB106:
+ 796              	.LBB107:
+ 319:../drivers/fsl_flexio_uart.h **** }
+ 797              		.loc 2 319 0
+ 798 0002 0468     		ldr	r4, [r0]
+ 799 0004 8379     		ldrb	r3, [r0, #6]
+ 800 0006 0122     		movs	r2, #1
+ 801 0008 9A40     		lsls	r2, r2, r3
+ 802              	.LVL112:
+ 803              	.LBB108:
+ 804              	.LBB109:
+ 805              		.loc 3 669 0
+ 806 000a 236B     		ldr	r3, [r4, #48]
+ 807 000c 9343     		bics	r3, r2
+ 808 000e 2363     		str	r3, [r4, #48]
+ 809              	.LVL113:
+ 810              	.LBE109:
+ 811              	.LBE108:
+ 812              	.LBE107:
+ 813              	.LBE106:
+ 293:../drivers/fsl_flexio_uart_dma.c ****     assert(handle->txDmaHandle);
+ 294:../drivers/fsl_flexio_uart_dma.c **** 
+ 295:../drivers/fsl_flexio_uart_dma.c ****     /* Disable FLEXIO UART TX DMA. */
+ 296:../drivers/fsl_flexio_uart_dma.c ****     FLEXIO_UART_EnableTxDMA(base, false);
+ 297:../drivers/fsl_flexio_uart_dma.c **** 
+ 298:../drivers/fsl_flexio_uart_dma.c ****     /* Stop transfer. */
+ 299:../drivers/fsl_flexio_uart_dma.c ****     DMA_StopTransfer(handle->txDmaHandle);
+ 814              		.loc 1 299 0
+ 815 0010 0A69     		ldr	r2, [r1, #16]
+ 816              	.LVL114:
+ 817              	.LBB110:
+ 818              	.LBB111:
+ 402:../drivers/fsl_dma.h **** }
+ 403:../drivers/fsl_dma.h **** 
+ 404:../drivers/fsl_dma.h **** /*!
+ 405:../drivers/fsl_dma.h ****  * @brief Disables the DMA hardware channel request.
+ 406:../drivers/fsl_dma.h ****  *
+ 407:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 408:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 409:../drivers/fsl_dma.h ****  */
+ 410:../drivers/fsl_dma.h **** static inline void DMA_DisableChannelRequest(DMA_Type *base, uint32_t channel)
+ 411:../drivers/fsl_dma.h **** {
+ 412:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 413:../drivers/fsl_dma.h **** 
+ 414:../drivers/fsl_dma.h ****     base->DMA[channel].DCR &= ~DMA_DCR_ERQ_MASK;
+ 415:../drivers/fsl_dma.h **** }
+ 416:../drivers/fsl_dma.h **** 
+ 417:../drivers/fsl_dma.h **** /*!
+ 418:../drivers/fsl_dma.h ****  * @brief Starts the DMA transfer with a software trigger.
+ 419:../drivers/fsl_dma.h ****  *
+ 420:../drivers/fsl_dma.h ****  * This function starts only one read/write iteration.
+ 421:../drivers/fsl_dma.h ****  *
+ 422:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 423:../drivers/fsl_dma.h ****  * @param channel The DMA channel number.
+ 424:../drivers/fsl_dma.h ****  */
+ 425:../drivers/fsl_dma.h **** static inline void DMA_TriggerChannelStart(DMA_Type *base, uint32_t channel)
+ 426:../drivers/fsl_dma.h **** {
+ 427:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 428:../drivers/fsl_dma.h **** 
+ 429:../drivers/fsl_dma.h ****     base->DMA[channel].DCR |= DMA_DCR_START_MASK;
+ 430:../drivers/fsl_dma.h **** }
+ 431:../drivers/fsl_dma.h **** 
+ 432:../drivers/fsl_dma.h **** /* @} */
+ 433:../drivers/fsl_dma.h **** /*!
+ 434:../drivers/fsl_dma.h ****  * @name DMA Channel Status Operation
+ 435:../drivers/fsl_dma.h ****  * @{
+ 436:../drivers/fsl_dma.h ****  */
+ 437:../drivers/fsl_dma.h **** 
+ 438:../drivers/fsl_dma.h **** /*!
+ 439:../drivers/fsl_dma.h ****  * @brief Gets the remaining bytes of the current DMA transfer.
+ 440:../drivers/fsl_dma.h ****  *
+ 441:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 442:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 443:../drivers/fsl_dma.h ****  * @return The number of bytes which have not been transferred yet.
+ 444:../drivers/fsl_dma.h ****  */
+ 445:../drivers/fsl_dma.h **** static inline uint32_t DMA_GetRemainingBytes(DMA_Type *base, uint32_t channel)
+ 446:../drivers/fsl_dma.h **** {
+ 447:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 448:../drivers/fsl_dma.h **** 
+ 449:../drivers/fsl_dma.h ****     return (base->DMA[channel].DSR_BCR & DMA_DSR_BCR_BCR_MASK) >> DMA_DSR_BCR_BCR_SHIFT;
+ 450:../drivers/fsl_dma.h **** }
+ 451:../drivers/fsl_dma.h **** 
+ 452:../drivers/fsl_dma.h **** /*!
+ 453:../drivers/fsl_dma.h ****  * @brief Gets the DMA channel status flags.
+ 454:../drivers/fsl_dma.h ****  *
+ 455:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 456:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 457:../drivers/fsl_dma.h ****  * @return The mask of the channel status. Use the _dma_channel_status_flags
+ 458:../drivers/fsl_dma.h ****  *         type to decode the return 32 bit variables.
+ 459:../drivers/fsl_dma.h ****  */
+ 460:../drivers/fsl_dma.h **** static inline uint32_t DMA_GetChannelStatusFlags(DMA_Type *base, uint32_t channel)
+ 461:../drivers/fsl_dma.h **** {
+ 462:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 463:../drivers/fsl_dma.h **** 
+ 464:../drivers/fsl_dma.h ****     return base->DMA[channel].DSR_BCR;
+ 465:../drivers/fsl_dma.h **** }
+ 466:../drivers/fsl_dma.h **** 
+ 467:../drivers/fsl_dma.h **** /*!
+ 468:../drivers/fsl_dma.h ****  * @brief Clears the DMA channel status flags.
+ 469:../drivers/fsl_dma.h ****  *
+ 470:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 471:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 472:../drivers/fsl_dma.h ****  * @param mask The mask of the channel status to be cleared. Use
+ 473:../drivers/fsl_dma.h ****  *             the defined _dma_channel_status_flags type.
+ 474:../drivers/fsl_dma.h ****  */
+ 475:../drivers/fsl_dma.h **** static inline void DMA_ClearChannelStatusFlags(DMA_Type *base, uint32_t channel, uint32_t mask)
+ 476:../drivers/fsl_dma.h **** {
+ 477:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 478:../drivers/fsl_dma.h **** 
+ 479:../drivers/fsl_dma.h ****     if (mask != 0U)
+ 480:../drivers/fsl_dma.h ****     {
+ 481:../drivers/fsl_dma.h ****         base->DMA[channel].DSR_BCR |= DMA_DSR_BCR_DONE(true);
+ 482:../drivers/fsl_dma.h ****     }
+ 483:../drivers/fsl_dma.h **** }
+ 484:../drivers/fsl_dma.h **** 
+ 485:../drivers/fsl_dma.h **** /* @} */
+ 486:../drivers/fsl_dma.h **** /*!
+ 487:../drivers/fsl_dma.h ****  * @name DMA Channel Transactional Operation
+ 488:../drivers/fsl_dma.h ****  * @{
+ 489:../drivers/fsl_dma.h ****  */
+ 490:../drivers/fsl_dma.h **** 
+ 491:../drivers/fsl_dma.h **** /*!
+ 492:../drivers/fsl_dma.h ****  * @brief Creates the DMA handle.
+ 493:../drivers/fsl_dma.h ****  *
+ 494:../drivers/fsl_dma.h ****  * This function is called first if using the transactional API for the DMA. This function
+ 495:../drivers/fsl_dma.h ****  * initializes the internal state of the DMA handle.
+ 496:../drivers/fsl_dma.h ****  *
+ 497:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer. The DMA handle stores callback function and
+ 498:../drivers/fsl_dma.h ****  *               parameters.
+ 499:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 500:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 501:../drivers/fsl_dma.h ****  */
+ 502:../drivers/fsl_dma.h **** void DMA_CreateHandle(dma_handle_t *handle, DMA_Type *base, uint32_t channel);
+ 503:../drivers/fsl_dma.h **** 
+ 504:../drivers/fsl_dma.h **** /*!
+ 505:../drivers/fsl_dma.h ****  * @brief Sets the DMA callback function.
+ 506:../drivers/fsl_dma.h ****  *
+ 507:../drivers/fsl_dma.h ****  * This callback is called in the DMA IRQ handler. Use the callback to do something
+ 508:../drivers/fsl_dma.h ****  * after the current transfer complete.
+ 509:../drivers/fsl_dma.h ****  *
+ 510:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer.
+ 511:../drivers/fsl_dma.h ****  * @param callback DMA callback function pointer.
+ 512:../drivers/fsl_dma.h ****  * @param userData Parameter for callback function. If it is not needed, just set to NULL.
+ 513:../drivers/fsl_dma.h ****  */
+ 514:../drivers/fsl_dma.h **** void DMA_SetCallback(dma_handle_t *handle, dma_callback callback, void *userData);
+ 515:../drivers/fsl_dma.h **** 
+ 516:../drivers/fsl_dma.h **** /*!
+ 517:../drivers/fsl_dma.h ****  * @brief Prepares the DMA transfer configuration structure.
+ 518:../drivers/fsl_dma.h ****  *
+ 519:../drivers/fsl_dma.h ****  * This function prepares the transfer configuration structure according to the user input.
+ 520:../drivers/fsl_dma.h ****  *
+ 521:../drivers/fsl_dma.h ****  * @param config Pointer to the user configuration structure of type dma_transfer_config_t.
+ 522:../drivers/fsl_dma.h ****  * @param srcAddr DMA transfer source address.
+ 523:../drivers/fsl_dma.h ****  * @param srcWidth DMA transfer source address width (byte).
+ 524:../drivers/fsl_dma.h ****  * @param destAddr DMA transfer destination address.
+ 525:../drivers/fsl_dma.h ****  * @param destWidth DMA transfer destination address width (byte).
+ 526:../drivers/fsl_dma.h ****  * @param transferBytes DMA transfer bytes to be transferred.
+ 527:../drivers/fsl_dma.h ****  * @param type DMA transfer type.
+ 528:../drivers/fsl_dma.h ****  */
+ 529:../drivers/fsl_dma.h **** void DMA_PrepareTransfer(dma_transfer_config_t *config,
+ 530:../drivers/fsl_dma.h ****                          void *srcAddr,
+ 531:../drivers/fsl_dma.h ****                          uint32_t srcWidth,
+ 532:../drivers/fsl_dma.h ****                          void *destAddr,
+ 533:../drivers/fsl_dma.h ****                          uint32_t destWidth,
+ 534:../drivers/fsl_dma.h ****                          uint32_t transferBytes,
+ 535:../drivers/fsl_dma.h ****                          dma_transfer_type_t type);
+ 536:../drivers/fsl_dma.h **** 
+ 537:../drivers/fsl_dma.h **** /*!
+ 538:../drivers/fsl_dma.h ****  * @brief Submits the DMA transfer request.
+ 539:../drivers/fsl_dma.h ****  *
+ 540:../drivers/fsl_dma.h ****  * This function submits the DMA transfer request according to the transfer configuration structure
+ 541:../drivers/fsl_dma.h ****  *
+ 542:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer.
+ 543:../drivers/fsl_dma.h ****  * @param config Pointer to DMA transfer configuration structure.
+ 544:../drivers/fsl_dma.h ****  * @param options Additional configurations for transfer. Use
+ 545:../drivers/fsl_dma.h ****  *                the defined dma_transfer_options_t type.
+ 546:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Success It indicates that the DMA submit transfer request succeeded.
+ 547:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Busy It indicates that the DMA is busy. Submit transfer request is not allow
+ 548:../drivers/fsl_dma.h ****  * @note This function can't process multi transfer request.
+ 549:../drivers/fsl_dma.h ****  */
+ 550:../drivers/fsl_dma.h **** status_t DMA_SubmitTransfer(dma_handle_t *handle, const dma_transfer_config_t *config, uint32_t opt
+ 551:../drivers/fsl_dma.h **** 
+ 552:../drivers/fsl_dma.h **** /*!
+ 553:../drivers/fsl_dma.h ****  * @brief DMA starts a transfer.
+ 554:../drivers/fsl_dma.h ****  *
+ 555:../drivers/fsl_dma.h ****  * This function enables the channel request. Call this function
+ 556:../drivers/fsl_dma.h ****  * after submitting a transfer request.
+ 557:../drivers/fsl_dma.h ****  *
+ 558:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer.
+ 559:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Success It indicates that the DMA start transfer succeed.
+ 560:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Busy It indicates that the DMA has started a transfer.
+ 561:../drivers/fsl_dma.h ****  */
+ 562:../drivers/fsl_dma.h **** static inline void DMA_StartTransfer(dma_handle_t *handle)
+ 563:../drivers/fsl_dma.h **** {
+ 564:../drivers/fsl_dma.h ****     assert(handle != NULL);
+ 565:../drivers/fsl_dma.h **** 
+ 566:../drivers/fsl_dma.h ****     handle->base->DMA[handle->channel].DCR |= DMA_DCR_ERQ_MASK;
+ 567:../drivers/fsl_dma.h **** }
+ 568:../drivers/fsl_dma.h **** 
+ 569:../drivers/fsl_dma.h **** /*!
+ 570:../drivers/fsl_dma.h ****  * @brief DMA stops a transfer.
+ 571:../drivers/fsl_dma.h ****  *
+ 572:../drivers/fsl_dma.h ****  * This function disables the channel request to stop a DMA transfer.
+ 573:../drivers/fsl_dma.h ****  * The transfer can be resumed by calling the DMA_StartTransfer.
+ 574:../drivers/fsl_dma.h ****  *
+ 575:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer.
+ 576:../drivers/fsl_dma.h ****  */
+ 577:../drivers/fsl_dma.h **** static inline void DMA_StopTransfer(dma_handle_t *handle)
+ 578:../drivers/fsl_dma.h **** {
+ 579:../drivers/fsl_dma.h ****     assert(handle != NULL);
+ 580:../drivers/fsl_dma.h **** 
+ 581:../drivers/fsl_dma.h ****     handle->base->DMA[handle->channel].DCR &= ~DMA_DCR_ERQ_MASK;
+ 819              		.loc 4 581 0
+ 820 0012 1368     		ldr	r3, [r2]
+ 821 0014 1279     		ldrb	r2, [r2, #4]
+ 822              	.LVL115:
+ 823 0016 1201     		lsls	r2, r2, #4
+ 824 0018 9B18     		adds	r3, r3, r2
+ 825 001a 0D33     		adds	r3, r3, #13
+ 826 001c FF33     		adds	r3, r3, #255
+ 827 001e 1A68     		ldr	r2, [r3]
+ 828 0020 0848     		ldr	r0, .L34
+ 829              	.LVL116:
+ 830 0022 0240     		ands	r2, r0
+ 831 0024 1A60     		str	r2, [r3]
+ 832              	.LVL117:
+ 833              	.LBE111:
+ 834              	.LBE110:
+ 300:../drivers/fsl_flexio_uart_dma.c **** 
+ 301:../drivers/fsl_flexio_uart_dma.c ****     /* Write DMA->DSR[DONE] to abort transfer and clear status. */
+ 302:../drivers/fsl_flexio_uart_dma.c ****     DMA_ClearChannelStatusFlags(handle->txDmaHandle->base, handle->txDmaHandle->channel, kDMA_Trans
+ 835              		.loc 1 302 0
+ 836 0026 0A69     		ldr	r2, [r1, #16]
+ 837 0028 1368     		ldr	r3, [r2]
+ 838 002a 1279     		ldrb	r2, [r2, #4]
+ 839              	.LVL118:
+ 840              	.LBB112:
+ 841              	.LBB113:
+ 481:../drivers/fsl_dma.h ****     }
+ 842              		.loc 4 481 0
+ 843 002c 1201     		lsls	r2, r2, #4
+ 844              	.LVL119:
+ 845 002e 9B18     		adds	r3, r3, r2
+ 846              	.LVL120:
+ 847 0030 0933     		adds	r3, r3, #9
+ 848 0032 FF33     		adds	r3, r3, #255
+ 849 0034 1868     		ldr	r0, [r3]
+ 850 0036 8022     		movs	r2, #128
+ 851 0038 5204     		lsls	r2, r2, #17
+ 852 003a 0243     		orrs	r2, r0
+ 853 003c 1A60     		str	r2, [r3]
+ 854              	.LVL121:
+ 855              	.LBE113:
+ 856              	.LBE112:
+ 303:../drivers/fsl_flexio_uart_dma.c **** 
+ 304:../drivers/fsl_flexio_uart_dma.c ****     handle->txState = kFLEXIO_UART_TxIdle;
+ 857              		.loc 1 304 0
+ 858 003e 0023     		movs	r3, #0
+ 859 0040 0B76     		strb	r3, [r1, #24]
+ 305:../drivers/fsl_flexio_uart_dma.c **** }
+ 860              		.loc 1 305 0
+ 861              		@ sp needed
+ 862 0042 10BD     		pop	{r4, pc}
+ 863              	.L35:
+ 864              		.align	2
+ 865              	.L34:
+ 866 0044 FFFFFFBF 		.word	-1073741825
+ 867              		.cfi_endproc
+ 868              	.LFE95:
+ 870              		.section	.text.FLEXIO_UART_TransferAbortReceiveDMA,"ax",%progbits
+ 871              		.align	1
+ 872              		.global	FLEXIO_UART_TransferAbortReceiveDMA
+ 873              		.syntax unified
+ 874              		.code	16
+ 875              		.thumb_func
+ 876              		.fpu softvfp
+ 878              	FLEXIO_UART_TransferAbortReceiveDMA:
+ 879              	.LFB96:
+ 306:../drivers/fsl_flexio_uart_dma.c **** 
+ 307:../drivers/fsl_flexio_uart_dma.c **** void FLEXIO_UART_TransferAbortReceiveDMA(FLEXIO_UART_Type *base, flexio_uart_dma_handle_t *handle)
+ 308:../drivers/fsl_flexio_uart_dma.c **** {
+ 880              		.loc 1 308 0
+ 881              		.cfi_startproc
+ 882              		@ args = 0, pretend = 0, frame = 0
+ 883              		@ frame_needed = 0, uses_anonymous_args = 0
+ 884              	.LVL122:
+ 885 0000 10B5     		push	{r4, lr}
+ 886              		.cfi_def_cfa_offset 8
+ 887              		.cfi_offset 4, -8
+ 888              		.cfi_offset 14, -4
+ 889              	.LVL123:
+ 890              	.LBB114:
+ 891              	.LBB115:
+ 892              		.loc 2 332 0
+ 893 0002 0468     		ldr	r4, [r0]
+ 894 0004 C379     		ldrb	r3, [r0, #7]
+ 895 0006 0122     		movs	r2, #1
+ 896 0008 9A40     		lsls	r2, r2, r3
+ 897              	.LVL124:
+ 898              	.LBB116:
+ 899              	.LBB117:
+ 900              		.loc 3 669 0
+ 901 000a 236B     		ldr	r3, [r4, #48]
+ 902 000c 9343     		bics	r3, r2
+ 903 000e 2363     		str	r3, [r4, #48]
+ 904              	.LVL125:
+ 905              	.LBE117:
+ 906              	.LBE116:
+ 907              	.LBE115:
+ 908              	.LBE114:
+ 309:../drivers/fsl_flexio_uart_dma.c ****     assert(handle->rxDmaHandle);
+ 310:../drivers/fsl_flexio_uart_dma.c **** 
+ 311:../drivers/fsl_flexio_uart_dma.c ****     /* Disable FLEXIO UART RX DMA. */
+ 312:../drivers/fsl_flexio_uart_dma.c ****     FLEXIO_UART_EnableRxDMA(base, false);
+ 313:../drivers/fsl_flexio_uart_dma.c **** 
+ 314:../drivers/fsl_flexio_uart_dma.c ****     /* Stop transfer. */
+ 315:../drivers/fsl_flexio_uart_dma.c ****     DMA_StopTransfer(handle->rxDmaHandle);
+ 909              		.loc 1 315 0
+ 910 0010 4A69     		ldr	r2, [r1, #20]
+ 911              	.LVL126:
+ 912              	.LBB118:
+ 913              	.LBB119:
+ 914              		.loc 4 581 0
+ 915 0012 1368     		ldr	r3, [r2]
+ 916 0014 1279     		ldrb	r2, [r2, #4]
+ 917              	.LVL127:
+ 918 0016 1201     		lsls	r2, r2, #4
+ 919 0018 9B18     		adds	r3, r3, r2
+ 920 001a 0D33     		adds	r3, r3, #13
+ 921 001c FF33     		adds	r3, r3, #255
+ 922 001e 1A68     		ldr	r2, [r3]
+ 923 0020 0848     		ldr	r0, .L37
+ 924              	.LVL128:
+ 925 0022 0240     		ands	r2, r0
+ 926 0024 1A60     		str	r2, [r3]
+ 927              	.LVL129:
+ 928              	.LBE119:
+ 929              	.LBE118:
+ 316:../drivers/fsl_flexio_uart_dma.c **** 
+ 317:../drivers/fsl_flexio_uart_dma.c ****     /* Write DMA->DSR[DONE] to abort transfer and clear status. */
+ 318:../drivers/fsl_flexio_uart_dma.c ****     DMA_ClearChannelStatusFlags(handle->rxDmaHandle->base, handle->rxDmaHandle->channel, kDMA_Trans
+ 930              		.loc 1 318 0
+ 931 0026 4A69     		ldr	r2, [r1, #20]
+ 932 0028 1368     		ldr	r3, [r2]
+ 933 002a 1279     		ldrb	r2, [r2, #4]
+ 934              	.LVL130:
+ 935              	.LBB120:
+ 936              	.LBB121:
+ 481:../drivers/fsl_dma.h ****     }
+ 937              		.loc 4 481 0
+ 938 002c 1201     		lsls	r2, r2, #4
+ 939              	.LVL131:
+ 940 002e 9B18     		adds	r3, r3, r2
+ 941              	.LVL132:
+ 942 0030 0933     		adds	r3, r3, #9
+ 943 0032 FF33     		adds	r3, r3, #255
+ 944 0034 1868     		ldr	r0, [r3]
+ 945 0036 8022     		movs	r2, #128
+ 946 0038 5204     		lsls	r2, r2, #17
+ 947 003a 0243     		orrs	r2, r0
+ 948 003c 1A60     		str	r2, [r3]
+ 949              	.LVL133:
+ 950              	.LBE121:
+ 951              	.LBE120:
+ 319:../drivers/fsl_flexio_uart_dma.c **** 
+ 320:../drivers/fsl_flexio_uart_dma.c ****     handle->rxState = kFLEXIO_UART_RxIdle;
+ 952              		.loc 1 320 0
+ 953 003e 0223     		movs	r3, #2
+ 954 0040 4B76     		strb	r3, [r1, #25]
+ 321:../drivers/fsl_flexio_uart_dma.c **** }
+ 955              		.loc 1 321 0
+ 956              		@ sp needed
+ 957 0042 10BD     		pop	{r4, pc}
+ 958              	.L38:
+ 959              		.align	2
+ 960              	.L37:
+ 961 0044 FFFFFFBF 		.word	-1073741825
+ 962              		.cfi_endproc
+ 963              	.LFE96:
+ 965              		.section	.text.FLEXIO_UART_TransferGetSendCountDMA,"ax",%progbits
+ 966              		.align	1
+ 967              		.global	FLEXIO_UART_TransferGetSendCountDMA
+ 968              		.syntax unified
+ 969              		.code	16
+ 970              		.thumb_func
+ 971              		.fpu softvfp
+ 973              	FLEXIO_UART_TransferGetSendCountDMA:
+ 974              	.LFB97:
+ 322:../drivers/fsl_flexio_uart_dma.c **** 
+ 323:../drivers/fsl_flexio_uart_dma.c **** status_t FLEXIO_UART_TransferGetSendCountDMA(FLEXIO_UART_Type *base, flexio_uart_dma_handle_t *hand
+ 324:../drivers/fsl_flexio_uart_dma.c **** {
+ 975              		.loc 1 324 0
+ 976              		.cfi_startproc
+ 977              		@ args = 0, pretend = 0, frame = 0
+ 978              		@ frame_needed = 0, uses_anonymous_args = 0
+ 979              		@ link register save eliminated.
+ 980              	.LVL134:
+ 325:../drivers/fsl_flexio_uart_dma.c ****     assert(handle);
+ 326:../drivers/fsl_flexio_uart_dma.c ****     assert(handle->txDmaHandle);
+ 327:../drivers/fsl_flexio_uart_dma.c ****     assert(count);
+ 328:../drivers/fsl_flexio_uart_dma.c **** 
+ 329:../drivers/fsl_flexio_uart_dma.c ****     if (kFLEXIO_UART_TxIdle == handle->txState)
+ 981              		.loc 1 329 0
+ 982 0000 0B7E     		ldrb	r3, [r1, #24]
+ 983 0002 002B     		cmp	r3, #0
+ 984 0004 0ED0     		beq	.L41
+ 330:../drivers/fsl_flexio_uart_dma.c ****     {
+ 331:../drivers/fsl_flexio_uart_dma.c ****         return kStatus_NoTransferInProgress;
+ 332:../drivers/fsl_flexio_uart_dma.c ****     }
+ 333:../drivers/fsl_flexio_uart_dma.c **** 
+ 334:../drivers/fsl_flexio_uart_dma.c ****     *count = handle->txDataSizeAll - DMA_GetRemainingBytes(handle->txDmaHandle->base, handle->txDma
+ 985              		.loc 1 334 0
+ 986 0006 8868     		ldr	r0, [r1, #8]
+ 987              	.LVL135:
+ 988 0008 0B69     		ldr	r3, [r1, #16]
+ 989 000a 1968     		ldr	r1, [r3]
+ 990              	.LVL136:
+ 991 000c 1B79     		ldrb	r3, [r3, #4]
+ 992              	.LVL137:
+ 993              	.LBB122:
+ 994              	.LBB123:
+ 449:../drivers/fsl_dma.h **** }
+ 995              		.loc 4 449 0
+ 996 000e 1B01     		lsls	r3, r3, #4
+ 997              	.LVL138:
+ 998 0010 C918     		adds	r1, r1, r3
+ 999              	.LVL139:
+ 1000 0012 0931     		adds	r1, r1, #9
+ 1001 0014 FF31     		adds	r1, r1, #255
+ 1002 0016 0B68     		ldr	r3, [r1]
+ 1003 0018 1B02     		lsls	r3, r3, #8
+ 1004 001a 1B0A     		lsrs	r3, r3, #8
+ 1005              	.LVL140:
+ 1006              	.LBE123:
+ 1007              	.LBE122:
+ 1008              		.loc 1 334 0
+ 1009 001c C31A     		subs	r3, r0, r3
+ 1010 001e 1360     		str	r3, [r2]
+ 335:../drivers/fsl_flexio_uart_dma.c **** 
+ 336:../drivers/fsl_flexio_uart_dma.c ****     return kStatus_Success;
+ 1011              		.loc 1 336 0
+ 1012 0020 0020     		movs	r0, #0
+ 1013              	.L39:
+ 337:../drivers/fsl_flexio_uart_dma.c **** }
+ 1014              		.loc 1 337 0
+ 1015              		@ sp needed
+ 1016 0022 7047     		bx	lr
+ 1017              	.LVL141:
+ 1018              	.L41:
+ 331:../drivers/fsl_flexio_uart_dma.c ****     }
+ 1019              		.loc 1 331 0
+ 1020 0024 0620     		movs	r0, #6
+ 1021              	.LVL142:
+ 1022 0026 FCE7     		b	.L39
+ 1023              		.cfi_endproc
+ 1024              	.LFE97:
+ 1026              		.section	.text.FLEXIO_UART_TransferGetReceiveCountDMA,"ax",%progbits
+ 1027              		.align	1
+ 1028              		.global	FLEXIO_UART_TransferGetReceiveCountDMA
+ 1029              		.syntax unified
+ 1030              		.code	16
+ 1031              		.thumb_func
+ 1032              		.fpu softvfp
+ 1034              	FLEXIO_UART_TransferGetReceiveCountDMA:
+ 1035              	.LFB98:
+ 338:../drivers/fsl_flexio_uart_dma.c **** 
+ 339:../drivers/fsl_flexio_uart_dma.c **** status_t FLEXIO_UART_TransferGetReceiveCountDMA(FLEXIO_UART_Type *base, flexio_uart_dma_handle_t *h
+ 340:../drivers/fsl_flexio_uart_dma.c **** {
+ 1036              		.loc 1 340 0
+ 1037              		.cfi_startproc
+ 1038              		@ args = 0, pretend = 0, frame = 0
+ 1039              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1040              		@ link register save eliminated.
+ 1041              	.LVL143:
+ 341:../drivers/fsl_flexio_uart_dma.c ****     assert(handle);
+ 342:../drivers/fsl_flexio_uart_dma.c ****     assert(handle->rxDmaHandle);
+ 343:../drivers/fsl_flexio_uart_dma.c ****     assert(count);
+ 344:../drivers/fsl_flexio_uart_dma.c **** 
+ 345:../drivers/fsl_flexio_uart_dma.c ****     if (kFLEXIO_UART_RxIdle == handle->rxState)
+ 1042              		.loc 1 345 0
+ 1043 0000 4B7E     		ldrb	r3, [r1, #25]
+ 1044 0002 022B     		cmp	r3, #2
+ 1045 0004 0ED0     		beq	.L44
+ 346:../drivers/fsl_flexio_uart_dma.c ****     {
+ 347:../drivers/fsl_flexio_uart_dma.c ****         return kStatus_NoTransferInProgress;
+ 348:../drivers/fsl_flexio_uart_dma.c ****     }
+ 349:../drivers/fsl_flexio_uart_dma.c **** 
+ 350:../drivers/fsl_flexio_uart_dma.c ****     *count = handle->rxDataSizeAll - DMA_GetRemainingBytes(handle->rxDmaHandle->base, handle->rxDma
+ 1046              		.loc 1 350 0
+ 1047 0006 C868     		ldr	r0, [r1, #12]
+ 1048              	.LVL144:
+ 1049 0008 4B69     		ldr	r3, [r1, #20]
+ 1050 000a 1968     		ldr	r1, [r3]
+ 1051              	.LVL145:
+ 1052 000c 1B79     		ldrb	r3, [r3, #4]
+ 1053              	.LVL146:
+ 1054              	.LBB124:
+ 1055              	.LBB125:
+ 449:../drivers/fsl_dma.h **** }
+ 1056              		.loc 4 449 0
+ 1057 000e 1B01     		lsls	r3, r3, #4
+ 1058              	.LVL147:
+ 1059 0010 C918     		adds	r1, r1, r3
+ 1060              	.LVL148:
+ 1061 0012 0931     		adds	r1, r1, #9
+ 1062 0014 FF31     		adds	r1, r1, #255
+ 1063 0016 0B68     		ldr	r3, [r1]
+ 1064 0018 1B02     		lsls	r3, r3, #8
+ 1065 001a 1B0A     		lsrs	r3, r3, #8
+ 1066              	.LVL149:
+ 1067              	.LBE125:
+ 1068              	.LBE124:
+ 1069              		.loc 1 350 0
+ 1070 001c C31A     		subs	r3, r0, r3
+ 1071 001e 1360     		str	r3, [r2]
+ 351:../drivers/fsl_flexio_uart_dma.c **** 
+ 352:../drivers/fsl_flexio_uart_dma.c ****     return kStatus_Success;
+ 1072              		.loc 1 352 0
+ 1073 0020 0020     		movs	r0, #0
+ 1074              	.L42:
+ 353:../drivers/fsl_flexio_uart_dma.c **** }
+ 1075              		.loc 1 353 0
+ 1076              		@ sp needed
+ 1077 0022 7047     		bx	lr
+ 1078              	.LVL150:
+ 1079              	.L44:
+ 347:../drivers/fsl_flexio_uart_dma.c ****     }
+ 1080              		.loc 1 347 0
+ 1081 0024 0620     		movs	r0, #6
+ 1082              	.LVL151:
+ 1083 0026 FCE7     		b	.L42
+ 1084              		.cfi_endproc
+ 1085              	.LFE98:
+ 1087              		.section	.bss.s_dmaPrivateHandle,"aw",%nobits
+ 1088              		.align	2
+ 1089              		.set	.LANCHOR0,. + 0
+ 1092              	s_dmaPrivateHandle:
+ 1093 0000 00000000 		.space	16
+ 1093      00000000 
+ 1093      00000000 
+ 1093      00000000 
+ 1094              		.text
+ 1095              	.Letext0:
+ 1096              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1097              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1098              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1099              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1100              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1101              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1102              		.file 11 "../CMSIS/system_MKL17Z4.h"
+ 1103              		.file 12 "../CMSIS/MKL17Z4.h"
+ 1104              		.file 13 "../drivers/fsl_common.h"
+ 1105              		.file 14 "../drivers/fsl_clock.h"
+ 1106              		.file 15 "../drivers/fsl_flexio_uart_dma.h"
+ 1107              		.file 16 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fsl_flexio_uart_dma.c
+     /tmp/ccdCPT6u.s:16     .text.FLEXIO_UART_TransferSendDMACallback:0000000000000000 $t
+     /tmp/ccdCPT6u.s:22     .text.FLEXIO_UART_TransferSendDMACallback:0000000000000000 FLEXIO_UART_TransferSendDMACallback
+     /tmp/ccdCPT6u.s:108    .text.FLEXIO_UART_TransferSendDMACallback:0000000000000040 $d
+     /tmp/ccdCPT6u.s:113    .text.FLEXIO_UART_TransferReceiveDMACallback:0000000000000000 $t
+     /tmp/ccdCPT6u.s:119    .text.FLEXIO_UART_TransferReceiveDMACallback:0000000000000000 FLEXIO_UART_TransferReceiveDMACallback
+     /tmp/ccdCPT6u.s:201    .text.FLEXIO_UART_TransferReceiveDMACallback:0000000000000040 $d
+     /tmp/ccdCPT6u.s:206    .text.FLEXIO_UART_TransferCreateHandleDMA:0000000000000000 $t
+     /tmp/ccdCPT6u.s:213    .text.FLEXIO_UART_TransferCreateHandleDMA:0000000000000000 FLEXIO_UART_TransferCreateHandleDMA
+     /tmp/ccdCPT6u.s:424    .text.FLEXIO_UART_TransferCreateHandleDMA:00000000000000f8 $d
+     /tmp/ccdCPT6u.s:431    .text.FLEXIO_UART_TransferSendDMA:0000000000000000 $t
+     /tmp/ccdCPT6u.s:438    .text.FLEXIO_UART_TransferSendDMA:0000000000000000 FLEXIO_UART_TransferSendDMA
+     /tmp/ccdCPT6u.s:601    .text.FLEXIO_UART_TransferReceiveDMA:0000000000000000 $t
+     /tmp/ccdCPT6u.s:608    .text.FLEXIO_UART_TransferReceiveDMA:0000000000000000 FLEXIO_UART_TransferReceiveDMA
+     /tmp/ccdCPT6u.s:771    .text.FLEXIO_UART_TransferReceiveDMA:0000000000000090 $d
+     /tmp/ccdCPT6u.s:776    .text.FLEXIO_UART_TransferAbortSendDMA:0000000000000000 $t
+     /tmp/ccdCPT6u.s:783    .text.FLEXIO_UART_TransferAbortSendDMA:0000000000000000 FLEXIO_UART_TransferAbortSendDMA
+     /tmp/ccdCPT6u.s:866    .text.FLEXIO_UART_TransferAbortSendDMA:0000000000000044 $d
+     /tmp/ccdCPT6u.s:871    .text.FLEXIO_UART_TransferAbortReceiveDMA:0000000000000000 $t
+     /tmp/ccdCPT6u.s:878    .text.FLEXIO_UART_TransferAbortReceiveDMA:0000000000000000 FLEXIO_UART_TransferAbortReceiveDMA
+     /tmp/ccdCPT6u.s:961    .text.FLEXIO_UART_TransferAbortReceiveDMA:0000000000000044 $d
+     /tmp/ccdCPT6u.s:966    .text.FLEXIO_UART_TransferGetSendCountDMA:0000000000000000 $t
+     /tmp/ccdCPT6u.s:973    .text.FLEXIO_UART_TransferGetSendCountDMA:0000000000000000 FLEXIO_UART_TransferGetSendCountDMA
+     /tmp/ccdCPT6u.s:1027   .text.FLEXIO_UART_TransferGetReceiveCountDMA:0000000000000000 $t
+     /tmp/ccdCPT6u.s:1034   .text.FLEXIO_UART_TransferGetReceiveCountDMA:0000000000000000 FLEXIO_UART_TransferGetReceiveCountDMA
+     /tmp/ccdCPT6u.s:1088   .bss.s_dmaPrivateHandle:0000000000000000 $d
+     /tmp/ccdCPT6u.s:1092   .bss.s_dmaPrivateHandle:0000000000000000 s_dmaPrivateHandle
+
+UNDEFINED SYMBOLS
+memset
+DMA_SetCallback
+DMA_ResetChannel
+FLEXIO_GetShifterBufferAddress
+DMA_SetTransferConfig

@@ -109,100 +109,103 @@
   62:../utilities/fsl_notifier.c ****     if ((configs == NULL) || (configsNumber == 0U) || (userFunction == NULL))
   49              		.loc 1 62 0
   50 0010 8946     		mov	r9, r1
-  51 0012 99B1     		cbz	r1, .L6
+  51 0012 A1B1     		cbz	r1, .L6
   52              		.loc 1 62 0 is_stmt 0 discriminator 1
-  53 0014 92B1     		cbz	r2, .L6
+  53 0014 9AB1     		cbz	r2, .L6
   54              		.loc 1 62 0 discriminator 2
-  55 0016 8DB1     		cbz	r5, .L6
+  55 0016 95B1     		cbz	r5, .L6
   63:../utilities/fsl_notifier.c ****     {
   64:../utilities/fsl_notifier.c ****         return kStatus_Fail;
   65:../utilities/fsl_notifier.c ****     }
   66:../utilities/fsl_notifier.c ****     /* Initialize handle structure */
   67:../utilities/fsl_notifier.c ****     memset(notifierHandle, 0, sizeof(notifier_handle_t));
   56              		.loc 1 67 0 is_stmt 1
-  57 0018 1822     		movs	r2, #24
+  57 0018 1422     		movs	r2, #20
   58              	.LVL1:
   59 001a 0021     		movs	r1, #0
   60              	.LVL2:
-  61 001c FFF7FEFF 		bl	memset
+  61 001c 0430     		adds	r0, r0, #4
   62              	.LVL3:
+  63 001e FFF7FEFF 		bl	memset
+  64              	.LVL4:
   68:../utilities/fsl_notifier.c ****     /* Store references to user-defined configurations */
   69:../utilities/fsl_notifier.c ****     notifierHandle->configsTable = configs;
-  63              		.loc 1 69 0
-  64 0020 C4F80090 		str	r9, [r4]
+  65              		.loc 1 69 0
+  66 0022 C4F80090 		str	r9, [r4]
   70:../utilities/fsl_notifier.c ****     notifierHandle->configsNumber = configsNumber;
-  65              		.loc 1 70 0
-  66 0024 84F80480 		strb	r8, [r4, #4]
+  67              		.loc 1 70 0
+  68 0026 84F80480 		strb	r8, [r4, #4]
   71:../utilities/fsl_notifier.c ****     /* Store references to user-defined callback configurations */
   72:../utilities/fsl_notifier.c ****     if (callbacks != NULL)
-  67              		.loc 1 72 0
-  68 0028 17B1     		cbz	r7, .L3
+  69              		.loc 1 72 0
+  70 002a 17B1     		cbz	r7, .L3
   73:../utilities/fsl_notifier.c ****     {
   74:../utilities/fsl_notifier.c ****         notifierHandle->callbacksTable = callbacks;
-  69              		.loc 1 74 0
-  70 002a A760     		str	r7, [r4, #8]
+  71              		.loc 1 74 0
+  72 002c A760     		str	r7, [r4, #8]
   75:../utilities/fsl_notifier.c ****         notifierHandle->callbacksNumber = callbacksNumber;
-  71              		.loc 1 75 0
-  72 002c 2673     		strb	r6, [r4, #12]
+  73              		.loc 1 75 0
+  74 002e 2673     		strb	r6, [r4, #12]
   76:../utilities/fsl_notifier.c ****         /* If all callbacks return success, then the errorCallbackIndex is callbacksNumber */
   77:../utilities/fsl_notifier.c ****         notifierHandle->errorCallbackIndex = callbacksNumber;
-  73              		.loc 1 77 0
-  74 002e 6673     		strb	r6, [r4, #13]
-  75              	.L3:
+  75              		.loc 1 77 0
+  76 0030 6673     		strb	r6, [r4, #13]
+  77              	.L3:
   78:../utilities/fsl_notifier.c ****     }
   79:../utilities/fsl_notifier.c ****     notifierHandle->userFunction = userFunction;
   80:../utilities/fsl_notifier.c ****     notifierHandle->userData = userData;
-  76              		.loc 1 80 0
-  77 0030 0A9B     		ldr	r3, [sp, #40]
+  78              		.loc 1 80 0
+  79 0032 0A9B     		ldr	r3, [sp, #40]
   79:../utilities/fsl_notifier.c ****     notifierHandle->userData = userData;
-  78              		.loc 1 79 0
-  79 0032 2561     		str	r5, [r4, #16]
-  80              		.loc 1 80 0
-  81 0034 6361     		str	r3, [r4, #20]
+  80              		.loc 1 79 0
+  81 0034 2561     		str	r5, [r4, #16]
+  82              		.loc 1 80 0
+  83 0036 6361     		str	r3, [r4, #20]
   81:../utilities/fsl_notifier.c **** 
   82:../utilities/fsl_notifier.c ****     return kStatus_Success;
-  82              		.loc 1 82 0
-  83 0036 0020     		movs	r0, #0
-  84 0038 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
-  85              	.LVL4:
-  86              	.L6:
-  64:../utilities/fsl_notifier.c ****     }
-  87              		.loc 1 64 0
-  88 003c 0120     		movs	r0, #1
-  89              	.LVL5:
+  84              		.loc 1 82 0
+  85 0038 0020     		movs	r0, #0
+  86              	.L1:
   83:../utilities/fsl_notifier.c **** }
-  90              		.loc 1 83 0
-  91 003e BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
-  92              		.cfi_endproc
-  93              	.LFE147:
-  95              		.section	.text.NOTIFIER_SwitchConfig,"ax",%progbits
-  96              		.align	1
-  97              		.global	NOTIFIER_SwitchConfig
-  98              		.syntax unified
-  99              		.thumb
- 100              		.thumb_func
- 101              		.fpu fpv4-sp-d16
- 103              	NOTIFIER_SwitchConfig:
- 104              	.LFB148:
+  87              		.loc 1 83 0
+  88 003a BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+  89              	.LVL5:
+  90              	.L6:
+  64:../utilities/fsl_notifier.c ****     }
+  91              		.loc 1 64 0
+  92 003e 0120     		movs	r0, #1
+  93              	.LVL6:
+  94 0040 FBE7     		b	.L1
+  95              		.cfi_endproc
+  96              	.LFE147:
+  98              		.section	.text.NOTIFIER_SwitchConfig,"ax",%progbits
+  99              		.align	1
+ 100              		.global	NOTIFIER_SwitchConfig
+ 101              		.syntax unified
+ 102              		.thumb
+ 103              		.thumb_func
+ 104              		.fpu fpv4-sp-d16
+ 106              	NOTIFIER_SwitchConfig:
+ 107              	.LFB148:
   84:../utilities/fsl_notifier.c **** 
   85:../utilities/fsl_notifier.c **** status_t NOTIFIER_SwitchConfig(notifier_handle_t *notifierHandle, uint8_t configIndex, notifier_pol
   86:../utilities/fsl_notifier.c **** {
- 105              		.loc 1 86 0
- 106              		.cfi_startproc
- 107              		@ args = 0, pretend = 0, frame = 8
- 108              		@ frame_needed = 0, uses_anonymous_args = 0
- 109              	.LVL6:
- 110 0000 2DE9F74F 		push	{r0, r1, r2, r4, r5, r6, r7, r8, r9, r10, fp, lr}
- 111              		.cfi_def_cfa_offset 48
- 112              		.cfi_offset 4, -36
- 113              		.cfi_offset 5, -32
- 114              		.cfi_offset 6, -28
- 115              		.cfi_offset 7, -24
- 116              		.cfi_offset 8, -20
- 117              		.cfi_offset 9, -16
- 118              		.cfi_offset 10, -12
- 119              		.cfi_offset 11, -8
- 120              		.cfi_offset 14, -4
+ 108              		.loc 1 86 0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 8
+ 111              		@ frame_needed = 0, uses_anonymous_args = 0
+ 112              	.LVL7:
+ 113 0000 2DE9F74F 		push	{r0, r1, r2, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 114              		.cfi_def_cfa_offset 48
+ 115              		.cfi_offset 4, -36
+ 116              		.cfi_offset 5, -32
+ 117              		.cfi_offset 6, -28
+ 118              		.cfi_offset 7, -24
+ 119              		.cfi_offset 8, -20
+ 120              		.cfi_offset 9, -16
+ 121              		.cfi_offset 10, -12
+ 122              		.cfi_offset 11, -8
+ 123              		.cfi_offset 14, -4
   87:../utilities/fsl_notifier.c ****     uint8_t currentStaticCallback = 0U;    /* Index to array of statically registered call-backs */
   88:../utilities/fsl_notifier.c ****     status_t returnCode = kStatus_Success; /* Function return */
   89:../utilities/fsl_notifier.c **** 
@@ -211,22 +214,22 @@
   92:../utilities/fsl_notifier.c **** 
   93:../utilities/fsl_notifier.c ****     /* Set errorcallbackindex as callbacksNumber, which means no callback error now */
   94:../utilities/fsl_notifier.c ****     notifierHandle->errorCallbackIndex = notifierHandle->callbacksNumber;
- 121              		.loc 1 94 0
- 122 0004 037B     		ldrb	r3, [r0, #12]	@ zero_extendqisi2
- 123 0006 4373     		strb	r3, [r0, #13]
+ 124              		.loc 1 94 0
+ 125 0004 037B     		ldrb	r3, [r0, #12]	@ zero_extendqisi2
+ 126 0006 4373     		strb	r3, [r0, #13]
   95:../utilities/fsl_notifier.c **** 
   96:../utilities/fsl_notifier.c ****     /* Requested configuration availability check */
   97:../utilities/fsl_notifier.c ****     if (configIndex >= notifierHandle->configsNumber)
- 124              		.loc 1 97 0
- 125 0008 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
- 126 000a 8B42     		cmp	r3, r1
+ 127              		.loc 1 97 0
+ 128 0008 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
+ 129 000a 8B42     		cmp	r3, r1
   86:../utilities/fsl_notifier.c ****     uint8_t currentStaticCallback = 0U;    /* Index to array of statically registered call-backs */
- 127              		.loc 1 86 0
- 128 000c 0446     		mov	r4, r0
- 129 000e 8946     		mov	r9, r1
- 130 0010 1746     		mov	r7, r2
- 131              		.loc 1 97 0
- 132 0012 6ED9     		bls	.L23
+ 130              		.loc 1 86 0
+ 131 000c 0446     		mov	r4, r0
+ 132 000e 8946     		mov	r9, r1
+ 133 0010 1746     		mov	r7, r2
+ 134              		.loc 1 97 0
+ 135 0012 6ED9     		bls	.L23
   98:../utilities/fsl_notifier.c ****     {
   99:../utilities/fsl_notifier.c ****         return kStatus_OutOfRange;
  100:../utilities/fsl_notifier.c ****     }
@@ -235,42 +238,42 @@
  103:../utilities/fsl_notifier.c **** 
  104:../utilities/fsl_notifier.c ****     notifyBlock.policy = policy;
  105:../utilities/fsl_notifier.c ****     notifyBlock.targetConfig = notifierHandle->configsTable[configIndex];
- 133              		.loc 1 105 0
- 134 0014 0FFA81FA 		sxth	r10, r1
- 135 0018 0368     		ldr	r3, [r0]
+ 136              		.loc 1 105 0
+ 137 0014 0FFA81FA 		sxth	r10, r1
+ 138 0018 0368     		ldr	r3, [r0]
  104:../utilities/fsl_notifier.c ****     notifyBlock.targetConfig = notifierHandle->configsTable[configIndex];
- 136              		.loc 1 104 0
- 137 001a 8DF80420 		strb	r2, [sp, #4]
- 138              		.loc 1 105 0
- 139 001e 53F82A30 		ldr	r3, [r3, r10, lsl #2]
- 140 0022 0093     		str	r3, [sp]
+ 139              		.loc 1 104 0
+ 140 001a 8DF80420 		strb	r2, [sp, #4]
+ 141              		.loc 1 105 0
+ 142 001e 53F82A30 		ldr	r3, [r3, r10, lsl #2]
+ 143 0022 0093     		str	r3, [sp]
  106:../utilities/fsl_notifier.c ****     notifyBlock.notifyType = kNOTIFIER_NotifyBefore;
  107:../utilities/fsl_notifier.c **** 
  108:../utilities/fsl_notifier.c ****     /* From all statically registered call-backs... */
  109:../utilities/fsl_notifier.c ****     for (currentStaticCallback = 0U; currentStaticCallback < notifierHandle->callbacksNumber; curre
- 141              		.loc 1 109 0
- 142 0024 4FF00008 		mov	r8, #0
+ 144              		.loc 1 109 0
+ 145 0024 4FF00008 		mov	r8, #0
  106:../utilities/fsl_notifier.c ****     notifyBlock.notifyType = kNOTIFIER_NotifyBefore;
- 143              		.loc 1 106 0
- 144 0028 0123     		movs	r3, #1
- 145 002a 8DF80530 		strb	r3, [sp, #5]
+ 146              		.loc 1 106 0
+ 147 0028 0123     		movs	r3, #1
+ 148 002a 8DF80530 		strb	r3, [sp, #5]
   88:../utilities/fsl_notifier.c **** 
- 146              		.loc 1 88 0
- 147 002e 4646     		mov	r6, r8
+ 149              		.loc 1 88 0
+ 150 002e 4546     		mov	r5, r8
  110:../utilities/fsl_notifier.c ****     {
  111:../utilities/fsl_notifier.c ****         callbackConfig = &(notifierHandle->callbacksTable[currentStaticCallback]);
- 148              		.loc 1 111 0
- 149 0030 4FF00C0B 		mov	fp, #12
- 150              	.LVL7:
- 151              	.L12:
+ 151              		.loc 1 111 0
+ 152 0030 4FF00C0B 		mov	fp, #12
+ 153              	.LVL8:
+ 154              	.L12:
  109:../utilities/fsl_notifier.c ****     {
- 152              		.loc 1 109 0 discriminator 1
- 153 0034 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
- 154 0036 5FFA88F5 		uxtb	r5, r8
- 155              	.LVL8:
- 156 003a AB42     		cmp	r3, r5
- 157 003c 1CD8     		bhi	.L15
+ 155              		.loc 1 109 0 discriminator 1
+ 156 0034 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
+ 157 0036 5FFA88F6 		uxtb	r6, r8
  158              	.LVL9:
+ 159 003a B342     		cmp	r3, r6
+ 160 003c 1CD8     		bhi	.L15
+ 161              	.LVL10:
  112:../utilities/fsl_notifier.c ****         /* ...notify only those which asked to be called before the configuration switch */
  113:../utilities/fsl_notifier.c ****         if (((uint32_t)callbackConfig->callbackType) & kNOTIFIER_CallbackBefore)
  114:../utilities/fsl_notifier.c ****         {
@@ -295,60 +298,59 @@
  133:../utilities/fsl_notifier.c ****     /* In case that any call-back returned error code and  policy doesn't force the configuration s
  134:../utilities/fsl_notifier.c ****      * switch call-backs */
  135:../utilities/fsl_notifier.c ****     if ((policy == kNOTIFIER_PolicyForcible) || (returnCode == kStatus_Success))
- 159              		.loc 1 135 0
- 160 003e 012F     		cmp	r7, #1
- 161 0040 01D0     		beq	.L16
- 162              		.loc 1 135 0 is_stmt 0 discriminator 1
- 163 0042 002E     		cmp	r6, #0
- 164 0044 40D1     		bne	.L14
- 165              	.L16:
+ 162              		.loc 1 135 0
+ 163 003e 012F     		cmp	r7, #1
+ 164 0040 01D0     		beq	.L16
+ 165              		.loc 1 135 0 is_stmt 0 discriminator 1
+ 166 0042 002D     		cmp	r5, #0
+ 167 0044 40D1     		bne	.L14
+ 168              	.L16:
  136:../utilities/fsl_notifier.c ****     {
  137:../utilities/fsl_notifier.c ****         returnCode = notifierHandle->userFunction(notifierHandle->configsTable[configIndex], notifi
- 166              		.loc 1 137 0 is_stmt 1
- 167 0046 2268     		ldr	r2, [r4]
- 168 0048 2369     		ldr	r3, [r4, #16]
- 169 004a 6169     		ldr	r1, [r4, #20]
- 170 004c 52F82A00 		ldr	r0, [r2, r10, lsl #2]
- 171 0050 9847     		blx	r3
- 172              	.LVL10:
+ 169              		.loc 1 137 0 is_stmt 1
+ 170 0046 2268     		ldr	r2, [r4]
+ 171 0048 D4E90431 		ldrd	r3, r1, [r4, #16]
+ 172 004c 52F82A00 		ldr	r0, [r2, r10, lsl #2]
+ 173 0050 9847     		blx	r3
+ 174              	.LVL11:
  138:../utilities/fsl_notifier.c ****         if (returnCode != kStatus_Success)
- 173              		.loc 1 138 0
- 174 0052 0646     		mov	r6, r0
- 175 0054 60B9     		cbnz	r0, .L10
+ 175              		.loc 1 138 0
+ 176 0052 0546     		mov	r5, r0
+ 177 0054 60B9     		cbnz	r0, .L10
  139:../utilities/fsl_notifier.c ****         {
  140:../utilities/fsl_notifier.c ****             return returnCode;
  141:../utilities/fsl_notifier.c ****         }
  142:../utilities/fsl_notifier.c ****         /* Update current configuration index */
  143:../utilities/fsl_notifier.c ****         notifierHandle->currentConfigIndex = configIndex;
  144:../utilities/fsl_notifier.c ****         notifyBlock.notifyType = kNOTIFIER_NotifyAfter;
- 176              		.loc 1 144 0
- 177 0056 0223     		movs	r3, #2
+ 178              		.loc 1 144 0
+ 179 0056 0223     		movs	r3, #2
  143:../utilities/fsl_notifier.c ****         notifyBlock.notifyType = kNOTIFIER_NotifyAfter;
- 178              		.loc 1 143 0
- 179 0058 84F80E90 		strb	r9, [r4, #14]
- 180              		.loc 1 144 0
- 181 005c 8DF80530 		strb	r3, [sp, #5]
- 182              	.LVL11:
+ 180              		.loc 1 143 0
+ 181 0058 84F80E90 		strb	r9, [r4, #14]
+ 182              		.loc 1 144 0
+ 183 005c 8DF80530 		strb	r3, [sp, #5]
+ 184              	.LVL12:
  145:../utilities/fsl_notifier.c ****         /* From all statically registered call-backs... */
  146:../utilities/fsl_notifier.c ****         for (currentStaticCallback = 0U; currentStaticCallback < notifierHandle->callbacksNumber;
- 183              		.loc 1 146 0
- 184 0060 8046     		mov	r8, r0
+ 185              		.loc 1 146 0
+ 186 0060 8046     		mov	r8, r0
  147:../utilities/fsl_notifier.c ****              currentStaticCallback++)
  148:../utilities/fsl_notifier.c ****         {
  149:../utilities/fsl_notifier.c ****             callbackConfig = &(notifierHandle->callbacksTable[currentStaticCallback]);
- 185              		.loc 1 149 0
- 186 0062 4FF00C09 		mov	r9, #12
- 187              	.LVL12:
- 188              	.L17:
+ 187              		.loc 1 149 0
+ 188 0062 4FF00C09 		mov	r9, #12
+ 189              	.LVL13:
+ 190              	.L17:
  146:../utilities/fsl_notifier.c ****              currentStaticCallback++)
- 189              		.loc 1 146 0 discriminator 1
- 190 0066 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
- 191 0068 5FFA88F5 		uxtb	r5, r8
- 192              	.LVL13:
- 193 006c AB42     		cmp	r3, r5
- 194 006e 17D8     		bhi	.L19
- 195              	.LVL14:
- 196              	.L10:
+ 191              		.loc 1 146 0 discriminator 1
+ 192 0066 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
+ 193 0068 5FFA88F6 		uxtb	r6, r8
+ 194              	.LVL14:
+ 195 006c B342     		cmp	r3, r6
+ 196 006e 17D8     		bhi	.L19
+ 197              	.LVL15:
+ 198              	.L10:
  150:../utilities/fsl_notifier.c ****             /* ...notify only those which asked to be called after the configruation switch */
  151:../utilities/fsl_notifier.c ****             if (((uint32_t)callbackConfig->callbackType) & kNOTIFIER_CallbackAfter)
  152:../utilities/fsl_notifier.c ****             {
@@ -381,170 +383,171 @@
  179:../utilities/fsl_notifier.c **** 
  180:../utilities/fsl_notifier.c ****     return returnCode;
  181:../utilities/fsl_notifier.c **** }
- 197              		.loc 1 181 0
- 198 0070 3046     		mov	r0, r6
- 199 0072 03B0     		add	sp, sp, #12
- 200              		.cfi_remember_state
- 201              		.cfi_def_cfa_offset 36
- 202              		@ sp needed
- 203 0074 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
- 204              	.LVL15:
- 205              	.L15:
- 206              		.cfi_restore_state
+ 199              		.loc 1 181 0
+ 200 0070 2846     		mov	r0, r5
+ 201 0072 03B0     		add	sp, sp, #12
+ 202              		.cfi_remember_state
+ 203              		.cfi_def_cfa_offset 36
+ 204              		@ sp needed
+ 205 0074 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 206              	.LVL16:
+ 207              	.L15:
+ 208              		.cfi_restore_state
  111:../utilities/fsl_notifier.c ****         /* ...notify only those which asked to be called before the configuration switch */
- 207              		.loc 1 111 0
- 208 0078 A168     		ldr	r1, [r4, #8]
- 209 007a 0BFB05F2 		mul	r2, fp, r5
- 210 007e 8B18     		adds	r3, r1, r2
- 211              	.LVL16:
+ 209              		.loc 1 111 0
+ 210 0078 A168     		ldr	r1, [r4, #8]
+ 211 007a 0BFB06F2 		mul	r2, fp, r6
+ 212 007e 8B18     		adds	r3, r1, r2
+ 213              	.LVL17:
  113:../utilities/fsl_notifier.c ****         {
- 212              		.loc 1 113 0
- 213 0080 1879     		ldrb	r0, [r3, #4]	@ zero_extendqisi2
- 214 0082 C007     		lsls	r0, r0, #31
- 215 0084 09D5     		bpl	.L13
+ 214              		.loc 1 113 0
+ 215 0080 1879     		ldrb	r0, [r3, #4]	@ zero_extendqisi2
+ 216 0082 C007     		lsls	r0, r0, #31
+ 217 0084 09D5     		bpl	.L13
  117:../utilities/fsl_notifier.c ****             {
- 216              		.loc 1 117 0
- 217 0086 8A58     		ldr	r2, [r1, r2]
- 218 0088 9968     		ldr	r1, [r3, #8]
- 219 008a 6846     		mov	r0, sp
- 220 008c 9047     		blx	r2
- 221              	.LVL17:
- 222 008e 20B1     		cbz	r0, .L13
+ 218              		.loc 1 117 0
+ 219 0086 8A58     		ldr	r2, [r1, r2]
+ 220 0088 9968     		ldr	r1, [r3, #8]
+ 221 008a 6846     		mov	r0, sp
+ 222 008c 9047     		blx	r2
  223              	.LVL18:
+ 224 008e 20B1     		cbz	r0, .L13
+ 225              	.LVL19:
  123:../utilities/fsl_notifier.c ****                 {
- 224              		.loc 1 123 0
- 225 0090 012F     		cmp	r7, #1
+ 226              		.loc 1 123 0
+ 227 0090 012F     		cmp	r7, #1
  120:../utilities/fsl_notifier.c ****                 /* If not forcing configuration switch, call all already notified call-backs to rev
- 226              		.loc 1 120 0
- 227 0092 6573     		strb	r5, [r4, #13]
+ 228              		.loc 1 120 0
+ 229 0092 6673     		strb	r6, [r4, #13]
  119:../utilities/fsl_notifier.c ****                 notifierHandle->errorCallbackIndex = currentStaticCallback;
- 228              		.loc 1 119 0
- 229 0094 42F24866 		movw	r6, #9800
+ 230              		.loc 1 119 0
+ 231 0094 42F24865 		movw	r5, #9800
  123:../utilities/fsl_notifier.c ****                 {
- 230              		.loc 1 123 0
- 231 0098 16D1     		bne	.L14
- 232              	.LVL19:
- 233              	.L13:
- 234 009a 08F10108 		add	r8, r8, #1
- 235              	.LVL20:
- 236 009e C9E7     		b	.L12
+ 232              		.loc 1 123 0
+ 233 0098 16D1     		bne	.L14
+ 234              	.LVL20:
+ 235              	.L13:
+ 236 009a 08F10108 		add	r8, r8, #1
  237              	.LVL21:
- 238              	.L19:
+ 238 009e C9E7     		b	.L12
+ 239              	.LVL22:
+ 240              	.L19:
  149:../utilities/fsl_notifier.c ****             /* ...notify only those which asked to be called after the configruation switch */
- 239              		.loc 1 149 0
- 240 00a0 A168     		ldr	r1, [r4, #8]
- 241 00a2 09FB05F2 		mul	r2, r9, r5
- 242 00a6 8B18     		adds	r3, r1, r2
- 243              	.LVL22:
+ 241              		.loc 1 149 0
+ 242 00a0 A168     		ldr	r1, [r4, #8]
+ 243 00a2 09FB06F2 		mul	r2, r9, r6
+ 244 00a6 8B18     		adds	r3, r1, r2
+ 245              	.LVL23:
  151:../utilities/fsl_notifier.c ****             {
- 244              		.loc 1 151 0
- 245 00a8 1879     		ldrb	r0, [r3, #4]	@ zero_extendqisi2
- 246 00aa 8007     		lsls	r0, r0, #30
- 247 00ac 09D5     		bpl	.L18
+ 246              		.loc 1 151 0
+ 247 00a8 1879     		ldrb	r0, [r3, #4]	@ zero_extendqisi2
+ 248 00aa 8007     		lsls	r0, r0, #30
+ 249 00ac 09D5     		bpl	.L18
  154:../utilities/fsl_notifier.c ****                 {
- 248              		.loc 1 154 0
- 249 00ae 8A58     		ldr	r2, [r1, r2]
- 250 00b0 9968     		ldr	r1, [r3, #8]
- 251 00b2 6846     		mov	r0, sp
- 252 00b4 9047     		blx	r2
- 253              	.LVL23:
- 254 00b6 20B1     		cbz	r0, .L18
+ 250              		.loc 1 154 0
+ 251 00ae 8A58     		ldr	r2, [r1, r2]
+ 252 00b0 9968     		ldr	r1, [r3, #8]
+ 253 00b2 6846     		mov	r0, sp
+ 254 00b4 9047     		blx	r2
  255              	.LVL24:
+ 256 00b6 20B1     		cbz	r0, .L18
+ 257              	.LVL25:
  158:../utilities/fsl_notifier.c ****                     {
- 256              		.loc 1 158 0
- 257 00b8 012F     		cmp	r7, #1
+ 258              		.loc 1 158 0
+ 259 00b8 012F     		cmp	r7, #1
  157:../utilities/fsl_notifier.c ****                     if (policy != kNOTIFIER_PolicyForcible)
- 258              		.loc 1 157 0
- 259 00ba 6573     		strb	r5, [r4, #13]
+ 260              		.loc 1 157 0
+ 261 00ba 6673     		strb	r6, [r4, #13]
  156:../utilities/fsl_notifier.c ****                     notifierHandle->errorCallbackIndex = currentStaticCallback;
- 260              		.loc 1 156 0
- 261 00bc 42F24966 		movw	r6, #9801
+ 262              		.loc 1 156 0
+ 263 00bc 42F24965 		movw	r5, #9801
  158:../utilities/fsl_notifier.c ****                     {
- 262              		.loc 1 158 0
- 263 00c0 D6D1     		bne	.L10
- 264              	.LVL25:
- 265              	.L18:
- 266 00c2 08F10108 		add	r8, r8, #1
- 267              	.LVL26:
- 268 00c6 CEE7     		b	.L17
+ 264              		.loc 1 158 0
+ 265 00c0 D6D1     		bne	.L10
+ 266              	.LVL26:
+ 267              	.L18:
+ 268 00c2 08F10108 		add	r8, r8, #1
  269              	.LVL27:
- 270              	.L14:
+ 270 00c6 CEE7     		b	.L17
+ 271              	.LVL28:
+ 272              	.L14:
  169:../utilities/fsl_notifier.c ****         while (currentStaticCallback--)
- 271              		.loc 1 169 0
- 272 00c8 0023     		movs	r3, #0
- 273 00ca 8DF80530 		strb	r3, [sp, #5]
- 274              	.L21:
- 275 00ce 013D     		subs	r5, r5, #1
- 276              	.LVL28:
- 277 00d0 EDB2     		uxtb	r5, r5
- 278              	.LVL29:
+ 273              		.loc 1 169 0
+ 274 00c8 0023     		movs	r3, #0
+ 275 00ca 8DF80530 		strb	r3, [sp, #5]
+ 276              	.L20:
  170:../utilities/fsl_notifier.c ****         {
- 279              		.loc 1 170 0
- 280 00d2 FF2D     		cmp	r5, #255
- 281 00d4 CCD0     		beq	.L10
+ 277              		.loc 1 170 0
+ 278 00ce 013E     		subs	r6, r6, #1
+ 279              	.LVL29:
+ 280 00d0 F6B2     		uxtb	r6, r6
+ 281              	.LVL30:
+ 282 00d2 FF2E     		cmp	r6, #255
+ 283 00d4 CCD0     		beq	.L10
  172:../utilities/fsl_notifier.c ****             if (((uint32_t)callbackConfig->callbackType) & kNOTIFIER_CallbackBefore)
- 282              		.loc 1 172 0
- 283 00d6 A268     		ldr	r2, [r4, #8]
- 284 00d8 05EB4501 		add	r1, r5, r5, lsl #1
- 285 00dc 02EB8103 		add	r3, r2, r1, lsl #2
- 286              	.LVL30:
+ 284              		.loc 1 172 0
+ 285 00d6 A268     		ldr	r2, [r4, #8]
+ 286 00d8 06EB4601 		add	r1, r6, r6, lsl #1
+ 287 00dc 02EB8103 		add	r3, r2, r1, lsl #2
+ 288              	.LVL31:
  173:../utilities/fsl_notifier.c ****             {
- 287              		.loc 1 173 0
- 288 00e0 1879     		ldrb	r0, [r3, #4]	@ zero_extendqisi2
- 289 00e2 C007     		lsls	r0, r0, #31
- 290 00e4 F3D5     		bpl	.L21
+ 289              		.loc 1 173 0
+ 290 00e0 1879     		ldrb	r0, [r3, #4]	@ zero_extendqisi2
+ 291 00e2 C007     		lsls	r0, r0, #31
+ 292 00e4 F3D5     		bpl	.L20
  175:../utilities/fsl_notifier.c ****             }
- 291              		.loc 1 175 0
- 292 00e6 52F82120 		ldr	r2, [r2, r1, lsl #2]
- 293 00ea 9968     		ldr	r1, [r3, #8]
- 294 00ec 6846     		mov	r0, sp
- 295 00ee 9047     		blx	r2
- 296              	.LVL31:
- 297 00f0 EDE7     		b	.L21
+ 293              		.loc 1 175 0
+ 294 00e6 52F82120 		ldr	r2, [r2, r1, lsl #2]
+ 295 00ea 9968     		ldr	r1, [r3, #8]
+ 296 00ec 6846     		mov	r0, sp
+ 297 00ee 9047     		blx	r2
  298              	.LVL32:
- 299              	.L23:
+ 299 00f0 EDE7     		b	.L20
+ 300              	.LVL33:
+ 301              	.L23:
   99:../utilities/fsl_notifier.c ****     }
- 300              		.loc 1 99 0
- 301 00f2 0326     		movs	r6, #3
- 302 00f4 BCE7     		b	.L10
- 303              		.cfi_endproc
- 304              	.LFE148:
- 306              		.section	.text.NOTIFIER_GetErrorCallbackIndex,"ax",%progbits
- 307              		.align	1
- 308              		.global	NOTIFIER_GetErrorCallbackIndex
- 309              		.syntax unified
- 310              		.thumb
- 311              		.thumb_func
- 312              		.fpu fpv4-sp-d16
- 314              	NOTIFIER_GetErrorCallbackIndex:
- 315              	.LFB149:
+ 302              		.loc 1 99 0
+ 303 00f2 0325     		movs	r5, #3
+ 304 00f4 BCE7     		b	.L10
+ 305              		.cfi_endproc
+ 306              	.LFE148:
+ 308              		.section	.text.NOTIFIER_GetErrorCallbackIndex,"ax",%progbits
+ 309              		.align	1
+ 310              		.global	NOTIFIER_GetErrorCallbackIndex
+ 311              		.syntax unified
+ 312              		.thumb
+ 313              		.thumb_func
+ 314              		.fpu fpv4-sp-d16
+ 316              	NOTIFIER_GetErrorCallbackIndex:
+ 317              	.LFB149:
  182:../utilities/fsl_notifier.c **** 
  183:../utilities/fsl_notifier.c **** uint8_t NOTIFIER_GetErrorCallbackIndex(notifier_handle_t *notifierHandle)
  184:../utilities/fsl_notifier.c **** {
- 316              		.loc 1 184 0
- 317              		.cfi_startproc
- 318              		@ args = 0, pretend = 0, frame = 0
- 319              		@ frame_needed = 0, uses_anonymous_args = 0
- 320              		@ link register save eliminated.
- 321              	.LVL33:
+ 318              		.loc 1 184 0
+ 319              		.cfi_startproc
+ 320              		@ args = 0, pretend = 0, frame = 0
+ 321              		@ frame_needed = 0, uses_anonymous_args = 0
+ 322              		@ link register save eliminated.
+ 323              	.LVL34:
  185:../utilities/fsl_notifier.c ****     return notifierHandle->errorCallbackIndex;
  186:../utilities/fsl_notifier.c **** }
- 322              		.loc 1 186 0
- 323 0000 407B     		ldrb	r0, [r0, #13]	@ zero_extendqisi2
- 324              	.LVL34:
- 325 0002 7047     		bx	lr
- 326              		.cfi_endproc
- 327              	.LFE149:
- 329              		.text
- 330              	.Letext0:
- 331              		.file 2 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 332              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 333              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 334              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 335              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 336              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 337              		.file 8 "../CMSIS/core_cm4.h"
- 338              		.file 9 "../CMSIS/system_MK64F12.h"
- 339              		.file 10 "../drivers/fsl_common.h"
- 340              		.file 11 "../drivers/fsl_clock.h"
- 341              		.file 12 "../utilities/fsl_notifier.h"
+ 324              		.loc 1 186 0
+ 325 0000 407B     		ldrb	r0, [r0, #13]	@ zero_extendqisi2
+ 326              	.LVL35:
+ 327 0002 7047     		bx	lr
+ 328              		.cfi_endproc
+ 329              	.LFE149:
+ 331              		.text
+ 332              	.Letext0:
+ 333              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 334              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 335              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 336              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 337              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 338              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 339              		.file 8 "../CMSIS/core_cm4.h"
+ 340              		.file 9 "../CMSIS/system_MK64F12.h"
+ 341              		.file 10 "../drivers/fsl_common.h"
+ 342              		.file 11 "../drivers/fsl_clock.h"
+ 343              		.file 12 "../utilities/fsl_notifier.h"
+ 344              		.file 13 "<built-in>"

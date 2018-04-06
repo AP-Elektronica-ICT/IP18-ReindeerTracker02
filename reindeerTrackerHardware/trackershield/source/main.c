@@ -184,14 +184,9 @@ int main(void) {
 	initUART();
 	configure_acc();
 	acc_init();
-<<<<<<< HEAD
-	initTimer();
-
-=======
 
 	initTimer();
 
->>>>>>> master
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
 	};
@@ -216,8 +211,9 @@ int main(void) {
 	 * set boost regulator enable pin as output. This pin will control the power to RF modules
 	 */
 	GPIO_PinInit(GPIOB, 11u, &LED_configOutput);
+	GPIO_PinInit(GPIOD, 1u, &LED_configOutput);
 
-	GPIO_SetPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
+	GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
 
 	//fletcher8(PMC_set, 14);
 	//fletcher8(ubx_cfg_prt, 7);
@@ -232,20 +228,17 @@ int main(void) {
 	/*
 	 * Copy all reindeer variables to struct before starting network operations
 	 */
-<<<<<<< HEAD
-	char testLat[11] = ("6500.53");
-	char testLon[11] = ("02534.554");
-=======
 
 char testLat[11] = ("6500.53");
 char testLon[11] = ("02534.554");
->>>>>>> master
+
 	strcpy(reindeerData.serialNum, "11111");
+
 	strcpy(reindeerData.latitude, testLat);
 	strcpy(reindeerData.longitude, testLon);
 	strcpy(reindeerData.dead, "false");
 	reindeerData.batteryLevel = 45;
-<<<<<<< HEAD
+
 	/*
 	 while (true) {
 
@@ -256,20 +249,13 @@ char testLon[11] = ("02534.554");
 	 delay_ms(500);
 	 }
 	 */
-	if (wake == 2) {
+	/*if (wake == 2) {
 		printf("Woken by ACCEL, reindeer is !!!ALIVE!!!\r\n");
 		SMC_PreEnterStopModes();
 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
-	}
-=======
 
-	while(1){
-		int16_t acc_val = read_acc_axis(0);
-			printf("Accelereometer %d\r\n",acc_val);
-			delay_ms(500);
-	}
+	}*/
 
->>>>>>> master
 
 	while (1) {
 
@@ -280,7 +266,7 @@ char testLon[11] = ("02534.554");
 		 * Check if a string has arrived from PC (with CR line end)
 		 */
 
-		if (wake == 1) {
+		if (wake == 5) {
 			strcpy(reindeerData.dead, "true");
 			printf("Woken by LPTMR, reindeer is !!!%s!!\r\n",
 					reindeerData.dead);
@@ -324,8 +310,10 @@ char testLon[11] = ("02534.554");
 				printf("Starting Reindeer IoT cycle\r\n");
 				break;
 			} else if (strstr(PC_recBuf, "gpsinfo=1") != NULL) {
+				GPIO_ClearPinsOutput(GPIOD, 1 << 1u);
 				streamGps = 1;
 			} else if (strstr(PC_recBuf, "gpsinfo=0") != NULL) {
+				GPIO_SetPinsOutput(GPIOD, 1 << 1u);
 				streamGps = 0;
 			} else if (strstr(PC_recBuf, "rfoff") != NULL) {
 				GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
@@ -373,8 +361,8 @@ char testLon[11] = ("02534.554");
 		 */
 		if (GPS_strReady && streamGps) {
 
-			//printf(GPS_recBuf);
-			//printf("\r\n"); //First print out whole buffer
+			printf(GPS_recBuf);
+			printf("\r\n"); //First print out whole buffer
 
 			if (getGPS()) {
 				//char testLat[12] = ("6500.02359");
@@ -419,17 +407,12 @@ char testLon[11] = ("02534.554");
 	 * Assemble data to json format and then to POST message
 	 */
 
-	//uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
+	uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
 
 	//NB_send_msg(mqttMessage, msgLen);
-<<<<<<< HEAD
-
 	NB_create_pdp_send(mqttMessage, msgLen);
 	printf("Roger\r\n");
-=======
-printf("kuusi on puu\r\n");
-	//NB_create_pdp_send(mqttMessage, msgLen);
->>>>>>> master
+
 	//parseData(testLat, testLon);
 }
 /*
@@ -441,15 +424,26 @@ printf("kuusi on puu\r\n");
 
  }
 
- LPTMR_Deinit(LPTMR0);			// Deinitiate timer to reset timer counte
- LPTMR_Init(LPTMR0, &lptmr_config);
- LPTMR_SetTimerPeriod(LPTMR0, 2000);  // 3000 for 20hz data rat
- LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
- LPTMR_StartTimer(LPTMR0);
- GPIO_PortToggle(GPIOB, 1 << 22u);
+			GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
+
+
+
+
+	LPTMR_Deinit(LPTMR0);			// Deinitiate timer to reset timer counte
+	LPTMR_Init(LPTMR0, &lptmr_config);
+	LPTMR_SetTimerPeriod(LPTMR0, 5000);  // 3000 for 20hz data rat
+	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
+	LPTMR_StartTimer(LPTMR0);
+
+
+
+}
+
 
  }
+
  */
+
 void LLWU_IRQHandler() {
 
 	if ( LLWU->F3 & 0x01) {	// 1 = LPTMR interrupt, 2 = Accel interrupt, 0 = No interrupts
@@ -504,27 +498,37 @@ void UART2_RX_TX_IRQHandler() {
 	UART_ClearStatusFlags(UART2, kUART_RxDataRegFullFlag);
 	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from GPS module
 
-	uint8_t uartData = UART2->D;
+		uint8_t uartData = UART2->D;
+		/*
+		 * Here we use different method for collecting GPS data. because there can be other data than characters,
+		 * like 0x00 in UBX messages, normal string functions would fail (mistaken null terminator)
+		 * so we must collect every byte from the gps module
+		 * so fill buffer to almost full with GPS data, then put GPS_strReady high and stop filling.
+		 * Start filling again when data has been read and GPS_strReady is low.
+		 *
+		 */
+		if(GPS_strReady == 0)
+		{
 
-	/*
-	 * Here we use different method for collecting GPS data. because there can be other data than characters,
-	 * like 0x00 in UBX messages, normal string functions would fail (mistaken null terminator)
-	 * so we must collect every byte from the gps module
-	 * so fill buffer to almost full with GPS data, then put GPS_strReady high and stop filling.
-	 * Start filling again when data has been read and GPS_strReady is low.
-	 *
-	 */
-	if (GPS_strReady == 0) {
-		GPS_recBuf[GPS_bufPtr] = uartData; //put new byte to buffer
-		GPS_bufPtr++;
-	}
+			GPS_recBuf[GPS_bufPtr] = uartData; //put new byte to buffer
+			GPS_bufPtr++;
+		}
 
-	/*
-	 * When buffer is almost full, put strReady high and stop filling it
-	 */
-	if (GPS_bufPtr > 499) {
-		GPS_strReady = 1;
-	}
+		if(GPS_bufPtr > 500)
+		{
+			if(uartData == 0x0a)
+			{
+				GPS_strReady = 1;
+			}
+		}
+
+		/*
+		 * When buffer is almost full, put strReady high and stop filling it
+		 */
+		/*if (GPS_bufPtr > 499) {
+			GPS_strReady = 1;
+		}*/
+
 
 }
 

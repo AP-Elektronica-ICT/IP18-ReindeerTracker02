@@ -1,0 +1,278 @@
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"ubx_func.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.ubx_send,"ax",%progbits
+  16              		.align	1
+  17              		.global	ubx_send
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	ubx_send:
+  24              	.LFB3:
+  25              		.file 1 "../source/ubx_func.c"
+   1:../source/ubx_func.c **** /*
+   2:../source/ubx_func.c ****  * ubx_func.c
+   3:../source/ubx_func.c ****  *
+   4:../source/ubx_func.c ****  *  Created on: Mar 19, 2018
+   5:../source/ubx_func.c ****  *      Author: nks
+   6:../source/ubx_func.c ****  */
+   7:../source/ubx_func.c **** 
+   8:../source/ubx_func.c **** #include <string.h>
+   9:../source/ubx_func.c **** #include <stdio.h>
+  10:../source/ubx_func.c **** #include <stdlib.h>
+  11:../source/ubx_func.c **** 
+  12:../source/ubx_func.c **** #include "ubx_func.h"
+  13:../source/ubx_func.c **** 
+  14:../source/ubx_func.c **** char PMC_set[] = { 0XB5, 0X62, 0X06, 0X86, 0X08, 0X00, 0X00, 0X01, 0X00, 0X00,
+  15:../source/ubx_func.c **** 		0X00, 0X00, 0X00, 0X00 };
+  16:../source/ubx_func.c **** char ubx_cfg_prt[] = { 0XB5, 0X62, 0X06, 0X00, 0X01, 0X00, 0X01 };
+  17:../source/ubx_func.c **** const char ubx_ack[] = { 0xB5, 0x62};
+  18:../source/ubx_func.c **** 
+  19:../source/ubx_func.c **** extern volatile uint8_t UART3_strReady;
+  20:../source/ubx_func.c **** extern char UART3_recBuf[];
+  21:../source/ubx_func.c **** extern void UART3_send(char *data);
+  22:../source/ubx_func.c **** 
+  23:../source/ubx_func.c **** void ubx_send(char* ubx_cmd, uint8_t len) {
+  26              		.loc 1 23 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              	.LVL0:
+  31 0000 10B5     		push	{r4, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 4, -8
+  34              		.cfi_offset 14, -4
+  35 0002 0400     		movs	r4, r0
+  36              	.LVL1:
+  24:../source/ubx_func.c **** 
+  25:../source/ubx_func.c **** 	uint32_t timeout = 10000000;
+  26:../source/ubx_func.c **** 	fletcher8(ubx_cmd, 7);
+  37              		.loc 1 26 0
+  38 0004 0721     		movs	r1, #7
+  39              	.LVL2:
+  40 0006 FFF7FEFF 		bl	fletcher8
+  41              	.LVL3:
+  27:../source/ubx_func.c **** /*
+  28:../source/ubx_func.c **** 	printf("Printing UBX-msg IN ubx func\r\n");
+  29:../source/ubx_func.c **** 
+  30:../source/ubx_func.c **** 	for (uint8_t i = 0; i < len + 2; i++) {
+  31:../source/ubx_func.c **** 		printf("%02x", (unsigned char) ubx_cmd[i]);
+  32:../source/ubx_func.c **** 	}
+  33:../source/ubx_func.c **** 
+  34:../source/ubx_func.c **** 	printf("\r\n");
+  35:../source/ubx_func.c **** */
+  36:../source/ubx_func.c **** 	UART3_send(ubx_cmd);
+  42              		.loc 1 36 0
+  43 000a 2000     		movs	r0, r4
+  44 000c FFF7FEFF 		bl	UART3_send
+  45              	.LVL4:
+  25:../source/ubx_func.c **** 	fletcher8(ubx_cmd, 7);
+  46              		.loc 1 25 0
+  47 0010 164C     		ldr	r4, .L8
+  48              	.LVL5:
+  49 0012 00E0     		b	.L2
+  50              	.LVL6:
+  51              	.L3:
+  37:../source/ubx_func.c **** 
+  38:../source/ubx_func.c **** 	while (1) {
+  39:../source/ubx_func.c **** 
+  40:../source/ubx_func.c **** 		while ( timeout  > 0 ) {
+  41:../source/ubx_func.c **** 			timeout--;
+  52              		.loc 1 41 0
+  53 0014 013C     		subs	r4, r4, #1
+  54              	.LVL7:
+  55              	.L2:
+  40:../source/ubx_func.c **** 			timeout--;
+  56              		.loc 1 40 0
+  57 0016 002C     		cmp	r4, #0
+  58 0018 FCD1     		bne	.L3
+  42:../source/ubx_func.c **** 		}
+  43:../source/ubx_func.c **** 
+  44:../source/ubx_func.c **** 		printf("waiting\r\n");
+  59              		.loc 1 44 0
+  60 001a 1548     		ldr	r0, .L8+4
+  61 001c FFF7FEFF 		bl	puts
+  62              	.LVL8:
+  45:../source/ubx_func.c **** 
+  46:../source/ubx_func.c **** 		if (UART3_strReady) {
+  63              		.loc 1 46 0
+  64 0020 144B     		ldr	r3, .L8+8
+  65 0022 1B78     		ldrb	r3, [r3]
+  66 0024 002B     		cmp	r3, #0
+  67 0026 F6D0     		beq	.L2
+  47:../source/ubx_func.c **** 			//printf("%s\r\n",UART3_recBuf);
+  48:../source/ubx_func.c **** 			UART3_strReady = 0;
+  68              		.loc 1 48 0
+  69 0028 124B     		ldr	r3, .L8+8
+  70 002a 0022     		movs	r2, #0
+  71 002c 1A70     		strb	r2, [r3]
+  49:../source/ubx_func.c **** 
+  50:../source/ubx_func.c **** 			if (memcmp(UART3_recBuf, ubx_ack, 1000) == 0) {
+  72              		.loc 1 50 0
+  73 002e FA32     		adds	r2, r2, #250
+  74 0030 9200     		lsls	r2, r2, #2
+  75 0032 1149     		ldr	r1, .L8+12
+  76 0034 1148     		ldr	r0, .L8+16
+  77 0036 FFF7FEFF 		bl	memcmp
+  78              	.LVL9:
+  79 003a 0028     		cmp	r0, #0
+  80 003c EBD1     		bne	.L2
+  81              	.LBB2:
+  51:../source/ubx_func.c **** 
+  52:../source/ubx_func.c **** 				for (uint8_t i = 0; i < strlen(UART3_recBuf) + 2; i++) {
+  82              		.loc 1 52 0
+  83 003e 0024     		movs	r4, #0
+  84              	.LVL10:
+  85 0040 01E0     		b	.L5
+  86              	.LVL11:
+  87              	.L6:
+  88              		.loc 1 52 0 is_stmt 0 discriminator 3
+  89 0042 0134     		adds	r4, r4, #1
+  90              	.LVL12:
+  91 0044 E4B2     		uxtb	r4, r4
+  92              	.LVL13:
+  93              	.L5:
+  94              		.loc 1 52 0 discriminator 1
+  95 0046 0D48     		ldr	r0, .L8+16
+  96 0048 FFF7FEFF 		bl	strlen
+  97              	.LVL14:
+  98 004c 0230     		adds	r0, r0, #2
+  99 004e 8442     		cmp	r4, r0
+ 100 0050 F7D3     		bcc	.L6
+ 101              	.LBE2:
+  53:../source/ubx_func.c **** 					//printf("%02x", (unsigned char) ubx_cmd[i]);
+  54:../source/ubx_func.c **** 				}
+  55:../source/ubx_func.c **** 
+  56:../source/ubx_func.c **** 				printf("got ubx\r\n");
+ 102              		.loc 1 56 0 is_stmt 1
+ 103 0052 0B48     		ldr	r0, .L8+20
+ 104 0054 FFF7FEFF 		bl	puts
+ 105              	.LVL15:
+  57:../source/ubx_func.c **** 				memset(UART3_recBuf, 0, strlen(UART3_recBuf));
+ 106              		.loc 1 57 0
+ 107 0058 084C     		ldr	r4, .L8+16
+ 108              	.LVL16:
+ 109 005a 2000     		movs	r0, r4
+ 110 005c FFF7FEFF 		bl	strlen
+ 111              	.LVL17:
+ 112 0060 0200     		movs	r2, r0
+ 113 0062 0021     		movs	r1, #0
+ 114 0064 2000     		movs	r0, r4
+ 115 0066 FFF7FEFF 		bl	memset
+ 116              	.LVL18:
+  58:../source/ubx_func.c **** 				break;
+  59:../source/ubx_func.c **** 
+  60:../source/ubx_func.c **** 			}
+  61:../source/ubx_func.c **** 
+  62:../source/ubx_func.c **** 		}
+  63:../source/ubx_func.c **** 
+  64:../source/ubx_func.c **** 	}
+  65:../source/ubx_func.c **** 
+  66:../source/ubx_func.c **** }
+ 117              		.loc 1 66 0
+ 118              		@ sp needed
+ 119 006a 10BD     		pop	{r4, pc}
+ 120              	.L9:
+ 121              		.align	2
+ 122              	.L8:
+ 123 006c 80969800 		.word	10000000
+ 124 0070 00000000 		.word	.LC0
+ 125 0074 00000000 		.word	UART3_strReady
+ 126 0078 00000000 		.word	.LANCHOR0
+ 127 007c 00000000 		.word	UART3_recBuf
+ 128 0080 0C000000 		.word	.LC5
+ 129              		.cfi_endproc
+ 130              	.LFE3:
+ 132              		.global	ubx_ack
+ 133              		.global	ubx_cfg_prt
+ 134              		.global	PMC_set
+ 135              		.section	.data.PMC_set,"aw",%progbits
+ 136              		.align	2
+ 139              	PMC_set:
+ 140 0000 B5       		.byte	-75
+ 141 0001 62       		.byte	98
+ 142 0002 06       		.byte	6
+ 143 0003 86       		.byte	-122
+ 144 0004 08       		.byte	8
+ 145 0005 00       		.byte	0
+ 146 0006 00       		.byte	0
+ 147 0007 01       		.byte	1
+ 148 0008 00       		.byte	0
+ 149 0009 00       		.byte	0
+ 150 000a 00       		.byte	0
+ 151 000b 00       		.byte	0
+ 152 000c 00       		.byte	0
+ 153 000d 00       		.byte	0
+ 154              		.section	.data.ubx_cfg_prt,"aw",%progbits
+ 155              		.align	2
+ 158              	ubx_cfg_prt:
+ 159 0000 B5       		.byte	-75
+ 160 0001 62       		.byte	98
+ 161 0002 06       		.byte	6
+ 162 0003 00       		.byte	0
+ 163 0004 01       		.byte	1
+ 164 0005 00       		.byte	0
+ 165 0006 01       		.byte	1
+ 166              		.section	.rodata.ubx_ack,"a",%progbits
+ 167              		.align	2
+ 168              		.set	.LANCHOR0,. + 0
+ 171              	ubx_ack:
+ 172 0000 B5       		.byte	-75
+ 173 0001 62       		.byte	98
+ 174              		.section	.rodata.ubx_send.str1.4,"aMS",%progbits,1
+ 175              		.align	2
+ 176              	.LC0:
+ 177 0000 77616974 		.ascii	"waiting\015\000"
+ 177      696E670D 
+ 177      00
+ 178 0009 000000   		.space	3
+ 179              	.LC5:
+ 180 000c 676F7420 		.ascii	"got ubx\015\000"
+ 180      7562780D 
+ 180      00
+ 181              		.text
+ 182              	.Letext0:
+ 183              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 184              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 185              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 186              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 187              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 188              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 189              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 190              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ 191              		.file 10 "../source/ubx_func.h"
+ 192              		.file 11 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 ubx_func.c
+     /tmp/cc0Hszts.s:16     .text.ubx_send:0000000000000000 $t
+     /tmp/cc0Hszts.s:23     .text.ubx_send:0000000000000000 ubx_send
+     /tmp/cc0Hszts.s:123    .text.ubx_send:000000000000006c $d
+     /tmp/cc0Hszts.s:171    .rodata.ubx_ack:0000000000000000 ubx_ack
+     /tmp/cc0Hszts.s:158    .data.ubx_cfg_prt:0000000000000000 ubx_cfg_prt
+     /tmp/cc0Hszts.s:139    .data.PMC_set:0000000000000000 PMC_set
+     /tmp/cc0Hszts.s:136    .data.PMC_set:0000000000000000 $d
+     /tmp/cc0Hszts.s:155    .data.ubx_cfg_prt:0000000000000000 $d
+     /tmp/cc0Hszts.s:167    .rodata.ubx_ack:0000000000000000 $d
+     /tmp/cc0Hszts.s:175    .rodata.ubx_send.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+fletcher8
+UART3_send
+puts
+memcmp
+strlen
+memset
+UART3_strReady
+UART3_recBuf

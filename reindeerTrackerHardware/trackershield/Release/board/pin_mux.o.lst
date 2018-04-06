@@ -110,8 +110,8 @@
   31              		@ frame_needed = 0, uses_anonymous_args = 0
   32              		@ link register save eliminated.
   33              	.LVL0:
-  34              	.LBB48:
-  35              	.LBB49:
+  34              	.LBB52:
+  35              	.LBB53:
   36              		.file 2 "../drivers/fsl_clock.h"
    1:../drivers/fsl_clock.h **** /*
    2:../drivers/fsl_clock.h ****  * The Clear BSD License
@@ -809,9 +809,9 @@
  694:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
  695:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
   37              		.loc 2 695 0
-  38 0000 2A4B     		ldr	r3, .L2
-  39              	.LBE49:
-  40              	.LBE48:
+  38 0000 2D4B     		ldr	r3, .L2
+  39              	.LBE53:
+  40              	.LBE52:
   81:../board/pin_mux.c ****   CLOCK_EnableClock(kCLOCK_PortB);                           /* Port B Clock Gate Control: Clock en
   82:../board/pin_mux.c ****   CLOCK_EnableClock(kCLOCK_PortC);
   83:../board/pin_mux.c ****   CLOCK_EnableClock(kCLOCK_PortD);
@@ -825,46 +825,50 @@
   91:../board/pin_mux.c ****   PORT_SetPinMux(PORTB, 22u, kPORT_MuxAsGpio);
   92:../board/pin_mux.c ****   PORT_SetPinMux(PORTB, 11u, kPORT_MuxAsGpio);	//boostreg enable pin
   93:../board/pin_mux.c **** 
-  94:../board/pin_mux.c ****   //PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);	// wakeup pin for stock frdm
-  95:../board/pin_mux.c **** 
+  94:../board/pin_mux.c **** 
+  95:../board/pin_mux.c ****   //PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);	// wakeup pin for stock frdm
   96:../board/pin_mux.c **** 
-  97:../board/pin_mux.c ****   PORT_SetPinMux(PORTC, 4u, kPORT_MuxAsGpio);
-  98:../board/pin_mux.c ****   PORT_SetPinMux(PORTC, 16u, kPORT_MuxAlt3);				// UART3 PIN RX (nbiot)
-  99:../board/pin_mux.c ****   PORT_SetPinMux(PORTC, 17u, kPORT_MuxAlt3);				// UART3 PIN TX (nbiot)
- 100:../board/pin_mux.c **** 
- 101:../board/pin_mux.c ****   PORT_SetPinMux(PORTD, 2u, kPORT_MuxAlt3);				// UART2 PIN RX (gps)
- 102:../board/pin_mux.c ****   PORT_SetPinMux(PORTD, 3u, kPORT_MuxAlt3);				// UART2 PIN TX (gps)
- 103:../board/pin_mux.c **** 
- 104:../board/pin_mux.c ****   SIM->SOPT5 = ((SIM->SOPT5 &
-  41              		.loc 1 104 0
-  42 0002 2B49     		ldr	r1, .L2+4
-  43              	.LBB51:
-  44              	.LBB50:
+  97:../board/pin_mux.c **** 
+  98:../board/pin_mux.c ****   PORT_SetPinMux(PORTC, 4u, kPORT_MuxAsGpio);
+  99:../board/pin_mux.c **** 
+ 100:../board/pin_mux.c ****   PORT_SetPinMux(PORTC, 16u, kPORT_MuxAlt3);				// UART3 PIN RX (nbiot)
+ 101:../board/pin_mux.c ****   PORT_SetPinMux(PORTC, 17u, kPORT_MuxAlt3);				// UART3 PIN TX (nbiot)
+ 102:../board/pin_mux.c **** 
+ 103:../board/pin_mux.c ****   PORT_SetPinMux(PORTD, 2u, kPORT_MuxAlt3);				// UART2 PIN RX (gps)
+ 104:../board/pin_mux.c ****   PORT_SetPinMux(PORTD, 3u, kPORT_MuxAlt3);				// UART2 PIN TX (gps)
+ 105:../board/pin_mux.c **** 
+ 106:../board/pin_mux.c ****   PORT_SetPinMux(PORTD, 1u, kPORT_MuxAsGpio);				// UART2 PIN TX (gps)
+ 107:../board/pin_mux.c **** 
+ 108:../board/pin_mux.c ****   SIM->SOPT5 = ((SIM->SOPT5 &
+  41              		.loc 1 108 0
+  42 0002 2E49     		ldr	r1, .L2+4
+  43              	.LBB55:
+  44              	.LBB54:
   45              		.loc 2 695 0
   46 0004 1A68     		ldr	r2, [r3]
   47 0006 42F48062 		orr	r2, r2, #1024
   48 000a 1A60     		str	r2, [r3]
   49              	.LVL1:
-  50              	.LBE50:
-  51              	.LBE51:
-  52              	.LBB52:
-  53              	.LBB53:
+  50              	.LBE54:
+  51              	.LBE55:
+  52              	.LBB56:
+  53              	.LBB57:
   54 000c 1A68     		ldr	r2, [r3]
   55 000e 42F40062 		orr	r2, r2, #2048
   56 0012 1A60     		str	r2, [r3]
   57              	.LVL2:
-  58              	.LBE53:
-  59              	.LBE52:
-  60              	.LBB54:
-  61              	.LBB55:
+  58              	.LBE57:
+  59              	.LBE56:
+  60              	.LBB58:
+  61              	.LBB59:
   62 0014 1A68     		ldr	r2, [r3]
   63 0016 42F48052 		orr	r2, r2, #4096
   64 001a 1A60     		str	r2, [r3]
   65              	.LVL3:
-  66              	.LBE55:
-  67              	.LBE54:
-  68              	.LBB56:
-  69              	.LBB57:
+  66              	.LBE59:
+  67              	.LBE58:
+  68              	.LBB60:
+  69              	.LBB61:
   70              		.file 3 "../drivers/fsl_port.h"
    1:../drivers/fsl_port.h **** /*
    2:../drivers/fsl_port.h ****  * The Clear BSD License
@@ -1233,146 +1237,157 @@
  365:../drivers/fsl_port.h **** {
  366:../drivers/fsl_port.h ****     base->PCR[pin] = (base->PCR[pin] & ~PORT_PCR_MUX_MASK) | PORT_PCR_MUX(mux);
   71              		.loc 3 366 0
-  72 001c 254B     		ldr	r3, .L2+8
+  72 001c 284B     		ldr	r3, .L2+8
   73 001e 1A6C     		ldr	r2, [r3, #64]
   74 0020 22F4E062 		bic	r2, r2, #1792
   75 0024 42F44072 		orr	r2, r2, #768
   76 0028 1A64     		str	r2, [r3, #64]
   77              	.LVL4:
-  78              	.LBE57:
-  79              	.LBE56:
-  80              	.LBB58:
-  81              	.LBB59:
+  78              	.LBE61:
+  79              	.LBE60:
+  80              	.LBB62:
+  81              	.LBB63:
   82 002a 5A6C     		ldr	r2, [r3, #68]
   83 002c 22F4E062 		bic	r2, r2, #1792
   84 0030 42F44072 		orr	r2, r2, #768
   85 0034 5A64     		str	r2, [r3, #68]
   86              	.LVL5:
-  87              	.LBE59:
-  88              	.LBE58:
-  89              	.LBB60:
-  90              	.LBB61:
+  87              	.LBE63:
+  88              	.LBE62:
+  89              	.LBB64:
+  90              	.LBB65:
   91 0036 5A6D     		ldr	r2, [r3, #84]
   92 0038 22F4E062 		bic	r2, r2, #1792
   93 003c 42F48072 		orr	r2, r2, #256
   94 0040 5A65     		str	r2, [r3, #84]
   95              	.LVL6:
-  96              	.LBE61:
-  97              	.LBE60:
-  98              	.LBB62:
-  99              	.LBB63:
+  96              	.LBE65:
+  97              	.LBE64:
+  98              	.LBB66:
+  99              	.LBB67:
  100 0042 9A6D     		ldr	r2, [r3, #88]
  101 0044 22F4E062 		bic	r2, r2, #1792
  102 0048 42F48072 		orr	r2, r2, #256
  103 004c 9A65     		str	r2, [r3, #88]
  104              	.LVL7:
- 105              	.LBE63:
- 106              	.LBE62:
- 107              	.LBB64:
- 108              	.LBB65:
+ 105              	.LBE67:
+ 106              	.LBE66:
+ 107              	.LBB68:
+ 108              	.LBB69:
  109 004e DA6A     		ldr	r2, [r3, #44]
  110 0050 22F4E062 		bic	r2, r2, #1792
  111 0054 42F48072 		orr	r2, r2, #256
  112 0058 DA62     		str	r2, [r3, #44]
  113              	.LVL8:
- 114              	.LBE65:
- 115              	.LBE64:
- 116              	.LBB66:
- 117              	.LBB67:
+ 114              	.LBE69:
+ 115              	.LBE68:
+ 116              	.LBB70:
+ 117              	.LBB71:
  118 005a 03F58053 		add	r3, r3, #4096
  119 005e 1A69     		ldr	r2, [r3, #16]
  120 0060 22F4E062 		bic	r2, r2, #1792
  121 0064 42F48072 		orr	r2, r2, #256
  122 0068 1A61     		str	r2, [r3, #16]
  123              	.LVL9:
- 124              	.LBE67:
- 125              	.LBE66:
- 126              	.LBB68:
- 127              	.LBB69:
+ 124              	.LBE71:
+ 125              	.LBE70:
+ 126              	.LBB72:
+ 127              	.LBB73:
  128 006a 1A6C     		ldr	r2, [r3, #64]
  129 006c 22F4E062 		bic	r2, r2, #1792
  130 0070 42F44072 		orr	r2, r2, #768
  131 0074 1A64     		str	r2, [r3, #64]
  132              	.LVL10:
- 133              	.LBE69:
- 134              	.LBE68:
- 135              	.LBB70:
- 136              	.LBB71:
+ 133              	.LBE73:
+ 134              	.LBE72:
+ 135              	.LBB74:
+ 136              	.LBB75:
  137 0076 5A6C     		ldr	r2, [r3, #68]
  138 0078 22F4E062 		bic	r2, r2, #1792
  139 007c 42F44072 		orr	r2, r2, #768
  140 0080 5A64     		str	r2, [r3, #68]
  141              	.LVL11:
- 142              	.LBE71:
- 143              	.LBE70:
- 144              	.LBB72:
- 145              	.LBB73:
- 146 0082 0D4A     		ldr	r2, .L2+12
- 147 0084 9368     		ldr	r3, [r2, #8]
- 148 0086 23F4E063 		bic	r3, r3, #1792
- 149 008a 43F44073 		orr	r3, r3, #768
- 150 008e 9360     		str	r3, [r2, #8]
+ 142              	.LBE75:
+ 143              	.LBE74:
+ 144              	.LBB76:
+ 145              	.LBB77:
+ 146 0082 03F58053 		add	r3, r3, #4096
+ 147 0086 9A68     		ldr	r2, [r3, #8]
+ 148 0088 22F4E062 		bic	r2, r2, #1792
+ 149 008c 42F44072 		orr	r2, r2, #768
+ 150 0090 9A60     		str	r2, [r3, #8]
  151              	.LVL12:
- 152              	.LBE73:
- 153              	.LBE72:
- 154              	.LBB74:
- 155              	.LBB75:
- 156 0090 D368     		ldr	r3, [r2, #12]
- 157 0092 23F4E063 		bic	r3, r3, #1792
- 158 0096 43F44073 		orr	r3, r3, #768
- 159 009a D360     		str	r3, [r2, #12]
+ 152              	.LBE77:
+ 153              	.LBE76:
+ 154              	.LBB78:
+ 155              	.LBB79:
+ 156 0092 DA68     		ldr	r2, [r3, #12]
+ 157 0094 22F4E062 		bic	r2, r2, #1792
+ 158 0098 42F44072 		orr	r2, r2, #768
+ 159 009c DA60     		str	r2, [r3, #12]
  160              	.LVL13:
- 161              	.LBE75:
- 162              	.LBE74:
- 163              		.loc 1 104 0
- 164 009c 41F21002 		movw	r2, #4112
- 165 00a0 8B58     		ldr	r3, [r1, r2]
- 105:../board/pin_mux.c ****     (~(SIM_SOPT5_UART0TXSRC_MASK)))                          /* Mask bits to zero which are setting
- 106:../board/pin_mux.c ****       | SIM_SOPT5_UART0TXSRC(SOPT5_UART0TXSRC_UART_TX)       /* UART 0 transmit data source select:
- 166              		.loc 1 106 0
- 167 00a2 23F00303 		bic	r3, r3, #3
- 104:../board/pin_mux.c ****     (~(SIM_SOPT5_UART0TXSRC_MASK)))                          /* Mask bits to zero which are setting
- 168              		.loc 1 104 0
- 169 00a6 8B50     		str	r3, [r1, r2]
- 170 00a8 7047     		bx	lr
- 171              	.L3:
- 172 00aa 00BF     		.align	2
- 173              	.L2:
- 174 00ac 38800440 		.word	1074036792
- 175 00b0 00700440 		.word	1074032640
- 176 00b4 00A00440 		.word	1074044928
- 177 00b8 00C00440 		.word	1074053120
- 178              		.cfi_endproc
- 179              	.LFE157:
- 181              		.section	.text.BOARD_InitBootPins,"ax",%progbits
- 182              		.align	1
- 183              		.global	BOARD_InitBootPins
- 184              		.syntax unified
- 185              		.thumb
- 186              		.thumb_func
- 187              		.fpu fpv4-sp-d16
- 189              	BOARD_InitBootPins:
- 190              	.LFB156:
+ 161              	.LBE79:
+ 162              	.LBE78:
+ 163              	.LBB80:
+ 164              	.LBB81:
+ 165 009e 5A68     		ldr	r2, [r3, #4]
+ 166 00a0 22F4E062 		bic	r2, r2, #1792
+ 167 00a4 42F48072 		orr	r2, r2, #256
+ 168 00a8 5A60     		str	r2, [r3, #4]
+ 169              	.LVL14:
+ 170              	.LBE81:
+ 171              	.LBE80:
+ 172              		.loc 1 108 0
+ 173 00aa 41F21002 		movw	r2, #4112
+ 174 00ae 8B58     		ldr	r3, [r1, r2]
+ 109:../board/pin_mux.c ****     (~(SIM_SOPT5_UART0TXSRC_MASK)))                          /* Mask bits to zero which are setting
+ 110:../board/pin_mux.c ****       | SIM_SOPT5_UART0TXSRC(SOPT5_UART0TXSRC_UART_TX)       /* UART 0 transmit data source select:
+ 175              		.loc 1 110 0
+ 176 00b0 23F00303 		bic	r3, r3, #3
+ 108:../board/pin_mux.c ****     (~(SIM_SOPT5_UART0TXSRC_MASK)))                          /* Mask bits to zero which are setting
+ 177              		.loc 1 108 0
+ 178 00b4 8B50     		str	r3, [r1, r2]
+ 111:../board/pin_mux.c ****     );
+ 112:../board/pin_mux.c **** }
+ 179              		.loc 1 112 0
+ 180 00b6 7047     		bx	lr
+ 181              	.L3:
+ 182              		.align	2
+ 183              	.L2:
+ 184 00b8 38800440 		.word	1074036792
+ 185 00bc 00700440 		.word	1074032640
+ 186 00c0 00A00440 		.word	1074044928
+ 187              		.cfi_endproc
+ 188              	.LFE157:
+ 190              		.section	.text.BOARD_InitBootPins,"ax",%progbits
+ 191              		.align	1
+ 192              		.global	BOARD_InitBootPins
+ 193              		.syntax unified
+ 194              		.thumb
+ 195              		.thumb_func
+ 196              		.fpu fpv4-sp-d16
+ 198              	BOARD_InitBootPins:
+ 199              	.LFB156:
   56:../board/pin_mux.c ****     BOARD_InitPins();
- 191              		.loc 1 56 0
- 192              		.cfi_startproc
- 193              		@ args = 0, pretend = 0, frame = 0
- 194              		@ frame_needed = 0, uses_anonymous_args = 0
- 195              		@ link register save eliminated.
+ 200              		.loc 1 56 0
+ 201              		.cfi_startproc
+ 202              		@ args = 0, pretend = 0, frame = 0
+ 203              		@ frame_needed = 0, uses_anonymous_args = 0
+ 204              		@ link register save eliminated.
   57:../board/pin_mux.c **** }
- 196              		.loc 1 57 0
- 197 0000 FFF7FEBF 		b	BOARD_InitPins
- 198              	.LVL14:
- 199              		.cfi_endproc
- 200              	.LFE156:
- 202              		.text
- 203              	.Letext0:
- 204              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 205              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 206              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 207              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 208              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 209              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 210              		.file 10 "../CMSIS/core_cm4.h"
- 211              		.file 11 "../CMSIS/system_MK64F12.h"
- 212              		.file 12 "../CMSIS/MK64F12.h"
+ 205              		.loc 1 57 0
+ 206 0000 FFF7FEBF 		b	BOARD_InitPins
+ 207              	.LVL15:
+ 208              		.cfi_endproc
+ 209              	.LFE156:
+ 211              		.text
+ 212              	.Letext0:
+ 213              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 214              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 215              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 216              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 217              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 218              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 219              		.file 10 "../CMSIS/core_cm4.h"
+ 220              		.file 11 "../CMSIS/system_MK64F12.h"
+ 221              		.file 12 "../CMSIS/MK64F12.h"

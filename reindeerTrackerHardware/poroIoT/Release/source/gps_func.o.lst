@@ -1,0 +1,982 @@
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"gps_func.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.printUbxResponseHex,"ax",%progbits
+  16              		.align	1
+  17              		.global	printUbxResponseHex
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	printUbxResponseHex:
+  24              	.LFB3:
+  25              		.file 1 "../source/gps_func.c"
+   1:../source/gps_func.c **** /*
+   2:../source/gps_func.c ****  * gps_func.c
+   3:../source/gps_func.c ****  *
+   4:../source/gps_func.c ****  *  Created on: Mar 15, 2018
+   5:../source/gps_func.c ****  *      Author: nks
+   6:../source/gps_func.c ****  */
+   7:../source/gps_func.c **** 
+   8:../source/gps_func.c **** #include <string.h>
+   9:../source/gps_func.c **** #include <stdio.h>
+  10:../source/gps_func.c **** #include <stdlib.h>
+  11:../source/gps_func.c **** 
+  12:../source/gps_func.c **** #include "gps_func.h"
+  13:../source/gps_func.c **** #include "at_func.h"
+  14:../source/gps_func.c **** 
+  15:../source/gps_func.c **** 
+  16:../source/gps_func.c **** 
+  17:../source/gps_func.c **** /*
+  18:../source/gps_func.c ****  *
+  19:../source/gps_func.c ****  * Print UBX response message as hex numbers
+  20:../source/gps_func.c ****  * cannot print it normally by printf because it contains 0x00 as data
+  21:../source/gps_func.c ****  */
+  22:../source/gps_func.c **** 
+  23:../source/gps_func.c **** void printUbxResponseHex(char* data, uint8_t dataLength)
+  24:../source/gps_func.c **** {
+  26              		.loc 1 24 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              	.LVL0:
+  31 0000 70B5     		push	{r4, r5, r6, lr}
+  32              		.cfi_def_cfa_offset 16
+  33              		.cfi_offset 4, -16
+  34              		.cfi_offset 5, -12
+  35              		.cfi_offset 6, -8
+  36              		.cfi_offset 14, -4
+  37 0002 0600     		movs	r6, r0
+  38 0004 0D00     		movs	r5, r1
+  39              	.LVL1:
+  40              	.LBB2:
+  25:../source/gps_func.c **** 	for (uint8_t n = 0; n < dataLength; n++)
+  41              		.loc 1 25 0
+  42 0006 0024     		movs	r4, #0
+  43 0008 05E0     		b	.L2
+  44              	.LVL2:
+  45              	.L3:
+  26:../source/gps_func.c **** 	{
+  27:../source/gps_func.c **** 		printf("%02x ", (uint8_t) (*(data + n)));
+  46              		.loc 1 27 0 discriminator 3
+  47 000a 315D     		ldrb	r1, [r6, r4]
+  48 000c 0348     		ldr	r0, .L4
+  49 000e FFF7FEFF 		bl	printf
+  50              	.LVL3:
+  25:../source/gps_func.c **** 	for (uint8_t n = 0; n < dataLength; n++)
+  51              		.loc 1 25 0 discriminator 3
+  52 0012 0134     		adds	r4, r4, #1
+  53              	.LVL4:
+  54 0014 E4B2     		uxtb	r4, r4
+  55              	.LVL5:
+  56              	.L2:
+  25:../source/gps_func.c **** 	for (uint8_t n = 0; n < dataLength; n++)
+  57              		.loc 1 25 0 is_stmt 0 discriminator 1
+  58 0016 AC42     		cmp	r4, r5
+  59 0018 F7D3     		bcc	.L3
+  60              	.LBE2:
+  28:../source/gps_func.c **** 	}
+  29:../source/gps_func.c **** }
+  61              		.loc 1 29 0 is_stmt 1
+  62              		@ sp needed
+  63              	.LVL6:
+  64              	.LVL7:
+  65 001a 70BD     		pop	{r4, r5, r6, pc}
+  66              	.L5:
+  67              		.align	2
+  68              	.L4:
+  69 001c 00000000 		.word	.LC0
+  70              		.cfi_endproc
+  71              	.LFE3:
+  73              		.section	.text.calcUbxCrc,"ax",%progbits
+  74              		.align	1
+  75              		.global	calcUbxCrc
+  76              		.syntax unified
+  77              		.code	16
+  78              		.thumb_func
+  79              		.fpu softvfp
+  81              	calcUbxCrc:
+  82              	.LFB4:
+  30:../source/gps_func.c **** 
+  31:../source/gps_func.c **** uint8_t calcUbxCrc(char *data)
+  32:../source/gps_func.c **** {
+  83              		.loc 1 32 0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 0
+  86              		@ frame_needed = 0, uses_anonymous_args = 0
+  87              	.LVL8:
+  88 0000 70B5     		push	{r4, r5, r6, lr}
+  89              		.cfi_def_cfa_offset 16
+  90              		.cfi_offset 4, -16
+  91              		.cfi_offset 5, -12
+  92              		.cfi_offset 6, -8
+  93              		.cfi_offset 14, -4
+  94 0002 0600     		movs	r6, r0
+  95              	.LVL9:
+  33:../source/gps_func.c **** 
+  34:../source/gps_func.c **** 	uint8_t ck_a = 0, ck_b = 0, n = 0;
+  96              		.loc 1 34 0
+  97 0004 0024     		movs	r4, #0
+  35:../source/gps_func.c **** 
+  36:../source/gps_func.c **** 	while (data[n] != 0x0d) //figure out length of input message by finding CR line end char
+  98              		.loc 1 36 0
+  99 0006 01E0     		b	.L7
+ 100              	.LVL10:
+ 101              	.L8:
+  37:../source/gps_func.c **** 	{
+  38:../source/gps_func.c **** 		n++;
+ 102              		.loc 1 38 0
+ 103 0008 0134     		adds	r4, r4, #1
+ 104              	.LVL11:
+ 105 000a E4B2     		uxtb	r4, r4
+ 106              	.LVL12:
+ 107              	.L7:
+  36:../source/gps_func.c **** 	{
+ 108              		.loc 1 36 0
+ 109 000c 3357     		ldrsb	r3, [r6, r4]
+ 110 000e 0D2B     		cmp	r3, #13
+ 111 0010 FAD1     		bne	.L8
+  39:../source/gps_func.c **** 	}
+  40:../source/gps_func.c **** 
+  41:../source/gps_func.c **** 	uint8_t dataLength = n;
+  42:../source/gps_func.c **** 
+  43:../source/gps_func.c **** 	for (n = 0; n < dataLength; n++)//calculate checksum for dataLength bytes
+ 112              		.loc 1 43 0
+ 113 0012 0023     		movs	r3, #0
+  34:../source/gps_func.c **** 
+ 114              		.loc 1 34 0
+ 115 0014 0021     		movs	r1, #0
+ 116 0016 0022     		movs	r2, #0
+ 117 0018 06E0     		b	.L9
+ 118              	.LVL13:
+ 119              	.L10:
+  44:../source/gps_func.c **** 	{
+  45:../source/gps_func.c **** 		ck_a = ck_a + data[n];
+ 120              		.loc 1 45 0 discriminator 3
+ 121 001a F05C     		ldrb	r0, [r6, r3]
+ 122 001c 8218     		adds	r2, r0, r2
+ 123              	.LVL14:
+ 124 001e D2B2     		uxtb	r2, r2
+ 125              	.LVL15:
+  46:../source/gps_func.c **** 		ck_b = ck_b + ck_a;
+ 126              		.loc 1 46 0 discriminator 3
+ 127 0020 8918     		adds	r1, r1, r2
+ 128              	.LVL16:
+ 129 0022 C9B2     		uxtb	r1, r1
+ 130              	.LVL17:
+  43:../source/gps_func.c **** 	{
+ 131              		.loc 1 43 0 discriminator 3
+ 132 0024 0133     		adds	r3, r3, #1
+ 133              	.LVL18:
+ 134 0026 DBB2     		uxtb	r3, r3
+ 135              	.LVL19:
+ 136              	.L9:
+  43:../source/gps_func.c **** 	{
+ 137              		.loc 1 43 0 is_stmt 0 discriminator 1
+ 138 0028 9C42     		cmp	r4, r3
+ 139 002a F6D8     		bhi	.L10
+  47:../source/gps_func.c **** 	}
+  48:../source/gps_func.c **** 
+  49:../source/gps_func.c **** 	data[n] = ck_a; //add checksum to end of data string
+ 140              		.loc 1 49 0 is_stmt 1
+ 141 002c F254     		strb	r2, [r6, r3]
+  50:../source/gps_func.c **** 	data[n + 1] = ck_b;
+ 142              		.loc 1 50 0
+ 143 002e 5A1C     		adds	r2, r3, #1
+ 144              	.LVL20:
+ 145 0030 B154     		strb	r1, [r6, r2]
+  51:../source/gps_func.c **** 	data[n + 2] = 0;	//add a zero to terminate string
+ 146              		.loc 1 51 0
+ 147 0032 0233     		adds	r3, r3, #2
+ 148              	.LVL21:
+ 149 0034 F318     		adds	r3, r6, r3
+ 150              	.LVL22:
+ 151 0036 0022     		movs	r2, #0
+ 152              	.LVL23:
+ 153 0038 1A70     		strb	r2, [r3]
+ 154              	.LVL24:
+  52:../source/gps_func.c **** 
+  53:../source/gps_func.c **** 	for (n = 0; n < (dataLength + 2); n++) //debug print our complete message
+ 155              		.loc 1 53 0
+ 156 003a 0025     		movs	r5, #0
+ 157 003c 05E0     		b	.L11
+ 158              	.LVL25:
+ 159              	.L12:
+  54:../source/gps_func.c **** 	{
+  55:../source/gps_func.c **** 		printf("%02x ", (uint8_t) data[n]);
+ 160              		.loc 1 55 0 discriminator 3
+ 161 003e 715D     		ldrb	r1, [r6, r5]
+ 162 0040 0548     		ldr	r0, .L13
+ 163 0042 FFF7FEFF 		bl	printf
+ 164              	.LVL26:
+  53:../source/gps_func.c **** 	{
+ 165              		.loc 1 53 0 discriminator 3
+ 166 0046 0135     		adds	r5, r5, #1
+ 167              	.LVL27:
+ 168 0048 EDB2     		uxtb	r5, r5
+ 169              	.LVL28:
+ 170              	.L11:
+  53:../source/gps_func.c **** 	{
+ 171              		.loc 1 53 0 is_stmt 0 discriminator 1
+ 172 004a A31C     		adds	r3, r4, #2
+ 173 004c 9D42     		cmp	r5, r3
+ 174 004e F6DB     		blt	.L12
+  56:../source/gps_func.c **** 	}
+  57:../source/gps_func.c **** 
+  58:../source/gps_func.c **** 	return dataLength + 4;
+ 175              		.loc 1 58 0 is_stmt 1
+ 176 0050 201D     		adds	r0, r4, #4
+ 177 0052 C0B2     		uxtb	r0, r0
+  59:../source/gps_func.c **** }
+ 178              		.loc 1 59 0
+ 179              		@ sp needed
+ 180              	.LVL29:
+ 181              	.LVL30:
+ 182 0054 70BD     		pop	{r4, r5, r6, pc}
+ 183              	.L14:
+ 184 0056 C046     		.align	2
+ 185              	.L13:
+ 186 0058 00000000 		.word	.LC0
+ 187              		.cfi_endproc
+ 188              	.LFE4:
+ 190              		.global	__aeabi_uidiv
+ 191              		.section	.text.parseData,"ax",%progbits
+ 192              		.align	1
+ 193              		.global	parseData
+ 194              		.syntax unified
+ 195              		.code	16
+ 196              		.thumb_func
+ 197              		.fpu softvfp
+ 199              	parseData:
+ 200              	.LFB6:
+  60:../source/gps_func.c **** 
+  61:../source/gps_func.c **** uint8_t getGPS()
+  62:../source/gps_func.c **** {
+  63:../source/gps_func.c **** 
+  64:../source/gps_func.c **** 	uint8_t counter = 0;
+  65:../source/gps_func.c **** 
+  66:../source/gps_func.c **** 	char GLL_ID[10];	// GLL Message ID $GPGLL
+  67:../source/gps_func.c **** 	char latitude[15];
+  68:../source/gps_func.c **** 	char northSouth[2];	// Indicates North / South, N = north, S = south
+  69:../source/gps_func.c **** 	char longitude[15];
+  70:../source/gps_func.c **** 	char eastWest[2];	// Indicates East / West, E = east, W = west
+  71:../source/gps_func.c **** 	char time[10];		// UTC Time
+  72:../source/gps_func.c **** 	char status[2];	// Status indicates data validity V = Data invalid or receiver warning, A = data v
+  73:../source/gps_func.c **** 	char posMode[2];	// Positioning mode according to NMEA protocol
+  74:../source/gps_func.c **** 	char checkSum[10];
+  75:../source/gps_func.c **** 
+  76:../source/gps_func.c **** 	char* GPS_dataPtrs[9] =
+  77:../source/gps_func.c **** 	{ GLL_ID, latitude, northSouth, longitude, eastWest, time, status, posMode,
+  78:../source/gps_func.c **** 			checkSum };
+  79:../source/gps_func.c **** 
+  80:../source/gps_func.c **** 	char* gllStart = strstr(GPS_recBuf, "NGLL"); //get starting pointer of GLL string
+  81:../source/gps_func.c **** 	char* gsvStart = strstr(GPS_recBuf, "PGSV"); //get start of GSV string(sats in view)
+  82:../source/gps_func.c **** 
+  83:../source/gps_func.c **** 	if (gllStart != NULL) //check if GLL string is found
+  84:../source/gps_func.c **** 	{
+  85:../source/gps_func.c **** 
+  86:../source/gps_func.c **** 		char* gllEnd = strstr(gllStart, "\r\n"); //get end of GLL string
+  87:../source/gps_func.c **** 
+  88:../source/gps_func.c **** 		if (gllEnd != NULL)
+  89:../source/gps_func.c **** 
+  90:../source/gps_func.c **** 		{
+  91:../source/gps_func.c **** 			*(gllEnd + 2) = 0; //write 0 to end of GLL string so string functions will stop correctly
+  92:../source/gps_func.c **** 			printf("GLL string %s\r\n", gllStart);
+  93:../source/gps_func.c **** 		}
+  94:../source/gps_func.c **** 
+  95:../source/gps_func.c **** 		uint8_t gllLength = strlen(gllStart);
+  96:../source/gps_func.c **** 		char* gllStringPtr = gllStart;
+  97:../source/gps_func.c **** 
+  98:../source/gps_func.c **** 		/*
+  99:../source/gps_func.c **** 		 * Here own function is used instead of strtok to splice the string
+ 100:../source/gps_func.c **** 		 *
+ 101:../source/gps_func.c **** 		 */
+ 102:../source/gps_func.c **** 		while (*gllStringPtr)
+ 103:../source/gps_func.c **** 		{
+ 104:../source/gps_func.c **** 
+ 105:../source/gps_func.c **** 			if (*gllStringPtr == ',') //if comma is found
+ 106:../source/gps_func.c **** 			{
+ 107:../source/gps_func.c **** 				*gllStringPtr = 0; //put 0 to comma's place
+ 108:../source/gps_func.c **** 				GPS_dataPtrs[counter] = gllStart; //save this string token to variable
+ 109:../source/gps_func.c **** 				counter++;
+ 110:../source/gps_func.c **** 				gllStart = gllStringPtr + 1; //move gllStart so it points to the next char after the comma
+ 111:../source/gps_func.c **** 
+ 112:../source/gps_func.c **** 			}
+ 113:../source/gps_func.c **** 
+ 114:../source/gps_func.c **** 			gllStringPtr++;
+ 115:../source/gps_func.c **** 
+ 116:../source/gps_func.c **** 		}
+ 117:../source/gps_func.c **** 
+ 118:../source/gps_func.c **** 		if (strstr(GPS_dataPtrs[6], "A") != NULL)
+ 119:../source/gps_func.c **** 		{
+ 120:../source/gps_func.c **** 			printf("Got GPS\r\n");
+ 121:../source/gps_func.c **** 			parseData(GPS_dataPtrs[1], GPS_dataPtrs[3]);
+ 122:../source/gps_func.c **** 			return 1;
+ 123:../source/gps_func.c **** 		}
+ 124:../source/gps_func.c **** 
+ 125:../source/gps_func.c **** 		else if (strstr(GPS_dataPtrs[6], "V") != NULL)
+ 126:../source/gps_func.c **** 		{
+ 127:../source/gps_func.c **** 			printf("Data invalid, waiting for valid data\r\n");
+ 128:../source/gps_func.c **** 		}
+ 129:../source/gps_func.c **** 
+ 130:../source/gps_func.c **** 		for (uint8_t cnr = 0; cnr < 7; cnr++)
+ 131:../source/gps_func.c **** 		{
+ 132:../source/gps_func.c **** 			printf("%s\r\n", GPS_dataPtrs[cnr]);
+ 133:../source/gps_func.c **** 		}
+ 134:../source/gps_func.c **** 
+ 135:../source/gps_func.c **** 	}
+ 136:../source/gps_func.c **** 
+ 137:../source/gps_func.c **** 	if (gsvStart != NULL) //if GSV string is found, print it
+ 138:../source/gps_func.c **** 	{
+ 139:../source/gps_func.c **** 		char* gsvEnd = strstr(gsvStart, "\r\n");
+ 140:../source/gps_func.c **** 
+ 141:../source/gps_func.c **** 		if (gsvEnd != NULL)
+ 142:../source/gps_func.c **** 		{
+ 143:../source/gps_func.c **** 
+ 144:../source/gps_func.c **** 			*(gsvEnd + 2) = 0;
+ 145:../source/gps_func.c **** 			printf("GSV string %s\r\n", gsvStart);
+ 146:../source/gps_func.c **** 
+ 147:../source/gps_func.c **** 		}
+ 148:../source/gps_func.c **** 	}
+ 149:../source/gps_func.c **** 
+ 150:../source/gps_func.c **** 	return 0;
+ 151:../source/gps_func.c **** 	//}
+ 152:../source/gps_func.c **** }
+ 153:../source/gps_func.c **** 
+ 154:../source/gps_func.c **** void parseData(char* latStr, char* lonStr)
+ 155:../source/gps_func.c **** {
+ 201              		.loc 1 155 0
+ 202              		.cfi_startproc
+ 203              		@ args = 0, pretend = 0, frame = 0
+ 204              		@ frame_needed = 0, uses_anonymous_args = 0
+ 205              	.LVL31:
+ 206 0000 70B5     		push	{r4, r5, r6, lr}
+ 207              		.cfi_def_cfa_offset 16
+ 208              		.cfi_offset 4, -16
+ 209              		.cfi_offset 5, -12
+ 210              		.cfi_offset 6, -8
+ 211              		.cfi_offset 14, -4
+ 212 0002 0400     		movs	r4, r0
+ 213 0004 0D00     		movs	r5, r1
+ 214              	.LVL32:
+ 156:../source/gps_func.c **** 
+ 157:../source/gps_func.c **** 	uint8_t d_ptr = 0;
+ 158:../source/gps_func.c **** 
+ 159:../source/gps_func.c **** 	const char s = '.';
+ 160:../source/gps_func.c **** 
+ 161:../source/gps_func.c **** 	char* delPtr;
+ 162:../source/gps_func.c **** 
+ 163:../source/gps_func.c **** 	/*
+ 164:../source/gps_func.c **** 	 * swap comma from ddmm.mmm to dd.mmmmm
+ 165:../source/gps_func.c **** 	 */
+ 166:../source/gps_func.c **** 
+ 167:../source/gps_func.c **** 	latStr[4] = latStr[3];
+ 215              		.loc 1 167 0
+ 216 0006 C378     		ldrb	r3, [r0, #3]
+ 217 0008 0371     		strb	r3, [r0, #4]
+ 168:../source/gps_func.c **** 	latStr[3] = latStr[2];
+ 218              		.loc 1 168 0
+ 219 000a 8378     		ldrb	r3, [r0, #2]
+ 220 000c C370     		strb	r3, [r0, #3]
+ 169:../source/gps_func.c **** 	latStr[2] = '.';
+ 221              		.loc 1 169 0
+ 222 000e 2E23     		movs	r3, #46
+ 223 0010 8370     		strb	r3, [r0, #2]
+ 170:../source/gps_func.c **** 
+ 171:../source/gps_func.c **** 	lonStr[5] = lonStr[4];
+ 224              		.loc 1 171 0
+ 225 0012 0A79     		ldrb	r2, [r1, #4]
+ 226 0014 4A71     		strb	r2, [r1, #5]
+ 172:../source/gps_func.c **** 	lonStr[4] = lonStr[3];
+ 227              		.loc 1 172 0
+ 228 0016 CA78     		ldrb	r2, [r1, #3]
+ 229 0018 0A71     		strb	r2, [r1, #4]
+ 173:../source/gps_func.c **** 	lonStr[3] = '.';
+ 230              		.loc 1 173 0
+ 231 001a CB70     		strb	r3, [r1, #3]
+ 174:../source/gps_func.c **** 
+ 175:../source/gps_func.c **** 	printf("latstr %s lonstr %s\r\n",latStr,lonStr);
+ 232              		.loc 1 175 0
+ 233 001c 0A00     		movs	r2, r1
+ 234 001e 0100     		movs	r1, r0
+ 235              	.LVL33:
+ 236 0020 2748     		ldr	r0, .L24
+ 237              	.LVL34:
+ 238 0022 FFF7FEFF 		bl	printf
+ 239              	.LVL35:
+ 157:../source/gps_func.c **** 
+ 240              		.loc 1 157 0
+ 241 0026 0023     		movs	r3, #0
+ 176:../source/gps_func.c **** 
+ 177:../source/gps_func.c **** 	while (latStr[d_ptr] == '0')
+ 242              		.loc 1 177 0
+ 243 0028 01E0     		b	.L16
+ 244              	.LVL36:
+ 245              	.L17:
+ 178:../source/gps_func.c **** 	{		// Skip all zeroes from beginning of string
+ 179:../source/gps_func.c **** 		d_ptr++;
+ 246              		.loc 1 179 0
+ 247 002a 0133     		adds	r3, r3, #1
+ 248              	.LVL37:
+ 249 002c DBB2     		uxtb	r3, r3
+ 250              	.LVL38:
+ 251              	.L16:
+ 177:../source/gps_func.c **** 	{		// Skip all zeroes from beginning of string
+ 252              		.loc 1 177 0
+ 253 002e E118     		adds	r1, r4, r3
+ 254 0030 0022     		movs	r2, #0
+ 255 0032 8A56     		ldrsb	r2, [r1, r2]
+ 256 0034 302A     		cmp	r2, #48
+ 257 0036 F8D0     		beq	.L17
+ 180:../source/gps_func.c **** 	}
+ 181:../source/gps_func.c **** 
+ 182:../source/gps_func.c **** 	strcpy(parsedLat, latStr + d_ptr);// Copy string without zeroes to new string
+ 258              		.loc 1 182 0
+ 259 0038 224C     		ldr	r4, .L24+4
+ 260              	.LVL39:
+ 261 003a 2000     		movs	r0, r4
+ 262 003c FFF7FEFF 		bl	strcpy
+ 263              	.LVL40:
+ 183:../source/gps_func.c **** 
+ 184:../source/gps_func.c **** 	d_ptr = 0;
+ 185:../source/gps_func.c **** 
+ 186:../source/gps_func.c **** 	delPtr = strchr(parsedLat, s);
+ 264              		.loc 1 186 0
+ 265 0040 2E21     		movs	r1, #46
+ 266 0042 2000     		movs	r0, r4
+ 267 0044 FFF7FEFF 		bl	strchr
+ 268              	.LVL41:
+ 187:../source/gps_func.c **** 	delPtr++;
+ 269              		.loc 1 187 0
+ 270 0048 441C     		adds	r4, r0, #1
+ 271              	.LVL42:
+ 188:../source/gps_func.c **** 	while(*delPtr == '0'){	delPtr++;} //LOOP2: If there is zeroes in minutes part, skip them
+ 272              		.loc 1 188 0
+ 273 004a 00E0     		b	.L18
+ 274              	.L19:
+ 275              		.loc 1 188 0 is_stmt 0 discriminator 2
+ 276 004c 0134     		adds	r4, r4, #1
+ 277              	.LVL43:
+ 278              	.L18:
+ 279              		.loc 1 188 0 discriminator 1
+ 280 004e 0023     		movs	r3, #0
+ 281 0050 E356     		ldrsb	r3, [r4, r3]
+ 282 0052 302B     		cmp	r3, #48
+ 283 0054 FAD0     		beq	.L19
+ 189:../source/gps_func.c **** 
+ 190:../source/gps_func.c **** 	uint32_t latMinutes = atol(delPtr);
+ 284              		.loc 1 190 0 is_stmt 1
+ 285 0056 2000     		movs	r0, r4
+ 286 0058 FFF7FEFF 		bl	atol
+ 287              	.LVL44:
+ 191:../source/gps_func.c **** 	latMinutes = latMinutes / 6; //Convert minutes to decimal degrees
+ 288              		.loc 1 191 0
+ 289 005c 0621     		movs	r1, #6
+ 290 005e FFF7FEFF 		bl	__aeabi_uidiv
+ 291              	.LVL45:
+ 292 0062 0600     		movs	r6, r0
+ 293              	.LVL46:
+ 192:../source/gps_func.c **** 
+ 193:../source/gps_func.c **** 	sprintf(delPtr, "%ld\r\n", latMinutes); //here because of LOOP2 delPtr points after the original z
+ 294              		.loc 1 193 0
+ 295 0064 0200     		movs	r2, r0
+ 296 0066 1849     		ldr	r1, .L24+8
+ 297 0068 2000     		movs	r0, r4
+ 298              	.LVL47:
+ 299 006a FFF7FEFF 		bl	sprintf
+ 300              	.LVL48:
+ 194:../source/gps_func.c **** 											//and decimal problem is fixed
+ 195:../source/gps_func.c **** 
+ 196:../source/gps_func.c **** 	printf("latmin: %ld\r\n",latMinutes);
+ 301              		.loc 1 196 0
+ 302 006e 3100     		movs	r1, r6
+ 303 0070 1648     		ldr	r0, .L24+12
+ 304 0072 FFF7FEFF 		bl	printf
+ 305              	.LVL49:
+ 184:../source/gps_func.c **** 
+ 306              		.loc 1 184 0
+ 307 0076 0023     		movs	r3, #0
+ 197:../source/gps_func.c **** 
+ 198:../source/gps_func.c **** 	while (lonStr[d_ptr] == '0')
+ 308              		.loc 1 198 0
+ 309 0078 01E0     		b	.L20
+ 310              	.LVL50:
+ 311              	.L21:
+ 199:../source/gps_func.c **** 	{
+ 200:../source/gps_func.c **** 		d_ptr++;
+ 312              		.loc 1 200 0
+ 313 007a 0133     		adds	r3, r3, #1
+ 314              	.LVL51:
+ 315 007c DBB2     		uxtb	r3, r3
+ 316              	.LVL52:
+ 317              	.L20:
+ 198:../source/gps_func.c **** 	{
+ 318              		.loc 1 198 0
+ 319 007e E918     		adds	r1, r5, r3
+ 320 0080 0022     		movs	r2, #0
+ 321 0082 8A56     		ldrsb	r2, [r1, r2]
+ 322 0084 302A     		cmp	r2, #48
+ 323 0086 F8D0     		beq	.L21
+ 201:../source/gps_func.c **** 	}
+ 202:../source/gps_func.c **** 
+ 203:../source/gps_func.c **** 	strcpy(parsedLon, lonStr + d_ptr);
+ 324              		.loc 1 203 0
+ 325 0088 114C     		ldr	r4, .L24+16
+ 326              	.LVL53:
+ 327 008a 2000     		movs	r0, r4
+ 328 008c FFF7FEFF 		bl	strcpy
+ 329              	.LVL54:
+ 204:../source/gps_func.c **** 
+ 205:../source/gps_func.c **** 	delPtr = strchr(parsedLon, s);
+ 330              		.loc 1 205 0
+ 331 0090 2E21     		movs	r1, #46
+ 332 0092 2000     		movs	r0, r4
+ 333 0094 FFF7FEFF 		bl	strchr
+ 334              	.LVL55:
+ 206:../source/gps_func.c **** 	delPtr++;
+ 335              		.loc 1 206 0
+ 336 0098 441C     		adds	r4, r0, #1
+ 337              	.LVL56:
+ 207:../source/gps_func.c **** 	while(*delPtr == '0'){	delPtr++;} //LOOP3: If there is zeroes in minutes part, skip them
+ 338              		.loc 1 207 0
+ 339 009a 00E0     		b	.L22
+ 340              	.L23:
+ 341              		.loc 1 207 0 is_stmt 0 discriminator 2
+ 342 009c 0134     		adds	r4, r4, #1
+ 343              	.LVL57:
+ 344              	.L22:
+ 345              		.loc 1 207 0 discriminator 1
+ 346 009e 0023     		movs	r3, #0
+ 347 00a0 E356     		ldrsb	r3, [r4, r3]
+ 348 00a2 302B     		cmp	r3, #48
+ 349 00a4 FAD0     		beq	.L23
+ 208:../source/gps_func.c **** 
+ 209:../source/gps_func.c **** 	uint32_t lonMinutes = atol(delPtr);
+ 350              		.loc 1 209 0 is_stmt 1
+ 351 00a6 2000     		movs	r0, r4
+ 352 00a8 FFF7FEFF 		bl	atol
+ 353              	.LVL58:
+ 210:../source/gps_func.c **** 	lonMinutes = lonMinutes / 6;
+ 354              		.loc 1 210 0
+ 355 00ac 0621     		movs	r1, #6
+ 356 00ae FFF7FEFF 		bl	__aeabi_uidiv
+ 357              	.LVL59:
+ 358 00b2 0200     		movs	r2, r0
+ 359              	.LVL60:
+ 211:../source/gps_func.c **** 
+ 212:../source/gps_func.c **** 	sprintf(delPtr, "%ld\r\n", lonMinutes);//here because of LOOP3 delPtr points after the original ze
+ 360              		.loc 1 212 0
+ 361 00b4 0449     		ldr	r1, .L24+8
+ 362 00b6 2000     		movs	r0, r4
+ 363              	.LVL61:
+ 364 00b8 FFF7FEFF 		bl	sprintf
+ 365              	.LVL62:
+ 213:../source/gps_func.c **** 											//and decimal problem is fixed
+ 214:../source/gps_func.c **** 
+ 215:../source/gps_func.c **** 	//printf("Parsed latitude: %s", parsedLon);
+ 216:../source/gps_func.c **** 	//printf("Parsed longitude: %s", parsedLat);
+ 217:../source/gps_func.c **** }
+ 366              		.loc 1 217 0
+ 367              		@ sp needed
+ 368              	.LVL63:
+ 369              	.LVL64:
+ 370              	.LVL65:
+ 371 00bc 70BD     		pop	{r4, r5, r6, pc}
+ 372              	.L25:
+ 373 00be C046     		.align	2
+ 374              	.L24:
+ 375 00c0 00000000 		.word	.LC3
+ 376 00c4 00000000 		.word	parsedLat
+ 377 00c8 18000000 		.word	.LC6
+ 378 00cc 20000000 		.word	.LC8
+ 379 00d0 00000000 		.word	parsedLon
+ 380              		.cfi_endproc
+ 381              	.LFE6:
+ 383              		.section	.text.getGPS,"ax",%progbits
+ 384              		.align	1
+ 385              		.global	getGPS
+ 386              		.syntax unified
+ 387              		.code	16
+ 388              		.thumb_func
+ 389              		.fpu softvfp
+ 391              	getGPS:
+ 392              	.LFB5:
+  62:../source/gps_func.c **** 
+ 393              		.loc 1 62 0
+ 394              		.cfi_startproc
+ 395              		@ args = 0, pretend = 0, frame = 120
+ 396              		@ frame_needed = 0, uses_anonymous_args = 0
+ 397 0000 30B5     		push	{r4, r5, lr}
+ 398              		.cfi_def_cfa_offset 12
+ 399              		.cfi_offset 4, -12
+ 400              		.cfi_offset 5, -8
+ 401              		.cfi_offset 14, -4
+ 402 0002 9FB0     		sub	sp, sp, #124
+ 403              		.cfi_def_cfa_offset 136
+ 404              	.LVL66:
+  76:../source/gps_func.c **** 	{ GLL_ID, latitude, northSouth, longitude, eastWest, time, status, posMode,
+ 405              		.loc 1 76 0
+ 406 0004 1BAB     		add	r3, sp, #108
+ 407 0006 0093     		str	r3, [sp]
+ 408 0008 17AB     		add	r3, sp, #92
+ 409 000a 0193     		str	r3, [sp, #4]
+ 410 000c 16AB     		add	r3, sp, #88
+ 411 000e 0293     		str	r3, [sp, #8]
+ 412 0010 12AB     		add	r3, sp, #72
+ 413 0012 0393     		str	r3, [sp, #12]
+ 414 0014 11AB     		add	r3, sp, #68
+ 415 0016 0493     		str	r3, [sp, #16]
+ 416 0018 0EAB     		add	r3, sp, #56
+ 417 001a 0593     		str	r3, [sp, #20]
+ 418 001c 0DAB     		add	r3, sp, #52
+ 419 001e 0693     		str	r3, [sp, #24]
+ 420 0020 0CAB     		add	r3, sp, #48
+ 421 0022 0793     		str	r3, [sp, #28]
+ 422 0024 09AB     		add	r3, sp, #36
+ 423 0026 0893     		str	r3, [sp, #32]
+  80:../source/gps_func.c **** 	char* gsvStart = strstr(GPS_recBuf, "PGSV"); //get start of GSV string(sats in view)
+ 424              		.loc 1 80 0
+ 425 0028 324D     		ldr	r5, .L41
+ 426 002a 3349     		ldr	r1, .L41+4
+ 427 002c 2800     		movs	r0, r5
+ 428 002e FFF7FEFF 		bl	strstr
+ 429              	.LVL67:
+ 430 0032 0400     		movs	r4, r0
+ 431              	.LVL68:
+  81:../source/gps_func.c **** 
+ 432              		.loc 1 81 0
+ 433 0034 3149     		ldr	r1, .L41+8
+ 434 0036 2800     		movs	r0, r5
+ 435              	.LVL69:
+ 436 0038 FFF7FEFF 		bl	strstr
+ 437              	.LVL70:
+ 438 003c 0500     		movs	r5, r0
+ 439              	.LVL71:
+  83:../source/gps_func.c **** 	{
+ 440              		.loc 1 83 0
+ 441 003e 002C     		cmp	r4, #0
+ 442 0040 44D0     		beq	.L27
+ 443              	.LBB3:
+  86:../source/gps_func.c **** 
+ 444              		.loc 1 86 0
+ 445 0042 2F49     		ldr	r1, .L41+12
+ 446 0044 2000     		movs	r0, r4
+ 447              	.LVL72:
+ 448 0046 FFF7FEFF 		bl	strstr
+ 449              	.LVL73:
+  88:../source/gps_func.c **** 
+ 450              		.loc 1 88 0
+ 451 004a 0028     		cmp	r0, #0
+ 452 004c 05D0     		beq	.L28
+  91:../source/gps_func.c **** 			printf("GLL string %s\r\n", gllStart);
+ 453              		.loc 1 91 0
+ 454 004e 0023     		movs	r3, #0
+ 455 0050 8370     		strb	r3, [r0, #2]
+  92:../source/gps_func.c **** 		}
+ 456              		.loc 1 92 0
+ 457 0052 2100     		movs	r1, r4
+ 458 0054 2B48     		ldr	r0, .L41+16
+ 459              	.LVL74:
+ 460 0056 FFF7FEFF 		bl	printf
+ 461              	.LVL75:
+ 462              	.L28:
+  96:../source/gps_func.c **** 
+ 463              		.loc 1 96 0
+ 464 005a 2300     		movs	r3, r4
+ 465              	.LBE3:
+  64:../source/gps_func.c **** 
+ 466              		.loc 1 64 0
+ 467 005c 0021     		movs	r1, #0
+ 468              	.LBB5:
+ 102:../source/gps_func.c **** 		{
+ 469              		.loc 1 102 0
+ 470 005e 00E0     		b	.L29
+ 471              	.LVL76:
+ 472              	.L30:
+ 114:../source/gps_func.c **** 
+ 473              		.loc 1 114 0
+ 474 0060 0133     		adds	r3, r3, #1
+ 475              	.LVL77:
+ 476              	.L29:
+ 102:../source/gps_func.c **** 		{
+ 477              		.loc 1 102 0
+ 478 0062 0022     		movs	r2, #0
+ 479 0064 9A56     		ldrsb	r2, [r3, r2]
+ 480 0066 002A     		cmp	r2, #0
+ 481 0068 0AD0     		beq	.L39
+ 105:../source/gps_func.c **** 			{
+ 482              		.loc 1 105 0
+ 483 006a 2C2A     		cmp	r2, #44
+ 484 006c F8D1     		bne	.L30
+ 107:../source/gps_func.c **** 				GPS_dataPtrs[counter] = gllStart; //save this string token to variable
+ 485              		.loc 1 107 0
+ 486 006e 0022     		movs	r2, #0
+ 487 0070 1A70     		strb	r2, [r3]
+ 108:../source/gps_func.c **** 				counter++;
+ 488              		.loc 1 108 0
+ 489 0072 8A00     		lsls	r2, r1, #2
+ 490 0074 6846     		mov	r0, sp
+ 491 0076 1450     		str	r4, [r2, r0]
+ 109:../source/gps_func.c **** 				gllStart = gllStringPtr + 1; //move gllStart so it points to the next char after the comma
+ 492              		.loc 1 109 0
+ 493 0078 0131     		adds	r1, r1, #1
+ 494              	.LVL78:
+ 495 007a C9B2     		uxtb	r1, r1
+ 496              	.LVL79:
+ 110:../source/gps_func.c **** 
+ 497              		.loc 1 110 0
+ 498 007c 5C1C     		adds	r4, r3, #1
+ 499              	.LVL80:
+ 500 007e EFE7     		b	.L30
+ 501              	.L39:
+ 118:../source/gps_func.c **** 		{
+ 502              		.loc 1 118 0
+ 503 0080 069C     		ldr	r4, [sp, #24]
+ 504              	.LVL81:
+ 505 0082 4121     		movs	r1, #65
+ 506              	.LVL82:
+ 507 0084 2000     		movs	r0, r4
+ 508 0086 FFF7FEFF 		bl	strchr
+ 509              	.LVL83:
+ 510 008a 0028     		cmp	r0, #0
+ 511 008c 0AD1     		bne	.L40
+ 125:../source/gps_func.c **** 		{
+ 512              		.loc 1 125 0
+ 513 008e 5621     		movs	r1, #86
+ 514 0090 2000     		movs	r0, r4
+ 515 0092 FFF7FEFF 		bl	strchr
+ 516              	.LVL84:
+ 517 0096 0028     		cmp	r0, #0
+ 518 0098 02D0     		beq	.L34
+ 127:../source/gps_func.c **** 		}
+ 519              		.loc 1 127 0
+ 520 009a 1B48     		ldr	r0, .L41+20
+ 521 009c FFF7FEFF 		bl	puts
+ 522              	.LVL85:
+ 523              	.L34:
+ 524              	.LBE5:
+  64:../source/gps_func.c **** 
+ 525              		.loc 1 64 0 discriminator 1
+ 526 00a0 0024     		movs	r4, #0
+ 527 00a2 11E0     		b	.L35
+ 528              	.L40:
+ 529              	.LBB6:
+ 120:../source/gps_func.c **** 			parseData(GPS_dataPtrs[1], GPS_dataPtrs[3]);
+ 530              		.loc 1 120 0
+ 531 00a4 1948     		ldr	r0, .L41+24
+ 532 00a6 FFF7FEFF 		bl	puts
+ 533              	.LVL86:
+ 121:../source/gps_func.c **** 			return 1;
+ 534              		.loc 1 121 0
+ 535 00aa 0399     		ldr	r1, [sp, #12]
+ 536 00ac 0198     		ldr	r0, [sp, #4]
+ 537 00ae FFF7FEFF 		bl	parseData
+ 538              	.LVL87:
+ 122:../source/gps_func.c **** 		}
+ 539              		.loc 1 122 0
+ 540 00b2 0120     		movs	r0, #1
+ 541              	.L33:
+ 542              	.LBE6:
+ 152:../source/gps_func.c **** 
+ 543              		.loc 1 152 0
+ 544 00b4 1FB0     		add	sp, sp, #124
+ 545              		@ sp needed
+ 546              	.LVL88:
+ 547 00b6 30BD     		pop	{r4, r5, pc}
+ 548              	.LVL89:
+ 549              	.L36:
+ 550              	.LBB7:
+ 551              	.LBB4:
+ 132:../source/gps_func.c **** 		}
+ 552              		.loc 1 132 0 discriminator 3
+ 553 00b8 A300     		lsls	r3, r4, #2
+ 554 00ba 6A46     		mov	r2, sp
+ 555 00bc 9958     		ldr	r1, [r3, r2]
+ 556 00be 1448     		ldr	r0, .L41+28
+ 557 00c0 FFF7FEFF 		bl	printf
+ 558              	.LVL90:
+ 130:../source/gps_func.c **** 		{
+ 559              		.loc 1 130 0 discriminator 3
+ 560 00c4 0134     		adds	r4, r4, #1
+ 561              	.LVL91:
+ 562 00c6 E4B2     		uxtb	r4, r4
+ 563              	.LVL92:
+ 564              	.L35:
+ 130:../source/gps_func.c **** 		{
+ 565              		.loc 1 130 0 is_stmt 0 discriminator 1
+ 566 00c8 062C     		cmp	r4, #6
+ 567 00ca F5D9     		bls	.L36
+ 568              	.LVL93:
+ 569              	.L27:
+ 570              	.LBE4:
+ 571              	.LBE7:
+ 137:../source/gps_func.c **** 	{
+ 572              		.loc 1 137 0 is_stmt 1
+ 573 00cc 002D     		cmp	r5, #0
+ 574 00ce 0DD0     		beq	.L37
+ 575              	.LBB8:
+ 139:../source/gps_func.c **** 
+ 576              		.loc 1 139 0
+ 577 00d0 0B49     		ldr	r1, .L41+12
+ 578 00d2 2800     		movs	r0, r5
+ 579 00d4 FFF7FEFF 		bl	strstr
+ 580              	.LVL94:
+ 141:../source/gps_func.c **** 		{
+ 581              		.loc 1 141 0
+ 582 00d8 0028     		cmp	r0, #0
+ 583 00da 09D0     		beq	.L38
+ 144:../source/gps_func.c **** 			printf("GSV string %s\r\n", gsvStart);
+ 584              		.loc 1 144 0
+ 585 00dc 0023     		movs	r3, #0
+ 586 00de 8370     		strb	r3, [r0, #2]
+ 145:../source/gps_func.c **** 
+ 587              		.loc 1 145 0
+ 588 00e0 2900     		movs	r1, r5
+ 589 00e2 0C48     		ldr	r0, .L41+32
+ 590              	.LVL95:
+ 591 00e4 FFF7FEFF 		bl	printf
+ 592              	.LVL96:
+ 593              	.LBE8:
+ 150:../source/gps_func.c **** 	//}
+ 594              		.loc 1 150 0
+ 595 00e8 0020     		movs	r0, #0
+ 596 00ea E3E7     		b	.L33
+ 597              	.L37:
+ 598 00ec 0020     		movs	r0, #0
+ 599 00ee E1E7     		b	.L33
+ 600              	.LVL97:
+ 601              	.L38:
+ 602 00f0 0020     		movs	r0, #0
+ 603              	.LVL98:
+ 604 00f2 DFE7     		b	.L33
+ 605              	.L42:
+ 606              		.align	2
+ 607              	.L41:
+ 608 00f4 00000000 		.word	GPS_recBuf
+ 609 00f8 00000000 		.word	.LC11
+ 610 00fc 08000000 		.word	.LC14
+ 611 0100 10000000 		.word	.LC16
+ 612 0104 14000000 		.word	.LC18
+ 613 0108 30000000 		.word	.LC22
+ 614 010c 24000000 		.word	.LC20
+ 615 0110 58000000 		.word	.LC24
+ 616 0114 60000000 		.word	.LC26
+ 617              		.cfi_endproc
+ 618              	.LFE5:
+ 620              		.section	.rodata.getGPS.str1.4,"aMS",%progbits,1
+ 621              		.align	2
+ 622              	.LC11:
+ 623 0000 4E474C4C 		.ascii	"NGLL\000"
+ 623      00
+ 624 0005 000000   		.space	3
+ 625              	.LC14:
+ 626 0008 50475356 		.ascii	"PGSV\000"
+ 626      00
+ 627 000d 000000   		.space	3
+ 628              	.LC16:
+ 629 0010 0D0A00   		.ascii	"\015\012\000"
+ 630 0013 00       		.space	1
+ 631              	.LC18:
+ 632 0014 474C4C20 		.ascii	"GLL string %s\015\012\000"
+ 632      73747269 
+ 632      6E672025 
+ 632      730D0A00 
+ 633              	.LC20:
+ 634 0024 476F7420 		.ascii	"Got GPS\015\000"
+ 634      4750530D 
+ 634      00
+ 635 002d 000000   		.space	3
+ 636              	.LC22:
+ 637 0030 44617461 		.ascii	"Data invalid, waiting for valid data\015\000"
+ 637      20696E76 
+ 637      616C6964 
+ 637      2C207761 
+ 637      6974696E 
+ 638 0056 0000     		.space	2
+ 639              	.LC24:
+ 640 0058 25730D0A 		.ascii	"%s\015\012\000"
+ 640      00
+ 641 005d 000000   		.space	3
+ 642              	.LC26:
+ 643 0060 47535620 		.ascii	"GSV string %s\015\012\000"
+ 643      73747269 
+ 643      6E672025 
+ 643      730D0A00 
+ 644              		.section	.rodata.parseData.str1.4,"aMS",%progbits,1
+ 645              		.align	2
+ 646              	.LC3:
+ 647 0000 6C617473 		.ascii	"latstr %s lonstr %s\015\012\000"
+ 647      74722025 
+ 647      73206C6F 
+ 647      6E737472 
+ 647      2025730D 
+ 648 0016 0000     		.space	2
+ 649              	.LC6:
+ 650 0018 256C640D 		.ascii	"%ld\015\012\000"
+ 650      0A00
+ 651 001e 0000     		.space	2
+ 652              	.LC8:
+ 653 0020 6C61746D 		.ascii	"latmin: %ld\015\012\000"
+ 653      696E3A20 
+ 653      256C640D 
+ 653      0A00
+ 654              		.section	.rodata.printUbxResponseHex.str1.4,"aMS",%progbits,1
+ 655              		.align	2
+ 656              	.LC0:
+ 657 0000 25303278 		.ascii	"%02x \000"
+ 657      2000
+ 658              		.text
+ 659              	.Letext0:
+ 660              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 661              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 662              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 663              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 664              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 665              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 666              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 667              		.file 9 "../source/gps_func.h"
+ 668              		.file 10 "../source/at_func.h"
+ 669              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
+ 670              		.file 12 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ 671              		.file 13 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 gps_func.c
+     /tmp/ccqIfYYd.s:16     .text.printUbxResponseHex:0000000000000000 $t
+     /tmp/ccqIfYYd.s:23     .text.printUbxResponseHex:0000000000000000 printUbxResponseHex
+     /tmp/ccqIfYYd.s:69     .text.printUbxResponseHex:000000000000001c $d
+     /tmp/ccqIfYYd.s:74     .text.calcUbxCrc:0000000000000000 $t
+     /tmp/ccqIfYYd.s:81     .text.calcUbxCrc:0000000000000000 calcUbxCrc
+     /tmp/ccqIfYYd.s:186    .text.calcUbxCrc:0000000000000058 $d
+     /tmp/ccqIfYYd.s:192    .text.parseData:0000000000000000 $t
+     /tmp/ccqIfYYd.s:199    .text.parseData:0000000000000000 parseData
+     /tmp/ccqIfYYd.s:375    .text.parseData:00000000000000c0 $d
+     /tmp/ccqIfYYd.s:384    .text.getGPS:0000000000000000 $t
+     /tmp/ccqIfYYd.s:391    .text.getGPS:0000000000000000 getGPS
+     /tmp/ccqIfYYd.s:608    .text.getGPS:00000000000000f4 $d
+     /tmp/ccqIfYYd.s:621    .rodata.getGPS.str1.4:0000000000000000 $d
+     /tmp/ccqIfYYd.s:645    .rodata.parseData.str1.4:0000000000000000 $d
+     /tmp/ccqIfYYd.s:655    .rodata.printUbxResponseHex.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+printf
+__aeabi_uidiv
+strcpy
+strchr
+atol
+sprintf
+parsedLat
+parsedLon
+strstr
+puts
+GPS_recBuf

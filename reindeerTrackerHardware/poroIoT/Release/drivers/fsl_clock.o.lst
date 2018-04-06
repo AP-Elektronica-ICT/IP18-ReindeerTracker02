@@ -1,0 +1,2347 @@
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"fsl_clock.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.CLOCK_GetLircClkFreq,"ax",%progbits
+  16              		.align	1
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	CLOCK_GetLircClkFreq:
+  23              	.LFB53:
+  24              		.file 1 "../drivers/fsl_clock.c"
+   1:../drivers/fsl_clock.c **** /*
+   2:../drivers/fsl_clock.c ****  * The Clear BSD License
+   3:../drivers/fsl_clock.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_clock.c ****  * Copyright (c) 2016 - 2017 , NXP
+   5:../drivers/fsl_clock.c ****  * All rights reserved.
+   6:../drivers/fsl_clock.c ****  *
+   7:../drivers/fsl_clock.c ****  *
+   8:../drivers/fsl_clock.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   9:../drivers/fsl_clock.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+  10:../drivers/fsl_clock.c ****  * that the following conditions are met:
+  11:../drivers/fsl_clock.c ****  *
+  12:../drivers/fsl_clock.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  13:../drivers/fsl_clock.c ****  *   of conditions and the following disclaimer.
+  14:../drivers/fsl_clock.c ****  *
+  15:../drivers/fsl_clock.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  16:../drivers/fsl_clock.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  17:../drivers/fsl_clock.c ****  *   other materials provided with the distribution.
+  18:../drivers/fsl_clock.c ****  *
+  19:../drivers/fsl_clock.c ****  * o Neither the name of copyright holder nor the names of its
+  20:../drivers/fsl_clock.c ****  *   contributors may be used to endorse or promote products derived from this
+  21:../drivers/fsl_clock.c ****  *   software without specific prior written permission.
+  22:../drivers/fsl_clock.c ****  *
+  23:../drivers/fsl_clock.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  24:../drivers/fsl_clock.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  25:../drivers/fsl_clock.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  26:../drivers/fsl_clock.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  27:../drivers/fsl_clock.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  28:../drivers/fsl_clock.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  29:../drivers/fsl_clock.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  30:../drivers/fsl_clock.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  31:../drivers/fsl_clock.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  32:../drivers/fsl_clock.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  33:../drivers/fsl_clock.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  34:../drivers/fsl_clock.c ****  */
+  35:../drivers/fsl_clock.c **** 
+  36:../drivers/fsl_clock.c **** #include "fsl_clock.h"
+  37:../drivers/fsl_clock.c **** 
+  38:../drivers/fsl_clock.c **** /*******************************************************************************
+  39:../drivers/fsl_clock.c ****  * Definitions
+  40:../drivers/fsl_clock.c ****  ******************************************************************************/
+  41:../drivers/fsl_clock.c **** 
+  42:../drivers/fsl_clock.c **** #if (defined(OSC) && !(defined(OSC0)))
+  43:../drivers/fsl_clock.c **** #define OSC0 OSC
+  44:../drivers/fsl_clock.c **** #endif
+  45:../drivers/fsl_clock.c **** 
+  46:../drivers/fsl_clock.c **** #define MCG_HIRC_FREQ (48000000U)
+  47:../drivers/fsl_clock.c **** #define MCG_LIRC_FREQ1 (2000000U)
+  48:../drivers/fsl_clock.c **** #define MCG_LIRC_FREQ2 (8000000U)
+  49:../drivers/fsl_clock.c **** 
+  50:../drivers/fsl_clock.c **** #define MCG_S_CLKST_VAL ((MCG->S & MCG_S_CLKST_MASK) >> MCG_S_CLKST_SHIFT)
+  51:../drivers/fsl_clock.c **** #define MCG_SC_FCRDIV_VAL ((MCG->SC & MCG_SC_FCRDIV_MASK) >> MCG_SC_FCRDIV_SHIFT)
+  52:../drivers/fsl_clock.c **** #define MCG_MC_LIRC_DIV2_VAL ((MCG->MC & MCG_MC_LIRC_DIV2_MASK) >> MCG_MC_LIRC_DIV2_SHIFT)
+  53:../drivers/fsl_clock.c **** #define MCG_C2_IRCS_VAL ((MCG->C2 & MCG_C2_IRCS_MASK) >> MCG_C2_IRCS_SHIFT)
+  54:../drivers/fsl_clock.c **** 
+  55:../drivers/fsl_clock.c **** #define SIM_CLKDIV1_OUTDIV1_VAL ((SIM->CLKDIV1 & SIM_CLKDIV1_OUTDIV1_MASK) >> SIM_CLKDIV1_OUTDIV1_S
+  56:../drivers/fsl_clock.c **** #define SIM_CLKDIV1_OUTDIV4_VAL ((SIM->CLKDIV1 & SIM_CLKDIV1_OUTDIV4_MASK) >> SIM_CLKDIV1_OUTDIV4_S
+  57:../drivers/fsl_clock.c **** #define SIM_SOPT1_OSC32KSEL_VAL ((SIM->SOPT1 & SIM_SOPT1_OSC32KSEL_MASK) >> SIM_SOPT1_OSC32KSEL_SHI
+  58:../drivers/fsl_clock.c **** 
+  59:../drivers/fsl_clock.c **** /*******************************************************************************
+  60:../drivers/fsl_clock.c ****  * Variables
+  61:../drivers/fsl_clock.c ****  ******************************************************************************/
+  62:../drivers/fsl_clock.c **** 
+  63:../drivers/fsl_clock.c **** /* External XTAL0 (OSC0) clock frequency. */
+  64:../drivers/fsl_clock.c **** uint32_t g_xtal0Freq;
+  65:../drivers/fsl_clock.c **** /* External XTAL32K clock frequency. */
+  66:../drivers/fsl_clock.c **** uint32_t g_xtal32Freq;
+  67:../drivers/fsl_clock.c **** 
+  68:../drivers/fsl_clock.c **** /*******************************************************************************
+  69:../drivers/fsl_clock.c ****  * Prototypes
+  70:../drivers/fsl_clock.c ****  ******************************************************************************/
+  71:../drivers/fsl_clock.c **** 
+  72:../drivers/fsl_clock.c **** /*!
+  73:../drivers/fsl_clock.c ****  * @brief Get the current MCG_Lite LIRC_CLK frequency in Hz.
+  74:../drivers/fsl_clock.c ****  *
+  75:../drivers/fsl_clock.c ****  * This function will return the LIRC_CLK value in frequency(Hz) based
+  76:../drivers/fsl_clock.c ****  * on current MCG_Lite configurations and settings. It is an internal function.
+  77:../drivers/fsl_clock.c ****  *
+  78:../drivers/fsl_clock.c ****  * @return MCG_Lite LIRC_CLK frequency.
+  79:../drivers/fsl_clock.c ****  */
+  80:../drivers/fsl_clock.c **** static uint32_t CLOCK_GetLircClkFreq(void);
+  81:../drivers/fsl_clock.c **** 
+  82:../drivers/fsl_clock.c **** /*!
+  83:../drivers/fsl_clock.c ****  * @brief Get RANGE value based on OSC frequency.
+  84:../drivers/fsl_clock.c ****  *
+  85:../drivers/fsl_clock.c ****  * To setup external crystal oscillator, must set the register bits RANGE base
+  86:../drivers/fsl_clock.c ****  * on the crystal frequency. This function returns the RANGE base on the input
+  87:../drivers/fsl_clock.c ****  * frequency. This is an internal function.
+  88:../drivers/fsl_clock.c ****  *
+  89:../drivers/fsl_clock.c ****  * @return RANGE value.
+  90:../drivers/fsl_clock.c ****  */
+  91:../drivers/fsl_clock.c **** static uint8_t CLOCK_GetOscRangeFromFreq(uint32_t freq);
+  92:../drivers/fsl_clock.c **** 
+  93:../drivers/fsl_clock.c **** /*******************************************************************************
+  94:../drivers/fsl_clock.c ****  * Code
+  95:../drivers/fsl_clock.c ****  ******************************************************************************/
+  96:../drivers/fsl_clock.c **** 
+  97:../drivers/fsl_clock.c **** static uint32_t CLOCK_GetLircClkFreq(void)
+  98:../drivers/fsl_clock.c **** {
+  25              		.loc 1 98 0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 0
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  29              		@ link register save eliminated.
+  99:../drivers/fsl_clock.c ****     static const uint32_t lircFreqs[] = {MCG_LIRC_FREQ1, MCG_LIRC_FREQ2};
+ 100:../drivers/fsl_clock.c **** 
+ 101:../drivers/fsl_clock.c ****     /* Check whether the LIRC is enabled. */
+ 102:../drivers/fsl_clock.c ****     if ((MCG->C1 & MCG_C1_IRCLKEN_MASK) || (kMCGLITE_ClkSrcLirc == MCG_S_CLKST_VAL))
+  30              		.loc 1 102 0
+  31 0000 0A4B     		ldr	r3, .L5
+  32 0002 1B78     		ldrb	r3, [r3]
+  33 0004 9B07     		lsls	r3, r3, #30
+  34 0006 08D4     		bmi	.L2
+  35              		.loc 1 102 0 is_stmt 0 discriminator 1
+  36 0008 084B     		ldr	r3, .L5
+  37 000a 9A79     		ldrb	r2, [r3, #6]
+  38 000c 9208     		lsrs	r2, r2, #2
+  39 000e 0323     		movs	r3, #3
+  40 0010 1340     		ands	r3, r2
+  41 0012 012B     		cmp	r3, #1
+  42 0014 01D0     		beq	.L2
+ 103:../drivers/fsl_clock.c ****     {
+ 104:../drivers/fsl_clock.c ****         return lircFreqs[MCG_C2_IRCS_VAL];
+ 105:../drivers/fsl_clock.c ****     }
+ 106:../drivers/fsl_clock.c ****     else
+ 107:../drivers/fsl_clock.c ****     {
+ 108:../drivers/fsl_clock.c ****         return 0U;
+  43              		.loc 1 108 0 is_stmt 1
+  44 0016 0020     		movs	r0, #0
+  45 0018 06E0     		b	.L1
+  46              	.L2:
+ 104:../drivers/fsl_clock.c ****     }
+  47              		.loc 1 104 0
+  48 001a 044B     		ldr	r3, .L5
+  49 001c 5B78     		ldrb	r3, [r3, #1]
+  50 001e 0122     		movs	r2, #1
+  51 0020 1340     		ands	r3, r2
+  52 0022 9B00     		lsls	r3, r3, #2
+  53 0024 024A     		ldr	r2, .L5+4
+  54 0026 9858     		ldr	r0, [r3, r2]
+  55              	.L1:
+ 109:../drivers/fsl_clock.c ****     }
+ 110:../drivers/fsl_clock.c **** }
+  56              		.loc 1 110 0
+  57              		@ sp needed
+  58 0028 7047     		bx	lr
+  59              	.L6:
+  60 002a C046     		.align	2
+  61              	.L5:
+  62 002c 00400640 		.word	1074151424
+  63 0030 00000000 		.word	.LANCHOR0
+  64              		.cfi_endproc
+  65              	.LFE53:
+  67              		.section	.text.CLOCK_GetOscRangeFromFreq,"ax",%progbits
+  68              		.align	1
+  69              		.syntax unified
+  70              		.code	16
+  71              		.thumb_func
+  72              		.fpu softvfp
+  74              	CLOCK_GetOscRangeFromFreq:
+  75              	.LFB54:
+ 111:../drivers/fsl_clock.c **** 
+ 112:../drivers/fsl_clock.c **** static uint8_t CLOCK_GetOscRangeFromFreq(uint32_t freq)
+ 113:../drivers/fsl_clock.c **** {
+  76              		.loc 1 113 0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80              		@ link register save eliminated.
+  81              	.LVL0:
+ 114:../drivers/fsl_clock.c ****     uint8_t range;
+ 115:../drivers/fsl_clock.c **** 
+ 116:../drivers/fsl_clock.c ****     if (freq <= 39063U)
+  82              		.loc 1 116 0
+  83 0000 054B     		ldr	r3, .L11
+  84 0002 9842     		cmp	r0, r3
+  85 0004 04D9     		bls	.L9
+ 117:../drivers/fsl_clock.c ****     {
+ 118:../drivers/fsl_clock.c ****         range = 0U;
+ 119:../drivers/fsl_clock.c ****     }
+ 120:../drivers/fsl_clock.c ****     else if (freq <= 8000000U)
+  86              		.loc 1 120 0
+  87 0006 054B     		ldr	r3, .L11+4
+  88 0008 9842     		cmp	r0, r3
+  89 000a 03D8     		bhi	.L10
+ 121:../drivers/fsl_clock.c ****     {
+ 122:../drivers/fsl_clock.c ****         range = 1U;
+  90              		.loc 1 122 0
+  91 000c 0120     		movs	r0, #1
+  92              	.LVL1:
+  93 000e 00E0     		b	.L8
+  94              	.LVL2:
+  95              	.L9:
+ 118:../drivers/fsl_clock.c ****     }
+  96              		.loc 1 118 0
+  97 0010 0020     		movs	r0, #0
+  98              	.LVL3:
+  99              	.L8:
+ 123:../drivers/fsl_clock.c ****     }
+ 124:../drivers/fsl_clock.c ****     else
+ 125:../drivers/fsl_clock.c ****     {
+ 126:../drivers/fsl_clock.c ****         range = 2U;
+ 127:../drivers/fsl_clock.c ****     }
+ 128:../drivers/fsl_clock.c **** 
+ 129:../drivers/fsl_clock.c ****     return range;
+ 130:../drivers/fsl_clock.c **** }
+ 100              		.loc 1 130 0
+ 101              		@ sp needed
+ 102 0012 7047     		bx	lr
+ 103              	.LVL4:
+ 104              	.L10:
+ 126:../drivers/fsl_clock.c ****     }
+ 105              		.loc 1 126 0
+ 106 0014 0220     		movs	r0, #2
+ 107              	.LVL5:
+ 108 0016 FCE7     		b	.L8
+ 109              	.L12:
+ 110              		.align	2
+ 111              	.L11:
+ 112 0018 97980000 		.word	39063
+ 113 001c 00127A00 		.word	8000000
+ 114              		.cfi_endproc
+ 115              	.LFE54:
+ 117              		.section	.text.CLOCK_GetOsc0ErClkFreq,"ax",%progbits
+ 118              		.align	1
+ 119              		.global	CLOCK_GetOsc0ErClkFreq
+ 120              		.syntax unified
+ 121              		.code	16
+ 122              		.thumb_func
+ 123              		.fpu softvfp
+ 125              	CLOCK_GetOsc0ErClkFreq:
+ 126              	.LFB55:
+ 131:../drivers/fsl_clock.c **** 
+ 132:../drivers/fsl_clock.c **** uint32_t CLOCK_GetOsc0ErClkFreq(void)
+ 133:../drivers/fsl_clock.c **** {
+ 127              		.loc 1 133 0
+ 128              		.cfi_startproc
+ 129              		@ args = 0, pretend = 0, frame = 0
+ 130              		@ frame_needed = 0, uses_anonymous_args = 0
+ 131              		@ link register save eliminated.
+ 134:../drivers/fsl_clock.c ****     if (OSC0->CR & OSC_CR_ERCLKEN_MASK)
+ 132              		.loc 1 134 0
+ 133 0000 044B     		ldr	r3, .L17
+ 134 0002 1B78     		ldrb	r3, [r3]
+ 135 0004 5BB2     		sxtb	r3, r3
+ 136 0006 002B     		cmp	r3, #0
+ 137 0008 01DB     		blt	.L16
+ 135:../drivers/fsl_clock.c ****     {
+ 136:../drivers/fsl_clock.c ****         /* Please call CLOCK_SetXtal0Freq base on board setting before using OSC0 clock. */
+ 137:../drivers/fsl_clock.c ****         assert(g_xtal0Freq);
+ 138:../drivers/fsl_clock.c ****         return g_xtal0Freq;
+ 139:../drivers/fsl_clock.c ****     }
+ 140:../drivers/fsl_clock.c ****     else
+ 141:../drivers/fsl_clock.c ****     {
+ 142:../drivers/fsl_clock.c ****         return 0U;
+ 138              		.loc 1 142 0
+ 139 000a 0020     		movs	r0, #0
+ 140              	.L13:
+ 143:../drivers/fsl_clock.c ****     }
+ 144:../drivers/fsl_clock.c **** }
+ 141              		.loc 1 144 0
+ 142              		@ sp needed
+ 143 000c 7047     		bx	lr
+ 144              	.L16:
+ 138:../drivers/fsl_clock.c ****     }
+ 145              		.loc 1 138 0
+ 146 000e 024B     		ldr	r3, .L17+4
+ 147 0010 1868     		ldr	r0, [r3]
+ 148 0012 FBE7     		b	.L13
+ 149              	.L18:
+ 150              		.align	2
+ 151              	.L17:
+ 152 0014 00500640 		.word	1074155520
+ 153 0018 00000000 		.word	g_xtal0Freq
+ 154              		.cfi_endproc
+ 155              	.LFE55:
+ 157              		.section	.text.CLOCK_GetEr32kClkFreq,"ax",%progbits
+ 158              		.align	1
+ 159              		.global	CLOCK_GetEr32kClkFreq
+ 160              		.syntax unified
+ 161              		.code	16
+ 162              		.thumb_func
+ 163              		.fpu softvfp
+ 165              	CLOCK_GetEr32kClkFreq:
+ 166              	.LFB56:
+ 145:../drivers/fsl_clock.c **** 
+ 146:../drivers/fsl_clock.c **** uint32_t CLOCK_GetEr32kClkFreq(void)
+ 147:../drivers/fsl_clock.c **** {
+ 167              		.loc 1 147 0
+ 168              		.cfi_startproc
+ 169              		@ args = 0, pretend = 0, frame = 0
+ 170              		@ frame_needed = 0, uses_anonymous_args = 0
+ 171 0000 10B5     		push	{r4, lr}
+ 172              		.cfi_def_cfa_offset 8
+ 173              		.cfi_offset 4, -8
+ 174              		.cfi_offset 14, -4
+ 148:../drivers/fsl_clock.c ****     uint32_t freq;
+ 149:../drivers/fsl_clock.c **** 
+ 150:../drivers/fsl_clock.c ****     switch (SIM_SOPT1_OSC32KSEL_VAL)
+ 175              		.loc 1 150 0
+ 176 0002 0D4B     		ldr	r3, .L28
+ 177 0004 1A68     		ldr	r2, [r3]
+ 178 0006 920C     		lsrs	r2, r2, #18
+ 179 0008 0323     		movs	r3, #3
+ 180 000a 1340     		ands	r3, r2
+ 181 000c 022B     		cmp	r3, #2
+ 182 000e 10D0     		beq	.L21
+ 183 0010 032B     		cmp	r3, #3
+ 184 0012 03D0     		beq	.L22
+ 185 0014 002B     		cmp	r3, #0
+ 186 0016 04D0     		beq	.L27
+ 151:../drivers/fsl_clock.c ****     {
+ 152:../drivers/fsl_clock.c ****         case 0U: /* OSC 32k clock  */
+ 153:../drivers/fsl_clock.c ****             freq = (CLOCK_GetOsc0ErClkFreq() == 32768U) ? 32768U : 0U;
+ 154:../drivers/fsl_clock.c ****             break;
+ 155:../drivers/fsl_clock.c ****         case 2U: /* RTC 32k clock  */
+ 156:../drivers/fsl_clock.c ****             /* Please call CLOCK_SetXtal32Freq base on board setting before using XTAL32K/RTC_CLKIN
+ 157:../drivers/fsl_clock.c ****             assert(g_xtal32Freq);
+ 158:../drivers/fsl_clock.c ****             freq = g_xtal32Freq;
+ 159:../drivers/fsl_clock.c ****             break;
+ 160:../drivers/fsl_clock.c ****         case 3U: /* LPO clock      */
+ 161:../drivers/fsl_clock.c ****             freq = LPO_CLK_FREQ;
+ 162:../drivers/fsl_clock.c ****             break;
+ 163:../drivers/fsl_clock.c ****         default:
+ 164:../drivers/fsl_clock.c ****             freq = 0U;
+ 187              		.loc 1 164 0
+ 188 0018 0020     		movs	r0, #0
+ 189 001a 01E0     		b	.L19
+ 190              	.L22:
+ 161:../drivers/fsl_clock.c ****             break;
+ 191              		.loc 1 161 0
+ 192 001c FA20     		movs	r0, #250
+ 193 001e 8000     		lsls	r0, r0, #2
+ 194              	.L19:
+ 165:../drivers/fsl_clock.c ****             break;
+ 166:../drivers/fsl_clock.c ****     }
+ 167:../drivers/fsl_clock.c ****     return freq;
+ 168:../drivers/fsl_clock.c **** }
+ 195              		.loc 1 168 0
+ 196              		@ sp needed
+ 197 0020 10BD     		pop	{r4, pc}
+ 198              	.L27:
+ 153:../drivers/fsl_clock.c ****             break;
+ 199              		.loc 1 153 0
+ 200 0022 FFF7FEFF 		bl	CLOCK_GetOsc0ErClkFreq
+ 201              	.LVL6:
+ 202 0026 8023     		movs	r3, #128
+ 203 0028 1B02     		lsls	r3, r3, #8
+ 204 002a 9842     		cmp	r0, r3
+ 205 002c F8D0     		beq	.L19
+ 206 002e 0020     		movs	r0, #0
+ 207              	.LVL7:
+ 167:../drivers/fsl_clock.c **** }
+ 208              		.loc 1 167 0
+ 209 0030 F6E7     		b	.L19
+ 210              	.LVL8:
+ 211              	.L21:
+ 158:../drivers/fsl_clock.c ****             break;
+ 212              		.loc 1 158 0
+ 213 0032 024B     		ldr	r3, .L28+4
+ 214 0034 1868     		ldr	r0, [r3]
+ 215              	.LVL9:
+ 159:../drivers/fsl_clock.c ****         case 3U: /* LPO clock      */
+ 216              		.loc 1 159 0
+ 217 0036 F3E7     		b	.L19
+ 218              	.L29:
+ 219              		.align	2
+ 220              	.L28:
+ 221 0038 00700440 		.word	1074032640
+ 222 003c 00000000 		.word	g_xtal32Freq
+ 223              		.cfi_endproc
+ 224              	.LFE56:
+ 226              		.section	.text.CLOCK_SetSimConfig,"ax",%progbits
+ 227              		.align	1
+ 228              		.global	CLOCK_SetSimConfig
+ 229              		.syntax unified
+ 230              		.code	16
+ 231              		.thumb_func
+ 232              		.fpu softvfp
+ 234              	CLOCK_SetSimConfig:
+ 235              	.LFB62:
+ 169:../drivers/fsl_clock.c **** 
+ 170:../drivers/fsl_clock.c **** uint32_t CLOCK_GetPlatClkFreq(void)
+ 171:../drivers/fsl_clock.c **** {
+ 172:../drivers/fsl_clock.c ****     return CLOCK_GetOutClkFreq() / (SIM_CLKDIV1_OUTDIV1_VAL + 1);
+ 173:../drivers/fsl_clock.c **** }
+ 174:../drivers/fsl_clock.c **** 
+ 175:../drivers/fsl_clock.c **** uint32_t CLOCK_GetFlashClkFreq(void)
+ 176:../drivers/fsl_clock.c **** {
+ 177:../drivers/fsl_clock.c ****     uint32_t freq;
+ 178:../drivers/fsl_clock.c **** 
+ 179:../drivers/fsl_clock.c ****     freq = CLOCK_GetOutClkFreq() / (SIM_CLKDIV1_OUTDIV1_VAL + 1);
+ 180:../drivers/fsl_clock.c ****     freq /= (SIM_CLKDIV1_OUTDIV4_VAL + 1);
+ 181:../drivers/fsl_clock.c **** 
+ 182:../drivers/fsl_clock.c ****     return freq;
+ 183:../drivers/fsl_clock.c **** }
+ 184:../drivers/fsl_clock.c **** 
+ 185:../drivers/fsl_clock.c **** uint32_t CLOCK_GetBusClkFreq(void)
+ 186:../drivers/fsl_clock.c **** {
+ 187:../drivers/fsl_clock.c ****     uint32_t freq;
+ 188:../drivers/fsl_clock.c **** 
+ 189:../drivers/fsl_clock.c ****     freq = CLOCK_GetOutClkFreq() / (SIM_CLKDIV1_OUTDIV1_VAL + 1);
+ 190:../drivers/fsl_clock.c ****     freq /= (SIM_CLKDIV1_OUTDIV4_VAL + 1);
+ 191:../drivers/fsl_clock.c **** 
+ 192:../drivers/fsl_clock.c ****     return freq;
+ 193:../drivers/fsl_clock.c **** }
+ 194:../drivers/fsl_clock.c **** 
+ 195:../drivers/fsl_clock.c **** uint32_t CLOCK_GetCoreSysClkFreq(void)
+ 196:../drivers/fsl_clock.c **** {
+ 197:../drivers/fsl_clock.c ****     return CLOCK_GetOutClkFreq() / (SIM_CLKDIV1_OUTDIV1_VAL + 1);
+ 198:../drivers/fsl_clock.c **** }
+ 199:../drivers/fsl_clock.c **** 
+ 200:../drivers/fsl_clock.c **** uint32_t CLOCK_GetFreq(clock_name_t clockName)
+ 201:../drivers/fsl_clock.c **** {
+ 202:../drivers/fsl_clock.c ****     uint32_t freq;
+ 203:../drivers/fsl_clock.c **** 
+ 204:../drivers/fsl_clock.c ****     switch (clockName)
+ 205:../drivers/fsl_clock.c ****     {
+ 206:../drivers/fsl_clock.c ****         case kCLOCK_CoreSysClk:
+ 207:../drivers/fsl_clock.c ****         case kCLOCK_PlatClk:
+ 208:../drivers/fsl_clock.c ****             freq = CLOCK_GetOutClkFreq() / (SIM_CLKDIV1_OUTDIV1_VAL + 1);
+ 209:../drivers/fsl_clock.c ****             break;
+ 210:../drivers/fsl_clock.c ****         case kCLOCK_BusClk:
+ 211:../drivers/fsl_clock.c ****         case kCLOCK_FlashClk:
+ 212:../drivers/fsl_clock.c ****             freq = CLOCK_GetOutClkFreq() / (SIM_CLKDIV1_OUTDIV1_VAL + 1);
+ 213:../drivers/fsl_clock.c ****             freq /= (SIM_CLKDIV1_OUTDIV4_VAL + 1);
+ 214:../drivers/fsl_clock.c ****             break;
+ 215:../drivers/fsl_clock.c ****         case kCLOCK_Er32kClk:
+ 216:../drivers/fsl_clock.c ****             freq = CLOCK_GetEr32kClkFreq();
+ 217:../drivers/fsl_clock.c ****             break;
+ 218:../drivers/fsl_clock.c ****         case kCLOCK_Osc0ErClk:
+ 219:../drivers/fsl_clock.c ****             freq = CLOCK_GetOsc0ErClkFreq();
+ 220:../drivers/fsl_clock.c ****             break;
+ 221:../drivers/fsl_clock.c ****         case kCLOCK_McgInternalRefClk:
+ 222:../drivers/fsl_clock.c ****             freq = CLOCK_GetInternalRefClkFreq();
+ 223:../drivers/fsl_clock.c ****             break;
+ 224:../drivers/fsl_clock.c ****         case kCLOCK_McgPeriphClk:
+ 225:../drivers/fsl_clock.c ****         case kCLOCK_McgIrc48MClk:
+ 226:../drivers/fsl_clock.c ****             freq = CLOCK_GetPeriphClkFreq();
+ 227:../drivers/fsl_clock.c ****             break;
+ 228:../drivers/fsl_clock.c ****         case kCLOCK_LpoClk:
+ 229:../drivers/fsl_clock.c ****             freq = LPO_CLK_FREQ;
+ 230:../drivers/fsl_clock.c ****             break;
+ 231:../drivers/fsl_clock.c ****         default:
+ 232:../drivers/fsl_clock.c ****             freq = 0U;
+ 233:../drivers/fsl_clock.c ****             break;
+ 234:../drivers/fsl_clock.c ****     }
+ 235:../drivers/fsl_clock.c **** 
+ 236:../drivers/fsl_clock.c ****     return freq;
+ 237:../drivers/fsl_clock.c **** }
+ 238:../drivers/fsl_clock.c **** 
+ 239:../drivers/fsl_clock.c **** void CLOCK_SetSimConfig(sim_clock_config_t const *config)
+ 240:../drivers/fsl_clock.c **** {
+ 236              		.loc 1 240 0
+ 237              		.cfi_startproc
+ 238              		@ args = 0, pretend = 0, frame = 0
+ 239              		@ frame_needed = 0, uses_anonymous_args = 0
+ 240              		@ link register save eliminated.
+ 241              	.LVL10:
+ 241:../drivers/fsl_clock.c ****     SIM->CLKDIV1 = config->clkdiv1;
+ 242              		.loc 1 241 0
+ 243 0000 0749     		ldr	r1, .L31
+ 244 0002 084B     		ldr	r3, .L31+4
+ 245 0004 4268     		ldr	r2, [r0, #4]
+ 246 0006 CA50     		str	r2, [r1, r3]
+ 242:../drivers/fsl_clock.c ****     CLOCK_SetEr32kClock(config->er32kSrc);
+ 247              		.loc 1 242 0
+ 248 0008 0278     		ldrb	r2, [r0]
+ 249              	.LVL11:
+ 250              	.LBB8:
+ 251              	.LBB9:
+ 252              		.file 2 "../drivers/fsl_clock.h"
+   1:../drivers/fsl_clock.h **** /*
+   2:../drivers/fsl_clock.h ****  * The Clear BSD License
+   3:../drivers/fsl_clock.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_clock.h ****  * Copyright (c) 2016 - 2017 , NXP
+   5:../drivers/fsl_clock.h ****  * All rights reserved.
+   6:../drivers/fsl_clock.h ****  *
+   7:../drivers/fsl_clock.h ****  *
+   8:../drivers/fsl_clock.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   9:../drivers/fsl_clock.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+  10:../drivers/fsl_clock.h ****  * that the following conditions are met:
+  11:../drivers/fsl_clock.h ****  *
+  12:../drivers/fsl_clock.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  13:../drivers/fsl_clock.h ****  *   of conditions and the following disclaimer.
+  14:../drivers/fsl_clock.h ****  *
+  15:../drivers/fsl_clock.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  16:../drivers/fsl_clock.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  17:../drivers/fsl_clock.h ****  *   other materials provided with the distribution.
+  18:../drivers/fsl_clock.h ****  *
+  19:../drivers/fsl_clock.h ****  * o Neither the name of copyright holder nor the names of its
+  20:../drivers/fsl_clock.h ****  *   contributors may be used to endorse or promote products derived from this
+  21:../drivers/fsl_clock.h ****  *   software without specific prior written permission.
+  22:../drivers/fsl_clock.h ****  *
+  23:../drivers/fsl_clock.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  24:../drivers/fsl_clock.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  25:../drivers/fsl_clock.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  26:../drivers/fsl_clock.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  27:../drivers/fsl_clock.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  28:../drivers/fsl_clock.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  29:../drivers/fsl_clock.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  30:../drivers/fsl_clock.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  31:../drivers/fsl_clock.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  32:../drivers/fsl_clock.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  33:../drivers/fsl_clock.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  34:../drivers/fsl_clock.h ****  */
+  35:../drivers/fsl_clock.h **** 
+  36:../drivers/fsl_clock.h **** #ifndef _FSL_CLOCK_H_
+  37:../drivers/fsl_clock.h **** #define _FSL_CLOCK_H_
+  38:../drivers/fsl_clock.h **** 
+  39:../drivers/fsl_clock.h **** #include "fsl_common.h"
+  40:../drivers/fsl_clock.h **** 
+  41:../drivers/fsl_clock.h **** /*! @addtogroup clock */
+  42:../drivers/fsl_clock.h **** /*! @{ */
+  43:../drivers/fsl_clock.h **** 
+  44:../drivers/fsl_clock.h **** /*! @file */
+  45:../drivers/fsl_clock.h **** 
+  46:../drivers/fsl_clock.h **** /*******************************************************************************
+  47:../drivers/fsl_clock.h ****  * Configurations
+  48:../drivers/fsl_clock.h ****  ******************************************************************************/
+  49:../drivers/fsl_clock.h **** 
+  50:../drivers/fsl_clock.h **** /*! @brief Configure whether driver controls clock
+  51:../drivers/fsl_clock.h ****  *
+  52:../drivers/fsl_clock.h ****  * When set to 0, peripheral drivers will enable clock in initialize function
+  53:../drivers/fsl_clock.h ****  * and disable clock in de-initialize function. When set to 1, peripheral
+  54:../drivers/fsl_clock.h ****  * driver will not control the clock, application could contol the clock out of
+  55:../drivers/fsl_clock.h ****  * the driver.
+  56:../drivers/fsl_clock.h ****  *
+  57:../drivers/fsl_clock.h ****  * @note All drivers share this feature switcher. If it is set to 1, application
+  58:../drivers/fsl_clock.h ****  * should handle clock enable and disable for all drivers.
+  59:../drivers/fsl_clock.h ****  */
+  60:../drivers/fsl_clock.h **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL))
+  61:../drivers/fsl_clock.h **** #define FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL 0
+  62:../drivers/fsl_clock.h **** #endif
+  63:../drivers/fsl_clock.h **** 
+  64:../drivers/fsl_clock.h **** /*******************************************************************************
+  65:../drivers/fsl_clock.h ****  * Definitions
+  66:../drivers/fsl_clock.h ****  ******************************************************************************/
+  67:../drivers/fsl_clock.h **** 
+  68:../drivers/fsl_clock.h **** /*! @name Driver version */
+  69:../drivers/fsl_clock.h **** /*@{*/
+  70:../drivers/fsl_clock.h **** /*! @brief CLOCK driver version 2.1.1. */
+  71:../drivers/fsl_clock.h **** #define FSL_CLOCK_DRIVER_VERSION (MAKE_VERSION(2, 1, 1))
+  72:../drivers/fsl_clock.h **** /*@}*/
+  73:../drivers/fsl_clock.h **** 
+  74:../drivers/fsl_clock.h **** /*! @brief External XTAL0 (OSC0) clock frequency.
+  75:../drivers/fsl_clock.h ****  *
+  76:../drivers/fsl_clock.h ****  * The XTAL0/EXTAL0 (OSC0) clock frequency in Hz. When the clock is set up, use the
+  77:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal0Freq to set the value in the clock driver. For example,
+  78:../drivers/fsl_clock.h ****  * if XTAL0 is 8 MHz:
+  79:../drivers/fsl_clock.h ****  * @code
+  80:../drivers/fsl_clock.h ****  * CLOCK_InitOsc0(...); // Set up the OSC0
+  81:../drivers/fsl_clock.h ****  * CLOCK_SetXtal0Freq(80000000); // Set the XTAL0 value to clock driver.
+  82:../drivers/fsl_clock.h ****  * @endcode
+  83:../drivers/fsl_clock.h ****  *
+  84:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where one core needs to set up the
+  85:../drivers/fsl_clock.h ****  * OSC0 using the CLOCK_InitOsc0. All other cores need to call the CLOCK_SetXtal0Freq
+  86:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+  87:../drivers/fsl_clock.h ****  */
+  88:../drivers/fsl_clock.h **** extern uint32_t g_xtal0Freq;
+  89:../drivers/fsl_clock.h **** 
+  90:../drivers/fsl_clock.h **** /*! @brief The external XTAL32/EXTAL32/RTC_CLKIN clock frequency.
+  91:../drivers/fsl_clock.h ****  *
+  92:../drivers/fsl_clock.h ****  * The XTAL32/EXTAL32/RTC_CLKIN clock frequency in Hz. When the clock is set up, use the
+  93:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal32Freq to set the value in the clock driver.
+  94:../drivers/fsl_clock.h ****  *
+  95:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where one core needs to set up
+  96:../drivers/fsl_clock.h ****  * the clock. All other cores need to call the CLOCK_SetXtal32Freq
+  97:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+  98:../drivers/fsl_clock.h ****  */
+  99:../drivers/fsl_clock.h **** extern uint32_t g_xtal32Freq;
+ 100:../drivers/fsl_clock.h **** 
+ 101:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DMAMUX. */
+ 102:../drivers/fsl_clock.h **** #define DMAMUX_CLOCKS  \
+ 103:../drivers/fsl_clock.h ****     {                  \
+ 104:../drivers/fsl_clock.h ****         kCLOCK_Dmamux0 \
+ 105:../drivers/fsl_clock.h ****     }
+ 106:../drivers/fsl_clock.h **** 
+ 107:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for RTC. */
+ 108:../drivers/fsl_clock.h **** #define RTC_CLOCKS  \
+ 109:../drivers/fsl_clock.h ****     {               \
+ 110:../drivers/fsl_clock.h ****         kCLOCK_Rtc0 \
+ 111:../drivers/fsl_clock.h ****     }
+ 112:../drivers/fsl_clock.h **** 
+ 113:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SAI. */
+ 114:../drivers/fsl_clock.h **** #define SAI_CLOCKS  \
+ 115:../drivers/fsl_clock.h ****     {               \
+ 116:../drivers/fsl_clock.h ****         kCLOCK_Sai0 \
+ 117:../drivers/fsl_clock.h ****     }
+ 118:../drivers/fsl_clock.h **** 
+ 119:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SPI. */
+ 120:../drivers/fsl_clock.h **** #define SPI_CLOCKS               \
+ 121:../drivers/fsl_clock.h ****     {                            \
+ 122:../drivers/fsl_clock.h ****         kCLOCK_Spi0, kCLOCK_Spi1 \
+ 123:../drivers/fsl_clock.h ****     }
+ 124:../drivers/fsl_clock.h **** 
+ 125:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PIT. */
+ 126:../drivers/fsl_clock.h **** #define PIT_CLOCKS  \
+ 127:../drivers/fsl_clock.h ****     {               \
+ 128:../drivers/fsl_clock.h ****         kCLOCK_Pit0 \
+ 129:../drivers/fsl_clock.h ****     }
+ 130:../drivers/fsl_clock.h **** 
+ 131:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PORT. */
+ 132:../drivers/fsl_clock.h **** #define PORT_CLOCKS                                                          \
+ 133:../drivers/fsl_clock.h ****     {                                                                        \
+ 134:../drivers/fsl_clock.h ****         kCLOCK_PortA, kCLOCK_PortB, kCLOCK_PortC, kCLOCK_PortD, kCLOCK_PortE \
+ 135:../drivers/fsl_clock.h ****     }
+ 136:../drivers/fsl_clock.h **** 
+ 137:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for LPUART. */
+ 138:../drivers/fsl_clock.h **** #define LPUART_CLOCKS                  \
+ 139:../drivers/fsl_clock.h ****     {                                  \
+ 140:../drivers/fsl_clock.h ****         kCLOCK_Lpuart0, kCLOCK_Lpuart1 \
+ 141:../drivers/fsl_clock.h ****     }
+ 142:../drivers/fsl_clock.h **** 
+ 143:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DAC. */
+ 144:../drivers/fsl_clock.h **** #define DAC_CLOCKS  \
+ 145:../drivers/fsl_clock.h ****     {               \
+ 146:../drivers/fsl_clock.h ****         kCLOCK_Dac0 \
+ 147:../drivers/fsl_clock.h ****     }
+ 148:../drivers/fsl_clock.h **** 
+ 149:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for LPTMR. */
+ 150:../drivers/fsl_clock.h **** #define LPTMR_CLOCKS  \
+ 151:../drivers/fsl_clock.h ****     {                 \
+ 152:../drivers/fsl_clock.h ****         kCLOCK_Lptmr0 \
+ 153:../drivers/fsl_clock.h ****     }
+ 154:../drivers/fsl_clock.h **** 
+ 155:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for ADC16. */
+ 156:../drivers/fsl_clock.h **** #define ADC16_CLOCKS \
+ 157:../drivers/fsl_clock.h ****     {                \
+ 158:../drivers/fsl_clock.h ****         kCLOCK_Adc0  \
+ 159:../drivers/fsl_clock.h ****     }
+ 160:../drivers/fsl_clock.h **** 
+ 161:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FLEXIO. */
+ 162:../drivers/fsl_clock.h **** #define FLEXIO_CLOCKS  \
+ 163:../drivers/fsl_clock.h ****     {                  \
+ 164:../drivers/fsl_clock.h ****         kCLOCK_Flexio0 \
+ 165:../drivers/fsl_clock.h ****     }
+ 166:../drivers/fsl_clock.h **** 
+ 167:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for VREF. */
+ 168:../drivers/fsl_clock.h **** #define VREF_CLOCKS  \
+ 169:../drivers/fsl_clock.h ****     {                \
+ 170:../drivers/fsl_clock.h ****         kCLOCK_Vref0 \
+ 171:../drivers/fsl_clock.h ****     }
+ 172:../drivers/fsl_clock.h **** 
+ 173:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DMA. */
+ 174:../drivers/fsl_clock.h **** #define DMA_CLOCKS  \
+ 175:../drivers/fsl_clock.h ****     {               \
+ 176:../drivers/fsl_clock.h ****         kCLOCK_Dma0 \
+ 177:../drivers/fsl_clock.h ****     }
+ 178:../drivers/fsl_clock.h **** 
+ 179:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for UART. */
+ 180:../drivers/fsl_clock.h **** #define UART_CLOCKS                                      \
+ 181:../drivers/fsl_clock.h ****     {                                                    \
+ 182:../drivers/fsl_clock.h ****         kCLOCK_IpInvalid, kCLOCK_IpInvalid, kCLOCK_Uart2 \
+ 183:../drivers/fsl_clock.h ****     }
+ 184:../drivers/fsl_clock.h **** 
+ 185:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for TPM. */
+ 186:../drivers/fsl_clock.h **** #define TPM_CLOCKS                            \
+ 187:../drivers/fsl_clock.h ****     {                                         \
+ 188:../drivers/fsl_clock.h ****         kCLOCK_Tpm0, kCLOCK_Tpm1, kCLOCK_Tpm2 \
+ 189:../drivers/fsl_clock.h ****     }
+ 190:../drivers/fsl_clock.h **** 
+ 191:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for I2C. */
+ 192:../drivers/fsl_clock.h **** #define I2C_CLOCKS               \
+ 193:../drivers/fsl_clock.h ****     {                            \
+ 194:../drivers/fsl_clock.h ****         kCLOCK_I2c0, kCLOCK_I2c1 \
+ 195:../drivers/fsl_clock.h ****     }
+ 196:../drivers/fsl_clock.h **** 
+ 197:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FTF. */
+ 198:../drivers/fsl_clock.h **** #define FTF_CLOCKS  \
+ 199:../drivers/fsl_clock.h ****     {               \
+ 200:../drivers/fsl_clock.h ****         kCLOCK_Ftf0 \
+ 201:../drivers/fsl_clock.h ****     }
+ 202:../drivers/fsl_clock.h **** 
+ 203:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CMP. */
+ 204:../drivers/fsl_clock.h **** #define CMP_CLOCKS  \
+ 205:../drivers/fsl_clock.h ****     {               \
+ 206:../drivers/fsl_clock.h ****         kCLOCK_Cmp0 \
+ 207:../drivers/fsl_clock.h ****     }
+ 208:../drivers/fsl_clock.h **** 
+ 209:../drivers/fsl_clock.h **** /*!
+ 210:../drivers/fsl_clock.h ****  * @brief LPO clock frequency.
+ 211:../drivers/fsl_clock.h ****  */
+ 212:../drivers/fsl_clock.h **** #define LPO_CLK_FREQ 1000U
+ 213:../drivers/fsl_clock.h **** 
+ 214:../drivers/fsl_clock.h **** /*! @brief Peripherals clock source definition. */
+ 215:../drivers/fsl_clock.h **** #define SYS_CLK kCLOCK_CoreSysClk
+ 216:../drivers/fsl_clock.h **** #define BUS_CLK kCLOCK_BusClk
+ 217:../drivers/fsl_clock.h **** 
+ 218:../drivers/fsl_clock.h **** #define I2C0_CLK_SRC SYS_CLK
+ 219:../drivers/fsl_clock.h **** #define I2C1_CLK_SRC SYS_CLK
+ 220:../drivers/fsl_clock.h **** #define SPI0_CLK_SRC BUS_CLK
+ 221:../drivers/fsl_clock.h **** #define SPI1_CLK_SRC SYS_CLK
+ 222:../drivers/fsl_clock.h **** #define UART2_CLK_SRC BUS_CLK
+ 223:../drivers/fsl_clock.h **** 
+ 224:../drivers/fsl_clock.h **** /*! @brief Clock name used to get clock frequency. */
+ 225:../drivers/fsl_clock.h **** typedef enum _clock_name
+ 226:../drivers/fsl_clock.h **** {
+ 227:../drivers/fsl_clock.h **** 
+ 228:../drivers/fsl_clock.h ****     /* ----------------------------- System layer clock -------------------------------*/
+ 229:../drivers/fsl_clock.h ****     kCLOCK_CoreSysClk,    /*!< Core/system clock                                         */
+ 230:../drivers/fsl_clock.h ****     kCLOCK_PlatClk,       /*!< Platform clock                                            */
+ 231:../drivers/fsl_clock.h ****     kCLOCK_BusClk,        /*!< Bus clock                                                 */
+ 232:../drivers/fsl_clock.h ****     kCLOCK_FlexBusClk,    /*!< FlexBus clock                                             */
+ 233:../drivers/fsl_clock.h ****     kCLOCK_FlashClk,      /*!< Flash clock                                               */
+ 234:../drivers/fsl_clock.h ****     kCLOCK_FastPeriphClk, /*!< Fast peripheral clock                                     */
+ 235:../drivers/fsl_clock.h ****     kCLOCK_PllFllSelClk,  /*!< The clock after SIM[PLLFLLSEL].                           */
+ 236:../drivers/fsl_clock.h **** 
+ 237:../drivers/fsl_clock.h ****     /* ---------------------------------- OSC clock -----------------------------------*/
+ 238:../drivers/fsl_clock.h ****     kCLOCK_Er32kClk,       /*!< External reference 32K clock (ERCLK32K)                   */
+ 239:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClk,      /*!< OSC0 external reference clock (OSC0ERCLK)                 */
+ 240:../drivers/fsl_clock.h ****     kCLOCK_Osc1ErClk,      /*!< OSC1 external reference clock (OSC1ERCLK)                 */
+ 241:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClkUndiv, /*!< OSC0 external reference undivided clock(OSC0ERCLK_UNDIV). */
+ 242:../drivers/fsl_clock.h **** 
+ 243:../drivers/fsl_clock.h ****     /* ----------------------------- MCG and MCG-Lite clock ---------------------------*/
+ 244:../drivers/fsl_clock.h ****     kCLOCK_McgFixedFreqClk,   /*!< MCG fixed frequency clock (MCGFFCLK)                      */
+ 245:../drivers/fsl_clock.h ****     kCLOCK_McgInternalRefClk, /*!< MCG internal reference clock (MCGIRCLK)                   */
+ 246:../drivers/fsl_clock.h ****     kCLOCK_McgFllClk,         /*!< MCGFLLCLK                                                 */
+ 247:../drivers/fsl_clock.h ****     kCLOCK_McgPll0Clk,        /*!< MCGPLL0CLK                                                */
+ 248:../drivers/fsl_clock.h ****     kCLOCK_McgPll1Clk,        /*!< MCGPLL1CLK                                                */
+ 249:../drivers/fsl_clock.h ****     kCLOCK_McgExtPllClk,      /*!< EXT_PLLCLK                                                */
+ 250:../drivers/fsl_clock.h ****     kCLOCK_McgPeriphClk,      /*!< MCG peripheral clock (MCGPCLK)                            */
+ 251:../drivers/fsl_clock.h ****     kCLOCK_McgIrc48MClk,      /*!< MCG IRC48M clock                                          */
+ 252:../drivers/fsl_clock.h **** 
+ 253:../drivers/fsl_clock.h ****     /* --------------------------------- Other clock ----------------------------------*/
+ 254:../drivers/fsl_clock.h ****     kCLOCK_LpoClk, /*!< LPO clock                                                 */
+ 255:../drivers/fsl_clock.h **** 
+ 256:../drivers/fsl_clock.h **** } clock_name_t;
+ 257:../drivers/fsl_clock.h **** 
+ 258:../drivers/fsl_clock.h **** /*------------------------------------------------------------------------------
+ 259:../drivers/fsl_clock.h **** 
+ 260:../drivers/fsl_clock.h ****  clock_gate_t definition:
+ 261:../drivers/fsl_clock.h **** 
+ 262:../drivers/fsl_clock.h ****  31                              16                              0
+ 263:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 264:../drivers/fsl_clock.h ****  | SIM_SCGC register offset       |   control bit offset in SCGC |
+ 265:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 266:../drivers/fsl_clock.h **** 
+ 267:../drivers/fsl_clock.h ****  For example, the SDHC clock gate is controlled by SIM_SCGC3[17], the
+ 268:../drivers/fsl_clock.h ****  SIM_SCGC3 offset in SIM is 0x1030, then kCLOCK_GateSdhc0 is defined as
+ 269:../drivers/fsl_clock.h **** 
+ 270:../drivers/fsl_clock.h ****               kCLOCK_GateSdhc0 = (0x1030 << 16) | 17;
+ 271:../drivers/fsl_clock.h **** 
+ 272:../drivers/fsl_clock.h **** ------------------------------------------------------------------------------*/
+ 273:../drivers/fsl_clock.h **** 
+ 274:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_SHIFT 16U
+ 275:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_MASK 0xFFFF0000U
+ 276:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_SHIFT 0U
+ 277:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_MASK 0x0000FFFFU
+ 278:../drivers/fsl_clock.h **** 
+ 279:../drivers/fsl_clock.h **** #define CLK_GATE_DEFINE(reg_offset, bit_shift)                                  \
+ 280:../drivers/fsl_clock.h ****     ((((reg_offset) << CLK_GATE_REG_OFFSET_SHIFT) & CLK_GATE_REG_OFFSET_MASK) | \
+ 281:../drivers/fsl_clock.h ****      (((bit_shift) << CLK_GATE_BIT_SHIFT_SHIFT) & CLK_GATE_BIT_SHIFT_MASK))
+ 282:../drivers/fsl_clock.h **** 
+ 283:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_REG_OFFSET(x) (((x)&CLK_GATE_REG_OFFSET_MASK) >> CLK_GATE_REG_OFFSET_SHIF
+ 284:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_BITS_SHIFT(x) (((x)&CLK_GATE_BIT_SHIFT_MASK) >> CLK_GATE_BIT_SHIFT_SHIFT)
+ 285:../drivers/fsl_clock.h **** 
+ 286:../drivers/fsl_clock.h **** /*! @brief Clock gate name used for CLOCK_EnableClock/CLOCK_DisableClock. */
+ 287:../drivers/fsl_clock.h **** typedef enum _clock_ip_name
+ 288:../drivers/fsl_clock.h **** {
+ 289:../drivers/fsl_clock.h ****     kCLOCK_IpInvalid = 0U,
+ 290:../drivers/fsl_clock.h ****     kCLOCK_I2c0 = CLK_GATE_DEFINE(0x1034U, 6U),
+ 291:../drivers/fsl_clock.h ****     kCLOCK_I2c1 = CLK_GATE_DEFINE(0x1034U, 7U),
+ 292:../drivers/fsl_clock.h ****     kCLOCK_Uart2 = CLK_GATE_DEFINE(0x1034U, 12U),
+ 293:../drivers/fsl_clock.h ****     kCLOCK_Cmp0 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 294:../drivers/fsl_clock.h ****     kCLOCK_Vref0 = CLK_GATE_DEFINE(0x1034U, 20U),
+ 295:../drivers/fsl_clock.h ****     kCLOCK_Spi0 = CLK_GATE_DEFINE(0x1034U, 22U),
+ 296:../drivers/fsl_clock.h ****     kCLOCK_Spi1 = CLK_GATE_DEFINE(0x1034U, 23U),
+ 297:../drivers/fsl_clock.h **** 
+ 298:../drivers/fsl_clock.h ****     kCLOCK_Lptmr0 = CLK_GATE_DEFINE(0x1038U, 0U),
+ 299:../drivers/fsl_clock.h ****     kCLOCK_PortA = CLK_GATE_DEFINE(0x1038U, 9U),
+ 300:../drivers/fsl_clock.h ****     kCLOCK_PortB = CLK_GATE_DEFINE(0x1038U, 10U),
+ 301:../drivers/fsl_clock.h ****     kCLOCK_PortC = CLK_GATE_DEFINE(0x1038U, 11U),
+ 302:../drivers/fsl_clock.h ****     kCLOCK_PortD = CLK_GATE_DEFINE(0x1038U, 12U),
+ 303:../drivers/fsl_clock.h ****     kCLOCK_PortE = CLK_GATE_DEFINE(0x1038U, 13U),
+ 304:../drivers/fsl_clock.h ****     kCLOCK_Lpuart0 = CLK_GATE_DEFINE(0x1038U, 20U),
+ 305:../drivers/fsl_clock.h ****     kCLOCK_Lpuart1 = CLK_GATE_DEFINE(0x1038U, 21U),
+ 306:../drivers/fsl_clock.h ****     kCLOCK_Flexio0 = CLK_GATE_DEFINE(0x1038U, 31U),
+ 307:../drivers/fsl_clock.h **** 
+ 308:../drivers/fsl_clock.h ****     kCLOCK_Ftf0 = CLK_GATE_DEFINE(0x103CU, 0U),
+ 309:../drivers/fsl_clock.h ****     kCLOCK_Dmamux0 = CLK_GATE_DEFINE(0x103CU, 1U),
+ 310:../drivers/fsl_clock.h ****     kCLOCK_Sai0 = CLK_GATE_DEFINE(0x103CU, 15U),
+ 311:../drivers/fsl_clock.h ****     kCLOCK_Pit0 = CLK_GATE_DEFINE(0x103CU, 23U),
+ 312:../drivers/fsl_clock.h ****     kCLOCK_Tpm0 = CLK_GATE_DEFINE(0x103CU, 24U),
+ 313:../drivers/fsl_clock.h ****     kCLOCK_Tpm1 = CLK_GATE_DEFINE(0x103CU, 25U),
+ 314:../drivers/fsl_clock.h ****     kCLOCK_Tpm2 = CLK_GATE_DEFINE(0x103CU, 26U),
+ 315:../drivers/fsl_clock.h ****     kCLOCK_Adc0 = CLK_GATE_DEFINE(0x103CU, 27U),
+ 316:../drivers/fsl_clock.h ****     kCLOCK_Rtc0 = CLK_GATE_DEFINE(0x103CU, 29U),
+ 317:../drivers/fsl_clock.h ****     kCLOCK_Dac0 = CLK_GATE_DEFINE(0x103CU, 31U),
+ 318:../drivers/fsl_clock.h **** 
+ 319:../drivers/fsl_clock.h ****     kCLOCK_Dma0 = CLK_GATE_DEFINE(0x1040U, 8U),
+ 320:../drivers/fsl_clock.h **** } clock_ip_name_t;
+ 321:../drivers/fsl_clock.h **** 
+ 322:../drivers/fsl_clock.h **** /*!@brief SIM configuration structure for clock setting. */
+ 323:../drivers/fsl_clock.h **** typedef struct _sim_clock_config
+ 324:../drivers/fsl_clock.h **** {
+ 325:../drivers/fsl_clock.h ****     uint8_t er32kSrc; /*!< ERCLK32K source selection.   */
+ 326:../drivers/fsl_clock.h ****     uint32_t clkdiv1; /*!< SIM_CLKDIV1.                 */
+ 327:../drivers/fsl_clock.h **** } sim_clock_config_t;
+ 328:../drivers/fsl_clock.h **** 
+ 329:../drivers/fsl_clock.h **** /*! @brief Oscillator capacitor load setting.*/
+ 330:../drivers/fsl_clock.h **** enum _osc_cap_load
+ 331:../drivers/fsl_clock.h **** {
+ 332:../drivers/fsl_clock.h ****     kOSC_Cap2P = OSC_CR_SC2P_MASK,  /*!< 2  pF capacitor load */
+ 333:../drivers/fsl_clock.h ****     kOSC_Cap4P = OSC_CR_SC4P_MASK,  /*!< 4  pF capacitor load */
+ 334:../drivers/fsl_clock.h ****     kOSC_Cap8P = OSC_CR_SC8P_MASK,  /*!< 8  pF capacitor load */
+ 335:../drivers/fsl_clock.h ****     kOSC_Cap16P = OSC_CR_SC16P_MASK /*!< 16 pF capacitor load */
+ 336:../drivers/fsl_clock.h **** };
+ 337:../drivers/fsl_clock.h **** 
+ 338:../drivers/fsl_clock.h **** /*! @brief OSCERCLK enable mode. */
+ 339:../drivers/fsl_clock.h **** enum _oscer_enable_mode
+ 340:../drivers/fsl_clock.h **** {
+ 341:../drivers/fsl_clock.h ****     kOSC_ErClkEnable = OSC_CR_ERCLKEN_MASK,       /*!< Enable.              */
+ 342:../drivers/fsl_clock.h ****     kOSC_ErClkEnableInStop = OSC_CR_EREFSTEN_MASK /*!< Enable in stop mode. */
+ 343:../drivers/fsl_clock.h **** };
+ 344:../drivers/fsl_clock.h **** 
+ 345:../drivers/fsl_clock.h **** /*! @brief The OSC configuration for OSCERCLK. */
+ 346:../drivers/fsl_clock.h **** typedef struct _oscer_config
+ 347:../drivers/fsl_clock.h **** {
+ 348:../drivers/fsl_clock.h ****     uint8_t enableMode; /*!< OSCERCLK enable mode. OR'ed value of \ref _oscer_enable_mode. */
+ 349:../drivers/fsl_clock.h **** 
+ 350:../drivers/fsl_clock.h **** } oscer_config_t;
+ 351:../drivers/fsl_clock.h **** 
+ 352:../drivers/fsl_clock.h **** /*! @brief The OSC work mode. */
+ 353:../drivers/fsl_clock.h **** typedef enum _osc_mode
+ 354:../drivers/fsl_clock.h **** {
+ 355:../drivers/fsl_clock.h ****     kOSC_ModeExt = 0U,                                            /*!< Use external clock.   */
+ 356:../drivers/fsl_clock.h ****     kOSC_ModeOscLowPower = MCG_C2_EREFS0_MASK,                    /*!< Oscillator low power. */
+ 357:../drivers/fsl_clock.h ****     kOSC_ModeOscHighGain = MCG_C2_EREFS0_MASK | MCG_C2_HGO0_MASK, /*!< Oscillator high gain. */
+ 358:../drivers/fsl_clock.h **** } osc_mode_t;
+ 359:../drivers/fsl_clock.h **** 
+ 360:../drivers/fsl_clock.h **** /*!
+ 361:../drivers/fsl_clock.h ****  * @brief OSC Initialization Configuration Structure
+ 362:../drivers/fsl_clock.h ****  *
+ 363:../drivers/fsl_clock.h ****  * Defines the configuration data structure to initialize the OSC.
+ 364:../drivers/fsl_clock.h ****  * When porting to a new board, set the following members
+ 365:../drivers/fsl_clock.h ****  * according to the board settings:
+ 366:../drivers/fsl_clock.h ****  * 1. freq: The external frequency.
+ 367:../drivers/fsl_clock.h ****  * 2. workMode: The OSC module mode.
+ 368:../drivers/fsl_clock.h ****  */
+ 369:../drivers/fsl_clock.h **** typedef struct _osc_config
+ 370:../drivers/fsl_clock.h **** {
+ 371:../drivers/fsl_clock.h ****     uint32_t freq;              /*!< External clock frequency.    */
+ 372:../drivers/fsl_clock.h ****     uint8_t capLoad;            /*!< Capacitor load setting.      */
+ 373:../drivers/fsl_clock.h ****     osc_mode_t workMode;        /*!< OSC work mode setting.       */
+ 374:../drivers/fsl_clock.h ****     oscer_config_t oscerConfig; /*!< Configuration for OSCERCLK.  */
+ 375:../drivers/fsl_clock.h **** } osc_config_t;
+ 376:../drivers/fsl_clock.h **** 
+ 377:../drivers/fsl_clock.h **** /*! @brief MCG_Lite clock source selection. */
+ 378:../drivers/fsl_clock.h **** typedef enum _mcglite_clkout_src
+ 379:../drivers/fsl_clock.h **** {
+ 380:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcHirc, /*!< MCGOUTCLK source is HIRC */
+ 381:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcLirc, /*!< MCGOUTCLK source is LIRC */
+ 382:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcExt,  /*!< MCGOUTCLK source is external clock source */
+ 383:../drivers/fsl_clock.h ****     kMCGLITE_ClkSrcReserved
+ 384:../drivers/fsl_clock.h **** } mcglite_clkout_src_t;
+ 385:../drivers/fsl_clock.h **** 
+ 386:../drivers/fsl_clock.h **** /*! @brief MCG_Lite LIRC select. */
+ 387:../drivers/fsl_clock.h **** typedef enum _mcglite_lirc_mode
+ 388:../drivers/fsl_clock.h **** {
+ 389:../drivers/fsl_clock.h ****     kMCGLITE_Lirc2M, /*!< Slow internal reference(LIRC) 2 MHz clock selected */
+ 390:../drivers/fsl_clock.h ****     kMCGLITE_Lirc8M, /*!< Slow internal reference(LIRC) 8 MHz clock selected */
+ 391:../drivers/fsl_clock.h **** } mcglite_lirc_mode_t;
+ 392:../drivers/fsl_clock.h **** 
+ 393:../drivers/fsl_clock.h **** /*! @brief MCG_Lite divider factor selection for clock source*/
+ 394:../drivers/fsl_clock.h **** typedef enum _mcglite_lirc_div
+ 395:../drivers/fsl_clock.h **** {
+ 396:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy1 = 0U, /*!< Divider is 1    */
+ 397:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy2,      /*!< Divider is 2    */
+ 398:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy4,      /*!< Divider is 4    */
+ 399:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy8,      /*!< Divider is 8    */
+ 400:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy16,     /*!< Divider is 16   */
+ 401:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy32,     /*!< Divider is 32   */
+ 402:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy64,     /*!< Divider is 64   */
+ 403:../drivers/fsl_clock.h ****     kMCGLITE_LircDivBy128     /*!< Divider is 128  */
+ 404:../drivers/fsl_clock.h **** } mcglite_lirc_div_t;
+ 405:../drivers/fsl_clock.h **** 
+ 406:../drivers/fsl_clock.h **** /*! @brief MCG_Lite clock mode definitions */
+ 407:../drivers/fsl_clock.h **** typedef enum _mcglite_mode
+ 408:../drivers/fsl_clock.h **** {
+ 409:../drivers/fsl_clock.h ****     kMCGLITE_ModeHirc48M, /*!< Clock mode is HIRC 48 M  */
+ 410:../drivers/fsl_clock.h ****     kMCGLITE_ModeLirc8M,  /*!< Clock mode is LIRC 8 M   */
+ 411:../drivers/fsl_clock.h ****     kMCGLITE_ModeLirc2M,  /*!< Clock mode is LIRC 2 M   */
+ 412:../drivers/fsl_clock.h ****     kMCGLITE_ModeExt,     /*!< Clock mode is EXT       */
+ 413:../drivers/fsl_clock.h ****     kMCGLITE_ModeError    /*!< Unknown mode            */
+ 414:../drivers/fsl_clock.h **** } mcglite_mode_t;
+ 415:../drivers/fsl_clock.h **** 
+ 416:../drivers/fsl_clock.h **** /*! @brief MCG internal reference clock (MCGIRCLK) enable mode definition. */
+ 417:../drivers/fsl_clock.h **** enum _mcglite_irclk_enable_mode
+ 418:../drivers/fsl_clock.h **** {
+ 419:../drivers/fsl_clock.h ****     kMCGLITE_IrclkEnable = MCG_C1_IRCLKEN_MASK,       /*!< MCGIRCLK enable.              */
+ 420:../drivers/fsl_clock.h ****     kMCGLITE_IrclkEnableInStop = MCG_C1_IREFSTEN_MASK /*!< MCGIRCLK enable in stop mode. */
+ 421:../drivers/fsl_clock.h **** };
+ 422:../drivers/fsl_clock.h **** 
+ 423:../drivers/fsl_clock.h **** /*! @brief MCG_Lite configure structure for mode change. */
+ 424:../drivers/fsl_clock.h **** typedef struct _mcglite_config
+ 425:../drivers/fsl_clock.h **** {
+ 426:../drivers/fsl_clock.h ****     mcglite_clkout_src_t outSrc;  /*!< MCGOUT clock select.                */
+ 427:../drivers/fsl_clock.h ****     uint8_t irclkEnableMode;      /*!< MCGIRCLK enable mode, OR'ed value of _mcglite_irclk_enable_m
+ 428:../drivers/fsl_clock.h ****     mcglite_lirc_mode_t ircs;     /*!< MCG_C2[IRCS].                       */
+ 429:../drivers/fsl_clock.h ****     mcglite_lirc_div_t fcrdiv;    /*!< MCG_SC[FCRDIV].                     */
+ 430:../drivers/fsl_clock.h ****     mcglite_lirc_div_t lircDiv2;  /*!< MCG_MC[LIRC_DIV2].                  */
+ 431:../drivers/fsl_clock.h ****     bool hircEnableInNotHircMode; /*!< HIRC enable when not in HIRC mode.  */
+ 432:../drivers/fsl_clock.h **** } mcglite_config_t;
+ 433:../drivers/fsl_clock.h **** 
+ 434:../drivers/fsl_clock.h **** /*******************************************************************************
+ 435:../drivers/fsl_clock.h ****  * API
+ 436:../drivers/fsl_clock.h ****  ******************************************************************************/
+ 437:../drivers/fsl_clock.h **** 
+ 438:../drivers/fsl_clock.h **** #if defined(__cplusplus)
+ 439:../drivers/fsl_clock.h **** extern "C" {
+ 440:../drivers/fsl_clock.h **** #endif /* __cplusplus */
+ 441:../drivers/fsl_clock.h **** 
+ 442:../drivers/fsl_clock.h **** /*!
+ 443:../drivers/fsl_clock.h ****  * @brief Enable the clock for specific IP.
+ 444:../drivers/fsl_clock.h ****  *
+ 445:../drivers/fsl_clock.h ****  * @param name  Which clock to enable, see \ref clock_ip_name_t.
+ 446:../drivers/fsl_clock.h ****  */
+ 447:../drivers/fsl_clock.h **** static inline void CLOCK_EnableClock(clock_ip_name_t name)
+ 448:../drivers/fsl_clock.h **** {
+ 449:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+ 450:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+ 451:../drivers/fsl_clock.h **** }
+ 452:../drivers/fsl_clock.h **** 
+ 453:../drivers/fsl_clock.h **** /*!
+ 454:../drivers/fsl_clock.h ****  * @brief Disable the clock for specific IP.
+ 455:../drivers/fsl_clock.h ****  *
+ 456:../drivers/fsl_clock.h ****  * @param name  Which clock to disable, see \ref clock_ip_name_t.
+ 457:../drivers/fsl_clock.h ****  */
+ 458:../drivers/fsl_clock.h **** static inline void CLOCK_DisableClock(clock_ip_name_t name)
+ 459:../drivers/fsl_clock.h **** {
+ 460:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+ 461:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+ 462:../drivers/fsl_clock.h **** }
+ 463:../drivers/fsl_clock.h **** 
+ 464:../drivers/fsl_clock.h **** /*!
+ 465:../drivers/fsl_clock.h ****  * @brief Set ERCLK32K source.
+ 466:../drivers/fsl_clock.h ****  *
+ 467:../drivers/fsl_clock.h ****  * @param src The value to set ERCLK32K clock source.
+ 468:../drivers/fsl_clock.h ****  */
+ 469:../drivers/fsl_clock.h **** static inline void CLOCK_SetEr32kClock(uint32_t src)
+ 470:../drivers/fsl_clock.h **** {
+ 471:../drivers/fsl_clock.h ****     SIM->SOPT1 = ((SIM->SOPT1 & ~SIM_SOPT1_OSC32KSEL_MASK) | SIM_SOPT1_OSC32KSEL(src));
+ 253              		.loc 2 471 0
+ 254 000a 0B68     		ldr	r3, [r1]
+ 255 000c 0648     		ldr	r0, .L31+8
+ 256              	.LVL12:
+ 257 000e 0340     		ands	r3, r0
+ 258 0010 9204     		lsls	r2, r2, #18
+ 259              	.LVL13:
+ 260 0012 C020     		movs	r0, #192
+ 261 0014 0003     		lsls	r0, r0, #12
+ 262 0016 0240     		ands	r2, r0
+ 263 0018 1343     		orrs	r3, r2
+ 264 001a 0B60     		str	r3, [r1]
+ 265              	.LVL14:
+ 266              	.LBE9:
+ 267              	.LBE8:
+ 243:../drivers/fsl_clock.c **** }
+ 268              		.loc 1 243 0
+ 269              		@ sp needed
+ 270 001c 7047     		bx	lr
+ 271              	.L32:
+ 272 001e C046     		.align	2
+ 273              	.L31:
+ 274 0020 00700440 		.word	1074032640
+ 275 0024 44100000 		.word	4164
+ 276 0028 FFFFF3FF 		.word	-786433
+ 277              		.cfi_endproc
+ 278              	.LFE62:
+ 280              		.section	.text.CLOCK_GetInternalRefClkFreq,"ax",%progbits
+ 281              		.align	1
+ 282              		.global	CLOCK_GetInternalRefClkFreq
+ 283              		.syntax unified
+ 284              		.code	16
+ 285              		.thumb_func
+ 286              		.fpu softvfp
+ 288              	CLOCK_GetInternalRefClkFreq:
+ 289              	.LFB63:
+ 244:../drivers/fsl_clock.c **** 
+ 245:../drivers/fsl_clock.c **** uint32_t CLOCK_GetInternalRefClkFreq(void)
+ 246:../drivers/fsl_clock.c **** {
+ 290              		.loc 1 246 0
+ 291              		.cfi_startproc
+ 292              		@ args = 0, pretend = 0, frame = 0
+ 293              		@ frame_needed = 0, uses_anonymous_args = 0
+ 294 0000 70B5     		push	{r4, r5, r6, lr}
+ 295              		.cfi_def_cfa_offset 16
+ 296              		.cfi_offset 4, -16
+ 297              		.cfi_offset 5, -12
+ 298              		.cfi_offset 6, -8
+ 299              		.cfi_offset 14, -4
+ 247:../drivers/fsl_clock.c ****     uint8_t divider1 = MCG_SC_FCRDIV_VAL;
+ 300              		.loc 1 247 0
+ 301 0002 064A     		ldr	r2, .L34
+ 302 0004 147A     		ldrb	r4, [r2, #8]
+ 303 0006 6408     		lsrs	r4, r4, #1
+ 304 0008 0723     		movs	r3, #7
+ 305 000a 1C40     		ands	r4, r3
+ 306              	.LVL15:
+ 248:../drivers/fsl_clock.c ****     uint8_t divider2 = MCG_MC_LIRC_DIV2_VAL;
+ 307              		.loc 1 248 0
+ 308 000c 157E     		ldrb	r5, [r2, #24]
+ 309 000e 1D40     		ands	r5, r3
+ 310              	.LVL16:
+ 249:../drivers/fsl_clock.c ****     /* LIRC internal reference clock is selected*/
+ 250:../drivers/fsl_clock.c ****     return CLOCK_GetLircClkFreq() >> (divider1 + divider2);
+ 311              		.loc 1 250 0
+ 312 0010 FFF7FEFF 		bl	CLOCK_GetLircClkFreq
+ 313              	.LVL17:
+ 314 0014 6419     		adds	r4, r4, r5
+ 315              	.LVL18:
+ 316 0016 E040     		lsrs	r0, r0, r4
+ 251:../drivers/fsl_clock.c **** }
+ 317              		.loc 1 251 0
+ 318              		@ sp needed
+ 319              	.LVL19:
+ 320 0018 70BD     		pop	{r4, r5, r6, pc}
+ 321              	.L35:
+ 322 001a C046     		.align	2
+ 323              	.L34:
+ 324 001c 00400640 		.word	1074151424
+ 325              		.cfi_endproc
+ 326              	.LFE63:
+ 328              		.section	.text.CLOCK_GetPeriphClkFreq,"ax",%progbits
+ 329              		.align	1
+ 330              		.global	CLOCK_GetPeriphClkFreq
+ 331              		.syntax unified
+ 332              		.code	16
+ 333              		.thumb_func
+ 334              		.fpu softvfp
+ 336              	CLOCK_GetPeriphClkFreq:
+ 337              	.LFB64:
+ 252:../drivers/fsl_clock.c **** 
+ 253:../drivers/fsl_clock.c **** uint32_t CLOCK_GetPeriphClkFreq(void)
+ 254:../drivers/fsl_clock.c **** {
+ 338              		.loc 1 254 0
+ 339              		.cfi_startproc
+ 340              		@ args = 0, pretend = 0, frame = 0
+ 341              		@ frame_needed = 0, uses_anonymous_args = 0
+ 342              		@ link register save eliminated.
+ 255:../drivers/fsl_clock.c ****     /* Check whether the HIRC is enabled. */
+ 256:../drivers/fsl_clock.c ****     if ((MCG->MC & MCG_MC_HIRCEN_MASK) || (kMCGLITE_ClkSrcHirc == MCG_S_CLKST_VAL))
+ 343              		.loc 1 256 0
+ 344 0000 074B     		ldr	r3, .L41
+ 345 0002 1B7E     		ldrb	r3, [r3, #24]
+ 346 0004 5BB2     		sxtb	r3, r3
+ 347 0006 002B     		cmp	r3, #0
+ 348 0008 08DB     		blt	.L38
+ 349              		.loc 1 256 0 is_stmt 0 discriminator 1
+ 350 000a 054B     		ldr	r3, .L41
+ 351 000c 9B79     		ldrb	r3, [r3, #6]
+ 352 000e 9B08     		lsrs	r3, r3, #2
+ 353 0010 9B07     		lsls	r3, r3, #30
+ 354 0012 01D0     		beq	.L40
+ 257:../drivers/fsl_clock.c ****     {
+ 258:../drivers/fsl_clock.c ****         return MCG_HIRC_FREQ;
+ 259:../drivers/fsl_clock.c ****     }
+ 260:../drivers/fsl_clock.c ****     else
+ 261:../drivers/fsl_clock.c ****     {
+ 262:../drivers/fsl_clock.c ****         return 0U;
+ 355              		.loc 1 262 0 is_stmt 1
+ 356 0014 0020     		movs	r0, #0
+ 357              	.L36:
+ 263:../drivers/fsl_clock.c ****     }
+ 264:../drivers/fsl_clock.c **** }
+ 358              		.loc 1 264 0
+ 359              		@ sp needed
+ 360 0016 7047     		bx	lr
+ 361              	.L40:
+ 258:../drivers/fsl_clock.c ****     }
+ 362              		.loc 1 258 0
+ 363 0018 0248     		ldr	r0, .L41+4
+ 364 001a FCE7     		b	.L36
+ 365              	.L38:
+ 366 001c 0148     		ldr	r0, .L41+4
+ 367 001e FAE7     		b	.L36
+ 368              	.L42:
+ 369              		.align	2
+ 370              	.L41:
+ 371 0020 00400640 		.word	1074151424
+ 372 0024 006CDC02 		.word	48000000
+ 373              		.cfi_endproc
+ 374              	.LFE64:
+ 376              		.section	.text.CLOCK_GetOutClkFreq,"ax",%progbits
+ 377              		.align	1
+ 378              		.global	CLOCK_GetOutClkFreq
+ 379              		.syntax unified
+ 380              		.code	16
+ 381              		.thumb_func
+ 382              		.fpu softvfp
+ 384              	CLOCK_GetOutClkFreq:
+ 385              	.LFB65:
+ 265:../drivers/fsl_clock.c **** 
+ 266:../drivers/fsl_clock.c **** uint32_t CLOCK_GetOutClkFreq(void)
+ 267:../drivers/fsl_clock.c **** {
+ 386              		.loc 1 267 0
+ 387              		.cfi_startproc
+ 388              		@ args = 0, pretend = 0, frame = 0
+ 389              		@ frame_needed = 0, uses_anonymous_args = 0
+ 390 0000 10B5     		push	{r4, lr}
+ 391              		.cfi_def_cfa_offset 8
+ 392              		.cfi_offset 4, -8
+ 393              		.cfi_offset 14, -4
+ 268:../drivers/fsl_clock.c ****     uint32_t freq;
+ 269:../drivers/fsl_clock.c **** 
+ 270:../drivers/fsl_clock.c ****     switch (MCG_S_CLKST_VAL)
+ 394              		.loc 1 270 0
+ 395 0002 0D4B     		ldr	r3, .L50
+ 396 0004 9A79     		ldrb	r2, [r3, #6]
+ 397 0006 9208     		lsrs	r2, r2, #2
+ 398 0008 0323     		movs	r3, #3
+ 399 000a 1340     		ands	r3, r2
+ 400 000c 012B     		cmp	r3, #1
+ 401 000e 07D0     		beq	.L45
+ 402 0010 002B     		cmp	r3, #0
+ 403 0012 03D0     		beq	.L46
+ 404 0014 022B     		cmp	r3, #2
+ 405 0016 0CD0     		beq	.L47
+ 271:../drivers/fsl_clock.c ****     {
+ 272:../drivers/fsl_clock.c ****         case kMCGLITE_ClkSrcHirc:
+ 273:../drivers/fsl_clock.c ****             freq = MCG_HIRC_FREQ;
+ 274:../drivers/fsl_clock.c ****             break;
+ 275:../drivers/fsl_clock.c ****         case kMCGLITE_ClkSrcLirc:
+ 276:../drivers/fsl_clock.c ****             freq = CLOCK_GetLircClkFreq() >> MCG_SC_FCRDIV_VAL;
+ 277:../drivers/fsl_clock.c ****             break;
+ 278:../drivers/fsl_clock.c ****         case kMCGLITE_ClkSrcExt:
+ 279:../drivers/fsl_clock.c ****             /* Please call CLOCK_SetXtal0Freq base on board setting before using OSC0 clock. */
+ 280:../drivers/fsl_clock.c ****             assert(g_xtal0Freq);
+ 281:../drivers/fsl_clock.c ****             freq = g_xtal0Freq;
+ 282:../drivers/fsl_clock.c ****             break;
+ 283:../drivers/fsl_clock.c ****         default:
+ 284:../drivers/fsl_clock.c ****             freq = 0U;
+ 406              		.loc 1 284 0
+ 407 0018 0020     		movs	r0, #0
+ 408              	.LVL20:
+ 285:../drivers/fsl_clock.c ****             break;
+ 286:../drivers/fsl_clock.c ****     }
+ 287:../drivers/fsl_clock.c **** 
+ 288:../drivers/fsl_clock.c ****     return freq;
+ 409              		.loc 1 288 0
+ 410 001a 00E0     		b	.L43
+ 411              	.LVL21:
+ 412              	.L46:
+ 273:../drivers/fsl_clock.c ****             break;
+ 413              		.loc 1 273 0
+ 414 001c 0748     		ldr	r0, .L50+4
+ 415              	.L43:
+ 289:../drivers/fsl_clock.c **** }
+ 416              		.loc 1 289 0
+ 417              		@ sp needed
+ 418 001e 10BD     		pop	{r4, pc}
+ 419              	.L45:
+ 276:../drivers/fsl_clock.c ****             break;
+ 420              		.loc 1 276 0
+ 421 0020 FFF7FEFF 		bl	CLOCK_GetLircClkFreq
+ 422              	.LVL22:
+ 423 0024 044B     		ldr	r3, .L50
+ 424 0026 1A7A     		ldrb	r2, [r3, #8]
+ 425 0028 5208     		lsrs	r2, r2, #1
+ 426 002a 0723     		movs	r3, #7
+ 427 002c 1340     		ands	r3, r2
+ 428 002e D840     		lsrs	r0, r0, r3
+ 429              	.LVL23:
+ 277:../drivers/fsl_clock.c ****         case kMCGLITE_ClkSrcExt:
+ 430              		.loc 1 277 0
+ 431 0030 F5E7     		b	.L43
+ 432              	.LVL24:
+ 433              	.L47:
+ 281:../drivers/fsl_clock.c ****             break;
+ 434              		.loc 1 281 0
+ 435 0032 034B     		ldr	r3, .L50+8
+ 436 0034 1868     		ldr	r0, [r3]
+ 437              	.LVL25:
+ 282:../drivers/fsl_clock.c ****         default:
+ 438              		.loc 1 282 0
+ 439 0036 F2E7     		b	.L43
+ 440              	.L51:
+ 441              		.align	2
+ 442              	.L50:
+ 443 0038 00400640 		.word	1074151424
+ 444 003c 006CDC02 		.word	48000000
+ 445 0040 00000000 		.word	g_xtal0Freq
+ 446              		.cfi_endproc
+ 447              	.LFE65:
+ 449              		.global	__aeabi_uidiv
+ 450              		.section	.text.CLOCK_GetPlatClkFreq,"ax",%progbits
+ 451              		.align	1
+ 452              		.global	CLOCK_GetPlatClkFreq
+ 453              		.syntax unified
+ 454              		.code	16
+ 455              		.thumb_func
+ 456              		.fpu softvfp
+ 458              	CLOCK_GetPlatClkFreq:
+ 459              	.LFB57:
+ 171:../drivers/fsl_clock.c ****     return CLOCK_GetOutClkFreq() / (SIM_CLKDIV1_OUTDIV1_VAL + 1);
+ 460              		.loc 1 171 0
+ 461              		.cfi_startproc
+ 462              		@ args = 0, pretend = 0, frame = 0
+ 463              		@ frame_needed = 0, uses_anonymous_args = 0
+ 464 0000 10B5     		push	{r4, lr}
+ 465              		.cfi_def_cfa_offset 8
+ 466              		.cfi_offset 4, -8
+ 467              		.cfi_offset 14, -4
+ 172:../drivers/fsl_clock.c **** }
+ 468              		.loc 1 172 0
+ 469 0002 FFF7FEFF 		bl	CLOCK_GetOutClkFreq
+ 470              	.LVL26:
+ 471 0006 044A     		ldr	r2, .L53
+ 472 0008 044B     		ldr	r3, .L53+4
+ 473 000a D158     		ldr	r1, [r2, r3]
+ 474 000c 090F     		lsrs	r1, r1, #28
+ 475 000e 0131     		adds	r1, r1, #1
+ 476 0010 FFF7FEFF 		bl	__aeabi_uidiv
+ 477              	.LVL27:
+ 173:../drivers/fsl_clock.c **** 
+ 478              		.loc 1 173 0
+ 479              		@ sp needed
+ 480 0014 10BD     		pop	{r4, pc}
+ 481              	.L54:
+ 482 0016 C046     		.align	2
+ 483              	.L53:
+ 484 0018 00700440 		.word	1074032640
+ 485 001c 44100000 		.word	4164
+ 486              		.cfi_endproc
+ 487              	.LFE57:
+ 489              		.section	.text.CLOCK_GetFlashClkFreq,"ax",%progbits
+ 490              		.align	1
+ 491              		.global	CLOCK_GetFlashClkFreq
+ 492              		.syntax unified
+ 493              		.code	16
+ 494              		.thumb_func
+ 495              		.fpu softvfp
+ 497              	CLOCK_GetFlashClkFreq:
+ 498              	.LFB58:
+ 176:../drivers/fsl_clock.c ****     uint32_t freq;
+ 499              		.loc 1 176 0
+ 500              		.cfi_startproc
+ 501              		@ args = 0, pretend = 0, frame = 0
+ 502              		@ frame_needed = 0, uses_anonymous_args = 0
+ 503 0000 70B5     		push	{r4, r5, r6, lr}
+ 504              		.cfi_def_cfa_offset 16
+ 505              		.cfi_offset 4, -16
+ 506              		.cfi_offset 5, -12
+ 507              		.cfi_offset 6, -8
+ 508              		.cfi_offset 14, -4
+ 179:../drivers/fsl_clock.c ****     freq /= (SIM_CLKDIV1_OUTDIV4_VAL + 1);
+ 509              		.loc 1 179 0
+ 510 0002 FFF7FEFF 		bl	CLOCK_GetOutClkFreq
+ 511              	.LVL28:
+ 512 0006 074D     		ldr	r5, .L56
+ 513 0008 074C     		ldr	r4, .L56+4
+ 514 000a 2959     		ldr	r1, [r5, r4]
+ 515 000c 090F     		lsrs	r1, r1, #28
+ 516 000e 0131     		adds	r1, r1, #1
+ 517 0010 FFF7FEFF 		bl	__aeabi_uidiv
+ 518              	.LVL29:
+ 180:../drivers/fsl_clock.c **** 
+ 519              		.loc 1 180 0
+ 520 0014 2B59     		ldr	r3, [r5, r4]
+ 521 0016 1B0C     		lsrs	r3, r3, #16
+ 522 0018 0721     		movs	r1, #7
+ 523 001a 1940     		ands	r1, r3
+ 524 001c 0131     		adds	r1, r1, #1
+ 525 001e FFF7FEFF 		bl	__aeabi_uidiv
+ 526              	.LVL30:
+ 183:../drivers/fsl_clock.c **** 
+ 527              		.loc 1 183 0
+ 528              		@ sp needed
+ 529 0022 70BD     		pop	{r4, r5, r6, pc}
+ 530              	.L57:
+ 531              		.align	2
+ 532              	.L56:
+ 533 0024 00700440 		.word	1074032640
+ 534 0028 44100000 		.word	4164
+ 535              		.cfi_endproc
+ 536              	.LFE58:
+ 538              		.section	.text.CLOCK_GetBusClkFreq,"ax",%progbits
+ 539              		.align	1
+ 540              		.global	CLOCK_GetBusClkFreq
+ 541              		.syntax unified
+ 542              		.code	16
+ 543              		.thumb_func
+ 544              		.fpu softvfp
+ 546              	CLOCK_GetBusClkFreq:
+ 547              	.LFB59:
+ 186:../drivers/fsl_clock.c ****     uint32_t freq;
+ 548              		.loc 1 186 0
+ 549              		.cfi_startproc
+ 550              		@ args = 0, pretend = 0, frame = 0
+ 551              		@ frame_needed = 0, uses_anonymous_args = 0
+ 552 0000 70B5     		push	{r4, r5, r6, lr}
+ 553              		.cfi_def_cfa_offset 16
+ 554              		.cfi_offset 4, -16
+ 555              		.cfi_offset 5, -12
+ 556              		.cfi_offset 6, -8
+ 557              		.cfi_offset 14, -4
+ 189:../drivers/fsl_clock.c ****     freq /= (SIM_CLKDIV1_OUTDIV4_VAL + 1);
+ 558              		.loc 1 189 0
+ 559 0002 FFF7FEFF 		bl	CLOCK_GetOutClkFreq
+ 560              	.LVL31:
+ 561 0006 074D     		ldr	r5, .L59
+ 562 0008 074C     		ldr	r4, .L59+4
+ 563 000a 2959     		ldr	r1, [r5, r4]
+ 564 000c 090F     		lsrs	r1, r1, #28
+ 565 000e 0131     		adds	r1, r1, #1
+ 566 0010 FFF7FEFF 		bl	__aeabi_uidiv
+ 567              	.LVL32:
+ 190:../drivers/fsl_clock.c **** 
+ 568              		.loc 1 190 0
+ 569 0014 2B59     		ldr	r3, [r5, r4]
+ 570 0016 1B0C     		lsrs	r3, r3, #16
+ 571 0018 0721     		movs	r1, #7
+ 572 001a 1940     		ands	r1, r3
+ 573 001c 0131     		adds	r1, r1, #1
+ 574 001e FFF7FEFF 		bl	__aeabi_uidiv
+ 575              	.LVL33:
+ 193:../drivers/fsl_clock.c **** 
+ 576              		.loc 1 193 0
+ 577              		@ sp needed
+ 578 0022 70BD     		pop	{r4, r5, r6, pc}
+ 579              	.L60:
+ 580              		.align	2
+ 581              	.L59:
+ 582 0024 00700440 		.word	1074032640
+ 583 0028 44100000 		.word	4164
+ 584              		.cfi_endproc
+ 585              	.LFE59:
+ 587              		.section	.text.CLOCK_GetCoreSysClkFreq,"ax",%progbits
+ 588              		.align	1
+ 589              		.global	CLOCK_GetCoreSysClkFreq
+ 590              		.syntax unified
+ 591              		.code	16
+ 592              		.thumb_func
+ 593              		.fpu softvfp
+ 595              	CLOCK_GetCoreSysClkFreq:
+ 596              	.LFB60:
+ 196:../drivers/fsl_clock.c ****     return CLOCK_GetOutClkFreq() / (SIM_CLKDIV1_OUTDIV1_VAL + 1);
+ 597              		.loc 1 196 0
+ 598              		.cfi_startproc
+ 599              		@ args = 0, pretend = 0, frame = 0
+ 600              		@ frame_needed = 0, uses_anonymous_args = 0
+ 601 0000 10B5     		push	{r4, lr}
+ 602              		.cfi_def_cfa_offset 8
+ 603              		.cfi_offset 4, -8
+ 604              		.cfi_offset 14, -4
+ 197:../drivers/fsl_clock.c **** }
+ 605              		.loc 1 197 0
+ 606 0002 FFF7FEFF 		bl	CLOCK_GetOutClkFreq
+ 607              	.LVL34:
+ 608 0006 044A     		ldr	r2, .L62
+ 609 0008 044B     		ldr	r3, .L62+4
+ 610 000a D158     		ldr	r1, [r2, r3]
+ 611 000c 090F     		lsrs	r1, r1, #28
+ 612 000e 0131     		adds	r1, r1, #1
+ 613 0010 FFF7FEFF 		bl	__aeabi_uidiv
+ 614              	.LVL35:
+ 198:../drivers/fsl_clock.c **** 
+ 615              		.loc 1 198 0
+ 616              		@ sp needed
+ 617 0014 10BD     		pop	{r4, pc}
+ 618              	.L63:
+ 619 0016 C046     		.align	2
+ 620              	.L62:
+ 621 0018 00700440 		.word	1074032640
+ 622 001c 44100000 		.word	4164
+ 623              		.cfi_endproc
+ 624              	.LFE60:
+ 626              		.section	.text.CLOCK_GetFreq,"ax",%progbits
+ 627              		.align	1
+ 628              		.global	CLOCK_GetFreq
+ 629              		.syntax unified
+ 630              		.code	16
+ 631              		.thumb_func
+ 632              		.fpu softvfp
+ 634              	CLOCK_GetFreq:
+ 635              	.LFB61:
+ 201:../drivers/fsl_clock.c ****     uint32_t freq;
+ 636              		.loc 1 201 0
+ 637              		.cfi_startproc
+ 638              		@ args = 0, pretend = 0, frame = 0
+ 639              		@ frame_needed = 0, uses_anonymous_args = 0
+ 640              	.LVL36:
+ 641 0000 70B5     		push	{r4, r5, r6, lr}
+ 642              		.cfi_def_cfa_offset 16
+ 643              		.cfi_offset 4, -16
+ 644              		.cfi_offset 5, -12
+ 645              		.cfi_offset 6, -8
+ 646              		.cfi_offset 14, -4
+ 204:../drivers/fsl_clock.c ****     {
+ 647              		.loc 1 204 0
+ 648 0002 1328     		cmp	r0, #19
+ 649 0004 2DD8     		bhi	.L74
+ 650 0006 8000     		lsls	r0, r0, #2
+ 651              	.LVL37:
+ 652 0008 174B     		ldr	r3, .L75
+ 653 000a 1B58     		ldr	r3, [r3, r0]
+ 654 000c 9F46     		mov	pc, r3
+ 655              		.section	.rodata.CLOCK_GetFreq,"a",%progbits
+ 656              		.align	2
+ 657              	.L67:
+ 658 0000 14000000 		.word	.L66
+ 659 0004 14000000 		.word	.L66
+ 660 0008 28000000 		.word	.L68
+ 661 000c 62000000 		.word	.L74
+ 662 0010 28000000 		.word	.L68
+ 663 0014 62000000 		.word	.L74
+ 664 0018 62000000 		.word	.L74
+ 665 001c 4A000000 		.word	.L69
+ 666 0020 50000000 		.word	.L70
+ 667 0024 62000000 		.word	.L74
+ 668 0028 62000000 		.word	.L74
+ 669 002c 62000000 		.word	.L74
+ 670 0030 56000000 		.word	.L71
+ 671 0034 62000000 		.word	.L74
+ 672 0038 62000000 		.word	.L74
+ 673 003c 62000000 		.word	.L74
+ 674 0040 62000000 		.word	.L74
+ 675 0044 5C000000 		.word	.L72
+ 676 0048 5C000000 		.word	.L72
+ 677 004c 0E000000 		.word	.L73
+ 678              		.section	.text.CLOCK_GetFreq
+ 679              	.L73:
+ 229:../drivers/fsl_clock.c ****             break;
+ 680              		.loc 1 229 0
+ 681 000e FA20     		movs	r0, #250
+ 682 0010 8000     		lsls	r0, r0, #2
+ 683              	.L64:
+ 237:../drivers/fsl_clock.c **** 
+ 684              		.loc 1 237 0
+ 685              		@ sp needed
+ 686 0012 70BD     		pop	{r4, r5, r6, pc}
+ 687              	.L66:
+ 208:../drivers/fsl_clock.c ****             break;
+ 688              		.loc 1 208 0
+ 689 0014 FFF7FEFF 		bl	CLOCK_GetOutClkFreq
+ 690              	.LVL38:
+ 691 0018 144A     		ldr	r2, .L75+4
+ 692 001a 154B     		ldr	r3, .L75+8
+ 693 001c D158     		ldr	r1, [r2, r3]
+ 694 001e 090F     		lsrs	r1, r1, #28
+ 695 0020 0131     		adds	r1, r1, #1
+ 696 0022 FFF7FEFF 		bl	__aeabi_uidiv
+ 697              	.LVL39:
+ 209:../drivers/fsl_clock.c ****         case kCLOCK_BusClk:
+ 698              		.loc 1 209 0
+ 699 0026 F4E7     		b	.L64
+ 700              	.LVL40:
+ 701              	.L68:
+ 212:../drivers/fsl_clock.c ****             freq /= (SIM_CLKDIV1_OUTDIV4_VAL + 1);
+ 702              		.loc 1 212 0
+ 703 0028 FFF7FEFF 		bl	CLOCK_GetOutClkFreq
+ 704              	.LVL41:
+ 705 002c 0F4D     		ldr	r5, .L75+4
+ 706 002e 104C     		ldr	r4, .L75+8
+ 707 0030 2959     		ldr	r1, [r5, r4]
+ 708 0032 090F     		lsrs	r1, r1, #28
+ 709 0034 0131     		adds	r1, r1, #1
+ 710 0036 FFF7FEFF 		bl	__aeabi_uidiv
+ 711              	.LVL42:
+ 213:../drivers/fsl_clock.c ****             break;
+ 712              		.loc 1 213 0
+ 713 003a 2B59     		ldr	r3, [r5, r4]
+ 714 003c 1B0C     		lsrs	r3, r3, #16
+ 715 003e 0721     		movs	r1, #7
+ 716 0040 1940     		ands	r1, r3
+ 717 0042 0131     		adds	r1, r1, #1
+ 718 0044 FFF7FEFF 		bl	__aeabi_uidiv
+ 719              	.LVL43:
+ 214:../drivers/fsl_clock.c ****         case kCLOCK_Er32kClk:
+ 720              		.loc 1 214 0
+ 721 0048 E3E7     		b	.L64
+ 722              	.LVL44:
+ 723              	.L69:
+ 216:../drivers/fsl_clock.c ****             break;
+ 724              		.loc 1 216 0
+ 725 004a FFF7FEFF 		bl	CLOCK_GetEr32kClkFreq
+ 726              	.LVL45:
+ 217:../drivers/fsl_clock.c ****         case kCLOCK_Osc0ErClk:
+ 727              		.loc 1 217 0
+ 728 004e E0E7     		b	.L64
+ 729              	.LVL46:
+ 730              	.L70:
+ 219:../drivers/fsl_clock.c ****             break;
+ 731              		.loc 1 219 0
+ 732 0050 FFF7FEFF 		bl	CLOCK_GetOsc0ErClkFreq
+ 733              	.LVL47:
+ 220:../drivers/fsl_clock.c ****         case kCLOCK_McgInternalRefClk:
+ 734              		.loc 1 220 0
+ 735 0054 DDE7     		b	.L64
+ 736              	.LVL48:
+ 737              	.L71:
+ 222:../drivers/fsl_clock.c ****             break;
+ 738              		.loc 1 222 0
+ 739 0056 FFF7FEFF 		bl	CLOCK_GetInternalRefClkFreq
+ 740              	.LVL49:
+ 223:../drivers/fsl_clock.c ****         case kCLOCK_McgPeriphClk:
+ 741              		.loc 1 223 0
+ 742 005a DAE7     		b	.L64
+ 743              	.LVL50:
+ 744              	.L72:
+ 226:../drivers/fsl_clock.c ****             break;
+ 745              		.loc 1 226 0
+ 746 005c FFF7FEFF 		bl	CLOCK_GetPeriphClkFreq
+ 747              	.LVL51:
+ 227:../drivers/fsl_clock.c ****         case kCLOCK_LpoClk:
+ 748              		.loc 1 227 0
+ 749 0060 D7E7     		b	.L64
+ 750              	.LVL52:
+ 751              	.L74:
+ 232:../drivers/fsl_clock.c ****             break;
+ 752              		.loc 1 232 0
+ 753 0062 0020     		movs	r0, #0
+ 754              	.LVL53:
+ 236:../drivers/fsl_clock.c **** }
+ 755              		.loc 1 236 0
+ 756 0064 D5E7     		b	.L64
+ 757              	.L76:
+ 758 0066 C046     		.align	2
+ 759              	.L75:
+ 760 0068 00000000 		.word	.L67
+ 761 006c 00700440 		.word	1074032640
+ 762 0070 44100000 		.word	4164
+ 763              		.cfi_endproc
+ 764              	.LFE61:
+ 766              		.section	.text.CLOCK_GetMode,"ax",%progbits
+ 767              		.align	1
+ 768              		.global	CLOCK_GetMode
+ 769              		.syntax unified
+ 770              		.code	16
+ 771              		.thumb_func
+ 772              		.fpu softvfp
+ 774              	CLOCK_GetMode:
+ 775              	.LFB66:
+ 290:../drivers/fsl_clock.c **** 
+ 291:../drivers/fsl_clock.c **** mcglite_mode_t CLOCK_GetMode(void)
+ 292:../drivers/fsl_clock.c **** {
+ 776              		.loc 1 292 0
+ 777              		.cfi_startproc
+ 778              		@ args = 0, pretend = 0, frame = 0
+ 779              		@ frame_needed = 0, uses_anonymous_args = 0
+ 780              		@ link register save eliminated.
+ 293:../drivers/fsl_clock.c ****     mcglite_mode_t mode;
+ 294:../drivers/fsl_clock.c **** 
+ 295:../drivers/fsl_clock.c ****     switch (MCG_S_CLKST_VAL)
+ 781              		.loc 1 295 0
+ 782 0000 0C4B     		ldr	r3, .L86
+ 783 0002 9A79     		ldrb	r2, [r3, #6]
+ 784 0004 9208     		lsrs	r2, r2, #2
+ 785 0006 0323     		movs	r3, #3
+ 786 0008 1340     		ands	r3, r2
+ 787 000a 012B     		cmp	r3, #1
+ 788 000c 07D0     		beq	.L79
+ 789 000e 002B     		cmp	r3, #0
+ 790 0010 03D0     		beq	.L80
+ 791 0012 022B     		cmp	r3, #2
+ 792 0014 0BD0     		beq	.L82
+ 793              	.LVL54:
+ 296:../drivers/fsl_clock.c ****     {
+ 297:../drivers/fsl_clock.c ****         case kMCGLITE_ClkSrcHirc: /* HIRC */
+ 298:../drivers/fsl_clock.c ****             mode = kMCGLITE_ModeHirc48M;
+ 299:../drivers/fsl_clock.c ****             break;
+ 300:../drivers/fsl_clock.c ****         case kMCGLITE_ClkSrcLirc: /* LIRC */
+ 301:../drivers/fsl_clock.c ****             if (kMCGLITE_Lirc2M == MCG_C2_IRCS_VAL)
+ 302:../drivers/fsl_clock.c ****             {
+ 303:../drivers/fsl_clock.c ****                 mode = kMCGLITE_ModeLirc2M;
+ 304:../drivers/fsl_clock.c ****             }
+ 305:../drivers/fsl_clock.c ****             else
+ 306:../drivers/fsl_clock.c ****             {
+ 307:../drivers/fsl_clock.c ****                 mode = kMCGLITE_ModeLirc8M;
+ 308:../drivers/fsl_clock.c ****             }
+ 309:../drivers/fsl_clock.c ****             break;
+ 310:../drivers/fsl_clock.c ****         case kMCGLITE_ClkSrcExt: /* EXT  */
+ 311:../drivers/fsl_clock.c ****             mode = kMCGLITE_ModeExt;
+ 312:../drivers/fsl_clock.c ****             break;
+ 313:../drivers/fsl_clock.c ****         default:
+ 314:../drivers/fsl_clock.c ****             mode = kMCGLITE_ModeError;
+ 794              		.loc 1 314 0
+ 795 0016 0420     		movs	r0, #4
+ 315:../drivers/fsl_clock.c ****             break;
+ 796              		.loc 1 315 0
+ 797 0018 00E0     		b	.L81
+ 798              	.LVL55:
+ 799              	.L80:
+ 298:../drivers/fsl_clock.c ****             break;
+ 800              		.loc 1 298 0
+ 801 001a 0020     		movs	r0, #0
+ 802              	.L81:
+ 803              	.LVL56:
+ 316:../drivers/fsl_clock.c ****     }
+ 317:../drivers/fsl_clock.c **** 
+ 318:../drivers/fsl_clock.c ****     return mode;
+ 319:../drivers/fsl_clock.c **** }
+ 804              		.loc 1 319 0
+ 805              		@ sp needed
+ 806 001c 7047     		bx	lr
+ 807              	.LVL57:
+ 808              	.L79:
+ 301:../drivers/fsl_clock.c ****             {
+ 809              		.loc 1 301 0
+ 810 001e 054B     		ldr	r3, .L86
+ 811 0020 5B78     		ldrb	r3, [r3, #1]
+ 812 0022 DB07     		lsls	r3, r3, #31
+ 813 0024 01D5     		bpl	.L85
+ 307:../drivers/fsl_clock.c ****             }
+ 814              		.loc 1 307 0
+ 815 0026 0120     		movs	r0, #1
+ 816 0028 F8E7     		b	.L81
+ 817              	.L85:
+ 303:../drivers/fsl_clock.c ****             }
+ 818              		.loc 1 303 0
+ 819 002a 0220     		movs	r0, #2
+ 820 002c F6E7     		b	.L81
+ 821              	.L82:
+ 311:../drivers/fsl_clock.c ****             break;
+ 822              		.loc 1 311 0
+ 823 002e 0320     		movs	r0, #3
+ 824 0030 F4E7     		b	.L81
+ 825              	.L87:
+ 826 0032 C046     		.align	2
+ 827              	.L86:
+ 828 0034 00400640 		.word	1074151424
+ 829              		.cfi_endproc
+ 830              	.LFE66:
+ 832              		.section	.text.CLOCK_SetMcgliteConfig,"ax",%progbits
+ 833              		.align	1
+ 834              		.global	CLOCK_SetMcgliteConfig
+ 835              		.syntax unified
+ 836              		.code	16
+ 837              		.thumb_func
+ 838              		.fpu softvfp
+ 840              	CLOCK_SetMcgliteConfig:
+ 841              	.LFB67:
+ 320:../drivers/fsl_clock.c **** 
+ 321:../drivers/fsl_clock.c **** status_t CLOCK_SetMcgliteConfig(mcglite_config_t const *targetConfig)
+ 322:../drivers/fsl_clock.c **** {
+ 842              		.loc 1 322 0
+ 843              		.cfi_startproc
+ 844              		@ args = 0, pretend = 0, frame = 0
+ 845              		@ frame_needed = 0, uses_anonymous_args = 0
+ 846              	.LVL58:
+ 847 0000 10B5     		push	{r4, lr}
+ 848              		.cfi_def_cfa_offset 8
+ 849              		.cfi_offset 4, -8
+ 850              		.cfi_offset 14, -4
+ 323:../drivers/fsl_clock.c ****     assert(targetConfig);
+ 324:../drivers/fsl_clock.c **** 
+ 325:../drivers/fsl_clock.c ****     /*
+ 326:../drivers/fsl_clock.c ****      * If switch between LIRC8M and LIRC2M, need to switch to HIRC mode first,
+ 327:../drivers/fsl_clock.c ****      * because could not switch directly.
+ 328:../drivers/fsl_clock.c ****      */
+ 329:../drivers/fsl_clock.c ****     if ((kMCGLITE_ClkSrcLirc == MCG_S_CLKST_VAL) && (kMCGLITE_ClkSrcLirc == targetConfig->outSrc) &
+ 851              		.loc 1 329 0
+ 852 0002 264B     		ldr	r3, .L94
+ 853 0004 9A79     		ldrb	r2, [r3, #6]
+ 854 0006 9208     		lsrs	r2, r2, #2
+ 855 0008 0323     		movs	r3, #3
+ 856 000a 1340     		ands	r3, r2
+ 857 000c 012B     		cmp	r3, #1
+ 858 000e 2AD0     		beq	.L93
+ 859              	.L89:
+ 330:../drivers/fsl_clock.c ****         (MCG_C2_IRCS_VAL != targetConfig->ircs))
+ 331:../drivers/fsl_clock.c ****     {
+ 332:../drivers/fsl_clock.c ****         MCG->C1 = (MCG->C1 & ~MCG_C1_CLKS_MASK) | MCG_C1_CLKS(kMCGLITE_ClkSrcHirc);
+ 333:../drivers/fsl_clock.c ****         while (kMCGLITE_ClkSrcHirc != MCG_S_CLKST_VAL)
+ 334:../drivers/fsl_clock.c ****         {
+ 335:../drivers/fsl_clock.c ****         }
+ 336:../drivers/fsl_clock.c ****     }
+ 337:../drivers/fsl_clock.c **** 
+ 338:../drivers/fsl_clock.c ****     /* Set configuration now. */
+ 339:../drivers/fsl_clock.c ****     MCG->SC = MCG_SC_FCRDIV(targetConfig->fcrdiv);
+ 860              		.loc 1 339 0
+ 861 0010 C378     		ldrb	r3, [r0, #3]
+ 862 0012 5B00     		lsls	r3, r3, #1
+ 863 0014 0E22     		movs	r2, #14
+ 864 0016 1340     		ands	r3, r2
+ 865 0018 204A     		ldr	r2, .L94
+ 866 001a 1372     		strb	r3, [r2, #8]
+ 340:../drivers/fsl_clock.c ****     MCG->MC = MCG_MC_HIRCEN(targetConfig->hircEnableInNotHircMode) | MCG_MC_LIRC_DIV2(targetConfig-
+ 867              		.loc 1 340 0
+ 868 001c 4379     		ldrb	r3, [r0, #5]
+ 869 001e DB01     		lsls	r3, r3, #7
+ 870 0020 DBB2     		uxtb	r3, r3
+ 871 0022 0479     		ldrb	r4, [r0, #4]
+ 872 0024 0721     		movs	r1, #7
+ 873 0026 2140     		ands	r1, r4
+ 874 0028 0B43     		orrs	r3, r1
+ 875 002a 1376     		strb	r3, [r2, #24]
+ 341:../drivers/fsl_clock.c ****     MCG->C2 = (MCG->C2 & ~MCG_C2_IRCS_MASK) | MCG_C2_IRCS(targetConfig->ircs);
+ 876              		.loc 1 341 0
+ 877 002c 5378     		ldrb	r3, [r2, #1]
+ 878 002e 0121     		movs	r1, #1
+ 879 0030 8B43     		bics	r3, r1
+ 880 0032 8478     		ldrb	r4, [r0, #2]
+ 881 0034 2140     		ands	r1, r4
+ 882 0036 0B43     		orrs	r3, r1
+ 883 0038 5370     		strb	r3, [r2, #1]
+ 342:../drivers/fsl_clock.c ****     MCG->C1 = MCG_C1_CLKS(targetConfig->outSrc) | targetConfig->irclkEnableMode;
+ 884              		.loc 1 342 0
+ 885 003a 0378     		ldrb	r3, [r0]
+ 886 003c 9B01     		lsls	r3, r3, #6
+ 887 003e DBB2     		uxtb	r3, r3
+ 888 0040 4178     		ldrb	r1, [r0, #1]
+ 889 0042 0B43     		orrs	r3, r1
+ 890 0044 1370     		strb	r3, [r2]
+ 343:../drivers/fsl_clock.c **** 
+ 344:../drivers/fsl_clock.c ****     /*
+ 345:../drivers/fsl_clock.c ****      * If external oscillator used and MCG_Lite is set to EXT mode, need to
+ 346:../drivers/fsl_clock.c ****      * wait for the OSC stable.
+ 347:../drivers/fsl_clock.c ****      */
+ 348:../drivers/fsl_clock.c ****     if ((MCG->C2 & MCG_C2_EREFS0_MASK) && (kMCGLITE_ClkSrcExt == targetConfig->outSrc))
+ 891              		.loc 1 348 0
+ 892 0046 5378     		ldrb	r3, [r2, #1]
+ 893 0048 5B07     		lsls	r3, r3, #29
+ 894 004a 02D5     		bpl	.L91
+ 895              		.loc 1 348 0 is_stmt 0 discriminator 1
+ 896 004c 0378     		ldrb	r3, [r0]
+ 897 004e 022B     		cmp	r3, #2
+ 898 0050 1ED0     		beq	.L92
+ 899              	.L91:
+ 349:../drivers/fsl_clock.c ****     {
+ 350:../drivers/fsl_clock.c ****         while (!(MCG->S & MCG_S_OSCINIT0_MASK))
+ 351:../drivers/fsl_clock.c ****         {
+ 352:../drivers/fsl_clock.c ****         }
+ 353:../drivers/fsl_clock.c ****     }
+ 354:../drivers/fsl_clock.c **** 
+ 355:../drivers/fsl_clock.c ****     /* Wait for clock source change completed. */
+ 356:../drivers/fsl_clock.c ****     while (targetConfig->outSrc != MCG_S_CLKST_VAL)
+ 900              		.loc 1 356 0 is_stmt 1 discriminator 1
+ 901 0052 0178     		ldrb	r1, [r0]
+ 902 0054 114B     		ldr	r3, .L94
+ 903 0056 9A79     		ldrb	r2, [r3, #6]
+ 904 0058 9208     		lsrs	r2, r2, #2
+ 905 005a 0323     		movs	r3, #3
+ 906 005c 1340     		ands	r3, r2
+ 907 005e 9942     		cmp	r1, r3
+ 908 0060 F7D1     		bne	.L91
+ 357:../drivers/fsl_clock.c ****     {
+ 358:../drivers/fsl_clock.c ****     }
+ 359:../drivers/fsl_clock.c **** 
+ 360:../drivers/fsl_clock.c ****     return kStatus_Success;
+ 361:../drivers/fsl_clock.c **** }
+ 909              		.loc 1 361 0
+ 910 0062 0020     		movs	r0, #0
+ 911              	.LVL59:
+ 912              		@ sp needed
+ 913 0064 10BD     		pop	{r4, pc}
+ 914              	.LVL60:
+ 915              	.L93:
+ 329:../drivers/fsl_clock.c ****         (MCG_C2_IRCS_VAL != targetConfig->ircs))
+ 916              		.loc 1 329 0 discriminator 1
+ 917 0066 0378     		ldrb	r3, [r0]
+ 918 0068 012B     		cmp	r3, #1
+ 919 006a D1D1     		bne	.L89
+ 330:../drivers/fsl_clock.c ****     {
+ 920              		.loc 1 330 0 discriminator 2
+ 921 006c 0B4B     		ldr	r3, .L94
+ 922 006e 5B78     		ldrb	r3, [r3, #1]
+ 923 0070 8278     		ldrb	r2, [r0, #2]
+ 329:../drivers/fsl_clock.c ****         (MCG_C2_IRCS_VAL != targetConfig->ircs))
+ 924              		.loc 1 329 0 discriminator 2
+ 925 0072 0121     		movs	r1, #1
+ 926 0074 0B40     		ands	r3, r1
+ 927 0076 9342     		cmp	r3, r2
+ 928 0078 CAD0     		beq	.L89
+ 332:../drivers/fsl_clock.c ****         while (kMCGLITE_ClkSrcHirc != MCG_S_CLKST_VAL)
+ 929              		.loc 1 332 0
+ 930 007a 084A     		ldr	r2, .L94
+ 931 007c 1378     		ldrb	r3, [r2]
+ 932 007e 3E31     		adds	r1, r1, #62
+ 933 0080 0B40     		ands	r3, r1
+ 934 0082 1370     		strb	r3, [r2]
+ 935              	.L90:
+ 333:../drivers/fsl_clock.c ****         {
+ 936              		.loc 1 333 0 discriminator 1
+ 937 0084 054B     		ldr	r3, .L94
+ 938 0086 9B79     		ldrb	r3, [r3, #6]
+ 939 0088 9B08     		lsrs	r3, r3, #2
+ 940 008a 9B07     		lsls	r3, r3, #30
+ 941 008c FAD1     		bne	.L90
+ 942 008e BFE7     		b	.L89
+ 943              	.L92:
+ 350:../drivers/fsl_clock.c ****         {
+ 944              		.loc 1 350 0 discriminator 1
+ 945 0090 024B     		ldr	r3, .L94
+ 946 0092 9B79     		ldrb	r3, [r3, #6]
+ 947 0094 9B07     		lsls	r3, r3, #30
+ 948 0096 FBD5     		bpl	.L92
+ 949 0098 DBE7     		b	.L91
+ 950              	.L95:
+ 951 009a C046     		.align	2
+ 952              	.L94:
+ 953 009c 00400640 		.word	1074151424
+ 954              		.cfi_endproc
+ 955              	.LFE67:
+ 957              		.section	.text.CLOCK_InitOsc0,"ax",%progbits
+ 958              		.align	1
+ 959              		.global	CLOCK_InitOsc0
+ 960              		.syntax unified
+ 961              		.code	16
+ 962              		.thumb_func
+ 963              		.fpu softvfp
+ 965              	CLOCK_InitOsc0:
+ 966              	.LFB68:
+ 362:../drivers/fsl_clock.c **** 
+ 363:../drivers/fsl_clock.c **** void CLOCK_InitOsc0(osc_config_t const *config)
+ 364:../drivers/fsl_clock.c **** {
+ 967              		.loc 1 364 0
+ 968              		.cfi_startproc
+ 969              		@ args = 0, pretend = 0, frame = 0
+ 970              		@ frame_needed = 0, uses_anonymous_args = 0
+ 971              	.LVL61:
+ 972 0000 70B5     		push	{r4, r5, r6, lr}
+ 973              		.cfi_def_cfa_offset 16
+ 974              		.cfi_offset 4, -16
+ 975              		.cfi_offset 5, -12
+ 976              		.cfi_offset 6, -8
+ 977              		.cfi_offset 14, -4
+ 978 0002 0400     		movs	r4, r0
+ 365:../drivers/fsl_clock.c ****     uint8_t range = CLOCK_GetOscRangeFromFreq(config->freq);
+ 979              		.loc 1 365 0
+ 980 0004 0068     		ldr	r0, [r0]
+ 981              	.LVL62:
+ 982 0006 FFF7FEFF 		bl	CLOCK_GetOscRangeFromFreq
+ 983              	.LVL63:
+ 366:../drivers/fsl_clock.c **** 
+ 367:../drivers/fsl_clock.c ****     OSC_SetCapLoad(OSC0, config->capLoad);
+ 984              		.loc 1 367 0
+ 985 000a 2379     		ldrb	r3, [r4, #4]
+ 986              	.LVL64:
+ 987              	.LBB10:
+ 988              	.LBB11:
+ 472:../drivers/fsl_clock.h **** }
+ 473:../drivers/fsl_clock.h **** 
+ 474:../drivers/fsl_clock.h **** /*!
+ 475:../drivers/fsl_clock.h ****  * @brief Set LPUART0 clock source.
+ 476:../drivers/fsl_clock.h ****  *
+ 477:../drivers/fsl_clock.h ****  * @param src The value to set LPUART0 clock source.
+ 478:../drivers/fsl_clock.h ****  */
+ 479:../drivers/fsl_clock.h **** static inline void CLOCK_SetLpuart0Clock(uint32_t src)
+ 480:../drivers/fsl_clock.h **** {
+ 481:../drivers/fsl_clock.h ****     SIM->SOPT2 = ((SIM->SOPT2 & ~SIM_SOPT2_LPUART0SRC_MASK) | SIM_SOPT2_LPUART0SRC(src));
+ 482:../drivers/fsl_clock.h **** }
+ 483:../drivers/fsl_clock.h **** 
+ 484:../drivers/fsl_clock.h **** /*!
+ 485:../drivers/fsl_clock.h ****  * @brief Set LPUART1 clock source.
+ 486:../drivers/fsl_clock.h ****  *
+ 487:../drivers/fsl_clock.h ****  * @param src The value to set LPUART1 clock source.
+ 488:../drivers/fsl_clock.h ****  */
+ 489:../drivers/fsl_clock.h **** static inline void CLOCK_SetLpuart1Clock(uint32_t src)
+ 490:../drivers/fsl_clock.h **** {
+ 491:../drivers/fsl_clock.h ****     SIM->SOPT2 = ((SIM->SOPT2 & ~SIM_SOPT2_LPUART1SRC_MASK) | SIM_SOPT2_LPUART1SRC(src));
+ 492:../drivers/fsl_clock.h **** }
+ 493:../drivers/fsl_clock.h **** 
+ 494:../drivers/fsl_clock.h **** /*!
+ 495:../drivers/fsl_clock.h ****  * @brief Set TPM clock source.
+ 496:../drivers/fsl_clock.h ****  *
+ 497:../drivers/fsl_clock.h ****  * @param src The value to set TPM clock source.
+ 498:../drivers/fsl_clock.h ****  */
+ 499:../drivers/fsl_clock.h **** static inline void CLOCK_SetTpmClock(uint32_t src)
+ 500:../drivers/fsl_clock.h **** {
+ 501:../drivers/fsl_clock.h ****     SIM->SOPT2 = ((SIM->SOPT2 & ~SIM_SOPT2_TPMSRC_MASK) | SIM_SOPT2_TPMSRC(src));
+ 502:../drivers/fsl_clock.h **** }
+ 503:../drivers/fsl_clock.h **** 
+ 504:../drivers/fsl_clock.h **** /*!
+ 505:../drivers/fsl_clock.h ****  * @brief Set FLEXIO clock source.
+ 506:../drivers/fsl_clock.h ****  *
+ 507:../drivers/fsl_clock.h ****  * @param src The value to set FLEXIO clock source.
+ 508:../drivers/fsl_clock.h ****  */
+ 509:../drivers/fsl_clock.h **** static inline void CLOCK_SetFlexio0Clock(uint32_t src)
+ 510:../drivers/fsl_clock.h **** {
+ 511:../drivers/fsl_clock.h ****     SIM->SOPT2 = ((SIM->SOPT2 & ~SIM_SOPT2_FLEXIOSRC_MASK) | SIM_SOPT2_FLEXIOSRC(src));
+ 512:../drivers/fsl_clock.h **** }
+ 513:../drivers/fsl_clock.h **** 
+ 514:../drivers/fsl_clock.h **** /*!
+ 515:../drivers/fsl_clock.h ****  * @brief Set CLKOUT source.
+ 516:../drivers/fsl_clock.h ****  *
+ 517:../drivers/fsl_clock.h ****  * @param src The value to set CLKOUT source.
+ 518:../drivers/fsl_clock.h ****  */
+ 519:../drivers/fsl_clock.h **** static inline void CLOCK_SetClkOutClock(uint32_t src)
+ 520:../drivers/fsl_clock.h **** {
+ 521:../drivers/fsl_clock.h ****     SIM->SOPT2 = ((SIM->SOPT2 & ~SIM_SOPT2_CLKOUTSEL_MASK) | SIM_SOPT2_CLKOUTSEL(src));
+ 522:../drivers/fsl_clock.h **** }
+ 523:../drivers/fsl_clock.h **** 
+ 524:../drivers/fsl_clock.h **** /*!
+ 525:../drivers/fsl_clock.h ****  * @brief Set RTC_CLKOUT source.
+ 526:../drivers/fsl_clock.h ****  *
+ 527:../drivers/fsl_clock.h ****  * @param src The value to set RTC_CLKOUT source.
+ 528:../drivers/fsl_clock.h ****  */
+ 529:../drivers/fsl_clock.h **** static inline void CLOCK_SetRtcClkOutClock(uint32_t src)
+ 530:../drivers/fsl_clock.h **** {
+ 531:../drivers/fsl_clock.h ****     SIM->SOPT2 = ((SIM->SOPT2 & ~SIM_SOPT2_RTCCLKOUTSEL_MASK) | SIM_SOPT2_RTCCLKOUTSEL(src));
+ 532:../drivers/fsl_clock.h **** }
+ 533:../drivers/fsl_clock.h **** 
+ 534:../drivers/fsl_clock.h **** /*!
+ 535:../drivers/fsl_clock.h ****  * @brief System clock divider
+ 536:../drivers/fsl_clock.h ****  *
+ 537:../drivers/fsl_clock.h ****  * Set the SIM_CLKDIV1[OUTDIV1], SIM_CLKDIV1[OUTDIV4].
+ 538:../drivers/fsl_clock.h ****  *
+ 539:../drivers/fsl_clock.h ****  * @param outdiv1 Clock 1 output divider value.
+ 540:../drivers/fsl_clock.h ****  *
+ 541:../drivers/fsl_clock.h ****  * @param outdiv4 Clock 4 output divider value.
+ 542:../drivers/fsl_clock.h ****  */
+ 543:../drivers/fsl_clock.h **** static inline void CLOCK_SetOutDiv(uint32_t outdiv1, uint32_t outdiv4)
+ 544:../drivers/fsl_clock.h **** {
+ 545:../drivers/fsl_clock.h ****     SIM->CLKDIV1 = SIM_CLKDIV1_OUTDIV1(outdiv1) | SIM_CLKDIV1_OUTDIV4(outdiv4);
+ 546:../drivers/fsl_clock.h **** }
+ 547:../drivers/fsl_clock.h **** 
+ 548:../drivers/fsl_clock.h **** /*!
+ 549:../drivers/fsl_clock.h ****  * @brief Gets the clock frequency for a specific clock name.
+ 550:../drivers/fsl_clock.h ****  *
+ 551:../drivers/fsl_clock.h ****  * This function checks the current clock configurations and then calculates
+ 552:../drivers/fsl_clock.h ****  * the clock frequency for a specific clock name defined in clock_name_t.
+ 553:../drivers/fsl_clock.h ****  * The MCG must be properly configured before using this function.
+ 554:../drivers/fsl_clock.h ****  *
+ 555:../drivers/fsl_clock.h ****  * @param clockName Clock names defined in clock_name_t
+ 556:../drivers/fsl_clock.h ****  * @return Clock frequency value in Hertz
+ 557:../drivers/fsl_clock.h ****  */
+ 558:../drivers/fsl_clock.h **** uint32_t CLOCK_GetFreq(clock_name_t clockName);
+ 559:../drivers/fsl_clock.h **** 
+ 560:../drivers/fsl_clock.h **** /*!
+ 561:../drivers/fsl_clock.h ****  * @brief Get the core clock or system clock frequency.
+ 562:../drivers/fsl_clock.h ****  *
+ 563:../drivers/fsl_clock.h ****  * @return Clock frequency in Hz.
+ 564:../drivers/fsl_clock.h ****  */
+ 565:../drivers/fsl_clock.h **** uint32_t CLOCK_GetCoreSysClkFreq(void);
+ 566:../drivers/fsl_clock.h **** 
+ 567:../drivers/fsl_clock.h **** /*!
+ 568:../drivers/fsl_clock.h ****  * @brief Get the platform clock frequency.
+ 569:../drivers/fsl_clock.h ****  *
+ 570:../drivers/fsl_clock.h ****  * @return Clock frequency in Hz.
+ 571:../drivers/fsl_clock.h ****  */
+ 572:../drivers/fsl_clock.h **** uint32_t CLOCK_GetPlatClkFreq(void);
+ 573:../drivers/fsl_clock.h **** 
+ 574:../drivers/fsl_clock.h **** /*!
+ 575:../drivers/fsl_clock.h ****  * @brief Get the bus clock frequency.
+ 576:../drivers/fsl_clock.h ****  *
+ 577:../drivers/fsl_clock.h ****  * @return Clock frequency in Hz.
+ 578:../drivers/fsl_clock.h ****  */
+ 579:../drivers/fsl_clock.h **** uint32_t CLOCK_GetBusClkFreq(void);
+ 580:../drivers/fsl_clock.h **** 
+ 581:../drivers/fsl_clock.h **** /*!
+ 582:../drivers/fsl_clock.h ****  * @brief Get the flash clock frequency.
+ 583:../drivers/fsl_clock.h ****  *
+ 584:../drivers/fsl_clock.h ****  * @return Clock frequency in Hz.
+ 585:../drivers/fsl_clock.h ****  */
+ 586:../drivers/fsl_clock.h **** uint32_t CLOCK_GetFlashClkFreq(void);
+ 587:../drivers/fsl_clock.h **** 
+ 588:../drivers/fsl_clock.h **** /*!
+ 589:../drivers/fsl_clock.h ****  * @brief Get the external reference 32K clock frequency (ERCLK32K).
+ 590:../drivers/fsl_clock.h ****  *
+ 591:../drivers/fsl_clock.h ****  * @return Clock frequency in Hz.
+ 592:../drivers/fsl_clock.h ****  */
+ 593:../drivers/fsl_clock.h **** uint32_t CLOCK_GetEr32kClkFreq(void);
+ 594:../drivers/fsl_clock.h **** 
+ 595:../drivers/fsl_clock.h **** /*!
+ 596:../drivers/fsl_clock.h ****  * @brief Get the OSC0 external reference clock frequency (OSC0ERCLK).
+ 597:../drivers/fsl_clock.h ****  *
+ 598:../drivers/fsl_clock.h ****  * @return Clock frequency in Hz.
+ 599:../drivers/fsl_clock.h ****  */
+ 600:../drivers/fsl_clock.h **** uint32_t CLOCK_GetOsc0ErClkFreq(void);
+ 601:../drivers/fsl_clock.h **** 
+ 602:../drivers/fsl_clock.h **** /*!
+ 603:../drivers/fsl_clock.h ****  * @brief Set the clock configure in SIM module.
+ 604:../drivers/fsl_clock.h ****  *
+ 605:../drivers/fsl_clock.h ****  * This function sets system layer clock settings in SIM module.
+ 606:../drivers/fsl_clock.h ****  *
+ 607:../drivers/fsl_clock.h ****  * @param config Pointer to the configure structure.
+ 608:../drivers/fsl_clock.h ****  */
+ 609:../drivers/fsl_clock.h **** void CLOCK_SetSimConfig(sim_clock_config_t const *config);
+ 610:../drivers/fsl_clock.h **** 
+ 611:../drivers/fsl_clock.h **** /*!
+ 612:../drivers/fsl_clock.h ****  * @brief Set the system clock dividers in SIM to safe value.
+ 613:../drivers/fsl_clock.h ****  *
+ 614:../drivers/fsl_clock.h ****  * The system level clocks (core clock, bus clock, flexbus clock and flash clock)
+ 615:../drivers/fsl_clock.h ****  * must be in allowed ranges. During MCG clock mode switch, the MCG output clock
+ 616:../drivers/fsl_clock.h ****  * changes then the system level clocks may be out of range. This function could
+ 617:../drivers/fsl_clock.h ****  * be used before MCG mode change, to make sure system level clocks are in allowed
+ 618:../drivers/fsl_clock.h ****  * range.
+ 619:../drivers/fsl_clock.h ****  *
+ 620:../drivers/fsl_clock.h ****  * @param config Pointer to the configure structure.
+ 621:../drivers/fsl_clock.h ****  */
+ 622:../drivers/fsl_clock.h **** static inline void CLOCK_SetSimSafeDivs(void)
+ 623:../drivers/fsl_clock.h **** {
+ 624:../drivers/fsl_clock.h ****     SIM->CLKDIV1 = 0x10070000U;
+ 625:../drivers/fsl_clock.h **** }
+ 626:../drivers/fsl_clock.h **** 
+ 627:../drivers/fsl_clock.h **** /*!
+ 628:../drivers/fsl_clock.h ****  * @name MCG_Lite clock frequency
+ 629:../drivers/fsl_clock.h ****  * @{
+ 630:../drivers/fsl_clock.h ****  */
+ 631:../drivers/fsl_clock.h **** 
+ 632:../drivers/fsl_clock.h **** /*!
+ 633:../drivers/fsl_clock.h ****  * @brief Gets the MCG_Lite output clock (MCGOUTCLK) frequency.
+ 634:../drivers/fsl_clock.h ****  *
+ 635:../drivers/fsl_clock.h ****  * This function gets the MCG_Lite output clock frequency in Hz based on the current
+ 636:../drivers/fsl_clock.h ****  * MCG_Lite register value.
+ 637:../drivers/fsl_clock.h ****  *
+ 638:../drivers/fsl_clock.h ****  * @return The frequency of MCGOUTCLK.
+ 639:../drivers/fsl_clock.h ****  */
+ 640:../drivers/fsl_clock.h **** uint32_t CLOCK_GetOutClkFreq(void);
+ 641:../drivers/fsl_clock.h **** 
+ 642:../drivers/fsl_clock.h **** /*!
+ 643:../drivers/fsl_clock.h ****  * @brief Gets the MCG internal reference clock (MCGIRCLK) frequency.
+ 644:../drivers/fsl_clock.h ****  *
+ 645:../drivers/fsl_clock.h ****  * This function gets the MCG_Lite internal reference clock frequency in Hz based
+ 646:../drivers/fsl_clock.h ****  * on the current MCG register value.
+ 647:../drivers/fsl_clock.h ****  *
+ 648:../drivers/fsl_clock.h ****  * @return The frequency of MCGIRCLK.
+ 649:../drivers/fsl_clock.h ****  */
+ 650:../drivers/fsl_clock.h **** uint32_t CLOCK_GetInternalRefClkFreq(void);
+ 651:../drivers/fsl_clock.h **** 
+ 652:../drivers/fsl_clock.h **** /*!
+ 653:../drivers/fsl_clock.h **** * @brief Gets the current MCGPCLK frequency.
+ 654:../drivers/fsl_clock.h **** *
+ 655:../drivers/fsl_clock.h **** * This function gets the MCGPCLK frequency in Hz based on the current MCG_Lite
+ 656:../drivers/fsl_clock.h **** * register settings.
+ 657:../drivers/fsl_clock.h **** *
+ 658:../drivers/fsl_clock.h **** * @return The frequency of MCGPCLK.
+ 659:../drivers/fsl_clock.h **** */
+ 660:../drivers/fsl_clock.h **** uint32_t CLOCK_GetPeriphClkFreq(void);
+ 661:../drivers/fsl_clock.h **** 
+ 662:../drivers/fsl_clock.h **** /*! @}*/
+ 663:../drivers/fsl_clock.h **** 
+ 664:../drivers/fsl_clock.h **** /*!
+ 665:../drivers/fsl_clock.h ****  * @name MCG_Lite mode.
+ 666:../drivers/fsl_clock.h ****  * @{
+ 667:../drivers/fsl_clock.h ****  */
+ 668:../drivers/fsl_clock.h **** 
+ 669:../drivers/fsl_clock.h **** /*!
+ 670:../drivers/fsl_clock.h ****  * @brief Gets the current MCG_Lite mode.
+ 671:../drivers/fsl_clock.h ****  *
+ 672:../drivers/fsl_clock.h ****  * This function checks the MCG_Lite registers and determines the current MCG_Lite mode.
+ 673:../drivers/fsl_clock.h ****  *
+ 674:../drivers/fsl_clock.h ****  * @return The current MCG_Lite mode or error code.
+ 675:../drivers/fsl_clock.h ****  */
+ 676:../drivers/fsl_clock.h **** mcglite_mode_t CLOCK_GetMode(void);
+ 677:../drivers/fsl_clock.h **** 
+ 678:../drivers/fsl_clock.h **** /*!
+ 679:../drivers/fsl_clock.h ****  * @brief Sets the MCG_Lite configuration.
+ 680:../drivers/fsl_clock.h ****  *
+ 681:../drivers/fsl_clock.h ****  * This function configures the MCG_Lite, includes the output clock source, MCGIRCLK
+ 682:../drivers/fsl_clock.h ****  * settings, HIRC settings, and so on. See @ref mcglite_config_t for details.
+ 683:../drivers/fsl_clock.h ****  *
+ 684:../drivers/fsl_clock.h ****  * @param  targetConfig Pointer to the target MCG_Lite mode configuration structure.
+ 685:../drivers/fsl_clock.h ****  * @return Error code.
+ 686:../drivers/fsl_clock.h ****  */
+ 687:../drivers/fsl_clock.h **** status_t CLOCK_SetMcgliteConfig(mcglite_config_t const *targetConfig);
+ 688:../drivers/fsl_clock.h **** 
+ 689:../drivers/fsl_clock.h **** /*! @}*/
+ 690:../drivers/fsl_clock.h **** 
+ 691:../drivers/fsl_clock.h **** /*!
+ 692:../drivers/fsl_clock.h ****  * @name OSC configuration
+ 693:../drivers/fsl_clock.h ****  * @{
+ 694:../drivers/fsl_clock.h ****  */
+ 695:../drivers/fsl_clock.h **** 
+ 696:../drivers/fsl_clock.h **** /*!
+ 697:../drivers/fsl_clock.h ****  * @brief Configures the OSC external reference clock (OSCERCLK).
+ 698:../drivers/fsl_clock.h ****  *
+ 699:../drivers/fsl_clock.h ****  * This function configures the OSC external reference clock (OSCERCLK).
+ 700:../drivers/fsl_clock.h ****  * This is an example to enable the OSCERCLK in normal mode and stop mode, and set
+ 701:../drivers/fsl_clock.h ****  * the output divider to 1.
+ 702:../drivers/fsl_clock.h ****  *
+ 703:../drivers/fsl_clock.h ****    @code
+ 704:../drivers/fsl_clock.h ****    oscer_config_t config =
+ 705:../drivers/fsl_clock.h ****    {
+ 706:../drivers/fsl_clock.h ****        .enableMode = kOSC_ErClkEnable | kOSC_ErClkEnableInStop,
+ 707:../drivers/fsl_clock.h ****        .erclkDiv   = 1U,
+ 708:../drivers/fsl_clock.h ****    };
+ 709:../drivers/fsl_clock.h **** 
+ 710:../drivers/fsl_clock.h ****    OSC_SetExtRefClkConfig(OSC, &config);
+ 711:../drivers/fsl_clock.h ****    @endcode
+ 712:../drivers/fsl_clock.h ****  *
+ 713:../drivers/fsl_clock.h ****  * @param base   OSC peripheral address.
+ 714:../drivers/fsl_clock.h ****  * @param config Pointer to the configuration structure.
+ 715:../drivers/fsl_clock.h ****  */
+ 716:../drivers/fsl_clock.h **** static inline void OSC_SetExtRefClkConfig(OSC_Type *base, oscer_config_t const *config)
+ 717:../drivers/fsl_clock.h **** {
+ 718:../drivers/fsl_clock.h ****     uint8_t reg = base->CR;
+ 719:../drivers/fsl_clock.h **** 
+ 720:../drivers/fsl_clock.h ****     reg &= ~(OSC_CR_ERCLKEN_MASK | OSC_CR_EREFSTEN_MASK);
+ 721:../drivers/fsl_clock.h ****     reg |= config->enableMode;
+ 722:../drivers/fsl_clock.h **** 
+ 723:../drivers/fsl_clock.h ****     base->CR = reg;
+ 724:../drivers/fsl_clock.h **** }
+ 725:../drivers/fsl_clock.h **** 
+ 726:../drivers/fsl_clock.h **** /*!
+ 727:../drivers/fsl_clock.h ****  * @brief Sets the capacitor load configuration for the oscillator.
+ 728:../drivers/fsl_clock.h ****  *
+ 729:../drivers/fsl_clock.h ****  * This function sets the specified capacitor configuration for the oscillator.
+ 730:../drivers/fsl_clock.h ****  * This should be done in the early system level initialization function call
+ 731:../drivers/fsl_clock.h ****  * based on the system configuration.
+ 732:../drivers/fsl_clock.h ****  *
+ 733:../drivers/fsl_clock.h ****  * @param base   OSC peripheral address.
+ 734:../drivers/fsl_clock.h ****  * @param capLoad OR'ed value for the capacitor load option.See \ref _osc_cap_load.
+ 735:../drivers/fsl_clock.h ****  *
+ 736:../drivers/fsl_clock.h ****  * Example:
+ 737:../drivers/fsl_clock.h ****    @code
+ 738:../drivers/fsl_clock.h ****    // To enable only 2 pF and 8 pF capacitor load, please use like this.
+ 739:../drivers/fsl_clock.h ****    OSC_SetCapLoad(OSC, kOSC_Cap2P | kOSC_Cap8P);
+ 740:../drivers/fsl_clock.h ****    @endcode
+ 741:../drivers/fsl_clock.h ****  */
+ 742:../drivers/fsl_clock.h **** 
+ 743:../drivers/fsl_clock.h **** static inline void OSC_SetCapLoad(OSC_Type *base, uint8_t capLoad)
+ 744:../drivers/fsl_clock.h **** {
+ 745:../drivers/fsl_clock.h ****     uint8_t reg = base->CR;
+ 989              		.loc 2 745 0
+ 990 000c 124A     		ldr	r2, .L99
+ 991 000e 1178     		ldrb	r1, [r2]
+ 992              	.LVL65:
+ 746:../drivers/fsl_clock.h **** 
+ 747:../drivers/fsl_clock.h ****     reg &= ~(OSC_CR_SC2P_MASK | OSC_CR_SC4P_MASK | OSC_CR_SC8P_MASK | OSC_CR_SC16P_MASK);
+ 993              		.loc 2 747 0
+ 994 0010 0F25     		movs	r5, #15
+ 995 0012 A943     		bics	r1, r5
+ 996              	.LVL66:
+ 748:../drivers/fsl_clock.h ****     reg |= capLoad;
+ 997              		.loc 2 748 0
+ 998 0014 0B43     		orrs	r3, r1
+ 999              	.LVL67:
+ 749:../drivers/fsl_clock.h **** 
+ 750:../drivers/fsl_clock.h ****     base->CR = reg;
+ 1000              		.loc 2 750 0
+ 1001 0016 1370     		strb	r3, [r2]
+ 1002              	.LVL68:
+ 1003              	.LBE11:
+ 1004              	.LBE10:
+ 1005              	.LBB12:
+ 1006              	.LBB13:
+ 718:../drivers/fsl_clock.h **** 
+ 1007              		.loc 2 718 0
+ 1008 0018 1378     		ldrb	r3, [r2]
+ 1009              	.LVL69:
+ 720:../drivers/fsl_clock.h ****     reg |= config->enableMode;
+ 1010              		.loc 2 720 0
+ 1011 001a 5F21     		movs	r1, #95
+ 1012 001c 0B40     		ands	r3, r1
+ 1013              	.LVL70:
+ 721:../drivers/fsl_clock.h **** 
+ 1014              		.loc 2 721 0
+ 1015 001e A179     		ldrb	r1, [r4, #6]
+ 1016 0020 0B43     		orrs	r3, r1
+ 1017              	.LVL71:
+ 723:../drivers/fsl_clock.h **** }
+ 1018              		.loc 2 723 0
+ 1019 0022 1370     		strb	r3, [r2]
+ 1020              	.LVL72:
+ 1021              	.LBE13:
+ 1022              	.LBE12:
+ 368:../drivers/fsl_clock.c ****     OSC_SetExtRefClkConfig(OSC0, &config->oscerConfig);
+ 369:../drivers/fsl_clock.c **** 
+ 370:../drivers/fsl_clock.c ****     MCG->C2 = ((MCG->C2 & MCG_C2_IRCS_MASK) | MCG_C2_RANGE0(range) | (uint8_t)config->workMode);
+ 1023              		.loc 1 370 0
+ 1024 0024 0D4A     		ldr	r2, .L99+4
+ 1025 0026 5378     		ldrb	r3, [r2, #1]
+ 1026 0028 0121     		movs	r1, #1
+ 1027 002a 0B40     		ands	r3, r1
+ 1028 002c 0001     		lsls	r0, r0, #4
+ 1029              	.LVL73:
+ 1030 002e 2F31     		adds	r1, r1, #47
+ 1031 0030 0840     		ands	r0, r1
+ 1032 0032 1843     		orrs	r0, r3
+ 1033 0034 6379     		ldrb	r3, [r4, #5]
+ 1034 0036 1843     		orrs	r0, r3
+ 1035 0038 5070     		strb	r0, [r2, #1]
+ 371:../drivers/fsl_clock.c **** 
+ 372:../drivers/fsl_clock.c ****     if ((kOSC_ModeExt != config->workMode) && (OSC0->CR & OSC_CR_ERCLKEN_MASK))
+ 1036              		.loc 1 372 0
+ 1037 003a 6379     		ldrb	r3, [r4, #5]
+ 1038 003c 002B     		cmp	r3, #0
+ 1039 003e 04D0     		beq	.L96
+ 1040              		.loc 1 372 0 is_stmt 0 discriminator 1
+ 1041 0040 054B     		ldr	r3, .L99
+ 1042 0042 1B78     		ldrb	r3, [r3]
+ 1043 0044 5BB2     		sxtb	r3, r3
+ 1044 0046 002B     		cmp	r3, #0
+ 1045 0048 00DB     		blt	.L98
+ 1046              	.L96:
+ 373:../drivers/fsl_clock.c ****     {
+ 374:../drivers/fsl_clock.c ****         /* Wait for stable. */
+ 375:../drivers/fsl_clock.c ****         while (!(MCG->S & MCG_S_OSCINIT0_MASK))
+ 376:../drivers/fsl_clock.c ****         {
+ 377:../drivers/fsl_clock.c ****         }
+ 378:../drivers/fsl_clock.c ****     }
+ 379:../drivers/fsl_clock.c **** }
+ 1047              		.loc 1 379 0 is_stmt 1
+ 1048              		@ sp needed
+ 1049              	.LVL74:
+ 1050 004a 70BD     		pop	{r4, r5, r6, pc}
+ 1051              	.LVL75:
+ 1052              	.L98:
+ 375:../drivers/fsl_clock.c ****         {
+ 1053              		.loc 1 375 0 discriminator 1
+ 1054 004c 034B     		ldr	r3, .L99+4
+ 1055 004e 9B79     		ldrb	r3, [r3, #6]
+ 1056 0050 9B07     		lsls	r3, r3, #30
+ 1057 0052 FBD5     		bpl	.L98
+ 1058 0054 F9E7     		b	.L96
+ 1059              	.L100:
+ 1060 0056 C046     		.align	2
+ 1061              	.L99:
+ 1062 0058 00500640 		.word	1074155520
+ 1063 005c 00400640 		.word	1074151424
+ 1064              		.cfi_endproc
+ 1065              	.LFE68:
+ 1067              		.section	.text.CLOCK_DeinitOsc0,"ax",%progbits
+ 1068              		.align	1
+ 1069              		.global	CLOCK_DeinitOsc0
+ 1070              		.syntax unified
+ 1071              		.code	16
+ 1072              		.thumb_func
+ 1073              		.fpu softvfp
+ 1075              	CLOCK_DeinitOsc0:
+ 1076              	.LFB69:
+ 380:../drivers/fsl_clock.c **** 
+ 381:../drivers/fsl_clock.c **** void CLOCK_DeinitOsc0(void)
+ 382:../drivers/fsl_clock.c **** {
+ 1077              		.loc 1 382 0
+ 1078              		.cfi_startproc
+ 1079              		@ args = 0, pretend = 0, frame = 0
+ 1080              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1081              		@ link register save eliminated.
+ 383:../drivers/fsl_clock.c ****     OSC0->CR = 0U;
+ 1082              		.loc 1 383 0
+ 1083 0000 044B     		ldr	r3, .L102
+ 1084 0002 0022     		movs	r2, #0
+ 1085 0004 1A70     		strb	r2, [r3]
+ 384:../drivers/fsl_clock.c ****     MCG->C2 &= MCG_C2_IRCS_MASK;
+ 1086              		.loc 1 384 0
+ 1087 0006 044A     		ldr	r2, .L102+4
+ 1088 0008 5378     		ldrb	r3, [r2, #1]
+ 1089 000a 0121     		movs	r1, #1
+ 1090 000c 0B40     		ands	r3, r1
+ 1091 000e 5370     		strb	r3, [r2, #1]
+ 385:../drivers/fsl_clock.c **** }
+ 1092              		.loc 1 385 0
+ 1093              		@ sp needed
+ 1094 0010 7047     		bx	lr
+ 1095              	.L103:
+ 1096 0012 C046     		.align	2
+ 1097              	.L102:
+ 1098 0014 00500640 		.word	1074155520
+ 1099 0018 00400640 		.word	1074151424
+ 1100              		.cfi_endproc
+ 1101              	.LFE69:
+ 1103              		.comm	g_xtal32Freq,4,4
+ 1104              		.comm	g_xtal0Freq,4,4
+ 1105              		.section	.rodata.lircFreqs.5637,"a",%progbits
+ 1106              		.align	2
+ 1107              		.set	.LANCHOR0,. + 0
+ 1110              	lircFreqs.5637:
+ 1111 0000 80841E00 		.word	2000000
+ 1112 0004 00127A00 		.word	8000000
+ 1113              		.text
+ 1114              	.Letext0:
+ 1115              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1116              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1117              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1118              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1119              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1120              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1121              		.file 9 "../CMSIS/system_MKL17Z4.h"
+ 1122              		.file 10 "../CMSIS/MKL17Z4.h"
+ 1123              		.file 11 "../drivers/fsl_common.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fsl_clock.c
+     /tmp/ccmy29yr.s:16     .text.CLOCK_GetLircClkFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:22     .text.CLOCK_GetLircClkFreq:0000000000000000 CLOCK_GetLircClkFreq
+     /tmp/ccmy29yr.s:62     .text.CLOCK_GetLircClkFreq:000000000000002c $d
+     /tmp/ccmy29yr.s:68     .text.CLOCK_GetOscRangeFromFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:74     .text.CLOCK_GetOscRangeFromFreq:0000000000000000 CLOCK_GetOscRangeFromFreq
+     /tmp/ccmy29yr.s:112    .text.CLOCK_GetOscRangeFromFreq:0000000000000018 $d
+     /tmp/ccmy29yr.s:118    .text.CLOCK_GetOsc0ErClkFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:125    .text.CLOCK_GetOsc0ErClkFreq:0000000000000000 CLOCK_GetOsc0ErClkFreq
+     /tmp/ccmy29yr.s:152    .text.CLOCK_GetOsc0ErClkFreq:0000000000000014 $d
+                            *COM*:0000000000000004 g_xtal0Freq
+     /tmp/ccmy29yr.s:158    .text.CLOCK_GetEr32kClkFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:165    .text.CLOCK_GetEr32kClkFreq:0000000000000000 CLOCK_GetEr32kClkFreq
+     /tmp/ccmy29yr.s:221    .text.CLOCK_GetEr32kClkFreq:0000000000000038 $d
+                            *COM*:0000000000000004 g_xtal32Freq
+     /tmp/ccmy29yr.s:227    .text.CLOCK_SetSimConfig:0000000000000000 $t
+     /tmp/ccmy29yr.s:234    .text.CLOCK_SetSimConfig:0000000000000000 CLOCK_SetSimConfig
+     /tmp/ccmy29yr.s:274    .text.CLOCK_SetSimConfig:0000000000000020 $d
+     /tmp/ccmy29yr.s:281    .text.CLOCK_GetInternalRefClkFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:288    .text.CLOCK_GetInternalRefClkFreq:0000000000000000 CLOCK_GetInternalRefClkFreq
+     /tmp/ccmy29yr.s:324    .text.CLOCK_GetInternalRefClkFreq:000000000000001c $d
+     /tmp/ccmy29yr.s:329    .text.CLOCK_GetPeriphClkFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:336    .text.CLOCK_GetPeriphClkFreq:0000000000000000 CLOCK_GetPeriphClkFreq
+     /tmp/ccmy29yr.s:371    .text.CLOCK_GetPeriphClkFreq:0000000000000020 $d
+     /tmp/ccmy29yr.s:377    .text.CLOCK_GetOutClkFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:384    .text.CLOCK_GetOutClkFreq:0000000000000000 CLOCK_GetOutClkFreq
+     /tmp/ccmy29yr.s:443    .text.CLOCK_GetOutClkFreq:0000000000000038 $d
+     /tmp/ccmy29yr.s:451    .text.CLOCK_GetPlatClkFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:458    .text.CLOCK_GetPlatClkFreq:0000000000000000 CLOCK_GetPlatClkFreq
+     /tmp/ccmy29yr.s:484    .text.CLOCK_GetPlatClkFreq:0000000000000018 $d
+     /tmp/ccmy29yr.s:490    .text.CLOCK_GetFlashClkFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:497    .text.CLOCK_GetFlashClkFreq:0000000000000000 CLOCK_GetFlashClkFreq
+     /tmp/ccmy29yr.s:533    .text.CLOCK_GetFlashClkFreq:0000000000000024 $d
+     /tmp/ccmy29yr.s:539    .text.CLOCK_GetBusClkFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:546    .text.CLOCK_GetBusClkFreq:0000000000000000 CLOCK_GetBusClkFreq
+     /tmp/ccmy29yr.s:582    .text.CLOCK_GetBusClkFreq:0000000000000024 $d
+     /tmp/ccmy29yr.s:588    .text.CLOCK_GetCoreSysClkFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:595    .text.CLOCK_GetCoreSysClkFreq:0000000000000000 CLOCK_GetCoreSysClkFreq
+     /tmp/ccmy29yr.s:621    .text.CLOCK_GetCoreSysClkFreq:0000000000000018 $d
+     /tmp/ccmy29yr.s:627    .text.CLOCK_GetFreq:0000000000000000 $t
+     /tmp/ccmy29yr.s:634    .text.CLOCK_GetFreq:0000000000000000 CLOCK_GetFreq
+     /tmp/ccmy29yr.s:656    .rodata.CLOCK_GetFreq:0000000000000000 $d
+     /tmp/ccmy29yr.s:760    .text.CLOCK_GetFreq:0000000000000068 $d
+     /tmp/ccmy29yr.s:767    .text.CLOCK_GetMode:0000000000000000 $t
+     /tmp/ccmy29yr.s:774    .text.CLOCK_GetMode:0000000000000000 CLOCK_GetMode
+     /tmp/ccmy29yr.s:828    .text.CLOCK_GetMode:0000000000000034 $d
+     /tmp/ccmy29yr.s:833    .text.CLOCK_SetMcgliteConfig:0000000000000000 $t
+     /tmp/ccmy29yr.s:840    .text.CLOCK_SetMcgliteConfig:0000000000000000 CLOCK_SetMcgliteConfig
+     /tmp/ccmy29yr.s:953    .text.CLOCK_SetMcgliteConfig:000000000000009c $d
+     /tmp/ccmy29yr.s:958    .text.CLOCK_InitOsc0:0000000000000000 $t
+     /tmp/ccmy29yr.s:965    .text.CLOCK_InitOsc0:0000000000000000 CLOCK_InitOsc0
+     /tmp/ccmy29yr.s:1062   .text.CLOCK_InitOsc0:0000000000000058 $d
+     /tmp/ccmy29yr.s:1068   .text.CLOCK_DeinitOsc0:0000000000000000 $t
+     /tmp/ccmy29yr.s:1075   .text.CLOCK_DeinitOsc0:0000000000000000 CLOCK_DeinitOsc0
+     /tmp/ccmy29yr.s:1098   .text.CLOCK_DeinitOsc0:0000000000000014 $d
+     /tmp/ccmy29yr.s:1106   .rodata.lircFreqs.5637:0000000000000000 $d
+     /tmp/ccmy29yr.s:1110   .rodata.lircFreqs.5637:0000000000000000 lircFreqs.5637
+
+UNDEFINED SYMBOLS
+__aeabi_uidiv
