@@ -37,7 +37,7 @@ lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
-volatile uint8_t wake = 5;
+volatile uint8_t wake = 0;
 volatile uint8_t NB_strReady = 0;
 volatile uint16_t NB_bufPtr = 0;
 
@@ -69,8 +69,8 @@ void initTimer() {
 	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_1;
 	LPTMR_Init(LPTMR0, &lptmr_config);
 
-	LPTMR_SetTimerPeriod(LPTMR0, 5000);  // 3000 for 20hz data rat
-
+	LPTMR_SetTimerPeriod(LPTMR0, 8000);  // 3000 for 20hz data rat
+	//EnableIRQ(LPTMR0_IRQn);
 
 }
 
@@ -188,22 +188,22 @@ int main(void) {
 
 	//initAdc();
 	initUART();
-	rtcInit();
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
 	};
 	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//blue led as output
 
-	char buf[30];
-
+	static char buf[100];
 
 	initTimer();
+
+	//rtcInit();
 
 	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
 	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; //!< Stop submode 1, for VLLS1/LLS1.
 
-	LLWU->ME |= 0x01; 		// enable LLWU wakeup source from LPTMR module
+	LLWU->ME |= 0x21; 		// enable LLWU wakeup source from LPTMR module and RTC alarm
 	LLWU->PE2 |= 0x04; // enable LLWU wakeup source from accelerometer interrupt pin
 
 	// 0x20 for stock frdm pin enable,
@@ -243,11 +243,13 @@ int main(void) {
 	strcpy(reindeerData.dead, "false");
 	reindeerData.batteryLevel = 45;
 
-	while(true){
-		sprintf(buf, "RTC Seconds: %ld\r\n", rtcGetSeconds());
-		PCprint(buf);
-		delay_ms(1000);
-	}
+
+
+	CLOCK_EnableClock(kCLOCK_Rtc0);
+	sprintf(buf, "rtc flags: %lx, lptmr flags: %lx, llwu pin flags: %x\r\n",RTC->SR,LPTMR0->CSR,LLWU ->F1);
+	PCprint(buf);
+	sprintf(buf, "rtc seconds: %ld\r\n", RTC->TSR);
+	PCprint(buf);
 
 	if (wake == 2) {
 
@@ -258,8 +260,17 @@ int main(void) {
 
 	else if (wake == 0) {
 		PCprint("wake was 0 going to sleep\r\n");
+
+		rtcInit();
 		SMC_PreEnterStopModes();
 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
+	}
+	else if(wake == 3){
+		PCprint("rtc alarm heratti perkele\r\nhaluan etta minuun luotetaan\r\n");
+		rtcInit();
+		SMC_PreEnterStopModes();
+		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
+
 	}
 
 
@@ -272,7 +283,7 @@ int main(void) {
 		if (wake == 1) {
 
 			//strcpy(reindeerData.dead, "true");
-			//PCprint("Woken by LPTMR, reindeer is !!!%s!!\r\n", reindeerData.dead);
+			PCprint("Woken by LPTMR, reindeer is !!!!\r\n");
 
 			while (true) {
 				if (!GPS_strReady) {
@@ -282,6 +293,7 @@ int main(void) {
 					char testLat[12] = ("6500.02359");
 					char testLon[12] = ("02530.56951");
 
+					parseData(testLat,testLon);
 					strcpy(reindeerData.latitude, testLat);
 					strcpy(reindeerData.longitude, testLon);
 					break;
@@ -436,12 +448,18 @@ void LLWU_IRQHandler() {
 
 	/* If wakeup by LPTMR. */
 	if ( LLWU->F3 & 0x01)
-	{	// 1 = LPTMR interrupt, 2 = Accel interrupt, 0 = No interrupts
+	{	// 1 = LPTMR interrupt, 2 = Accel interrupt, 3 = RTC alarm interrupt, 0 = No interrupts
 
 		wake = 1;
 		CLOCK_EnableClock(kCLOCK_Lptmr0);
 		LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
 
+	}
+	else if (LLWU ->F3 & 0x20) //if wakeup from RTC alarm
+	{
+		wake = 3;
+		CLOCK_EnableClock(kCLOCK_Rtc0);
+		RTC ->TAR = 0xa;
 	}
 
 	else if ( LLWU->F1 & 0x20)
@@ -450,6 +468,7 @@ void LLWU_IRQHandler() {
 		wake = 2;
 		LLWU->F1 |= 0x20;
 	}
+
 
 	LLWU->F1 = 0x20;
 }
@@ -515,4 +534,21 @@ void LPUART1_IRQHandler() {
 		PC_bufPtr = 0;
 
 	}
+}
+
+void LPTMR_IRQHandler()
+{
+	wake = 1;
+		CLOCK_EnableClock(kCLOCK_Lptmr0);
+		LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
+}
+
+void RTC_IRQHandler(){
+
+	CLOCK_EnableClock(kCLOCK_Rtc0);
+
+	RTC ->SR &= ~0x10;	//disable counter for resetting TSR
+	RTC ->TSR = 0;		//reset TSR
+	RTC ->TAR = 0xa;
+
 }

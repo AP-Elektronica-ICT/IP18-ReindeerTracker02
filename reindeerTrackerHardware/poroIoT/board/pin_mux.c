@@ -103,7 +103,7 @@ void BOARD_InitPins(void) {
 
 	  PORT_SetPinMux(PORTE, 17u, kPORT_MuxAlt3);				// UART2 PIN RX (gps)
 	  PORT_SetPinMux(PORTE, 16u, kPORT_MuxAlt3);				// UART2 PIN TX (gps)
-	  PORT_SetPinMux(PORTA, 19u, kPORT_MuxAsGpio);				//GPS wake up pin
+	  //PORT_SetPinMux(PORTA, 19u, kPORT_MuxAsGpio);				//GPS wake up pin
   // CLOCK_EnableClock(kCLOCK_PortB);                           /* Port B Clock Gate Control: Clock enabled */
 
   // PORT_SetPinMux(PORTB, PIN16_IDX, kPORT_MuxAlt3);           /* PORTB16 (pin 62) is configured as UART0_RX */
