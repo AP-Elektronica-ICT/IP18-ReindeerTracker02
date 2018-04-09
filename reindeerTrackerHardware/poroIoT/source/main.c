@@ -249,6 +249,7 @@ int main(void) {
 	while(true){
 		sprintf(buf, "RTC Seconds: %ld", rtcGetSeconds());
 		PCprint(buf);
+		delay_ms(1000);
 	}
 
 	if (wake == 2) {
@@ -272,8 +273,8 @@ int main(void) {
 
 		if (wake == 1) {
 
-			strcpy(reindeerData.dead, "true");
-			PCprint("Woken by LPTMR, reindeer is !!!%s!!\r\n",reindeerData.dead);
+			//strcpy(reindeerData.dead, "true");
+			//PCprint("Woken by LPTMR, reindeer is !!!%s!!\r\n", reindeerData.dead);
 
 			while (true) {
 				if (!GPS_strReady) {
@@ -302,8 +303,8 @@ int main(void) {
 
 			}
 
-			PCprint("Parsed latitude: %s\r\n", reindeerData.latitude);
-			PCprint("Parsed longitude: %s\r\n", reindeerData.longitude);
+			//PCprint("Parsed latitude: %s\r\n", reindeerData.latitude);
+			//PCprint("Parsed longitude: %s\r\n", reindeerData.longitude);
 			break;
 		}
 
