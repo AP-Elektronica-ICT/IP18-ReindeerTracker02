@@ -1,5 +1,5 @@
 import { Component, trigger, state, style, transition, animate,keyframes } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {AlertController, IonicPage, NavController, NavParams} from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { SignUpPage } from '../sign-up/sign-up';
 import {FormGroup} from "@angular/forms";
@@ -75,7 +75,7 @@ export class LogInPage {
 
   loginError = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthProvider, public alertCtrl: AlertController) {
   }
 
   login(form: FormGroup) {
@@ -95,5 +95,44 @@ export class LogInPage {
     this.navCtrl.push(SignUpPage);
   }
 
+  showForgotPasswordPrompt() {
+    let prompt = this.alertCtrl.create({
+      title: 'Forgot password',
+      message: "Please enter your email address, an email to reset your password will be sent shortly after.",
+      inputs: [
+        {
+          name: 'email',
+          placeholder: 'Email',
+          type: 'email'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Send',
+          handler: data => {
+            this.auth.resetPassword(data.email)
+              .then(res => {
+                this.showEmailResetAlert();
+              })
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
 
+  showEmailResetAlert() {
+    let alert = this.alertCtrl.create({
+      title: 'Email sent',
+      subTitle: 'An email has been sent to reset your password',
+      buttons: ['OK']
+    });
+    alert.present();
+  }
 }

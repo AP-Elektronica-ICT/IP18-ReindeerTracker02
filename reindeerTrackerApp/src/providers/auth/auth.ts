@@ -64,4 +64,8 @@ export class AuthProvider {
   signOut(): Promise<any> {
     return this.af.auth.signOut();
   }
+
+  resetPassword(email: string): Promise<any> {
+    return this.af.auth.sendPasswordResetEmail(email);
+  }
 }
