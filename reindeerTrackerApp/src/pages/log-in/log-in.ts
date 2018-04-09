@@ -78,6 +78,13 @@ export class LogInPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthProvider, public alertCtrl: AlertController) {
   }
 
+  ionViewDidLoad() {
+    console.log(this.auth.isAuthenticated());
+    if (this.auth.isAuthenticated()) {
+      this.navCtrl.push(HomePage);
+    }
+  }
+
   login(form: FormGroup) {
     this.loginError = false;
     const email = form.controls.email.value;
