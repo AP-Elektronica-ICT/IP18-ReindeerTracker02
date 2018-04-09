@@ -37,7 +37,6 @@ export class SignupComponent implements OnInit {
       console.log(userdata);
       this.auth.signupWithEmailPassword(email, password, userdata as Userdata)
         .subscribe(res => {
-          //TODO: go to other page
           console.log(res);
           this.router.navigate(['/']);
         }, err => {
