@@ -2,6 +2,8 @@ import { Component, trigger, state, style, transition, animate,keyframes } from 
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { SignUpPage } from '../sign-up/sign-up';
+import {FormGroup} from "@angular/forms";
+import {AuthProvider} from "../../providers/auth/auth";
 
 /**
  * Generated class for the LogInPage page.
@@ -16,7 +18,7 @@ import { SignUpPage } from '../sign-up/sign-up';
   templateUrl: 'log-in.html',
 
   animations: [
- 
+
     //For the logo
     trigger('flyInBottomSlow', [
       state('in', style({
@@ -27,7 +29,7 @@ import { SignUpPage } from '../sign-up/sign-up';
         animate('2000ms ease-in-out')
       ])
     ]),
- 
+
     //For the background detail
     trigger('flyInBottomFast', [
       state('in', style({
@@ -38,7 +40,7 @@ import { SignUpPage } from '../sign-up/sign-up';
         animate('1000ms ease-in-out')
       ])
     ]),
- 
+
     //For the login form
     trigger('bounceInBottom', [
       state('in', style({
@@ -71,11 +73,22 @@ export class LogInPage {
   loginState: any = "in";
   formState: any = "in";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  loginError = false;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthProvider) {
   }
 
-  login(){
-    this.navCtrl.push(HomePage);
+  login(form: FormGroup) {
+    this.loginError = false;
+    const email = form.controls.email.value;
+    const password = form.controls.password.value;
+    this.auth.loginWithEmailPassword(email, password)
+      .then(res => {
+        this.navCtrl.push(HomePage);
+      })
+      .catch(err => {
+        this.loginError = true;
+      })
   }
 
   signup(){

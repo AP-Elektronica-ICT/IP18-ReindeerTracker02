@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import {Observable} from "rxjs/Observable";
 import {AppSettings} from "../../AppSettings";
 import {DeviceDetails} from "../../classes/deviceDetails";
+import {AuthProvider} from "../auth/auth";
 
 @Injectable()
 export class DeviceProvider {
   api = AppSettings.API_ENDPOINT;
 
-  constructor(public http: HttpClient) {
+  constructor(public http: HttpClient, private auth: AuthProvider) {
 
   }
 
@@ -21,20 +22,17 @@ export class DeviceProvider {
   }
 
   getUserDevices(): Observable<any> {
-    //TODO: get user id from firebase login
-    const uid = 'DDQ4cy9jMeYkVpHvqVoiUNJ76GI3';
+    const uid = this.auth.getCurrentUID();
     return this.http.get(this.api + '/users/' + uid + '/devices');
   }
 
   addDeviceToUser(deviceKey: string): Observable<any> {
-    //TODO: get user id from firebase login
-    const uid = 'DDQ4cy9jMeYkVpHvqVoiUNJ76GI3';
+    const uid = this.auth.getCurrentUID();
     return this.http.put(this.api + '/users/' + uid + '/devices', {deviceKey: deviceKey});
   }
 
   removeDeviceFromUser(deviceKey: string): Observable<any> {
-    //TODO: get user id from firebase login
-    const uid = 'DDQ4cy9jMeYkVpHvqVoiUNJ76GI3';
+    const uid = this.auth.getCurrentUID();
     return this.http.delete(this.api + '/users/' + uid + '/devices?deviceKey=' + deviceKey);
   }
 
