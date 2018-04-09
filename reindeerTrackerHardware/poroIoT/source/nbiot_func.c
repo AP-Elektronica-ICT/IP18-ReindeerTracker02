@@ -38,7 +38,7 @@ uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage)
 	uint8_t clientid_lt = strlen(client_id);
 	uint8_t pass_lt = strlen(passwd);
 	uint8_t user_lt = strlen(username);
-	//M		Q		T    T   prLe  flag  kea   kea
+
 	uint8_t connect_command[] =
 	{ 0x10, clientid_lt + pass_lt + user_lt + 10 + 6, 0x00, 0x04, 0x4d, 0x51,
 			0x54, 0x54, 0x04, 0xc2, 0x00, 0x0a, 0x00, clientid_lt };
@@ -437,35 +437,4 @@ void NB_read_msg()
 	}
 }
 
-/*
- uint8_t NB_setPin() {
 
- return AT_send(AT_NPIN, "", "+NPIN: \"OK\"");
- //delay_ms(2000000);
- //AT_send(AT_COPS, "");
-
- //char cmd_buf[100];
- //sprintf(cmd_buf, "%s\r\n", AT_NPIN);
- //PCprint(cmd_buf);
-
- }
- */
-
-/*
- void NB_setPin(char* pinCode) {
- res =  NB_setPin();
-
- if(res == 0){
- PCprint("ack\r\n");
- }
- else if(res == 1){
- PCprint("error\r\n");
- }
- char cmd_buf[100];
-
- sprintf(cmd_buf, "%s2,\"%s\"\r\n", AT_NPIN, pinCode);
-
- PCprint(cmd_buf);
-
- }
- */

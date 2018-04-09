@@ -8,9 +8,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "i2c_func.h"
-//#define X_AXIS 	0
-//#define Y_AXIS 	1
-//#define Z_AXIS 	2
 
 #include "adc_func.h"
 #include "acc_func.h"
@@ -88,6 +85,7 @@ int16_t read_acc_axis(uint8_t axis) {
 	acc_val |= acc_buf; //OR LSB values to the acc_value
 
 	//MMMM MMMM LLLL LL00
+
 	acc_val >>= 2; //shift right 2 bits to right-justify
 
 	//00MM MMMM MMLL LLLLpaskaa

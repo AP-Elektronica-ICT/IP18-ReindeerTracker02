@@ -14,7 +14,8 @@
 uint32_t millis();
 
 void SysTick_Handler();
-
+void rtcInit();
+uint32_t rtcGetSeconds();
 
 /*
  * Small delay_ms function
