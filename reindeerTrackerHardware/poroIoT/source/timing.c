@@ -6,6 +6,7 @@
  */
 
 #include "timing.h"
+#include "fsl_rtc.h"
 
 volatile uint32_t ticks = 0;
 
@@ -33,4 +34,19 @@ void delay_ms(uint32_t del)
 	{
 
 	}
+}
+
+void rtcInit() {
+
+	rtc_config_t rtc_config;
+	RTC_GetDefaultConfig(&rtc_config);
+	SIM -> SOPT1 |= 0xC0000;
+	RTC_Init(RTC, &rtc_config);
+	RTC_StartTimer(RTC);
+
+}
+
+uint32_t rtcGetSeconds() {
+
+	return RTC -> TSR;
 }

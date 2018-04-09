@@ -187,6 +187,7 @@ int main(void) {
 	 acc_init();*/
 	//initAdc();
 	initUART();
+	rtcInit();
 
 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
@@ -244,6 +245,11 @@ int main(void) {
 	strcpy(reindeerData.longitude, testLon);
 	strcpy(reindeerData.dead, "false");
 	reindeerData.batteryLevel = 45;
+
+	while(true){
+		sprintf(buf, "RTC Seconds: %ld", rtcGetSeconds());
+		PCprint(buf);
+	}
 
 	if (wake == 2) {
 
