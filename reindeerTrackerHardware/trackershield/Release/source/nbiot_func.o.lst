@@ -907,36 +907,51 @@
  213:../source/nbiot_func.c **** 
  214:../source/nbiot_func.c **** void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen){
  215:../source/nbiot_func.c **** 
- 216:../source/nbiot_func.c **** 	 NB_reboot();
- 217:../source/nbiot_func.c **** 	  NB_setPin();
- 218:../source/nbiot_func.c **** 	  delay_ms(1000);  //viivettä pitää olla
- 219:../source/nbiot_func.c **** 	  NB_cops_register();
- 220:../source/nbiot_func.c **** 	  NB_network_status();
- 221:../source/nbiot_func.c **** 	  delay_ms(1000);
- 222:../source/nbiot_func.c **** 	  NB_define_pdp();
- 223:../source/nbiot_func.c **** 	  delay_ms(1000);
- 224:../source/nbiot_func.c **** 	 NB_cops_deRegister();
- 225:../source/nbiot_func.c **** 	  delay_ms(2200);
- 226:../source/nbiot_func.c **** 	  NB_active_pdp();
- 227:../source/nbiot_func.c **** 	  delay_ms(3000);
- 228:../source/nbiot_func.c **** 	  NB_show_ip();
- 229:../source/nbiot_func.c **** 	  delay_ms(1000);
- 230:../source/nbiot_func.c **** 	 NB_create_socket();
- 231:../source/nbiot_func.c **** 	  delay_ms(1000);
- 232:../source/nbiot_func.c **** 	  while(1){
- 233:../source/nbiot_func.c **** 
- 234:../source/nbiot_func.c **** 	  NB_send_msg(mqttMessage, msgLen);
- 235:../source/nbiot_func.c **** 	  delay_ms(1000);
- 236:../source/nbiot_func.c **** 	  }
- 237:../source/nbiot_func.c **** 	  //NB_received_data();
- 238:../source/nbiot_func.c **** 	  delay_ms(4000);
- 239:../source/nbiot_func.c **** 	  NB_read_msg();
- 240:../source/nbiot_func.c **** }
- 241:../source/nbiot_func.c **** 
- 242:../source/nbiot_func.c **** 
- 243:../source/nbiot_func.c **** 
- 244:../source/nbiot_func.c **** void NB_reboot() {
- 647              		.loc 1 244 0
+ 216:../source/nbiot_func.c **** 	uint8_t reSend_msg = 0;
+ 217:../source/nbiot_func.c **** 
+ 218:../source/nbiot_func.c **** 	 NB_reboot();
+ 219:../source/nbiot_func.c **** 	  NB_setPin();
+ 220:../source/nbiot_func.c **** 
+ 221:../source/nbiot_func.c **** 	  delay_ms(1000);  //viivettä pitää olla
+ 222:../source/nbiot_func.c **** 	  NB_cops_register();
+ 223:../source/nbiot_func.c **** 
+ 224:../source/nbiot_func.c **** 	  NB_network_status();
+ 225:../source/nbiot_func.c **** 	  delay_ms(1000);
+ 226:../source/nbiot_func.c **** 
+ 227:../source/nbiot_func.c **** 	  NB_define_pdp();
+ 228:../source/nbiot_func.c **** 	  delay_ms(1000);
+ 229:../source/nbiot_func.c **** 
+ 230:../source/nbiot_func.c **** 	  do{
+ 231:../source/nbiot_func.c **** 
+ 232:../source/nbiot_func.c **** 	 NB_cops_deRegister();
+ 233:../source/nbiot_func.c **** 	  delay_ms(2200);
+ 234:../source/nbiot_func.c **** 
+ 235:../source/nbiot_func.c **** 	  NB_active_pdp();
+ 236:../source/nbiot_func.c **** 	  delay_ms(3000);
+ 237:../source/nbiot_func.c **** 
+ 238:../source/nbiot_func.c **** 	  if(reSend_msg == 1){
+ 239:../source/nbiot_func.c **** 	  NB_network_status();
+ 240:../source/nbiot_func.c **** 	  delay_ms(1000);
+ 241:../source/nbiot_func.c **** 	  }
+ 242:../source/nbiot_func.c **** 	  NB_show_ip();
+ 243:../source/nbiot_func.c **** 	  delay_ms(1000);
+ 244:../source/nbiot_func.c **** 
+ 245:../source/nbiot_func.c **** 	 NB_create_socket();
+ 246:../source/nbiot_func.c **** 	  delay_ms(1000);
+ 247:../source/nbiot_func.c **** 
+ 248:../source/nbiot_func.c **** 	  reSend_msg = NB_send_msg(mqttMessage, msgLen);
+ 249:../source/nbiot_func.c **** 
+ 250:../source/nbiot_func.c **** 	} while(reSend_msg == 1);
+ 251:../source/nbiot_func.c **** 
+ 252:../source/nbiot_func.c **** 	  //NB_received_data();
+ 253:../source/nbiot_func.c **** 	  delay_ms(4000);
+ 254:../source/nbiot_func.c **** 	  NB_read_msg();
+ 255:../source/nbiot_func.c **** }
+ 256:../source/nbiot_func.c **** 
+ 257:../source/nbiot_func.c **** 
+ 258:../source/nbiot_func.c **** 
+ 259:../source/nbiot_func.c **** void NB_reboot() {
+ 647              		.loc 1 259 0
  648              		.cfi_startproc
  649              		@ args = 0, pretend = 0, frame = 0
  650              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -944,9 +959,9 @@
  652              		.cfi_def_cfa_offset 8
  653              		.cfi_offset 3, -8
  654              		.cfi_offset 14, -4
- 245:../source/nbiot_func.c **** 
- 246:../source/nbiot_func.c **** 	res = AT_send(AT_NRB, "", "+UFOTAS");
- 655              		.loc 1 246 0
+ 260:../source/nbiot_func.c **** 
+ 261:../source/nbiot_func.c **** 	res = AT_send(AT_NRB, "", "+UFOTAS");
+ 655              		.loc 1 261 0
  656 0002 0B4B     		ldr	r3, .L27
  657 0004 0B4A     		ldr	r2, .L27+4
  658 0006 1868     		ldr	r0, [r3]
@@ -955,51 +970,51 @@
  661              	.LVL84:
  662 000e 0B4B     		ldr	r3, .L27+12
  663 0010 1870     		strb	r0, [r3]
- 247:../source/nbiot_func.c **** 	if (res == 0) {
- 664              		.loc 1 247 0
+ 262:../source/nbiot_func.c **** 	if (res == 0) {
+ 664              		.loc 1 262 0
  665 0012 20B9     		cbnz	r0, .L23
- 248:../source/nbiot_func.c **** 		printf("rebooted\r\n");
- 666              		.loc 1 248 0
+ 263:../source/nbiot_func.c **** 		printf("rebooted\r\n");
+ 666              		.loc 1 263 0
  667 0014 0A48     		ldr	r0, .L27+16
  668              	.L26:
- 249:../source/nbiot_func.c **** 	} else if (res == 1) {
- 250:../source/nbiot_func.c **** 		printf("error\r\n");
- 251:../source/nbiot_func.c **** 	} else if (res == 2) {
- 252:../source/nbiot_func.c **** 		printf("timeout error\r\n");
- 253:../source/nbiot_func.c **** 	}
- 254:../source/nbiot_func.c **** 
- 255:../source/nbiot_func.c **** }
- 669              		.loc 1 255 0
+ 264:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 265:../source/nbiot_func.c **** 		printf("error\r\n");
+ 266:../source/nbiot_func.c **** 	} else if (res == 2) {
+ 267:../source/nbiot_func.c **** 		printf("timeout error\r\n");
+ 268:../source/nbiot_func.c **** 	}
+ 269:../source/nbiot_func.c **** 
+ 270:../source/nbiot_func.c **** }
+ 669              		.loc 1 270 0
  670 0016 BDE80840 		pop	{r3, lr}
  671              		.cfi_remember_state
  672              		.cfi_restore 14
  673              		.cfi_restore 3
  674              		.cfi_def_cfa_offset 0
- 252:../source/nbiot_func.c **** 	}
- 675              		.loc 1 252 0
+ 267:../source/nbiot_func.c **** 	}
+ 675              		.loc 1 267 0
  676 001a FFF7FEBF 		b	puts
  677              	.LVL85:
  678              	.L23:
  679              		.cfi_restore_state
- 249:../source/nbiot_func.c **** 	} else if (res == 1) {
- 680              		.loc 1 249 0
+ 264:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 680              		.loc 1 264 0
  681 001e 0128     		cmp	r0, #1
  682 0020 01D1     		bne	.L24
- 250:../source/nbiot_func.c **** 	} else if (res == 2) {
- 683              		.loc 1 250 0
+ 265:../source/nbiot_func.c **** 	} else if (res == 2) {
+ 683              		.loc 1 265 0
  684 0022 0848     		ldr	r0, .L27+20
  685 0024 F7E7     		b	.L26
  686              	.L24:
- 251:../source/nbiot_func.c **** 		printf("timeout error\r\n");
- 687              		.loc 1 251 0
+ 266:../source/nbiot_func.c **** 		printf("timeout error\r\n");
+ 687              		.loc 1 266 0
  688 0026 0228     		cmp	r0, #2
  689 0028 01D1     		bne	.L22
- 252:../source/nbiot_func.c **** 	}
- 690              		.loc 1 252 0
+ 267:../source/nbiot_func.c **** 	}
+ 690              		.loc 1 267 0
  691 002a 0748     		ldr	r0, .L27+24
  692 002c F3E7     		b	.L26
  693              	.L22:
- 694              		.loc 1 255 0
+ 694              		.loc 1 270 0
  695 002e 08BD     		pop	{r3, pc}
  696              	.L28:
  697              		.align	2
@@ -1022,8 +1037,8 @@
  715              		.fpu fpv4-sp-d16
  717              	NB_setPin:
  718              	.LFB8:
- 256:../source/nbiot_func.c **** void NB_setPin() {
- 719              		.loc 1 256 0
+ 271:../source/nbiot_func.c **** void NB_setPin() {
+ 719              		.loc 1 271 0
  720              		.cfi_startproc
  721              		@ args = 0, pretend = 0, frame = 0
  722              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -1031,9 +1046,9 @@
  724              		.cfi_def_cfa_offset 8
  725              		.cfi_offset 3, -8
  726              		.cfi_offset 14, -4
- 257:../source/nbiot_func.c **** 
- 258:../source/nbiot_func.c **** 	res = AT_send(AT_NPIN, "", "+NPIN: \"OK\"");
- 727              		.loc 1 258 0
+ 272:../source/nbiot_func.c **** 
+ 273:../source/nbiot_func.c **** 	res = AT_send(AT_NPIN, "", "+NPIN: \"OK\"");
+ 727              		.loc 1 273 0
  728 0002 094B     		ldr	r3, .L33
  729 0004 094A     		ldr	r2, .L33+4
  730 0006 1868     		ldr	r0, [r3]
@@ -1042,40 +1057,40 @@
  733              	.LVL86:
  734 000e 094B     		ldr	r3, .L33+12
  735 0010 1870     		strb	r0, [r3]
- 259:../source/nbiot_func.c **** 	if (res == 0) {
- 736              		.loc 1 259 0
+ 274:../source/nbiot_func.c **** 	if (res == 0) {
+ 736              		.loc 1 274 0
  737 0012 20B9     		cbnz	r0, .L30
- 260:../source/nbiot_func.c **** 		printf("ack\r\n");
- 738              		.loc 1 260 0
+ 275:../source/nbiot_func.c **** 		printf("ack\r\n");
+ 738              		.loc 1 275 0
  739 0014 0848     		ldr	r0, .L33+16
  740              	.L32:
- 261:../source/nbiot_func.c **** 	} else if (res == 1) {
- 262:../source/nbiot_func.c **** 		printf("error\r\n");
- 263:../source/nbiot_func.c **** 	}
- 264:../source/nbiot_func.c **** 
- 265:../source/nbiot_func.c **** }
- 741              		.loc 1 265 0
+ 276:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 277:../source/nbiot_func.c **** 		printf("error\r\n");
+ 278:../source/nbiot_func.c **** 	}
+ 279:../source/nbiot_func.c **** 
+ 280:../source/nbiot_func.c **** }
+ 741              		.loc 1 280 0
  742 0016 BDE80840 		pop	{r3, lr}
  743              		.cfi_remember_state
  744              		.cfi_restore 14
  745              		.cfi_restore 3
  746              		.cfi_def_cfa_offset 0
- 262:../source/nbiot_func.c **** 	}
- 747              		.loc 1 262 0
+ 277:../source/nbiot_func.c **** 	}
+ 747              		.loc 1 277 0
  748 001a FFF7FEBF 		b	puts
  749              	.LVL87:
  750              	.L30:
  751              		.cfi_restore_state
- 261:../source/nbiot_func.c **** 	} else if (res == 1) {
- 752              		.loc 1 261 0
+ 276:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 752              		.loc 1 276 0
  753 001e 0128     		cmp	r0, #1
  754 0020 01D1     		bne	.L29
- 262:../source/nbiot_func.c **** 	}
- 755              		.loc 1 262 0
+ 277:../source/nbiot_func.c **** 	}
+ 755              		.loc 1 277 0
  756 0022 0648     		ldr	r0, .L33+20
  757 0024 F7E7     		b	.L32
  758              	.L29:
- 759              		.loc 1 265 0
+ 759              		.loc 1 280 0
  760 0026 08BD     		pop	{r3, pc}
  761              	.L34:
  762              		.align	2
@@ -1097,8 +1112,8 @@
  779              		.fpu fpv4-sp-d16
  781              	NB_cops_register:
  782              	.LFB9:
- 266:../source/nbiot_func.c **** void NB_cops_register() {
- 783              		.loc 1 266 0
+ 281:../source/nbiot_func.c **** void NB_cops_register() {
+ 783              		.loc 1 281 0
  784              		.cfi_startproc
  785              		@ args = 0, pretend = 0, frame = 0
  786              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -1106,9 +1121,9 @@
  788              		.cfi_def_cfa_offset 8
  789              		.cfi_offset 3, -8
  790              		.cfi_offset 14, -4
- 267:../source/nbiot_func.c **** 
- 268:../source/nbiot_func.c **** 	res = AT_send(AT_COPS, "=0", "OK");   //0 Register to network
- 791              		.loc 1 268 0
+ 282:../source/nbiot_func.c **** 
+ 283:../source/nbiot_func.c **** 	res = AT_send(AT_COPS, "=0", "OK");   //0 Register to network
+ 791              		.loc 1 283 0
  792 0002 094B     		ldr	r3, .L39
  793 0004 094A     		ldr	r2, .L39+4
  794 0006 1868     		ldr	r0, [r3]
@@ -1117,39 +1132,39 @@
  797              	.LVL88:
  798 000e 094B     		ldr	r3, .L39+12
  799 0010 1870     		strb	r0, [r3]
- 269:../source/nbiot_func.c **** 	if (res == 0) {
- 800              		.loc 1 269 0
+ 284:../source/nbiot_func.c **** 	if (res == 0) {
+ 800              		.loc 1 284 0
  801 0012 20B9     		cbnz	r0, .L36
- 270:../source/nbiot_func.c **** 		printf("Registered\r\n");
- 802              		.loc 1 270 0
+ 285:../source/nbiot_func.c **** 		printf("Registered\r\n");
+ 802              		.loc 1 285 0
  803 0014 0848     		ldr	r0, .L39+16
  804              	.L38:
- 271:../source/nbiot_func.c **** 	} else if (res == 1) {
- 272:../source/nbiot_func.c **** 		printf("error\r\n");
- 273:../source/nbiot_func.c **** 	}
- 274:../source/nbiot_func.c **** }
- 805              		.loc 1 274 0
+ 286:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 287:../source/nbiot_func.c **** 		printf("error\r\n");
+ 288:../source/nbiot_func.c **** 	}
+ 289:../source/nbiot_func.c **** }
+ 805              		.loc 1 289 0
  806 0016 BDE80840 		pop	{r3, lr}
  807              		.cfi_remember_state
  808              		.cfi_restore 14
  809              		.cfi_restore 3
  810              		.cfi_def_cfa_offset 0
- 272:../source/nbiot_func.c **** 	}
- 811              		.loc 1 272 0
+ 287:../source/nbiot_func.c **** 	}
+ 811              		.loc 1 287 0
  812 001a FFF7FEBF 		b	puts
  813              	.LVL89:
  814              	.L36:
  815              		.cfi_restore_state
- 271:../source/nbiot_func.c **** 	} else if (res == 1) {
- 816              		.loc 1 271 0
+ 286:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 816              		.loc 1 286 0
  817 001e 0128     		cmp	r0, #1
  818 0020 01D1     		bne	.L35
- 272:../source/nbiot_func.c **** 	}
- 819              		.loc 1 272 0
+ 287:../source/nbiot_func.c **** 	}
+ 819              		.loc 1 287 0
  820 0022 0648     		ldr	r0, .L39+20
  821 0024 F7E7     		b	.L38
  822              	.L35:
- 823              		.loc 1 274 0
+ 823              		.loc 1 289 0
  824 0026 08BD     		pop	{r3, pc}
  825              	.L40:
  826              		.align	2
@@ -1171,8 +1186,8 @@
  843              		.fpu fpv4-sp-d16
  845              	NB_cops_deRegister:
  846              	.LFB10:
- 275:../source/nbiot_func.c **** void NB_cops_deRegister() {
- 847              		.loc 1 275 0
+ 290:../source/nbiot_func.c **** void NB_cops_deRegister() {
+ 847              		.loc 1 290 0
  848              		.cfi_startproc
  849              		@ args = 0, pretend = 0, frame = 0
  850              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -1180,9 +1195,9 @@
  852              		.cfi_def_cfa_offset 8
  853              		.cfi_offset 3, -8
  854              		.cfi_offset 14, -4
- 276:../source/nbiot_func.c **** 
- 277:../source/nbiot_func.c **** 	res = AT_send(AT_COPS, "=2", "OK");   //2 De-Register from network
- 855              		.loc 1 277 0
+ 291:../source/nbiot_func.c **** 
+ 292:../source/nbiot_func.c **** 	res = AT_send(AT_COPS, "=2", "OK");   //2 De-Register from network
+ 855              		.loc 1 292 0
  856 0002 094B     		ldr	r3, .L45
  857 0004 094A     		ldr	r2, .L45+4
  858 0006 1868     		ldr	r0, [r3]
@@ -1191,39 +1206,39 @@
  861              	.LVL90:
  862 000e 094B     		ldr	r3, .L45+12
  863 0010 1870     		strb	r0, [r3]
- 278:../source/nbiot_func.c **** 	if (res == 0) {
- 864              		.loc 1 278 0
+ 293:../source/nbiot_func.c **** 	if (res == 0) {
+ 864              		.loc 1 293 0
  865 0012 20B9     		cbnz	r0, .L42
- 279:../source/nbiot_func.c **** 		printf("De-registered\r\n");
- 866              		.loc 1 279 0
+ 294:../source/nbiot_func.c **** 		printf("De-registered\r\n");
+ 866              		.loc 1 294 0
  867 0014 0848     		ldr	r0, .L45+16
  868              	.L44:
- 280:../source/nbiot_func.c **** 	} else if (res == 1) {
- 281:../source/nbiot_func.c **** 		printf("error\r\n");
- 282:../source/nbiot_func.c **** 	}
- 283:../source/nbiot_func.c **** }
- 869              		.loc 1 283 0
+ 295:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 296:../source/nbiot_func.c **** 		printf("error\r\n");
+ 297:../source/nbiot_func.c **** 	}
+ 298:../source/nbiot_func.c **** }
+ 869              		.loc 1 298 0
  870 0016 BDE80840 		pop	{r3, lr}
  871              		.cfi_remember_state
  872              		.cfi_restore 14
  873              		.cfi_restore 3
  874              		.cfi_def_cfa_offset 0
- 281:../source/nbiot_func.c **** 	}
- 875              		.loc 1 281 0
+ 296:../source/nbiot_func.c **** 	}
+ 875              		.loc 1 296 0
  876 001a FFF7FEBF 		b	puts
  877              	.LVL91:
  878              	.L42:
  879              		.cfi_restore_state
- 280:../source/nbiot_func.c **** 	} else if (res == 1) {
- 880              		.loc 1 280 0
+ 295:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 880              		.loc 1 295 0
  881 001e 0128     		cmp	r0, #1
  882 0020 01D1     		bne	.L41
- 281:../source/nbiot_func.c **** 	}
- 883              		.loc 1 281 0
+ 296:../source/nbiot_func.c **** 	}
+ 883              		.loc 1 296 0
  884 0022 0648     		ldr	r0, .L45+20
  885 0024 F7E7     		b	.L44
  886              	.L41:
- 887              		.loc 1 283 0
+ 887              		.loc 1 298 0
  888 0026 08BD     		pop	{r3, pc}
  889              	.L46:
  890              		.align	2
@@ -1245,8 +1260,8 @@
  907              		.fpu fpv4-sp-d16
  909              	NB_cops_readRegister:
  910              	.LFB11:
- 284:../source/nbiot_func.c **** void NB_cops_readRegister() {
- 911              		.loc 1 284 0
+ 299:../source/nbiot_func.c **** void NB_cops_readRegister() {
+ 911              		.loc 1 299 0
  912              		.cfi_startproc
  913              		@ args = 0, pretend = 0, frame = 0
  914              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -1254,9 +1269,9 @@
  916              		.cfi_def_cfa_offset 8
  917              		.cfi_offset 3, -8
  918              		.cfi_offset 14, -4
- 285:../source/nbiot_func.c **** 
- 286:../source/nbiot_func.c **** 	res = AT_send(AT_COPS, "?", "OK");   //2 De-Register from network
- 919              		.loc 1 286 0
+ 300:../source/nbiot_func.c **** 
+ 301:../source/nbiot_func.c **** 	res = AT_send(AT_COPS, "?", "OK");   //2 De-Register from network
+ 919              		.loc 1 301 0
  920 0002 094B     		ldr	r3, .L51
  921 0004 094A     		ldr	r2, .L51+4
  922 0006 1868     		ldr	r0, [r3]
@@ -1265,39 +1280,39 @@
  925              	.LVL92:
  926 000e 094B     		ldr	r3, .L51+12
  927 0010 1870     		strb	r0, [r3]
- 287:../source/nbiot_func.c **** 	if (res == 0) {
- 928              		.loc 1 287 0
+ 302:../source/nbiot_func.c **** 	if (res == 0) {
+ 928              		.loc 1 302 0
  929 0012 20B9     		cbnz	r0, .L48
- 288:../source/nbiot_func.c **** 		printf("readCOPS\r\n");
- 930              		.loc 1 288 0
+ 303:../source/nbiot_func.c **** 		printf("readCOPS\r\n");
+ 930              		.loc 1 303 0
  931 0014 0848     		ldr	r0, .L51+16
  932              	.L50:
- 289:../source/nbiot_func.c **** 	} else if (res == 1) {
- 290:../source/nbiot_func.c **** 		printf("error\r\n");
- 291:../source/nbiot_func.c **** 	}
- 292:../source/nbiot_func.c **** }
- 933              		.loc 1 292 0
+ 304:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 305:../source/nbiot_func.c **** 		printf("error\r\n");
+ 306:../source/nbiot_func.c **** 	}
+ 307:../source/nbiot_func.c **** }
+ 933              		.loc 1 307 0
  934 0016 BDE80840 		pop	{r3, lr}
  935              		.cfi_remember_state
  936              		.cfi_restore 14
  937              		.cfi_restore 3
  938              		.cfi_def_cfa_offset 0
- 290:../source/nbiot_func.c **** 	}
- 939              		.loc 1 290 0
+ 305:../source/nbiot_func.c **** 	}
+ 939              		.loc 1 305 0
  940 001a FFF7FEBF 		b	puts
  941              	.LVL93:
  942              	.L48:
  943              		.cfi_restore_state
- 289:../source/nbiot_func.c **** 	} else if (res == 1) {
- 944              		.loc 1 289 0
+ 304:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 944              		.loc 1 304 0
  945 001e 0128     		cmp	r0, #1
  946 0020 01D1     		bne	.L47
- 290:../source/nbiot_func.c **** 	}
- 947              		.loc 1 290 0
+ 305:../source/nbiot_func.c **** 	}
+ 947              		.loc 1 305 0
  948 0022 0648     		ldr	r0, .L51+20
  949 0024 F7E7     		b	.L50
  950              	.L47:
- 951              		.loc 1 292 0
+ 951              		.loc 1 307 0
  952 0026 08BD     		pop	{r3, pc}
  953              	.L52:
  954              		.align	2
@@ -1319,8 +1334,8 @@
  971              		.fpu fpv4-sp-d16
  973              	NB_network_status:
  974              	.LFB12:
- 293:../source/nbiot_func.c **** void NB_network_status() {
- 975              		.loc 1 293 0
+ 308:../source/nbiot_func.c **** void NB_network_status() {
+ 975              		.loc 1 308 0
  976              		.cfi_startproc
  977              		@ args = 0, pretend = 0, frame = 0
  978              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -1332,61 +1347,61 @@
  984              		.cfi_offset 6, -12
  985              		.cfi_offset 7, -8
  986              		.cfi_offset 14, -4
- 294:../source/nbiot_func.c **** 	res = 2;
- 987              		.loc 1 294 0
+ 309:../source/nbiot_func.c **** 	res = 2;
+ 987              		.loc 1 309 0
  988 0002 0C4C     		ldr	r4, .L59
- 295:../source/nbiot_func.c **** 	while (res != 0) {
- 296:../source/nbiot_func.c **** 		res = AT_send(AT_CEREG, "", "+CEREG: 0,1");
- 989              		.loc 1 296 0
+ 310:../source/nbiot_func.c **** 	while (res != 0) {
+ 311:../source/nbiot_func.c **** 		res = AT_send(AT_CEREG, "", "+CEREG: 0,1");
+ 989              		.loc 1 311 0
  990 0004 0C4D     		ldr	r5, .L59+4
  991 0006 0D4E     		ldr	r6, .L59+8
  992 0008 0D4F     		ldr	r7, .L59+12
- 294:../source/nbiot_func.c **** 	res = 2;
- 993              		.loc 1 294 0
+ 309:../source/nbiot_func.c **** 	res = 2;
+ 993              		.loc 1 309 0
  994 000a 0223     		movs	r3, #2
  995 000c 2370     		strb	r3, [r4]
  996              	.L54:
- 295:../source/nbiot_func.c **** 	while (res != 0) {
- 997              		.loc 1 295 0
+ 310:../source/nbiot_func.c **** 	while (res != 0) {
+ 997              		.loc 1 310 0
  998 000e 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
  999 0010 03B9     		cbnz	r3, .L57
- 297:../source/nbiot_func.c **** 		if (res == 0) {
- 298:../source/nbiot_func.c **** 			printf("CEREG_OK\r\n");
- 299:../source/nbiot_func.c **** 		} else if (res == 1) {
- 300:../source/nbiot_func.c **** 			printf("error\r\n");
- 301:../source/nbiot_func.c **** 		}
- 302:../source/nbiot_func.c **** 	}
- 303:../source/nbiot_func.c **** }
- 1000              		.loc 1 303 0
+ 312:../source/nbiot_func.c **** 		if (res == 0) {
+ 313:../source/nbiot_func.c **** 			printf("CEREG_OK\r\n");
+ 314:../source/nbiot_func.c **** 		} else if (res == 1) {
+ 315:../source/nbiot_func.c **** 			printf("error\r\n");
+ 316:../source/nbiot_func.c **** 		}
+ 317:../source/nbiot_func.c **** 	}
+ 318:../source/nbiot_func.c **** }
+ 1000              		.loc 1 318 0
  1001 0012 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
  1002              	.L57:
- 296:../source/nbiot_func.c **** 		if (res == 0) {
- 1003              		.loc 1 296 0
+ 311:../source/nbiot_func.c **** 		if (res == 0) {
+ 1003              		.loc 1 311 0
  1004 0014 3246     		mov	r2, r6
  1005 0016 3946     		mov	r1, r7
  1006 0018 2868     		ldr	r0, [r5]
  1007 001a FFF7FEFF 		bl	AT_send
  1008              	.LVL94:
  1009 001e 2070     		strb	r0, [r4]
- 297:../source/nbiot_func.c **** 		if (res == 0) {
- 1010              		.loc 1 297 0
+ 312:../source/nbiot_func.c **** 		if (res == 0) {
+ 1010              		.loc 1 312 0
  1011 0020 18B9     		cbnz	r0, .L55
- 298:../source/nbiot_func.c **** 		} else if (res == 1) {
- 1012              		.loc 1 298 0
+ 313:../source/nbiot_func.c **** 		} else if (res == 1) {
+ 1012              		.loc 1 313 0
  1013 0022 0848     		ldr	r0, .L59+16
  1014              	.L58:
- 300:../source/nbiot_func.c **** 		}
- 1015              		.loc 1 300 0
+ 315:../source/nbiot_func.c **** 		}
+ 1015              		.loc 1 315 0
  1016 0024 FFF7FEFF 		bl	puts
  1017              	.LVL95:
  1018 0028 F1E7     		b	.L54
  1019              	.L55:
- 299:../source/nbiot_func.c **** 			printf("error\r\n");
- 1020              		.loc 1 299 0
+ 314:../source/nbiot_func.c **** 			printf("error\r\n");
+ 1020              		.loc 1 314 0
  1021 002a 0128     		cmp	r0, #1
  1022 002c EFD1     		bne	.L54
- 300:../source/nbiot_func.c **** 		}
- 1023              		.loc 1 300 0
+ 315:../source/nbiot_func.c **** 		}
+ 1023              		.loc 1 315 0
  1024 002e 0648     		ldr	r0, .L59+20
  1025 0030 F8E7     		b	.L58
  1026              	.L60:
@@ -1409,67 +1424,67 @@
  1044              		.fpu fpv4-sp-d16
  1046              	NB_define_pdp:
  1047              	.LFB13:
- 304:../source/nbiot_func.c **** void NB_define_pdp() {
- 1048              		.loc 1 304 0
+ 319:../source/nbiot_func.c **** void NB_define_pdp() {
+ 1048              		.loc 1 319 0
  1049              		.cfi_startproc
  1050              		@ args = 0, pretend = 0, frame = 0
  1051              		@ frame_needed = 0, uses_anonymous_args = 0
- 305:../source/nbiot_func.c **** 	res = AT_send(AT_CGDCONT, "", "OK");
- 1052              		.loc 1 305 0
+ 320:../source/nbiot_func.c **** 	res = AT_send(AT_CGDCONT, "", "OK");
+ 1052              		.loc 1 320 0
  1053 0000 0C4B     		ldr	r3, .L65
  1054 0002 0D4A     		ldr	r2, .L65+4
  1055 0004 1868     		ldr	r0, [r3]
  1056 0006 0D49     		ldr	r1, .L65+8
- 304:../source/nbiot_func.c **** void NB_define_pdp() {
- 1057              		.loc 1 304 0
+ 319:../source/nbiot_func.c **** void NB_define_pdp() {
+ 1057              		.loc 1 319 0
  1058 0008 10B5     		push	{r4, lr}
  1059              		.cfi_def_cfa_offset 8
  1060              		.cfi_offset 4, -8
  1061              		.cfi_offset 14, -4
- 1062              		.loc 1 305 0
+ 1062              		.loc 1 320 0
  1063 000a FFF7FEFF 		bl	AT_send
  1064              	.LVL96:
  1065 000e 0C4C     		ldr	r4, .L65+12
  1066 0010 2070     		strb	r0, [r4]
- 306:../source/nbiot_func.c **** 	delay_ms(1000);
- 1067              		.loc 1 306 0
+ 321:../source/nbiot_func.c **** 	delay_ms(1000);
+ 1067              		.loc 1 321 0
  1068 0012 4FF47A70 		mov	r0, #1000
  1069 0016 FFF7FEFF 		bl	delay_ms
  1070              	.LVL97:
- 307:../source/nbiot_func.c **** 	if (res == 0) {
- 1071              		.loc 1 307 0
+ 322:../source/nbiot_func.c **** 	if (res == 0) {
+ 1071              		.loc 1 322 0
  1072 001a 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
  1073 001c 23B9     		cbnz	r3, .L62
- 308:../source/nbiot_func.c **** 		printf("PDP context 1 defined\r\n");
- 1074              		.loc 1 308 0
+ 323:../source/nbiot_func.c **** 		printf("PDP context 1 defined\r\n");
+ 1074              		.loc 1 323 0
  1075 001e 0948     		ldr	r0, .L65+16
  1076              	.L64:
- 309:../source/nbiot_func.c **** 	} else if (res == 1) {
- 310:../source/nbiot_func.c **** 		printf("error\r\n");
- 311:../source/nbiot_func.c **** 	}
- 312:../source/nbiot_func.c **** }
- 1077              		.loc 1 312 0
+ 324:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 325:../source/nbiot_func.c **** 		printf("error\r\n");
+ 326:../source/nbiot_func.c **** 	}
+ 327:../source/nbiot_func.c **** }
+ 1077              		.loc 1 327 0
  1078 0020 BDE81040 		pop	{r4, lr}
  1079              		.cfi_remember_state
  1080              		.cfi_restore 14
  1081              		.cfi_restore 4
  1082              		.cfi_def_cfa_offset 0
- 310:../source/nbiot_func.c **** 	}
- 1083              		.loc 1 310 0
+ 325:../source/nbiot_func.c **** 	}
+ 1083              		.loc 1 325 0
  1084 0024 FFF7FEBF 		b	puts
  1085              	.LVL98:
  1086              	.L62:
  1087              		.cfi_restore_state
- 309:../source/nbiot_func.c **** 	} else if (res == 1) {
- 1088              		.loc 1 309 0
+ 324:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 1088              		.loc 1 324 0
  1089 0028 012B     		cmp	r3, #1
  1090 002a 01D1     		bne	.L61
- 310:../source/nbiot_func.c **** 	}
- 1091              		.loc 1 310 0
+ 325:../source/nbiot_func.c **** 	}
+ 1091              		.loc 1 325 0
  1092 002c 0648     		ldr	r0, .L65+20
  1093 002e F7E7     		b	.L64
  1094              	.L61:
- 1095              		.loc 1 312 0
+ 1095              		.loc 1 327 0
  1096 0030 10BD     		pop	{r4, pc}
  1097              	.L66:
  1098 0032 00BF     		.align	2
@@ -1491,67 +1506,67 @@
  1115              		.fpu fpv4-sp-d16
  1117              	NB_active_pdp:
  1118              	.LFB14:
- 313:../source/nbiot_func.c **** void NB_active_pdp() {
- 1119              		.loc 1 313 0
+ 328:../source/nbiot_func.c **** void NB_active_pdp() {
+ 1119              		.loc 1 328 0
  1120              		.cfi_startproc
  1121              		@ args = 0, pretend = 0, frame = 0
  1122              		@ frame_needed = 0, uses_anonymous_args = 0
- 314:../source/nbiot_func.c **** 	res = AT_send(AT_CGACT, "=1,1", "OK");     //Active PDP context 1
- 1123              		.loc 1 314 0
+ 329:../source/nbiot_func.c **** 	res = AT_send(AT_CGACT, "=1,1", "OK");     //Active PDP context 1
+ 1123              		.loc 1 329 0
  1124 0000 0C4B     		ldr	r3, .L71
  1125 0002 0D4A     		ldr	r2, .L71+4
  1126 0004 1868     		ldr	r0, [r3]
  1127 0006 0D49     		ldr	r1, .L71+8
- 313:../source/nbiot_func.c **** void NB_active_pdp() {
- 1128              		.loc 1 313 0
+ 328:../source/nbiot_func.c **** void NB_active_pdp() {
+ 1128              		.loc 1 328 0
  1129 0008 10B5     		push	{r4, lr}
  1130              		.cfi_def_cfa_offset 8
  1131              		.cfi_offset 4, -8
  1132              		.cfi_offset 14, -4
- 1133              		.loc 1 314 0
+ 1133              		.loc 1 329 0
  1134 000a FFF7FEFF 		bl	AT_send
  1135              	.LVL99:
  1136 000e 0C4C     		ldr	r4, .L71+12
  1137 0010 2070     		strb	r0, [r4]
- 315:../source/nbiot_func.c **** 	delay_ms(1000);
- 1138              		.loc 1 315 0
+ 330:../source/nbiot_func.c **** 	delay_ms(1000);
+ 1138              		.loc 1 330 0
  1139 0012 4FF47A70 		mov	r0, #1000
  1140 0016 FFF7FEFF 		bl	delay_ms
  1141              	.LVL100:
- 316:../source/nbiot_func.c **** 	if (res == 0) {
- 1142              		.loc 1 316 0
+ 331:../source/nbiot_func.c **** 	if (res == 0) {
+ 1142              		.loc 1 331 0
  1143 001a 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
  1144 001c 23B9     		cbnz	r3, .L68
- 317:../source/nbiot_func.c **** 		printf("PDP 1 activated\r\n");
- 1145              		.loc 1 317 0
+ 332:../source/nbiot_func.c **** 		printf("PDP 1 activated\r\n");
+ 1145              		.loc 1 332 0
  1146 001e 0948     		ldr	r0, .L71+16
  1147              	.L70:
- 318:../source/nbiot_func.c **** 	} else if (res == 1) {
- 319:../source/nbiot_func.c **** 		printf("error\r\n");
- 320:../source/nbiot_func.c **** 	}
- 321:../source/nbiot_func.c **** }
- 1148              		.loc 1 321 0
+ 333:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 334:../source/nbiot_func.c **** 		printf("error\r\n");
+ 335:../source/nbiot_func.c **** 	}
+ 336:../source/nbiot_func.c **** }
+ 1148              		.loc 1 336 0
  1149 0020 BDE81040 		pop	{r4, lr}
  1150              		.cfi_remember_state
  1151              		.cfi_restore 14
  1152              		.cfi_restore 4
  1153              		.cfi_def_cfa_offset 0
- 319:../source/nbiot_func.c **** 	}
- 1154              		.loc 1 319 0
+ 334:../source/nbiot_func.c **** 	}
+ 1154              		.loc 1 334 0
  1155 0024 FFF7FEBF 		b	puts
  1156              	.LVL101:
  1157              	.L68:
  1158              		.cfi_restore_state
- 318:../source/nbiot_func.c **** 	} else if (res == 1) {
- 1159              		.loc 1 318 0
+ 333:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 1159              		.loc 1 333 0
  1160 0028 012B     		cmp	r3, #1
  1161 002a 01D1     		bne	.L67
- 319:../source/nbiot_func.c **** 	}
- 1162              		.loc 1 319 0
+ 334:../source/nbiot_func.c **** 	}
+ 1162              		.loc 1 334 0
  1163 002c 0648     		ldr	r0, .L71+20
  1164 002e F7E7     		b	.L70
  1165              	.L67:
- 1166              		.loc 1 321 0
+ 1166              		.loc 1 336 0
  1167 0030 10BD     		pop	{r4, pc}
  1168              	.L72:
  1169 0032 00BF     		.align	2
@@ -1573,8 +1588,8 @@
  1186              		.fpu fpv4-sp-d16
  1188              	NB_show_ip:
  1189              	.LFB15:
- 322:../source/nbiot_func.c **** void NB_show_ip() {
- 1190              		.loc 1 322 0
+ 337:../source/nbiot_func.c **** void NB_show_ip() {
+ 1190              		.loc 1 337 0
  1191              		.cfi_startproc
  1192              		@ args = 0, pretend = 0, frame = 0
  1193              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -1582,8 +1597,8 @@
  1195              		.cfi_def_cfa_offset 8
  1196              		.cfi_offset 3, -8
  1197              		.cfi_offset 14, -4
- 323:../source/nbiot_func.c **** 	res = AT_send(AT_CGPADDR, "", "OK");     //Show ip address
- 1198              		.loc 1 323 0
+ 338:../source/nbiot_func.c **** 	res = AT_send(AT_CGPADDR, "", "OK");     //Show ip address
+ 1198              		.loc 1 338 0
  1199 0002 094B     		ldr	r3, .L77
  1200 0004 094A     		ldr	r2, .L77+4
  1201 0006 1868     		ldr	r0, [r3]
@@ -1592,40 +1607,40 @@
  1204              	.LVL102:
  1205 000e 094B     		ldr	r3, .L77+12
  1206 0010 1870     		strb	r0, [r3]
- 324:../source/nbiot_func.c **** 
- 325:../source/nbiot_func.c **** 	if (res == 0) {
- 1207              		.loc 1 325 0
+ 339:../source/nbiot_func.c **** 
+ 340:../source/nbiot_func.c **** 	if (res == 0) {
+ 1207              		.loc 1 340 0
  1208 0012 20B9     		cbnz	r0, .L74
- 326:../source/nbiot_func.c **** 		printf("ip  found\r\n");
- 1209              		.loc 1 326 0
+ 341:../source/nbiot_func.c **** 		printf("ip  found\r\n");
+ 1209              		.loc 1 341 0
  1210 0014 0848     		ldr	r0, .L77+16
  1211              	.L76:
- 327:../source/nbiot_func.c **** 	} else if (res == 1) {
- 328:../source/nbiot_func.c **** 		printf("error\r\n");
- 329:../source/nbiot_func.c **** 	}
- 330:../source/nbiot_func.c **** }
- 1212              		.loc 1 330 0
+ 342:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 343:../source/nbiot_func.c **** 		printf("error\r\n");
+ 344:../source/nbiot_func.c **** 	}
+ 345:../source/nbiot_func.c **** }
+ 1212              		.loc 1 345 0
  1213 0016 BDE80840 		pop	{r3, lr}
  1214              		.cfi_remember_state
  1215              		.cfi_restore 14
  1216              		.cfi_restore 3
  1217              		.cfi_def_cfa_offset 0
- 328:../source/nbiot_func.c **** 	}
- 1218              		.loc 1 328 0
+ 343:../source/nbiot_func.c **** 	}
+ 1218              		.loc 1 343 0
  1219 001a FFF7FEBF 		b	puts
  1220              	.LVL103:
  1221              	.L74:
  1222              		.cfi_restore_state
- 327:../source/nbiot_func.c **** 	} else if (res == 1) {
- 1223              		.loc 1 327 0
+ 342:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 1223              		.loc 1 342 0
  1224 001e 0128     		cmp	r0, #1
  1225 0020 01D1     		bne	.L73
- 328:../source/nbiot_func.c **** 	}
- 1226              		.loc 1 328 0
+ 343:../source/nbiot_func.c **** 	}
+ 1226              		.loc 1 343 0
  1227 0022 0648     		ldr	r0, .L77+20
  1228 0024 F7E7     		b	.L76
  1229              	.L73:
- 1230              		.loc 1 330 0
+ 1230              		.loc 1 345 0
  1231 0026 08BD     		pop	{r3, pc}
  1232              	.L78:
  1233              		.align	2
@@ -1647,8 +1662,8 @@
  1250              		.fpu fpv4-sp-d16
  1252              	NB_create_socket:
  1253              	.LFB16:
- 331:../source/nbiot_func.c **** void NB_create_socket() {
- 1254              		.loc 1 331 0
+ 346:../source/nbiot_func.c **** void NB_create_socket() {
+ 1254              		.loc 1 346 0
  1255              		.cfi_startproc
  1256              		@ args = 0, pretend = 0, frame = 0
  1257              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -1656,8 +1671,8 @@
  1259              		.cfi_def_cfa_offset 8
  1260              		.cfi_offset 3, -8
  1261              		.cfi_offset 14, -4
- 332:../source/nbiot_func.c **** 	res = AT_send(AT_NSOCR, "", "OK");     //Create UDP socket
- 1262              		.loc 1 332 0
+ 347:../source/nbiot_func.c **** 	res = AT_send(AT_NSOCR, "", "OK");     //Create UDP socket
+ 1262              		.loc 1 347 0
  1263 0002 094B     		ldr	r3, .L83
  1264 0004 094A     		ldr	r2, .L83+4
  1265 0006 1868     		ldr	r0, [r3]
@@ -1666,39 +1681,39 @@
  1268              	.LVL104:
  1269 000e 094B     		ldr	r3, .L83+12
  1270 0010 1870     		strb	r0, [r3]
- 333:../source/nbiot_func.c **** 	if (res == 0) {
- 1271              		.loc 1 333 0
+ 348:../source/nbiot_func.c **** 	if (res == 0) {
+ 1271              		.loc 1 348 0
  1272 0012 20B9     		cbnz	r0, .L80
- 334:../source/nbiot_func.c **** 		printf("Socket ready\r\n");
- 1273              		.loc 1 334 0
+ 349:../source/nbiot_func.c **** 		printf("Socket ready\r\n");
+ 1273              		.loc 1 349 0
  1274 0014 0848     		ldr	r0, .L83+16
  1275              	.L82:
- 335:../source/nbiot_func.c **** 	} else if (res == 1) {
- 336:../source/nbiot_func.c **** 		printf("error\r\n");
- 337:../source/nbiot_func.c **** 	}
- 338:../source/nbiot_func.c **** }
- 1276              		.loc 1 338 0
+ 350:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 351:../source/nbiot_func.c **** 		printf("error\r\n");
+ 352:../source/nbiot_func.c **** 	}
+ 353:../source/nbiot_func.c **** }
+ 1276              		.loc 1 353 0
  1277 0016 BDE80840 		pop	{r3, lr}
  1278              		.cfi_remember_state
  1279              		.cfi_restore 14
  1280              		.cfi_restore 3
  1281              		.cfi_def_cfa_offset 0
- 336:../source/nbiot_func.c **** 	}
- 1282              		.loc 1 336 0
+ 351:../source/nbiot_func.c **** 	}
+ 1282              		.loc 1 351 0
  1283 001a FFF7FEBF 		b	puts
  1284              	.LVL105:
  1285              	.L80:
  1286              		.cfi_restore_state
- 335:../source/nbiot_func.c **** 	} else if (res == 1) {
- 1287              		.loc 1 335 0
+ 350:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 1287              		.loc 1 350 0
  1288 001e 0128     		cmp	r0, #1
  1289 0020 01D1     		bne	.L79
- 336:../source/nbiot_func.c **** 	}
- 1290              		.loc 1 336 0
+ 351:../source/nbiot_func.c **** 	}
+ 1290              		.loc 1 351 0
  1291 0022 0648     		ldr	r0, .L83+20
  1292 0024 F7E7     		b	.L82
  1293              	.L79:
- 1294              		.loc 1 338 0
+ 1294              		.loc 1 353 0
  1295 0026 08BD     		pop	{r3, pc}
  1296              	.L84:
  1297              		.align	2
@@ -1720,531 +1735,593 @@
  1314              		.fpu fpv4-sp-d16
  1316              	NB_send_msg:
  1317              	.LFB17:
- 339:../source/nbiot_func.c **** void NB_send_msg(char *mqttMessage, uint8_t msgLen) {
- 1318              		.loc 1 339 0
+ 354:../source/nbiot_func.c **** uint8_t NB_send_msg(char *mqttMessage, uint8_t msgLen) {
+ 1318              		.loc 1 354 0
  1319              		.cfi_startproc
  1320              		@ args = 0, pretend = 0, frame = 504
  1321              		@ frame_needed = 0, uses_anonymous_args = 0
  1322              	.LVL106:
- 1323 0000 00B5     		push	{lr}
- 1324              		.cfi_def_cfa_offset 4
- 1325              		.cfi_offset 14, -4
- 1326 0002 FFB0     		sub	sp, sp, #508
- 1327              		.cfi_def_cfa_offset 512
- 340:../source/nbiot_func.c **** 
- 341:../source/nbiot_func.c **** 	char nsost_command[500];
- 342:../source/nbiot_func.c **** 
- 343:../source/nbiot_func.c **** 	sprintf(nsost_command,"0,\"167.99.207.133\",1884,%d,\"%s\"", msgLen, mqttMessage);
- 1328              		.loc 1 343 0
- 1329 0004 0346     		mov	r3, r0
- 1330 0006 0A46     		mov	r2, r1
- 1331 0008 01A8     		add	r0, sp, #4
- 1332              	.LVL107:
- 1333 000a 0E49     		ldr	r1, .L88
- 1334              	.LVL108:
- 1335 000c FFF7FEFF 		bl	sprintf
- 1336              	.LVL109:
- 344:../source/nbiot_func.c **** 
- 345:../source/nbiot_func.c **** 	printf("%s\r\n",nsost_command);
- 1337              		.loc 1 345 0
- 1338 0010 01A9     		add	r1, sp, #4
- 1339 0012 0D48     		ldr	r0, .L88+4
- 1340 0014 FFF7FEFF 		bl	printf
- 1341              	.LVL110:
- 346:../source/nbiot_func.c **** 
- 347:../source/nbiot_func.c **** 	res = AT_send(AT_NSOST, nsost_command, "OK");     //Send message to server
- 1342              		.loc 1 347 0
- 1343 0018 0C4B     		ldr	r3, .L88+8
- 1344 001a 0D4A     		ldr	r2, .L88+12
- 1345 001c 1868     		ldr	r0, [r3]
- 1346 001e 01A9     		add	r1, sp, #4
- 1347 0020 FFF7FEFF 		bl	AT_send
- 1348              	.LVL111:
- 1349 0024 0B4B     		ldr	r3, .L88+16
- 1350 0026 1870     		strb	r0, [r3]
- 348:../source/nbiot_func.c **** 
- 349:../source/nbiot_func.c **** 	if (res == 0) {
- 1351              		.loc 1 349 0
- 1352 0028 28B9     		cbnz	r0, .L86
- 350:../source/nbiot_func.c **** 		printf("sent");
- 1353              		.loc 1 350 0
- 1354 002a 0B48     		ldr	r0, .L88+20
- 1355 002c FFF7FEFF 		bl	printf
- 1356              	.LVL112:
- 1357              	.L85:
- 351:../source/nbiot_func.c **** 	} else if (res == 1) {
- 352:../source/nbiot_func.c **** 		printf("error\r\n");
- 353:../source/nbiot_func.c **** 	}
- 354:../source/nbiot_func.c **** }
- 1358              		.loc 1 354 0
- 1359 0030 7FB0     		add	sp, sp, #508
- 1360              		.cfi_remember_state
- 1361              		.cfi_def_cfa_offset 4
- 1362              		@ sp needed
- 1363 0032 5DF804FB 		ldr	pc, [sp], #4
- 1364              	.L86:
- 1365              		.cfi_restore_state
- 351:../source/nbiot_func.c **** 	} else if (res == 1) {
- 1366              		.loc 1 351 0
- 1367 0036 0128     		cmp	r0, #1
- 1368 0038 FAD1     		bne	.L85
- 352:../source/nbiot_func.c **** 	}
- 1369              		.loc 1 352 0
- 1370 003a 0848     		ldr	r0, .L88+24
- 1371 003c FFF7FEFF 		bl	puts
- 1372              	.LVL113:
- 1373              		.loc 1 354 0
- 1374 0040 F6E7     		b	.L85
- 1375              	.L89:
- 1376 0042 00BF     		.align	2
- 1377              	.L88:
- 1378 0044 00000000 		.word	.LC34
- 1379 0048 00000000 		.word	.LC7
- 1380 004c 00000000 		.word	AT_NSOST
- 1381 0050 00000000 		.word	.LC20
- 1382 0054 00000000 		.word	res
- 1383 0058 20000000 		.word	.LC35
- 1384 005c 13000000 		.word	.LC16
- 1385              		.cfi_endproc
- 1386              	.LFE17:
- 1388              		.section	.text.NB_create_pdp_send,"ax",%progbits
- 1389              		.align	1
- 1390              		.global	NB_create_pdp_send
- 1391              		.syntax unified
- 1392              		.thumb
- 1393              		.thumb_func
- 1394              		.fpu fpv4-sp-d16
- 1396              	NB_create_pdp_send:
- 1397              	.LFB6:
+ 1323 0000 10B5     		push	{r4, lr}
+ 1324              		.cfi_def_cfa_offset 8
+ 1325              		.cfi_offset 4, -8
+ 1326              		.cfi_offset 14, -4
+ 1327 0002 FEB0     		sub	sp, sp, #504
+ 1328              		.cfi_def_cfa_offset 512
+ 355:../source/nbiot_func.c **** 
+ 356:../source/nbiot_func.c **** 	char nsost_command[500];
+ 357:../source/nbiot_func.c **** 	uint8_t reSend_msg = 0;
+ 358:../source/nbiot_func.c **** 
+ 359:../source/nbiot_func.c **** 	sprintf(nsost_command,"0,\"167.99.207.133\",1884,%d,\"%s\"", msgLen, mqttMessage);
+ 1329              		.loc 1 359 0
+ 1330 0004 0346     		mov	r3, r0
+ 1331 0006 0A46     		mov	r2, r1
+ 1332 0008 01A8     		add	r0, sp, #4
+ 1333              	.LVL107:
+ 1334 000a 0F49     		ldr	r1, .L89
+ 1335              	.LVL108:
+ 1336 000c FFF7FEFF 		bl	sprintf
+ 1337              	.LVL109:
+ 360:../source/nbiot_func.c **** 
+ 361:../source/nbiot_func.c **** 	printf("%s\r\n",nsost_command);
+ 1338              		.loc 1 361 0
+ 1339 0010 01A9     		add	r1, sp, #4
+ 1340 0012 0E48     		ldr	r0, .L89+4
+ 1341 0014 FFF7FEFF 		bl	printf
+ 1342              	.LVL110:
+ 362:../source/nbiot_func.c **** 
+ 363:../source/nbiot_func.c **** 	res = AT_send(AT_NSOST, nsost_command, "OK");     //Send message to server
+ 1343              		.loc 1 363 0
+ 1344 0018 0D4B     		ldr	r3, .L89+8
+ 1345 001a 0E4A     		ldr	r2, .L89+12
+ 1346 001c 1868     		ldr	r0, [r3]
+ 1347 001e 01A9     		add	r1, sp, #4
+ 1348 0020 FFF7FEFF 		bl	AT_send
+ 1349              	.LVL111:
+ 1350 0024 0C4B     		ldr	r3, .L89+16
+ 1351 0026 0446     		mov	r4, r0
+ 1352 0028 1870     		strb	r0, [r3]
+ 364:../source/nbiot_func.c **** 
+ 365:../source/nbiot_func.c **** 	if (res == 0) {
+ 1353              		.loc 1 365 0
+ 1354 002a 28B9     		cbnz	r0, .L86
+ 366:../source/nbiot_func.c **** 		printf("sent");
+ 1355              		.loc 1 366 0
+ 1356 002c 0B48     		ldr	r0, .L89+20
+ 1357 002e FFF7FEFF 		bl	printf
+ 1358              	.LVL112:
+ 1359              	.L87:
+ 367:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 368:../source/nbiot_func.c **** 		printf("error\r\n");
+ 369:../source/nbiot_func.c **** 		reSend_msg = 1;
+ 370:../source/nbiot_func.c **** 		return reSend_msg;
+ 371:../source/nbiot_func.c **** 	}
+ 372:../source/nbiot_func.c **** 	return 0;
+ 373:../source/nbiot_func.c **** }
+ 1360              		.loc 1 373 0
+ 1361 0032 2046     		mov	r0, r4
+ 1362 0034 7EB0     		add	sp, sp, #504
+ 1363              		.cfi_remember_state
+ 1364              		.cfi_def_cfa_offset 8
+ 1365              		@ sp needed
+ 1366 0036 10BD     		pop	{r4, pc}
+ 1367              	.LVL113:
+ 1368              	.L86:
+ 1369              		.cfi_restore_state
+ 367:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 1370              		.loc 1 367 0
+ 1371 0038 0128     		cmp	r0, #1
+ 1372 003a 03D1     		bne	.L88
+ 368:../source/nbiot_func.c **** 		reSend_msg = 1;
+ 1373              		.loc 1 368 0
+ 1374 003c 0848     		ldr	r0, .L89+24
+ 1375 003e FFF7FEFF 		bl	puts
+ 1376              	.LVL114:
+ 370:../source/nbiot_func.c **** 	}
+ 1377              		.loc 1 370 0
+ 1378 0042 F6E7     		b	.L87
+ 1379              	.LVL115:
+ 1380              	.L88:
+ 372:../source/nbiot_func.c **** }
+ 1381              		.loc 1 372 0
+ 1382 0044 0024     		movs	r4, #0
+ 1383 0046 F4E7     		b	.L87
+ 1384              	.L90:
+ 1385              		.align	2
+ 1386              	.L89:
+ 1387 0048 00000000 		.word	.LC34
+ 1388 004c 00000000 		.word	.LC7
+ 1389 0050 00000000 		.word	AT_NSOST
+ 1390 0054 00000000 		.word	.LC20
+ 1391 0058 00000000 		.word	res
+ 1392 005c 20000000 		.word	.LC35
+ 1393 0060 13000000 		.word	.LC16
+ 1394              		.cfi_endproc
+ 1395              	.LFE17:
+ 1397              		.section	.text.NB_read_msg,"ax",%progbits
+ 1398              		.align	1
+ 1399              		.global	NB_read_msg
+ 1400              		.syntax unified
+ 1401              		.thumb
+ 1402              		.thumb_func
+ 1403              		.fpu fpv4-sp-d16
+ 1405              	NB_read_msg:
+ 1406              	.LFB18:
+ 374:../source/nbiot_func.c **** void NB_read_msg() {
+ 1407              		.loc 1 374 0
+ 1408              		.cfi_startproc
+ 1409              		@ args = 0, pretend = 0, frame = 0
+ 1410              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1411 0000 08B5     		push	{r3, lr}
+ 1412              		.cfi_def_cfa_offset 8
+ 1413              		.cfi_offset 3, -8
+ 1414              		.cfi_offset 14, -4
+ 375:../source/nbiot_func.c **** 	res = AT_send(AT_NSORF, "", "OK");     //read echo data
+ 1415              		.loc 1 375 0
+ 1416 0002 094B     		ldr	r3, .L95
+ 1417 0004 094A     		ldr	r2, .L95+4
+ 1418 0006 1868     		ldr	r0, [r3]
+ 1419 0008 0949     		ldr	r1, .L95+8
+ 1420 000a FFF7FEFF 		bl	AT_send
+ 1421              	.LVL116:
+ 1422 000e 094B     		ldr	r3, .L95+12
+ 1423 0010 1870     		strb	r0, [r3]
+ 376:../source/nbiot_func.c **** 	//delay_ms(1000);
+ 377:../source/nbiot_func.c **** 	if (res == 0) {
+ 1424              		.loc 1 377 0
+ 1425 0012 20B9     		cbnz	r0, .L92
+ 378:../source/nbiot_func.c **** 		printf("echo\r\n");
+ 1426              		.loc 1 378 0
+ 1427 0014 0848     		ldr	r0, .L95+16
+ 1428              	.L94:
+ 379:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 380:../source/nbiot_func.c **** 		printf("error\r\n");
+ 381:../source/nbiot_func.c **** 	}
+ 382:../source/nbiot_func.c **** }
+ 1429              		.loc 1 382 0
+ 1430 0016 BDE80840 		pop	{r3, lr}
+ 1431              		.cfi_remember_state
+ 1432              		.cfi_restore 14
+ 1433              		.cfi_restore 3
+ 1434              		.cfi_def_cfa_offset 0
+ 380:../source/nbiot_func.c **** 	}
+ 1435              		.loc 1 380 0
+ 1436 001a FFF7FEBF 		b	puts
+ 1437              	.LVL117:
+ 1438              	.L92:
+ 1439              		.cfi_restore_state
+ 379:../source/nbiot_func.c **** 	} else if (res == 1) {
+ 1440              		.loc 1 379 0
+ 1441 001e 0128     		cmp	r0, #1
+ 1442 0020 01D1     		bne	.L91
+ 380:../source/nbiot_func.c **** 	}
+ 1443              		.loc 1 380 0
+ 1444 0022 0648     		ldr	r0, .L95+20
+ 1445 0024 F7E7     		b	.L94
+ 1446              	.L91:
+ 1447              		.loc 1 382 0
+ 1448 0026 08BD     		pop	{r3, pc}
+ 1449              	.L96:
+ 1450              		.align	2
+ 1451              	.L95:
+ 1452 0028 00000000 		.word	AT_NSORF
+ 1453 002c 00000000 		.word	.LC20
+ 1454 0030 08000000 		.word	.LC14
+ 1455 0034 00000000 		.word	res
+ 1456 0038 00000000 		.word	.LC36
+ 1457 003c 13000000 		.word	.LC16
+ 1458              		.cfi_endproc
+ 1459              	.LFE18:
+ 1461              		.section	.text.NB_create_pdp_send,"ax",%progbits
+ 1462              		.align	1
+ 1463              		.global	NB_create_pdp_send
+ 1464              		.syntax unified
+ 1465              		.thumb
+ 1466              		.thumb_func
+ 1467              		.fpu fpv4-sp-d16
+ 1469              	NB_create_pdp_send:
+ 1470              	.LFB6:
  214:../source/nbiot_func.c **** 
- 1398              		.loc 1 214 0
- 1399              		.cfi_startproc
- 1400              		@ Volatile: function does not return.
- 1401              		@ args = 0, pretend = 0, frame = 0
- 1402              		@ frame_needed = 0, uses_anonymous_args = 0
- 1403              	.LVL114:
- 1404 0000 08B5     		push	{r3, lr}
- 1405              		.cfi_def_cfa_offset 8
- 1406              		.cfi_offset 3, -8
- 1407              		.cfi_offset 14, -4
+ 1471              		.loc 1 214 0
+ 1472              		.cfi_startproc
+ 1473              		@ args = 0, pretend = 0, frame = 0
+ 1474              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1475              	.LVL118:
+ 1476 0000 70B5     		push	{r4, r5, r6, lr}
+ 1477              		.cfi_def_cfa_offset 16
+ 1478              		.cfi_offset 4, -16
+ 1479              		.cfi_offset 5, -12
+ 1480              		.cfi_offset 6, -8
+ 1481              		.cfi_offset 14, -4
  214:../source/nbiot_func.c **** 
- 1408              		.loc 1 214 0
- 1409 0002 0D46     		mov	r5, r1
- 1410 0004 0446     		mov	r4, r0
- 216:../source/nbiot_func.c **** 	  NB_setPin();
- 1411              		.loc 1 216 0
- 1412 0006 FFF7FEFF 		bl	NB_reboot
- 1413              	.LVL115:
- 217:../source/nbiot_func.c **** 	  delay_ms(1000);  //viivettä pitää olla
- 1414              		.loc 1 217 0
- 1415 000a FFF7FEFF 		bl	NB_setPin
- 1416              	.LVL116:
- 218:../source/nbiot_func.c **** 	  NB_cops_register();
- 1417              		.loc 1 218 0
- 1418 000e 4FF47A70 		mov	r0, #1000
- 1419 0012 FFF7FEFF 		bl	delay_ms
- 1420              	.LVL117:
- 219:../source/nbiot_func.c **** 	  NB_network_status();
- 1421              		.loc 1 219 0
- 1422 0016 FFF7FEFF 		bl	NB_cops_register
- 1423              	.LVL118:
- 220:../source/nbiot_func.c **** 	  delay_ms(1000);
- 1424              		.loc 1 220 0
- 1425 001a FFF7FEFF 		bl	NB_network_status
- 1426              	.LVL119:
- 221:../source/nbiot_func.c **** 	  NB_define_pdp();
- 1427              		.loc 1 221 0
- 1428 001e 4FF47A70 		mov	r0, #1000
- 1429 0022 FFF7FEFF 		bl	delay_ms
- 1430              	.LVL120:
- 222:../source/nbiot_func.c **** 	  delay_ms(1000);
- 1431              		.loc 1 222 0
- 1432 0026 FFF7FEFF 		bl	NB_define_pdp
- 1433              	.LVL121:
- 223:../source/nbiot_func.c **** 	 NB_cops_deRegister();
- 1434              		.loc 1 223 0
- 1435 002a 4FF47A70 		mov	r0, #1000
- 1436 002e FFF7FEFF 		bl	delay_ms
- 1437              	.LVL122:
- 224:../source/nbiot_func.c **** 	  delay_ms(2200);
- 1438              		.loc 1 224 0
- 1439 0032 FFF7FEFF 		bl	NB_cops_deRegister
- 1440              	.LVL123:
- 225:../source/nbiot_func.c **** 	  NB_active_pdp();
- 1441              		.loc 1 225 0
- 1442 0036 40F69800 		movw	r0, #2200
- 1443 003a FFF7FEFF 		bl	delay_ms
- 1444              	.LVL124:
- 226:../source/nbiot_func.c **** 	  delay_ms(3000);
- 1445              		.loc 1 226 0
- 1446 003e FFF7FEFF 		bl	NB_active_pdp
- 1447              	.LVL125:
- 227:../source/nbiot_func.c **** 	  NB_show_ip();
- 1448              		.loc 1 227 0
- 1449 0042 40F6B830 		movw	r0, #3000
- 1450 0046 FFF7FEFF 		bl	delay_ms
- 1451              	.LVL126:
- 228:../source/nbiot_func.c **** 	  delay_ms(1000);
- 1452              		.loc 1 228 0
- 1453 004a FFF7FEFF 		bl	NB_show_ip
- 1454              	.LVL127:
- 229:../source/nbiot_func.c **** 	 NB_create_socket();
- 1455              		.loc 1 229 0
- 1456 004e 4FF47A70 		mov	r0, #1000
- 1457 0052 FFF7FEFF 		bl	delay_ms
- 1458              	.LVL128:
- 230:../source/nbiot_func.c **** 	  delay_ms(1000);
- 1459              		.loc 1 230 0
- 1460 0056 FFF7FEFF 		bl	NB_create_socket
- 1461              	.LVL129:
- 1462              	.L92:
- 231:../source/nbiot_func.c **** 	  while(1){
- 1463              		.loc 1 231 0
- 1464 005a 4FF47A70 		mov	r0, #1000
- 1465 005e FFF7FEFF 		bl	delay_ms
- 1466              	.LVL130:
- 234:../source/nbiot_func.c **** 	  delay_ms(1000);
- 1467              		.loc 1 234 0
- 1468 0062 2946     		mov	r1, r5
- 1469 0064 2046     		mov	r0, r4
- 1470 0066 FFF7FEFF 		bl	NB_send_msg
- 1471              	.LVL131:
- 1472 006a F6E7     		b	.L92
- 1473              		.cfi_endproc
- 1474              	.LFE6:
- 1476              		.section	.text.NB_read_msg,"ax",%progbits
- 1477              		.align	1
- 1478              		.global	NB_read_msg
- 1479              		.syntax unified
- 1480              		.thumb
- 1481              		.thumb_func
- 1482              		.fpu fpv4-sp-d16
- 1484              	NB_read_msg:
- 1485              	.LFB18:
- 355:../source/nbiot_func.c **** void NB_read_msg() {
- 1486              		.loc 1 355 0
- 1487              		.cfi_startproc
- 1488              		@ args = 0, pretend = 0, frame = 0
- 1489              		@ frame_needed = 0, uses_anonymous_args = 0
- 1490 0000 08B5     		push	{r3, lr}
- 1491              		.cfi_def_cfa_offset 8
- 1492              		.cfi_offset 3, -8
- 1493              		.cfi_offset 14, -4
- 356:../source/nbiot_func.c **** 	res = AT_send(AT_NSORF, "", "OK");     //read echo data
- 1494              		.loc 1 356 0
- 1495 0002 094B     		ldr	r3, .L97
- 1496 0004 094A     		ldr	r2, .L97+4
- 1497 0006 1868     		ldr	r0, [r3]
- 1498 0008 0949     		ldr	r1, .L97+8
- 1499 000a FFF7FEFF 		bl	AT_send
- 1500              	.LVL132:
- 1501 000e 094B     		ldr	r3, .L97+12
- 1502 0010 1870     		strb	r0, [r3]
- 357:../source/nbiot_func.c **** 	//delay_ms(1000);
- 358:../source/nbiot_func.c **** 	if (res == 0) {
- 1503              		.loc 1 358 0
- 1504 0012 20B9     		cbnz	r0, .L94
- 359:../source/nbiot_func.c **** 		printf("echo\r\n");
- 1505              		.loc 1 359 0
- 1506 0014 0848     		ldr	r0, .L97+16
- 1507              	.L96:
- 360:../source/nbiot_func.c **** 	} else if (res == 1) {
- 361:../source/nbiot_func.c **** 		printf("error\r\n");
- 362:../source/nbiot_func.c **** 	}
- 363:../source/nbiot_func.c **** }
- 1508              		.loc 1 363 0
- 1509 0016 BDE80840 		pop	{r3, lr}
- 1510              		.cfi_remember_state
- 1511              		.cfi_restore 14
- 1512              		.cfi_restore 3
- 1513              		.cfi_def_cfa_offset 0
- 361:../source/nbiot_func.c **** 	}
- 1514              		.loc 1 361 0
- 1515 001a FFF7FEBF 		b	puts
- 1516              	.LVL133:
- 1517              	.L94:
- 1518              		.cfi_restore_state
- 360:../source/nbiot_func.c **** 	} else if (res == 1) {
- 1519              		.loc 1 360 0
- 1520 001e 0128     		cmp	r0, #1
- 1521 0020 01D1     		bne	.L93
- 361:../source/nbiot_func.c **** 	}
- 1522              		.loc 1 361 0
- 1523 0022 0648     		ldr	r0, .L97+20
- 1524 0024 F7E7     		b	.L96
- 1525              	.L93:
- 1526              		.loc 1 363 0
- 1527 0026 08BD     		pop	{r3, pc}
- 1528              	.L98:
- 1529              		.align	2
- 1530              	.L97:
- 1531 0028 00000000 		.word	AT_NSORF
- 1532 002c 00000000 		.word	.LC20
- 1533 0030 08000000 		.word	.LC14
- 1534 0034 00000000 		.word	res
- 1535 0038 00000000 		.word	.LC36
- 1536 003c 13000000 		.word	.LC16
- 1537              		.cfi_endproc
- 1538              	.LFE18:
- 1540              		.global	passwd
- 1541              		.global	username
- 1542              		.global	topic
- 1543              		.global	client_id
- 1544              		.global	postHeader
- 1545              		.comm	res,1,1
- 1546              		.section	.bss.jsonMessage.7127,"aw",%nobits
- 1547              		.set	.LANCHOR4,. + 0
- 1550              	jsonMessage.7127:
- 1551 0000 00000000 		.space	150
- 1551      00000000 
- 1551      00000000 
- 1551      00000000 
- 1551      00000000 
- 1552              		.section	.bss.jsonMessage.7140,"aw",%nobits
- 1553              		.set	.LANCHOR5,. + 0
- 1556              	jsonMessage.7140:
- 1557 0000 00000000 		.space	150
- 1557      00000000 
- 1557      00000000 
- 1557      00000000 
- 1557      00000000 
- 1558              		.section	.data.client_id,"aw",%progbits
- 1559              		.align	2
- 1560              		.set	.LANCHOR0,. + 0
- 1563              	client_id:
- 1564 0000 16000000 		.word	.LC39
- 1565              		.section	.data.passwd,"aw",%progbits
- 1566              		.align	2
- 1567              		.set	.LANCHOR1,. + 0
- 1570              	passwd:
- 1571 0000 00000000 		.word	.LC37
- 1572              		.section	.data.topic,"aw",%progbits
- 1573              		.align	2
- 1574              		.set	.LANCHOR3,. + 0
- 1577              	topic:
- 1578 0000 0D000000 		.word	.LC38
- 1579              		.section	.data.username,"aw",%progbits
- 1580              		.align	2
- 1581              		.set	.LANCHOR2,. + 0
- 1584              	username:
- 1585 0000 0D000000 		.word	.LC38
- 1586              		.section	.rodata.NB_active_pdp.str1.1,"aMS",%progbits,1
- 1587              	.LC30:
- 1588 0000 3D312C31 		.ascii	"=1,1\000"
- 1588      00
- 1589              	.LC31:
- 1590 0005 50445020 		.ascii	"PDP 1 activated\015\000"
- 1590      31206163 
- 1590      74697661 
- 1590      7465640D 
- 1590      00
- 1591              		.section	.rodata.NB_cops_deRegister.str1.1,"aMS",%progbits,1
- 1592              	.LC23:
- 1593 0000 3D3200   		.ascii	"=2\000"
- 1594              	.LC24:
- 1595 0003 44652D72 		.ascii	"De-registered\015\000"
- 1595      65676973 
- 1595      74657265 
- 1595      640D00
- 1596              		.section	.rodata.NB_cops_readRegister.str1.1,"aMS",%progbits,1
- 1597              	.LC25:
- 1598 0000 3F00     		.ascii	"?\000"
- 1599              	.LC26:
- 1600 0002 72656164 		.ascii	"readCOPS\015\000"
- 1600      434F5053 
- 1600      0D00
- 1601              		.section	.rodata.NB_cops_register.str1.1,"aMS",%progbits,1
- 1602              	.LC20:
- 1603 0000 4F4B00   		.ascii	"OK\000"
- 1604              	.LC21:
- 1605 0003 3D3000   		.ascii	"=0\000"
- 1606              	.LC22:
- 1607 0006 52656769 		.ascii	"Registered\015\000"
- 1607      73746572 
- 1607      65640D00 
- 1608              		.section	.rodata.NB_create_socket.str1.1,"aMS",%progbits,1
- 1609              	.LC33:
- 1610 0000 536F636B 		.ascii	"Socket ready\015\000"
- 1610      65742072 
- 1610      65616479 
- 1610      0D00
- 1611              		.section	.rodata.NB_define_pdp.str1.1,"aMS",%progbits,1
- 1612              	.LC29:
- 1613 0000 50445020 		.ascii	"PDP context 1 defined\015\000"
- 1613      636F6E74 
- 1613      65787420 
- 1613      31206465 
- 1613      66696E65 
- 1614              		.section	.rodata.NB_network_status.str1.1,"aMS",%progbits,1
- 1615              	.LC27:
- 1616 0000 2B434552 		.ascii	"+CEREG: 0,1\000"
- 1616      45473A20 
- 1616      302C3100 
- 1617              	.LC28:
- 1618 000c 43455245 		.ascii	"CEREG_OK\015\000"
- 1618      475F4F4B 
- 1618      0D00
- 1619              		.section	.rodata.NB_read_msg.str1.1,"aMS",%progbits,1
- 1620              	.LC36:
- 1621 0000 6563686F 		.ascii	"echo\015\000"
- 1621      0D00
- 1622              		.section	.rodata.NB_reboot.str1.1,"aMS",%progbits,1
- 1623              	.LC13:
- 1624 0000 2B55464F 		.ascii	"+UFOTAS\000"
- 1624      54415300 
- 1625              	.LC14:
- 1626 0008 00       		.ascii	"\000"
- 1627              	.LC15:
- 1628 0009 7265626F 		.ascii	"rebooted\015\000"
- 1628      6F746564 
- 1628      0D00
- 1629              	.LC16:
- 1630 0013 6572726F 		.ascii	"error\015\000"
- 1630      720D00
- 1631              	.LC17:
- 1632 001a 74696D65 		.ascii	"timeout error\015\000"
- 1632      6F757420 
- 1632      6572726F 
- 1632      720D00
- 1633              		.section	.rodata.NB_received_data.str1.1,"aMS",%progbits,1
- 1634              	.LC10:
- 1635 0000 4E534F4E 		.ascii	"NSONMI\000"
- 1635      4D4900
- 1636              	.LC11:
- 1637 0007 72656365 		.ascii	"received\015\000"
- 1637      69766564 
- 1637      0D00
- 1638              	.LC12:
- 1639 0011 4552524F 		.ascii	"ERROR\000"
- 1639      5200
- 1640              		.section	.rodata.NB_send_msg.str1.1,"aMS",%progbits,1
- 1641              	.LC34:
- 1642 0000 302C2231 		.ascii	"0,\"167.99.207.133\",1884,%d,\"%s\"\000"
- 1642      36372E39 
- 1642      392E3230 
- 1642      372E3133 
- 1642      33222C31 
- 1643              	.LC35:
- 1644 0020 73656E74 		.ascii	"sent\000"
- 1644      00
- 1645              		.section	.rodata.NB_setPin.str1.1,"aMS",%progbits,1
- 1646              	.LC18:
- 1647 0000 2B4E5049 		.ascii	"+NPIN: \"OK\"\000"
- 1647      4E3A2022 
- 1647      4F4B2200 
- 1648              	.LC19:
- 1649 000c 61636B0D 		.ascii	"ack\015\000"
- 1649      00
- 1650              		.section	.rodata.NB_show_ip.str1.1,"aMS",%progbits,1
- 1651              	.LC32:
- 1652 0000 69702020 		.ascii	"ip  found\015\000"
- 1652      666F756E 
- 1652      640D00
- 1653              		.section	.rodata.assembleMqtt.str1.1,"aMS",%progbits,1
- 1654              	.LC0:
- 1655 0000 7B0D0A0D 		.ascii	"{\015\012\015\012    \"serialnumber\":\"%s\",\015\012"
- 1655      0A202020 
- 1655      20227365 
- 1655      7269616C 
- 1655      6E756D62 
- 1656 001f 00       		.ascii	"\000"
- 1657              	.LC1:
- 1658 0020 20202020 		.ascii	"    \"lat\":\"%s\",\015\012\000"
- 1658      226C6174 
- 1658      223A2225 
- 1658      73222C0D 
- 1658      0A00
- 1659              	.LC2:
- 1660 0032 20202020 		.ascii	"    \"long\":\"%s\",\015\012\000"
- 1660      226C6F6E 
- 1660      67223A22 
- 1660      2573222C 
- 1660      0D0A00
- 1661              	.LC3:
- 1662 0045 20202020 		.ascii	"    \"status\":\"%s\",\015\012\000"
- 1662      22737461 
- 1662      74757322 
- 1662      3A222573 
- 1662      222C0D0A 
- 1663              	.LC4:
- 1664 005a 20202020 		.ascii	"    \"battery\":\"%d\"\015\012\015\012}\000"
- 1664      22626174 
- 1664      74657279 
- 1664      223A2225 
- 1664      64220D0A 
- 1665              	.LC5:
- 1666 0072 25303278 		.ascii	"%02x\000"
- 1666      00
- 1667              	.LC6:
- 1668 0077 7061636B 		.ascii	"packet length %d\015\012\000"
- 1668      6574206C 
- 1668      656E6774 
- 1668      68202564 
- 1668      0D0A00
- 1669              		.section	.rodata.assemblePacket.str1.1,"aMS",%progbits,1
- 1670              	.LC7:
- 1671 0000 25730D0A 		.ascii	"%s\015\012\000"
- 1671      00
- 1672              	.LC8:
- 1673 0005 6C656E67 		.ascii	"length of udp msg %d \015\012Printing UDP message i"
- 1673      7468206F 
- 1673      66207564 
- 1673      70206D73 
- 1673      67202564 
- 1674 0032 6E206865 		.ascii	"n hex\015\012\000"
- 1674      780D0A00 
- 1675              	.LC9:
- 1676 003a 0D00     		.ascii	"\015\000"
- 1677              		.section	.rodata.postHeader,"a",%progbits
- 1678              		.set	.LANCHOR6,. + 0
- 1681              	postHeader:
- 1682 0000 504F5354 		.ascii	"POST /Reindeertracker/API/data/index.php HTTP/1.1\015"
- 1682      202F5265 
- 1682      696E6465 
- 1682      65727472 
- 1682      61636B65 
- 1683 0032 0A486F73 		.ascii	"\012Host: 168.235.64.81\015\012Content-Length: %d\015"
- 1683      743A2031 
- 1683      36382E32 
- 1683      33352E36 
- 1683      342E3831 
- 1684 005b 0A436F6E 		.ascii	"\012Content-Type: application/json\015\012Cache-Con"
- 1684      74656E74 
- 1684      2D547970 
- 1684      653A2061 
- 1684      70706C69 
- 1685 0085 74726F6C 		.ascii	"trol: no-cache\015\012\015\012\000"
- 1685      3A206E6F 
- 1685      2D636163 
- 1685      68650D0A 
- 1685      0D0A00
- 1686              		.section	.rodata.str1.1,"aMS",%progbits,1
- 1687              	.LC37:
- 1688 0000 7265696E 		.ascii	"reindeer1234\000"
- 1688      64656572 
- 1688      31323334 
- 1688      00
- 1689              	.LC38:
- 1690 000d 7265696E 		.ascii	"reindeer\000"
- 1690      64656572 
+ 1482              		.loc 1 214 0
+ 1483 0002 0E46     		mov	r6, r1
+ 1484 0004 0546     		mov	r5, r0
+ 218:../source/nbiot_func.c **** 	  NB_setPin();
+ 1485              		.loc 1 218 0
+ 1486 0006 FFF7FEFF 		bl	NB_reboot
+ 1487              	.LVL119:
+ 219:../source/nbiot_func.c **** 
+ 1488              		.loc 1 219 0
+ 1489 000a FFF7FEFF 		bl	NB_setPin
+ 1490              	.LVL120:
+ 221:../source/nbiot_func.c **** 	  NB_cops_register();
+ 1491              		.loc 1 221 0
+ 1492 000e 4FF47A70 		mov	r0, #1000
+ 1493 0012 FFF7FEFF 		bl	delay_ms
+ 1494              	.LVL121:
+ 222:../source/nbiot_func.c **** 
+ 1495              		.loc 1 222 0
+ 1496 0016 FFF7FEFF 		bl	NB_cops_register
+ 1497              	.LVL122:
+ 224:../source/nbiot_func.c **** 	  delay_ms(1000);
+ 1498              		.loc 1 224 0
+ 1499 001a FFF7FEFF 		bl	NB_network_status
+ 1500              	.LVL123:
+ 225:../source/nbiot_func.c **** 
+ 1501              		.loc 1 225 0
+ 1502 001e 4FF47A70 		mov	r0, #1000
+ 1503 0022 FFF7FEFF 		bl	delay_ms
+ 1504              	.LVL124:
+ 227:../source/nbiot_func.c **** 	  delay_ms(1000);
+ 1505              		.loc 1 227 0
+ 1506 0026 FFF7FEFF 		bl	NB_define_pdp
+ 1507              	.LVL125:
+ 228:../source/nbiot_func.c **** 
+ 1508              		.loc 1 228 0
+ 1509 002a 4FF47A70 		mov	r0, #1000
+ 1510 002e FFF7FEFF 		bl	delay_ms
+ 1511              	.LVL126:
+ 216:../source/nbiot_func.c **** 
+ 1512              		.loc 1 216 0
+ 1513 0032 0024     		movs	r4, #0
+ 1514              	.LVL127:
+ 1515              	.L99:
+ 232:../source/nbiot_func.c **** 	  delay_ms(2200);
+ 1516              		.loc 1 232 0
+ 1517 0034 FFF7FEFF 		bl	NB_cops_deRegister
+ 1518              	.LVL128:
+ 233:../source/nbiot_func.c **** 
+ 1519              		.loc 1 233 0
+ 1520 0038 40F69800 		movw	r0, #2200
+ 1521 003c FFF7FEFF 		bl	delay_ms
+ 1522              	.LVL129:
+ 235:../source/nbiot_func.c **** 	  delay_ms(3000);
+ 1523              		.loc 1 235 0
+ 1524 0040 FFF7FEFF 		bl	NB_active_pdp
+ 1525              	.LVL130:
+ 236:../source/nbiot_func.c **** 
+ 1526              		.loc 1 236 0
+ 1527 0044 40F6B830 		movw	r0, #3000
+ 1528 0048 FFF7FEFF 		bl	delay_ms
+ 1529              	.LVL131:
+ 238:../source/nbiot_func.c **** 	  NB_network_status();
+ 1530              		.loc 1 238 0
+ 1531 004c 012C     		cmp	r4, #1
+ 1532 004e 05D1     		bne	.L98
+ 239:../source/nbiot_func.c **** 	  delay_ms(1000);
+ 1533              		.loc 1 239 0
+ 1534 0050 FFF7FEFF 		bl	NB_network_status
+ 1535              	.LVL132:
+ 240:../source/nbiot_func.c **** 	  }
+ 1536              		.loc 1 240 0
+ 1537 0054 4FF47A70 		mov	r0, #1000
+ 1538 0058 FFF7FEFF 		bl	delay_ms
+ 1539              	.LVL133:
+ 1540              	.L98:
+ 242:../source/nbiot_func.c **** 	  delay_ms(1000);
+ 1541              		.loc 1 242 0
+ 1542 005c FFF7FEFF 		bl	NB_show_ip
+ 1543              	.LVL134:
+ 243:../source/nbiot_func.c **** 
+ 1544              		.loc 1 243 0
+ 1545 0060 4FF47A70 		mov	r0, #1000
+ 1546 0064 FFF7FEFF 		bl	delay_ms
+ 1547              	.LVL135:
+ 245:../source/nbiot_func.c **** 	  delay_ms(1000);
+ 1548              		.loc 1 245 0
+ 1549 0068 FFF7FEFF 		bl	NB_create_socket
+ 1550              	.LVL136:
+ 246:../source/nbiot_func.c **** 
+ 1551              		.loc 1 246 0
+ 1552 006c 4FF47A70 		mov	r0, #1000
+ 1553 0070 FFF7FEFF 		bl	delay_ms
+ 1554              	.LVL137:
+ 248:../source/nbiot_func.c **** 
+ 1555              		.loc 1 248 0
+ 1556 0074 3146     		mov	r1, r6
+ 1557 0076 2846     		mov	r0, r5
+ 1558 0078 FFF7FEFF 		bl	NB_send_msg
+ 1559              	.LVL138:
+ 250:../source/nbiot_func.c **** 
+ 1560              		.loc 1 250 0
+ 1561 007c 0128     		cmp	r0, #1
+ 248:../source/nbiot_func.c **** 
+ 1562              		.loc 1 248 0
+ 1563 007e 0446     		mov	r4, r0
+ 1564              	.LVL139:
+ 250:../source/nbiot_func.c **** 
+ 1565              		.loc 1 250 0
+ 1566 0080 D8D0     		beq	.L99
+ 253:../source/nbiot_func.c **** 	  NB_read_msg();
+ 1567              		.loc 1 253 0
+ 1568 0082 4FF47A60 		mov	r0, #4000
+ 1569              	.LVL140:
+ 1570 0086 FFF7FEFF 		bl	delay_ms
+ 1571              	.LVL141:
+ 255:../source/nbiot_func.c **** 
+ 1572              		.loc 1 255 0
+ 1573 008a BDE87040 		pop	{r4, r5, r6, lr}
+ 1574              		.cfi_restore 14
+ 1575              		.cfi_restore 6
+ 1576              		.cfi_restore 5
+ 1577              		.cfi_restore 4
+ 1578              		.cfi_def_cfa_offset 0
+ 1579              	.LVL142:
+ 254:../source/nbiot_func.c **** }
+ 1580              		.loc 1 254 0
+ 1581 008e FFF7FEBF 		b	NB_read_msg
+ 1582              	.LVL143:
+ 1583              		.cfi_endproc
+ 1584              	.LFE6:
+ 1586              		.global	passwd
+ 1587              		.global	username
+ 1588              		.global	topic
+ 1589              		.global	client_id
+ 1590              		.global	postHeader
+ 1591              		.comm	res,1,1
+ 1592              		.section	.bss.jsonMessage.7127,"aw",%nobits
+ 1593              		.set	.LANCHOR4,. + 0
+ 1596              	jsonMessage.7127:
+ 1597 0000 00000000 		.space	150
+ 1597      00000000 
+ 1597      00000000 
+ 1597      00000000 
+ 1597      00000000 
+ 1598              		.section	.bss.jsonMessage.7140,"aw",%nobits
+ 1599              		.set	.LANCHOR5,. + 0
+ 1602              	jsonMessage.7140:
+ 1603 0000 00000000 		.space	150
+ 1603      00000000 
+ 1603      00000000 
+ 1603      00000000 
+ 1603      00000000 
+ 1604              		.section	.data.client_id,"aw",%progbits
+ 1605              		.align	2
+ 1606              		.set	.LANCHOR0,. + 0
+ 1609              	client_id:
+ 1610 0000 16000000 		.word	.LC39
+ 1611              		.section	.data.passwd,"aw",%progbits
+ 1612              		.align	2
+ 1613              		.set	.LANCHOR1,. + 0
+ 1616              	passwd:
+ 1617 0000 00000000 		.word	.LC37
+ 1618              		.section	.data.topic,"aw",%progbits
+ 1619              		.align	2
+ 1620              		.set	.LANCHOR3,. + 0
+ 1623              	topic:
+ 1624 0000 0D000000 		.word	.LC38
+ 1625              		.section	.data.username,"aw",%progbits
+ 1626              		.align	2
+ 1627              		.set	.LANCHOR2,. + 0
+ 1630              	username:
+ 1631 0000 0D000000 		.word	.LC38
+ 1632              		.section	.rodata.NB_active_pdp.str1.1,"aMS",%progbits,1
+ 1633              	.LC30:
+ 1634 0000 3D312C31 		.ascii	"=1,1\000"
+ 1634      00
+ 1635              	.LC31:
+ 1636 0005 50445020 		.ascii	"PDP 1 activated\015\000"
+ 1636      31206163 
+ 1636      74697661 
+ 1636      7465640D 
+ 1636      00
+ 1637              		.section	.rodata.NB_cops_deRegister.str1.1,"aMS",%progbits,1
+ 1638              	.LC23:
+ 1639 0000 3D3200   		.ascii	"=2\000"
+ 1640              	.LC24:
+ 1641 0003 44652D72 		.ascii	"De-registered\015\000"
+ 1641      65676973 
+ 1641      74657265 
+ 1641      640D00
+ 1642              		.section	.rodata.NB_cops_readRegister.str1.1,"aMS",%progbits,1
+ 1643              	.LC25:
+ 1644 0000 3F00     		.ascii	"?\000"
+ 1645              	.LC26:
+ 1646 0002 72656164 		.ascii	"readCOPS\015\000"
+ 1646      434F5053 
+ 1646      0D00
+ 1647              		.section	.rodata.NB_cops_register.str1.1,"aMS",%progbits,1
+ 1648              	.LC20:
+ 1649 0000 4F4B00   		.ascii	"OK\000"
+ 1650              	.LC21:
+ 1651 0003 3D3000   		.ascii	"=0\000"
+ 1652              	.LC22:
+ 1653 0006 52656769 		.ascii	"Registered\015\000"
+ 1653      73746572 
+ 1653      65640D00 
+ 1654              		.section	.rodata.NB_create_socket.str1.1,"aMS",%progbits,1
+ 1655              	.LC33:
+ 1656 0000 536F636B 		.ascii	"Socket ready\015\000"
+ 1656      65742072 
+ 1656      65616479 
+ 1656      0D00
+ 1657              		.section	.rodata.NB_define_pdp.str1.1,"aMS",%progbits,1
+ 1658              	.LC29:
+ 1659 0000 50445020 		.ascii	"PDP context 1 defined\015\000"
+ 1659      636F6E74 
+ 1659      65787420 
+ 1659      31206465 
+ 1659      66696E65 
+ 1660              		.section	.rodata.NB_network_status.str1.1,"aMS",%progbits,1
+ 1661              	.LC27:
+ 1662 0000 2B434552 		.ascii	"+CEREG: 0,1\000"
+ 1662      45473A20 
+ 1662      302C3100 
+ 1663              	.LC28:
+ 1664 000c 43455245 		.ascii	"CEREG_OK\015\000"
+ 1664      475F4F4B 
+ 1664      0D00
+ 1665              		.section	.rodata.NB_read_msg.str1.1,"aMS",%progbits,1
+ 1666              	.LC36:
+ 1667 0000 6563686F 		.ascii	"echo\015\000"
+ 1667      0D00
+ 1668              		.section	.rodata.NB_reboot.str1.1,"aMS",%progbits,1
+ 1669              	.LC13:
+ 1670 0000 2B55464F 		.ascii	"+UFOTAS\000"
+ 1670      54415300 
+ 1671              	.LC14:
+ 1672 0008 00       		.ascii	"\000"
+ 1673              	.LC15:
+ 1674 0009 7265626F 		.ascii	"rebooted\015\000"
+ 1674      6F746564 
+ 1674      0D00
+ 1675              	.LC16:
+ 1676 0013 6572726F 		.ascii	"error\015\000"
+ 1676      720D00
+ 1677              	.LC17:
+ 1678 001a 74696D65 		.ascii	"timeout error\015\000"
+ 1678      6F757420 
+ 1678      6572726F 
+ 1678      720D00
+ 1679              		.section	.rodata.NB_received_data.str1.1,"aMS",%progbits,1
+ 1680              	.LC10:
+ 1681 0000 4E534F4E 		.ascii	"NSONMI\000"
+ 1681      4D4900
+ 1682              	.LC11:
+ 1683 0007 72656365 		.ascii	"received\015\000"
+ 1683      69766564 
+ 1683      0D00
+ 1684              	.LC12:
+ 1685 0011 4552524F 		.ascii	"ERROR\000"
+ 1685      5200
+ 1686              		.section	.rodata.NB_send_msg.str1.1,"aMS",%progbits,1
+ 1687              	.LC34:
+ 1688 0000 302C2231 		.ascii	"0,\"167.99.207.133\",1884,%d,\"%s\"\000"
+ 1688      36372E39 
+ 1688      392E3230 
+ 1688      372E3133 
+ 1688      33222C31 
+ 1689              	.LC35:
+ 1690 0020 73656E74 		.ascii	"sent\000"
  1690      00
- 1691              	.LC39:
- 1692 0016 7265696E 		.ascii	"reindeertracker\000"
- 1692      64656572 
- 1692      74726163 
- 1692      6B657200 
- 1693              		.text
- 1694              	.Letext0:
- 1695              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 1696              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 1697              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 1698              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 1699              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 1700              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 1701              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
- 1702              		.file 9 "../source/nbiot_func.h"
- 1703              		.file 10 "../source/at_func.h"
- 1704              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
- 1705              		.file 12 "../source/timing.h"
- 1706              		.file 13 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
- 1707              		.file 14 "<built-in>"
+ 1691              		.section	.rodata.NB_setPin.str1.1,"aMS",%progbits,1
+ 1692              	.LC18:
+ 1693 0000 2B4E5049 		.ascii	"+NPIN: \"OK\"\000"
+ 1693      4E3A2022 
+ 1693      4F4B2200 
+ 1694              	.LC19:
+ 1695 000c 61636B0D 		.ascii	"ack\015\000"
+ 1695      00
+ 1696              		.section	.rodata.NB_show_ip.str1.1,"aMS",%progbits,1
+ 1697              	.LC32:
+ 1698 0000 69702020 		.ascii	"ip  found\015\000"
+ 1698      666F756E 
+ 1698      640D00
+ 1699              		.section	.rodata.assembleMqtt.str1.1,"aMS",%progbits,1
+ 1700              	.LC0:
+ 1701 0000 7B0D0A0D 		.ascii	"{\015\012\015\012    \"serialnumber\":\"%s\",\015\012"
+ 1701      0A202020 
+ 1701      20227365 
+ 1701      7269616C 
+ 1701      6E756D62 
+ 1702 001f 00       		.ascii	"\000"
+ 1703              	.LC1:
+ 1704 0020 20202020 		.ascii	"    \"lat\":\"%s\",\015\012\000"
+ 1704      226C6174 
+ 1704      223A2225 
+ 1704      73222C0D 
+ 1704      0A00
+ 1705              	.LC2:
+ 1706 0032 20202020 		.ascii	"    \"long\":\"%s\",\015\012\000"
+ 1706      226C6F6E 
+ 1706      67223A22 
+ 1706      2573222C 
+ 1706      0D0A00
+ 1707              	.LC3:
+ 1708 0045 20202020 		.ascii	"    \"status\":\"%s\",\015\012\000"
+ 1708      22737461 
+ 1708      74757322 
+ 1708      3A222573 
+ 1708      222C0D0A 
+ 1709              	.LC4:
+ 1710 005a 20202020 		.ascii	"    \"battery\":\"%d\"\015\012\015\012}\000"
+ 1710      22626174 
+ 1710      74657279 
+ 1710      223A2225 
+ 1710      64220D0A 
+ 1711              	.LC5:
+ 1712 0072 25303278 		.ascii	"%02x\000"
+ 1712      00
+ 1713              	.LC6:
+ 1714 0077 7061636B 		.ascii	"packet length %d\015\012\000"
+ 1714      6574206C 
+ 1714      656E6774 
+ 1714      68202564 
+ 1714      0D0A00
+ 1715              		.section	.rodata.assemblePacket.str1.1,"aMS",%progbits,1
+ 1716              	.LC7:
+ 1717 0000 25730D0A 		.ascii	"%s\015\012\000"
+ 1717      00
+ 1718              	.LC8:
+ 1719 0005 6C656E67 		.ascii	"length of udp msg %d \015\012Printing UDP message i"
+ 1719      7468206F 
+ 1719      66207564 
+ 1719      70206D73 
+ 1719      67202564 
+ 1720 0032 6E206865 		.ascii	"n hex\015\012\000"
+ 1720      780D0A00 
+ 1721              	.LC9:
+ 1722 003a 0D00     		.ascii	"\015\000"
+ 1723              		.section	.rodata.postHeader,"a",%progbits
+ 1724              		.set	.LANCHOR6,. + 0
+ 1727              	postHeader:
+ 1728 0000 504F5354 		.ascii	"POST /Reindeertracker/API/data/index.php HTTP/1.1\015"
+ 1728      202F5265 
+ 1728      696E6465 
+ 1728      65727472 
+ 1728      61636B65 
+ 1729 0032 0A486F73 		.ascii	"\012Host: 168.235.64.81\015\012Content-Length: %d\015"
+ 1729      743A2031 
+ 1729      36382E32 
+ 1729      33352E36 
+ 1729      342E3831 
+ 1730 005b 0A436F6E 		.ascii	"\012Content-Type: application/json\015\012Cache-Con"
+ 1730      74656E74 
+ 1730      2D547970 
+ 1730      653A2061 
+ 1730      70706C69 
+ 1731 0085 74726F6C 		.ascii	"trol: no-cache\015\012\015\012\000"
+ 1731      3A206E6F 
+ 1731      2D636163 
+ 1731      68650D0A 
+ 1731      0D0A00
+ 1732              		.section	.rodata.str1.1,"aMS",%progbits,1
+ 1733              	.LC37:
+ 1734 0000 7265696E 		.ascii	"reindeer1234\000"
+ 1734      64656572 
+ 1734      31323334 
+ 1734      00
+ 1735              	.LC38:
+ 1736 000d 7265696E 		.ascii	"reindeer\000"
+ 1736      64656572 
+ 1736      00
+ 1737              	.LC39:
+ 1738 0016 7265696E 		.ascii	"reindeertracker\000"
+ 1738      64656572 
+ 1738      74726163 
+ 1738      6B657200 
+ 1739              		.text
+ 1740              	.Letext0:
+ 1741              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1742              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1743              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1744              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1745              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1746              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1747              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 1748              		.file 9 "../source/nbiot_func.h"
+ 1749              		.file 10 "../source/at_func.h"
+ 1750              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
+ 1751              		.file 12 "../source/timing.h"
+ 1752              		.file 13 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ 1753              		.file 14 "<built-in>"

@@ -1,0 +1,2857 @@
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"fsl_i2c_dma.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.I2C_CheckAndClearError,"ax",%progbits
+  16              		.align	1
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	I2C_CheckAndClearError:
+  23              	.LFB76:
+  24              		.file 1 "../drivers/fsl_i2c_dma.c"
+   1:../drivers/fsl_i2c_dma.c **** /*
+   2:../drivers/fsl_i2c_dma.c ****  * The Clear BSD License
+   3:../drivers/fsl_i2c_dma.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_i2c_dma.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_i2c_dma.c ****  * All rights reserved.
+   6:../drivers/fsl_i2c_dma.c ****  *
+   7:../drivers/fsl_i2c_dma.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_i2c_dma.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_i2c_dma.c ****  * that the following conditions are met:
+  10:../drivers/fsl_i2c_dma.c ****  *
+  11:../drivers/fsl_i2c_dma.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_i2c_dma.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_i2c_dma.c ****  *
+  14:../drivers/fsl_i2c_dma.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_i2c_dma.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_i2c_dma.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_i2c_dma.c ****  *
+  18:../drivers/fsl_i2c_dma.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_i2c_dma.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_i2c_dma.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_i2c_dma.c ****  *
+  22:../drivers/fsl_i2c_dma.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_i2c_dma.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_i2c_dma.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_i2c_dma.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_i2c_dma.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_i2c_dma.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_i2c_dma.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_i2c_dma.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_i2c_dma.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_i2c_dma.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_i2c_dma.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_i2c_dma.c ****  */
+  34:../drivers/fsl_i2c_dma.c **** 
+  35:../drivers/fsl_i2c_dma.c **** #include "fsl_i2c_dma.h"
+  36:../drivers/fsl_i2c_dma.c **** 
+  37:../drivers/fsl_i2c_dma.c **** /*******************************************************************************
+  38:../drivers/fsl_i2c_dma.c ****  * Definitions
+  39:../drivers/fsl_i2c_dma.c ****  ******************************************************************************/
+  40:../drivers/fsl_i2c_dma.c **** 
+  41:../drivers/fsl_i2c_dma.c **** /*<! @brief Structure definition for i2c_master_dma_handle_t. The structure is private. */
+  42:../drivers/fsl_i2c_dma.c **** typedef struct _i2c_master_dma_private_handle
+  43:../drivers/fsl_i2c_dma.c **** {
+  44:../drivers/fsl_i2c_dma.c ****     I2C_Type *base;
+  45:../drivers/fsl_i2c_dma.c ****     i2c_master_dma_handle_t *handle;
+  46:../drivers/fsl_i2c_dma.c **** } i2c_master_dma_private_handle_t;
+  47:../drivers/fsl_i2c_dma.c **** 
+  48:../drivers/fsl_i2c_dma.c **** /*! @brief i2c master DMA transfer state. */
+  49:../drivers/fsl_i2c_dma.c **** enum _i2c_master_dma_transfer_states
+  50:../drivers/fsl_i2c_dma.c **** {
+  51:../drivers/fsl_i2c_dma.c ****     kIdleState = 0x0U,         /*!< I2C bus idle. */
+  52:../drivers/fsl_i2c_dma.c ****     kTransferDataState = 0x1U, /*!< 7-bit address check state. */
+  53:../drivers/fsl_i2c_dma.c **** };
+  54:../drivers/fsl_i2c_dma.c **** 
+  55:../drivers/fsl_i2c_dma.c **** /*! @brief Common sets of flags used by the driver. */
+  56:../drivers/fsl_i2c_dma.c **** enum _i2c_flag_constants
+  57:../drivers/fsl_i2c_dma.c **** {
+  58:../drivers/fsl_i2c_dma.c **** /*! All flags which are cleared by the driver upon starting a transfer. */
+  59:../drivers/fsl_i2c_dma.c **** #if defined(FSL_FEATURE_I2C_HAS_START_STOP_DETECT) && FSL_FEATURE_I2C_HAS_START_STOP_DETECT
+  60:../drivers/fsl_i2c_dma.c ****     kClearFlags = kI2C_ArbitrationLostFlag | kI2C_IntPendingFlag | kI2C_StartDetectFlag | kI2C_Stop
+  61:../drivers/fsl_i2c_dma.c **** #elif defined(FSL_FEATURE_I2C_HAS_STOP_DETECT) && FSL_FEATURE_I2C_HAS_STOP_DETECT
+  62:../drivers/fsl_i2c_dma.c ****     kClearFlags = kI2C_ArbitrationLostFlag | kI2C_IntPendingFlag | kI2C_StopDetectFlag,
+  63:../drivers/fsl_i2c_dma.c **** #else
+  64:../drivers/fsl_i2c_dma.c ****     kClearFlags = kI2C_ArbitrationLostFlag | kI2C_IntPendingFlag,
+  65:../drivers/fsl_i2c_dma.c **** #endif
+  66:../drivers/fsl_i2c_dma.c **** };
+  67:../drivers/fsl_i2c_dma.c **** 
+  68:../drivers/fsl_i2c_dma.c **** /*******************************************************************************
+  69:../drivers/fsl_i2c_dma.c ****  * Prototypes
+  70:../drivers/fsl_i2c_dma.c ****  ******************************************************************************/
+  71:../drivers/fsl_i2c_dma.c **** 
+  72:../drivers/fsl_i2c_dma.c **** /*!
+  73:../drivers/fsl_i2c_dma.c ****  * @brief DMA callback for I2C master DMA driver.
+  74:../drivers/fsl_i2c_dma.c ****  *
+  75:../drivers/fsl_i2c_dma.c ****  * @param handle DMA handler for I2C master DMA driver
+  76:../drivers/fsl_i2c_dma.c ****  * @param userData user param passed to the callback function
+  77:../drivers/fsl_i2c_dma.c ****  */
+  78:../drivers/fsl_i2c_dma.c **** static void I2C_MasterTransferCallbackDMA(dma_handle_t *handle, void *userData);
+  79:../drivers/fsl_i2c_dma.c **** 
+  80:../drivers/fsl_i2c_dma.c **** /*!
+  81:../drivers/fsl_i2c_dma.c ****  * @brief Check and clear status operation.
+  82:../drivers/fsl_i2c_dma.c ****  *
+  83:../drivers/fsl_i2c_dma.c ****  * @param base I2C peripheral base address.
+  84:../drivers/fsl_i2c_dma.c ****  * @param status current i2c hardware status
+  85:../drivers/fsl_i2c_dma.c ****  * @retval kStatus_Success No error found.
+  86:../drivers/fsl_i2c_dma.c ****  * @retval kStatus_I2C_ArbitrationLost Transfer error, arbitration lost.
+  87:../drivers/fsl_i2c_dma.c ****  * @retval kStatus_I2C_Nak Received Nak error.
+  88:../drivers/fsl_i2c_dma.c ****  */
+  89:../drivers/fsl_i2c_dma.c **** static status_t I2C_CheckAndClearError(I2C_Type *base, uint32_t status);
+  90:../drivers/fsl_i2c_dma.c **** 
+  91:../drivers/fsl_i2c_dma.c **** /*!
+  92:../drivers/fsl_i2c_dma.c ****  * @brief DMA config for I2C master driver.
+  93:../drivers/fsl_i2c_dma.c ****  *
+  94:../drivers/fsl_i2c_dma.c ****  * @param base I2C peripheral base address.
+  95:../drivers/fsl_i2c_dma.c ****  * @param handle pointer to i2c_master_dma_handle_t structure which stores the transfer state.
+  96:../drivers/fsl_i2c_dma.c ****  */
+  97:../drivers/fsl_i2c_dma.c **** static void I2C_MasterTransferDMAConfig(I2C_Type *base, i2c_master_dma_handle_t *handle);
+  98:../drivers/fsl_i2c_dma.c **** 
+  99:../drivers/fsl_i2c_dma.c **** /*!
+ 100:../drivers/fsl_i2c_dma.c ****  * @brief Set up master transfer, send slave address and sub address(if any), wait until the
+ 101:../drivers/fsl_i2c_dma.c ****  * wait until address sent status return.
+ 102:../drivers/fsl_i2c_dma.c ****  *
+ 103:../drivers/fsl_i2c_dma.c ****  * @param base I2C peripheral base address.
+ 104:../drivers/fsl_i2c_dma.c ****  * @param handle pointer to i2c_master_dma_handle_t structure which stores the transfer state.
+ 105:../drivers/fsl_i2c_dma.c ****  * @param xfer pointer to i2c_master_transfer_t structure.
+ 106:../drivers/fsl_i2c_dma.c ****  */
+ 107:../drivers/fsl_i2c_dma.c **** static status_t I2C_InitTransferStateMachineDMA(I2C_Type *base,
+ 108:../drivers/fsl_i2c_dma.c ****                                                 i2c_master_dma_handle_t *handle,
+ 109:../drivers/fsl_i2c_dma.c ****                                                 i2c_master_transfer_t *xfer);
+ 110:../drivers/fsl_i2c_dma.c **** 
+ 111:../drivers/fsl_i2c_dma.c **** /*!
+ 112:../drivers/fsl_i2c_dma.c ****  * @brief Get the I2C instance from peripheral base address.
+ 113:../drivers/fsl_i2c_dma.c ****  *
+ 114:../drivers/fsl_i2c_dma.c ****  * @param base I2C peripheral base address.
+ 115:../drivers/fsl_i2c_dma.c ****  * @return I2C instance.
+ 116:../drivers/fsl_i2c_dma.c ****  */
+ 117:../drivers/fsl_i2c_dma.c **** extern uint32_t I2C_GetInstance(I2C_Type *base);
+ 118:../drivers/fsl_i2c_dma.c **** 
+ 119:../drivers/fsl_i2c_dma.c **** /*******************************************************************************
+ 120:../drivers/fsl_i2c_dma.c ****  * Variables
+ 121:../drivers/fsl_i2c_dma.c ****  ******************************************************************************/
+ 122:../drivers/fsl_i2c_dma.c **** 
+ 123:../drivers/fsl_i2c_dma.c **** /*<! Private handle only used for internally. */
+ 124:../drivers/fsl_i2c_dma.c **** static i2c_master_dma_private_handle_t s_dmaPrivateHandle[FSL_FEATURE_SOC_I2C_COUNT];
+ 125:../drivers/fsl_i2c_dma.c **** 
+ 126:../drivers/fsl_i2c_dma.c **** /*******************************************************************************
+ 127:../drivers/fsl_i2c_dma.c ****  * Codes
+ 128:../drivers/fsl_i2c_dma.c ****  ******************************************************************************/
+ 129:../drivers/fsl_i2c_dma.c **** 
+ 130:../drivers/fsl_i2c_dma.c **** static void I2C_MasterTransferCallbackDMA(dma_handle_t *handle, void *userData)
+ 131:../drivers/fsl_i2c_dma.c **** {
+ 132:../drivers/fsl_i2c_dma.c ****     i2c_master_dma_private_handle_t *i2cPrivateHandle = (i2c_master_dma_private_handle_t *)userData
+ 133:../drivers/fsl_i2c_dma.c ****     status_t result = kStatus_Success;
+ 134:../drivers/fsl_i2c_dma.c **** 
+ 135:../drivers/fsl_i2c_dma.c ****     /* Disable DMA. */
+ 136:../drivers/fsl_i2c_dma.c ****     I2C_EnableDMA(i2cPrivateHandle->base, false);
+ 137:../drivers/fsl_i2c_dma.c **** 
+ 138:../drivers/fsl_i2c_dma.c ****     /* Send stop if kI2C_TransferNoStop flag is not asserted. */
+ 139:../drivers/fsl_i2c_dma.c ****     if (!(i2cPrivateHandle->handle->transfer.flags & kI2C_TransferNoStopFlag))
+ 140:../drivers/fsl_i2c_dma.c ****     {
+ 141:../drivers/fsl_i2c_dma.c ****         if (i2cPrivateHandle->handle->transfer.direction == kI2C_Read)
+ 142:../drivers/fsl_i2c_dma.c ****         {
+ 143:../drivers/fsl_i2c_dma.c ****             /* Change to send NAK at the last byte. */
+ 144:../drivers/fsl_i2c_dma.c ****             i2cPrivateHandle->base->C1 |= I2C_C1_TXAK_MASK;
+ 145:../drivers/fsl_i2c_dma.c **** 
+ 146:../drivers/fsl_i2c_dma.c ****             /* Wait the last data to be received. */
+ 147:../drivers/fsl_i2c_dma.c ****             while (!(i2cPrivateHandle->base->S & kI2C_TransferCompleteFlag))
+ 148:../drivers/fsl_i2c_dma.c ****             {
+ 149:../drivers/fsl_i2c_dma.c ****             }
+ 150:../drivers/fsl_i2c_dma.c **** 
+ 151:../drivers/fsl_i2c_dma.c ****             /* Send stop signal. */
+ 152:../drivers/fsl_i2c_dma.c ****             result = I2C_MasterStop(i2cPrivateHandle->base);
+ 153:../drivers/fsl_i2c_dma.c **** 
+ 154:../drivers/fsl_i2c_dma.c ****             /* Read the last data byte. */
+ 155:../drivers/fsl_i2c_dma.c ****             *(i2cPrivateHandle->handle->transfer.data + i2cPrivateHandle->handle->transfer.dataSize
+ 156:../drivers/fsl_i2c_dma.c ****                 i2cPrivateHandle->base->D;
+ 157:../drivers/fsl_i2c_dma.c ****         }
+ 158:../drivers/fsl_i2c_dma.c ****         else
+ 159:../drivers/fsl_i2c_dma.c ****         {
+ 160:../drivers/fsl_i2c_dma.c ****             /* Wait the last data to be sent. */
+ 161:../drivers/fsl_i2c_dma.c ****             while (!(i2cPrivateHandle->base->S & kI2C_TransferCompleteFlag))
+ 162:../drivers/fsl_i2c_dma.c ****             {
+ 163:../drivers/fsl_i2c_dma.c ****             }
+ 164:../drivers/fsl_i2c_dma.c **** 
+ 165:../drivers/fsl_i2c_dma.c ****             /* Send stop signal. */
+ 166:../drivers/fsl_i2c_dma.c ****             result = I2C_MasterStop(i2cPrivateHandle->base);
+ 167:../drivers/fsl_i2c_dma.c ****         }
+ 168:../drivers/fsl_i2c_dma.c ****     }
+ 169:../drivers/fsl_i2c_dma.c ****     else
+ 170:../drivers/fsl_i2c_dma.c ****     {
+ 171:../drivers/fsl_i2c_dma.c ****         if (i2cPrivateHandle->handle->transfer.direction == kI2C_Read)
+ 172:../drivers/fsl_i2c_dma.c ****         {
+ 173:../drivers/fsl_i2c_dma.c ****             /* Change to send NAK at the last byte. */
+ 174:../drivers/fsl_i2c_dma.c ****             i2cPrivateHandle->base->C1 |= I2C_C1_TXAK_MASK;
+ 175:../drivers/fsl_i2c_dma.c **** 
+ 176:../drivers/fsl_i2c_dma.c ****             /* Wait the last data to be received. */
+ 177:../drivers/fsl_i2c_dma.c ****             while (!(i2cPrivateHandle->base->S & kI2C_TransferCompleteFlag))
+ 178:../drivers/fsl_i2c_dma.c ****             {
+ 179:../drivers/fsl_i2c_dma.c ****             }
+ 180:../drivers/fsl_i2c_dma.c **** 
+ 181:../drivers/fsl_i2c_dma.c ****             /* Change direction to send. */
+ 182:../drivers/fsl_i2c_dma.c ****             i2cPrivateHandle->base->C1 |= I2C_C1_TX_MASK;
+ 183:../drivers/fsl_i2c_dma.c **** 
+ 184:../drivers/fsl_i2c_dma.c ****             /* Read the last data byte. */
+ 185:../drivers/fsl_i2c_dma.c ****             *(i2cPrivateHandle->handle->transfer.data + i2cPrivateHandle->handle->transfer.dataSize
+ 186:../drivers/fsl_i2c_dma.c ****                 i2cPrivateHandle->base->D;
+ 187:../drivers/fsl_i2c_dma.c ****         }
+ 188:../drivers/fsl_i2c_dma.c ****     }
+ 189:../drivers/fsl_i2c_dma.c **** 
+ 190:../drivers/fsl_i2c_dma.c ****     i2cPrivateHandle->handle->state = kIdleState;
+ 191:../drivers/fsl_i2c_dma.c **** 
+ 192:../drivers/fsl_i2c_dma.c ****     if (i2cPrivateHandle->handle->completionCallback)
+ 193:../drivers/fsl_i2c_dma.c ****     {
+ 194:../drivers/fsl_i2c_dma.c ****         i2cPrivateHandle->handle->completionCallback(i2cPrivateHandle->base, i2cPrivateHandle->hand
+ 195:../drivers/fsl_i2c_dma.c ****                                                      i2cPrivateHandle->handle->userData);
+ 196:../drivers/fsl_i2c_dma.c ****     }
+ 197:../drivers/fsl_i2c_dma.c **** }
+ 198:../drivers/fsl_i2c_dma.c **** 
+ 199:../drivers/fsl_i2c_dma.c **** static status_t I2C_CheckAndClearError(I2C_Type *base, uint32_t status)
+ 200:../drivers/fsl_i2c_dma.c **** {
+  25              		.loc 1 200 0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 0
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  29              		@ link register save eliminated.
+  30              	.LVL0:
+ 201:../drivers/fsl_i2c_dma.c ****     status_t result = kStatus_Success;
+ 202:../drivers/fsl_i2c_dma.c **** 
+ 203:../drivers/fsl_i2c_dma.c ****     /* Check arbitration lost. */
+ 204:../drivers/fsl_i2c_dma.c ****     if (status & kI2C_ArbitrationLostFlag)
+  31              		.loc 1 204 0
+  32 0000 CB06     		lsls	r3, r1, #27
+  33 0002 03D4     		bmi	.L5
+ 205:../drivers/fsl_i2c_dma.c ****     {
+ 206:../drivers/fsl_i2c_dma.c ****         /* Clear arbitration lost flag. */
+ 207:../drivers/fsl_i2c_dma.c ****         base->S = kI2C_ArbitrationLostFlag;
+ 208:../drivers/fsl_i2c_dma.c ****         result = kStatus_I2C_ArbitrationLost;
+ 209:../drivers/fsl_i2c_dma.c ****     }
+ 210:../drivers/fsl_i2c_dma.c ****     /* Check NAK */
+ 211:../drivers/fsl_i2c_dma.c ****     else if (status & kI2C_ReceiveNakFlag)
+  34              		.loc 1 211 0
+  35 0004 CB07     		lsls	r3, r1, #31
+  36 0006 05D4     		bmi	.L4
+ 201:../drivers/fsl_i2c_dma.c ****     status_t result = kStatus_Success;
+  37              		.loc 1 201 0
+  38 0008 0020     		movs	r0, #0
+  39              	.LVL1:
+  40              	.L1:
+ 212:../drivers/fsl_i2c_dma.c ****     {
+ 213:../drivers/fsl_i2c_dma.c ****         result = kStatus_I2C_Nak;
+ 214:../drivers/fsl_i2c_dma.c ****     }
+ 215:../drivers/fsl_i2c_dma.c ****     else
+ 216:../drivers/fsl_i2c_dma.c ****     {
+ 217:../drivers/fsl_i2c_dma.c ****     }
+ 218:../drivers/fsl_i2c_dma.c **** 
+ 219:../drivers/fsl_i2c_dma.c ****     return result;
+ 220:../drivers/fsl_i2c_dma.c **** }
+  41              		.loc 1 220 0
+  42              		@ sp needed
+  43 000a 7047     		bx	lr
+  44              	.LVL2:
+  45              	.L5:
+ 207:../drivers/fsl_i2c_dma.c ****         result = kStatus_I2C_ArbitrationLost;
+  46              		.loc 1 207 0
+  47 000c 1023     		movs	r3, #16
+  48 000e C370     		strb	r3, [r0, #3]
+  49              	.LVL3:
+ 208:../drivers/fsl_i2c_dma.c ****     }
+  50              		.loc 1 208 0
+  51 0010 0148     		ldr	r0, .L6
+  52              	.LVL4:
+  53 0012 FAE7     		b	.L1
+  54              	.LVL5:
+  55              	.L4:
+ 213:../drivers/fsl_i2c_dma.c ****     }
+  56              		.loc 1 213 0
+  57 0014 0148     		ldr	r0, .L6+4
+  58              	.LVL6:
+ 219:../drivers/fsl_i2c_dma.c **** }
+  59              		.loc 1 219 0
+  60 0016 F8E7     		b	.L1
+  61              	.L7:
+  62              		.align	2
+  63              	.L6:
+  64 0018 4F040000 		.word	1103
+  65 001c 4E040000 		.word	1102
+  66              		.cfi_endproc
+  67              	.LFE76:
+  69              		.section	.text.I2C_MasterTransferCallbackDMA,"ax",%progbits
+  70              		.align	1
+  71              		.syntax unified
+  72              		.code	16
+  73              		.thumb_func
+  74              		.fpu softvfp
+  76              	I2C_MasterTransferCallbackDMA:
+  77              	.LFB75:
+ 131:../drivers/fsl_i2c_dma.c ****     i2c_master_dma_private_handle_t *i2cPrivateHandle = (i2c_master_dma_private_handle_t *)userData
+  78              		.loc 1 131 0
+  79              		.cfi_startproc
+  80              		@ args = 0, pretend = 0, frame = 0
+  81              		@ frame_needed = 0, uses_anonymous_args = 0
+  82              	.LVL7:
+  83 0000 70B5     		push	{r4, r5, r6, lr}
+  84              		.cfi_def_cfa_offset 16
+  85              		.cfi_offset 4, -16
+  86              		.cfi_offset 5, -12
+  87              		.cfi_offset 6, -8
+  88              		.cfi_offset 14, -4
+  89 0002 0C00     		movs	r4, r1
+  90              	.LVL8:
+ 136:../drivers/fsl_i2c_dma.c **** 
+  91              		.loc 1 136 0
+  92 0004 0A68     		ldr	r2, [r1]
+  93              	.LVL9:
+  94              	.LBB22:
+  95              	.LBB23:
+  96              		.file 2 "../drivers/fsl_i2c.h"
+   1:../drivers/fsl_i2c.h **** /*
+   2:../drivers/fsl_i2c.h ****  * The Clear BSD License
+   3:../drivers/fsl_i2c.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_i2c.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_i2c.h ****  * All rights reserved.
+   6:../drivers/fsl_i2c.h ****  *
+   7:../drivers/fsl_i2c.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_i2c.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_i2c.h ****  * that the following conditions are met:
+  10:../drivers/fsl_i2c.h ****  *
+  11:../drivers/fsl_i2c.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_i2c.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_i2c.h ****  *
+  14:../drivers/fsl_i2c.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_i2c.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_i2c.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_i2c.h ****  *
+  18:../drivers/fsl_i2c.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_i2c.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_i2c.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_i2c.h ****  *
+  22:../drivers/fsl_i2c.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_i2c.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_i2c.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_i2c.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_i2c.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_i2c.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_i2c.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_i2c.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_i2c.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_i2c.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_i2c.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_i2c.h ****  */
+  34:../drivers/fsl_i2c.h **** #ifndef _FSL_I2C_H_
+  35:../drivers/fsl_i2c.h **** #define _FSL_I2C_H_
+  36:../drivers/fsl_i2c.h **** 
+  37:../drivers/fsl_i2c.h **** #include "fsl_common.h"
+  38:../drivers/fsl_i2c.h **** 
+  39:../drivers/fsl_i2c.h **** /*!
+  40:../drivers/fsl_i2c.h ****  * @addtogroup i2c_driver
+  41:../drivers/fsl_i2c.h ****  * @{
+  42:../drivers/fsl_i2c.h ****  */
+  43:../drivers/fsl_i2c.h **** 
+  44:../drivers/fsl_i2c.h **** /*******************************************************************************
+  45:../drivers/fsl_i2c.h ****  * Definitions
+  46:../drivers/fsl_i2c.h ****  ******************************************************************************/
+  47:../drivers/fsl_i2c.h **** 
+  48:../drivers/fsl_i2c.h **** /*! @name Driver version */
+  49:../drivers/fsl_i2c.h **** /*@{*/
+  50:../drivers/fsl_i2c.h **** /*! @brief I2C driver version 2.0.5. */
+  51:../drivers/fsl_i2c.h **** #define FSL_I2C_DRIVER_VERSION (MAKE_VERSION(2, 0, 5))
+  52:../drivers/fsl_i2c.h **** /*@}*/
+  53:../drivers/fsl_i2c.h **** 
+  54:../drivers/fsl_i2c.h **** /*! @brief Timeout times for waiting flag. */
+  55:../drivers/fsl_i2c.h **** #ifndef I2C_WAIT_TIMEOUT
+  56:../drivers/fsl_i2c.h **** #define I2C_WAIT_TIMEOUT 0U /* Define to zero means keep waiting until the flag is assert/deassert.
+  57:../drivers/fsl_i2c.h **** #endif
+  58:../drivers/fsl_i2c.h **** 
+  59:../drivers/fsl_i2c.h **** #if (defined(FSL_FEATURE_I2C_HAS_START_STOP_DETECT) && FSL_FEATURE_I2C_HAS_START_STOP_DETECT || \
+  60:../drivers/fsl_i2c.h ****      defined(FSL_FEATURE_I2C_HAS_STOP_DETECT) && FSL_FEATURE_I2C_HAS_STOP_DETECT)
+  61:../drivers/fsl_i2c.h **** #define I2C_HAS_STOP_DETECT
+  62:../drivers/fsl_i2c.h **** #endif /* FSL_FEATURE_I2C_HAS_START_STOP_DETECT / FSL_FEATURE_I2C_HAS_STOP_DETECT */
+  63:../drivers/fsl_i2c.h **** 
+  64:../drivers/fsl_i2c.h **** /*! @brief  I2C status return codes. */
+  65:../drivers/fsl_i2c.h **** enum _i2c_status
+  66:../drivers/fsl_i2c.h **** {
+  67:../drivers/fsl_i2c.h ****     kStatus_I2C_Busy = MAKE_STATUS(kStatusGroup_I2C, 0),            /*!< I2C is busy with current t
+  68:../drivers/fsl_i2c.h ****     kStatus_I2C_Idle = MAKE_STATUS(kStatusGroup_I2C, 1),            /*!< Bus is Idle. */
+  69:../drivers/fsl_i2c.h ****     kStatus_I2C_Nak = MAKE_STATUS(kStatusGroup_I2C, 2),             /*!< NAK received during transf
+  70:../drivers/fsl_i2c.h ****     kStatus_I2C_ArbitrationLost = MAKE_STATUS(kStatusGroup_I2C, 3), /*!< Arbitration lost during tr
+  71:../drivers/fsl_i2c.h ****     kStatus_I2C_Timeout = MAKE_STATUS(kStatusGroup_I2C, 4),         /*!< Timeout poling status flag
+  72:../drivers/fsl_i2c.h ****     kStatus_I2C_Addr_Nak = MAKE_STATUS(kStatusGroup_I2C, 5),        /*!< NAK received during the ad
+  73:../drivers/fsl_i2c.h **** };
+  74:../drivers/fsl_i2c.h **** 
+  75:../drivers/fsl_i2c.h **** /*!
+  76:../drivers/fsl_i2c.h ****  * @brief I2C peripheral flags
+  77:../drivers/fsl_i2c.h ****  *
+  78:../drivers/fsl_i2c.h ****  * The following status register flags can be cleared:
+  79:../drivers/fsl_i2c.h ****  * - #kI2C_ArbitrationLostFlag
+  80:../drivers/fsl_i2c.h ****  * - #kI2C_IntPendingFlag
+  81:../drivers/fsl_i2c.h ****  * - #kI2C_StartDetectFlag
+  82:../drivers/fsl_i2c.h ****  * - #kI2C_StopDetectFlag
+  83:../drivers/fsl_i2c.h ****  *
+  84:../drivers/fsl_i2c.h ****  * @note These enumerations are meant to be OR'd together to form a bit mask.
+  85:../drivers/fsl_i2c.h ****  *
+  86:../drivers/fsl_i2c.h ****  */
+  87:../drivers/fsl_i2c.h **** enum _i2c_flags
+  88:../drivers/fsl_i2c.h **** {
+  89:../drivers/fsl_i2c.h ****     kI2C_ReceiveNakFlag = I2C_S_RXAK_MASK,       /*!< I2C receive NAK flag. */
+  90:../drivers/fsl_i2c.h ****     kI2C_IntPendingFlag = I2C_S_IICIF_MASK,      /*!< I2C interrupt pending flag. */
+  91:../drivers/fsl_i2c.h ****     kI2C_TransferDirectionFlag = I2C_S_SRW_MASK, /*!< I2C transfer direction flag. */
+  92:../drivers/fsl_i2c.h ****     kI2C_RangeAddressMatchFlag = I2C_S_RAM_MASK, /*!< I2C range address match flag. */
+  93:../drivers/fsl_i2c.h ****     kI2C_ArbitrationLostFlag = I2C_S_ARBL_MASK,  /*!< I2C arbitration lost flag. */
+  94:../drivers/fsl_i2c.h ****     kI2C_BusBusyFlag = I2C_S_BUSY_MASK,          /*!< I2C bus busy flag. */
+  95:../drivers/fsl_i2c.h ****     kI2C_AddressMatchFlag = I2C_S_IAAS_MASK,     /*!< I2C address match flag. */
+  96:../drivers/fsl_i2c.h ****     kI2C_TransferCompleteFlag = I2C_S_TCF_MASK,  /*!< I2C transfer complete flag. */
+  97:../drivers/fsl_i2c.h **** #ifdef I2C_HAS_STOP_DETECT
+  98:../drivers/fsl_i2c.h ****     kI2C_StopDetectFlag = I2C_FLT_STOPF_MASK << 8, /*!< I2C stop detect flag. */
+  99:../drivers/fsl_i2c.h **** #endif /* FSL_FEATURE_I2C_HAS_START_STOP_DETECT / FSL_FEATURE_I2C_HAS_STOP_DETECT */
+ 100:../drivers/fsl_i2c.h **** 
+ 101:../drivers/fsl_i2c.h **** #if defined(FSL_FEATURE_I2C_HAS_START_STOP_DETECT) && FSL_FEATURE_I2C_HAS_START_STOP_DETECT
+ 102:../drivers/fsl_i2c.h ****     kI2C_StartDetectFlag = I2C_FLT_STARTF_MASK << 8, /*!< I2C start detect flag. */
+ 103:../drivers/fsl_i2c.h **** #endif                                               /* FSL_FEATURE_I2C_HAS_START_STOP_DETECT */
+ 104:../drivers/fsl_i2c.h **** };
+ 105:../drivers/fsl_i2c.h **** 
+ 106:../drivers/fsl_i2c.h **** /*! @brief I2C feature interrupt source. */
+ 107:../drivers/fsl_i2c.h **** enum _i2c_interrupt_enable
+ 108:../drivers/fsl_i2c.h **** {
+ 109:../drivers/fsl_i2c.h ****     kI2C_GlobalInterruptEnable = I2C_C1_IICIE_MASK, /*!< I2C global interrupt. */
+ 110:../drivers/fsl_i2c.h **** 
+ 111:../drivers/fsl_i2c.h **** #if defined(FSL_FEATURE_I2C_HAS_STOP_DETECT) && FSL_FEATURE_I2C_HAS_STOP_DETECT
+ 112:../drivers/fsl_i2c.h ****     kI2C_StopDetectInterruptEnable = I2C_FLT_STOPIE_MASK, /*!< I2C stop detect interrupt. */
+ 113:../drivers/fsl_i2c.h **** #endif                                                    /* FSL_FEATURE_I2C_HAS_STOP_DETECT */
+ 114:../drivers/fsl_i2c.h **** 
+ 115:../drivers/fsl_i2c.h **** #if defined(FSL_FEATURE_I2C_HAS_START_STOP_DETECT) && FSL_FEATURE_I2C_HAS_START_STOP_DETECT
+ 116:../drivers/fsl_i2c.h ****     kI2C_StartStopDetectInterruptEnable = I2C_FLT_SSIE_MASK, /*!< I2C start&stop detect interrupt. 
+ 117:../drivers/fsl_i2c.h **** #endif                                                       /* FSL_FEATURE_I2C_HAS_START_STOP_DETE
+ 118:../drivers/fsl_i2c.h **** };
+ 119:../drivers/fsl_i2c.h **** 
+ 120:../drivers/fsl_i2c.h **** /*! @brief The direction of master and slave transfers. */
+ 121:../drivers/fsl_i2c.h **** typedef enum _i2c_direction
+ 122:../drivers/fsl_i2c.h **** {
+ 123:../drivers/fsl_i2c.h ****     kI2C_Write = 0x0U, /*!< Master transmits to the slave. */
+ 124:../drivers/fsl_i2c.h ****     kI2C_Read = 0x1U,  /*!< Master receives from the slave. */
+ 125:../drivers/fsl_i2c.h **** } i2c_direction_t;
+ 126:../drivers/fsl_i2c.h **** 
+ 127:../drivers/fsl_i2c.h **** /*! @brief Addressing mode. */
+ 128:../drivers/fsl_i2c.h **** typedef enum _i2c_slave_address_mode
+ 129:../drivers/fsl_i2c.h **** {
+ 130:../drivers/fsl_i2c.h ****     kI2C_Address7bit = 0x0U, /*!< 7-bit addressing mode. */
+ 131:../drivers/fsl_i2c.h ****     kI2C_RangeMatch = 0X2U,  /*!< Range address match addressing mode. */
+ 132:../drivers/fsl_i2c.h **** } i2c_slave_address_mode_t;
+ 133:../drivers/fsl_i2c.h **** 
+ 134:../drivers/fsl_i2c.h **** /*! @brief I2C transfer control flag. */
+ 135:../drivers/fsl_i2c.h **** enum _i2c_master_transfer_flags
+ 136:../drivers/fsl_i2c.h **** {
+ 137:../drivers/fsl_i2c.h ****     kI2C_TransferDefaultFlag = 0x0U,       /*!< A transfer starts with a start signal, stops with a
+ 138:../drivers/fsl_i2c.h ****     kI2C_TransferNoStartFlag = 0x1U,       /*!< A transfer starts without a start signal, only supp
+ 139:../drivers/fsl_i2c.h ****                                         write+read with no start flag, do not support read only wit
+ 140:../drivers/fsl_i2c.h ****     kI2C_TransferRepeatedStartFlag = 0x2U, /*!< A transfer starts with a repeated start signal. */
+ 141:../drivers/fsl_i2c.h ****     kI2C_TransferNoStopFlag = 0x4U,        /*!< A transfer ends without a stop signal. */
+ 142:../drivers/fsl_i2c.h **** };
+ 143:../drivers/fsl_i2c.h **** 
+ 144:../drivers/fsl_i2c.h **** /*!
+ 145:../drivers/fsl_i2c.h ****  * @brief Set of events sent to the callback for nonblocking slave transfers.
+ 146:../drivers/fsl_i2c.h ****  *
+ 147:../drivers/fsl_i2c.h ****  * These event enumerations are used for two related purposes. First, a bit mask created by OR'ing 
+ 148:../drivers/fsl_i2c.h ****  * events is passed to I2C_SlaveTransferNonBlocking() to specify which events to enable.
+ 149:../drivers/fsl_i2c.h ****  * Then, when the slave callback is invoked, it is passed the current event through its @a transfer
+ 150:../drivers/fsl_i2c.h ****  * parameter.
+ 151:../drivers/fsl_i2c.h ****  *
+ 152:../drivers/fsl_i2c.h ****  * @note These enumerations are meant to be OR'd together to form a bit mask of events.
+ 153:../drivers/fsl_i2c.h ****  */
+ 154:../drivers/fsl_i2c.h **** typedef enum _i2c_slave_transfer_event
+ 155:../drivers/fsl_i2c.h **** {
+ 156:../drivers/fsl_i2c.h ****     kI2C_SlaveAddressMatchEvent = 0x01U, /*!< Received the slave address after a start or repeated 
+ 157:../drivers/fsl_i2c.h ****     kI2C_SlaveTransmitEvent = 0x02U,     /*!< A callback is requested to provide data to transmit
+ 158:../drivers/fsl_i2c.h ****                                                 (slave-transmitter role). */
+ 159:../drivers/fsl_i2c.h ****     kI2C_SlaveReceiveEvent = 0x04U,      /*!< A callback is requested to provide a buffer in which 
+ 160:../drivers/fsl_i2c.h ****                                                  data (slave-receiver role). */
+ 161:../drivers/fsl_i2c.h ****     kI2C_SlaveTransmitAckEvent = 0x08U,  /*!< A callback needs to either transmit an ACK or NACK. *
+ 162:../drivers/fsl_i2c.h **** #if defined(FSL_FEATURE_I2C_HAS_START_STOP_DETECT) && FSL_FEATURE_I2C_HAS_START_STOP_DETECT
+ 163:../drivers/fsl_i2c.h ****     kI2C_SlaveStartEvent = 0x10U, /*!< A start/repeated start was detected. */
+ 164:../drivers/fsl_i2c.h **** #endif
+ 165:../drivers/fsl_i2c.h ****     kI2C_SlaveCompletionEvent = 0x20U,  /*!< A stop was detected or finished transfer, completing t
+ 166:../drivers/fsl_i2c.h ****     kI2C_SlaveGenaralcallEvent = 0x40U, /*!< Received the general call address after a start or rep
+ 167:../drivers/fsl_i2c.h **** 
+ 168:../drivers/fsl_i2c.h ****     /*! A bit mask of all available events. */
+ 169:../drivers/fsl_i2c.h ****     kI2C_SlaveAllEvents = kI2C_SlaveAddressMatchEvent | kI2C_SlaveTransmitEvent | kI2C_SlaveReceive
+ 170:../drivers/fsl_i2c.h **** #if defined(FSL_FEATURE_I2C_HAS_START_STOP_DETECT) && FSL_FEATURE_I2C_HAS_START_STOP_DETECT
+ 171:../drivers/fsl_i2c.h ****                           kI2C_SlaveStartEvent |
+ 172:../drivers/fsl_i2c.h **** #endif
+ 173:../drivers/fsl_i2c.h ****                           kI2C_SlaveCompletionEvent | kI2C_SlaveGenaralcallEvent,
+ 174:../drivers/fsl_i2c.h **** } i2c_slave_transfer_event_t;
+ 175:../drivers/fsl_i2c.h **** 
+ 176:../drivers/fsl_i2c.h **** /*! @brief I2C master user configuration. */
+ 177:../drivers/fsl_i2c.h **** typedef struct _i2c_master_config
+ 178:../drivers/fsl_i2c.h **** {
+ 179:../drivers/fsl_i2c.h ****     bool enableMaster; /*!< Enables the I2C peripheral at initialization time. */
+ 180:../drivers/fsl_i2c.h **** #if defined(FSL_FEATURE_I2C_HAS_STOP_HOLD_OFF) && FSL_FEATURE_I2C_HAS_STOP_HOLD_OFF
+ 181:../drivers/fsl_i2c.h ****     bool enableStopHold; /*!< Controls the stop hold enable. */
+ 182:../drivers/fsl_i2c.h **** #endif
+ 183:../drivers/fsl_i2c.h **** #if defined(FSL_FEATURE_I2C_HAS_DOUBLE_BUFFER_ENABLE) && FSL_FEATURE_I2C_HAS_DOUBLE_BUFFER_ENABLE
+ 184:../drivers/fsl_i2c.h ****     bool enableDoubleBuffering; /*!< Controls double buffer enable; notice that
+ 185:../drivers/fsl_i2c.h ****                                      enabling the double buffer disables the clock stretch. */
+ 186:../drivers/fsl_i2c.h **** #endif
+ 187:../drivers/fsl_i2c.h ****     uint32_t baudRate_Bps;     /*!< Baud rate configuration of I2C peripheral. */
+ 188:../drivers/fsl_i2c.h ****     uint8_t glitchFilterWidth; /*!< Controls the width of the glitch. */
+ 189:../drivers/fsl_i2c.h **** } i2c_master_config_t;
+ 190:../drivers/fsl_i2c.h **** 
+ 191:../drivers/fsl_i2c.h **** /*! @brief I2C slave user configuration. */
+ 192:../drivers/fsl_i2c.h **** typedef struct _i2c_slave_config
+ 193:../drivers/fsl_i2c.h **** {
+ 194:../drivers/fsl_i2c.h ****     bool enableSlave;       /*!< Enables the I2C peripheral at initialization time. */
+ 195:../drivers/fsl_i2c.h ****     bool enableGeneralCall; /*!< Enables the general call addressing mode. */
+ 196:../drivers/fsl_i2c.h ****     bool enableWakeUp;      /*!< Enables/disables waking up MCU from low-power mode. */
+ 197:../drivers/fsl_i2c.h **** #if defined(FSL_FEATURE_I2C_HAS_DOUBLE_BUFFER_ENABLE) && FSL_FEATURE_I2C_HAS_DOUBLE_BUFFER_ENABLE
+ 198:../drivers/fsl_i2c.h ****     bool enableDoubleBuffering; /*!< Controls a double buffer enable; notice that
+ 199:../drivers/fsl_i2c.h ****                                      enabling the double buffer disables the clock stretch. */
+ 200:../drivers/fsl_i2c.h **** #endif
+ 201:../drivers/fsl_i2c.h ****     bool enableBaudRateCtl; /*!< Enables/disables independent slave baud rate on SCL in very fast I
+ 202:../drivers/fsl_i2c.h ****     uint16_t slaveAddress;  /*!< A slave address configuration. */
+ 203:../drivers/fsl_i2c.h ****     uint16_t upperAddress;  /*!< A maximum boundary slave address used in a range matching mode. */
+ 204:../drivers/fsl_i2c.h ****     i2c_slave_address_mode_t
+ 205:../drivers/fsl_i2c.h ****         addressingMode;          /*!< An addressing mode configuration of i2c_slave_address_mode_co
+ 206:../drivers/fsl_i2c.h ****     uint32_t sclStopHoldTime_ns; /*!< the delay from the rising edge of SCL (I2C clock) to the risi
+ 207:../drivers/fsl_i2c.h ****                                     data) while SCL is high (stop condition), SDA hold time and SCL
+ 208:../drivers/fsl_i2c.h ****                                     are also configured according to the SCL stop hold time. */
+ 209:../drivers/fsl_i2c.h **** } i2c_slave_config_t;
+ 210:../drivers/fsl_i2c.h **** 
+ 211:../drivers/fsl_i2c.h **** /*! @brief I2C master handle typedef. */
+ 212:../drivers/fsl_i2c.h **** typedef struct _i2c_master_handle i2c_master_handle_t;
+ 213:../drivers/fsl_i2c.h **** 
+ 214:../drivers/fsl_i2c.h **** /*! @brief I2C master transfer callback typedef. */
+ 215:../drivers/fsl_i2c.h **** typedef void (*i2c_master_transfer_callback_t)(I2C_Type *base,
+ 216:../drivers/fsl_i2c.h ****                                                i2c_master_handle_t *handle,
+ 217:../drivers/fsl_i2c.h ****                                                status_t status,
+ 218:../drivers/fsl_i2c.h ****                                                void *userData);
+ 219:../drivers/fsl_i2c.h **** 
+ 220:../drivers/fsl_i2c.h **** /*! @brief I2C slave handle typedef. */
+ 221:../drivers/fsl_i2c.h **** typedef struct _i2c_slave_handle i2c_slave_handle_t;
+ 222:../drivers/fsl_i2c.h **** 
+ 223:../drivers/fsl_i2c.h **** /*! @brief I2C master transfer structure. */
+ 224:../drivers/fsl_i2c.h **** typedef struct _i2c_master_transfer
+ 225:../drivers/fsl_i2c.h **** {
+ 226:../drivers/fsl_i2c.h ****     uint32_t flags;            /*!< A transfer flag which controls the transfer. */
+ 227:../drivers/fsl_i2c.h ****     uint8_t slaveAddress;      /*!< 7-bit slave address. */
+ 228:../drivers/fsl_i2c.h ****     i2c_direction_t direction; /*!< A transfer direction, read or write. */
+ 229:../drivers/fsl_i2c.h ****     uint32_t subaddress;       /*!< A sub address. Transferred MSB first. */
+ 230:../drivers/fsl_i2c.h ****     uint8_t subaddressSize;    /*!< A size of the command buffer. */
+ 231:../drivers/fsl_i2c.h ****     uint8_t *volatile data;    /*!< A transfer buffer. */
+ 232:../drivers/fsl_i2c.h ****     volatile size_t dataSize;  /*!< A transfer size. */
+ 233:../drivers/fsl_i2c.h **** } i2c_master_transfer_t;
+ 234:../drivers/fsl_i2c.h **** 
+ 235:../drivers/fsl_i2c.h **** /*! @brief I2C master handle structure. */
+ 236:../drivers/fsl_i2c.h **** struct _i2c_master_handle
+ 237:../drivers/fsl_i2c.h **** {
+ 238:../drivers/fsl_i2c.h ****     i2c_master_transfer_t transfer;                    /*!< I2C master transfer copy. */
+ 239:../drivers/fsl_i2c.h ****     size_t transferSize;                               /*!< Total bytes to be transferred. */
+ 240:../drivers/fsl_i2c.h ****     uint8_t state;                                     /*!< A transfer state maintained during tran
+ 241:../drivers/fsl_i2c.h ****     i2c_master_transfer_callback_t completionCallback; /*!< A callback function called when the tra
+ 242:../drivers/fsl_i2c.h ****     void *userData;                                    /*!< A callback parameter passed to the call
+ 243:../drivers/fsl_i2c.h **** };
+ 244:../drivers/fsl_i2c.h **** 
+ 245:../drivers/fsl_i2c.h **** /*! @brief I2C slave transfer structure. */
+ 246:../drivers/fsl_i2c.h **** typedef struct _i2c_slave_transfer
+ 247:../drivers/fsl_i2c.h **** {
+ 248:../drivers/fsl_i2c.h ****     i2c_slave_transfer_event_t event; /*!< A reason that the callback is invoked. */
+ 249:../drivers/fsl_i2c.h ****     uint8_t *volatile data;           /*!< A transfer buffer. */
+ 250:../drivers/fsl_i2c.h ****     volatile size_t dataSize;         /*!< A transfer size. */
+ 251:../drivers/fsl_i2c.h ****     status_t completionStatus;        /*!< Success or error code describing how the transfer comple
+ 252:../drivers/fsl_i2c.h ****                                          #kI2C_SlaveCompletionEvent. */
+ 253:../drivers/fsl_i2c.h ****     size_t transferredCount; /*!< A number of bytes actually transferred since the start or since t
+ 254:../drivers/fsl_i2c.h ****                                 start. */
+ 255:../drivers/fsl_i2c.h **** } i2c_slave_transfer_t;
+ 256:../drivers/fsl_i2c.h **** 
+ 257:../drivers/fsl_i2c.h **** /*! @brief I2C slave transfer callback typedef. */
+ 258:../drivers/fsl_i2c.h **** typedef void (*i2c_slave_transfer_callback_t)(I2C_Type *base, i2c_slave_transfer_t *xfer, void *use
+ 259:../drivers/fsl_i2c.h **** 
+ 260:../drivers/fsl_i2c.h **** /*! @brief I2C slave handle structure. */
+ 261:../drivers/fsl_i2c.h **** struct _i2c_slave_handle
+ 262:../drivers/fsl_i2c.h **** {
+ 263:../drivers/fsl_i2c.h ****     volatile bool isBusy;                   /*!< Indicates whether a transfer is busy. */
+ 264:../drivers/fsl_i2c.h ****     i2c_slave_transfer_t transfer;          /*!< I2C slave transfer copy. */
+ 265:../drivers/fsl_i2c.h ****     uint32_t eventMask;                     /*!< A mask of enabled events. */
+ 266:../drivers/fsl_i2c.h ****     i2c_slave_transfer_callback_t callback; /*!< A callback function called at the transfer event. 
+ 267:../drivers/fsl_i2c.h ****     void *userData;                         /*!< A callback parameter passed to the callback. */
+ 268:../drivers/fsl_i2c.h **** };
+ 269:../drivers/fsl_i2c.h **** 
+ 270:../drivers/fsl_i2c.h **** /*******************************************************************************
+ 271:../drivers/fsl_i2c.h ****  * API
+ 272:../drivers/fsl_i2c.h ****  ******************************************************************************/
+ 273:../drivers/fsl_i2c.h **** 
+ 274:../drivers/fsl_i2c.h **** #if defined(__cplusplus)
+ 275:../drivers/fsl_i2c.h **** extern "C" {
+ 276:../drivers/fsl_i2c.h **** #endif /*_cplusplus. */
+ 277:../drivers/fsl_i2c.h **** 
+ 278:../drivers/fsl_i2c.h **** /*!
+ 279:../drivers/fsl_i2c.h ****  * @name Initialization and deinitialization
+ 280:../drivers/fsl_i2c.h ****  * @{
+ 281:../drivers/fsl_i2c.h ****  */
+ 282:../drivers/fsl_i2c.h **** 
+ 283:../drivers/fsl_i2c.h **** /*!
+ 284:../drivers/fsl_i2c.h ****  * @brief Initializes the I2C peripheral. Call this API to ungate the I2C clock
+ 285:../drivers/fsl_i2c.h ****  * and configure the I2C with master configuration.
+ 286:../drivers/fsl_i2c.h ****  *
+ 287:../drivers/fsl_i2c.h ****  * @note This API should be called at the beginning of the application.
+ 288:../drivers/fsl_i2c.h ****  * Otherwise, any operation to the I2C module can cause a hard fault
+ 289:../drivers/fsl_i2c.h ****  * because the clock is not enabled. The configuration structure can be custom filled
+ 290:../drivers/fsl_i2c.h ****  * or it can be set with default values by using the I2C_MasterGetDefaultConfig().
+ 291:../drivers/fsl_i2c.h ****  * After calling this API, the master is ready to transfer.
+ 292:../drivers/fsl_i2c.h ****  * This is an example.
+ 293:../drivers/fsl_i2c.h ****  * @code
+ 294:../drivers/fsl_i2c.h ****  * i2c_master_config_t config = {
+ 295:../drivers/fsl_i2c.h ****  * .enableMaster = true,
+ 296:../drivers/fsl_i2c.h ****  * .enableStopHold = false,
+ 297:../drivers/fsl_i2c.h ****  * .highDrive = false,
+ 298:../drivers/fsl_i2c.h ****  * .baudRate_Bps = 100000,
+ 299:../drivers/fsl_i2c.h ****  * .glitchFilterWidth = 0
+ 300:../drivers/fsl_i2c.h ****  * };
+ 301:../drivers/fsl_i2c.h ****  * I2C_MasterInit(I2C0, &config, 12000000U);
+ 302:../drivers/fsl_i2c.h ****  * @endcode
+ 303:../drivers/fsl_i2c.h ****  *
+ 304:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 305:../drivers/fsl_i2c.h ****  * @param masterConfig A pointer to the master configuration structure
+ 306:../drivers/fsl_i2c.h ****  * @param srcClock_Hz I2C peripheral clock frequency in Hz
+ 307:../drivers/fsl_i2c.h ****  */
+ 308:../drivers/fsl_i2c.h **** void I2C_MasterInit(I2C_Type *base, const i2c_master_config_t *masterConfig, uint32_t srcClock_Hz);
+ 309:../drivers/fsl_i2c.h **** 
+ 310:../drivers/fsl_i2c.h **** /*!
+ 311:../drivers/fsl_i2c.h ****  * @brief Initializes the I2C peripheral. Call this API to ungate the I2C clock
+ 312:../drivers/fsl_i2c.h ****  * and initialize the I2C with the slave configuration.
+ 313:../drivers/fsl_i2c.h ****  *
+ 314:../drivers/fsl_i2c.h ****  * @note This API should be called at the beginning of the application.
+ 315:../drivers/fsl_i2c.h ****  * Otherwise, any operation to the I2C module can cause a hard fault
+ 316:../drivers/fsl_i2c.h ****  * because the clock is not enabled. The configuration structure can partly be set
+ 317:../drivers/fsl_i2c.h ****  * with default values by I2C_SlaveGetDefaultConfig() or it can be custom filled by the user.
+ 318:../drivers/fsl_i2c.h ****  * This is an example.
+ 319:../drivers/fsl_i2c.h ****  * @code
+ 320:../drivers/fsl_i2c.h ****  * i2c_slave_config_t config = {
+ 321:../drivers/fsl_i2c.h ****  * .enableSlave = true,
+ 322:../drivers/fsl_i2c.h ****  * .enableGeneralCall = false,
+ 323:../drivers/fsl_i2c.h ****  * .addressingMode = kI2C_Address7bit,
+ 324:../drivers/fsl_i2c.h ****  * .slaveAddress = 0x1DU,
+ 325:../drivers/fsl_i2c.h ****  * .enableWakeUp = false,
+ 326:../drivers/fsl_i2c.h ****  * .enablehighDrive = false,
+ 327:../drivers/fsl_i2c.h ****  * .enableBaudRateCtl = false,
+ 328:../drivers/fsl_i2c.h ****  * .sclStopHoldTime_ns = 4000
+ 329:../drivers/fsl_i2c.h ****  * };
+ 330:../drivers/fsl_i2c.h ****  * I2C_SlaveInit(I2C0, &config, 12000000U);
+ 331:../drivers/fsl_i2c.h ****  * @endcode
+ 332:../drivers/fsl_i2c.h ****  *
+ 333:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 334:../drivers/fsl_i2c.h ****  * @param slaveConfig A pointer to the slave configuration structure
+ 335:../drivers/fsl_i2c.h ****  * @param srcClock_Hz I2C peripheral clock frequency in Hz
+ 336:../drivers/fsl_i2c.h ****  */
+ 337:../drivers/fsl_i2c.h **** void I2C_SlaveInit(I2C_Type *base, const i2c_slave_config_t *slaveConfig, uint32_t srcClock_Hz);
+ 338:../drivers/fsl_i2c.h **** 
+ 339:../drivers/fsl_i2c.h **** /*!
+ 340:../drivers/fsl_i2c.h ****  * @brief De-initializes the I2C master peripheral. Call this API to gate the I2C clock.
+ 341:../drivers/fsl_i2c.h ****  * The I2C master module can't work unless the I2C_MasterInit is called.
+ 342:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 343:../drivers/fsl_i2c.h ****  */
+ 344:../drivers/fsl_i2c.h **** void I2C_MasterDeinit(I2C_Type *base);
+ 345:../drivers/fsl_i2c.h **** 
+ 346:../drivers/fsl_i2c.h **** /*!
+ 347:../drivers/fsl_i2c.h ****  * @brief De-initializes the I2C slave peripheral. Calling this API gates the I2C clock.
+ 348:../drivers/fsl_i2c.h ****  * The I2C slave module can't work unless the I2C_SlaveInit is called to enable the clock.
+ 349:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 350:../drivers/fsl_i2c.h ****  */
+ 351:../drivers/fsl_i2c.h **** void I2C_SlaveDeinit(I2C_Type *base);
+ 352:../drivers/fsl_i2c.h **** 
+ 353:../drivers/fsl_i2c.h **** /*!
+ 354:../drivers/fsl_i2c.h ****  * @brief  Sets the I2C master configuration structure to default values.
+ 355:../drivers/fsl_i2c.h ****  *
+ 356:../drivers/fsl_i2c.h ****  * The purpose of this API is to get the configuration structure initialized for use in the I2C_Mas
+ 357:../drivers/fsl_i2c.h ****  * Use the initialized structure unchanged in the I2C_MasterConfigure() or modify
+ 358:../drivers/fsl_i2c.h ****  * the structure before calling the I2C_MasterConfigure().
+ 359:../drivers/fsl_i2c.h ****  * This is an example.
+ 360:../drivers/fsl_i2c.h ****  * @code
+ 361:../drivers/fsl_i2c.h ****  * i2c_master_config_t config;
+ 362:../drivers/fsl_i2c.h ****  * I2C_MasterGetDefaultConfig(&config);
+ 363:../drivers/fsl_i2c.h ****  * @endcode
+ 364:../drivers/fsl_i2c.h ****  * @param masterConfig A pointer to the master configuration structure.
+ 365:../drivers/fsl_i2c.h **** */
+ 366:../drivers/fsl_i2c.h **** void I2C_MasterGetDefaultConfig(i2c_master_config_t *masterConfig);
+ 367:../drivers/fsl_i2c.h **** 
+ 368:../drivers/fsl_i2c.h **** /*!
+ 369:../drivers/fsl_i2c.h ****  * @brief  Sets the I2C slave configuration structure to default values.
+ 370:../drivers/fsl_i2c.h ****  *
+ 371:../drivers/fsl_i2c.h ****  * The purpose of this API is to get the configuration structure initialized for use in the I2C_Sla
+ 372:../drivers/fsl_i2c.h ****  * Modify fields of the structure before calling the I2C_SlaveConfigure().
+ 373:../drivers/fsl_i2c.h ****  * This is an example.
+ 374:../drivers/fsl_i2c.h ****  * @code
+ 375:../drivers/fsl_i2c.h ****  * i2c_slave_config_t config;
+ 376:../drivers/fsl_i2c.h ****  * I2C_SlaveGetDefaultConfig(&config);
+ 377:../drivers/fsl_i2c.h ****  * @endcode
+ 378:../drivers/fsl_i2c.h ****  * @param slaveConfig A pointer to the slave configuration structure.
+ 379:../drivers/fsl_i2c.h ****  */
+ 380:../drivers/fsl_i2c.h **** void I2C_SlaveGetDefaultConfig(i2c_slave_config_t *slaveConfig);
+ 381:../drivers/fsl_i2c.h **** 
+ 382:../drivers/fsl_i2c.h **** /*!
+ 383:../drivers/fsl_i2c.h ****  * @brief Enables or disabless the I2C peripheral operation.
+ 384:../drivers/fsl_i2c.h ****  *
+ 385:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 386:../drivers/fsl_i2c.h ****  * @param enable Pass true to enable and false to disable the module.
+ 387:../drivers/fsl_i2c.h ****  */
+ 388:../drivers/fsl_i2c.h **** static inline void I2C_Enable(I2C_Type *base, bool enable)
+ 389:../drivers/fsl_i2c.h **** {
+ 390:../drivers/fsl_i2c.h ****     if (enable)
+ 391:../drivers/fsl_i2c.h ****     {
+ 392:../drivers/fsl_i2c.h ****         base->C1 |= I2C_C1_IICEN_MASK;
+ 393:../drivers/fsl_i2c.h ****     }
+ 394:../drivers/fsl_i2c.h ****     else
+ 395:../drivers/fsl_i2c.h ****     {
+ 396:../drivers/fsl_i2c.h ****         base->C1 &= ~I2C_C1_IICEN_MASK;
+ 397:../drivers/fsl_i2c.h ****     }
+ 398:../drivers/fsl_i2c.h **** }
+ 399:../drivers/fsl_i2c.h **** 
+ 400:../drivers/fsl_i2c.h **** /* @} */
+ 401:../drivers/fsl_i2c.h **** 
+ 402:../drivers/fsl_i2c.h **** /*!
+ 403:../drivers/fsl_i2c.h ****  * @name Status
+ 404:../drivers/fsl_i2c.h ****  * @{
+ 405:../drivers/fsl_i2c.h ****  */
+ 406:../drivers/fsl_i2c.h **** 
+ 407:../drivers/fsl_i2c.h **** /*!
+ 408:../drivers/fsl_i2c.h ****  * @brief Gets the I2C status flags.
+ 409:../drivers/fsl_i2c.h ****  *
+ 410:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 411:../drivers/fsl_i2c.h ****  * @return status flag, use status flag to AND #_i2c_flags to get the related status.
+ 412:../drivers/fsl_i2c.h ****  */
+ 413:../drivers/fsl_i2c.h **** uint32_t I2C_MasterGetStatusFlags(I2C_Type *base);
+ 414:../drivers/fsl_i2c.h **** 
+ 415:../drivers/fsl_i2c.h **** /*!
+ 416:../drivers/fsl_i2c.h ****  * @brief Gets the I2C status flags.
+ 417:../drivers/fsl_i2c.h ****  *
+ 418:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 419:../drivers/fsl_i2c.h ****  * @return status flag, use status flag to AND #_i2c_flags to get the related status.
+ 420:../drivers/fsl_i2c.h ****  */
+ 421:../drivers/fsl_i2c.h **** static inline uint32_t I2C_SlaveGetStatusFlags(I2C_Type *base)
+ 422:../drivers/fsl_i2c.h **** {
+ 423:../drivers/fsl_i2c.h ****     return I2C_MasterGetStatusFlags(base);
+ 424:../drivers/fsl_i2c.h **** }
+ 425:../drivers/fsl_i2c.h **** 
+ 426:../drivers/fsl_i2c.h **** /*!
+ 427:../drivers/fsl_i2c.h ****  * @brief Clears the I2C status flag state.
+ 428:../drivers/fsl_i2c.h ****  *
+ 429:../drivers/fsl_i2c.h ****  * The following status register flags can be cleared kI2C_ArbitrationLostFlag and kI2C_IntPendingF
+ 430:../drivers/fsl_i2c.h ****  *
+ 431:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 432:../drivers/fsl_i2c.h ****  * @param statusMask The status flag mask, defined in type i2c_status_flag_t.
+ 433:../drivers/fsl_i2c.h ****  *      The parameter can be any combination of the following values:
+ 434:../drivers/fsl_i2c.h ****  *          @arg kI2C_StartDetectFlag (if available)
+ 435:../drivers/fsl_i2c.h ****  *          @arg kI2C_StopDetectFlag (if available)
+ 436:../drivers/fsl_i2c.h ****  *          @arg kI2C_ArbitrationLostFlag
+ 437:../drivers/fsl_i2c.h ****  *          @arg kI2C_IntPendingFlagFlag
+ 438:../drivers/fsl_i2c.h ****  */
+ 439:../drivers/fsl_i2c.h **** static inline void I2C_MasterClearStatusFlags(I2C_Type *base, uint32_t statusMask)
+ 440:../drivers/fsl_i2c.h **** {
+ 441:../drivers/fsl_i2c.h **** /* Must clear the STARTF / STOPF bits prior to clearing IICIF */
+ 442:../drivers/fsl_i2c.h **** #if defined(FSL_FEATURE_I2C_HAS_START_STOP_DETECT) && FSL_FEATURE_I2C_HAS_START_STOP_DETECT
+ 443:../drivers/fsl_i2c.h ****     if (statusMask & kI2C_StartDetectFlag)
+ 444:../drivers/fsl_i2c.h ****     {
+ 445:../drivers/fsl_i2c.h ****         /* Shift the odd-ball flags back into place. */
+ 446:../drivers/fsl_i2c.h ****         base->FLT |= (uint8_t)(statusMask >> 8U);
+ 447:../drivers/fsl_i2c.h ****     }
+ 448:../drivers/fsl_i2c.h **** #endif
+ 449:../drivers/fsl_i2c.h **** 
+ 450:../drivers/fsl_i2c.h **** #ifdef I2C_HAS_STOP_DETECT
+ 451:../drivers/fsl_i2c.h ****     if (statusMask & kI2C_StopDetectFlag)
+ 452:../drivers/fsl_i2c.h ****     {
+ 453:../drivers/fsl_i2c.h ****         /* Shift the odd-ball flags back into place. */
+ 454:../drivers/fsl_i2c.h ****         base->FLT |= (uint8_t)(statusMask >> 8U);
+ 455:../drivers/fsl_i2c.h ****     }
+ 456:../drivers/fsl_i2c.h **** #endif
+ 457:../drivers/fsl_i2c.h **** 
+ 458:../drivers/fsl_i2c.h ****     base->S = (uint8_t)statusMask;
+ 459:../drivers/fsl_i2c.h **** }
+ 460:../drivers/fsl_i2c.h **** 
+ 461:../drivers/fsl_i2c.h **** /*!
+ 462:../drivers/fsl_i2c.h ****  * @brief Clears the I2C status flag state.
+ 463:../drivers/fsl_i2c.h ****  *
+ 464:../drivers/fsl_i2c.h ****  * The following status register flags can be cleared kI2C_ArbitrationLostFlag and kI2C_IntPendingF
+ 465:../drivers/fsl_i2c.h ****  *
+ 466:../drivers/fsl_i2c.h ****   * @param base I2C base pointer
+ 467:../drivers/fsl_i2c.h ****   * @param statusMask The status flag mask, defined in type i2c_status_flag_t.
+ 468:../drivers/fsl_i2c.h ****  *      The parameter can be any combination of the following values:
+ 469:../drivers/fsl_i2c.h ****  *          @arg kI2C_StartDetectFlag (if available)
+ 470:../drivers/fsl_i2c.h ****  *          @arg kI2C_StopDetectFlag (if available)
+ 471:../drivers/fsl_i2c.h ****  *          @arg kI2C_ArbitrationLostFlag
+ 472:../drivers/fsl_i2c.h ****  *          @arg kI2C_IntPendingFlagFlag
+ 473:../drivers/fsl_i2c.h ****  */
+ 474:../drivers/fsl_i2c.h **** static inline void I2C_SlaveClearStatusFlags(I2C_Type *base, uint32_t statusMask)
+ 475:../drivers/fsl_i2c.h **** {
+ 476:../drivers/fsl_i2c.h ****     I2C_MasterClearStatusFlags(base, statusMask);
+ 477:../drivers/fsl_i2c.h **** }
+ 478:../drivers/fsl_i2c.h **** 
+ 479:../drivers/fsl_i2c.h **** /* @} */
+ 480:../drivers/fsl_i2c.h **** 
+ 481:../drivers/fsl_i2c.h **** /*!
+ 482:../drivers/fsl_i2c.h ****  * @name Interrupts
+ 483:../drivers/fsl_i2c.h ****  * @{
+ 484:../drivers/fsl_i2c.h ****  */
+ 485:../drivers/fsl_i2c.h **** 
+ 486:../drivers/fsl_i2c.h **** /*!
+ 487:../drivers/fsl_i2c.h ****  * @brief Enables I2C interrupt requests.
+ 488:../drivers/fsl_i2c.h ****  *
+ 489:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 490:../drivers/fsl_i2c.h ****  * @param mask interrupt source
+ 491:../drivers/fsl_i2c.h ****  *     The parameter can be combination of the following source if defined:
+ 492:../drivers/fsl_i2c.h ****  *     @arg kI2C_GlobalInterruptEnable
+ 493:../drivers/fsl_i2c.h ****  *     @arg kI2C_StopDetectInterruptEnable/kI2C_StartDetectInterruptEnable
+ 494:../drivers/fsl_i2c.h ****  *     @arg kI2C_SdaTimeoutInterruptEnable
+ 495:../drivers/fsl_i2c.h ****  */
+ 496:../drivers/fsl_i2c.h **** void I2C_EnableInterrupts(I2C_Type *base, uint32_t mask);
+ 497:../drivers/fsl_i2c.h **** 
+ 498:../drivers/fsl_i2c.h **** /*!
+ 499:../drivers/fsl_i2c.h ****  * @brief Disables I2C interrupt requests.
+ 500:../drivers/fsl_i2c.h ****  *
+ 501:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 502:../drivers/fsl_i2c.h ****  * @param mask interrupt source
+ 503:../drivers/fsl_i2c.h ****  *     The parameter can be combination of the following source if defined:
+ 504:../drivers/fsl_i2c.h ****  *     @arg kI2C_GlobalInterruptEnable
+ 505:../drivers/fsl_i2c.h ****  *     @arg kI2C_StopDetectInterruptEnable/kI2C_StartDetectInterruptEnable
+ 506:../drivers/fsl_i2c.h ****  *     @arg kI2C_SdaTimeoutInterruptEnable
+ 507:../drivers/fsl_i2c.h ****  */
+ 508:../drivers/fsl_i2c.h **** void I2C_DisableInterrupts(I2C_Type *base, uint32_t mask);
+ 509:../drivers/fsl_i2c.h **** 
+ 510:../drivers/fsl_i2c.h **** /*!
+ 511:../drivers/fsl_i2c.h ****  * @name DMA Control
+ 512:../drivers/fsl_i2c.h ****  * @{
+ 513:../drivers/fsl_i2c.h ****  */
+ 514:../drivers/fsl_i2c.h **** #if defined(FSL_FEATURE_I2C_HAS_DMA_SUPPORT) && FSL_FEATURE_I2C_HAS_DMA_SUPPORT
+ 515:../drivers/fsl_i2c.h **** /*!
+ 516:../drivers/fsl_i2c.h ****  * @brief Enables/disables the I2C DMA interrupt.
+ 517:../drivers/fsl_i2c.h ****  *
+ 518:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 519:../drivers/fsl_i2c.h ****  * @param enable true to enable, false to disable
+ 520:../drivers/fsl_i2c.h **** */
+ 521:../drivers/fsl_i2c.h **** static inline void I2C_EnableDMA(I2C_Type *base, bool enable)
+ 522:../drivers/fsl_i2c.h **** {
+ 523:../drivers/fsl_i2c.h ****     if (enable)
+ 524:../drivers/fsl_i2c.h ****     {
+ 525:../drivers/fsl_i2c.h ****         base->C1 |= I2C_C1_DMAEN_MASK;
+ 526:../drivers/fsl_i2c.h ****     }
+ 527:../drivers/fsl_i2c.h ****     else
+ 528:../drivers/fsl_i2c.h ****     {
+ 529:../drivers/fsl_i2c.h ****         base->C1 &= ~I2C_C1_DMAEN_MASK;
+  97              		.loc 2 529 0
+  98 0006 9378     		ldrb	r3, [r2, #2]
+  99 0008 0121     		movs	r1, #1
+ 100              	.LVL10:
+ 101 000a 8B43     		bics	r3, r1
+ 102 000c 9370     		strb	r3, [r2, #2]
+ 103              	.LVL11:
+ 104              	.LBE23:
+ 105              	.LBE22:
+ 139:../drivers/fsl_i2c_dma.c ****     {
+ 106              		.loc 1 139 0
+ 107 000e 6368     		ldr	r3, [r4, #4]
+ 108 0010 1A68     		ldr	r2, [r3]
+ 109 0012 5207     		lsls	r2, r2, #29
+ 110 0014 2AD4     		bmi	.L9
+ 141:../drivers/fsl_i2c_dma.c ****         {
+ 111              		.loc 1 141 0
+ 112 0016 5B79     		ldrb	r3, [r3, #5]
+ 113 0018 012B     		cmp	r3, #1
+ 114 001a 12D0     		beq	.L16
+ 115              	.LVL12:
+ 116              	.L10:
+ 161:../drivers/fsl_i2c_dma.c ****             {
+ 117              		.loc 1 161 0 discriminator 1
+ 118 001c 2068     		ldr	r0, [r4]
+ 119 001e C378     		ldrb	r3, [r0, #3]
+ 120 0020 5BB2     		sxtb	r3, r3
+ 121 0022 002B     		cmp	r3, #0
+ 122 0024 FADA     		bge	.L10
+ 166:../drivers/fsl_i2c_dma.c ****         }
+ 123              		.loc 1 166 0
+ 124 0026 FFF7FEFF 		bl	I2C_MasterStop
+ 125              	.LVL13:
+ 126 002a 0200     		movs	r2, r0
+ 127              	.LVL14:
+ 128              	.L12:
+ 190:../drivers/fsl_i2c_dma.c **** 
+ 129              		.loc 1 190 0
+ 130 002c 0023     		movs	r3, #0
+ 131 002e 6168     		ldr	r1, [r4, #4]
+ 132 0030 0B77     		strb	r3, [r1, #28]
+ 192:../drivers/fsl_i2c_dma.c ****     {
+ 133              		.loc 1 192 0
+ 134 0032 6168     		ldr	r1, [r4, #4]
+ 135 0034 4D6A     		ldr	r5, [r1, #36]
+ 136 0036 002D     		cmp	r5, #0
+ 137 0038 02D0     		beq	.L8
+ 194:../drivers/fsl_i2c_dma.c ****                                                      i2cPrivateHandle->handle->userData);
+ 138              		.loc 1 194 0
+ 139 003a 2068     		ldr	r0, [r4]
+ 140 003c 8B6A     		ldr	r3, [r1, #40]
+ 141 003e A847     		blx	r5
+ 142              	.LVL15:
+ 143              	.L8:
+ 197:../drivers/fsl_i2c_dma.c **** 
+ 144              		.loc 1 197 0
+ 145              		@ sp needed
+ 146              	.LVL16:
+ 147 0040 70BD     		pop	{r4, r5, r6, pc}
+ 148              	.LVL17:
+ 149              	.L16:
+ 144:../drivers/fsl_i2c_dma.c **** 
+ 150              		.loc 1 144 0
+ 151 0042 2268     		ldr	r2, [r4]
+ 152 0044 9378     		ldrb	r3, [r2, #2]
+ 153 0046 0821     		movs	r1, #8
+ 154 0048 0B43     		orrs	r3, r1
+ 155 004a 9370     		strb	r3, [r2, #2]
+ 156              	.LVL18:
+ 157              	.L11:
+ 147:../drivers/fsl_i2c_dma.c ****             {
+ 158              		.loc 1 147 0 discriminator 1
+ 159 004c 2068     		ldr	r0, [r4]
+ 160 004e C378     		ldrb	r3, [r0, #3]
+ 161 0050 5BB2     		sxtb	r3, r3
+ 162 0052 002B     		cmp	r3, #0
+ 163 0054 FADA     		bge	.L11
+ 152:../drivers/fsl_i2c_dma.c **** 
+ 164              		.loc 1 152 0
+ 165 0056 FFF7FEFF 		bl	I2C_MasterStop
+ 166              	.LVL19:
+ 167 005a 0200     		movs	r2, r0
+ 168              	.LVL20:
+ 155:../drivers/fsl_i2c_dma.c ****                 i2cPrivateHandle->base->D;
+ 169              		.loc 1 155 0
+ 170 005c 6368     		ldr	r3, [r4, #4]
+ 171 005e 1969     		ldr	r1, [r3, #16]
+ 172 0060 5B69     		ldr	r3, [r3, #20]
+ 173 0062 013B     		subs	r3, r3, #1
+ 156:../drivers/fsl_i2c_dma.c ****         }
+ 174              		.loc 1 156 0
+ 175 0064 2068     		ldr	r0, [r4]
+ 176              	.LVL21:
+ 177 0066 0079     		ldrb	r0, [r0, #4]
+ 155:../drivers/fsl_i2c_dma.c ****                 i2cPrivateHandle->base->D;
+ 178              		.loc 1 155 0
+ 179 0068 C854     		strb	r0, [r1, r3]
+ 180 006a DFE7     		b	.L12
+ 181              	.LVL22:
+ 182              	.L9:
+ 171:../drivers/fsl_i2c_dma.c ****         {
+ 183              		.loc 1 171 0
+ 184 006c 5B79     		ldrb	r3, [r3, #5]
+ 185 006e 012B     		cmp	r3, #1
+ 186 0070 01D0     		beq	.L17
+ 133:../drivers/fsl_i2c_dma.c **** 
+ 187              		.loc 1 133 0
+ 188 0072 0022     		movs	r2, #0
+ 189 0074 DAE7     		b	.L12
+ 190              	.L17:
+ 174:../drivers/fsl_i2c_dma.c **** 
+ 191              		.loc 1 174 0
+ 192 0076 2268     		ldr	r2, [r4]
+ 193 0078 9378     		ldrb	r3, [r2, #2]
+ 194 007a 0821     		movs	r1, #8
+ 195 007c 0B43     		orrs	r3, r1
+ 196 007e 9370     		strb	r3, [r2, #2]
+ 197              	.L13:
+ 177:../drivers/fsl_i2c_dma.c ****             {
+ 198              		.loc 1 177 0 discriminator 1
+ 199 0080 2268     		ldr	r2, [r4]
+ 200 0082 D378     		ldrb	r3, [r2, #3]
+ 201 0084 5BB2     		sxtb	r3, r3
+ 202 0086 002B     		cmp	r3, #0
+ 203 0088 FADA     		bge	.L13
+ 182:../drivers/fsl_i2c_dma.c **** 
+ 204              		.loc 1 182 0
+ 205 008a 9378     		ldrb	r3, [r2, #2]
+ 206 008c 1021     		movs	r1, #16
+ 207 008e 0B43     		orrs	r3, r1
+ 208 0090 9370     		strb	r3, [r2, #2]
+ 185:../drivers/fsl_i2c_dma.c ****                 i2cPrivateHandle->base->D;
+ 209              		.loc 1 185 0
+ 210 0092 6368     		ldr	r3, [r4, #4]
+ 211 0094 1A69     		ldr	r2, [r3, #16]
+ 212 0096 5B69     		ldr	r3, [r3, #20]
+ 213 0098 013B     		subs	r3, r3, #1
+ 186:../drivers/fsl_i2c_dma.c ****         }
+ 214              		.loc 1 186 0
+ 215 009a 2168     		ldr	r1, [r4]
+ 216 009c 0979     		ldrb	r1, [r1, #4]
+ 185:../drivers/fsl_i2c_dma.c ****                 i2cPrivateHandle->base->D;
+ 217              		.loc 1 185 0
+ 218 009e D154     		strb	r1, [r2, r3]
+ 133:../drivers/fsl_i2c_dma.c **** 
+ 219              		.loc 1 133 0
+ 220 00a0 0022     		movs	r2, #0
+ 221 00a2 C3E7     		b	.L12
+ 222              		.cfi_endproc
+ 223              	.LFE75:
+ 225              		.section	.text.I2C_InitTransferStateMachineDMA,"ax",%progbits
+ 226              		.align	1
+ 227              		.syntax unified
+ 228              		.code	16
+ 229              		.thumb_func
+ 230              		.fpu softvfp
+ 232              	I2C_InitTransferStateMachineDMA:
+ 233              	.LFB77:
+ 221:../drivers/fsl_i2c_dma.c **** 
+ 222:../drivers/fsl_i2c_dma.c **** static status_t I2C_InitTransferStateMachineDMA(I2C_Type *base,
+ 223:../drivers/fsl_i2c_dma.c ****                                                 i2c_master_dma_handle_t *handle,
+ 224:../drivers/fsl_i2c_dma.c ****                                                 i2c_master_transfer_t *xfer)
+ 225:../drivers/fsl_i2c_dma.c **** {
+ 234              		.loc 1 225 0
+ 235              		.cfi_startproc
+ 236              		@ args = 0, pretend = 0, frame = 0
+ 237              		@ frame_needed = 0, uses_anonymous_args = 0
+ 238              	.LVL23:
+ 239 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 240              		.cfi_def_cfa_offset 24
+ 241              		.cfi_offset 3, -24
+ 242              		.cfi_offset 4, -20
+ 243              		.cfi_offset 5, -16
+ 244              		.cfi_offset 6, -12
+ 245              		.cfi_offset 7, -8
+ 246              		.cfi_offset 14, -4
+ 247 0002 0400     		movs	r4, r0
+ 248 0004 0D00     		movs	r5, r1
+ 226:../drivers/fsl_i2c_dma.c ****     assert(handle);
+ 227:../drivers/fsl_i2c_dma.c ****     assert(xfer);
+ 228:../drivers/fsl_i2c_dma.c **** 
+ 229:../drivers/fsl_i2c_dma.c ****     /* Set up transfer first. */
+ 230:../drivers/fsl_i2c_dma.c ****     i2c_direction_t direction = xfer->direction;
+ 249              		.loc 1 230 0
+ 250 0006 5379     		ldrb	r3, [r2, #5]
+ 251 0008 9C46     		mov	ip, r3
+ 252              	.LVL24:
+ 231:../drivers/fsl_i2c_dma.c ****     status_t result = kStatus_Success;
+ 232:../drivers/fsl_i2c_dma.c **** 
+ 233:../drivers/fsl_i2c_dma.c ****     if (handle->state != kIdleState)
+ 253              		.loc 1 233 0
+ 254 000a 0B7F     		ldrb	r3, [r1, #28]
+ 255 000c 002B     		cmp	r3, #0
+ 256 000e 00D0     		beq	.LCB249
+ 257 0010 81E0     		b	.L30	@long jump
+ 258              	.LCB249:
+ 234:../drivers/fsl_i2c_dma.c ****     {
+ 235:../drivers/fsl_i2c_dma.c ****         return kStatus_I2C_Busy;
+ 236:../drivers/fsl_i2c_dma.c ****     }
+ 237:../drivers/fsl_i2c_dma.c ****     else
+ 238:../drivers/fsl_i2c_dma.c ****     {
+ 239:../drivers/fsl_i2c_dma.c ****         /* Init the handle member. */
+ 240:../drivers/fsl_i2c_dma.c ****         handle->transfer = *xfer;
+ 259              		.loc 1 240 0
+ 260 0012 0B00     		movs	r3, r1
+ 261 0014 1100     		movs	r1, r2
+ 262              	.LVL25:
+ 263 0016 C1C9     		ldmia	r1!, {r0, r6, r7}
+ 264 0018 C1C3     		stmia	r3!, {r0, r6, r7}
+ 265              	.LVL26:
+ 266 001a C1C9     		ldmia	r1!, {r0, r6, r7}
+ 267 001c C1C3     		stmia	r3!, {r0, r6, r7}
+ 241:../drivers/fsl_i2c_dma.c **** 
+ 242:../drivers/fsl_i2c_dma.c ****         /* Save total transfer size. */
+ 243:../drivers/fsl_i2c_dma.c ****         handle->transferSize = xfer->dataSize;
+ 268              		.loc 1 243 0
+ 269 001e 5369     		ldr	r3, [r2, #20]
+ 270 0020 AB61     		str	r3, [r5, #24]
+ 244:../drivers/fsl_i2c_dma.c **** 
+ 245:../drivers/fsl_i2c_dma.c ****         handle->state = kTransferDataState;
+ 271              		.loc 1 245 0
+ 272 0022 0123     		movs	r3, #1
+ 273 0024 2B77     		strb	r3, [r5, #28]
+ 274              	.LVL27:
+ 275              	.LBB24:
+ 276              	.LBB25:
+ 446:../drivers/fsl_i2c.h ****     }
+ 277              		.loc 2 446 0
+ 278 0026 A179     		ldrb	r1, [r4, #6]
+ 279 0028 5020     		movs	r0, #80
+ 280 002a 0143     		orrs	r1, r0
+ 281 002c A171     		strb	r1, [r4, #6]
+ 454:../drivers/fsl_i2c.h ****     }
+ 282              		.loc 2 454 0
+ 283 002e A379     		ldrb	r3, [r4, #6]
+ 284 0030 0343     		orrs	r3, r0
+ 285 0032 A371     		strb	r3, [r4, #6]
+ 458:../drivers/fsl_i2c.h **** }
+ 286              		.loc 2 458 0
+ 287 0034 1223     		movs	r3, #18
+ 288 0036 E370     		strb	r3, [r4, #3]
+ 289              	.LVL28:
+ 290              	.LBE25:
+ 291              	.LBE24:
+ 246:../drivers/fsl_i2c_dma.c **** 
+ 247:../drivers/fsl_i2c_dma.c ****         /* Clear all status before transfer. */
+ 248:../drivers/fsl_i2c_dma.c ****         I2C_MasterClearStatusFlags(base, kClearFlags);
+ 249:../drivers/fsl_i2c_dma.c **** 
+ 250:../drivers/fsl_i2c_dma.c ****         /* Change to send write address when it's a read operation with command. */
+ 251:../drivers/fsl_i2c_dma.c ****         if ((xfer->subaddressSize > 0) && (xfer->direction == kI2C_Read))
+ 292              		.loc 1 251 0
+ 293 0038 137B     		ldrb	r3, [r2, #12]
+ 294 003a 002B     		cmp	r3, #0
+ 295 003c 02D0     		beq	.L20
+ 296              		.loc 1 251 0 is_stmt 0 discriminator 1
+ 297 003e 5379     		ldrb	r3, [r2, #5]
+ 298 0040 012B     		cmp	r3, #1
+ 299 0042 26D0     		beq	.L33
+ 300              	.LVL29:
+ 301              	.L20:
+ 252:../drivers/fsl_i2c_dma.c ****         {
+ 253:../drivers/fsl_i2c_dma.c ****             direction = kI2C_Write;
+ 254:../drivers/fsl_i2c_dma.c ****         }
+ 255:../drivers/fsl_i2c_dma.c **** 
+ 256:../drivers/fsl_i2c_dma.c ****         /* If repeated start is requested, send repeated start. */
+ 257:../drivers/fsl_i2c_dma.c ****         if (handle->transfer.flags & kI2C_TransferRepeatedStartFlag)
+ 302              		.loc 1 257 0 is_stmt 1
+ 303 0044 2B68     		ldr	r3, [r5]
+ 304 0046 9B07     		lsls	r3, r3, #30
+ 305 0048 26D5     		bpl	.L21
+ 258:../drivers/fsl_i2c_dma.c ****         {
+ 259:../drivers/fsl_i2c_dma.c ****             result = I2C_MasterRepeatedStart(base, handle->transfer.slaveAddress, direction);
+ 306              		.loc 1 259 0
+ 307 004a 2979     		ldrb	r1, [r5, #4]
+ 308 004c 6246     		mov	r2, ip
+ 309              	.LVL30:
+ 310 004e 2000     		movs	r0, r4
+ 311 0050 FFF7FEFF 		bl	I2C_MasterRepeatedStart
+ 312              	.LVL31:
+ 313 0054 0600     		movs	r6, r0
+ 314              	.LVL32:
+ 315              	.L22:
+ 260:../drivers/fsl_i2c_dma.c ****         }
+ 261:../drivers/fsl_i2c_dma.c ****         else /* For normal transfer, send start. */
+ 262:../drivers/fsl_i2c_dma.c ****         {
+ 263:../drivers/fsl_i2c_dma.c ****             result = I2C_MasterStart(base, handle->transfer.slaveAddress, direction);
+ 264:../drivers/fsl_i2c_dma.c ****         }
+ 265:../drivers/fsl_i2c_dma.c **** 
+ 266:../drivers/fsl_i2c_dma.c ****         if (result)
+ 316              		.loc 1 266 0
+ 317 0056 002E     		cmp	r6, #0
+ 318 0058 5ED1     		bne	.L18
+ 319              	.L23:
+ 267:../drivers/fsl_i2c_dma.c ****         {
+ 268:../drivers/fsl_i2c_dma.c ****             return result;
+ 269:../drivers/fsl_i2c_dma.c ****         }
+ 270:../drivers/fsl_i2c_dma.c **** 
+ 271:../drivers/fsl_i2c_dma.c ****         while (!(base->S & kI2C_IntPendingFlag))
+ 320              		.loc 1 271 0 discriminator 1
+ 321 005a E378     		ldrb	r3, [r4, #3]
+ 322 005c 9B07     		lsls	r3, r3, #30
+ 323 005e FCD5     		bpl	.L23
+ 272:../drivers/fsl_i2c_dma.c ****         {
+ 273:../drivers/fsl_i2c_dma.c ****         }
+ 274:../drivers/fsl_i2c_dma.c **** 
+ 275:../drivers/fsl_i2c_dma.c ****         /* Check if there's transfer error. */
+ 276:../drivers/fsl_i2c_dma.c ****         result = I2C_CheckAndClearError(base, base->S);
+ 324              		.loc 1 276 0
+ 325 0060 E178     		ldrb	r1, [r4, #3]
+ 326 0062 C9B2     		uxtb	r1, r1
+ 327 0064 2000     		movs	r0, r4
+ 328              	.LVL33:
+ 329 0066 FFF7FEFF 		bl	I2C_CheckAndClearError
+ 330              	.LVL34:
+ 331 006a 061E     		subs	r6, r0, #0
+ 332              	.LVL35:
+ 277:../drivers/fsl_i2c_dma.c **** 
+ 278:../drivers/fsl_i2c_dma.c ****         /* Return if error. */
+ 279:../drivers/fsl_i2c_dma.c ****         if (result)
+ 333              		.loc 1 279 0
+ 334 006c 1ED0     		beq	.L24
+ 280:../drivers/fsl_i2c_dma.c ****         {
+ 281:../drivers/fsl_i2c_dma.c ****             if (result == kStatus_I2C_Nak)
+ 335              		.loc 1 281 0
+ 336 006e 2B4B     		ldr	r3, .L35
+ 337 0070 9842     		cmp	r0, r3
+ 338 0072 51D1     		bne	.L18
+ 339              	.LVL36:
+ 282:../drivers/fsl_i2c_dma.c ****             {
+ 283:../drivers/fsl_i2c_dma.c ****                 result = kStatus_I2C_Addr_Nak;
+ 284:../drivers/fsl_i2c_dma.c **** 
+ 285:../drivers/fsl_i2c_dma.c ****                 if (I2C_MasterStop(base) != kStatus_Success)
+ 340              		.loc 1 285 0
+ 341 0074 2000     		movs	r0, r4
+ 342 0076 FFF7FEFF 		bl	I2C_MasterStop
+ 343              	.LVL37:
+ 344 007a 0028     		cmp	r0, #0
+ 345 007c 13D1     		bne	.L32
+ 283:../drivers/fsl_i2c_dma.c **** 
+ 346              		.loc 1 283 0
+ 347 007e 284E     		ldr	r6, .L35+4
+ 348              	.L25:
+ 349              	.LVL38:
+ 286:../drivers/fsl_i2c_dma.c ****                 {
+ 287:../drivers/fsl_i2c_dma.c ****                     result = kStatus_I2C_Timeout;
+ 288:../drivers/fsl_i2c_dma.c ****                 }
+ 289:../drivers/fsl_i2c_dma.c **** 
+ 290:../drivers/fsl_i2c_dma.c ****                 if (handle->completionCallback)
+ 350              		.loc 1 290 0
+ 351 0080 6F6A     		ldr	r7, [r5, #36]
+ 352 0082 002F     		cmp	r7, #0
+ 353 0084 48D0     		beq	.L18
+ 291:../drivers/fsl_i2c_dma.c ****                 {
+ 292:../drivers/fsl_i2c_dma.c ****                     (handle->completionCallback)(base, handle, result, handle->userData);
+ 354              		.loc 1 292 0
+ 355 0086 AB6A     		ldr	r3, [r5, #40]
+ 356 0088 3200     		movs	r2, r6
+ 357 008a 2900     		movs	r1, r5
+ 358 008c 2000     		movs	r0, r4
+ 359 008e B847     		blx	r7
+ 360              	.LVL39:
+ 361 0090 42E0     		b	.L18
+ 362              	.LVL40:
+ 363              	.L33:
+ 253:../drivers/fsl_i2c_dma.c ****         }
+ 364              		.loc 1 253 0
+ 365 0092 0023     		movs	r3, #0
+ 366 0094 9C46     		mov	ip, r3
+ 367              	.LVL41:
+ 368 0096 D5E7     		b	.L20
+ 369              	.LVL42:
+ 370              	.L21:
+ 263:../drivers/fsl_i2c_dma.c ****         }
+ 371              		.loc 1 263 0
+ 372 0098 2979     		ldrb	r1, [r5, #4]
+ 373 009a 6246     		mov	r2, ip
+ 374              	.LVL43:
+ 375 009c 2000     		movs	r0, r4
+ 376 009e FFF7FEFF 		bl	I2C_MasterStart
+ 377              	.LVL44:
+ 378 00a2 0600     		movs	r6, r0
+ 379              	.LVL45:
+ 380 00a4 D7E7     		b	.L22
+ 381              	.LVL46:
+ 382              	.L32:
+ 287:../drivers/fsl_i2c_dma.c ****                 }
+ 383              		.loc 1 287 0
+ 384 00a6 8A26     		movs	r6, #138
+ 385 00a8 F600     		lsls	r6, r6, #3
+ 386 00aa E9E7     		b	.L25
+ 387              	.LVL47:
+ 388              	.L24:
+ 293:../drivers/fsl_i2c_dma.c ****                 }
+ 294:../drivers/fsl_i2c_dma.c ****             }
+ 295:../drivers/fsl_i2c_dma.c **** 
+ 296:../drivers/fsl_i2c_dma.c ****             return result;
+ 297:../drivers/fsl_i2c_dma.c ****         }
+ 298:../drivers/fsl_i2c_dma.c **** 
+ 299:../drivers/fsl_i2c_dma.c ****         /* Send subaddress. */
+ 300:../drivers/fsl_i2c_dma.c ****         if (handle->transfer.subaddressSize)
+ 389              		.loc 1 300 0
+ 390 00ac 2B7B     		ldrb	r3, [r5, #12]
+ 391 00ae 002B     		cmp	r3, #0
+ 392 00b0 1AD0     		beq	.L26
+ 393              	.L28:
+ 301:../drivers/fsl_i2c_dma.c ****         {
+ 302:../drivers/fsl_i2c_dma.c ****             do
+ 303:../drivers/fsl_i2c_dma.c ****             {
+ 304:../drivers/fsl_i2c_dma.c ****                 /* Clear interrupt pending flag. */
+ 305:../drivers/fsl_i2c_dma.c ****                 base->S = kI2C_IntPendingFlag;
+ 394              		.loc 1 305 0
+ 395 00b2 0223     		movs	r3, #2
+ 396 00b4 E370     		strb	r3, [r4, #3]
+ 306:../drivers/fsl_i2c_dma.c **** 
+ 307:../drivers/fsl_i2c_dma.c ****                 handle->transfer.subaddressSize--;
+ 397              		.loc 1 307 0
+ 398 00b6 2B7B     		ldrb	r3, [r5, #12]
+ 399 00b8 013B     		subs	r3, r3, #1
+ 400 00ba DBB2     		uxtb	r3, r3
+ 401 00bc 2B73     		strb	r3, [r5, #12]
+ 308:../drivers/fsl_i2c_dma.c ****                 base->D = ((handle->transfer.subaddress) >> (8 * handle->transfer.subaddressSize));
+ 402              		.loc 1 308 0
+ 403 00be DB00     		lsls	r3, r3, #3
+ 404 00c0 AA68     		ldr	r2, [r5, #8]
+ 405 00c2 DA40     		lsrs	r2, r2, r3
+ 406 00c4 D3B2     		uxtb	r3, r2
+ 407 00c6 2371     		strb	r3, [r4, #4]
+ 408              	.L27:
+ 309:../drivers/fsl_i2c_dma.c **** 
+ 310:../drivers/fsl_i2c_dma.c ****                 /* Wait until data transfer complete. */
+ 311:../drivers/fsl_i2c_dma.c ****                 while (!(base->S & kI2C_IntPendingFlag))
+ 409              		.loc 1 311 0 discriminator 1
+ 410 00c8 E378     		ldrb	r3, [r4, #3]
+ 411 00ca 9B07     		lsls	r3, r3, #30
+ 412 00cc FCD5     		bpl	.L27
+ 312:../drivers/fsl_i2c_dma.c ****                 {
+ 313:../drivers/fsl_i2c_dma.c ****                 }
+ 314:../drivers/fsl_i2c_dma.c **** 
+ 315:../drivers/fsl_i2c_dma.c ****                 /* Check if there's transfer error. */
+ 316:../drivers/fsl_i2c_dma.c ****                 result = I2C_CheckAndClearError(base, base->S);
+ 413              		.loc 1 316 0
+ 414 00ce E178     		ldrb	r1, [r4, #3]
+ 415 00d0 C9B2     		uxtb	r1, r1
+ 416 00d2 2000     		movs	r0, r4
+ 417              	.LVL48:
+ 418 00d4 FFF7FEFF 		bl	I2C_CheckAndClearError
+ 419              	.LVL49:
+ 420 00d8 061E     		subs	r6, r0, #0
+ 421              	.LVL50:
+ 317:../drivers/fsl_i2c_dma.c **** 
+ 318:../drivers/fsl_i2c_dma.c ****                 if (result)
+ 422              		.loc 1 318 0
+ 423 00da 1DD1     		bne	.L18
+ 319:../drivers/fsl_i2c_dma.c ****                 {
+ 320:../drivers/fsl_i2c_dma.c ****                     return result;
+ 321:../drivers/fsl_i2c_dma.c ****                 }
+ 322:../drivers/fsl_i2c_dma.c **** 
+ 323:../drivers/fsl_i2c_dma.c ****             } while ((handle->transfer.subaddressSize > 0) && (result == kStatus_Success));
+ 424              		.loc 1 323 0
+ 425 00dc 2B7B     		ldrb	r3, [r5, #12]
+ 426 00de 002B     		cmp	r3, #0
+ 427 00e0 E7D1     		bne	.L28
+ 324:../drivers/fsl_i2c_dma.c **** 
+ 325:../drivers/fsl_i2c_dma.c ****             if (handle->transfer.direction == kI2C_Read)
+ 428              		.loc 1 325 0
+ 429 00e2 6B79     		ldrb	r3, [r5, #5]
+ 430 00e4 012B     		cmp	r3, #1
+ 431 00e6 02D0     		beq	.L34
+ 432              	.L26:
+ 326:../drivers/fsl_i2c_dma.c ****             {
+ 327:../drivers/fsl_i2c_dma.c ****                 /* Clear pending flag. */
+ 328:../drivers/fsl_i2c_dma.c ****                 base->S = kI2C_IntPendingFlag;
+ 329:../drivers/fsl_i2c_dma.c **** 
+ 330:../drivers/fsl_i2c_dma.c ****                 /* Send repeated start and slave address. */
+ 331:../drivers/fsl_i2c_dma.c ****                 result = I2C_MasterRepeatedStart(base, handle->transfer.slaveAddress, kI2C_Read);
+ 332:../drivers/fsl_i2c_dma.c **** 
+ 333:../drivers/fsl_i2c_dma.c ****                 if (result)
+ 334:../drivers/fsl_i2c_dma.c ****                 {
+ 335:../drivers/fsl_i2c_dma.c ****                     return result;
+ 336:../drivers/fsl_i2c_dma.c ****                 }
+ 337:../drivers/fsl_i2c_dma.c **** 
+ 338:../drivers/fsl_i2c_dma.c ****                 /* Wait until data transfer complete. */
+ 339:../drivers/fsl_i2c_dma.c ****                 while (!(base->S & kI2C_IntPendingFlag))
+ 340:../drivers/fsl_i2c_dma.c ****                 {
+ 341:../drivers/fsl_i2c_dma.c ****                 }
+ 342:../drivers/fsl_i2c_dma.c **** 
+ 343:../drivers/fsl_i2c_dma.c ****                 /* Check if there's transfer error. */
+ 344:../drivers/fsl_i2c_dma.c ****                 result = I2C_CheckAndClearError(base, base->S);
+ 345:../drivers/fsl_i2c_dma.c **** 
+ 346:../drivers/fsl_i2c_dma.c ****                 if (result)
+ 347:../drivers/fsl_i2c_dma.c ****                 {
+ 348:../drivers/fsl_i2c_dma.c ****                     return result;
+ 349:../drivers/fsl_i2c_dma.c ****                 }
+ 350:../drivers/fsl_i2c_dma.c ****             }
+ 351:../drivers/fsl_i2c_dma.c ****         }
+ 352:../drivers/fsl_i2c_dma.c **** 
+ 353:../drivers/fsl_i2c_dma.c ****         /* Clear pending flag. */
+ 354:../drivers/fsl_i2c_dma.c ****         base->S = kI2C_IntPendingFlag;
+ 433              		.loc 1 354 0
+ 434 00e8 0223     		movs	r3, #2
+ 435 00ea E370     		strb	r3, [r4, #3]
+ 355:../drivers/fsl_i2c_dma.c ****     }
+ 356:../drivers/fsl_i2c_dma.c **** 
+ 357:../drivers/fsl_i2c_dma.c ****     return result;
+ 436              		.loc 1 357 0
+ 437 00ec 14E0     		b	.L18
+ 438              	.L34:
+ 328:../drivers/fsl_i2c_dma.c **** 
+ 439              		.loc 1 328 0
+ 440 00ee 0133     		adds	r3, r3, #1
+ 441 00f0 E370     		strb	r3, [r4, #3]
+ 331:../drivers/fsl_i2c_dma.c **** 
+ 442              		.loc 1 331 0
+ 443 00f2 2979     		ldrb	r1, [r5, #4]
+ 444 00f4 0122     		movs	r2, #1
+ 445 00f6 2000     		movs	r0, r4
+ 446              	.LVL51:
+ 447 00f8 FFF7FEFF 		bl	I2C_MasterRepeatedStart
+ 448              	.LVL52:
+ 449 00fc 061E     		subs	r6, r0, #0
+ 450              	.LVL53:
+ 333:../drivers/fsl_i2c_dma.c ****                 {
+ 451              		.loc 1 333 0
+ 452 00fe 0BD1     		bne	.L18
+ 453              	.L29:
+ 339:../drivers/fsl_i2c_dma.c ****                 {
+ 454              		.loc 1 339 0 discriminator 1
+ 455 0100 E378     		ldrb	r3, [r4, #3]
+ 456 0102 9B07     		lsls	r3, r3, #30
+ 457 0104 FCD5     		bpl	.L29
+ 344:../drivers/fsl_i2c_dma.c **** 
+ 458              		.loc 1 344 0
+ 459 0106 E178     		ldrb	r1, [r4, #3]
+ 460 0108 C9B2     		uxtb	r1, r1
+ 461 010a 2000     		movs	r0, r4
+ 462              	.LVL54:
+ 463 010c FFF7FEFF 		bl	I2C_CheckAndClearError
+ 464              	.LVL55:
+ 465 0110 061E     		subs	r6, r0, #0
+ 466              	.LVL56:
+ 346:../drivers/fsl_i2c_dma.c ****                 {
+ 467              		.loc 1 346 0
+ 468 0112 E9D0     		beq	.L26
+ 469 0114 00E0     		b	.L18
+ 470              	.LVL57:
+ 471              	.L30:
+ 235:../drivers/fsl_i2c_dma.c ****     }
+ 472              		.loc 1 235 0
+ 473 0116 034E     		ldr	r6, .L35+8
+ 474              	.LVL58:
+ 475              	.L18:
+ 358:../drivers/fsl_i2c_dma.c **** }
+ 476              		.loc 1 358 0
+ 477 0118 3000     		movs	r0, r6
+ 478              		@ sp needed
+ 479              	.LVL59:
+ 480              	.LVL60:
+ 481 011a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 482              	.L36:
+ 483              		.align	2
+ 484              	.L35:
+ 485 011c 4E040000 		.word	1102
+ 486 0120 51040000 		.word	1105
+ 487 0124 4C040000 		.word	1100
+ 488              		.cfi_endproc
+ 489              	.LFE77:
+ 491              		.section	.text.I2C_MasterTransferDMAConfig,"ax",%progbits
+ 492              		.align	1
+ 493              		.syntax unified
+ 494              		.code	16
+ 495              		.thumb_func
+ 496              		.fpu softvfp
+ 498              	I2C_MasterTransferDMAConfig:
+ 499              	.LFB78:
+ 359:../drivers/fsl_i2c_dma.c **** 
+ 360:../drivers/fsl_i2c_dma.c **** static void I2C_MasterTransferDMAConfig(I2C_Type *base, i2c_master_dma_handle_t *handle)
+ 361:../drivers/fsl_i2c_dma.c **** {
+ 500              		.loc 1 361 0
+ 501              		.cfi_startproc
+ 502              		@ args = 0, pretend = 0, frame = 16
+ 503              		@ frame_needed = 0, uses_anonymous_args = 0
+ 504              	.LVL61:
+ 505 0000 10B5     		push	{r4, lr}
+ 506              		.cfi_def_cfa_offset 8
+ 507              		.cfi_offset 4, -8
+ 508              		.cfi_offset 14, -4
+ 509 0002 84B0     		sub	sp, sp, #16
+ 510              		.cfi_def_cfa_offset 24
+ 511 0004 0C00     		movs	r4, r1
+ 512              	.LVL62:
+ 362:../drivers/fsl_i2c_dma.c ****     dma_transfer_config_t transfer_config;
+ 363:../drivers/fsl_i2c_dma.c ****     dma_transfer_options_t transfer_options = kDMA_EnableInterrupt;
+ 364:../drivers/fsl_i2c_dma.c **** 
+ 365:../drivers/fsl_i2c_dma.c ****     if (handle->transfer.direction == kI2C_Read)
+ 513              		.loc 1 365 0
+ 514 0006 4B79     		ldrb	r3, [r1, #5]
+ 515 0008 012B     		cmp	r3, #1
+ 516 000a 21D0     		beq	.L40
+ 366:../drivers/fsl_i2c_dma.c ****     {
+ 367:../drivers/fsl_i2c_dma.c ****         transfer_config.srcAddr = (uint32_t)I2C_GetDataRegAddr(base);
+ 368:../drivers/fsl_i2c_dma.c ****         transfer_config.destAddr = (uint32_t)(handle->transfer.data);
+ 369:../drivers/fsl_i2c_dma.c ****         transfer_config.transferSize = (handle->transfer.dataSize - 1);
+ 370:../drivers/fsl_i2c_dma.c ****         transfer_config.srcSize = kDMA_Transfersize8bits;
+ 371:../drivers/fsl_i2c_dma.c ****         transfer_config.enableSrcIncrement = false;
+ 372:../drivers/fsl_i2c_dma.c ****         transfer_config.destSize = kDMA_Transfersize8bits;
+ 373:../drivers/fsl_i2c_dma.c ****         transfer_config.enableDestIncrement = true;
+ 374:../drivers/fsl_i2c_dma.c ****     }
+ 375:../drivers/fsl_i2c_dma.c ****     else
+ 376:../drivers/fsl_i2c_dma.c ****     {
+ 377:../drivers/fsl_i2c_dma.c ****         transfer_config.srcAddr = (uint32_t)(handle->transfer.data + 1);
+ 517              		.loc 1 377 0
+ 518 000c 0B69     		ldr	r3, [r1, #16]
+ 519 000e 0133     		adds	r3, r3, #1
+ 520 0010 0093     		str	r3, [sp]
+ 521              	.LVL63:
+ 522              	.LBB26:
+ 523              	.LBB27:
+ 530:../drivers/fsl_i2c.h ****     }
+ 531:../drivers/fsl_i2c.h **** }
+ 532:../drivers/fsl_i2c.h **** 
+ 533:../drivers/fsl_i2c.h **** #endif /* FSL_FEATURE_I2C_HAS_DMA_SUPPORT */
+ 534:../drivers/fsl_i2c.h **** 
+ 535:../drivers/fsl_i2c.h **** /*!
+ 536:../drivers/fsl_i2c.h ****  * @brief  Gets the I2C tx/rx data register address. This API is used to provide a transfer address
+ 537:../drivers/fsl_i2c.h ****  * for I2C DMA transfer configuration.
+ 538:../drivers/fsl_i2c.h ****  *
+ 539:../drivers/fsl_i2c.h ****  * @param base I2C base pointer
+ 540:../drivers/fsl_i2c.h ****  * @return data register address
+ 541:../drivers/fsl_i2c.h ****  */
+ 542:../drivers/fsl_i2c.h **** static inline uint32_t I2C_GetDataRegAddr(I2C_Type *base)
+ 543:../drivers/fsl_i2c.h **** {
+ 544:../drivers/fsl_i2c.h ****     return (uint32_t)(&(base->D));
+ 524              		.loc 2 544 0
+ 525 0012 0430     		adds	r0, r0, #4
+ 526              	.LVL64:
+ 527              	.LBE27:
+ 528              	.LBE26:
+ 378:../drivers/fsl_i2c_dma.c ****         transfer_config.destAddr = (uint32_t)I2C_GetDataRegAddr(base);
+ 529              		.loc 1 378 0
+ 530 0014 0190     		str	r0, [sp, #4]
+ 379:../drivers/fsl_i2c_dma.c ****         transfer_config.transferSize = (handle->transfer.dataSize - 1);
+ 531              		.loc 1 379 0
+ 532 0016 4B69     		ldr	r3, [r1, #20]
+ 533 0018 013B     		subs	r3, r3, #1
+ 534 001a 0393     		str	r3, [sp, #12]
+ 380:../drivers/fsl_i2c_dma.c ****         transfer_config.srcSize = kDMA_Transfersize8bits;
+ 535              		.loc 1 380 0
+ 536 001c 0123     		movs	r3, #1
+ 537 001e 6A46     		mov	r2, sp
+ 538 0020 5372     		strb	r3, [r2, #9]
+ 381:../drivers/fsl_i2c_dma.c ****         transfer_config.enableSrcIncrement = true;
+ 539              		.loc 1 381 0
+ 540 0022 1372     		strb	r3, [r2, #8]
+ 382:../drivers/fsl_i2c_dma.c ****         transfer_config.destSize = kDMA_Transfersize8bits;
+ 541              		.loc 1 382 0
+ 542 0024 D372     		strb	r3, [r2, #11]
+ 383:../drivers/fsl_i2c_dma.c ****         transfer_config.enableDestIncrement = false;
+ 543              		.loc 1 383 0
+ 544 0026 0023     		movs	r3, #0
+ 545 0028 9372     		strb	r3, [r2, #10]
+ 546              	.LVL65:
+ 547              	.L39:
+ 384:../drivers/fsl_i2c_dma.c ****     }
+ 385:../drivers/fsl_i2c_dma.c **** 
+ 386:../drivers/fsl_i2c_dma.c ****     DMA_SubmitTransfer(handle->dmaHandle, &transfer_config, transfer_options);
+ 548              		.loc 1 386 0
+ 549 002a 0122     		movs	r2, #1
+ 550 002c 6946     		mov	r1, sp
+ 551 002e 206A     		ldr	r0, [r4, #32]
+ 552 0030 FFF7FEFF 		bl	DMA_SubmitTransfer
+ 553              	.LVL66:
+ 387:../drivers/fsl_i2c_dma.c ****     DMA_StartTransfer(handle->dmaHandle);
+ 554              		.loc 1 387 0
+ 555 0034 226A     		ldr	r2, [r4, #32]
+ 556              	.LVL67:
+ 557              	.LBB28:
+ 558              	.LBB29:
+ 559              		.file 3 "../drivers/fsl_dma.h"
+   1:../drivers/fsl_dma.h **** /*
+   2:../drivers/fsl_dma.h ****  * The Clear BSD License
+   3:../drivers/fsl_dma.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_dma.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_dma.h ****  * All rights reserved.
+   6:../drivers/fsl_dma.h ****  *
+   7:../drivers/fsl_dma.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_dma.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_dma.h ****  * that the following conditions are met:
+  10:../drivers/fsl_dma.h ****  *
+  11:../drivers/fsl_dma.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_dma.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_dma.h ****  *
+  14:../drivers/fsl_dma.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_dma.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_dma.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_dma.h ****  *
+  18:../drivers/fsl_dma.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_dma.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_dma.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_dma.h ****  *
+  22:../drivers/fsl_dma.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_dma.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_dma.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_dma.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_dma.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_dma.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_dma.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_dma.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_dma.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_dma.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_dma.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_dma.h ****  */
+  34:../drivers/fsl_dma.h **** 
+  35:../drivers/fsl_dma.h **** #ifndef _FSL_DMA_H_
+  36:../drivers/fsl_dma.h **** #define _FSL_DMA_H_
+  37:../drivers/fsl_dma.h **** 
+  38:../drivers/fsl_dma.h **** #include "fsl_common.h"
+  39:../drivers/fsl_dma.h **** 
+  40:../drivers/fsl_dma.h **** /*!
+  41:../drivers/fsl_dma.h ****  * @addtogroup dma
+  42:../drivers/fsl_dma.h ****  * @{
+  43:../drivers/fsl_dma.h ****  */
+  44:../drivers/fsl_dma.h **** 
+  45:../drivers/fsl_dma.h **** 
+  46:../drivers/fsl_dma.h **** /*******************************************************************************
+  47:../drivers/fsl_dma.h ****  * Definitions
+  48:../drivers/fsl_dma.h ****  ******************************************************************************/
+  49:../drivers/fsl_dma.h **** 
+  50:../drivers/fsl_dma.h **** /*! @name Driver version */
+  51:../drivers/fsl_dma.h **** /*@{*/
+  52:../drivers/fsl_dma.h **** /*! @brief DMA driver version 2.0.1. */
+  53:../drivers/fsl_dma.h **** #define FSL_DMA_DRIVER_VERSION (MAKE_VERSION(2, 0, 1))
+  54:../drivers/fsl_dma.h **** /*@}*/
+  55:../drivers/fsl_dma.h **** 
+  56:../drivers/fsl_dma.h **** /*! @brief status flag for the DMA driver. */
+  57:../drivers/fsl_dma.h **** enum _dma_channel_status_flags
+  58:../drivers/fsl_dma.h **** {
+  59:../drivers/fsl_dma.h ****     kDMA_TransactionsBCRFlag = DMA_DSR_BCR_BCR_MASK,       /*!< Contains the number of bytes yet to
+  60:../drivers/fsl_dma.h ****                                                                 transferred for a given block */
+  61:../drivers/fsl_dma.h ****     kDMA_TransactionsDoneFlag = DMA_DSR_BCR_DONE_MASK,     /*!< Transactions Done */
+  62:../drivers/fsl_dma.h ****     kDMA_TransactionsBusyFlag = DMA_DSR_BCR_BSY_MASK,      /*!< Transactions Busy */
+  63:../drivers/fsl_dma.h ****     kDMA_TransactionsRequestFlag = DMA_DSR_BCR_REQ_MASK,   /*!< Transactions Request */
+  64:../drivers/fsl_dma.h ****     kDMA_BusErrorOnDestinationFlag = DMA_DSR_BCR_BED_MASK, /*!< Bus Error on Destination */
+  65:../drivers/fsl_dma.h ****     kDMA_BusErrorOnSourceFlag = DMA_DSR_BCR_BES_MASK,      /*!< Bus Error on Source */
+  66:../drivers/fsl_dma.h ****     kDMA_ConfigurationErrorFlag = DMA_DSR_BCR_CE_MASK,     /*!< Configuration Error */
+  67:../drivers/fsl_dma.h **** };
+  68:../drivers/fsl_dma.h **** 
+  69:../drivers/fsl_dma.h **** /*! @brief DMA transfer size type*/
+  70:../drivers/fsl_dma.h **** typedef enum _dma_transfer_size
+  71:../drivers/fsl_dma.h **** {
+  72:../drivers/fsl_dma.h ****     kDMA_Transfersize32bits = 0x0U, /*!< 32 bits are transferred for every read/write */
+  73:../drivers/fsl_dma.h ****     kDMA_Transfersize8bits,         /*!< 8 bits are transferred for every read/write */
+  74:../drivers/fsl_dma.h ****     kDMA_Transfersize16bits,        /*!< 16b its are transferred for every read/write */
+  75:../drivers/fsl_dma.h **** } dma_transfer_size_t;
+  76:../drivers/fsl_dma.h **** 
+  77:../drivers/fsl_dma.h **** /*! @brief Configuration type for the DMA modulo */
+  78:../drivers/fsl_dma.h **** typedef enum _dma_modulo
+  79:../drivers/fsl_dma.h **** {
+  80:../drivers/fsl_dma.h ****     kDMA_ModuloDisable = 0x0U, /*!< Buffer disabled */
+  81:../drivers/fsl_dma.h ****     kDMA_Modulo16Bytes,        /*!< Circular buffer size is 16 bytes. */
+  82:../drivers/fsl_dma.h ****     kDMA_Modulo32Bytes,        /*!< Circular buffer size is 32 bytes. */
+  83:../drivers/fsl_dma.h ****     kDMA_Modulo64Bytes,        /*!< Circular buffer size is 64 bytes. */
+  84:../drivers/fsl_dma.h ****     kDMA_Modulo128Bytes,       /*!< Circular buffer size is 128 bytes. */
+  85:../drivers/fsl_dma.h ****     kDMA_Modulo256Bytes,       /*!< Circular buffer size is 256 bytes. */
+  86:../drivers/fsl_dma.h ****     kDMA_Modulo512Bytes,       /*!< Circular buffer size is 512 bytes. */
+  87:../drivers/fsl_dma.h ****     kDMA_Modulo1KBytes,        /*!< Circular buffer size is 1 KB. */
+  88:../drivers/fsl_dma.h ****     kDMA_Modulo2KBytes,        /*!< Circular buffer size is 2 KB. */
+  89:../drivers/fsl_dma.h ****     kDMA_Modulo4KBytes,        /*!< Circular buffer size is 4 KB. */
+  90:../drivers/fsl_dma.h ****     kDMA_Modulo8KBytes,        /*!< Circular buffer size is 8 KB. */
+  91:../drivers/fsl_dma.h ****     kDMA_Modulo16KBytes,       /*!< Circular buffer size is 16 KB. */
+  92:../drivers/fsl_dma.h ****     kDMA_Modulo32KBytes,       /*!< Circular buffer size is 32 KB. */
+  93:../drivers/fsl_dma.h ****     kDMA_Modulo64KBytes,       /*!< Circular buffer size is 64 KB. */
+  94:../drivers/fsl_dma.h ****     kDMA_Modulo128KBytes,      /*!< Circular buffer size is 128 KB. */
+  95:../drivers/fsl_dma.h ****     kDMA_Modulo256KBytes,      /*!< Circular buffer size is 256 KB. */
+  96:../drivers/fsl_dma.h **** } dma_modulo_t;
+  97:../drivers/fsl_dma.h **** 
+  98:../drivers/fsl_dma.h **** /*! @brief DMA channel link type */
+  99:../drivers/fsl_dma.h **** typedef enum _dma_channel_link_type
+ 100:../drivers/fsl_dma.h **** {
+ 101:../drivers/fsl_dma.h ****     kDMA_ChannelLinkDisable = 0x0U,      /*!< No channel link. */
+ 102:../drivers/fsl_dma.h ****     kDMA_ChannelLinkChannel1AndChannel2, /*!< Perform a link to channel LCH1 after each cycle-steal
+ 103:../drivers/fsl_dma.h ****                                               followed by a link to LCH2 after the BCR decrements t
+ 104:../drivers/fsl_dma.h ****     kDMA_ChannelLinkChannel1,            /*!< Perform a link to LCH1 after each cycle-steal transfe
+ 105:../drivers/fsl_dma.h ****     kDMA_ChannelLinkChannel1AfterBCR0,   /*!< Perform a link to LCH1 after the BCR decrements. */
+ 106:../drivers/fsl_dma.h **** } dma_channel_link_type_t;
+ 107:../drivers/fsl_dma.h **** 
+ 108:../drivers/fsl_dma.h **** /*! @brief DMA transfer type */
+ 109:../drivers/fsl_dma.h **** typedef enum _dma_transfer_type
+ 110:../drivers/fsl_dma.h **** {
+ 111:../drivers/fsl_dma.h ****     kDMA_MemoryToMemory = 0x0U, /*!< Memory to Memory transfer. */
+ 112:../drivers/fsl_dma.h ****     kDMA_PeripheralToMemory,    /*!< Peripheral to Memory transfer. */
+ 113:../drivers/fsl_dma.h ****     kDMA_MemoryToPeripheral,    /*!< Memory to Peripheral transfer. */
+ 114:../drivers/fsl_dma.h **** } dma_transfer_type_t;
+ 115:../drivers/fsl_dma.h **** 
+ 116:../drivers/fsl_dma.h **** /*! @brief DMA transfer options */
+ 117:../drivers/fsl_dma.h **** typedef enum _dma_transfer_options
+ 118:../drivers/fsl_dma.h **** {
+ 119:../drivers/fsl_dma.h ****     kDMA_NoOptions = 0x0U, /*!< Transfer without options. */
+ 120:../drivers/fsl_dma.h ****     kDMA_EnableInterrupt,  /*!< Enable interrupt while transfer complete. */
+ 121:../drivers/fsl_dma.h **** } dma_transfer_options_t;
+ 122:../drivers/fsl_dma.h **** 
+ 123:../drivers/fsl_dma.h **** /*! @brief DMA transfer status */
+ 124:../drivers/fsl_dma.h **** enum _dma_transfer_status
+ 125:../drivers/fsl_dma.h **** {
+ 126:../drivers/fsl_dma.h ****     kStatus_DMA_Busy = MAKE_STATUS(kStatusGroup_DMA, 0),
+ 127:../drivers/fsl_dma.h **** };
+ 128:../drivers/fsl_dma.h **** 
+ 129:../drivers/fsl_dma.h **** /*! @brief DMA transfer configuration structure */
+ 130:../drivers/fsl_dma.h **** typedef struct _dma_transfer_config
+ 131:../drivers/fsl_dma.h **** {
+ 132:../drivers/fsl_dma.h ****     uint32_t srcAddr;             /*!< DMA transfer source address. */
+ 133:../drivers/fsl_dma.h ****     uint32_t destAddr;            /*!< DMA destination address.*/
+ 134:../drivers/fsl_dma.h ****     bool enableSrcIncrement;      /*!< Source address increase after each transfer. */
+ 135:../drivers/fsl_dma.h ****     dma_transfer_size_t srcSize;  /*!< Source transfer size unit. */
+ 136:../drivers/fsl_dma.h ****     bool enableDestIncrement;     /*!< Destination address increase after each transfer. */
+ 137:../drivers/fsl_dma.h ****     dma_transfer_size_t destSize; /*!< Destination transfer unit.*/
+ 138:../drivers/fsl_dma.h ****     uint32_t transferSize;        /*!< The number of bytes to be transferred. */
+ 139:../drivers/fsl_dma.h **** } dma_transfer_config_t;
+ 140:../drivers/fsl_dma.h **** 
+ 141:../drivers/fsl_dma.h **** /*! @brief DMA transfer configuration structure */
+ 142:../drivers/fsl_dma.h **** typedef struct _dma_channel_link_config
+ 143:../drivers/fsl_dma.h **** {
+ 144:../drivers/fsl_dma.h ****     dma_channel_link_type_t linkType; /*!< Channel link type. */
+ 145:../drivers/fsl_dma.h ****     uint32_t channel1;                /*!< The index of channel 1. */
+ 146:../drivers/fsl_dma.h ****     uint32_t channel2;                /*!< The index of channel 2. */
+ 147:../drivers/fsl_dma.h **** } dma_channel_link_config_t;
+ 148:../drivers/fsl_dma.h **** 
+ 149:../drivers/fsl_dma.h **** struct _dma_handle;
+ 150:../drivers/fsl_dma.h **** /*! @brief Callback function prototype for the DMA driver. */
+ 151:../drivers/fsl_dma.h **** typedef void (*dma_callback)(struct _dma_handle *handle, void *userData);
+ 152:../drivers/fsl_dma.h **** 
+ 153:../drivers/fsl_dma.h **** /*! @brief DMA DMA handle structure */
+ 154:../drivers/fsl_dma.h **** typedef struct _dma_handle
+ 155:../drivers/fsl_dma.h **** {
+ 156:../drivers/fsl_dma.h ****     DMA_Type *base;        /*!< DMA peripheral address. */
+ 157:../drivers/fsl_dma.h ****     uint8_t channel;       /*!< DMA channel used. */
+ 158:../drivers/fsl_dma.h ****     dma_callback callback; /*!< DMA callback function.*/
+ 159:../drivers/fsl_dma.h ****     void *userData;        /*!< Callback parameter. */
+ 160:../drivers/fsl_dma.h **** } dma_handle_t;
+ 161:../drivers/fsl_dma.h **** 
+ 162:../drivers/fsl_dma.h **** /*******************************************************************************
+ 163:../drivers/fsl_dma.h ****  * API
+ 164:../drivers/fsl_dma.h ****  ******************************************************************************/
+ 165:../drivers/fsl_dma.h **** #if defined(__cplusplus)
+ 166:../drivers/fsl_dma.h **** extern "C" {
+ 167:../drivers/fsl_dma.h **** #endif /* __cplusplus */
+ 168:../drivers/fsl_dma.h **** 
+ 169:../drivers/fsl_dma.h **** /*!
+ 170:../drivers/fsl_dma.h ****  * @name DMA Initialization and De-initialization
+ 171:../drivers/fsl_dma.h ****  * @{
+ 172:../drivers/fsl_dma.h ****  */
+ 173:../drivers/fsl_dma.h **** 
+ 174:../drivers/fsl_dma.h **** /*!
+ 175:../drivers/fsl_dma.h ****  * @brief Initializes the DMA peripheral.
+ 176:../drivers/fsl_dma.h ****  *
+ 177:../drivers/fsl_dma.h ****  * This function ungates the DMA clock.
+ 178:../drivers/fsl_dma.h ****  *
+ 179:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 180:../drivers/fsl_dma.h ****  */
+ 181:../drivers/fsl_dma.h **** void DMA_Init(DMA_Type *base);
+ 182:../drivers/fsl_dma.h **** 
+ 183:../drivers/fsl_dma.h **** /*!
+ 184:../drivers/fsl_dma.h ****  * @brief Deinitializes the DMA peripheral.
+ 185:../drivers/fsl_dma.h ****  *
+ 186:../drivers/fsl_dma.h ****  * This function gates the DMA clock.
+ 187:../drivers/fsl_dma.h ****  *
+ 188:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 189:../drivers/fsl_dma.h ****  */
+ 190:../drivers/fsl_dma.h **** void DMA_Deinit(DMA_Type *base);
+ 191:../drivers/fsl_dma.h **** 
+ 192:../drivers/fsl_dma.h **** /* @} */
+ 193:../drivers/fsl_dma.h **** /*!
+ 194:../drivers/fsl_dma.h ****  * @name DMA Channel Operation
+ 195:../drivers/fsl_dma.h ****  * @{
+ 196:../drivers/fsl_dma.h ****  */
+ 197:../drivers/fsl_dma.h **** 
+ 198:../drivers/fsl_dma.h **** /*!
+ 199:../drivers/fsl_dma.h ****  * @brief Resets the DMA channel.
+ 200:../drivers/fsl_dma.h ****  *
+ 201:../drivers/fsl_dma.h ****  * Sets all register values to reset values and enables
+ 202:../drivers/fsl_dma.h ****  * the cycle steal and auto stop channel request features.
+ 203:../drivers/fsl_dma.h ****  *
+ 204:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 205:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 206:../drivers/fsl_dma.h ****  */
+ 207:../drivers/fsl_dma.h **** void DMA_ResetChannel(DMA_Type *base, uint32_t channel);
+ 208:../drivers/fsl_dma.h **** 
+ 209:../drivers/fsl_dma.h **** /*!
+ 210:../drivers/fsl_dma.h ****  * @brief Configures the DMA transfer attribute.
+ 211:../drivers/fsl_dma.h ****  *
+ 212:../drivers/fsl_dma.h ****  * This function configures the transfer attribute including the source address,
+ 213:../drivers/fsl_dma.h ****  * destination address, transfer size, and so on.
+ 214:../drivers/fsl_dma.h ****  * This example shows how to set up the the dma_transfer_config_t
+ 215:../drivers/fsl_dma.h ****  * parameters and how to call the DMA_ConfigBasicTransfer function.
+ 216:../drivers/fsl_dma.h ****  * @code
+ 217:../drivers/fsl_dma.h ****  *   dma_transfer_config_t transferConfig;
+ 218:../drivers/fsl_dma.h ****  *   memset(&transferConfig, 0, sizeof(transferConfig));
+ 219:../drivers/fsl_dma.h ****  *   transferConfig.srcAddr = (uint32_t)srcAddr;
+ 220:../drivers/fsl_dma.h ****  *   transferConfig.destAddr = (uint32_t)destAddr;
+ 221:../drivers/fsl_dma.h ****  *   transferConfig.enbaleSrcIncrement = true;
+ 222:../drivers/fsl_dma.h ****  *   transferConfig.enableDestIncrement = true;
+ 223:../drivers/fsl_dma.h ****  *   transferConfig.srcSize = kDMA_Transfersize32bits;
+ 224:../drivers/fsl_dma.h ****  *   transferConfig.destSize = kDMA_Transfersize32bits;
+ 225:../drivers/fsl_dma.h ****  *   transferConfig.transferSize = sizeof(uint32_t) * BUFF_LENGTH;
+ 226:../drivers/fsl_dma.h ****  *   DMA_SetTransferConfig(DMA0, 0, &transferConfig);
+ 227:../drivers/fsl_dma.h ****  * @endcode
+ 228:../drivers/fsl_dma.h ****  *
+ 229:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 230:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 231:../drivers/fsl_dma.h ****  * @param config Pointer to the DMA transfer configuration structure.
+ 232:../drivers/fsl_dma.h ****  */
+ 233:../drivers/fsl_dma.h **** void DMA_SetTransferConfig(DMA_Type *base, uint32_t channel, const dma_transfer_config_t *config);
+ 234:../drivers/fsl_dma.h **** 
+ 235:../drivers/fsl_dma.h **** /*!
+ 236:../drivers/fsl_dma.h ****  * @brief Configures the DMA channel link feature.
+ 237:../drivers/fsl_dma.h ****  *
+ 238:../drivers/fsl_dma.h ****  * This function allows DMA channels to have their transfers linked. The current DMA channel
+ 239:../drivers/fsl_dma.h ****  * triggers a DMA request to the linked channels (LCH1 or LCH2) depending on the channel link
+ 240:../drivers/fsl_dma.h ****  * type.
+ 241:../drivers/fsl_dma.h ****  * Perform a link to channel LCH1 after each cycle-steal transfer followed by a link to LCH2
+ 242:../drivers/fsl_dma.h ****  * after the BCR decrements to 0 if the type is kDMA_ChannelLinkChannel1AndChannel2.
+ 243:../drivers/fsl_dma.h ****  * Perform a link to LCH1 after each cycle-steal transfer if the type is kDMA_ChannelLinkChannel1.
+ 244:../drivers/fsl_dma.h ****  * Perform a link to LCH1 after the BCR decrements to 0 if the type is kDMA_ChannelLinkChannel1Afte
+ 245:../drivers/fsl_dma.h ****  *
+ 246:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 247:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 248:../drivers/fsl_dma.h ****  * @param config Pointer to the channel link configuration structure.
+ 249:../drivers/fsl_dma.h ****  */
+ 250:../drivers/fsl_dma.h **** void DMA_SetChannelLinkConfig(DMA_Type *base, uint32_t channel, const dma_channel_link_config_t *co
+ 251:../drivers/fsl_dma.h **** 
+ 252:../drivers/fsl_dma.h **** /*!
+ 253:../drivers/fsl_dma.h ****  * @brief Sets the DMA source address for the DMA transfer.
+ 254:../drivers/fsl_dma.h ****  *
+ 255:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 256:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 257:../drivers/fsl_dma.h ****  * @param srcAddr DMA source address.
+ 258:../drivers/fsl_dma.h ****  */
+ 259:../drivers/fsl_dma.h **** static inline void DMA_SetSourceAddress(DMA_Type *base, uint32_t channel, uint32_t srcAddr)
+ 260:../drivers/fsl_dma.h **** {
+ 261:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 262:../drivers/fsl_dma.h **** 
+ 263:../drivers/fsl_dma.h ****     base->DMA[channel].SAR = srcAddr;
+ 264:../drivers/fsl_dma.h **** }
+ 265:../drivers/fsl_dma.h **** 
+ 266:../drivers/fsl_dma.h **** /*!
+ 267:../drivers/fsl_dma.h ****  * @brief Sets the DMA destination address for the DMA transfer.
+ 268:../drivers/fsl_dma.h ****  *
+ 269:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 270:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 271:../drivers/fsl_dma.h ****  * @param destAddr DMA destination address.
+ 272:../drivers/fsl_dma.h ****  */
+ 273:../drivers/fsl_dma.h **** static inline void DMA_SetDestinationAddress(DMA_Type *base, uint32_t channel, uint32_t destAddr)
+ 274:../drivers/fsl_dma.h **** {
+ 275:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 276:../drivers/fsl_dma.h **** 
+ 277:../drivers/fsl_dma.h ****     base->DMA[channel].DAR = destAddr;
+ 278:../drivers/fsl_dma.h **** }
+ 279:../drivers/fsl_dma.h **** 
+ 280:../drivers/fsl_dma.h **** /*!
+ 281:../drivers/fsl_dma.h ****  * @brief Sets the DMA transfer size for the DMA transfer.
+ 282:../drivers/fsl_dma.h ****  *
+ 283:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 284:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 285:../drivers/fsl_dma.h ****  * @param size The number of bytes to be transferred.
+ 286:../drivers/fsl_dma.h ****  */
+ 287:../drivers/fsl_dma.h **** static inline void DMA_SetTransferSize(DMA_Type *base, uint32_t channel, uint32_t size)
+ 288:../drivers/fsl_dma.h **** {
+ 289:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 290:../drivers/fsl_dma.h **** 
+ 291:../drivers/fsl_dma.h ****     base->DMA[channel].DSR_BCR = DMA_DSR_BCR_BCR(size);
+ 292:../drivers/fsl_dma.h **** }
+ 293:../drivers/fsl_dma.h **** 
+ 294:../drivers/fsl_dma.h **** /*!
+ 295:../drivers/fsl_dma.h ****  * @brief Sets the DMA modulo for the DMA transfer.
+ 296:../drivers/fsl_dma.h ****  *
+ 297:../drivers/fsl_dma.h ****  * This function defines a specific address range specified to be the value after (SAR + SSIZE)/(DA
+ 298:../drivers/fsl_dma.h ****  * calculation is performed or the original register value. It provides the ability to implement a 
+ 299:../drivers/fsl_dma.h ****  * data queue easily.
+ 300:../drivers/fsl_dma.h ****  *
+ 301:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 302:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 303:../drivers/fsl_dma.h ****  * @param srcModulo source address modulo.
+ 304:../drivers/fsl_dma.h ****  * @param destModulo destination address modulo.
+ 305:../drivers/fsl_dma.h ****  */
+ 306:../drivers/fsl_dma.h **** void DMA_SetModulo(DMA_Type *base, uint32_t channel, dma_modulo_t srcModulo, dma_modulo_t destModul
+ 307:../drivers/fsl_dma.h **** 
+ 308:../drivers/fsl_dma.h **** /*!
+ 309:../drivers/fsl_dma.h ****  * @brief Enables the DMA cycle steal for the DMA transfer.
+ 310:../drivers/fsl_dma.h ****  *
+ 311:../drivers/fsl_dma.h ****  * If the cycle steal feature is enabled (true), the DMA controller forces a single read/write tran
+ 312:../drivers/fsl_dma.h ****  *  or it continuously makes read/write transfers until the BCR decrements to 0.
+ 313:../drivers/fsl_dma.h ****  *
+ 314:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 315:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 316:../drivers/fsl_dma.h ****  * @param enable The command for enable (true) or disable (false).
+ 317:../drivers/fsl_dma.h ****  */
+ 318:../drivers/fsl_dma.h **** static inline void DMA_EnableCycleSteal(DMA_Type *base, uint32_t channel, bool enable)
+ 319:../drivers/fsl_dma.h **** {
+ 320:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 321:../drivers/fsl_dma.h **** 
+ 322:../drivers/fsl_dma.h ****     base->DMA[channel].DCR = (base->DMA[channel].DCR & (~DMA_DCR_CS_MASK)) | DMA_DCR_CS(enable);
+ 323:../drivers/fsl_dma.h **** }
+ 324:../drivers/fsl_dma.h **** 
+ 325:../drivers/fsl_dma.h **** /*!
+ 326:../drivers/fsl_dma.h ****  * @brief Enables the DMA auto align for the DMA transfer.
+ 327:../drivers/fsl_dma.h ****  *
+ 328:../drivers/fsl_dma.h ****  * If the auto align feature is enabled (true), the appropriate address register increments
+ 329:../drivers/fsl_dma.h ****  * regardless of DINC or SINC.
+ 330:../drivers/fsl_dma.h ****  *
+ 331:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 332:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 333:../drivers/fsl_dma.h ****  * @param enable The command for enable (true) or disable (false).
+ 334:../drivers/fsl_dma.h ****  */
+ 335:../drivers/fsl_dma.h **** static inline void DMA_EnableAutoAlign(DMA_Type *base, uint32_t channel, bool enable)
+ 336:../drivers/fsl_dma.h **** {
+ 337:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 338:../drivers/fsl_dma.h **** 
+ 339:../drivers/fsl_dma.h ****     base->DMA[channel].DCR = (base->DMA[channel].DCR & (~DMA_DCR_AA_MASK)) | DMA_DCR_AA(enable);
+ 340:../drivers/fsl_dma.h **** }
+ 341:../drivers/fsl_dma.h **** 
+ 342:../drivers/fsl_dma.h **** /*!
+ 343:../drivers/fsl_dma.h ****  * @brief Enables the DMA async request for the DMA transfer.
+ 344:../drivers/fsl_dma.h ****  *
+ 345:../drivers/fsl_dma.h ****  * If the async request feature is enabled (true), the DMA supports asynchronous DREQs
+ 346:../drivers/fsl_dma.h ****  * while the MCU is in stop mode.
+ 347:../drivers/fsl_dma.h ****  *
+ 348:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 349:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 350:../drivers/fsl_dma.h ****  * @param enable The command for enable (true) or disable (false).
+ 351:../drivers/fsl_dma.h ****  */
+ 352:../drivers/fsl_dma.h **** static inline void DMA_EnableAsyncRequest(DMA_Type *base, uint32_t channel, bool enable)
+ 353:../drivers/fsl_dma.h **** {
+ 354:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 355:../drivers/fsl_dma.h **** 
+ 356:../drivers/fsl_dma.h ****     base->DMA[channel].DCR = (base->DMA[channel].DCR & (~DMA_DCR_EADREQ_MASK)) | DMA_DCR_EADREQ(ena
+ 357:../drivers/fsl_dma.h **** }
+ 358:../drivers/fsl_dma.h **** 
+ 359:../drivers/fsl_dma.h **** /*!
+ 360:../drivers/fsl_dma.h ****  * @brief Enables an interrupt for the DMA transfer.
+ 361:../drivers/fsl_dma.h ****  *
+ 362:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 363:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 364:../drivers/fsl_dma.h ****  */
+ 365:../drivers/fsl_dma.h **** static inline void DMA_EnableInterrupts(DMA_Type *base, uint32_t channel)
+ 366:../drivers/fsl_dma.h **** {
+ 367:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 368:../drivers/fsl_dma.h **** 
+ 369:../drivers/fsl_dma.h ****     base->DMA[channel].DCR |= DMA_DCR_EINT(true);
+ 370:../drivers/fsl_dma.h **** }
+ 371:../drivers/fsl_dma.h **** 
+ 372:../drivers/fsl_dma.h **** /*!
+ 373:../drivers/fsl_dma.h ****  * @brief Disables an interrupt for the DMA transfer.
+ 374:../drivers/fsl_dma.h ****  *
+ 375:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 376:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 377:../drivers/fsl_dma.h ****  */
+ 378:../drivers/fsl_dma.h **** static inline void DMA_DisableInterrupts(DMA_Type *base, uint32_t channel)
+ 379:../drivers/fsl_dma.h **** {
+ 380:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 381:../drivers/fsl_dma.h **** 
+ 382:../drivers/fsl_dma.h ****     base->DMA[channel].DCR &= ~DMA_DCR_EINT_MASK;
+ 383:../drivers/fsl_dma.h **** }
+ 384:../drivers/fsl_dma.h **** 
+ 385:../drivers/fsl_dma.h **** /* @} */
+ 386:../drivers/fsl_dma.h **** /*!
+ 387:../drivers/fsl_dma.h ****  * @name DMA Channel Transfer Operation
+ 388:../drivers/fsl_dma.h ****  * @{
+ 389:../drivers/fsl_dma.h ****  */
+ 390:../drivers/fsl_dma.h **** 
+ 391:../drivers/fsl_dma.h **** /*!
+ 392:../drivers/fsl_dma.h ****  * @brief Enables the DMA hardware channel request.
+ 393:../drivers/fsl_dma.h ****  *
+ 394:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 395:../drivers/fsl_dma.h ****  * @param channel The DMA channel number.
+ 396:../drivers/fsl_dma.h ****  */
+ 397:../drivers/fsl_dma.h **** static inline void DMA_EnableChannelRequest(DMA_Type *base, uint32_t channel)
+ 398:../drivers/fsl_dma.h **** {
+ 399:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 400:../drivers/fsl_dma.h **** 
+ 401:../drivers/fsl_dma.h ****     base->DMA[channel].DCR |= DMA_DCR_ERQ_MASK;
+ 402:../drivers/fsl_dma.h **** }
+ 403:../drivers/fsl_dma.h **** 
+ 404:../drivers/fsl_dma.h **** /*!
+ 405:../drivers/fsl_dma.h ****  * @brief Disables the DMA hardware channel request.
+ 406:../drivers/fsl_dma.h ****  *
+ 407:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 408:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 409:../drivers/fsl_dma.h ****  */
+ 410:../drivers/fsl_dma.h **** static inline void DMA_DisableChannelRequest(DMA_Type *base, uint32_t channel)
+ 411:../drivers/fsl_dma.h **** {
+ 412:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 413:../drivers/fsl_dma.h **** 
+ 414:../drivers/fsl_dma.h ****     base->DMA[channel].DCR &= ~DMA_DCR_ERQ_MASK;
+ 415:../drivers/fsl_dma.h **** }
+ 416:../drivers/fsl_dma.h **** 
+ 417:../drivers/fsl_dma.h **** /*!
+ 418:../drivers/fsl_dma.h ****  * @brief Starts the DMA transfer with a software trigger.
+ 419:../drivers/fsl_dma.h ****  *
+ 420:../drivers/fsl_dma.h ****  * This function starts only one read/write iteration.
+ 421:../drivers/fsl_dma.h ****  *
+ 422:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 423:../drivers/fsl_dma.h ****  * @param channel The DMA channel number.
+ 424:../drivers/fsl_dma.h ****  */
+ 425:../drivers/fsl_dma.h **** static inline void DMA_TriggerChannelStart(DMA_Type *base, uint32_t channel)
+ 426:../drivers/fsl_dma.h **** {
+ 427:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 428:../drivers/fsl_dma.h **** 
+ 429:../drivers/fsl_dma.h ****     base->DMA[channel].DCR |= DMA_DCR_START_MASK;
+ 430:../drivers/fsl_dma.h **** }
+ 431:../drivers/fsl_dma.h **** 
+ 432:../drivers/fsl_dma.h **** /* @} */
+ 433:../drivers/fsl_dma.h **** /*!
+ 434:../drivers/fsl_dma.h ****  * @name DMA Channel Status Operation
+ 435:../drivers/fsl_dma.h ****  * @{
+ 436:../drivers/fsl_dma.h ****  */
+ 437:../drivers/fsl_dma.h **** 
+ 438:../drivers/fsl_dma.h **** /*!
+ 439:../drivers/fsl_dma.h ****  * @brief Gets the remaining bytes of the current DMA transfer.
+ 440:../drivers/fsl_dma.h ****  *
+ 441:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 442:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 443:../drivers/fsl_dma.h ****  * @return The number of bytes which have not been transferred yet.
+ 444:../drivers/fsl_dma.h ****  */
+ 445:../drivers/fsl_dma.h **** static inline uint32_t DMA_GetRemainingBytes(DMA_Type *base, uint32_t channel)
+ 446:../drivers/fsl_dma.h **** {
+ 447:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 448:../drivers/fsl_dma.h **** 
+ 449:../drivers/fsl_dma.h ****     return (base->DMA[channel].DSR_BCR & DMA_DSR_BCR_BCR_MASK) >> DMA_DSR_BCR_BCR_SHIFT;
+ 450:../drivers/fsl_dma.h **** }
+ 451:../drivers/fsl_dma.h **** 
+ 452:../drivers/fsl_dma.h **** /*!
+ 453:../drivers/fsl_dma.h ****  * @brief Gets the DMA channel status flags.
+ 454:../drivers/fsl_dma.h ****  *
+ 455:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 456:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 457:../drivers/fsl_dma.h ****  * @return The mask of the channel status. Use the _dma_channel_status_flags
+ 458:../drivers/fsl_dma.h ****  *         type to decode the return 32 bit variables.
+ 459:../drivers/fsl_dma.h ****  */
+ 460:../drivers/fsl_dma.h **** static inline uint32_t DMA_GetChannelStatusFlags(DMA_Type *base, uint32_t channel)
+ 461:../drivers/fsl_dma.h **** {
+ 462:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 463:../drivers/fsl_dma.h **** 
+ 464:../drivers/fsl_dma.h ****     return base->DMA[channel].DSR_BCR;
+ 465:../drivers/fsl_dma.h **** }
+ 466:../drivers/fsl_dma.h **** 
+ 467:../drivers/fsl_dma.h **** /*!
+ 468:../drivers/fsl_dma.h ****  * @brief Clears the DMA channel status flags.
+ 469:../drivers/fsl_dma.h ****  *
+ 470:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 471:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 472:../drivers/fsl_dma.h ****  * @param mask The mask of the channel status to be cleared. Use
+ 473:../drivers/fsl_dma.h ****  *             the defined _dma_channel_status_flags type.
+ 474:../drivers/fsl_dma.h ****  */
+ 475:../drivers/fsl_dma.h **** static inline void DMA_ClearChannelStatusFlags(DMA_Type *base, uint32_t channel, uint32_t mask)
+ 476:../drivers/fsl_dma.h **** {
+ 477:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 478:../drivers/fsl_dma.h **** 
+ 479:../drivers/fsl_dma.h ****     if (mask != 0U)
+ 480:../drivers/fsl_dma.h ****     {
+ 481:../drivers/fsl_dma.h ****         base->DMA[channel].DSR_BCR |= DMA_DSR_BCR_DONE(true);
+ 482:../drivers/fsl_dma.h ****     }
+ 483:../drivers/fsl_dma.h **** }
+ 484:../drivers/fsl_dma.h **** 
+ 485:../drivers/fsl_dma.h **** /* @} */
+ 486:../drivers/fsl_dma.h **** /*!
+ 487:../drivers/fsl_dma.h ****  * @name DMA Channel Transactional Operation
+ 488:../drivers/fsl_dma.h ****  * @{
+ 489:../drivers/fsl_dma.h ****  */
+ 490:../drivers/fsl_dma.h **** 
+ 491:../drivers/fsl_dma.h **** /*!
+ 492:../drivers/fsl_dma.h ****  * @brief Creates the DMA handle.
+ 493:../drivers/fsl_dma.h ****  *
+ 494:../drivers/fsl_dma.h ****  * This function is called first if using the transactional API for the DMA. This function
+ 495:../drivers/fsl_dma.h ****  * initializes the internal state of the DMA handle.
+ 496:../drivers/fsl_dma.h ****  *
+ 497:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer. The DMA handle stores callback function and
+ 498:../drivers/fsl_dma.h ****  *               parameters.
+ 499:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 500:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 501:../drivers/fsl_dma.h ****  */
+ 502:../drivers/fsl_dma.h **** void DMA_CreateHandle(dma_handle_t *handle, DMA_Type *base, uint32_t channel);
+ 503:../drivers/fsl_dma.h **** 
+ 504:../drivers/fsl_dma.h **** /*!
+ 505:../drivers/fsl_dma.h ****  * @brief Sets the DMA callback function.
+ 506:../drivers/fsl_dma.h ****  *
+ 507:../drivers/fsl_dma.h ****  * This callback is called in the DMA IRQ handler. Use the callback to do something
+ 508:../drivers/fsl_dma.h ****  * after the current transfer complete.
+ 509:../drivers/fsl_dma.h ****  *
+ 510:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer.
+ 511:../drivers/fsl_dma.h ****  * @param callback DMA callback function pointer.
+ 512:../drivers/fsl_dma.h ****  * @param userData Parameter for callback function. If it is not needed, just set to NULL.
+ 513:../drivers/fsl_dma.h ****  */
+ 514:../drivers/fsl_dma.h **** void DMA_SetCallback(dma_handle_t *handle, dma_callback callback, void *userData);
+ 515:../drivers/fsl_dma.h **** 
+ 516:../drivers/fsl_dma.h **** /*!
+ 517:../drivers/fsl_dma.h ****  * @brief Prepares the DMA transfer configuration structure.
+ 518:../drivers/fsl_dma.h ****  *
+ 519:../drivers/fsl_dma.h ****  * This function prepares the transfer configuration structure according to the user input.
+ 520:../drivers/fsl_dma.h ****  *
+ 521:../drivers/fsl_dma.h ****  * @param config Pointer to the user configuration structure of type dma_transfer_config_t.
+ 522:../drivers/fsl_dma.h ****  * @param srcAddr DMA transfer source address.
+ 523:../drivers/fsl_dma.h ****  * @param srcWidth DMA transfer source address width (byte).
+ 524:../drivers/fsl_dma.h ****  * @param destAddr DMA transfer destination address.
+ 525:../drivers/fsl_dma.h ****  * @param destWidth DMA transfer destination address width (byte).
+ 526:../drivers/fsl_dma.h ****  * @param transferBytes DMA transfer bytes to be transferred.
+ 527:../drivers/fsl_dma.h ****  * @param type DMA transfer type.
+ 528:../drivers/fsl_dma.h ****  */
+ 529:../drivers/fsl_dma.h **** void DMA_PrepareTransfer(dma_transfer_config_t *config,
+ 530:../drivers/fsl_dma.h ****                          void *srcAddr,
+ 531:../drivers/fsl_dma.h ****                          uint32_t srcWidth,
+ 532:../drivers/fsl_dma.h ****                          void *destAddr,
+ 533:../drivers/fsl_dma.h ****                          uint32_t destWidth,
+ 534:../drivers/fsl_dma.h ****                          uint32_t transferBytes,
+ 535:../drivers/fsl_dma.h ****                          dma_transfer_type_t type);
+ 536:../drivers/fsl_dma.h **** 
+ 537:../drivers/fsl_dma.h **** /*!
+ 538:../drivers/fsl_dma.h ****  * @brief Submits the DMA transfer request.
+ 539:../drivers/fsl_dma.h ****  *
+ 540:../drivers/fsl_dma.h ****  * This function submits the DMA transfer request according to the transfer configuration structure
+ 541:../drivers/fsl_dma.h ****  *
+ 542:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer.
+ 543:../drivers/fsl_dma.h ****  * @param config Pointer to DMA transfer configuration structure.
+ 544:../drivers/fsl_dma.h ****  * @param options Additional configurations for transfer. Use
+ 545:../drivers/fsl_dma.h ****  *                the defined dma_transfer_options_t type.
+ 546:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Success It indicates that the DMA submit transfer request succeeded.
+ 547:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Busy It indicates that the DMA is busy. Submit transfer request is not allow
+ 548:../drivers/fsl_dma.h ****  * @note This function can't process multi transfer request.
+ 549:../drivers/fsl_dma.h ****  */
+ 550:../drivers/fsl_dma.h **** status_t DMA_SubmitTransfer(dma_handle_t *handle, const dma_transfer_config_t *config, uint32_t opt
+ 551:../drivers/fsl_dma.h **** 
+ 552:../drivers/fsl_dma.h **** /*!
+ 553:../drivers/fsl_dma.h ****  * @brief DMA starts a transfer.
+ 554:../drivers/fsl_dma.h ****  *
+ 555:../drivers/fsl_dma.h ****  * This function enables the channel request. Call this function
+ 556:../drivers/fsl_dma.h ****  * after submitting a transfer request.
+ 557:../drivers/fsl_dma.h ****  *
+ 558:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer.
+ 559:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Success It indicates that the DMA start transfer succeed.
+ 560:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Busy It indicates that the DMA has started a transfer.
+ 561:../drivers/fsl_dma.h ****  */
+ 562:../drivers/fsl_dma.h **** static inline void DMA_StartTransfer(dma_handle_t *handle)
+ 563:../drivers/fsl_dma.h **** {
+ 564:../drivers/fsl_dma.h ****     assert(handle != NULL);
+ 565:../drivers/fsl_dma.h **** 
+ 566:../drivers/fsl_dma.h ****     handle->base->DMA[handle->channel].DCR |= DMA_DCR_ERQ_MASK;
+ 560              		.loc 3 566 0
+ 561 0036 1368     		ldr	r3, [r2]
+ 562 0038 1279     		ldrb	r2, [r2, #4]
+ 563              	.LVL68:
+ 564 003a 1201     		lsls	r2, r2, #4
+ 565 003c 9B18     		adds	r3, r3, r2
+ 566 003e 0D33     		adds	r3, r3, #13
+ 567 0040 FF33     		adds	r3, r3, #255
+ 568 0042 1968     		ldr	r1, [r3]
+ 569 0044 8022     		movs	r2, #128
+ 570 0046 D205     		lsls	r2, r2, #23
+ 571 0048 0A43     		orrs	r2, r1
+ 572 004a 1A60     		str	r2, [r3]
+ 573              	.LVL69:
+ 574              	.LBE29:
+ 575              	.LBE28:
+ 388:../drivers/fsl_i2c_dma.c **** }
+ 576              		.loc 1 388 0
+ 577 004c 04B0     		add	sp, sp, #16
+ 578              		@ sp needed
+ 579              	.LVL70:
+ 580 004e 10BD     		pop	{r4, pc}
+ 581              	.LVL71:
+ 582              	.L40:
+ 583              	.LBB30:
+ 584              	.LBB31:
+ 585              		.loc 2 544 0
+ 586 0050 0430     		adds	r0, r0, #4
+ 587              	.LVL72:
+ 588              	.LBE31:
+ 589              	.LBE30:
+ 367:../drivers/fsl_i2c_dma.c ****         transfer_config.destAddr = (uint32_t)(handle->transfer.data);
+ 590              		.loc 1 367 0
+ 591 0052 0090     		str	r0, [sp]
+ 368:../drivers/fsl_i2c_dma.c ****         transfer_config.transferSize = (handle->transfer.dataSize - 1);
+ 592              		.loc 1 368 0
+ 593 0054 0B69     		ldr	r3, [r1, #16]
+ 594 0056 0193     		str	r3, [sp, #4]
+ 369:../drivers/fsl_i2c_dma.c ****         transfer_config.srcSize = kDMA_Transfersize8bits;
+ 595              		.loc 1 369 0
+ 596 0058 4B69     		ldr	r3, [r1, #20]
+ 597 005a 013B     		subs	r3, r3, #1
+ 598 005c 0393     		str	r3, [sp, #12]
+ 370:../drivers/fsl_i2c_dma.c ****         transfer_config.enableSrcIncrement = false;
+ 599              		.loc 1 370 0
+ 600 005e 0123     		movs	r3, #1
+ 601 0060 6A46     		mov	r2, sp
+ 602 0062 5372     		strb	r3, [r2, #9]
+ 371:../drivers/fsl_i2c_dma.c ****         transfer_config.destSize = kDMA_Transfersize8bits;
+ 603              		.loc 1 371 0
+ 604 0064 0022     		movs	r2, #0
+ 605 0066 6946     		mov	r1, sp
+ 606              	.LVL73:
+ 607 0068 0A72     		strb	r2, [r1, #8]
+ 372:../drivers/fsl_i2c_dma.c ****         transfer_config.enableDestIncrement = true;
+ 608              		.loc 1 372 0
+ 609 006a CB72     		strb	r3, [r1, #11]
+ 373:../drivers/fsl_i2c_dma.c ****     }
+ 610              		.loc 1 373 0
+ 611 006c 8B72     		strb	r3, [r1, #10]
+ 612 006e DCE7     		b	.L39
+ 613              		.cfi_endproc
+ 614              	.LFE78:
+ 616              		.section	.text.I2C_MasterTransferCreateHandleDMA,"ax",%progbits
+ 617              		.align	1
+ 618              		.global	I2C_MasterTransferCreateHandleDMA
+ 619              		.syntax unified
+ 620              		.code	16
+ 621              		.thumb_func
+ 622              		.fpu softvfp
+ 624              	I2C_MasterTransferCreateHandleDMA:
+ 625              	.LFB79:
+ 389:../drivers/fsl_i2c_dma.c **** 
+ 390:../drivers/fsl_i2c_dma.c **** void I2C_MasterTransferCreateHandleDMA(I2C_Type *base,
+ 391:../drivers/fsl_i2c_dma.c ****                                        i2c_master_dma_handle_t *handle,
+ 392:../drivers/fsl_i2c_dma.c ****                                        i2c_master_dma_transfer_callback_t callback,
+ 393:../drivers/fsl_i2c_dma.c ****                                        void *userData,
+ 394:../drivers/fsl_i2c_dma.c ****                                        dma_handle_t *dmaHandle)
+ 395:../drivers/fsl_i2c_dma.c **** {
+ 626              		.loc 1 395 0
+ 627              		.cfi_startproc
+ 628              		@ args = 4, pretend = 0, frame = 0
+ 629              		@ frame_needed = 0, uses_anonymous_args = 0
+ 630              	.LVL74:
+ 631 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 632              		.cfi_def_cfa_offset 20
+ 633              		.cfi_offset 4, -20
+ 634              		.cfi_offset 5, -16
+ 635              		.cfi_offset 6, -12
+ 636              		.cfi_offset 7, -8
+ 637              		.cfi_offset 14, -4
+ 638 0002 C646     		mov	lr, r8
+ 639 0004 00B5     		push	{lr}
+ 640              		.cfi_def_cfa_offset 24
+ 641              		.cfi_offset 8, -24
+ 642 0006 0500     		movs	r5, r0
+ 643 0008 0C00     		movs	r4, r1
+ 644 000a 9046     		mov	r8, r2
+ 645 000c 1F00     		movs	r7, r3
+ 396:../drivers/fsl_i2c_dma.c ****     assert(handle);
+ 397:../drivers/fsl_i2c_dma.c ****     assert(dmaHandle);
+ 398:../drivers/fsl_i2c_dma.c **** 
+ 399:../drivers/fsl_i2c_dma.c ****     uint32_t instance = I2C_GetInstance(base);
+ 646              		.loc 1 399 0
+ 647 000e FFF7FEFF 		bl	I2C_GetInstance
+ 648              	.LVL75:
+ 649 0012 0600     		movs	r6, r0
+ 650              	.LVL76:
+ 400:../drivers/fsl_i2c_dma.c **** 
+ 401:../drivers/fsl_i2c_dma.c ****     /* Zero handle. */
+ 402:../drivers/fsl_i2c_dma.c ****     memset(handle, 0, sizeof(*handle));
+ 651              		.loc 1 402 0
+ 652 0014 2022     		movs	r2, #32
+ 653 0016 0021     		movs	r1, #0
+ 654 0018 2000     		movs	r0, r4
+ 655              	.LVL77:
+ 656 001a FFF7FEFF 		bl	memset
+ 657              	.LVL78:
+ 403:../drivers/fsl_i2c_dma.c **** 
+ 404:../drivers/fsl_i2c_dma.c ****     /* Set the user callback and userData. */
+ 405:../drivers/fsl_i2c_dma.c ****     handle->completionCallback = callback;
+ 658              		.loc 1 405 0
+ 659 001e 4346     		mov	r3, r8
+ 660 0020 6362     		str	r3, [r4, #36]
+ 406:../drivers/fsl_i2c_dma.c ****     handle->userData = userData;
+ 661              		.loc 1 406 0
+ 662 0022 A762     		str	r7, [r4, #40]
+ 407:../drivers/fsl_i2c_dma.c **** 
+ 408:../drivers/fsl_i2c_dma.c ****     /* Set the handle for DMA. */
+ 409:../drivers/fsl_i2c_dma.c ****     handle->dmaHandle = dmaHandle;
+ 663              		.loc 1 409 0
+ 664 0024 069B     		ldr	r3, [sp, #24]
+ 665 0026 2362     		str	r3, [r4, #32]
+ 410:../drivers/fsl_i2c_dma.c **** 
+ 411:../drivers/fsl_i2c_dma.c ****     s_dmaPrivateHandle[instance].base = base;
+ 666              		.loc 1 411 0
+ 667 0028 054A     		ldr	r2, .L42
+ 668 002a F600     		lsls	r6, r6, #3
+ 669              	.LVL79:
+ 670 002c B550     		str	r5, [r6, r2]
+ 412:../drivers/fsl_i2c_dma.c ****     s_dmaPrivateHandle[instance].handle = handle;
+ 671              		.loc 1 412 0
+ 672 002e 9219     		adds	r2, r2, r6
+ 673 0030 5460     		str	r4, [r2, #4]
+ 413:../drivers/fsl_i2c_dma.c **** 
+ 414:../drivers/fsl_i2c_dma.c ****     DMA_SetCallback(dmaHandle, (dma_callback)I2C_MasterTransferCallbackDMA, &s_dmaPrivateHandle[ins
+ 674              		.loc 1 414 0
+ 675 0032 0449     		ldr	r1, .L42+4
+ 676 0034 1800     		movs	r0, r3
+ 677 0036 FFF7FEFF 		bl	DMA_SetCallback
+ 678              	.LVL80:
+ 415:../drivers/fsl_i2c_dma.c **** }
+ 679              		.loc 1 415 0
+ 680              		@ sp needed
+ 681              	.LVL81:
+ 682              	.LVL82:
+ 683              	.LVL83:
+ 684              	.LVL84:
+ 685 003a 04BC     		pop	{r2}
+ 686 003c 9046     		mov	r8, r2
+ 687 003e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 688              	.L43:
+ 689              		.align	2
+ 690              	.L42:
+ 691 0040 00000000 		.word	.LANCHOR0
+ 692 0044 00000000 		.word	I2C_MasterTransferCallbackDMA
+ 693              		.cfi_endproc
+ 694              	.LFE79:
+ 696              		.section	.text.I2C_MasterTransferDMA,"ax",%progbits
+ 697              		.align	1
+ 698              		.global	I2C_MasterTransferDMA
+ 699              		.syntax unified
+ 700              		.code	16
+ 701              		.thumb_func
+ 702              		.fpu softvfp
+ 704              	I2C_MasterTransferDMA:
+ 705              	.LFB80:
+ 416:../drivers/fsl_i2c_dma.c **** 
+ 417:../drivers/fsl_i2c_dma.c **** status_t I2C_MasterTransferDMA(I2C_Type *base, i2c_master_dma_handle_t *handle, i2c_master_transfer
+ 418:../drivers/fsl_i2c_dma.c **** {
+ 706              		.loc 1 418 0
+ 707              		.cfi_startproc
+ 708              		@ args = 0, pretend = 0, frame = 8
+ 709              		@ frame_needed = 0, uses_anonymous_args = 0
+ 710              	.LVL85:
+ 711 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 712              		.cfi_def_cfa_offset 20
+ 713              		.cfi_offset 4, -20
+ 714              		.cfi_offset 5, -16
+ 715              		.cfi_offset 6, -12
+ 716              		.cfi_offset 7, -8
+ 717              		.cfi_offset 14, -4
+ 718 0002 83B0     		sub	sp, sp, #12
+ 719              		.cfi_def_cfa_offset 32
+ 720 0004 0400     		movs	r4, r0
+ 721 0006 0D00     		movs	r5, r1
+ 419:../drivers/fsl_i2c_dma.c ****     assert(handle);
+ 420:../drivers/fsl_i2c_dma.c ****     assert(xfer);
+ 421:../drivers/fsl_i2c_dma.c **** 
+ 422:../drivers/fsl_i2c_dma.c ****     status_t result;
+ 423:../drivers/fsl_i2c_dma.c ****     uint8_t tmpReg;
+ 424:../drivers/fsl_i2c_dma.c ****     volatile uint8_t dummy = 0;
+ 722              		.loc 1 424 0
+ 723 0008 6B46     		mov	r3, sp
+ 724 000a D91D     		adds	r1, r3, #7
+ 725              	.LVL86:
+ 726 000c 0023     		movs	r3, #0
+ 727 000e 0B70     		strb	r3, [r1]
+ 425:../drivers/fsl_i2c_dma.c **** 
+ 426:../drivers/fsl_i2c_dma.c ****     /* Add this to avoid build warning. */
+ 427:../drivers/fsl_i2c_dma.c ****     dummy++;
+ 728              		.loc 1 427 0
+ 729 0010 0B78     		ldrb	r3, [r1]
+ 730 0012 0133     		adds	r3, r3, #1
+ 731 0014 DBB2     		uxtb	r3, r3
+ 732 0016 0B70     		strb	r3, [r1]
+ 733              	.LVL87:
+ 734              	.LBB32:
+ 735              	.LBB33:
+ 529:../drivers/fsl_i2c.h ****     }
+ 736              		.loc 2 529 0
+ 737 0018 8378     		ldrb	r3, [r0, #2]
+ 738 001a 0121     		movs	r1, #1
+ 739 001c 8B43     		bics	r3, r1
+ 740 001e 8370     		strb	r3, [r0, #2]
+ 741              	.LVL88:
+ 742              	.LBE33:
+ 743              	.LBE32:
+ 428:../drivers/fsl_i2c_dma.c **** 
+ 429:../drivers/fsl_i2c_dma.c ****     /* Disable dma transfer. */
+ 430:../drivers/fsl_i2c_dma.c ****     I2C_EnableDMA(base, false);
+ 431:../drivers/fsl_i2c_dma.c **** 
+ 432:../drivers/fsl_i2c_dma.c ****     /* Send address and command buffer(if there is), until senddata phase or receive data phase. */
+ 433:../drivers/fsl_i2c_dma.c ****     result = I2C_InitTransferStateMachineDMA(base, handle, xfer);
+ 744              		.loc 1 433 0
+ 745 0020 2900     		movs	r1, r5
+ 746 0022 FFF7FEFF 		bl	I2C_InitTransferStateMachineDMA
+ 747              	.LVL89:
+ 748 0026 061E     		subs	r6, r0, #0
+ 749              	.LVL90:
+ 434:../drivers/fsl_i2c_dma.c **** 
+ 435:../drivers/fsl_i2c_dma.c ****     if (result != kStatus_Success)
+ 750              		.loc 1 435 0
+ 751 0028 0FD0     		beq	.L45
+ 436:../drivers/fsl_i2c_dma.c ****     {
+ 437:../drivers/fsl_i2c_dma.c ****         /* Send stop if received Nak. */
+ 438:../drivers/fsl_i2c_dma.c ****         if (result == kStatus_I2C_Nak)
+ 752              		.loc 1 438 0
+ 753 002a 314B     		ldr	r3, .L63
+ 754 002c 9842     		cmp	r0, r3
+ 755 002e 04D0     		beq	.L57
+ 756              	.LVL91:
+ 757              	.L46:
+ 439:../drivers/fsl_i2c_dma.c ****         {
+ 440:../drivers/fsl_i2c_dma.c ****             if (I2C_MasterStop(base) != kStatus_Success)
+ 441:../drivers/fsl_i2c_dma.c ****             {
+ 442:../drivers/fsl_i2c_dma.c ****                 result = kStatus_I2C_Timeout;
+ 443:../drivers/fsl_i2c_dma.c ****             }
+ 444:../drivers/fsl_i2c_dma.c ****         }
+ 445:../drivers/fsl_i2c_dma.c **** 
+ 446:../drivers/fsl_i2c_dma.c ****         /* Reset the state to idle state. */
+ 447:../drivers/fsl_i2c_dma.c ****         handle->state = kIdleState;
+ 758              		.loc 1 447 0
+ 759 0030 0023     		movs	r3, #0
+ 760 0032 2B77     		strb	r3, [r5, #28]
+ 761              	.L44:
+ 448:../drivers/fsl_i2c_dma.c **** 
+ 449:../drivers/fsl_i2c_dma.c ****         return result;
+ 450:../drivers/fsl_i2c_dma.c ****     }
+ 451:../drivers/fsl_i2c_dma.c **** 
+ 452:../drivers/fsl_i2c_dma.c ****     /* Configure dma transfer. */
+ 453:../drivers/fsl_i2c_dma.c ****     /* For i2c send, need to send 1 byte first to trigger the dma, for i2c read,
+ 454:../drivers/fsl_i2c_dma.c ****     need to send stop before reading the last byte, so the dma transfer size should
+ 455:../drivers/fsl_i2c_dma.c ****     be (xSize - 1). */
+ 456:../drivers/fsl_i2c_dma.c ****     if (handle->transfer.dataSize > 1)
+ 457:../drivers/fsl_i2c_dma.c ****     {
+ 458:../drivers/fsl_i2c_dma.c ****         I2C_MasterTransferDMAConfig(base, handle);
+ 459:../drivers/fsl_i2c_dma.c ****         if (handle->transfer.direction == kI2C_Read)
+ 460:../drivers/fsl_i2c_dma.c ****         {
+ 461:../drivers/fsl_i2c_dma.c ****             /* Change direction for receive. */
+ 462:../drivers/fsl_i2c_dma.c ****             base->C1 &= ~(I2C_C1_TX_MASK | I2C_C1_TXAK_MASK);
+ 463:../drivers/fsl_i2c_dma.c **** 
+ 464:../drivers/fsl_i2c_dma.c ****             /* Read dummy to release the bus. */
+ 465:../drivers/fsl_i2c_dma.c ****             dummy = base->D;
+ 466:../drivers/fsl_i2c_dma.c **** 
+ 467:../drivers/fsl_i2c_dma.c ****             /* Enabe dma transfer. */
+ 468:../drivers/fsl_i2c_dma.c ****             I2C_EnableDMA(base, true);
+ 469:../drivers/fsl_i2c_dma.c ****         }
+ 470:../drivers/fsl_i2c_dma.c ****         else
+ 471:../drivers/fsl_i2c_dma.c ****         {
+ 472:../drivers/fsl_i2c_dma.c ****             /* Enabe dma transfer. */
+ 473:../drivers/fsl_i2c_dma.c ****             I2C_EnableDMA(base, true);
+ 474:../drivers/fsl_i2c_dma.c **** 
+ 475:../drivers/fsl_i2c_dma.c ****             /* Send the first data. */
+ 476:../drivers/fsl_i2c_dma.c ****             base->D = *handle->transfer.data;
+ 477:../drivers/fsl_i2c_dma.c ****         }
+ 478:../drivers/fsl_i2c_dma.c ****     }
+ 479:../drivers/fsl_i2c_dma.c ****     else /* If transfer size is 1, use polling method. */
+ 480:../drivers/fsl_i2c_dma.c ****     {
+ 481:../drivers/fsl_i2c_dma.c ****         if (handle->transfer.direction == kI2C_Read)
+ 482:../drivers/fsl_i2c_dma.c ****         {
+ 483:../drivers/fsl_i2c_dma.c ****             tmpReg = base->C1;
+ 484:../drivers/fsl_i2c_dma.c **** 
+ 485:../drivers/fsl_i2c_dma.c ****             /* Change direction to Rx. */
+ 486:../drivers/fsl_i2c_dma.c ****             tmpReg &= ~I2C_C1_TX_MASK;
+ 487:../drivers/fsl_i2c_dma.c **** 
+ 488:../drivers/fsl_i2c_dma.c ****             /* Configure send NAK */
+ 489:../drivers/fsl_i2c_dma.c ****             tmpReg |= I2C_C1_TXAK_MASK;
+ 490:../drivers/fsl_i2c_dma.c **** 
+ 491:../drivers/fsl_i2c_dma.c ****             base->C1 = tmpReg;
+ 492:../drivers/fsl_i2c_dma.c **** 
+ 493:../drivers/fsl_i2c_dma.c ****             /* Read dummy to release the bus. */
+ 494:../drivers/fsl_i2c_dma.c ****             dummy = base->D;
+ 495:../drivers/fsl_i2c_dma.c ****         }
+ 496:../drivers/fsl_i2c_dma.c ****         else
+ 497:../drivers/fsl_i2c_dma.c ****         {
+ 498:../drivers/fsl_i2c_dma.c ****             base->D = *handle->transfer.data;
+ 499:../drivers/fsl_i2c_dma.c ****         }
+ 500:../drivers/fsl_i2c_dma.c **** 
+ 501:../drivers/fsl_i2c_dma.c ****         /* Wait until data transfer complete. */
+ 502:../drivers/fsl_i2c_dma.c ****         while (!(base->S & kI2C_IntPendingFlag))
+ 503:../drivers/fsl_i2c_dma.c ****         {
+ 504:../drivers/fsl_i2c_dma.c ****         }
+ 505:../drivers/fsl_i2c_dma.c **** 
+ 506:../drivers/fsl_i2c_dma.c ****         /* Clear pending flag. */
+ 507:../drivers/fsl_i2c_dma.c ****         base->S = kI2C_IntPendingFlag;
+ 508:../drivers/fsl_i2c_dma.c **** 
+ 509:../drivers/fsl_i2c_dma.c ****         /* Send stop if kI2C_TransferNoStop flag is not asserted. */
+ 510:../drivers/fsl_i2c_dma.c ****         if (!(handle->transfer.flags & kI2C_TransferNoStopFlag))
+ 511:../drivers/fsl_i2c_dma.c ****         {
+ 512:../drivers/fsl_i2c_dma.c ****             result = I2C_MasterStop(base);
+ 513:../drivers/fsl_i2c_dma.c ****         }
+ 514:../drivers/fsl_i2c_dma.c ****         else
+ 515:../drivers/fsl_i2c_dma.c ****         {
+ 516:../drivers/fsl_i2c_dma.c ****             /* Change direction to send. */
+ 517:../drivers/fsl_i2c_dma.c ****             base->C1 |= I2C_C1_TX_MASK;
+ 518:../drivers/fsl_i2c_dma.c ****         }
+ 519:../drivers/fsl_i2c_dma.c **** 
+ 520:../drivers/fsl_i2c_dma.c ****         /* Read the last byte of data. */
+ 521:../drivers/fsl_i2c_dma.c ****         if (handle->transfer.direction == kI2C_Read)
+ 522:../drivers/fsl_i2c_dma.c ****         {
+ 523:../drivers/fsl_i2c_dma.c ****             *handle->transfer.data = base->D;
+ 524:../drivers/fsl_i2c_dma.c ****         }
+ 525:../drivers/fsl_i2c_dma.c **** 
+ 526:../drivers/fsl_i2c_dma.c ****         /* Reset the state to idle. */
+ 527:../drivers/fsl_i2c_dma.c ****         handle->state = kIdleState;
+ 528:../drivers/fsl_i2c_dma.c **** 
+ 529:../drivers/fsl_i2c_dma.c ****         /* Call the callback function after the function has completed. */
+ 530:../drivers/fsl_i2c_dma.c ****         if (handle->completionCallback)
+ 531:../drivers/fsl_i2c_dma.c ****         {
+ 532:../drivers/fsl_i2c_dma.c ****             handle->completionCallback(base, handle, result, handle->userData);
+ 533:../drivers/fsl_i2c_dma.c ****         }
+ 534:../drivers/fsl_i2c_dma.c ****     }
+ 535:../drivers/fsl_i2c_dma.c **** 
+ 536:../drivers/fsl_i2c_dma.c ****     return result;
+ 537:../drivers/fsl_i2c_dma.c **** }
+ 762              		.loc 1 537 0
+ 763 0034 3000     		movs	r0, r6
+ 764 0036 03B0     		add	sp, sp, #12
+ 765              		@ sp needed
+ 766              	.LVL92:
+ 767              	.LVL93:
+ 768              	.LVL94:
+ 769 0038 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 770              	.LVL95:
+ 771              	.L57:
+ 440:../drivers/fsl_i2c_dma.c ****             {
+ 772              		.loc 1 440 0
+ 773 003a 2000     		movs	r0, r4
+ 774              	.LVL96:
+ 775 003c FFF7FEFF 		bl	I2C_MasterStop
+ 776              	.LVL97:
+ 777 0040 0028     		cmp	r0, #0
+ 778 0042 F5D0     		beq	.L46
+ 442:../drivers/fsl_i2c_dma.c ****             }
+ 779              		.loc 1 442 0
+ 780 0044 8A26     		movs	r6, #138
+ 781              	.LVL98:
+ 782 0046 F600     		lsls	r6, r6, #3
+ 783 0048 F2E7     		b	.L46
+ 784              	.LVL99:
+ 785              	.L45:
+ 456:../drivers/fsl_i2c_dma.c ****     {
+ 786              		.loc 1 456 0
+ 787 004a 6B69     		ldr	r3, [r5, #20]
+ 788 004c 012B     		cmp	r3, #1
+ 789 004e 1FD8     		bhi	.L58
+ 481:../drivers/fsl_i2c_dma.c ****         {
+ 790              		.loc 1 481 0
+ 791 0050 6B79     		ldrb	r3, [r5, #5]
+ 792 0052 012B     		cmp	r3, #1
+ 793 0054 38D0     		beq	.L59
+ 498:../drivers/fsl_i2c_dma.c ****         }
+ 794              		.loc 1 498 0
+ 795 0056 2B69     		ldr	r3, [r5, #16]
+ 796 0058 1B78     		ldrb	r3, [r3]
+ 797 005a 2371     		strb	r3, [r4, #4]
+ 798              	.L52:
+ 502:../drivers/fsl_i2c_dma.c ****         {
+ 799              		.loc 1 502 0 discriminator 1
+ 800 005c E378     		ldrb	r3, [r4, #3]
+ 801 005e 9B07     		lsls	r3, r3, #30
+ 802 0060 FCD5     		bpl	.L52
+ 507:../drivers/fsl_i2c_dma.c **** 
+ 803              		.loc 1 507 0
+ 804 0062 0223     		movs	r3, #2
+ 805 0064 E370     		strb	r3, [r4, #3]
+ 510:../drivers/fsl_i2c_dma.c ****         {
+ 806              		.loc 1 510 0
+ 807 0066 2B68     		ldr	r3, [r5]
+ 808 0068 5B07     		lsls	r3, r3, #29
+ 809 006a 38D5     		bpl	.L60
+ 517:../drivers/fsl_i2c_dma.c ****         }
+ 810              		.loc 1 517 0
+ 811 006c A378     		ldrb	r3, [r4, #2]
+ 812 006e 1022     		movs	r2, #16
+ 813 0070 1343     		orrs	r3, r2
+ 814 0072 A370     		strb	r3, [r4, #2]
+ 815              	.L54:
+ 521:../drivers/fsl_i2c_dma.c ****         {
+ 816              		.loc 1 521 0
+ 817 0074 6B79     		ldrb	r3, [r5, #5]
+ 818 0076 012B     		cmp	r3, #1
+ 819 0078 36D0     		beq	.L61
+ 820              	.L55:
+ 527:../drivers/fsl_i2c_dma.c **** 
+ 821              		.loc 1 527 0
+ 822 007a 0023     		movs	r3, #0
+ 823 007c 2B77     		strb	r3, [r5, #28]
+ 530:../drivers/fsl_i2c_dma.c ****         {
+ 824              		.loc 1 530 0
+ 825 007e 6F6A     		ldr	r7, [r5, #36]
+ 826 0080 002F     		cmp	r7, #0
+ 827 0082 D7D0     		beq	.L44
+ 532:../drivers/fsl_i2c_dma.c ****         }
+ 828              		.loc 1 532 0
+ 829 0084 AB6A     		ldr	r3, [r5, #40]
+ 830 0086 3200     		movs	r2, r6
+ 831 0088 2900     		movs	r1, r5
+ 832 008a 2000     		movs	r0, r4
+ 833              	.LVL100:
+ 834 008c B847     		blx	r7
+ 835              	.LVL101:
+ 836 008e D1E7     		b	.L44
+ 837              	.LVL102:
+ 838              	.L58:
+ 458:../drivers/fsl_i2c_dma.c ****         if (handle->transfer.direction == kI2C_Read)
+ 839              		.loc 1 458 0
+ 840 0090 2900     		movs	r1, r5
+ 841 0092 2000     		movs	r0, r4
+ 842              	.LVL103:
+ 843 0094 FFF7FEFF 		bl	I2C_MasterTransferDMAConfig
+ 844              	.LVL104:
+ 459:../drivers/fsl_i2c_dma.c ****         {
+ 845              		.loc 1 459 0
+ 846 0098 6B79     		ldrb	r3, [r5, #5]
+ 847 009a 012B     		cmp	r3, #1
+ 848 009c 07D0     		beq	.L62
+ 849              	.LVL105:
+ 850              	.LBB34:
+ 851              	.LBB35:
+ 525:../drivers/fsl_i2c.h ****     }
+ 852              		.loc 2 525 0
+ 853 009e A378     		ldrb	r3, [r4, #2]
+ 854 00a0 0122     		movs	r2, #1
+ 855 00a2 1343     		orrs	r3, r2
+ 856 00a4 A370     		strb	r3, [r4, #2]
+ 857              	.LVL106:
+ 858              	.LBE35:
+ 859              	.LBE34:
+ 476:../drivers/fsl_i2c_dma.c ****         }
+ 860              		.loc 1 476 0
+ 861 00a6 2B69     		ldr	r3, [r5, #16]
+ 862 00a8 1B78     		ldrb	r3, [r3]
+ 863 00aa 2371     		strb	r3, [r4, #4]
+ 864 00ac C2E7     		b	.L44
+ 865              	.L62:
+ 462:../drivers/fsl_i2c_dma.c **** 
+ 866              		.loc 1 462 0
+ 867 00ae A378     		ldrb	r3, [r4, #2]
+ 868 00b0 1822     		movs	r2, #24
+ 869 00b2 9343     		bics	r3, r2
+ 870 00b4 A370     		strb	r3, [r4, #2]
+ 465:../drivers/fsl_i2c_dma.c **** 
+ 871              		.loc 1 465 0
+ 872 00b6 2379     		ldrb	r3, [r4, #4]
+ 873 00b8 DBB2     		uxtb	r3, r3
+ 874 00ba 6A46     		mov	r2, sp
+ 875 00bc D371     		strb	r3, [r2, #7]
+ 876              	.LVL107:
+ 877              	.LBB36:
+ 878              	.LBB37:
+ 525:../drivers/fsl_i2c.h ****     }
+ 879              		.loc 2 525 0
+ 880 00be A378     		ldrb	r3, [r4, #2]
+ 881 00c0 0122     		movs	r2, #1
+ 882 00c2 1343     		orrs	r3, r2
+ 883 00c4 A370     		strb	r3, [r4, #2]
+ 884 00c6 B5E7     		b	.L44
+ 885              	.LVL108:
+ 886              	.L59:
+ 887              	.LBE37:
+ 888              	.LBE36:
+ 483:../drivers/fsl_i2c_dma.c **** 
+ 889              		.loc 1 483 0
+ 890 00c8 A378     		ldrb	r3, [r4, #2]
+ 891              	.LVL109:
+ 486:../drivers/fsl_i2c_dma.c **** 
+ 892              		.loc 1 486 0
+ 893 00ca 1022     		movs	r2, #16
+ 894 00cc 9343     		bics	r3, r2
+ 895              	.LVL110:
+ 489:../drivers/fsl_i2c_dma.c **** 
+ 896              		.loc 1 489 0
+ 897 00ce 0822     		movs	r2, #8
+ 898 00d0 1343     		orrs	r3, r2
+ 899              	.LVL111:
+ 491:../drivers/fsl_i2c_dma.c **** 
+ 900              		.loc 1 491 0
+ 901 00d2 A370     		strb	r3, [r4, #2]
+ 494:../drivers/fsl_i2c_dma.c ****         }
+ 902              		.loc 1 494 0
+ 903 00d4 2379     		ldrb	r3, [r4, #4]
+ 904              	.LVL112:
+ 905 00d6 DBB2     		uxtb	r3, r3
+ 906 00d8 6A46     		mov	r2, sp
+ 907 00da D371     		strb	r3, [r2, #7]
+ 908              	.LVL113:
+ 909 00dc BEE7     		b	.L52
+ 910              	.L60:
+ 512:../drivers/fsl_i2c_dma.c ****         }
+ 911              		.loc 1 512 0
+ 912 00de 2000     		movs	r0, r4
+ 913              	.LVL114:
+ 914 00e0 FFF7FEFF 		bl	I2C_MasterStop
+ 915              	.LVL115:
+ 916 00e4 0600     		movs	r6, r0
+ 917              	.LVL116:
+ 918 00e6 C5E7     		b	.L54
+ 919              	.L61:
+ 523:../drivers/fsl_i2c_dma.c ****         }
+ 920              		.loc 1 523 0
+ 921 00e8 2B69     		ldr	r3, [r5, #16]
+ 922 00ea 2279     		ldrb	r2, [r4, #4]
+ 923 00ec 1A70     		strb	r2, [r3]
+ 924 00ee C4E7     		b	.L55
+ 925              	.L64:
+ 926              		.align	2
+ 927              	.L63:
+ 928 00f0 4E040000 		.word	1102
+ 929              		.cfi_endproc
+ 930              	.LFE80:
+ 932              		.section	.text.I2C_MasterTransferGetCountDMA,"ax",%progbits
+ 933              		.align	1
+ 934              		.global	I2C_MasterTransferGetCountDMA
+ 935              		.syntax unified
+ 936              		.code	16
+ 937              		.thumb_func
+ 938              		.fpu softvfp
+ 940              	I2C_MasterTransferGetCountDMA:
+ 941              	.LFB81:
+ 538:../drivers/fsl_i2c_dma.c **** 
+ 539:../drivers/fsl_i2c_dma.c **** status_t I2C_MasterTransferGetCountDMA(I2C_Type *base, i2c_master_dma_handle_t *handle, size_t *cou
+ 540:../drivers/fsl_i2c_dma.c **** {
+ 942              		.loc 1 540 0
+ 943              		.cfi_startproc
+ 944              		@ args = 0, pretend = 0, frame = 0
+ 945              		@ frame_needed = 0, uses_anonymous_args = 0
+ 946              		@ link register save eliminated.
+ 947              	.LVL117:
+ 541:../drivers/fsl_i2c_dma.c ****     assert(handle);
+ 542:../drivers/fsl_i2c_dma.c **** 
+ 543:../drivers/fsl_i2c_dma.c ****     if (!count)
+ 948              		.loc 1 543 0
+ 949 0000 002A     		cmp	r2, #0
+ 950 0002 15D0     		beq	.L68
+ 544:../drivers/fsl_i2c_dma.c ****     {
+ 545:../drivers/fsl_i2c_dma.c ****         return kStatus_InvalidArgument;
+ 546:../drivers/fsl_i2c_dma.c ****     }
+ 547:../drivers/fsl_i2c_dma.c **** 
+ 548:../drivers/fsl_i2c_dma.c ****     if (kIdleState != handle->state)
+ 951              		.loc 1 548 0
+ 952 0004 0B7F     		ldrb	r3, [r1, #28]
+ 953 0006 002B     		cmp	r3, #0
+ 954 0008 03D1     		bne	.L69
+ 549:../drivers/fsl_i2c_dma.c ****     {
+ 550:../drivers/fsl_i2c_dma.c ****         *count = (handle->transferSize - DMA_GetRemainingBytes(handle->dmaHandle->base, handle->dma
+ 551:../drivers/fsl_i2c_dma.c ****     }
+ 552:../drivers/fsl_i2c_dma.c ****     else
+ 553:../drivers/fsl_i2c_dma.c ****     {
+ 554:../drivers/fsl_i2c_dma.c ****         *count = handle->transferSize;
+ 955              		.loc 1 554 0
+ 956 000a 8B69     		ldr	r3, [r1, #24]
+ 957 000c 1360     		str	r3, [r2]
+ 555:../drivers/fsl_i2c_dma.c ****     }
+ 556:../drivers/fsl_i2c_dma.c **** 
+ 557:../drivers/fsl_i2c_dma.c ****     return kStatus_Success;
+ 958              		.loc 1 557 0
+ 959 000e 0020     		movs	r0, #0
+ 960              	.LVL118:
+ 961              	.L65:
+ 558:../drivers/fsl_i2c_dma.c **** }
+ 962              		.loc 1 558 0
+ 963              		@ sp needed
+ 964 0010 7047     		bx	lr
+ 965              	.LVL119:
+ 966              	.L69:
+ 550:../drivers/fsl_i2c_dma.c ****     }
+ 967              		.loc 1 550 0
+ 968 0012 8869     		ldr	r0, [r1, #24]
+ 969              	.LVL120:
+ 970 0014 0B6A     		ldr	r3, [r1, #32]
+ 971 0016 1968     		ldr	r1, [r3]
+ 972              	.LVL121:
+ 973 0018 1B79     		ldrb	r3, [r3, #4]
+ 974              	.LVL122:
+ 975              	.LBB38:
+ 976              	.LBB39:
+ 449:../drivers/fsl_dma.h **** }
+ 977              		.loc 3 449 0
+ 978 001a 1B01     		lsls	r3, r3, #4
+ 979              	.LVL123:
+ 980 001c C918     		adds	r1, r1, r3
+ 981              	.LVL124:
+ 982 001e 0931     		adds	r1, r1, #9
+ 983 0020 FF31     		adds	r1, r1, #255
+ 984 0022 0B68     		ldr	r3, [r1]
+ 985 0024 1B02     		lsls	r3, r3, #8
+ 986 0026 1B0A     		lsrs	r3, r3, #8
+ 987              	.LVL125:
+ 988              	.LBE39:
+ 989              	.LBE38:
+ 550:../drivers/fsl_i2c_dma.c ****     }
+ 990              		.loc 1 550 0
+ 991 0028 C31A     		subs	r3, r0, r3
+ 992 002a 1360     		str	r3, [r2]
+ 557:../drivers/fsl_i2c_dma.c **** }
+ 993              		.loc 1 557 0
+ 994 002c 0020     		movs	r0, #0
+ 995 002e EFE7     		b	.L65
+ 996              	.LVL126:
+ 997              	.L68:
+ 545:../drivers/fsl_i2c_dma.c ****     }
+ 998              		.loc 1 545 0
+ 999 0030 0420     		movs	r0, #4
+ 1000              	.LVL127:
+ 1001 0032 EDE7     		b	.L65
+ 1002              		.cfi_endproc
+ 1003              	.LFE81:
+ 1005              		.section	.text.I2C_MasterTransferAbortDMA,"ax",%progbits
+ 1006              		.align	1
+ 1007              		.global	I2C_MasterTransferAbortDMA
+ 1008              		.syntax unified
+ 1009              		.code	16
+ 1010              		.thumb_func
+ 1011              		.fpu softvfp
+ 1013              	I2C_MasterTransferAbortDMA:
+ 1014              	.LFB82:
+ 559:../drivers/fsl_i2c_dma.c **** 
+ 560:../drivers/fsl_i2c_dma.c **** void I2C_MasterTransferAbortDMA(I2C_Type *base, i2c_master_dma_handle_t *handle)
+ 561:../drivers/fsl_i2c_dma.c **** {
+ 1015              		.loc 1 561 0
+ 1016              		.cfi_startproc
+ 1017              		@ args = 0, pretend = 0, frame = 0
+ 1018              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1019              	.LVL128:
+ 1020 0000 70B5     		push	{r4, r5, r6, lr}
+ 1021              		.cfi_def_cfa_offset 16
+ 1022              		.cfi_offset 4, -16
+ 1023              		.cfi_offset 5, -12
+ 1024              		.cfi_offset 6, -8
+ 1025              		.cfi_offset 14, -4
+ 1026 0002 0500     		movs	r5, r0
+ 1027 0004 0C00     		movs	r4, r1
+ 562:../drivers/fsl_i2c_dma.c ****     DMA_AbortTransfer(handle->dmaHandle);
+ 1028              		.loc 1 562 0
+ 1029 0006 086A     		ldr	r0, [r1, #32]
+ 1030              	.LVL129:
+ 1031 0008 FFF7FEFF 		bl	DMA_AbortTransfer
+ 1032              	.LVL130:
+ 1033              	.LBB40:
+ 1034              	.LBB41:
+ 529:../drivers/fsl_i2c.h ****     }
+ 1035              		.loc 2 529 0
+ 1036 000c AB78     		ldrb	r3, [r5, #2]
+ 1037 000e 0122     		movs	r2, #1
+ 1038 0010 9343     		bics	r3, r2
+ 1039 0012 AB70     		strb	r3, [r5, #2]
+ 1040              	.LVL131:
+ 1041              	.LBE41:
+ 1042              	.LBE40:
+ 563:../drivers/fsl_i2c_dma.c **** 
+ 564:../drivers/fsl_i2c_dma.c ****     /* Disable dma transfer. */
+ 565:../drivers/fsl_i2c_dma.c ****     I2C_EnableDMA(base, false);
+ 566:../drivers/fsl_i2c_dma.c **** 
+ 567:../drivers/fsl_i2c_dma.c ****     /* Reset the state to idle. */
+ 568:../drivers/fsl_i2c_dma.c ****     handle->state = kIdleState;
+ 1043              		.loc 1 568 0
+ 1044 0014 0023     		movs	r3, #0
+ 1045 0016 2377     		strb	r3, [r4, #28]
+ 569:../drivers/fsl_i2c_dma.c **** }
+ 1046              		.loc 1 569 0
+ 1047              		@ sp needed
+ 1048              	.LVL132:
+ 1049              	.LVL133:
+ 1050 0018 70BD     		pop	{r4, r5, r6, pc}
+ 1051              		.cfi_endproc
+ 1052              	.LFE82:
+ 1054              		.section	.bss.s_dmaPrivateHandle,"aw",%nobits
+ 1055              		.align	2
+ 1056              		.set	.LANCHOR0,. + 0
+ 1059              	s_dmaPrivateHandle:
+ 1060 0000 00000000 		.space	16
+ 1060      00000000 
+ 1060      00000000 
+ 1060      00000000 
+ 1061              		.text
+ 1062              	.Letext0:
+ 1063              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1064              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1065              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1066              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1067              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1068              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1069              		.file 10 "../CMSIS/system_MKL17Z4.h"
+ 1070              		.file 11 "../CMSIS/MKL17Z4.h"
+ 1071              		.file 12 "../drivers/fsl_common.h"
+ 1072              		.file 13 "../drivers/fsl_clock.h"
+ 1073              		.file 14 "../drivers/fsl_i2c_dma.h"
+ 1074              		.file 15 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fsl_i2c_dma.c
+     /tmp/cci7tm4H.s:16     .text.I2C_CheckAndClearError:0000000000000000 $t
+     /tmp/cci7tm4H.s:22     .text.I2C_CheckAndClearError:0000000000000000 I2C_CheckAndClearError
+     /tmp/cci7tm4H.s:64     .text.I2C_CheckAndClearError:0000000000000018 $d
+     /tmp/cci7tm4H.s:70     .text.I2C_MasterTransferCallbackDMA:0000000000000000 $t
+     /tmp/cci7tm4H.s:76     .text.I2C_MasterTransferCallbackDMA:0000000000000000 I2C_MasterTransferCallbackDMA
+     /tmp/cci7tm4H.s:226    .text.I2C_InitTransferStateMachineDMA:0000000000000000 $t
+     /tmp/cci7tm4H.s:232    .text.I2C_InitTransferStateMachineDMA:0000000000000000 I2C_InitTransferStateMachineDMA
+     /tmp/cci7tm4H.s:485    .text.I2C_InitTransferStateMachineDMA:000000000000011c $d
+     /tmp/cci7tm4H.s:492    .text.I2C_MasterTransferDMAConfig:0000000000000000 $t
+     /tmp/cci7tm4H.s:498    .text.I2C_MasterTransferDMAConfig:0000000000000000 I2C_MasterTransferDMAConfig
+     /tmp/cci7tm4H.s:617    .text.I2C_MasterTransferCreateHandleDMA:0000000000000000 $t
+     /tmp/cci7tm4H.s:624    .text.I2C_MasterTransferCreateHandleDMA:0000000000000000 I2C_MasterTransferCreateHandleDMA
+     /tmp/cci7tm4H.s:691    .text.I2C_MasterTransferCreateHandleDMA:0000000000000040 $d
+     /tmp/cci7tm4H.s:697    .text.I2C_MasterTransferDMA:0000000000000000 $t
+     /tmp/cci7tm4H.s:704    .text.I2C_MasterTransferDMA:0000000000000000 I2C_MasterTransferDMA
+     /tmp/cci7tm4H.s:928    .text.I2C_MasterTransferDMA:00000000000000f0 $d
+     /tmp/cci7tm4H.s:933    .text.I2C_MasterTransferGetCountDMA:0000000000000000 $t
+     /tmp/cci7tm4H.s:940    .text.I2C_MasterTransferGetCountDMA:0000000000000000 I2C_MasterTransferGetCountDMA
+     /tmp/cci7tm4H.s:1006   .text.I2C_MasterTransferAbortDMA:0000000000000000 $t
+     /tmp/cci7tm4H.s:1013   .text.I2C_MasterTransferAbortDMA:0000000000000000 I2C_MasterTransferAbortDMA
+     /tmp/cci7tm4H.s:1055   .bss.s_dmaPrivateHandle:0000000000000000 $d
+     /tmp/cci7tm4H.s:1059   .bss.s_dmaPrivateHandle:0000000000000000 s_dmaPrivateHandle
+
+UNDEFINED SYMBOLS
+I2C_MasterStop
+I2C_MasterRepeatedStart
+I2C_MasterStart
+DMA_SubmitTransfer
+I2C_GetInstance
+memset
+DMA_SetCallback
+DMA_AbortTransfer

@@ -1,0 +1,811 @@
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"fsl_llwu.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.LLWU_SetExternalWakeupPinMode,"ax",%progbits
+  16              		.align	1
+  17              		.global	LLWU_SetExternalWakeupPinMode
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	LLWU_SetExternalWakeupPinMode:
+  24              	.LFB55:
+  25              		.file 1 "../drivers/fsl_llwu.c"
+   1:../drivers/fsl_llwu.c **** /*
+   2:../drivers/fsl_llwu.c ****  * The Clear BSD License
+   3:../drivers/fsl_llwu.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_llwu.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_llwu.c ****  * All rights reserved.
+   6:../drivers/fsl_llwu.c ****  *
+   7:../drivers/fsl_llwu.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_llwu.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_llwu.c ****  * that the following conditions are met:
+  10:../drivers/fsl_llwu.c ****  *
+  11:../drivers/fsl_llwu.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_llwu.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_llwu.c ****  *
+  14:../drivers/fsl_llwu.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_llwu.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_llwu.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_llwu.c ****  *
+  18:../drivers/fsl_llwu.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_llwu.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_llwu.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_llwu.c ****  *
+  22:../drivers/fsl_llwu.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_llwu.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_llwu.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_llwu.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_llwu.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_llwu.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_llwu.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_llwu.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_llwu.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_llwu.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_llwu.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_llwu.c ****  */
+  34:../drivers/fsl_llwu.c **** 
+  35:../drivers/fsl_llwu.c **** #include "fsl_llwu.h"
+  36:../drivers/fsl_llwu.c **** 
+  37:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN)
+  38:../drivers/fsl_llwu.c **** void LLWU_SetExternalWakeupPinMode(LLWU_Type *base, uint32_t pinIndex, llwu_external_pin_mode_t pin
+  39:../drivers/fsl_llwu.c **** {
+  26              		.loc 1 39 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              	.LVL0:
+  31 0000 10B5     		push	{r4, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 4, -8
+  34              		.cfi_offset 14, -4
+  40:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
+  41:../drivers/fsl_llwu.c ****     volatile uint32_t *regBase;
+  42:../drivers/fsl_llwu.c ****     uint32_t regOffset;
+  43:../drivers/fsl_llwu.c ****     uint32_t reg;
+  44:../drivers/fsl_llwu.c **** 
+  45:../drivers/fsl_llwu.c ****     switch (pinIndex >> 4U)
+  46:../drivers/fsl_llwu.c ****     {
+  47:../drivers/fsl_llwu.c ****         case 0U:
+  48:../drivers/fsl_llwu.c ****             regBase = &base->PE1;
+  49:../drivers/fsl_llwu.c ****             break;
+  50:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 16))
+  51:../drivers/fsl_llwu.c ****         case 1U:
+  52:../drivers/fsl_llwu.c ****             regBase = &base->PE2;
+  53:../drivers/fsl_llwu.c ****             break;
+  54:../drivers/fsl_llwu.c **** #endif
+  55:../drivers/fsl_llwu.c ****         default:
+  56:../drivers/fsl_llwu.c ****             regBase = NULL;
+  57:../drivers/fsl_llwu.c ****             break;
+  58:../drivers/fsl_llwu.c ****     }
+  59:../drivers/fsl_llwu.c **** #else
+  60:../drivers/fsl_llwu.c ****     volatile uint8_t *regBase;
+  61:../drivers/fsl_llwu.c ****     uint8_t regOffset;
+  62:../drivers/fsl_llwu.c ****     uint8_t reg;
+  63:../drivers/fsl_llwu.c ****     switch (pinIndex >> 2U)
+  35              		.loc 1 63 0
+  36 0002 8B08     		lsrs	r3, r1, #2
+  37 0004 012B     		cmp	r3, #1
+  38 0006 07D0     		beq	.L3
+  39 0008 002B     		cmp	r3, #0
+  40 000a 06D0     		beq	.L7
+  41 000c 022B     		cmp	r3, #2
+  42 000e 12D0     		beq	.L5
+  43 0010 032B     		cmp	r3, #3
+  44 0012 0FD1     		bne	.L1
+  64:../drivers/fsl_llwu.c ****     {
+  65:../drivers/fsl_llwu.c ****         case 0U:
+  66:../drivers/fsl_llwu.c ****             regBase = &base->PE1;
+  67:../drivers/fsl_llwu.c ****             break;
+  68:../drivers/fsl_llwu.c ****         case 1U:
+  69:../drivers/fsl_llwu.c ****             regBase = &base->PE2;
+  70:../drivers/fsl_llwu.c ****             break;
+  71:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 8))
+  72:../drivers/fsl_llwu.c ****         case 2U:
+  73:../drivers/fsl_llwu.c ****             regBase = &base->PE3;
+  74:../drivers/fsl_llwu.c ****             break;
+  75:../drivers/fsl_llwu.c **** #endif
+  76:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 12))
+  77:../drivers/fsl_llwu.c ****         case 3U:
+  78:../drivers/fsl_llwu.c ****             regBase = &base->PE4;
+  45              		.loc 1 78 0
+  46 0014 0330     		adds	r0, r0, #3
+  47              	.LVL1:
+  79:../drivers/fsl_llwu.c ****             break;
+  48              		.loc 1 79 0
+  49 0016 00E0     		b	.L7
+  50              	.LVL2:
+  51              	.L3:
+  69:../drivers/fsl_llwu.c ****             break;
+  52              		.loc 1 69 0
+  53 0018 0130     		adds	r0, r0, #1
+  54              	.LVL3:
+  55              	.L7:
+  80:../drivers/fsl_llwu.c **** #endif
+  81:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 16))
+  82:../drivers/fsl_llwu.c ****         case 4U:
+  83:../drivers/fsl_llwu.c ****             regBase = &base->PE5;
+  84:../drivers/fsl_llwu.c ****             break;
+  85:../drivers/fsl_llwu.c **** #endif
+  86:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 20))
+  87:../drivers/fsl_llwu.c ****         case 5U:
+  88:../drivers/fsl_llwu.c ****             regBase = &base->PE6;
+  89:../drivers/fsl_llwu.c ****             break;
+  90:../drivers/fsl_llwu.c **** #endif
+  91:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 24))
+  92:../drivers/fsl_llwu.c ****         case 6U:
+  93:../drivers/fsl_llwu.c ****             regBase = &base->PE7;
+  94:../drivers/fsl_llwu.c ****             break;
+  95:../drivers/fsl_llwu.c **** #endif
+  96:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 28))
+  97:../drivers/fsl_llwu.c ****         case 7U:
+  98:../drivers/fsl_llwu.c ****             regBase = &base->PE8;
+  99:../drivers/fsl_llwu.c ****             break;
+ 100:../drivers/fsl_llwu.c **** #endif
+ 101:../drivers/fsl_llwu.c ****         default:
+ 102:../drivers/fsl_llwu.c ****             regBase = NULL;
+ 103:../drivers/fsl_llwu.c ****             break;
+ 104:../drivers/fsl_llwu.c ****     }
+ 105:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_REG_BITWIDTH == 32 */
+ 106:../drivers/fsl_llwu.c **** 
+ 107:../drivers/fsl_llwu.c ****     if (regBase)
+  56              		.loc 1 107 0
+  57 001a 0028     		cmp	r0, #0
+  58 001c 0AD0     		beq	.L1
+ 108:../drivers/fsl_llwu.c ****     {
+ 109:../drivers/fsl_llwu.c ****         reg = *regBase;
+  59              		.loc 1 109 0
+  60 001e 0378     		ldrb	r3, [r0]
+  61              	.LVL4:
+ 110:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
+ 111:../drivers/fsl_llwu.c ****         regOffset = ((pinIndex & 0x0FU) << 1U);
+ 112:../drivers/fsl_llwu.c **** #else
+ 113:../drivers/fsl_llwu.c ****         regOffset = ((pinIndex & 0x03U) << 1U);
+  62              		.loc 1 113 0
+  63 0020 4900     		lsls	r1, r1, #1
+  64              	.LVL5:
+  65 0022 0624     		movs	r4, #6
+  66 0024 2140     		ands	r1, r4
+  67              	.LVL6:
+ 114:../drivers/fsl_llwu.c **** #endif
+ 115:../drivers/fsl_llwu.c ****         reg &= ~(0x3U << regOffset);
+  68              		.loc 1 115 0
+  69 0026 033C     		subs	r4, r4, #3
+  70 0028 8C40     		lsls	r4, r4, r1
+  71 002a A343     		bics	r3, r4
+  72              	.LVL7:
+ 116:../drivers/fsl_llwu.c ****         reg |= ((uint32_t)pinMode << regOffset);
+  73              		.loc 1 116 0
+  74 002c 8A40     		lsls	r2, r2, r1
+  75              	.LVL8:
+  76 002e 1A43     		orrs	r2, r3
+  77 0030 D2B2     		uxtb	r2, r2
+  78              	.LVL9:
+ 117:../drivers/fsl_llwu.c ****         *regBase = reg;
+  79              		.loc 1 117 0
+  80 0032 0270     		strb	r2, [r0]
+  81              	.LVL10:
+  82              	.L1:
+ 118:../drivers/fsl_llwu.c ****     }
+ 119:../drivers/fsl_llwu.c **** }
+  83              		.loc 1 119 0
+  84              		@ sp needed
+  85 0034 10BD     		pop	{r4, pc}
+  86              	.LVL11:
+  87              	.L5:
+  73:../drivers/fsl_llwu.c ****             break;
+  88              		.loc 1 73 0
+  89 0036 0230     		adds	r0, r0, #2
+  90              	.LVL12:
+  74:../drivers/fsl_llwu.c **** #endif
+  91              		.loc 1 74 0
+  92 0038 EFE7     		b	.L7
+  93              		.cfi_endproc
+  94              	.LFE55:
+  96              		.section	.text.LLWU_GetExternalWakeupPinFlag,"ax",%progbits
+  97              		.align	1
+  98              		.global	LLWU_GetExternalWakeupPinFlag
+  99              		.syntax unified
+ 100              		.code	16
+ 101              		.thumb_func
+ 102              		.fpu softvfp
+ 104              	LLWU_GetExternalWakeupPinFlag:
+ 105              	.LFB56:
+ 120:../drivers/fsl_llwu.c **** 
+ 121:../drivers/fsl_llwu.c **** bool LLWU_GetExternalWakeupPinFlag(LLWU_Type *base, uint32_t pinIndex)
+ 122:../drivers/fsl_llwu.c **** {
+ 106              		.loc 1 122 0
+ 107              		.cfi_startproc
+ 108              		@ args = 0, pretend = 0, frame = 0
+ 109              		@ frame_needed = 0, uses_anonymous_args = 0
+ 110              		@ link register save eliminated.
+ 111              	.LVL13:
+ 123:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
+ 124:../drivers/fsl_llwu.c ****     return (bool)(base->PF & (1U << pinIndex));
+ 125:../drivers/fsl_llwu.c **** #else
+ 126:../drivers/fsl_llwu.c ****     volatile uint8_t *regBase;
+ 127:../drivers/fsl_llwu.c **** 
+ 128:../drivers/fsl_llwu.c ****     switch (pinIndex >> 3U)
+ 112              		.loc 1 128 0
+ 113 0000 CB08     		lsrs	r3, r1, #3
+ 114 0002 03D0     		beq	.L10
+ 115 0004 012B     		cmp	r3, #1
+ 116 0006 0DD0     		beq	.L11
+ 129:../drivers/fsl_llwu.c ****     {
+ 130:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PF) && FSL_FEATURE_LLWU_HAS_PF)
+ 131:../drivers/fsl_llwu.c ****         case 0U:
+ 132:../drivers/fsl_llwu.c ****             regBase = &base->PF1;
+ 133:../drivers/fsl_llwu.c ****             break;
+ 134:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 8))
+ 135:../drivers/fsl_llwu.c ****         case 1U:
+ 136:../drivers/fsl_llwu.c ****             regBase = &base->PF2;
+ 137:../drivers/fsl_llwu.c ****             break;
+ 138:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 139:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 16))
+ 140:../drivers/fsl_llwu.c ****         case 2U:
+ 141:../drivers/fsl_llwu.c ****             regBase = &base->PF3;
+ 142:../drivers/fsl_llwu.c ****             break;
+ 143:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 144:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 24))
+ 145:../drivers/fsl_llwu.c ****         case 3U:
+ 146:../drivers/fsl_llwu.c ****             regBase = &base->PF4;
+ 147:../drivers/fsl_llwu.c ****             break;
+ 148:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 149:../drivers/fsl_llwu.c **** #else
+ 150:../drivers/fsl_llwu.c ****         case 0U:
+ 151:../drivers/fsl_llwu.c ****             regBase = &base->F1;
+ 152:../drivers/fsl_llwu.c ****             break;
+ 153:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 8))
+ 154:../drivers/fsl_llwu.c ****         case 1U:
+ 155:../drivers/fsl_llwu.c ****             regBase = &base->F2;
+ 156:../drivers/fsl_llwu.c ****             break;
+ 157:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 158:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 16))
+ 159:../drivers/fsl_llwu.c ****         case 2U:
+ 160:../drivers/fsl_llwu.c ****             regBase = &base->F3;
+ 161:../drivers/fsl_llwu.c ****             break;
+ 162:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 163:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 24))
+ 164:../drivers/fsl_llwu.c ****         case 3U:
+ 165:../drivers/fsl_llwu.c ****             regBase = &base->F4;
+ 166:../drivers/fsl_llwu.c ****             break;
+ 167:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 168:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PF */
+ 169:../drivers/fsl_llwu.c ****         default:
+ 170:../drivers/fsl_llwu.c ****             regBase = NULL;
+ 171:../drivers/fsl_llwu.c ****             break;
+ 172:../drivers/fsl_llwu.c ****     }
+ 173:../drivers/fsl_llwu.c **** 
+ 174:../drivers/fsl_llwu.c ****     if (regBase)
+ 175:../drivers/fsl_llwu.c ****     {
+ 176:../drivers/fsl_llwu.c ****         return (bool)(*regBase & (1U << pinIndex % 8));
+ 177:../drivers/fsl_llwu.c ****     }
+ 178:../drivers/fsl_llwu.c ****     else
+ 179:../drivers/fsl_llwu.c ****     {
+ 180:../drivers/fsl_llwu.c ****         return false;
+ 117              		.loc 1 180 0
+ 118 0008 0020     		movs	r0, #0
+ 119              	.LVL14:
+ 120 000a 0AE0     		b	.L9
+ 121              	.LVL15:
+ 122              	.L10:
+ 151:../drivers/fsl_llwu.c ****             break;
+ 123              		.loc 1 151 0
+ 124 000c 0530     		adds	r0, r0, #5
+ 125              	.LVL16:
+ 126              	.L12:
+ 174:../drivers/fsl_llwu.c ****     {
+ 127              		.loc 1 174 0
+ 128 000e 0028     		cmp	r0, #0
+ 129 0010 0AD0     		beq	.L14
+ 176:../drivers/fsl_llwu.c ****     }
+ 130              		.loc 1 176 0
+ 131 0012 0078     		ldrb	r0, [r0]
+ 132              	.LVL17:
+ 133 0014 C0B2     		uxtb	r0, r0
+ 134 0016 0723     		movs	r3, #7
+ 135 0018 1940     		ands	r1, r3
+ 136              	.LVL18:
+ 137 001a 0300     		movs	r3, r0
+ 138 001c CB40     		lsrs	r3, r3, r1
+ 139 001e 0120     		movs	r0, #1
+ 140 0020 1840     		ands	r0, r3
+ 141              	.L9:
+ 181:../drivers/fsl_llwu.c ****     }
+ 182:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_REG_BITWIDTH */
+ 183:../drivers/fsl_llwu.c **** }
+ 142              		.loc 1 183 0
+ 143              		@ sp needed
+ 144 0022 7047     		bx	lr
+ 145              	.LVL19:
+ 146              	.L11:
+ 155:../drivers/fsl_llwu.c ****             break;
+ 147              		.loc 1 155 0
+ 148 0024 0630     		adds	r0, r0, #6
+ 149              	.LVL20:
+ 156:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 150              		.loc 1 156 0
+ 151 0026 F2E7     		b	.L12
+ 152              	.LVL21:
+ 153              	.L14:
+ 180:../drivers/fsl_llwu.c ****     }
+ 154              		.loc 1 180 0
+ 155 0028 0020     		movs	r0, #0
+ 156              	.LVL22:
+ 157 002a FAE7     		b	.L9
+ 158              		.cfi_endproc
+ 159              	.LFE56:
+ 161              		.section	.text.LLWU_ClearExternalWakeupPinFlag,"ax",%progbits
+ 162              		.align	1
+ 163              		.global	LLWU_ClearExternalWakeupPinFlag
+ 164              		.syntax unified
+ 165              		.code	16
+ 166              		.thumb_func
+ 167              		.fpu softvfp
+ 169              	LLWU_ClearExternalWakeupPinFlag:
+ 170              	.LFB57:
+ 184:../drivers/fsl_llwu.c **** 
+ 185:../drivers/fsl_llwu.c **** void LLWU_ClearExternalWakeupPinFlag(LLWU_Type *base, uint32_t pinIndex)
+ 186:../drivers/fsl_llwu.c **** {
+ 171              		.loc 1 186 0
+ 172              		.cfi_startproc
+ 173              		@ args = 0, pretend = 0, frame = 0
+ 174              		@ frame_needed = 0, uses_anonymous_args = 0
+ 175              		@ link register save eliminated.
+ 176              	.LVL23:
+ 187:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
+ 188:../drivers/fsl_llwu.c ****     base->PF = (1U << pinIndex);
+ 189:../drivers/fsl_llwu.c **** #else
+ 190:../drivers/fsl_llwu.c ****     volatile uint8_t *regBase;
+ 191:../drivers/fsl_llwu.c ****     switch (pinIndex >> 3U)
+ 177              		.loc 1 191 0
+ 178 0000 CB08     		lsrs	r3, r1, #3
+ 179 0002 03D0     		beq	.L18
+ 180 0004 012B     		cmp	r3, #1
+ 181 0006 0AD1     		bne	.L16
+ 192:../drivers/fsl_llwu.c ****     {
+ 193:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PF) && FSL_FEATURE_LLWU_HAS_PF)
+ 194:../drivers/fsl_llwu.c ****         case 0U:
+ 195:../drivers/fsl_llwu.c ****             regBase = &base->PF1;
+ 196:../drivers/fsl_llwu.c ****             break;
+ 197:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 8))
+ 198:../drivers/fsl_llwu.c ****         case 1U:
+ 199:../drivers/fsl_llwu.c ****             regBase = &base->PF2;
+ 200:../drivers/fsl_llwu.c ****             break;
+ 201:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 202:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 16))
+ 203:../drivers/fsl_llwu.c ****         case 2U:
+ 204:../drivers/fsl_llwu.c ****             regBase = &base->PF3;
+ 205:../drivers/fsl_llwu.c ****             break;
+ 206:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 207:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 24))
+ 208:../drivers/fsl_llwu.c ****         case 3U:
+ 209:../drivers/fsl_llwu.c ****             regBase = &base->PF4;
+ 210:../drivers/fsl_llwu.c ****             break;
+ 211:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 212:../drivers/fsl_llwu.c **** #else
+ 213:../drivers/fsl_llwu.c ****         case 0U:
+ 214:../drivers/fsl_llwu.c ****             regBase = &base->F1;
+ 215:../drivers/fsl_llwu.c ****             break;
+ 216:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 8))
+ 217:../drivers/fsl_llwu.c ****         case 1U:
+ 218:../drivers/fsl_llwu.c ****             regBase = &base->F2;
+ 182              		.loc 1 218 0
+ 183 0008 0630     		adds	r0, r0, #6
+ 184              	.LVL24:
+ 219:../drivers/fsl_llwu.c ****             break;
+ 185              		.loc 1 219 0
+ 186 000a 00E0     		b	.L20
+ 187              	.LVL25:
+ 188              	.L18:
+ 214:../drivers/fsl_llwu.c ****             break;
+ 189              		.loc 1 214 0
+ 190 000c 0530     		adds	r0, r0, #5
+ 191              	.LVL26:
+ 192              	.L20:
+ 220:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 221:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 16))
+ 222:../drivers/fsl_llwu.c ****         case 2U:
+ 223:../drivers/fsl_llwu.c ****             regBase = &base->F3;
+ 224:../drivers/fsl_llwu.c ****             break;
+ 225:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 226:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 24))
+ 227:../drivers/fsl_llwu.c ****         case 3U:
+ 228:../drivers/fsl_llwu.c ****             regBase = &base->F4;
+ 229:../drivers/fsl_llwu.c ****             break;
+ 230:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 231:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PF */
+ 232:../drivers/fsl_llwu.c ****         default:
+ 233:../drivers/fsl_llwu.c ****             regBase = NULL;
+ 234:../drivers/fsl_llwu.c ****             break;
+ 235:../drivers/fsl_llwu.c ****     }
+ 236:../drivers/fsl_llwu.c ****     if (regBase)
+ 193              		.loc 1 236 0
+ 194 000e 0028     		cmp	r0, #0
+ 195 0010 05D0     		beq	.L16
+ 237:../drivers/fsl_llwu.c ****     {
+ 238:../drivers/fsl_llwu.c ****         *regBase = (1U << pinIndex % 8U);
+ 196              		.loc 1 238 0
+ 197 0012 0723     		movs	r3, #7
+ 198 0014 1940     		ands	r1, r3
+ 199              	.LVL27:
+ 200 0016 063B     		subs	r3, r3, #6
+ 201 0018 8B40     		lsls	r3, r3, r1
+ 202 001a DBB2     		uxtb	r3, r3
+ 203 001c 0370     		strb	r3, [r0]
+ 204              	.LVL28:
+ 205              	.L16:
+ 239:../drivers/fsl_llwu.c ****     }
+ 240:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_REG_BITWIDTH */
+ 241:../drivers/fsl_llwu.c **** }
+ 206              		.loc 1 241 0
+ 207              		@ sp needed
+ 208 001e 7047     		bx	lr
+ 209              		.cfi_endproc
+ 210              	.LFE57:
+ 212              		.section	.text.LLWU_SetPinFilterMode,"ax",%progbits
+ 213              		.align	1
+ 214              		.global	LLWU_SetPinFilterMode
+ 215              		.syntax unified
+ 216              		.code	16
+ 217              		.thumb_func
+ 218              		.fpu softvfp
+ 220              	LLWU_SetPinFilterMode:
+ 221              	.LFB58:
+ 242:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 243:../drivers/fsl_llwu.c **** 
+ 244:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && FSL_FEATURE_LLWU_HAS_PIN_FILTER)
+ 245:../drivers/fsl_llwu.c **** void LLWU_SetPinFilterMode(LLWU_Type *base, uint32_t filterIndex, llwu_external_pin_filter_mode_t f
+ 246:../drivers/fsl_llwu.c **** {
+ 222              		.loc 1 246 0
+ 223              		.cfi_startproc
+ 224              		@ args = 0, pretend = 0, frame = 8
+ 225              		@ frame_needed = 0, uses_anonymous_args = 0
+ 226              		@ link register save eliminated.
+ 227              	.LVL29:
+ 228 0000 82B0     		sub	sp, sp, #8
+ 229              		.cfi_def_cfa_offset 8
+ 230 0002 0092     		str	r2, [sp]
+ 231 0004 0193     		str	r3, [sp, #4]
+ 247:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
+ 248:../drivers/fsl_llwu.c ****     base->FILT = ((base->FILT) & ~((LLWU_FILT_FILTSEL1_MASK | LLWU_FILT_FILTE1_MASK) << ((filterInd
+ 249:../drivers/fsl_llwu.c ****                  ((LLWU_FILT_FILTSEL1(filterMode.pinIndex) | LLWU_FILT_FILTE1(filterMode.filterMode
+ 250:../drivers/fsl_llwu.c ****                   << ((filterIndex - 1U) * 8U)) |
+ 251:../drivers/fsl_llwu.c ****                  LLWU_FILT_FILTF1_MASK /* W1C to clear the FILTF flag bit. */
+ 252:../drivers/fsl_llwu.c ****         ;
+ 253:../drivers/fsl_llwu.c **** #else
+ 254:../drivers/fsl_llwu.c ****     volatile uint8_t *regBase;
+ 255:../drivers/fsl_llwu.c **** 
+ 256:../drivers/fsl_llwu.c ****     switch (filterIndex)
+ 232              		.loc 1 256 0
+ 233 0006 0129     		cmp	r1, #1
+ 234 0008 03D0     		beq	.L23
+ 235 000a 0229     		cmp	r1, #2
+ 236 000c 16D1     		bne	.L21
+ 257:../drivers/fsl_llwu.c ****     {
+ 258:../drivers/fsl_llwu.c ****         case 1U:
+ 259:../drivers/fsl_llwu.c ****             regBase = &base->FILT1;
+ 260:../drivers/fsl_llwu.c ****             break;
+ 261:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 1))
+ 262:../drivers/fsl_llwu.c ****         case 2U:
+ 263:../drivers/fsl_llwu.c ****             regBase = &base->FILT2;
+ 237              		.loc 1 263 0
+ 238 000e 0930     		adds	r0, r0, #9
+ 239              	.LVL30:
+ 264:../drivers/fsl_llwu.c ****             break;
+ 240              		.loc 1 264 0
+ 241 0010 00E0     		b	.L25
+ 242              	.LVL31:
+ 243              	.L23:
+ 259:../drivers/fsl_llwu.c ****             break;
+ 244              		.loc 1 259 0
+ 245 0012 0830     		adds	r0, r0, #8
+ 246              	.LVL32:
+ 247              	.L25:
+ 265:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
+ 266:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 2))
+ 267:../drivers/fsl_llwu.c ****         case 3U:
+ 268:../drivers/fsl_llwu.c ****             regBase = &base->FILT3;
+ 269:../drivers/fsl_llwu.c ****             break;
+ 270:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
+ 271:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 3))
+ 272:../drivers/fsl_llwu.c ****         case 4U:
+ 273:../drivers/fsl_llwu.c ****             regBase = &base->FILT4;
+ 274:../drivers/fsl_llwu.c ****             break;
+ 275:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
+ 276:../drivers/fsl_llwu.c ****         default:
+ 277:../drivers/fsl_llwu.c ****             regBase = NULL;
+ 278:../drivers/fsl_llwu.c ****             break;
+ 279:../drivers/fsl_llwu.c ****     }
+ 280:../drivers/fsl_llwu.c **** 
+ 281:../drivers/fsl_llwu.c ****     if (NULL != regBase)
+ 248              		.loc 1 281 0
+ 249 0014 0028     		cmp	r0, #0
+ 250 0016 11D0     		beq	.L21
+ 282:../drivers/fsl_llwu.c ****     {
+ 283:../drivers/fsl_llwu.c ****         *regBase = (*regBase & ~(LLWU_FILT1_FILTSEL_MASK | LLWU_FILT1_FILTE_MASK)) |
+ 251              		.loc 1 283 0
+ 252 0018 0378     		ldrb	r3, [r0]
+ 253 001a 6F22     		movs	r2, #111
+ 254 001c 9343     		bics	r3, r2
+ 284:../drivers/fsl_llwu.c ****                    LLWU_FILT1_FILTSEL(filterMode.pinIndex) | LLWU_FILT1_FILTE(filterMode.filterMode
+ 255              		.loc 1 284 0
+ 256 001e 603A     		subs	r2, r2, #96
+ 257 0020 0099     		ldr	r1, [sp]
+ 258              	.LVL33:
+ 259 0022 0A40     		ands	r2, r1
+ 283:../drivers/fsl_llwu.c ****                    LLWU_FILT1_FILTSEL(filterMode.pinIndex) | LLWU_FILT1_FILTE(filterMode.filterMode
+ 260              		.loc 1 283 0
+ 261 0024 1343     		orrs	r3, r2
+ 262              		.loc 1 284 0
+ 263 0026 6A46     		mov	r2, sp
+ 264 0028 1279     		ldrb	r2, [r2, #4]
+ 265 002a 5201     		lsls	r2, r2, #5
+ 266 002c 6021     		movs	r1, #96
+ 267 002e 0A40     		ands	r2, r1
+ 268 0030 1343     		orrs	r3, r2
+ 269 0032 8022     		movs	r2, #128
+ 270 0034 5242     		rsbs	r2, r2, #0
+ 271 0036 1343     		orrs	r3, r2
+ 272 0038 DBB2     		uxtb	r3, r3
+ 283:../drivers/fsl_llwu.c ****                    LLWU_FILT1_FILTSEL(filterMode.pinIndex) | LLWU_FILT1_FILTE(filterMode.filterMode
+ 273              		.loc 1 283 0
+ 274 003a 0370     		strb	r3, [r0]
+ 275              	.LVL34:
+ 276              	.L21:
+ 285:../drivers/fsl_llwu.c ****                    LLWU_FILT1_FILTF_MASK /* W1C to clear the FILTF flag bit. */
+ 286:../drivers/fsl_llwu.c ****             ;
+ 287:../drivers/fsl_llwu.c ****     }
+ 288:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_REG_BITWIDTH */
+ 289:../drivers/fsl_llwu.c **** }
+ 277              		.loc 1 289 0
+ 278 003c 02B0     		add	sp, sp, #8
+ 279              		@ sp needed
+ 280 003e 7047     		bx	lr
+ 281              		.cfi_endproc
+ 282              	.LFE58:
+ 284              		.section	.text.LLWU_GetPinFilterFlag,"ax",%progbits
+ 285              		.align	1
+ 286              		.global	LLWU_GetPinFilterFlag
+ 287              		.syntax unified
+ 288              		.code	16
+ 289              		.thumb_func
+ 290              		.fpu softvfp
+ 292              	LLWU_GetPinFilterFlag:
+ 293              	.LFB59:
+ 290:../drivers/fsl_llwu.c **** 
+ 291:../drivers/fsl_llwu.c **** bool LLWU_GetPinFilterFlag(LLWU_Type *base, uint32_t filterIndex)
+ 292:../drivers/fsl_llwu.c **** {
+ 294              		.loc 1 292 0
+ 295              		.cfi_startproc
+ 296              		@ args = 0, pretend = 0, frame = 0
+ 297              		@ frame_needed = 0, uses_anonymous_args = 0
+ 298              		@ link register save eliminated.
+ 299              	.LVL35:
+ 293:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
+ 294:../drivers/fsl_llwu.c ****     return (bool)(base->FILT & (1U << (filterIndex * 8U - 1)));
+ 295:../drivers/fsl_llwu.c **** #else
+ 296:../drivers/fsl_llwu.c ****     bool status = false;
+ 297:../drivers/fsl_llwu.c **** 
+ 298:../drivers/fsl_llwu.c ****     switch (filterIndex)
+ 300              		.loc 1 298 0
+ 301 0000 0129     		cmp	r1, #1
+ 302 0002 03D0     		beq	.L28
+ 303 0004 0229     		cmp	r1, #2
+ 304 0006 04D0     		beq	.L29
+ 296:../drivers/fsl_llwu.c **** 
+ 305              		.loc 1 296 0
+ 306 0008 0020     		movs	r0, #0
+ 307              	.LVL36:
+ 308 000a 01E0     		b	.L27
+ 309              	.LVL37:
+ 310              	.L28:
+ 299:../drivers/fsl_llwu.c ****     {
+ 300:../drivers/fsl_llwu.c ****         case 1:
+ 301:../drivers/fsl_llwu.c ****             status = (base->FILT1 & LLWU_FILT1_FILTF_MASK);
+ 311              		.loc 1 301 0
+ 312 000c 007A     		ldrb	r0, [r0, #8]
+ 313              	.LVL38:
+ 314 000e C009     		lsrs	r0, r0, #7
+ 315              	.LVL39:
+ 316              	.L27:
+ 302:../drivers/fsl_llwu.c ****             break;
+ 303:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 1))
+ 304:../drivers/fsl_llwu.c ****         case 2:
+ 305:../drivers/fsl_llwu.c ****             status = (base->FILT2 & LLWU_FILT2_FILTF_MASK);
+ 306:../drivers/fsl_llwu.c ****             break;
+ 307:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
+ 308:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 2))
+ 309:../drivers/fsl_llwu.c ****         case 3:
+ 310:../drivers/fsl_llwu.c ****             status = (base->FILT3 & LLWU_FILT3_FILTF_MASK);
+ 311:../drivers/fsl_llwu.c ****             break;
+ 312:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
+ 313:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 3))
+ 314:../drivers/fsl_llwu.c ****         case 4:
+ 315:../drivers/fsl_llwu.c ****             status = (base->FILT4 & LLWU_FILT4_FILTF_MASK);
+ 316:../drivers/fsl_llwu.c ****             break;
+ 317:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
+ 318:../drivers/fsl_llwu.c ****         default:
+ 319:../drivers/fsl_llwu.c ****             break;
+ 320:../drivers/fsl_llwu.c ****     }
+ 321:../drivers/fsl_llwu.c **** 
+ 322:../drivers/fsl_llwu.c ****     return status;
+ 323:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_REG_BITWIDTH */
+ 324:../drivers/fsl_llwu.c **** }
+ 317              		.loc 1 324 0
+ 318              		@ sp needed
+ 319 0010 7047     		bx	lr
+ 320              	.LVL40:
+ 321              	.L29:
+ 305:../drivers/fsl_llwu.c ****             break;
+ 322              		.loc 1 305 0
+ 323 0012 407A     		ldrb	r0, [r0, #9]
+ 324              	.LVL41:
+ 325 0014 C009     		lsrs	r0, r0, #7
+ 326              	.LVL42:
+ 306:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
+ 327              		.loc 1 306 0
+ 328 0016 FBE7     		b	.L27
+ 329              		.cfi_endproc
+ 330              	.LFE59:
+ 332              		.section	.text.LLWU_ClearPinFilterFlag,"ax",%progbits
+ 333              		.align	1
+ 334              		.global	LLWU_ClearPinFilterFlag
+ 335              		.syntax unified
+ 336              		.code	16
+ 337              		.thumb_func
+ 338              		.fpu softvfp
+ 340              	LLWU_ClearPinFilterFlag:
+ 341              	.LFB60:
+ 325:../drivers/fsl_llwu.c **** 
+ 326:../drivers/fsl_llwu.c **** void LLWU_ClearPinFilterFlag(LLWU_Type *base, uint32_t filterIndex)
+ 327:../drivers/fsl_llwu.c **** {
+ 342              		.loc 1 327 0
+ 343              		.cfi_startproc
+ 344              		@ args = 0, pretend = 0, frame = 0
+ 345              		@ frame_needed = 0, uses_anonymous_args = 0
+ 346              		@ link register save eliminated.
+ 347              	.LVL43:
+ 328:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
+ 329:../drivers/fsl_llwu.c ****     uint32_t reg;
+ 330:../drivers/fsl_llwu.c **** 
+ 331:../drivers/fsl_llwu.c ****     reg = base->FILT;
+ 332:../drivers/fsl_llwu.c ****     switch (filterIndex)
+ 333:../drivers/fsl_llwu.c ****     {
+ 334:../drivers/fsl_llwu.c ****         case 1:
+ 335:../drivers/fsl_llwu.c ****             reg |= LLWU_FILT_FILTF1_MASK;
+ 336:../drivers/fsl_llwu.c ****             break;
+ 337:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 1))
+ 338:../drivers/fsl_llwu.c ****         case 2:
+ 339:../drivers/fsl_llwu.c ****             reg |= LLWU_FILT_FILTF2_MASK;
+ 340:../drivers/fsl_llwu.c ****             break;
+ 341:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER > 1 */
+ 342:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 2))
+ 343:../drivers/fsl_llwu.c ****         case 3:
+ 344:../drivers/fsl_llwu.c ****             reg |= LLWU_FILT_FILTF3_MASK;
+ 345:../drivers/fsl_llwu.c ****             break;
+ 346:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER > 2 */
+ 347:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 3))
+ 348:../drivers/fsl_llwu.c ****         case 4:
+ 349:../drivers/fsl_llwu.c ****             reg |= LLWU_FILT_FILTF4_MASK;
+ 350:../drivers/fsl_llwu.c ****             break;
+ 351:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER > 3 */
+ 352:../drivers/fsl_llwu.c ****         default:
+ 353:../drivers/fsl_llwu.c ****             break;
+ 354:../drivers/fsl_llwu.c ****     }
+ 355:../drivers/fsl_llwu.c ****     base->FILT = reg;
+ 356:../drivers/fsl_llwu.c **** #else
+ 357:../drivers/fsl_llwu.c ****     volatile uint8_t *regBase;
+ 358:../drivers/fsl_llwu.c ****     uint8_t reg;
+ 359:../drivers/fsl_llwu.c **** 
+ 360:../drivers/fsl_llwu.c ****     switch (filterIndex)
+ 348              		.loc 1 360 0
+ 349 0000 0129     		cmp	r1, #1
+ 350 0002 03D0     		beq	.L34
+ 351 0004 0229     		cmp	r1, #2
+ 352 0006 0AD1     		bne	.L32
+ 361:../drivers/fsl_llwu.c ****     {
+ 362:../drivers/fsl_llwu.c ****         case 1:
+ 363:../drivers/fsl_llwu.c ****             regBase = &base->FILT1;
+ 364:../drivers/fsl_llwu.c ****             break;
+ 365:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 1))
+ 366:../drivers/fsl_llwu.c ****         case 2:
+ 367:../drivers/fsl_llwu.c ****             regBase = &base->FILT2;
+ 353              		.loc 1 367 0
+ 354 0008 0930     		adds	r0, r0, #9
+ 355              	.LVL44:
+ 368:../drivers/fsl_llwu.c ****             break;
+ 356              		.loc 1 368 0
+ 357 000a 00E0     		b	.L36
+ 358              	.LVL45:
+ 359              	.L34:
+ 363:../drivers/fsl_llwu.c ****             break;
+ 360              		.loc 1 363 0
+ 361 000c 0830     		adds	r0, r0, #8
+ 362              	.LVL46:
+ 363              	.L36:
+ 369:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
+ 370:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 2))
+ 371:../drivers/fsl_llwu.c ****         case 3:
+ 372:../drivers/fsl_llwu.c ****             regBase = &base->FILT3;
+ 373:../drivers/fsl_llwu.c ****             break;
+ 374:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
+ 375:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 3))
+ 376:../drivers/fsl_llwu.c ****         case 4:
+ 377:../drivers/fsl_llwu.c ****             regBase = &base->FILT4;
+ 378:../drivers/fsl_llwu.c ****             break;
+ 379:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
+ 380:../drivers/fsl_llwu.c ****         default:
+ 381:../drivers/fsl_llwu.c ****             regBase = NULL;
+ 382:../drivers/fsl_llwu.c ****             break;
+ 383:../drivers/fsl_llwu.c ****     }
+ 384:../drivers/fsl_llwu.c **** 
+ 385:../drivers/fsl_llwu.c ****     if (regBase)
+ 364              		.loc 1 385 0
+ 365 000e 0028     		cmp	r0, #0
+ 366 0010 05D0     		beq	.L32
+ 386:../drivers/fsl_llwu.c ****     {
+ 387:../drivers/fsl_llwu.c ****         reg = *regBase;
+ 367              		.loc 1 387 0
+ 368 0012 0378     		ldrb	r3, [r0]
+ 369              	.LVL47:
+ 388:../drivers/fsl_llwu.c ****         reg |= LLWU_FILT1_FILTF_MASK;
+ 370              		.loc 1 388 0
+ 371 0014 8022     		movs	r2, #128
+ 372 0016 5242     		rsbs	r2, r2, #0
+ 373 0018 1343     		orrs	r3, r2
+ 374              	.LVL48:
+ 375 001a DBB2     		uxtb	r3, r3
+ 376              	.LVL49:
+ 389:../drivers/fsl_llwu.c ****         *regBase = reg;
+ 377              		.loc 1 389 0
+ 378 001c 0370     		strb	r3, [r0]
+ 379              	.LVL50:
+ 380              	.L32:
+ 390:../drivers/fsl_llwu.c ****     }
+ 391:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_REG_BITWIDTH */
+ 392:../drivers/fsl_llwu.c **** }
+ 381              		.loc 1 392 0
+ 382              		@ sp needed
+ 383 001e 7047     		bx	lr
+ 384              		.cfi_endproc
+ 385              	.LFE60:
+ 387              		.text
+ 388              	.Letext0:
+ 389              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 390              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 391              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 392              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 393              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 394              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 395              		.file 8 "../CMSIS/system_MKL17Z4.h"
+ 396              		.file 9 "../CMSIS/MKL17Z4.h"
+ 397              		.file 10 "../drivers/fsl_clock.h"
+ 398              		.file 11 "../drivers/fsl_llwu.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fsl_llwu.c
+     /tmp/ccaSJXvK.s:16     .text.LLWU_SetExternalWakeupPinMode:0000000000000000 $t
+     /tmp/ccaSJXvK.s:23     .text.LLWU_SetExternalWakeupPinMode:0000000000000000 LLWU_SetExternalWakeupPinMode
+     /tmp/ccaSJXvK.s:97     .text.LLWU_GetExternalWakeupPinFlag:0000000000000000 $t
+     /tmp/ccaSJXvK.s:104    .text.LLWU_GetExternalWakeupPinFlag:0000000000000000 LLWU_GetExternalWakeupPinFlag
+     /tmp/ccaSJXvK.s:162    .text.LLWU_ClearExternalWakeupPinFlag:0000000000000000 $t
+     /tmp/ccaSJXvK.s:169    .text.LLWU_ClearExternalWakeupPinFlag:0000000000000000 LLWU_ClearExternalWakeupPinFlag
+     /tmp/ccaSJXvK.s:213    .text.LLWU_SetPinFilterMode:0000000000000000 $t
+     /tmp/ccaSJXvK.s:220    .text.LLWU_SetPinFilterMode:0000000000000000 LLWU_SetPinFilterMode
+     /tmp/ccaSJXvK.s:285    .text.LLWU_GetPinFilterFlag:0000000000000000 $t
+     /tmp/ccaSJXvK.s:292    .text.LLWU_GetPinFilterFlag:0000000000000000 LLWU_GetPinFilterFlag
+     /tmp/ccaSJXvK.s:333    .text.LLWU_ClearPinFilterFlag:0000000000000000 $t
+     /tmp/ccaSJXvK.s:340    .text.LLWU_ClearPinFilterFlag:0000000000000000 LLWU_ClearPinFilterFlag
+
+NO UNDEFINED SYMBOLS

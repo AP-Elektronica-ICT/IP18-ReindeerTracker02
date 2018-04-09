@@ -39,7 +39,7 @@
   13:../source/i2c_func.c **** #define FRDM_ACC_SADDR 0x1D
   14:../source/i2c_func.c **** #define TRACKER_ACC_SADDR 0x1C
   15:../source/i2c_func.c **** 
-  16:../source/i2c_func.c **** #define ACC_SADDR TRACKER_ACC_SADDR
+  16:../source/i2c_func.c **** #define ACC_SADDR FRDM_ACC_SADDR
   17:../source/i2c_func.c **** 
   18:../source/i2c_func.c **** void initI2C()
   19:../source/i2c_func.c **** {
@@ -789,7 +789,7 @@
   66              		.loc 1 29 0
   67 0020 0123     		movs	r3, #1
   30:../source/i2c_func.c ****     config.enableStopHold = false;
-  31:../source/i2c_func.c ****     config.baudRate_Bps = 200000;
+  31:../source/i2c_func.c ****     config.baudRate_Bps = 100000;
   68              		.loc 1 31 0
   69 0022 0F4A     		ldr	r2, .L2+4
   29:../source/i2c_func.c ****     config.enableStopHold = false;
@@ -807,7 +807,7 @@
   77 002c 2246     		mov	r2, r4
   78 002e 01A9     		add	r1, sp, #4
   79 0030 0C48     		ldr	r0, .L2+8
-  30:../source/i2c_func.c ****     config.baudRate_Bps = 200000;
+  30:../source/i2c_func.c ****     config.baudRate_Bps = 100000;
   80              		.loc 1 30 0
   81 0032 8DF80530 		strb	r3, [sp, #5]
   32:../source/i2c_func.c ****     config.glitchFilterWidth = 0;
@@ -1217,7 +1217,7 @@
  115              		.align	2
  116              	.L2:
  117 005c 34800440 		.word	1074036788
- 118 0060 400D0300 		.word	200000
+ 118 0060 A0860100 		.word	100000
  119 0064 00600640 		.word	1074159616
  120 0068 00D00440 		.word	1074057216
  121              		.cfi_endproc
@@ -1256,7 +1256,7 @@
  150              		.loc 1 43 0
  151 0008 1348     		ldr	r0, .L14
  152              	.LVL12:
- 153 000a 1C21     		movs	r1, #28
+ 153 000a 1D21     		movs	r1, #29
  154              	.LVL13:
  155 000c FFF7FEFF 		bl	I2C_MasterStart
  156              	.LVL14:
@@ -1377,7 +1377,7 @@
  238              		.loc 1 72 0
  239 0004 0446     		mov	r4, r0
  240              		.loc 1 75 0
- 241 0006 1C21     		movs	r1, #28
+ 241 0006 1D21     		movs	r1, #29
  242 0008 1B48     		ldr	r0, .L29
  243              	.LVL17:
  244 000a FFF7FEFF 		bl	I2C_MasterStart
@@ -1432,7 +1432,7 @@
  275 0034 42F00202 		orr	r2, r2, #2
  276 0038 DA70     		strb	r2, [r3, #3]
  277              		.loc 1 92 0
- 278 003a 1C21     		movs	r1, #28
+ 278 003a 1D21     		movs	r1, #29
  279 003c 0122     		movs	r2, #1
  280 003e FFF7FEFF 		bl	I2C_MasterRepeatedStart
  281              	.LVL19:

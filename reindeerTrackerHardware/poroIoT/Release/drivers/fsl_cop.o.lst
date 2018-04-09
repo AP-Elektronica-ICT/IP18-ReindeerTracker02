@@ -1,0 +1,706 @@
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"fsl_cop.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.COP_GetDefaultConfig,"ax",%progbits
+  16              		.align	1
+  17              		.global	COP_GetDefaultConfig
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	COP_GetDefaultConfig:
+  24              	.LFB54:
+  25              		.file 1 "../drivers/fsl_cop.c"
+   1:../drivers/fsl_cop.c **** /*
+   2:../drivers/fsl_cop.c ****  * The Clear BSD License
+   3:../drivers/fsl_cop.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_cop.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_cop.c ****  * All rights reserved.
+   6:../drivers/fsl_cop.c ****  *
+   7:../drivers/fsl_cop.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_cop.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_cop.c ****  * that the following conditions are met:
+  10:../drivers/fsl_cop.c ****  *
+  11:../drivers/fsl_cop.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_cop.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_cop.c ****  *
+  14:../drivers/fsl_cop.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_cop.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_cop.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_cop.c ****  *
+  18:../drivers/fsl_cop.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_cop.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_cop.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_cop.c ****  *
+  22:../drivers/fsl_cop.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_cop.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_cop.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_cop.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_cop.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_cop.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_cop.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_cop.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_cop.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_cop.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_cop.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_cop.c ****  */
+  34:../drivers/fsl_cop.c **** 
+  35:../drivers/fsl_cop.c **** #include "fsl_cop.h"
+  36:../drivers/fsl_cop.c **** 
+  37:../drivers/fsl_cop.c **** /*******************************************************************************
+  38:../drivers/fsl_cop.c ****  * Code
+  39:../drivers/fsl_cop.c ****  ******************************************************************************/
+  40:../drivers/fsl_cop.c **** 
+  41:../drivers/fsl_cop.c **** void COP_GetDefaultConfig(cop_config_t *config)
+  42:../drivers/fsl_cop.c **** {
+  26              		.loc 1 42 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+  31              	.LVL0:
+  43:../drivers/fsl_cop.c ****     assert(config);
+  44:../drivers/fsl_cop.c **** 
+  45:../drivers/fsl_cop.c ****     config->enableWindowMode = false;
+  32              		.loc 1 45 0
+  33 0000 0023     		movs	r3, #0
+  34 0002 0370     		strb	r3, [r0]
+  46:../drivers/fsl_cop.c **** #if defined(FSL_FEATURE_COP_HAS_LONGTIME_MODE) && FSL_FEATURE_COP_HAS_LONGTIME_MODE
+  47:../drivers/fsl_cop.c ****     config->timeoutMode = kCOP_LongTimeoutMode;
+  35              		.loc 1 47 0
+  36 0004 0122     		movs	r2, #1
+  37 0006 4270     		strb	r2, [r0, #1]
+  48:../drivers/fsl_cop.c ****     config->enableStop = false;
+  38              		.loc 1 48 0
+  39 0008 8370     		strb	r3, [r0, #2]
+  49:../drivers/fsl_cop.c ****     config->enableDebug = false;
+  40              		.loc 1 49 0
+  41 000a C370     		strb	r3, [r0, #3]
+  50:../drivers/fsl_cop.c **** #endif /* FSL_FEATURE_COP_HAS_LONGTIME_MODE */
+  51:../drivers/fsl_cop.c ****     config->clockSource = kCOP_LpoClock;
+  42              		.loc 1 51 0
+  43 000c 0371     		strb	r3, [r0, #4]
+  52:../drivers/fsl_cop.c ****     config->timeoutCycles = kCOP_2Power10CyclesOr2Power18Cycles;
+  44              		.loc 1 52 0
+  45 000e 0333     		adds	r3, r3, #3
+  46 0010 4371     		strb	r3, [r0, #5]
+  53:../drivers/fsl_cop.c **** }
+  47              		.loc 1 53 0
+  48              		@ sp needed
+  49 0012 7047     		bx	lr
+  50              		.cfi_endproc
+  51              	.LFE54:
+  53              		.section	.text.COP_Init,"ax",%progbits
+  54              		.align	1
+  55              		.global	COP_Init
+  56              		.syntax unified
+  57              		.code	16
+  58              		.thumb_func
+  59              		.fpu softvfp
+  61              	COP_Init:
+  62              	.LFB55:
+  54:../drivers/fsl_cop.c **** 
+  55:../drivers/fsl_cop.c **** void COP_Init(SIM_Type *base, const cop_config_t *config)
+  56:../drivers/fsl_cop.c **** {
+  63              		.loc 1 56 0
+  64              		.cfi_startproc
+  65              		@ args = 0, pretend = 0, frame = 0
+  66              		@ frame_needed = 0, uses_anonymous_args = 0
+  67              	.LVL1:
+  68 0000 10B5     		push	{r4, lr}
+  69              		.cfi_def_cfa_offset 8
+  70              		.cfi_offset 4, -8
+  71              		.cfi_offset 14, -4
+  72              	.LVL2:
+  57:../drivers/fsl_cop.c ****     assert(config);
+  58:../drivers/fsl_cop.c **** 
+  59:../drivers/fsl_cop.c ****     uint32_t value = 0U;
+  60:../drivers/fsl_cop.c **** 
+  61:../drivers/fsl_cop.c **** #if defined(FSL_FEATURE_COP_HAS_LONGTIME_MODE) && FSL_FEATURE_COP_HAS_LONGTIME_MODE
+  62:../drivers/fsl_cop.c ****     value = SIM_COPC_COPW(config->enableWindowMode) | SIM_COPC_COPCLKS(config->timeoutMode) |
+  73              		.loc 1 62 0
+  74 0002 0B78     		ldrb	r3, [r1]
+  75 0004 4C78     		ldrb	r4, [r1, #1]
+  76 0006 6400     		lsls	r4, r4, #1
+  77 0008 0222     		movs	r2, #2
+  78 000a 2240     		ands	r2, r4
+  79 000c 1343     		orrs	r3, r2
+  63:../drivers/fsl_cop.c ****             SIM_COPC_COPT(config->timeoutCycles) | SIM_COPC_COPSTPEN(config->enableStop) |
+  80              		.loc 1 63 0
+  81 000e 4C79     		ldrb	r4, [r1, #5]
+  82 0010 A400     		lsls	r4, r4, #2
+  83 0012 0C22     		movs	r2, #12
+  84 0014 2240     		ands	r2, r4
+  62:../drivers/fsl_cop.c ****             SIM_COPC_COPT(config->timeoutCycles) | SIM_COPC_COPSTPEN(config->enableStop) |
+  85              		.loc 1 62 0
+  86 0016 1343     		orrs	r3, r2
+  87              		.loc 1 63 0
+  88 0018 8C78     		ldrb	r4, [r1, #2]
+  89 001a 2401     		lsls	r4, r4, #4
+  90 001c 1022     		movs	r2, #16
+  91 001e 2240     		ands	r2, r4
+  92 0020 1343     		orrs	r3, r2
+  64:../drivers/fsl_cop.c ****             SIM_COPC_COPDBGEN(config->enableDebug) | SIM_COPC_COPCLKSEL(config->clockSource);
+  93              		.loc 1 64 0
+  94 0022 CC78     		ldrb	r4, [r1, #3]
+  95 0024 6401     		lsls	r4, r4, #5
+  96 0026 2022     		movs	r2, #32
+  97 0028 2240     		ands	r2, r4
+  63:../drivers/fsl_cop.c ****             SIM_COPC_COPT(config->timeoutCycles) | SIM_COPC_COPSTPEN(config->enableStop) |
+  98              		.loc 1 63 0
+  99 002a 1343     		orrs	r3, r2
+ 100              		.loc 1 64 0
+ 101 002c 0979     		ldrb	r1, [r1, #4]
+ 102              	.LVL3:
+ 103 002e 8901     		lsls	r1, r1, #6
+ 104 0030 FF22     		movs	r2, #255
+ 105 0032 0A40     		ands	r2, r1
+  62:../drivers/fsl_cop.c ****             SIM_COPC_COPT(config->timeoutCycles) | SIM_COPC_COPSTPEN(config->enableStop) |
+ 106              		.loc 1 62 0
+ 107 0034 1343     		orrs	r3, r2
+ 108              	.LVL4:
+  65:../drivers/fsl_cop.c **** #else
+  66:../drivers/fsl_cop.c ****     value = SIM_COPC_COPW(config->enableWindowMode) | SIM_COPC_COPCLKS(config->clockSource) |
+  67:../drivers/fsl_cop.c ****             SIM_COPC_COPT(config->timeoutCycles);
+  68:../drivers/fsl_cop.c **** #endif /* FSL_FEATURE_COP_HAS_LONGTIME_MODE */
+  69:../drivers/fsl_cop.c ****     base->COPC = value;
+ 109              		.loc 1 69 0
+ 110 0036 8822     		movs	r2, #136
+ 111 0038 5201     		lsls	r2, r2, #5
+ 112 003a 8350     		str	r3, [r0, r2]
+  70:../drivers/fsl_cop.c **** }
+ 113              		.loc 1 70 0
+ 114              		@ sp needed
+ 115 003c 10BD     		pop	{r4, pc}
+ 116              		.cfi_endproc
+ 117              	.LFE55:
+ 119              		.section	.text.COP_Refresh,"ax",%progbits
+ 120              		.align	1
+ 121              		.global	COP_Refresh
+ 122              		.syntax unified
+ 123              		.code	16
+ 124              		.thumb_func
+ 125              		.fpu softvfp
+ 127              	COP_Refresh:
+ 128              	.LFB56:
+  71:../drivers/fsl_cop.c **** 
+  72:../drivers/fsl_cop.c **** void COP_Refresh(SIM_Type *base)
+  73:../drivers/fsl_cop.c **** {
+ 129              		.loc 1 73 0
+ 130              		.cfi_startproc
+ 131              		@ args = 0, pretend = 0, frame = 0
+ 132              		@ frame_needed = 0, uses_anonymous_args = 0
+ 133              		@ link register save eliminated.
+ 134              	.LVL5:
+ 135              	.LBB18:
+ 136              	.LBB19:
+ 137              	.LBB20:
+ 138              	.LBB21:
+ 139              		.file 2 "../CMSIS/cmsis_gcc.h"
+   1:../CMSIS/cmsis_gcc.h **** /**************************************************************************//**
+   2:../CMSIS/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:../CMSIS/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:../CMSIS/cmsis_gcc.h ****  * @version  V5.0.2
+   5:../CMSIS/cmsis_gcc.h ****  * @date     13. February 2017
+   6:../CMSIS/cmsis_gcc.h ****  ******************************************************************************/
+   7:../CMSIS/cmsis_gcc.h **** /*
+   8:../CMSIS/cmsis_gcc.h ****  * Copyright (c) 2009-2017 ARM Limited. All rights reserved.
+   9:../CMSIS/cmsis_gcc.h ****  *
+  10:../CMSIS/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:../CMSIS/cmsis_gcc.h ****  *
+  12:../CMSIS/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:../CMSIS/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:../CMSIS/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:../CMSIS/cmsis_gcc.h ****  *
+  16:../CMSIS/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:../CMSIS/cmsis_gcc.h ****  *
+  18:../CMSIS/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:../CMSIS/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:../CMSIS/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:../CMSIS/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:../CMSIS/cmsis_gcc.h ****  * limitations under the License.
+  23:../CMSIS/cmsis_gcc.h ****  */
+  24:../CMSIS/cmsis_gcc.h **** 
+  25:../CMSIS/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:../CMSIS/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:../CMSIS/cmsis_gcc.h **** 
+  28:../CMSIS/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:../CMSIS/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:../CMSIS/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:../CMSIS/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:../CMSIS/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:../CMSIS/cmsis_gcc.h **** 
+  34:../CMSIS/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:../CMSIS/cmsis_gcc.h **** #ifndef __has_builtin
+  36:../CMSIS/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:../CMSIS/cmsis_gcc.h **** #endif
+  38:../CMSIS/cmsis_gcc.h **** 
+  39:../CMSIS/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:../CMSIS/cmsis_gcc.h **** #ifndef   __ASM
+  41:../CMSIS/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:../CMSIS/cmsis_gcc.h **** #endif
+  43:../CMSIS/cmsis_gcc.h **** #ifndef   __INLINE
+  44:../CMSIS/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:../CMSIS/cmsis_gcc.h **** #endif
+  46:../CMSIS/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:../CMSIS/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:../CMSIS/cmsis_gcc.h **** #endif
+  49:../CMSIS/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  50:../CMSIS/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((noreturn))
+  51:../CMSIS/cmsis_gcc.h **** #endif
+  52:../CMSIS/cmsis_gcc.h **** #ifndef   __USED
+  53:../CMSIS/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  54:../CMSIS/cmsis_gcc.h **** #endif
+  55:../CMSIS/cmsis_gcc.h **** #ifndef   __WEAK
+  56:../CMSIS/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  57:../CMSIS/cmsis_gcc.h **** #endif
+  58:../CMSIS/cmsis_gcc.h **** #ifndef   __PACKED
+  59:../CMSIS/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  60:../CMSIS/cmsis_gcc.h **** #endif
+  61:../CMSIS/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  62:../CMSIS/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  63:../CMSIS/cmsis_gcc.h **** #endif
+  64:../CMSIS/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  65:../CMSIS/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  66:../CMSIS/cmsis_gcc.h **** #endif
+  67:../CMSIS/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  68:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  69:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  70:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  71:../CMSIS/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  72:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  73:../CMSIS/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  74:../CMSIS/cmsis_gcc.h **** #endif
+  75:../CMSIS/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  76:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  77:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  78:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  79:../CMSIS/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  80:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  81:../CMSIS/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  82:../CMSIS/cmsis_gcc.h **** #endif
+  83:../CMSIS/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  84:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  85:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  86:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  87:../CMSIS/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  88:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  89:../CMSIS/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  90:../CMSIS/cmsis_gcc.h **** #endif
+  91:../CMSIS/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  92:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  93:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  94:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  95:../CMSIS/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  96:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  97:../CMSIS/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+  98:../CMSIS/cmsis_gcc.h **** #endif
+  99:../CMSIS/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 100:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 101:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 102:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 103:../CMSIS/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 104:../CMSIS/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 105:../CMSIS/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 106:../CMSIS/cmsis_gcc.h **** #endif
+ 107:../CMSIS/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 108:../CMSIS/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 109:../CMSIS/cmsis_gcc.h **** #endif
+ 110:../CMSIS/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 111:../CMSIS/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 112:../CMSIS/cmsis_gcc.h **** #endif
+ 113:../CMSIS/cmsis_gcc.h **** 
+ 114:../CMSIS/cmsis_gcc.h **** 
+ 115:../CMSIS/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 116:../CMSIS/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 117:../CMSIS/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 118:../CMSIS/cmsis_gcc.h ****   @{
+ 119:../CMSIS/cmsis_gcc.h ****  */
+ 120:../CMSIS/cmsis_gcc.h **** 
+ 121:../CMSIS/cmsis_gcc.h **** /**
+ 122:../CMSIS/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 123:../CMSIS/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 124:../CMSIS/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 125:../CMSIS/cmsis_gcc.h ****  */
+ 126:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __enable_irq(void)
+ 127:../CMSIS/cmsis_gcc.h **** {
+ 128:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 129:../CMSIS/cmsis_gcc.h **** }
+ 130:../CMSIS/cmsis_gcc.h **** 
+ 131:../CMSIS/cmsis_gcc.h **** 
+ 132:../CMSIS/cmsis_gcc.h **** /**
+ 133:../CMSIS/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 134:../CMSIS/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 135:../CMSIS/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 136:../CMSIS/cmsis_gcc.h ****  */
+ 137:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __disable_irq(void)
+ 138:../CMSIS/cmsis_gcc.h **** {
+ 139:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 140:../CMSIS/cmsis_gcc.h **** }
+ 141:../CMSIS/cmsis_gcc.h **** 
+ 142:../CMSIS/cmsis_gcc.h **** 
+ 143:../CMSIS/cmsis_gcc.h **** /**
+ 144:../CMSIS/cmsis_gcc.h ****   \brief   Get Control Register
+ 145:../CMSIS/cmsis_gcc.h ****   \details Returns the content of the Control Register.
+ 146:../CMSIS/cmsis_gcc.h ****   \return               Control Register value
+ 147:../CMSIS/cmsis_gcc.h ****  */
+ 148:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_CONTROL(void)
+ 149:../CMSIS/cmsis_gcc.h **** {
+ 150:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 151:../CMSIS/cmsis_gcc.h **** 
+ 152:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 153:../CMSIS/cmsis_gcc.h ****   return(result);
+ 154:../CMSIS/cmsis_gcc.h **** }
+ 155:../CMSIS/cmsis_gcc.h **** 
+ 156:../CMSIS/cmsis_gcc.h **** 
+ 157:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 158:../CMSIS/cmsis_gcc.h **** /**
+ 159:../CMSIS/cmsis_gcc.h ****   \brief   Get Control Register (non-secure)
+ 160:../CMSIS/cmsis_gcc.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 161:../CMSIS/cmsis_gcc.h ****   \return               non-secure Control Register value
+ 162:../CMSIS/cmsis_gcc.h ****  */
+ 163:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_CONTROL_NS(void)
+ 164:../CMSIS/cmsis_gcc.h **** {
+ 165:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 166:../CMSIS/cmsis_gcc.h **** 
+ 167:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 168:../CMSIS/cmsis_gcc.h ****   return(result);
+ 169:../CMSIS/cmsis_gcc.h **** }
+ 170:../CMSIS/cmsis_gcc.h **** #endif
+ 171:../CMSIS/cmsis_gcc.h **** 
+ 172:../CMSIS/cmsis_gcc.h **** 
+ 173:../CMSIS/cmsis_gcc.h **** /**
+ 174:../CMSIS/cmsis_gcc.h ****   \brief   Set Control Register
+ 175:../CMSIS/cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+ 176:../CMSIS/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 177:../CMSIS/cmsis_gcc.h ****  */
+ 178:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __set_CONTROL(uint32_t control)
+ 179:../CMSIS/cmsis_gcc.h **** {
+ 180:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 181:../CMSIS/cmsis_gcc.h **** }
+ 182:../CMSIS/cmsis_gcc.h **** 
+ 183:../CMSIS/cmsis_gcc.h **** 
+ 184:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 185:../CMSIS/cmsis_gcc.h **** /**
+ 186:../CMSIS/cmsis_gcc.h ****   \brief   Set Control Register (non-secure)
+ 187:../CMSIS/cmsis_gcc.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 188:../CMSIS/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 189:../CMSIS/cmsis_gcc.h ****  */
+ 190:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ 191:../CMSIS/cmsis_gcc.h **** {
+ 192:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 193:../CMSIS/cmsis_gcc.h **** }
+ 194:../CMSIS/cmsis_gcc.h **** #endif
+ 195:../CMSIS/cmsis_gcc.h **** 
+ 196:../CMSIS/cmsis_gcc.h **** 
+ 197:../CMSIS/cmsis_gcc.h **** /**
+ 198:../CMSIS/cmsis_gcc.h ****   \brief   Get IPSR Register
+ 199:../CMSIS/cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 200:../CMSIS/cmsis_gcc.h ****   \return               IPSR Register value
+ 201:../CMSIS/cmsis_gcc.h ****  */
+ 202:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_IPSR(void)
+ 203:../CMSIS/cmsis_gcc.h **** {
+ 204:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 205:../CMSIS/cmsis_gcc.h **** 
+ 206:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 207:../CMSIS/cmsis_gcc.h ****   return(result);
+ 208:../CMSIS/cmsis_gcc.h **** }
+ 209:../CMSIS/cmsis_gcc.h **** 
+ 210:../CMSIS/cmsis_gcc.h **** 
+ 211:../CMSIS/cmsis_gcc.h **** /**
+ 212:../CMSIS/cmsis_gcc.h ****   \brief   Get APSR Register
+ 213:../CMSIS/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 214:../CMSIS/cmsis_gcc.h ****   \return               APSR Register value
+ 215:../CMSIS/cmsis_gcc.h ****  */
+ 216:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_APSR(void)
+ 217:../CMSIS/cmsis_gcc.h **** {
+ 218:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 219:../CMSIS/cmsis_gcc.h **** 
+ 220:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 221:../CMSIS/cmsis_gcc.h ****   return(result);
+ 222:../CMSIS/cmsis_gcc.h **** }
+ 223:../CMSIS/cmsis_gcc.h **** 
+ 224:../CMSIS/cmsis_gcc.h **** 
+ 225:../CMSIS/cmsis_gcc.h **** /**
+ 226:../CMSIS/cmsis_gcc.h ****   \brief   Get xPSR Register
+ 227:../CMSIS/cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 228:../CMSIS/cmsis_gcc.h ****   \return               xPSR Register value
+ 229:../CMSIS/cmsis_gcc.h ****  */
+ 230:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_xPSR(void)
+ 231:../CMSIS/cmsis_gcc.h **** {
+ 232:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 233:../CMSIS/cmsis_gcc.h **** 
+ 234:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 235:../CMSIS/cmsis_gcc.h ****   return(result);
+ 236:../CMSIS/cmsis_gcc.h **** }
+ 237:../CMSIS/cmsis_gcc.h **** 
+ 238:../CMSIS/cmsis_gcc.h **** 
+ 239:../CMSIS/cmsis_gcc.h **** /**
+ 240:../CMSIS/cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 241:../CMSIS/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 242:../CMSIS/cmsis_gcc.h ****   \return               PSP Register value
+ 243:../CMSIS/cmsis_gcc.h ****  */
+ 244:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_PSP(void)
+ 245:../CMSIS/cmsis_gcc.h **** {
+ 246:../CMSIS/cmsis_gcc.h ****   register uint32_t result;
+ 247:../CMSIS/cmsis_gcc.h **** 
+ 248:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
+ 249:../CMSIS/cmsis_gcc.h ****   return(result);
+ 250:../CMSIS/cmsis_gcc.h **** }
+ 251:../CMSIS/cmsis_gcc.h **** 
+ 252:../CMSIS/cmsis_gcc.h **** 
+ 253:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 254:../CMSIS/cmsis_gcc.h **** /**
+ 255:../CMSIS/cmsis_gcc.h ****   \brief   Get Process Stack Pointer (non-secure)
+ 256:../CMSIS/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure s
+ 257:../CMSIS/cmsis_gcc.h ****   \return               PSP Register value
+ 258:../CMSIS/cmsis_gcc.h ****  */
+ 259:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_PSP_NS(void)
+ 260:../CMSIS/cmsis_gcc.h **** {
+ 261:../CMSIS/cmsis_gcc.h ****   register uint32_t result;
+ 262:../CMSIS/cmsis_gcc.h **** 
+ 263:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
+ 264:../CMSIS/cmsis_gcc.h ****   return(result);
+ 265:../CMSIS/cmsis_gcc.h **** }
+ 266:../CMSIS/cmsis_gcc.h **** #endif
+ 267:../CMSIS/cmsis_gcc.h **** 
+ 268:../CMSIS/cmsis_gcc.h **** 
+ 269:../CMSIS/cmsis_gcc.h **** /**
+ 270:../CMSIS/cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 271:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 272:../CMSIS/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 273:../CMSIS/cmsis_gcc.h ****  */
+ 274:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __set_PSP(uint32_t topOfProcStack)
+ 275:../CMSIS/cmsis_gcc.h **** {
+ 276:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
+ 277:../CMSIS/cmsis_gcc.h **** }
+ 278:../CMSIS/cmsis_gcc.h **** 
+ 279:../CMSIS/cmsis_gcc.h **** 
+ 280:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 281:../CMSIS/cmsis_gcc.h **** /**
+ 282:../CMSIS/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 283:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure sta
+ 284:../CMSIS/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 285:../CMSIS/cmsis_gcc.h ****  */
+ 286:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
+ 287:../CMSIS/cmsis_gcc.h **** {
+ 288:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR psp_ns, %0" : : "r" (topOfProcStack) : );
+ 289:../CMSIS/cmsis_gcc.h **** }
+ 290:../CMSIS/cmsis_gcc.h **** #endif
+ 291:../CMSIS/cmsis_gcc.h **** 
+ 292:../CMSIS/cmsis_gcc.h **** 
+ 293:../CMSIS/cmsis_gcc.h **** /**
+ 294:../CMSIS/cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 295:../CMSIS/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 296:../CMSIS/cmsis_gcc.h ****   \return               MSP Register value
+ 297:../CMSIS/cmsis_gcc.h ****  */
+ 298:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_MSP(void)
+ 299:../CMSIS/cmsis_gcc.h **** {
+ 300:../CMSIS/cmsis_gcc.h ****   register uint32_t result;
+ 301:../CMSIS/cmsis_gcc.h **** 
+ 302:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
+ 303:../CMSIS/cmsis_gcc.h ****   return(result);
+ 304:../CMSIS/cmsis_gcc.h **** }
+ 305:../CMSIS/cmsis_gcc.h **** 
+ 306:../CMSIS/cmsis_gcc.h **** 
+ 307:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 308:../CMSIS/cmsis_gcc.h **** /**
+ 309:../CMSIS/cmsis_gcc.h ****   \brief   Get Main Stack Pointer (non-secure)
+ 310:../CMSIS/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure stat
+ 311:../CMSIS/cmsis_gcc.h ****   \return               MSP Register value
+ 312:../CMSIS/cmsis_gcc.h ****  */
+ 313:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_MSP_NS(void)
+ 314:../CMSIS/cmsis_gcc.h **** {
+ 315:../CMSIS/cmsis_gcc.h ****   register uint32_t result;
+ 316:../CMSIS/cmsis_gcc.h **** 
+ 317:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
+ 318:../CMSIS/cmsis_gcc.h ****   return(result);
+ 319:../CMSIS/cmsis_gcc.h **** }
+ 320:../CMSIS/cmsis_gcc.h **** #endif
+ 321:../CMSIS/cmsis_gcc.h **** 
+ 322:../CMSIS/cmsis_gcc.h **** 
+ 323:../CMSIS/cmsis_gcc.h **** /**
+ 324:../CMSIS/cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 325:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 326:../CMSIS/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 327:../CMSIS/cmsis_gcc.h ****  */
+ 328:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __set_MSP(uint32_t topOfMainStack)
+ 329:../CMSIS/cmsis_gcc.h **** {
+ 330:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
+ 331:../CMSIS/cmsis_gcc.h **** }
+ 332:../CMSIS/cmsis_gcc.h **** 
+ 333:../CMSIS/cmsis_gcc.h **** 
+ 334:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 335:../CMSIS/cmsis_gcc.h **** /**
+ 336:../CMSIS/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
+ 337:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
+ 338:../CMSIS/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 339:../CMSIS/cmsis_gcc.h ****  */
+ 340:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
+ 341:../CMSIS/cmsis_gcc.h **** {
+ 342:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
+ 343:../CMSIS/cmsis_gcc.h **** }
+ 344:../CMSIS/cmsis_gcc.h **** #endif
+ 345:../CMSIS/cmsis_gcc.h **** 
+ 346:../CMSIS/cmsis_gcc.h **** 
+ 347:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 348:../CMSIS/cmsis_gcc.h **** /**
+ 349:../CMSIS/cmsis_gcc.h ****   \brief   Get Stack Pointer (non-secure)
+ 350:../CMSIS/cmsis_gcc.h ****   \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
+ 351:../CMSIS/cmsis_gcc.h ****   \return               SP Register value
+ 352:../CMSIS/cmsis_gcc.h ****  */
+ 353:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_SP_NS(void)
+ 354:../CMSIS/cmsis_gcc.h **** {
+ 355:../CMSIS/cmsis_gcc.h ****   register uint32_t result;
+ 356:../CMSIS/cmsis_gcc.h **** 
+ 357:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, sp_ns" : "=r" (result) );
+ 358:../CMSIS/cmsis_gcc.h ****   return(result);
+ 359:../CMSIS/cmsis_gcc.h **** }
+ 360:../CMSIS/cmsis_gcc.h **** 
+ 361:../CMSIS/cmsis_gcc.h **** 
+ 362:../CMSIS/cmsis_gcc.h **** /**
+ 363:../CMSIS/cmsis_gcc.h ****   \brief   Set Stack Pointer (non-secure)
+ 364:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
+ 365:../CMSIS/cmsis_gcc.h ****   \param [in]    topOfStack  Stack Pointer value to set
+ 366:../CMSIS/cmsis_gcc.h ****  */
+ 367:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __TZ_set_SP_NS(uint32_t topOfStack)
+ 368:../CMSIS/cmsis_gcc.h **** {
+ 369:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
+ 370:../CMSIS/cmsis_gcc.h **** }
+ 371:../CMSIS/cmsis_gcc.h **** #endif
+ 372:../CMSIS/cmsis_gcc.h **** 
+ 373:../CMSIS/cmsis_gcc.h **** 
+ 374:../CMSIS/cmsis_gcc.h **** /**
+ 375:../CMSIS/cmsis_gcc.h ****   \brief   Get Priority Mask
+ 376:../CMSIS/cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 377:../CMSIS/cmsis_gcc.h ****   \return               Priority Mask value
+ 378:../CMSIS/cmsis_gcc.h ****  */
+ 379:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_PRIMASK(void)
+ 380:../CMSIS/cmsis_gcc.h **** {
+ 381:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 382:../CMSIS/cmsis_gcc.h **** 
+ 383:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) );
+ 140              		.loc 2 383 0
+ 141              		.syntax divided
+ 142              	@ 383 "../CMSIS/cmsis_gcc.h" 1
+ 143 0000 EFF31083 		MRS r3, primask
+ 144              	@ 0 "" 2
+ 145              		.thumb
+ 146              		.syntax unified
+ 147              	.LBE21:
+ 148              	.LBE20:
+ 149              	.LBB22:
+ 150              	.LBB23:
+ 139:../CMSIS/cmsis_gcc.h **** }
+ 151              		.loc 2 139 0
+ 152              		.syntax divided
+ 153              	@ 139 "../CMSIS/cmsis_gcc.h" 1
+ 154 0004 72B6     		cpsid i
+ 155              	@ 0 "" 2
+ 156              	.LVL6:
+ 157              		.thumb
+ 158              		.syntax unified
+ 159              	.LBE23:
+ 160              	.LBE22:
+ 161              	.LBE19:
+ 162              	.LBE18:
+  74:../drivers/fsl_cop.c ****     uint32_t primaskValue = 0U;
+  75:../drivers/fsl_cop.c **** 
+  76:../drivers/fsl_cop.c ****     /* Disable the global interrupt to protect refresh sequence */
+  77:../drivers/fsl_cop.c ****     primaskValue = DisableGlobalIRQ();
+  78:../drivers/fsl_cop.c ****     base->SRVCOP = COP_FIRST_BYTE_OF_REFRESH;
+ 163              		.loc 1 78 0
+ 164 0006 044A     		ldr	r2, .L4
+ 165 0008 5521     		movs	r1, #85
+ 166 000a 8150     		str	r1, [r0, r2]
+  79:../drivers/fsl_cop.c ****     base->SRVCOP = COP_SECOND_BYTE_OF_REFRESH;
+ 167              		.loc 1 79 0
+ 168 000c 5531     		adds	r1, r1, #85
+ 169 000e 8150     		str	r1, [r0, r2]
+ 170              	.LBB24:
+ 171              	.LBB25:
+ 172              	.LBB26:
+ 384:../CMSIS/cmsis_gcc.h ****   return(result);
+ 385:../CMSIS/cmsis_gcc.h **** }
+ 386:../CMSIS/cmsis_gcc.h **** 
+ 387:../CMSIS/cmsis_gcc.h **** 
+ 388:../CMSIS/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 389:../CMSIS/cmsis_gcc.h **** /**
+ 390:../CMSIS/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
+ 391:../CMSIS/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
+ 392:../CMSIS/cmsis_gcc.h ****   \return               Priority Mask value
+ 393:../CMSIS/cmsis_gcc.h ****  */
+ 394:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_PRIMASK_NS(void)
+ 395:../CMSIS/cmsis_gcc.h **** {
+ 396:../CMSIS/cmsis_gcc.h ****   uint32_t result;
+ 397:../CMSIS/cmsis_gcc.h **** 
+ 398:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask_ns" : "=r" (result) );
+ 399:../CMSIS/cmsis_gcc.h ****   return(result);
+ 400:../CMSIS/cmsis_gcc.h **** }
+ 401:../CMSIS/cmsis_gcc.h **** #endif
+ 402:../CMSIS/cmsis_gcc.h **** 
+ 403:../CMSIS/cmsis_gcc.h **** 
+ 404:../CMSIS/cmsis_gcc.h **** /**
+ 405:../CMSIS/cmsis_gcc.h ****   \brief   Set Priority Mask
+ 406:../CMSIS/cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 407:../CMSIS/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 408:../CMSIS/cmsis_gcc.h ****  */
+ 409:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __set_PRIMASK(uint32_t priMask)
+ 410:../CMSIS/cmsis_gcc.h **** {
+ 411:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ 173              		.loc 2 411 0
+ 174              		.syntax divided
+ 175              	@ 411 "../CMSIS/cmsis_gcc.h" 1
+ 176 0010 83F31088 		MSR primask, r3
+ 177              	@ 0 "" 2
+ 178              		.thumb
+ 179              		.syntax unified
+ 180              	.LBE26:
+ 181              	.LBE25:
+ 182              	.LBE24:
+  80:../drivers/fsl_cop.c ****     EnableGlobalIRQ(primaskValue);
+  81:../drivers/fsl_cop.c **** }
+ 183              		.loc 1 81 0
+ 184              		@ sp needed
+ 185 0014 7047     		bx	lr
+ 186              	.L5:
+ 187 0016 C046     		.align	2
+ 188              	.L4:
+ 189 0018 04110000 		.word	4356
+ 190              		.cfi_endproc
+ 191              	.LFE56:
+ 193              		.text
+ 194              	.Letext0:
+ 195              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 196              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 197              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 198              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 199              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 200              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 201              		.file 9 "../CMSIS/system_MKL17Z4.h"
+ 202              		.file 10 "../CMSIS/MKL17Z4.h"
+ 203              		.file 11 "../drivers/fsl_clock.h"
+ 204              		.file 12 "../drivers/fsl_cop.h"
+ 205              		.file 13 "../drivers/fsl_common.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fsl_cop.c
+     /tmp/ccTs8S9A.s:16     .text.COP_GetDefaultConfig:0000000000000000 $t
+     /tmp/ccTs8S9A.s:23     .text.COP_GetDefaultConfig:0000000000000000 COP_GetDefaultConfig
+     /tmp/ccTs8S9A.s:54     .text.COP_Init:0000000000000000 $t
+     /tmp/ccTs8S9A.s:61     .text.COP_Init:0000000000000000 COP_Init
+     /tmp/ccTs8S9A.s:120    .text.COP_Refresh:0000000000000000 $t
+     /tmp/ccTs8S9A.s:127    .text.COP_Refresh:0000000000000000 COP_Refresh
+     /tmp/ccTs8S9A.s:189    .text.COP_Refresh:0000000000000018 $d
+
+NO UNDEFINED SYMBOLS

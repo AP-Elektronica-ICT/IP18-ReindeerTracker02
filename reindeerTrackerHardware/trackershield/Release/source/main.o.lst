@@ -137,9 +137,9 @@
   80:../source/main.c **** 	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_1;
   52              		.loc 1 80 0
   53 0012 0022     		movs	r2, #0
-  54              	.LBB54:
-  55              	.LBB55:
-  56              	.LBB56:
+  54              	.LBB42:
+  55              	.LBB43:
+  56              	.LBB44:
   57              		.file 2 "../CMSIS/core_cm4.h"
    1:../CMSIS/core_cm4.h **** /**************************************************************************//**
    2:../CMSIS/core_cm4.h ****  * @file     core_cm4.h
@@ -1819,29 +1819,29 @@
 1676:../CMSIS/core_cm4.h ****     NVIC->ISER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) &
   58              		.loc 2 1676 0
   59 0014 084B     		ldr	r3, .L2+8
-  60              	.LBE56:
-  61              	.LBE55:
-  62              	.LBE54:
+  60              	.LBE44:
+  61              	.LBE43:
+  62              	.LBE42:
   80:../source/main.c **** 	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_1;
   63              		.loc 1 80 0
   64 0016 A271     		strb	r2, [r4, #6]
-  65              	.LBB59:
-  66              	.LBB58:
-  67              	.LBB57:
+  65              	.LBB47:
+  66              	.LBB46:
+  67              	.LBB45:
   68              		.loc 2 1676 0
   69 0018 4FF08062 		mov	r2, #67108864
   70 001c 5A60     		str	r2, [r3, #4]
   71              	.LVL2:
-  72              	.LBE57:
-  73              	.LBE58:
-  74              	.LBE59:
+  72              	.LBE45:
+  73              	.LBE46:
+  74              	.LBE47:
   75              		.loc 1 83 0
   76 001e 2146     		mov	r1, r4
   77 0020 2846     		mov	r0, r5
   78 0022 FFF7FEFF 		bl	LPTMR_Init
   79              	.LVL3:
-  80              	.LBB60:
-  81              	.LBB61:
+  80              	.LBB48:
+  81              	.LBB49:
   82              		.file 3 "../drivers/fsl_lptmr.h"
    1:../drivers/fsl_lptmr.h **** /*
    2:../drivers/fsl_lptmr.h ****  * The Clear BSD License
@@ -2165,8 +2165,8 @@
   84 0026 41F65733 		movw	r3, #6999
   85 002a AB60     		str	r3, [r5, #8]
   86              	.LVL4:
-  87              	.LBE61:
-  88              	.LBE60:
+  87              	.LBE49:
+  88              	.LBE48:
   84:../source/main.c **** 	LPTMR_SetTimerPeriod(LPTMR0, 7000);  // 3000 for 20hz data rat
   85:../source/main.c **** }
   89              		.loc 1 85 0
@@ -2267,14 +2267,14 @@
  159 002e 2846     		mov	r0, r5
  160 0030 FFF7FEFF 		bl	UART_Init
  161              	.LVL10:
- 162              	.LBB74:
- 163              	.LBB75:
- 164              	.LBB76:
+ 162              	.LBB62:
+ 163              	.LBB63:
+ 164              	.LBB64:
  165              		.loc 2 1676 0
  166 0034 0E4C     		ldr	r4, .L5+12
- 167              	.LBE76:
- 168              	.LBE75:
- 169              	.LBE74:
+ 167              	.LBE64:
+ 168              	.LBE63:
+ 169              	.LBE62:
  104:../source/main.c **** 
  105:../source/main.c **** 	UART_EnableInterrupts(UART3, kUART_RxDataRegFullInterruptEnable); //enable UART3 receive interrupt
  170              		.loc 1 105 0
@@ -2282,16 +2282,16 @@
  172 003a 3046     		mov	r0, r6
  173 003c FFF7FEFF 		bl	UART_EnableInterrupts
  174              	.LVL11:
- 175              	.LBB79:
- 176              	.LBB78:
- 177              	.LBB77:
+ 175              	.LBB67:
+ 176              	.LBB66:
+ 177              	.LBB65:
  178              		.loc 2 1676 0
  179 0040 2023     		movs	r3, #32
  180 0042 6360     		str	r3, [r4, #4]
  181              	.LVL12:
- 182              	.LBE77:
- 183              	.LBE78:
- 184              	.LBE79:
+ 182              	.LBE65:
+ 183              	.LBE66:
+ 184              	.LBE67:
  106:../source/main.c **** 
  107:../source/main.c **** 	EnableIRQ(UART3_RX_TX_IRQn);
  108:../source/main.c **** 
@@ -2301,16 +2301,16 @@
  187 0048 2846     		mov	r0, r5
  188 004a FFF7FEFF 		bl	UART_EnableInterrupts
  189              	.LVL13:
- 190              	.LBB80:
- 191              	.LBB81:
- 192              	.LBB82:
+ 190              	.LBB68:
+ 191              	.LBB69:
+ 192              	.LBB70:
  193              		.loc 2 1676 0
  194 004e 0823     		movs	r3, #8
  195 0050 6360     		str	r3, [r4, #4]
  196              	.LVL14:
- 197              	.LBE82:
- 198              	.LBE81:
- 199              	.LBE80:
+ 197              	.LBE70:
+ 198              	.LBE69:
+ 199              	.LBE68:
  110:../source/main.c **** 	EnableIRQ(UART2_RX_TX_IRQn);
  111:../source/main.c **** 
  112:../source/main.c **** 	UART_EnableInterrupts(UART0, kUART_RxDataRegFullInterruptEnable); //enable UART0 receive interrupt
@@ -2319,16 +2319,16 @@
  202 0056 0748     		ldr	r0, .L5+16
  203 0058 FFF7FEFF 		bl	UART_EnableInterrupts
  204              	.LVL15:
- 205              	.LBB83:
- 206              	.LBB84:
- 207              	.LBB85:
+ 205              	.LBB71:
+ 206              	.LBB72:
+ 207              	.LBB73:
  208              		.loc 2 1676 0
  209 005c 4FF00043 		mov	r3, #-2147483648
  210 0060 2360     		str	r3, [r4]
  211              	.LVL16:
- 212              	.LBE85:
- 213              	.LBE84:
- 214              	.LBE83:
+ 212              	.LBE73:
+ 213              	.LBE72:
+ 214              	.LBE71:
  113:../source/main.c **** 	EnableIRQ(UART0_RX_TX_IRQn);
  114:../source/main.c **** 
  115:../source/main.c **** }
@@ -2557,41 +2557,36 @@
  161:../source/main.c **** int main(void) {
  390              		.loc 1 161 0
  391              		.cfi_startproc
- 392              		@ args = 0, pretend = 0, frame = 528
+ 392              		@ args = 0, pretend = 0, frame = 520
  393              		@ frame_needed = 0, uses_anonymous_args = 0
- 394 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
- 395              		.cfi_def_cfa_offset 32
- 396              		.cfi_offset 4, -32
- 397              		.cfi_offset 5, -28
- 398              		.cfi_offset 6, -24
- 399              		.cfi_offset 7, -20
- 400              		.cfi_offset 8, -16
- 401              		.cfi_offset 9, -12
- 402              		.cfi_offset 10, -8
- 403              		.cfi_offset 14, -4
+ 394 0000 30B5     		push	{r4, r5, lr}
+ 395              		.cfi_def_cfa_offset 12
+ 396              		.cfi_offset 4, -12
+ 397              		.cfi_offset 5, -8
+ 398              		.cfi_offset 14, -4
  162:../source/main.c **** 
  163:../source/main.c **** 	PMC->REGSC |= 0x08;	//acknowledge wake up to voltage regulator module, this is needed with LLWU wa
- 404              		.loc 1 163 0
- 405 0004 B84A     		ldr	r2, .L67
- 406 0006 9378     		ldrb	r3, [r2, #2]	@ zero_extendqisi2
- 407 0008 43F00803 		orr	r3, r3, #8
- 408 000c 9370     		strb	r3, [r2, #2]
- 409              	.LVL29:
- 410              	.LBB113:
- 411              	.LBB114:
- 412              	.LBB115:
- 413              		.loc 2 1676 0
- 414 000e B74B     		ldr	r3, .L67+4
- 415 0010 4FF40012 		mov	r2, #2097152
- 416 0014 1A60     		str	r2, [r3]
- 417              	.LVL30:
- 418              	.LBE115:
- 419              	.LBE114:
- 420              	.LBE113:
+ 399              		.loc 1 163 0
+ 400 0002 574A     		ldr	r2, .L28
+ 401 0004 9378     		ldrb	r3, [r2, #2]	@ zero_extendqisi2
+ 402 0006 43F00803 		orr	r3, r3, #8
+ 403 000a 9370     		strb	r3, [r2, #2]
+ 404              	.LVL29:
+ 405              	.LBB95:
+ 406              	.LBB96:
+ 407              	.LBB97:
+ 408              		.loc 2 1676 0
+ 409 000c 554B     		ldr	r3, .L28+4
+ 410 000e 4FF40012 		mov	r2, #2097152
+ 411 0012 1A60     		str	r2, [r3]
+ 412              	.LVL30:
+ 413              	.LBE97:
+ 414              	.LBE96:
+ 415              	.LBE95:
  161:../source/main.c **** 
- 421              		.loc 1 161 0
- 422 0016 ADF5047D 		sub	sp, sp, #528
- 423              		.cfi_def_cfa_offset 560
+ 416              		.loc 1 161 0
+ 417 0014 ADF5037D 		sub	sp, sp, #524
+ 418              		.cfi_def_cfa_offset 536
  164:../source/main.c **** 	EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode, it means that next MC
  165:../source/main.c **** 						 //will jump to the LLWU interrupt vector
  166:../source/main.c **** 
@@ -2599,37 +2594,37 @@
  168:../source/main.c **** 	char mqttMessage[450];
  169:../source/main.c **** 
  170:../source/main.c **** 	BOARD_InitPins();	//init all physical pins
- 424              		.loc 1 170 0
- 425 001a FFF7FEFF 		bl	BOARD_InitPins
- 426              	.LVL31:
+ 419              		.loc 1 170 0
+ 420 0018 FFF7FEFF 		bl	BOARD_InitPins
+ 421              	.LVL31:
  171:../source/main.c **** 	//BOARD_BootClockRUN();  //by uncommenting this we can use FRDM 50Mhz external clock, but will not
  172:../source/main.c **** 	BOARD_InitDebugConsole();
- 427              		.loc 1 172 0
- 428 001e FFF7FEFF 		bl	BOARD_InitDebugConsole
- 429              	.LVL32:
+ 422              		.loc 1 172 0
+ 423 001c FFF7FEFF 		bl	BOARD_InitDebugConsole
+ 424              	.LVL32:
  173:../source/main.c **** 
  174:../source/main.c **** 	/*
  175:../source/main.c **** 	 * Calculate how many processor ticks are in 1 ms to make accurate delay_ms function
  176:../source/main.c **** 	 * first take MCU clock frequency, divide by 1000ms and divide by 7 because our delay_ms loop take
  177:../source/main.c **** 	 */
  178:../source/main.c **** 	ms_ticks = BOARD_DEBUG_UART_CLK_FREQ / 1000 / 7;
- 430              		.loc 1 178 0
- 431 0022 FFF7FEFF 		bl	CLOCK_GetCoreSysClkFreq
- 432              	.LVL33:
- 433 0026 41F65833 		movw	r3, #7000
- 434 002a B0FBF3F0 		udiv	r0, r0, r3
- 435 002e B04B     		ldr	r3, .L67+8
- 436 0030 1860     		str	r0, [r3]
+ 425              		.loc 1 178 0
+ 426 0020 FFF7FEFF 		bl	CLOCK_GetCoreSysClkFreq
+ 427              	.LVL33:
+ 428 0024 41F65833 		movw	r3, #7000
+ 429 0028 B0FBF3F0 		udiv	r0, r0, r3
+ 430 002c 4E4B     		ldr	r3, .L28+8
+ 431 002e 1860     		str	r0, [r3]
  179:../source/main.c **** 
  180:../source/main.c **** 	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay
- 437              		.loc 1 180 0
- 438 0032 FFF7FEFF 		bl	CLOCK_GetCoreSysClkFreq
- 439              	.LVL34:
- 440 0036 4FF47A73 		mov	r3, #1000
- 441 003a B0FBF3F0 		udiv	r0, r0, r3
- 442              	.LVL35:
- 443              	.LBB116:
- 444              	.LBB117:
+ 432              		.loc 1 180 0
+ 433 0030 FFF7FEFF 		bl	CLOCK_GetCoreSysClkFreq
+ 434              	.LVL34:
+ 435 0034 4FF47A73 		mov	r3, #1000
+ 436 0038 B0FBF3F0 		udiv	r0, r0, r3
+ 437              	.LVL35:
+ 438              	.LBB98:
+ 439              	.LBB99:
 1677:../CMSIS/core_cm4.h ****   }
 1678:../CMSIS/core_cm4.h **** }
 1679:../CMSIS/core_cm4.h **** 
@@ -2962,53 +2957,79 @@
 2006:../CMSIS/core_cm4.h **** __STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
 2007:../CMSIS/core_cm4.h **** {
 2008:../CMSIS/core_cm4.h ****   if ((ticks - 1UL) > SysTick_LOAD_RELOAD_Msk)
- 445              		.loc 2 2008 0
- 446 003e 0138     		subs	r0, r0, #1
- 447              	.LVL36:
- 448 0040 B0F1807F 		cmp	r0, #16777216
- 449 0044 09D2     		bcs	.L27
+ 440              		.loc 2 2008 0
+ 441 003c 0138     		subs	r0, r0, #1
+ 442              	.LVL36:
+ 443 003e B0F1807F 		cmp	r0, #16777216
+ 444 0042 09D2     		bcs	.L27
 2009:../CMSIS/core_cm4.h ****   {
 2010:../CMSIS/core_cm4.h ****     return (1UL);                                                   /* Reload value impossible */
 2011:../CMSIS/core_cm4.h ****   }
 2012:../CMSIS/core_cm4.h **** 
 2013:../CMSIS/core_cm4.h ****   SysTick->LOAD  = (uint32_t)(ticks - 1UL);                         /* set reload register */
- 450              		.loc 2 2013 0
- 451 0046 AB4B     		ldr	r3, .L67+12
- 452              	.LBB118:
- 453              	.LBB119:
+ 445              		.loc 2 2013 0
+ 446 0044 494B     		ldr	r3, .L28+12
+ 447              	.LBB100:
+ 448              	.LBB101:
 1808:../CMSIS/core_cm4.h ****   }
- 454              		.loc 2 1808 0
- 455 0048 AB4A     		ldr	r2, .L67+16
- 456              	.LBE119:
- 457              	.LBE118:
- 458              		.loc 2 2013 0
- 459 004a 5860     		str	r0, [r3, #4]
- 460              	.LVL37:
- 461              	.LBB121:
- 462              	.LBB120:
+ 449              		.loc 2 1808 0
+ 450 0046 4A4A     		ldr	r2, .L28+16
+ 451              	.LBE101:
+ 452              	.LBE100:
+ 453              		.loc 2 2013 0
+ 454 0048 5860     		str	r0, [r3, #4]
+ 455              	.LVL37:
+ 456              	.LBB103:
+ 457              	.LBB102:
 1808:../CMSIS/core_cm4.h ****   }
- 463              		.loc 2 1808 0
- 464 004c F021     		movs	r1, #240
- 465 004e 82F82310 		strb	r1, [r2, #35]
- 466              	.LVL38:
- 467              	.LBE120:
- 468              	.LBE121:
+ 458              		.loc 2 1808 0
+ 459 004a F021     		movs	r1, #240
+ 460 004c 82F82310 		strb	r1, [r2, #35]
+ 461              	.LVL38:
+ 462              	.LBE102:
+ 463              	.LBE103:
 2014:../CMSIS/core_cm4.h ****   NVIC_SetPriority (SysTick_IRQn, (1UL << __NVIC_PRIO_BITS) - 1UL); /* set Priority for Systick Int
 2015:../CMSIS/core_cm4.h ****   SysTick->VAL   = 0UL;                                             /* Load the SysTick Counter Val
- 469              		.loc 2 2015 0
- 470 0052 0022     		movs	r2, #0
- 471 0054 9A60     		str	r2, [r3, #8]
+ 464              		.loc 2 2015 0
+ 465 0050 0022     		movs	r2, #0
+ 466 0052 9A60     		str	r2, [r3, #8]
 2016:../CMSIS/core_cm4.h ****   SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
- 472              		.loc 2 2016 0
- 473 0056 0722     		movs	r2, #7
- 474 0058 1A60     		str	r2, [r3]
- 475              	.L27:
- 476              	.LVL39:
- 477              	.LBE117:
- 478              	.LBE116:
- 479              	.LBB122:
- 480              	.LBB123:
- 481              		.file 4 "../drivers/fsl_smc.h"
+ 467              		.loc 2 2016 0
+ 468 0054 0722     		movs	r2, #7
+ 469 0056 1A60     		str	r2, [r3]
+ 470              	.L27:
+ 471              	.LVL39:
+ 472              	.LBE99:
+ 473              	.LBE98:
+ 181:../source/main.c **** 
+ 182:../source/main.c **** 	initI2C();
+ 474              		.loc 1 182 0
+ 475 0058 FFF7FEFF 		bl	initI2C
+ 476              	.LVL40:
+ 183:../source/main.c **** 	initAdc();
+ 477              		.loc 1 183 0
+ 478 005c FFF7FEFF 		bl	initAdc
+ 479              	.LVL41:
+ 184:../source/main.c **** 	initUART();
+ 480              		.loc 1 184 0
+ 481 0060 FFF7FEFF 		bl	initUART
+ 482              	.LVL42:
+ 185:../source/main.c **** 	configure_acc();
+ 483              		.loc 1 185 0
+ 484 0064 FFF7FEFF 		bl	configure_acc
+ 485              	.LVL43:
+ 186:../source/main.c **** 	acc_init();
+ 486              		.loc 1 186 0
+ 487 0068 FFF7FEFF 		bl	acc_init
+ 488              	.LVL44:
+ 187:../source/main.c **** 
+ 188:../source/main.c **** 	initTimer();
+ 489              		.loc 1 188 0
+ 490 006c FFF7FEFF 		bl	initTimer
+ 491              	.LVL45:
+ 492              	.LBB104:
+ 493              	.LBB105:
+ 494              		.file 4 "../drivers/fsl_smc.h"
    1:../drivers/fsl_smc.h **** /*
    2:../drivers/fsl_smc.h ****  * The Clear BSD License
    3:../drivers/fsl_smc.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
@@ -3297,116 +3318,96 @@
  286:../drivers/fsl_smc.h **** static inline void SMC_SetPowerModeProtection(SMC_Type *base, uint8_t allowedModes)
  287:../drivers/fsl_smc.h **** {
  288:../drivers/fsl_smc.h ****     base->PMPROT = allowedModes;
- 482              		.loc 4 288 0
- 483 005a A84D     		ldr	r5, .L67+20
- 484              	.LBE123:
- 485              	.LBE122:
- 181:../source/main.c **** 
- 182:../source/main.c **** 	initI2C();
- 183:../source/main.c **** 	initAdc();
- 184:../source/main.c **** 	initUART();
- 185:../source/main.c **** 	configure_acc();
- 186:../source/main.c **** 	acc_init();
- 187:../source/main.c **** 	initTimer();
- 188:../source/main.c **** 
- 189:../source/main.c **** 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
- 190:../source/main.c **** 	1, /* initial value */
- 191:../source/main.c **** 	};
- 192:../source/main.c **** 
- 193:../source/main.c **** 	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeVlls);
- 194:../source/main.c **** 	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; /*!< Stop submode 1, for VLLS1/LLS1. */
- 486              		.loc 1 194 0
- 487 005c A84E     		ldr	r6, .L67+24
+ 495              		.loc 4 288 0
+ 496 0070 404B     		ldr	r3, .L28+20
+ 497              	.LBE105:
+ 498              	.LBE104:
+ 189:../source/main.c **** 
+ 190:../source/main.c **** 	static const gpio_pin_config_t LED_configOutput = { kGPIO_DigitalOutput, /* use as output pin */
+ 191:../source/main.c **** 	1, /* initial value */
+ 192:../source/main.c **** 	};
+ 193:../source/main.c **** 
+ 194:../source/main.c **** 	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeVlls);
+ 195:../source/main.c **** 	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; /*!< Stop submode 1, for VLLS1/LLS1. */
+ 196:../source/main.c **** 
+ 197:../source/main.c **** 	LLWU->ME |= 0x01; 		// enable LLWU wakeup source from LPTMR module
+ 198:../source/main.c **** 	LLWU->PE3 |= 0x01; // enable LLWU wakeup source from accelerometer interrupt pin
+ 199:../source/main.c **** 					   // 0x20 for stock frdm pin enable,
+ 200:../source/main.c **** 	LLWU->FILT1 |= 0x28;	// set pin wakeup from rising edge, 0x2A for frdm
+ 201:../source/main.c **** 
+ 202:../source/main.c **** 	EnableIRQ(PORTC_IRQn);
+ 203:../source/main.c **** 
+ 204:../source/main.c **** 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
+ 205:../source/main.c **** 	LPTMR_StartTimer(LPTMR0);
+ 206:../source/main.c **** 
+ 207:../source/main.c **** 	GPIO_PinInit(GPIOB, 21u, &LED_configOutput);	//blue led as output
+ 499              		.loc 1 207 0
+ 500 0072 414C     		ldr	r4, .L28+24
+ 501              	.LBB107:
+ 502              	.LBB106:
+ 503              		.loc 4 288 0
+ 504 0074 0222     		movs	r2, #2
+ 505 0076 1A70     		strb	r2, [r3]
+ 506              	.LVL46:
+ 507              	.LBE106:
+ 508              	.LBE107:
  195:../source/main.c **** 
- 196:../source/main.c **** 	LLWU->ME |= 0x01; 		// enable LLWU wakeup source from LPTMR module
+ 509              		.loc 1 195 0
+ 510 0078 404B     		ldr	r3, .L28+28
+ 511 007a 0125     		movs	r5, #1
+ 512 007c 1D70     		strb	r5, [r3]
  197:../source/main.c **** 	LLWU->PE3 |= 0x01; // enable LLWU wakeup source from accelerometer interrupt pin
+ 513              		.loc 1 197 0
+ 514 007e 404B     		ldr	r3, .L28+32
+ 515 0080 1A79     		ldrb	r2, [r3, #4]	@ zero_extendqisi2
+ 516 0082 2A43     		orrs	r2, r2, r5
+ 517 0084 1A71     		strb	r2, [r3, #4]
  198:../source/main.c **** 					   // 0x20 for stock frdm pin enable,
- 199:../source/main.c **** 	LLWU->FILT1 |= 0x28;	// set pin wakeup from rising edge, 0x2A for frdm
+ 518              		.loc 1 198 0
+ 519 0086 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 520 0088 2A43     		orrs	r2, r2, r5
+ 521 008a 9A70     		strb	r2, [r3, #2]
  200:../source/main.c **** 
- 201:../source/main.c **** 	//EnableIRQ(PORTC_IRQn);
- 202:../source/main.c **** 
- 203:../source/main.c **** 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
- 204:../source/main.c **** 	LPTMR_StartTimer(LPTMR0);
- 205:../source/main.c **** 
- 206:../source/main.c **** 	GPIO_PinInit(GPIOB, 21u, &LED_configOutput);	//blue led as output
- 488              		.loc 1 206 0
- 489 005e A94C     		ldr	r4, .L67+28
- 182:../source/main.c **** 	initAdc();
- 490              		.loc 1 182 0
- 491 0060 FFF7FEFF 		bl	initI2C
- 492              	.LVL40:
- 183:../source/main.c **** 	initUART();
- 493              		.loc 1 183 0
- 494 0064 FFF7FEFF 		bl	initAdc
- 495              	.LVL41:
- 184:../source/main.c **** 	configure_acc();
- 496              		.loc 1 184 0
- 497 0068 FFF7FEFF 		bl	initUART
- 498              	.LVL42:
- 185:../source/main.c **** 	acc_init();
- 499              		.loc 1 185 0
- 500 006c FFF7FEFF 		bl	configure_acc
- 501              	.LVL43:
- 186:../source/main.c **** 	initTimer();
- 502              		.loc 1 186 0
- 503 0070 FFF7FEFF 		bl	acc_init
- 504              	.LVL44:
- 187:../source/main.c **** 
- 505              		.loc 1 187 0
- 506 0074 FFF7FEFF 		bl	initTimer
- 507              	.LVL45:
- 508              	.LBB125:
- 509              	.LBB124:
- 510              		.loc 4 288 0
- 511 0078 0223     		movs	r3, #2
- 512 007a 2B70     		strb	r3, [r5]
- 513              	.LVL46:
- 514              	.LBE124:
- 515              	.LBE125:
- 194:../source/main.c **** 
- 516              		.loc 1 194 0
- 517 007c 0123     		movs	r3, #1
- 518 007e 3370     		strb	r3, [r6]
- 196:../source/main.c **** 	LLWU->PE3 |= 0x01; // enable LLWU wakeup source from accelerometer interrupt pin
- 519              		.loc 1 196 0
- 520 0080 A14B     		ldr	r3, .L67+32
- 521 0082 1A79     		ldrb	r2, [r3, #4]	@ zero_extendqisi2
- 522 0084 42F00102 		orr	r2, r2, #1
- 523 0088 1A71     		strb	r2, [r3, #4]
- 197:../source/main.c **** 					   // 0x20 for stock frdm pin enable,
- 524              		.loc 1 197 0
- 525 008a 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
- 526 008c 42F00102 		orr	r2, r2, #1
- 527 0090 9A70     		strb	r2, [r3, #2]
- 199:../source/main.c **** 
- 528              		.loc 1 199 0
- 529 0092 1A7A     		ldrb	r2, [r3, #8]	@ zero_extendqisi2
- 530 0094 42F02802 		orr	r2, r2, #40
- 531 0098 1A72     		strb	r2, [r3, #8]
- 532              	.LVL47:
- 533              	.LBB126:
- 534              	.LBB127:
+ 522              		.loc 1 200 0
+ 523 008c 1A7A     		ldrb	r2, [r3, #8]	@ zero_extendqisi2
+ 524 008e 42F02802 		orr	r2, r2, #40
+ 525 0092 1A72     		strb	r2, [r3, #8]
+ 526              	.LVL47:
+ 527              	.LBB108:
+ 528              	.LBB109:
+ 529              	.LBB110:
+1676:../CMSIS/core_cm4.h ****   }
+ 530              		.loc 2 1676 0
+ 531 0094 334B     		ldr	r3, .L28+4
+ 532 0096 4FF00052 		mov	r2, #536870912
+ 533 009a 5A60     		str	r2, [r3, #4]
+ 534              	.LVL48:
+ 535              	.LBE110:
+ 536              	.LBE109:
+ 537              	.LBE108:
+ 538              	.LBB111:
+ 539              	.LBB112:
  205:../drivers/fsl_lptmr.h **** 
- 535              		.loc 3 205 0
- 536 009a 9C4A     		ldr	r2, .L67+36
- 537 009c 1368     		ldr	r3, [r2]
- 538              	.LVL48:
+ 540              		.loc 3 205 0
+ 541 009c 394A     		ldr	r2, .L28+36
+ 542 009e 1368     		ldr	r3, [r2]
+ 543              	.LVL49:
  208:../drivers/fsl_lptmr.h ****     reg |= mask;
- 539              		.loc 3 208 0
- 540 009e 23F08003 		bic	r3, r3, #128
- 541              	.LVL49:
+ 544              		.loc 3 208 0
+ 545 00a0 23F08003 		bic	r3, r3, #128
+ 546              	.LVL50:
  209:../drivers/fsl_lptmr.h ****     base->CSR = reg;
- 542              		.loc 3 209 0
- 543 00a2 43F04003 		orr	r3, r3, #64
- 544              	.LVL50:
+ 547              		.loc 3 209 0
+ 548 00a4 43F04003 		orr	r3, r3, #64
+ 549              	.LVL51:
  210:../drivers/fsl_lptmr.h **** }
- 545              		.loc 3 210 0
- 546 00a6 1360     		str	r3, [r2]
- 547              	.LVL51:
- 548              	.LBE127:
- 549              	.LBE126:
- 550              	.LBB128:
- 551              	.LBB129:
+ 550              		.loc 3 210 0
+ 551 00a8 1360     		str	r3, [r2]
+ 552              	.LVL52:
+ 553              	.LBE112:
+ 554              	.LBE111:
+ 555              	.LBB113:
+ 556              	.LBB114:
  319:../drivers/fsl_lptmr.h **** }
  320:../drivers/fsl_lptmr.h **** 
  321:../drivers/fsl_lptmr.h **** /*!
@@ -3450,53 +3451,60 @@
  359:../drivers/fsl_lptmr.h **** static inline void LPTMR_StartTimer(LPTMR_Type *base)
  360:../drivers/fsl_lptmr.h **** {
  361:../drivers/fsl_lptmr.h ****     uint32_t reg = base->CSR;
- 552              		.loc 3 361 0
- 553 00a8 1368     		ldr	r3, [r2]
- 554              	.LVL52:
+ 557              		.loc 3 361 0
+ 558 00aa 1368     		ldr	r3, [r2]
+ 559              	.LVL53:
  362:../drivers/fsl_lptmr.h **** 
  363:../drivers/fsl_lptmr.h ****     /* Clear the TCF bit to avoid clearing the w1c bit when writing back. */
  364:../drivers/fsl_lptmr.h ****     reg &= ~(LPTMR_CSR_TCF_MASK);
- 555              		.loc 3 364 0
- 556 00aa 23F08003 		bic	r3, r3, #128
- 557              	.LVL53:
+ 560              		.loc 3 364 0
+ 561 00ac 23F08003 		bic	r3, r3, #128
+ 562              	.LVL54:
  365:../drivers/fsl_lptmr.h ****     reg |= LPTMR_CSR_TEN_MASK;
- 558              		.loc 3 365 0
- 559 00ae 43F00103 		orr	r3, r3, #1
- 560              	.LVL54:
+ 563              		.loc 3 365 0
+ 564 00b0 2B43     		orrs	r3, r3, r5
+ 565              	.LVL55:
  366:../drivers/fsl_lptmr.h ****     base->CSR = reg;
- 561              		.loc 3 366 0
- 562 00b2 1360     		str	r3, [r2]
- 563              	.LVL55:
- 564              	.LBE129:
- 565              	.LBE128:
- 566              		.loc 1 206 0
- 567 00b4 1521     		movs	r1, #21
- 568 00b6 964A     		ldr	r2, .L67+40
- 569 00b8 2046     		mov	r0, r4
- 570 00ba FFF7FEFF 		bl	GPIO_PinInit
- 571              	.LVL56:
- 207:../source/main.c **** 	GPIO_PinInit(GPIOB, 22u, &LED_configOutput);	//red led as output
- 572              		.loc 1 207 0
- 573 00be 944A     		ldr	r2, .L67+40
- 574 00c0 1621     		movs	r1, #22
- 575 00c2 2046     		mov	r0, r4
- 576 00c4 FFF7FEFF 		bl	GPIO_PinInit
- 577              	.LVL57:
- 208:../source/main.c **** 
- 209:../source/main.c **** 	/*
- 210:../source/main.c **** 	 * set boost regulator enable pin as output. This pin will control the power to RF modules
- 211:../source/main.c **** 	 */
- 212:../source/main.c **** 	GPIO_PinInit(GPIOB, 11u, &LED_configOutput);
- 578              		.loc 1 212 0
- 579 00c8 914A     		ldr	r2, .L67+40
- 580 00ca 0B21     		movs	r1, #11
- 581 00cc 2046     		mov	r0, r4
- 582 00ce FFF7FEFF 		bl	GPIO_PinInit
- 583              	.LVL58:
- 584              	.LBB130:
- 585              	.LBB131:
- 586              	.LBB132:
- 587              		.file 5 "../drivers/fsl_gpio.h"
+ 566              		.loc 3 366 0
+ 567 00b2 1360     		str	r3, [r2]
+ 568              	.LVL56:
+ 569              	.LBE114:
+ 570              	.LBE113:
+ 571              		.loc 1 207 0
+ 572 00b4 2046     		mov	r0, r4
+ 573 00b6 344A     		ldr	r2, .L28+40
+ 574 00b8 1521     		movs	r1, #21
+ 575 00ba FFF7FEFF 		bl	GPIO_PinInit
+ 576              	.LVL57:
+ 208:../source/main.c **** 	GPIO_PinInit(GPIOB, 22u, &LED_configOutput);	//red led as output
+ 577              		.loc 1 208 0
+ 578 00be 2046     		mov	r0, r4
+ 579 00c0 314A     		ldr	r2, .L28+40
+ 580 00c2 1621     		movs	r1, #22
+ 581 00c4 FFF7FEFF 		bl	GPIO_PinInit
+ 582              	.LVL58:
+ 209:../source/main.c **** 
+ 210:../source/main.c **** 	/*
+ 211:../source/main.c **** 	 * set boost regulator enable pin as output. This pin will control the power to RF modules
+ 212:../source/main.c **** 	 */
+ 213:../source/main.c **** 	GPIO_PinInit(GPIOB, 11u, &LED_configOutput);
+ 583              		.loc 1 213 0
+ 584 00c8 2046     		mov	r0, r4
+ 585 00ca 2F4A     		ldr	r2, .L28+40
+ 586 00cc 0B21     		movs	r1, #11
+ 587 00ce FFF7FEFF 		bl	GPIO_PinInit
+ 588              	.LVL59:
+ 214:../source/main.c **** 	GPIO_PinInit(GPIOD, 1u, &LED_configOutput);
+ 589              		.loc 1 214 0
+ 590 00d2 2946     		mov	r1, r5
+ 591 00d4 2C4A     		ldr	r2, .L28+40
+ 592 00d6 2D48     		ldr	r0, .L28+44
+ 593 00d8 FFF7FEFF 		bl	GPIO_PinInit
+ 594              	.LVL60:
+ 595              	.LBB115:
+ 596              	.LBB116:
+ 597              	.LBB117:
+ 598              		.file 5 "../drivers/fsl_gpio.h"
    1:../drivers/fsl_gpio.h **** /*
    2:../drivers/fsl_gpio.h ****  * The Clear BSD License
    3:../drivers/fsl_gpio.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
@@ -3687,570 +3695,6 @@
  188:../drivers/fsl_gpio.h **** static inline void GPIO_PortSet(GPIO_Type *base, uint32_t mask)
  189:../drivers/fsl_gpio.h **** {
  190:../drivers/fsl_gpio.h ****     base->PSOR = mask;
- 588              		.loc 5 190 0
- 589 00d2 4FF40063 		mov	r3, #2048
- 590 00d6 6360     		str	r3, [r4, #4]
- 591              	.LVL59:
- 592              	.LBE132:
- 593              	.LBE131:
- 594              	.LBE130:
- 213:../source/main.c **** 
- 214:../source/main.c **** 	GPIO_SetPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
- 215:../source/main.c **** 
- 216:../source/main.c **** 	//fletcher8(PMC_set, 14);
- 217:../source/main.c **** 	//fletcher8(ubx_cfg_prt, 7);
- 218:../source/main.c **** 	//ubx_send(ubx_cfg_prt);
- 219:../source/main.c **** 
- 220:../source/main.c **** 	printf(
- 595              		.loc 1 220 0
- 596 00d8 8E48     		ldr	r0, .L67+44
- 597 00da FFF7FEFF 		bl	puts
- 598              	.LVL60:
- 221:../source/main.c **** 			"Reindeer IoT has started\r\nCommand \"iot\" to start executing reindeer track cycle\r\n"
- 222:../source/main.c **** 					"Command \"gpsinfo=1\" or \"gpsinfo=0\" to switch GPS data on/off\r\n");
- 223:../source/main.c **** 	printf(
- 599              		.loc 1 223 0
- 600 00de 8E48     		ldr	r0, .L67+48
- 601 00e0 FFF7FEFF 		bl	puts
- 602              	.LVL61:
- 224:../source/main.c **** 			"Or enter normal AT commands here for SARA-N2\r\nModules powered on and booting now!\r\n");
- 225:../source/main.c **** 
- 226:../source/main.c **** 	/*
- 227:../source/main.c **** 	 * Copy all reindeer variables to struct before starting network operations
- 228:../source/main.c **** 	 */
- 229:../source/main.c **** 	char testLat[11] = ("6500.53");
- 603              		.loc 1 229 0
- 604 00e4 8D4B     		ldr	r3, .L67+52
- 605 00e6 5968     		ldr	r1, [r3, #4]	@ unaligned
- 606 00e8 1868     		ldr	r0, [r3]	@ unaligned
- 607 00ea 6A46     		mov	r2, sp
- 608 00ec 03C2     		stmia	r2!, {r0, r1}
- 230:../source/main.c **** 	char testLon[11] = ("02534.554");
- 609              		.loc 1 230 0
- 610 00ee 53F80B0F 		ldr	r0, [r3, #11]!	@ unaligned
- 611 00f2 5968     		ldr	r1, [r3, #4]	@ unaligned
- 612 00f4 1B89     		ldrh	r3, [r3, #8]	@ unaligned
- 613 00f6 03AA     		add	r2, sp, #12
- 614 00f8 03C2     		stmia	r2!, {r0, r1}
- 229:../source/main.c **** 	char testLon[11] = ("02534.554");
- 615              		.loc 1 229 0
- 616 00fa 0027     		movs	r7, #0
- 231:../source/main.c **** 	strcpy(reindeerData.serialNum, "11111");
- 617              		.loc 1 231 0
- 618 00fc 8849     		ldr	r1, .L67+56
- 230:../source/main.c **** 	char testLon[11] = ("02534.554");
- 619              		.loc 1 230 0
- 620 00fe 1380     		strh	r3, [r2]	@ unaligned
- 621              		.loc 1 231 0
- 622 0100 09A8     		add	r0, sp, #36
- 229:../source/main.c **** 	char testLon[11] = ("02534.554");
- 623              		.loc 1 229 0
- 624 0102 ADF80870 		strh	r7, [sp, #8]	@ movhi
- 625 0106 8DF80A70 		strb	r7, [sp, #10]
- 230:../source/main.c **** 	char testLon[11] = ("02534.554");
- 626              		.loc 1 230 0
- 627 010a 8DF81670 		strb	r7, [sp, #22]
- 628              		.loc 1 231 0
- 629 010e FFF7FEFF 		bl	strcpy
- 630              	.LVL62:
- 232:../source/main.c **** 	strcpy(reindeerData.latitude, testLat);
- 631              		.loc 1 232 0
- 632 0112 6946     		mov	r1, sp
- 633 0114 0DF12A00 		add	r0, sp, #42
- 634 0118 FFF7FEFF 		bl	strcpy
- 635              	.LVL63:
- 233:../source/main.c **** 	strcpy(reindeerData.longitude, testLon);
- 636              		.loc 1 233 0
- 637 011c 03A9     		add	r1, sp, #12
- 638 011e 0DF13600 		add	r0, sp, #54
- 639 0122 FFF7FEFF 		bl	strcpy
- 640              	.LVL64:
- 234:../source/main.c **** 	strcpy(reindeerData.dead, "false");
- 235:../source/main.c **** 	reindeerData.batteryLevel = 45;
- 236:../source/main.c **** 	/*
- 237:../source/main.c **** 	 while (true) {
- 238:../source/main.c **** 
- 239:../source/main.c **** 	 int16_t acc_val_x = read_acc_axis(0);
- 240:../source/main.c **** 	 int16_t acc_val_y = read_acc_axis(1);
- 241:../source/main.c **** 	 int16_t acc_val_z = read_acc_axis(2);
- 242:../source/main.c **** 	 printf("Akseloreometer x: %d y: %d z: %d\r\n", acc_val_x, acc_val_y, acc_val_z);
- 243:../source/main.c **** 	 delay_ms(500);
- 244:../source/main.c **** 	 }
- 245:../source/main.c **** 	 */
- 246:../source/main.c **** 	if (wake == 2) {
- 641              		.loc 1 246 0
- 642 0126 7F4F     		ldr	r7, .L67+60
- 234:../source/main.c **** 	strcpy(reindeerData.dead, "false");
- 643              		.loc 1 234 0
- 644 0128 7F49     		ldr	r1, .L67+64
- 645 012a 0DF14200 		add	r0, sp, #66
- 646 012e FFF7FEFF 		bl	strcpy
- 647              	.LVL65:
- 235:../source/main.c **** 	/*
- 648              		.loc 1 235 0
- 649 0132 2D23     		movs	r3, #45
- 650 0134 8DF84830 		strb	r3, [sp, #72]
- 651              		.loc 1 246 0
- 652 0138 3B78     		ldrb	r3, [r7]	@ zero_extendqisi2
- 653 013a 022B     		cmp	r3, #2
- 654 013c 08D1     		bne	.L28
- 247:../source/main.c **** 		printf("Woken by ACCEL, reindeer is !!!ALIVE!!!\r\n");
- 655              		.loc 1 247 0
- 656 013e 7B48     		ldr	r0, .L67+68
- 657 0140 FFF7FEFF 		bl	puts
- 658              	.LVL66:
- 248:../source/main.c **** 		SMC_PreEnterStopModes();
- 659              		.loc 1 248 0
- 660 0144 FFF7FEFF 		bl	SMC_PreEnterStopModes
- 661              	.LVL67:
- 249:../source/main.c **** 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
- 662              		.loc 1 249 0
- 663 0148 3146     		mov	r1, r6
- 664 014a 2846     		mov	r0, r5
- 665 014c FFF7FEFF 		bl	SMC_SetPowerModeVlls
- 666              	.LVL68:
- 667              	.L28:
- 250:../source/main.c **** 	}
- 251:../source/main.c **** 
- 252:../source/main.c **** 	while (1) {
- 253:../source/main.c **** 
- 254:../source/main.c **** 		//int16_t acc_val = read_acc_axis(0);
- 255:../source/main.c **** 		//printf("Accelereometer %d\r\n",acc_val);
- 256:../source/main.c **** 		//break;
- 257:../source/main.c **** 		/*
- 258:../source/main.c **** 		 * Check if a string has arrived from PC (with CR line end)
- 259:../source/main.c **** 		 */
- 260:../source/main.c **** 
- 261:../source/main.c **** 		if (wake == 1) {
- 262:../source/main.c **** 			strcpy(reindeerData.dead, "true");
- 263:../source/main.c **** 			printf("Woken by LPTMR, reindeer is !!!%s!!\r\n",
- 264:../source/main.c **** 					reindeerData.dead);
- 265:../source/main.c **** 
- 266:../source/main.c **** 			while (true) {
- 267:../source/main.c **** 				if (GPS_strReady) {
- 268:../source/main.c **** 					printf(GPS_recBuf);
- 269:../source/main.c **** 					printf("\r\n"); //First print out whole buffer
- 270:../source/main.c **** 
- 271:../source/main.c **** 					char testLat[12] = ("6500.02359");
- 272:../source/main.c **** 					char testLon[12] = ("02530.56951");
- 273:../source/main.c **** 
- 274:../source/main.c **** 					strcpy(reindeerData.latitude, testLat);
- 275:../source/main.c **** 					strcpy(reindeerData.longitude, testLon);
- 276:../source/main.c **** 					break;
- 277:../source/main.c **** 
- 278:../source/main.c **** 					if (getGPS()) {
- 279:../source/main.c **** 						//char testLat[12] = ("6500.02359");
- 280:../source/main.c **** 						//char testLon[12] = ("02530.56951");
- 281:../source/main.c **** 
- 282:../source/main.c **** 						//parseData(testLat,testLon);
- 283:../source/main.c **** 
- 284:../source/main.c **** 						strcpy(reindeerData.latitude, parsedLat);
- 285:../source/main.c **** 						strcpy(reindeerData.longitude, parsedLon);
- 286:../source/main.c **** 						break;
- 287:../source/main.c **** 					}
- 288:../source/main.c **** 					memset(GPS_recBuf, 0, 600);
- 289:../source/main.c **** 					GPS_bufPtr = 0;
- 290:../source/main.c **** 					GPS_strReady = 0;
- 291:../source/main.c **** 				}
- 292:../source/main.c **** 			}
- 293:../source/main.c **** 			printf("Parsed latitude: %s\r\n", reindeerData.latitude);
- 294:../source/main.c **** 			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
- 295:../source/main.c **** 			break;
- 296:../source/main.c **** 		}
- 297:../source/main.c **** 
- 298:../source/main.c **** 		if (PC_strReady) {
- 668              		.loc 1 298 0
- 669 0150 774E     		ldr	r6, .L67+72
- 299:../source/main.c **** 
- 300:../source/main.c **** 			if (strstr(PC_recBuf, "iot") != NULL) {
- 670              		.loc 1 300 0
- 671 0152 DFF83882 		ldr	r8, .L67+164
- 672              	.L29:
- 261:../source/main.c **** 			strcpy(reindeerData.dead, "true");
- 673              		.loc 1 261 0
- 674 0156 3B78     		ldrb	r3, [r7]	@ zero_extendqisi2
- 675 0158 012B     		cmp	r3, #1
- 676 015a 47D1     		bne	.L30
- 262:../source/main.c **** 			printf("Woken by LPTMR, reindeer is !!!%s!!\r\n",
- 677              		.loc 1 262 0
- 678 015c 7549     		ldr	r1, .L67+76
- 679 015e 0DF14200 		add	r0, sp, #66
- 680 0162 FFF7FEFF 		bl	strcpy
- 681              	.LVL69:
- 263:../source/main.c **** 					reindeerData.dead);
- 682              		.loc 1 263 0
- 683 0166 0DF14201 		add	r1, sp, #66
- 684 016a 7348     		ldr	r0, .L67+80
- 685 016c FFF7FEFF 		bl	printf
- 686              	.LVL70:
- 267:../source/main.c **** 					printf(GPS_recBuf);
- 687              		.loc 1 267 0
- 688 0170 724A     		ldr	r2, .L67+84
- 689              	.L31:
- 690 0172 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 691 0174 002B     		cmp	r3, #0
- 692 0176 FCD0     		beq	.L31
- 693              	.LBB133:
- 268:../source/main.c **** 					printf("\r\n"); //First print out whole buffer
- 694              		.loc 1 268 0
- 695 0178 7148     		ldr	r0, .L67+88
- 696 017a FFF7FEFF 		bl	printf
- 697              	.LVL71:
- 269:../source/main.c **** 
- 698              		.loc 1 269 0
- 699 017e 7148     		ldr	r0, .L67+92
- 700 0180 FFF7FEFF 		bl	puts
- 701              	.LVL72:
- 271:../source/main.c **** 					char testLon[12] = ("02530.56951");
- 702              		.loc 1 271 0
- 703 0184 704A     		ldr	r2, .L67+96
- 704 0186 1068     		ldr	r0, [r2]	@ unaligned
- 705 0188 5168     		ldr	r1, [r2, #4]	@ unaligned
- 706 018a 06AB     		add	r3, sp, #24
- 707 018c 03C3     		stmia	r3!, {r0, r1}
- 708 018e 1189     		ldrh	r1, [r2, #8]	@ unaligned
- 709 0190 927A     		ldrb	r2, [r2, #10]	@ zero_extendqisi2
- 710 0192 9A70     		strb	r2, [r3, #2]
- 272:../source/main.c **** 
- 711              		.loc 1 272 0
- 712 0194 6D4A     		ldr	r2, .L67+100
- 271:../source/main.c **** 					char testLon[12] = ("02530.56951");
- 713              		.loc 1 271 0
- 714 0196 1980     		strh	r1, [r3]	@ unaligned
- 272:../source/main.c **** 
- 715              		.loc 1 272 0
- 716 0198 1068     		ldr	r0, [r2]	@ unaligned
- 717 019a 5168     		ldr	r1, [r2, #4]	@ unaligned
- 271:../source/main.c **** 					char testLon[12] = ("02530.56951");
- 718              		.loc 1 271 0
- 719 019c 0023     		movs	r3, #0
- 720 019e 8DF82330 		strb	r3, [sp, #35]
- 272:../source/main.c **** 
- 721              		.loc 1 272 0
- 722 01a2 13AB     		add	r3, sp, #76
- 723 01a4 03C3     		stmia	r3!, {r0, r1}
- 724 01a6 9068     		ldr	r0, [r2, #8]	@ unaligned
- 725 01a8 1860     		str	r0, [r3]
- 274:../source/main.c **** 					strcpy(reindeerData.longitude, testLon);
- 726              		.loc 1 274 0
- 727 01aa 06A9     		add	r1, sp, #24
- 728 01ac 0DF12A00 		add	r0, sp, #42
- 729 01b0 FFF7FEFF 		bl	strcpy
- 730              	.LVL73:
- 275:../source/main.c **** 					break;
- 731              		.loc 1 275 0
- 732 01b4 13A9     		add	r1, sp, #76
- 733 01b6 0DF13600 		add	r0, sp, #54
- 734 01ba FFF7FEFF 		bl	strcpy
- 735              	.LVL74:
- 736              	.LBE133:
- 293:../source/main.c **** 			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
- 737              		.loc 1 293 0
- 738 01be 0DF12A01 		add	r1, sp, #42
- 739 01c2 6348     		ldr	r0, .L67+104
- 740 01c4 FFF7FEFF 		bl	printf
- 741              	.LVL75:
- 294:../source/main.c **** 			break;
- 742              		.loc 1 294 0
- 743 01c8 0DF13601 		add	r1, sp, #54
- 744 01cc 6148     		ldr	r0, .L67+108
- 745 01ce FFF7FEFF 		bl	printf
- 746              	.LVL76:
- 747              	.L32:
- 301:../source/main.c **** 				printf("Starting Reindeer IoT cycle\r\n");
- 302:../source/main.c **** 				break;
- 303:../source/main.c **** 			} else if (strstr(PC_recBuf, "gpsinfo=1") != NULL) {
- 304:../source/main.c **** 				streamGps = 1;
- 305:../source/main.c **** 			} else if (strstr(PC_recBuf, "gpsinfo=0") != NULL) {
- 306:../source/main.c **** 				streamGps = 0;
- 307:../source/main.c **** 			} else if (strstr(PC_recBuf, "rfoff") != NULL) {
- 308:../source/main.c **** 				GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
- 309:../source/main.c **** 			} else if (strstr(PC_recBuf, "rfon") != NULL) {
- 310:../source/main.c **** 				GPIO_SetPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
- 311:../source/main.c **** 			} else if (strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
- 312:../source/main.c **** 			{
- 313:../source/main.c **** 				printf("send to gps\r\n");
- 314:../source/main.c **** 				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf + 2); //Calculate UBX checksum and add it to the messa
- 315:../source/main.c **** 				UART2_send(PC_recBuf, ubxMsgLen); //Send UBX message to module
- 316:../source/main.c **** 			} else {
- 317:../source/main.c **** 
- 318:../source/main.c **** 				UART3_send(PC_recBuf);
- 319:../source/main.c **** 
- 320:../source/main.c **** 			}
- 321:../source/main.c **** 			memset(PC_recBuf, 0, strlen(PC_recBuf));
- 322:../source/main.c **** 			PC_strReady = 0;
- 323:../source/main.c **** 			PC_bufPtr = 0;
- 324:../source/main.c **** 		}
- 325:../source/main.c **** 
- 326:../source/main.c **** 		if (UART3_strReady) {
- 327:../source/main.c **** 			moduleResponseTimeout = millis() + RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial val
- 328:../source/main.c **** 
- 329:../source/main.c **** 			while (millis() < moduleResponseTimeout)
- 330:../source/main.c **** 
- 331:../source/main.c **** 			{
- 332:../source/main.c **** 
- 333:../source/main.c **** 				if (breakIfAtOk()) {
- 334:../source/main.c **** 					break;
- 335:../source/main.c **** 				}
- 336:../source/main.c **** 
- 337:../source/main.c **** 			}
- 338:../source/main.c **** 
- 339:../source/main.c **** 			//now the timeout has expired since last character had arrived, so we can process data
- 340:../source/main.c **** 
- 341:../source/main.c **** 			printf(UART3_recBuf);
- 342:../source/main.c **** 			printf("\r\n");
- 343:../source/main.c **** 			memset(UART3_recBuf, 0, 500);
- 344:../source/main.c **** 			UART3_bufPtr = 0;
- 345:../source/main.c **** 			UART3_strReady = 0;
- 346:../source/main.c **** 		}
- 347:../source/main.c **** 
- 348:../source/main.c **** 		/*
- 349:../source/main.c **** 		 * If GPS string is ready and GPS data streaming is enabled, enter here to process GPS data buffe
- 350:../source/main.c **** 		 */
- 351:../source/main.c **** 		if (GPS_strReady && streamGps) {
- 352:../source/main.c **** 
- 353:../source/main.c **** 			//printf(GPS_recBuf);
- 354:../source/main.c **** 			//printf("\r\n"); //First print out whole buffer
- 355:../source/main.c **** 
- 356:../source/main.c **** 			if (getGPS()) {
- 357:../source/main.c **** 				//char testLat[12] = ("6500.02359");
- 358:../source/main.c **** 				//char testLon[12] = ("02530.56951");
- 359:../source/main.c **** 
- 360:../source/main.c **** 				//parseData(testLat,testLon);
- 361:../source/main.c **** 
- 362:../source/main.c **** 				strcpy(reindeerData.latitude, parsedLat);
- 363:../source/main.c **** 				strcpy(reindeerData.longitude, parsedLon);
- 364:../source/main.c **** 				break;
- 365:../source/main.c **** 			}
- 366:../source/main.c **** 
- 367:../source/main.c **** 			printf("Parsed latitude: %s\r\n", reindeerData.latitude);
- 368:../source/main.c **** 			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
- 369:../source/main.c **** 
- 370:../source/main.c **** 			char* ubxResponseStartPtr = strstr(GPS_recBuf, "\xb5\x62"); //Find pointer to UBX header. If the
- 371:../source/main.c **** 																		//will be NULL
- 372:../source/main.c **** 
- 373:../source/main.c **** 			if (ubxResponseStartPtr != NULL) //If pointer is not null, it means UBX response header is found
- 374:../source/main.c **** 			{
- 375:../source/main.c **** 				printf("Found UBX response\r\n");
- 376:../source/main.c **** 
- 377:../source/main.c **** 				uint8_t responseLength = *(ubxResponseStartPtr + 4); //Find out UBX response length, it is alwa
- 378:../source/main.c **** 																	 //from beginning of the packet. * means dereferencing pointer
- 379:../source/main.c **** 				//dereferencing means "accessing the value where pointer points"
- 380:../source/main.c **** 
- 381:../source/main.c **** 				printf("UBX response length: %02x\r\n", responseLength);
- 382:../source/main.c **** 
- 383:../source/main.c **** 				printUbxResponseHex(ubxResponseStartPtr,
- 384:../source/main.c **** 						responseLength + 6 + 2); //Print UBX response message. Function wants to know
- 385:../source/main.c **** 				//how many chars to print. We must add 6+2 to print header and crc too
- 386:../source/main.c **** 			}
- 387:../source/main.c **** 
- 388:../source/main.c **** 			memset(GPS_recBuf, 0, 600);
- 389:../source/main.c **** 			GPS_bufPtr = 0;
- 390:../source/main.c **** 			GPS_strReady = 0;
- 391:../source/main.c **** 		}
- 392:../source/main.c **** 
- 393:../source/main.c **** 	}
- 394:../source/main.c **** 
- 395:../source/main.c **** 	/*
- 396:../source/main.c **** 	 * Assemble data to json format and then to POST message
- 397:../source/main.c **** 	 */
- 398:../source/main.c **** 
- 399:../source/main.c **** 	uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
- 748              		.loc 1 399 0
- 749 01d2 13A9     		add	r1, sp, #76
- 750 01d4 09A8     		add	r0, sp, #36
- 751 01d6 FFF7FEFF 		bl	assembleMqtt
- 752              	.LVL77:
- 400:../source/main.c **** 
- 401:../source/main.c **** 	//NB_send_msg(mqttMessage, msgLen);
- 402:../source/main.c **** 
- 403:../source/main.c **** 	NB_create_pdp_send(mqttMessage, msgLen);
- 753              		.loc 1 403 0
- 754 01da 0146     		mov	r1, r0
- 755 01dc 13A8     		add	r0, sp, #76
- 756              	.LVL78:
- 757 01de FFF7FEFF 		bl	NB_create_pdp_send
- 758              	.LVL79:
- 404:../source/main.c **** 	//parseData(testLat, testLon);
- 405:../source/main.c **** }
- 759              		.loc 1 405 0
- 760 01e2 0020     		movs	r0, #0
- 761 01e4 0DF5047D 		add	sp, sp, #528
- 762              		.cfi_remember_state
- 763              		.cfi_def_cfa_offset 32
- 764              		@ sp needed
- 765 01e8 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
- 766              	.L30:
- 767              		.cfi_restore_state
- 298:../source/main.c **** 
- 768              		.loc 1 298 0
- 769 01ec 3378     		ldrb	r3, [r6]	@ zero_extendqisi2
- 770 01ee F3B1     		cbz	r3, .L33
- 300:../source/main.c **** 				printf("Starting Reindeer IoT cycle\r\n");
- 771              		.loc 1 300 0
- 772 01f0 4146     		mov	r1, r8
- 773 01f2 5948     		ldr	r0, .L67+112
- 774 01f4 FFF7FEFF 		bl	strstr
- 775              	.LVL80:
- 776 01f8 18B1     		cbz	r0, .L34
- 301:../source/main.c **** 				break;
- 777              		.loc 1 301 0
- 778 01fa 5848     		ldr	r0, .L67+116
- 779 01fc FFF7FEFF 		bl	puts
- 780              	.LVL81:
- 302:../source/main.c **** 			} else if (strstr(PC_recBuf, "gpsinfo=1") != NULL) {
- 781              		.loc 1 302 0
- 782 0200 E7E7     		b	.L32
- 783              	.L34:
- 303:../source/main.c **** 				streamGps = 1;
- 784              		.loc 1 303 0
- 785 0202 5749     		ldr	r1, .L67+120
- 786 0204 5448     		ldr	r0, .L67+112
- 787 0206 FFF7FEFF 		bl	strstr
- 788              	.LVL82:
- 789 020a 0546     		mov	r5, r0
- 790 020c 0028     		cmp	r0, #0
- 791 020e 4FD0     		beq	.L35
- 304:../source/main.c **** 			} else if (strstr(PC_recBuf, "gpsinfo=0") != NULL) {
- 792              		.loc 1 304 0
- 793 0210 544B     		ldr	r3, .L67+124
- 794 0212 0122     		movs	r2, #1
- 795 0214 1A70     		strb	r2, [r3]
- 796              	.L36:
- 321:../source/main.c **** 			PC_strReady = 0;
- 797              		.loc 1 321 0
- 798 0216 5048     		ldr	r0, .L67+112
- 799 0218 FFF7FEFF 		bl	strlen
- 800              	.LVL83:
- 801 021c 0021     		movs	r1, #0
- 802 021e 0246     		mov	r2, r0
- 803 0220 4D48     		ldr	r0, .L67+112
- 804 0222 FFF7FEFF 		bl	memset
- 805              	.LVL84:
- 323:../source/main.c **** 		}
- 806              		.loc 1 323 0
- 807 0226 504A     		ldr	r2, .L67+128
- 322:../source/main.c **** 			PC_bufPtr = 0;
- 808              		.loc 1 322 0
- 809 0228 0023     		movs	r3, #0
- 810 022a 3370     		strb	r3, [r6]
- 323:../source/main.c **** 		}
- 811              		.loc 1 323 0
- 812 022c 1380     		strh	r3, [r2]	@ movhi
- 813              	.L33:
- 326:../source/main.c **** 			moduleResponseTimeout = millis() + RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial val
- 814              		.loc 1 326 0
- 815 022e DFF86091 		ldr	r9, .L67+168
- 816 0232 99F80030 		ldrb	r3, [r9]	@ zero_extendqisi2
- 817 0236 FBB1     		cbz	r3, .L41
- 327:../source/main.c **** 
- 818              		.loc 1 327 0
- 819 0238 FFF7FEFF 		bl	millis
- 820              	.LVL85:
- 821 023c 4B4D     		ldr	r5, .L67+132
- 822 023e 00F5FA60 		add	r0, r0, #2000
- 823 0242 2860     		str	r0, [r5]
- 824              	.L42:
- 329:../source/main.c **** 
- 825              		.loc 1 329 0
- 826 0244 FFF7FEFF 		bl	millis
- 827              	.LVL86:
- 828 0248 2B68     		ldr	r3, [r5]
- 829 024a 9842     		cmp	r0, r3
- 830 024c 03D2     		bcs	.L44
- 333:../source/main.c **** 					break;
- 831              		.loc 1 333 0
- 832 024e FFF7FEFF 		bl	breakIfAtOk
- 833              	.LVL87:
- 834 0252 0028     		cmp	r0, #0
- 835 0254 F6D0     		beq	.L42
- 836              	.L44:
- 341:../source/main.c **** 			printf("\r\n");
- 837              		.loc 1 341 0
- 838 0256 4648     		ldr	r0, .L67+136
- 839 0258 FFF7FEFF 		bl	printf
- 840              	.LVL88:
- 342:../source/main.c **** 			memset(UART3_recBuf, 0, 500);
- 841              		.loc 1 342 0
- 842 025c 3948     		ldr	r0, .L67+92
- 843 025e FFF7FEFF 		bl	puts
- 844              	.LVL89:
- 343:../source/main.c **** 			UART3_bufPtr = 0;
- 845              		.loc 1 343 0
- 846 0262 4FF4FA72 		mov	r2, #500
- 847 0266 0021     		movs	r1, #0
- 848 0268 4148     		ldr	r0, .L67+136
- 849 026a FFF7FEFF 		bl	memset
- 850              	.LVL90:
- 344:../source/main.c **** 			UART3_strReady = 0;
- 851              		.loc 1 344 0
- 852 026e 414A     		ldr	r2, .L67+140
- 853 0270 0023     		movs	r3, #0
- 854 0272 1380     		strh	r3, [r2]	@ movhi
- 345:../source/main.c **** 		}
- 855              		.loc 1 345 0
- 856 0274 89F80030 		strb	r3, [r9]
- 857              	.L41:
- 351:../source/main.c **** 
- 858              		.loc 1 351 0
- 859 0278 DFF8C0A0 		ldr	r10, .L67+84
- 860 027c 9AF80030 		ldrb	r3, [r10]	@ zero_extendqisi2
- 861 0280 002B     		cmp	r3, #0
- 862 0282 3FF468AF 		beq	.L29
- 351:../source/main.c **** 
- 863              		.loc 1 351 0 is_stmt 0 discriminator 1
- 864 0286 374B     		ldr	r3, .L67+124
- 865 0288 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 866 028a 002B     		cmp	r3, #0
- 867 028c 3FF463AF 		beq	.L29
- 868              	.LBB134:
- 356:../source/main.c **** 				//char testLat[12] = ("6500.02359");
- 869              		.loc 1 356 0 is_stmt 1
- 870 0290 FFF7FEFF 		bl	getGPS
- 871              	.LVL91:
- 872 0294 0028     		cmp	r0, #0
- 873 0296 00F09180 		beq	.L46
- 362:../source/main.c **** 				strcpy(reindeerData.longitude, parsedLon);
- 874              		.loc 1 362 0
- 875 029a 3749     		ldr	r1, .L67+144
- 876 029c 0DF12A00 		add	r0, sp, #42
- 877 02a0 FFF7FEFF 		bl	strcpy
- 878              	.LVL92:
- 363:../source/main.c **** 				break;
- 879              		.loc 1 363 0
- 880 02a4 3549     		ldr	r1, .L67+148
- 881 02a6 0DF13600 		add	r0, sp, #54
- 882 02aa FFF7FEFF 		bl	strcpy
- 883              	.LVL93:
- 364:../source/main.c **** 			}
- 884              		.loc 1 364 0
- 885 02ae 90E7     		b	.L32
- 886              	.L35:
- 887              	.LBE134:
- 305:../source/main.c **** 				streamGps = 0;
- 888              		.loc 1 305 0
- 889 02b0 3349     		ldr	r1, .L67+152
- 890 02b2 2948     		ldr	r0, .L67+112
- 891 02b4 FFF7FEFF 		bl	strstr
- 892              	.LVL94:
- 893 02b8 10B1     		cbz	r0, .L37
- 306:../source/main.c **** 			} else if (strstr(PC_recBuf, "rfoff") != NULL) {
- 894              		.loc 1 306 0
- 895 02ba 2A4B     		ldr	r3, .L67+124
- 896 02bc 1D70     		strb	r5, [r3]
- 897 02be AAE7     		b	.L36
- 898              	.L37:
- 307:../source/main.c **** 				GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
- 899              		.loc 1 307 0
- 900 02c0 3049     		ldr	r1, .L67+156
- 901 02c2 2548     		ldr	r0, .L67+112
- 902 02c4 FFF7FEFF 		bl	strstr
- 903              	.LVL95:
- 904 02c8 18B1     		cbz	r0, .L38
- 905              	.LVL96:
- 906              	.LBB136:
- 907              	.LBB137:
- 908              	.LBB138:
  191:../drivers/fsl_gpio.h **** }
  192:../drivers/fsl_gpio.h **** 
  193:../drivers/fsl_gpio.h **** /*!
@@ -4271,250 +3715,381 @@
  208:../drivers/fsl_gpio.h **** static inline void GPIO_PortClear(GPIO_Type *base, uint32_t mask)
  209:../drivers/fsl_gpio.h **** {
  210:../drivers/fsl_gpio.h ****     base->PCOR = mask;
- 909              		.loc 5 210 0
- 910 02ca 4FF40063 		mov	r3, #2048
- 911 02ce A360     		str	r3, [r4, #8]
- 912              	.LVL97:
- 913 02d0 A1E7     		b	.L36
- 914              	.LVL98:
- 915              	.L38:
- 916              	.LBE138:
- 917              	.LBE137:
- 918              	.LBE136:
- 309:../source/main.c **** 				GPIO_SetPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
- 919              		.loc 1 309 0
- 920 02d2 2D49     		ldr	r1, .L67+160
- 921 02d4 2048     		ldr	r0, .L67+112
- 922 02d6 FFF7FEFF 		bl	strstr
- 923              	.LVL99:
- 924 02da 0028     		cmp	r0, #0
- 925 02dc 5AD0     		beq	.L39
- 926              	.LVL100:
- 927              	.LBB139:
- 928              	.LBB140:
- 929              	.LBB141:
- 190:../drivers/fsl_gpio.h **** }
- 930              		.loc 5 190 0
- 931 02de 4FF40063 		mov	r3, #2048
- 932 02e2 6360     		str	r3, [r4, #4]
- 933              	.LVL101:
- 934 02e4 97E7     		b	.L36
- 935              	.L68:
- 936 02e6 00BF     		.align	2
- 937              	.L67:
- 938 02e8 00D00740 		.word	1074253824
- 939 02ec 00E100E0 		.word	-536813312
- 940 02f0 00000000 		.word	ms_ticks
- 941 02f4 10E000E0 		.word	-536813552
- 942 02f8 00ED00E0 		.word	-536810240
- 943 02fc 00E00740 		.word	1074257920
- 944 0300 00000000 		.word	smc_power_mode_vlls_config
- 945 0304 40F00F40 		.word	1074786368
- 946 0308 00C00740 		.word	1074249728
- 947 030c 00000440 		.word	1074003968
- 948 0310 00000000 		.word	.LANCHOR1
- 949 0314 00000000 		.word	.LC0
- 950 0318 8F000000 		.word	.LC1
- 951 031c 00000000 		.word	.LANCHOR2
- 952 0320 E2000000 		.word	.LC4
- 953 0324 00000000 		.word	.LANCHOR3
- 954 0328 E8000000 		.word	.LC5
- 955 032c EE000000 		.word	.LC6
- 956 0330 00000000 		.word	.LANCHOR5
- 957 0334 17010000 		.word	.LC7
- 958 0338 1C010000 		.word	.LC8
- 959 033c 00000000 		.word	.LANCHOR4
- 960 0340 00000000 		.word	GPS_recBuf
- 961 0344 42010000 		.word	.LC9
- 962 0348 16000000 		.word	.LANCHOR2+22
- 963 034c F1010000 		.word	.LC11
- 964 0350 44010000 		.word	.LC12
- 965 0354 5A010000 		.word	.LC13
- 966 0358 00000000 		.word	.LANCHOR6
- 967 035c 75010000 		.word	.LC15
- 968 0360 92010000 		.word	.LC16
- 969 0364 00000000 		.word	.LANCHOR7
- 970 0368 00000000 		.word	.LANCHOR8
- 971 036c 00000000 		.word	.LANCHOR9
- 972 0370 00000000 		.word	UART3_recBuf
- 973 0374 00000000 		.word	.LANCHOR10
- 974 0378 00000000 		.word	parsedLat
- 975 037c 00000000 		.word	parsedLon
- 976 0380 9C010000 		.word	.LC17
- 977 0384 A6010000 		.word	.LC18
- 978 0388 AC010000 		.word	.LC19
- 979 038c 71010000 		.word	.LC14
- 980 0390 00000000 		.word	.LANCHOR0
- 981              	.LVL102:
- 982              	.L39:
- 983              	.LBE141:
- 984              	.LBE140:
- 985              	.LBE139:
- 311:../source/main.c **** 			{
- 986              		.loc 1 311 0
- 987 0394 1F49     		ldr	r1, .L69
- 988 0396 2048     		ldr	r0, .L69+4
- 989 0398 FFF7FEFF 		bl	strstr
- 990              	.LVL103:
- 991 039c 50B1     		cbz	r0, .L40
- 992              	.LBB142:
- 313:../source/main.c **** 				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf + 2); //Calculate UBX checksum and add it to the messa
- 993              		.loc 1 313 0
- 994 039e 1F48     		ldr	r0, .L69+8
- 995 03a0 FFF7FEFF 		bl	puts
- 996              	.LVL104:
- 314:../source/main.c **** 				UART2_send(PC_recBuf, ubxMsgLen); //Send UBX message to module
- 997              		.loc 1 314 0
- 998 03a4 1E48     		ldr	r0, .L69+12
- 999 03a6 FFF7FEFF 		bl	calcUbxCrc
- 1000              	.LVL105:
- 315:../source/main.c **** 			} else {
- 1001              		.loc 1 315 0
- 1002 03aa 0146     		mov	r1, r0
- 1003 03ac 1A48     		ldr	r0, .L69+4
- 1004              	.LVL106:
- 1005 03ae FFF7FEFF 		bl	UART2_send
- 1006              	.LVL107:
- 1007              	.LBE142:
- 1008 03b2 30E7     		b	.L36
- 1009              	.L40:
- 318:../source/main.c **** 
- 1010              		.loc 1 318 0
- 1011 03b4 1848     		ldr	r0, .L69+4
- 1012 03b6 FFF7FEFF 		bl	UART3_send
- 1013              	.LVL108:
- 1014 03ba 2CE7     		b	.L36
- 1015              	.L46:
- 1016              	.LBB143:
- 367:../source/main.c **** 			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
- 1017              		.loc 1 367 0
- 1018 03bc 0DF12A01 		add	r1, sp, #42
- 1019 03c0 1848     		ldr	r0, .L69+16
- 1020 03c2 FFF7FEFF 		bl	printf
- 1021              	.LVL109:
- 368:../source/main.c **** 
- 1022              		.loc 1 368 0
- 1023 03c6 0DF13601 		add	r1, sp, #54
- 1024 03ca 1748     		ldr	r0, .L69+20
- 1025 03cc FFF7FEFF 		bl	printf
- 1026              	.LVL110:
- 370:../source/main.c **** 																		//will be NULL
- 1027              		.loc 1 370 0
- 1028 03d0 1049     		ldr	r1, .L69
- 1029 03d2 1648     		ldr	r0, .L69+24
- 1030 03d4 FFF7FEFF 		bl	strstr
- 1031              	.LVL111:
- 373:../source/main.c **** 			{
- 1032              		.loc 1 373 0
- 1033 03d8 8146     		mov	r9, r0
- 1034 03da 70B1     		cbz	r0, .L47
- 1035              	.LBB135:
- 375:../source/main.c **** 
- 1036              		.loc 1 375 0
- 1037 03dc 1448     		ldr	r0, .L69+28
- 1038              	.LVL112:
- 1039 03de FFF7FEFF 		bl	puts
- 1040              	.LVL113:
- 377:../source/main.c **** 																	 //from beginning of the packet. * means dereferencing pointer
- 1041              		.loc 1 377 0
- 1042 03e2 99F80450 		ldrb	r5, [r9, #4]	@ zero_extendqisi2
- 1043              	.LVL114:
- 381:../source/main.c **** 
- 1044              		.loc 1 381 0
- 1045 03e6 1348     		ldr	r0, .L69+32
- 1046 03e8 2946     		mov	r1, r5
- 1047 03ea FFF7FEFF 		bl	printf
- 1048              	.LVL115:
- 383:../source/main.c **** 						responseLength + 6 + 2); //Print UBX response message. Function wants to know
- 1049              		.loc 1 383 0
- 1050 03ee 05F10801 		add	r1, r5, #8
- 1051 03f2 C9B2     		uxtb	r1, r1
- 1052 03f4 4846     		mov	r0, r9
- 1053 03f6 FFF7FEFF 		bl	printUbxResponseHex
- 1054              	.LVL116:
- 1055              	.L47:
- 1056              	.LBE135:
- 388:../source/main.c **** 			GPS_bufPtr = 0;
- 1057              		.loc 1 388 0
- 1058 03fa 4FF41672 		mov	r2, #600
- 1059 03fe 0021     		movs	r1, #0
- 1060 0400 0A48     		ldr	r0, .L69+24
- 1061 0402 FFF7FEFF 		bl	memset
- 1062              	.LVL117:
- 389:../source/main.c **** 			GPS_strReady = 0;
- 1063              		.loc 1 389 0
- 1064 0406 0C4A     		ldr	r2, .L69+36
- 1065 0408 0023     		movs	r3, #0
- 1066 040a 1380     		strh	r3, [r2]	@ movhi
- 390:../source/main.c **** 		}
- 1067              		.loc 1 390 0
- 1068 040c 8AF80030 		strb	r3, [r10]
- 1069 0410 A1E6     		b	.L29
- 1070              	.L70:
- 1071 0412 00BF     		.align	2
- 1072              	.L69:
- 1073 0414 B1010000 		.word	.LC20
- 1074 0418 00000000 		.word	.LANCHOR6
- 1075 041c B4010000 		.word	.LC21
- 1076 0420 02000000 		.word	.LANCHOR6+2
- 1077 0424 44010000 		.word	.LC12
- 1078 0428 5A010000 		.word	.LC13
- 1079 042c 00000000 		.word	GPS_recBuf
- 1080 0430 C1010000 		.word	.LC22
- 1081 0434 D5010000 		.word	.LC23
- 1082 0438 00000000 		.word	.LANCHOR11
- 1083              	.LBE143:
- 1084              		.cfi_endproc
- 1085              	.LFE226:
- 1087              		.section	.text.LLWU_IRQHandler,"ax",%progbits
- 1088              		.align	1
- 1089              		.global	LLWU_IRQHandler
- 1090              		.syntax unified
- 1091              		.thumb
- 1092              		.thumb_func
- 1093              		.fpu fpv4-sp-d16
- 1095              	LLWU_IRQHandler:
- 1096              	.LFB227:
- 406:../source/main.c **** /*
- 407:../source/main.c ****  void PORTC_IRQHandler() {
- 408:../source/main.c **** 
- 409:../source/main.c ****  PORTC->PCR[6] |= 0x01000000;
- 410:../source/main.c **** 
- 411:../source/main.c ****  while ( PORTC->PCR[6] & 0x01000000) {
- 412:../source/main.c **** 
- 413:../source/main.c ****  }
- 414:../source/main.c **** 
- 415:../source/main.c ****  LPTMR_Deinit(LPTMR0);			// Deinitiate timer to reset timer counte
- 416:../source/main.c ****  LPTMR_Init(LPTMR0, &lptmr_config);
- 417:../source/main.c ****  LPTMR_SetTimerPeriod(LPTMR0, 2000);  // 3000 for 20hz data rat
- 418:../source/main.c ****  LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
- 419:../source/main.c ****  LPTMR_StartTimer(LPTMR0);
- 420:../source/main.c ****  GPIO_PortToggle(GPIOB, 1 << 22u);
- 421:../source/main.c **** 
- 422:../source/main.c ****  }
- 423:../source/main.c ****  */
- 424:../source/main.c **** void LLWU_IRQHandler() {
- 1097              		.loc 1 424 0
- 1098              		.cfi_startproc
- 1099              		@ args = 0, pretend = 0, frame = 0
- 1100              		@ frame_needed = 0, uses_anonymous_args = 0
- 1101              		@ link register save eliminated.
- 425:../source/main.c **** 
- 426:../source/main.c **** 	if ( LLWU->F3 & 0x01) {	// 1 = LPTMR interrupt, 2 = Accel interrupt, 0 = No interrupts
- 1102              		.loc 1 426 0
- 1103 0000 0F4B     		ldr	r3, .L77
- 1104 0002 DA79     		ldrb	r2, [r3, #7]	@ zero_extendqisi2
- 1105 0004 D107     		lsls	r1, r2, #31
- 1106 0006 10D5     		bpl	.L72
- 427:../source/main.c **** 		wake = 1;
- 1107              		.loc 1 427 0
- 1108 0008 0E4B     		ldr	r3, .L77+4
- 1109 000a 0122     		movs	r2, #1
- 1110 000c 1A70     		strb	r2, [r3]
- 1111              	.LVL118:
- 1112              	.LBB146:
- 1113              	.LBB147:
- 1114              		.file 6 "../drivers/fsl_clock.h"
+ 599              		.loc 5 210 0
+ 600 00dc 4FF40063 		mov	r3, #2048
+ 601 00e0 A360     		str	r3, [r4, #8]
+ 602              	.LVL61:
+ 603              	.LBE117:
+ 604              	.LBE116:
+ 605              	.LBE115:
+ 215:../source/main.c **** 
+ 216:../source/main.c **** 	GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
+ 217:../source/main.c **** 
+ 218:../source/main.c **** 	//fletcher8(PMC_set, 14);
+ 219:../source/main.c **** 	//fletcher8(ubx_cfg_prt, 7);
+ 220:../source/main.c **** 	//ubx_send(ubx_cfg_prt);
+ 221:../source/main.c **** 
+ 222:../source/main.c **** 	printf(
+ 606              		.loc 1 222 0
+ 607 00e2 2B48     		ldr	r0, .L28+48
+ 608 00e4 FFF7FEFF 		bl	puts
+ 609              	.LVL62:
+ 223:../source/main.c **** 			"Reindeer IoT has started\r\nCommand \"iot\" to start executing reindeer track cycle\r\n"
+ 224:../source/main.c **** 					"Command \"gpsinfo=1\" or \"gpsinfo=0\" to switch GPS data on/off\r\n");
+ 225:../source/main.c **** 	printf(
+ 610              		.loc 1 225 0
+ 611 00e8 2A48     		ldr	r0, .L28+52
+ 612 00ea FFF7FEFF 		bl	puts
+ 613              	.LVL63:
+ 226:../source/main.c **** 			"Or enter normal AT commands here for SARA-N2\r\nModules powered on and booting now!\r\n");
+ 227:../source/main.c **** 
+ 228:../source/main.c **** 	/*
+ 229:../source/main.c **** 	 * Copy all reindeer variables to struct before starting network operations
+ 230:../source/main.c **** 	 */
+ 231:../source/main.c **** 
+ 232:../source/main.c **** char testLat[11] = ("6500.53");
+ 614              		.loc 1 232 0
+ 615 00ee 2A4B     		ldr	r3, .L28+56
+ 616 00f0 5968     		ldr	r1, [r3, #4]	@ unaligned
+ 617 00f2 1868     		ldr	r0, [r3]	@ unaligned
+ 618 00f4 01AA     		add	r2, sp, #4
+ 619 00f6 03C2     		stmia	r2!, {r0, r1}
+ 233:../source/main.c **** char testLon[11] = ("02534.554");
+ 620              		.loc 1 233 0
+ 621 00f8 53F80B0F 		ldr	r0, [r3, #11]!	@ unaligned
+ 622 00fc 5968     		ldr	r1, [r3, #4]	@ unaligned
+ 623 00fe 1B89     		ldrh	r3, [r3, #8]	@ unaligned
+ 624 0100 04AA     		add	r2, sp, #16
+ 625 0102 03C2     		stmia	r2!, {r0, r1}
+ 232:../source/main.c **** char testLon[11] = ("02534.554");
+ 626              		.loc 1 232 0
+ 627 0104 0024     		movs	r4, #0
+ 234:../source/main.c **** 
+ 235:../source/main.c **** 	strcpy(reindeerData.serialNum, "11111");
+ 628              		.loc 1 235 0
+ 629 0106 2549     		ldr	r1, .L28+60
+ 233:../source/main.c **** 
+ 630              		.loc 1 233 0
+ 631 0108 1380     		strh	r3, [r2]	@ unaligned
+ 632              		.loc 1 235 0
+ 633 010a 07A8     		add	r0, sp, #28
+ 232:../source/main.c **** char testLon[11] = ("02534.554");
+ 634              		.loc 1 232 0
+ 635 010c ADF80C40 		strh	r4, [sp, #12]	@ movhi
+ 636 0110 8DF80E40 		strb	r4, [sp, #14]
+ 233:../source/main.c **** 
+ 637              		.loc 1 233 0
+ 638 0114 8DF81A40 		strb	r4, [sp, #26]
+ 639              		.loc 1 235 0
+ 640 0118 FFF7FEFF 		bl	strcpy
+ 641              	.LVL64:
+ 236:../source/main.c **** 
+ 237:../source/main.c **** 	strcpy(reindeerData.latitude, testLat);
+ 642              		.loc 1 237 0
+ 643 011c 01A9     		add	r1, sp, #4
+ 644 011e 0DF12200 		add	r0, sp, #34
+ 645 0122 FFF7FEFF 		bl	strcpy
+ 646              	.LVL65:
+ 238:../source/main.c **** 	strcpy(reindeerData.longitude, testLon);
+ 647              		.loc 1 238 0
+ 648 0126 04A9     		add	r1, sp, #16
+ 649 0128 0DF12E00 		add	r0, sp, #46
+ 650 012c FFF7FEFF 		bl	strcpy
+ 651              	.LVL66:
+ 239:../source/main.c **** 	strcpy(reindeerData.dead, "false");
+ 652              		.loc 1 239 0
+ 653 0130 1B49     		ldr	r1, .L28+64
+ 654 0132 0DF13A00 		add	r0, sp, #58
+ 655 0136 FFF7FEFF 		bl	strcpy
+ 656              	.LVL67:
+ 240:../source/main.c **** 	reindeerData.batteryLevel = 45;
+ 657              		.loc 1 240 0
+ 658 013a 2D23     		movs	r3, #45
+ 241:../source/main.c **** 
+ 242:../source/main.c **** 	/*
+ 243:../source/main.c **** 	 while (true) {
+ 244:../source/main.c **** 
+ 245:../source/main.c **** 	 int16_t acc_val_x = read_acc_axis(0);
+ 246:../source/main.c **** 	 int16_t acc_val_y = read_acc_axis(1);
+ 247:../source/main.c **** 	 int16_t acc_val_z = read_acc_axis(2);
+ 248:../source/main.c **** 	 printf("Akseloreometer x: %d y: %d z: %d\r\n", acc_val_x, acc_val_y, acc_val_z);
+ 249:../source/main.c **** 	 delay_ms(500);
+ 250:../source/main.c **** 	 }
+ 251:../source/main.c **** 	 */
+ 252:../source/main.c **** 	/*if (wake == 2) {
+ 253:../source/main.c **** 		printf("Woken by ACCEL, reindeer is !!!ALIVE!!!\r\n");
+ 254:../source/main.c **** 		SMC_PreEnterStopModes();
+ 255:../source/main.c **** 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
+ 256:../source/main.c **** 
+ 257:../source/main.c **** 	}*/
+ 258:../source/main.c **** 
+ 259:../source/main.c **** 
+ 260:../source/main.c **** 	while (1) {
+ 261:../source/main.c **** 
+ 262:../source/main.c **** 		//int16_t acc_val = read_acc_axis(0);
+ 263:../source/main.c **** 		//printf("Accelereometer %d\r\n",acc_val);
+ 264:../source/main.c **** 		break;
+ 265:../source/main.c **** 		/*
+ 266:../source/main.c **** 		 * Check if a string has arrived from PC (with CR line end)
+ 267:../source/main.c **** 		 */
+ 268:../source/main.c **** 
+ 269:../source/main.c **** 		if (wake == 5) {
+ 270:../source/main.c **** 			strcpy(reindeerData.dead, "true");
+ 271:../source/main.c **** 			printf("Woken by LPTMR, reindeer is !!!%s!!\r\n",
+ 272:../source/main.c **** 					reindeerData.dead);
+ 273:../source/main.c **** 
+ 274:../source/main.c **** 			while (true) {
+ 275:../source/main.c **** 				if (GPS_strReady) {
+ 276:../source/main.c **** 					printf(GPS_recBuf);
+ 277:../source/main.c **** 					printf("\r\n"); //First print out whole buffer
+ 278:../source/main.c **** 
+ 279:../source/main.c **** 					char testLat[12] = ("6500.02359");
+ 280:../source/main.c **** 					char testLon[12] = ("02530.56951");
+ 281:../source/main.c **** 
+ 282:../source/main.c **** 					strcpy(reindeerData.latitude, testLat);
+ 283:../source/main.c **** 					strcpy(reindeerData.longitude, testLon);
+ 284:../source/main.c **** 					break;
+ 285:../source/main.c **** 
+ 286:../source/main.c **** 					if (getGPS()) {
+ 287:../source/main.c **** 						//char testLat[12] = ("6500.02359");
+ 288:../source/main.c **** 						//char testLon[12] = ("02530.56951");
+ 289:../source/main.c **** 
+ 290:../source/main.c **** 						//parseData(testLat,testLon);
+ 291:../source/main.c **** 
+ 292:../source/main.c **** 						strcpy(reindeerData.latitude, parsedLat);
+ 293:../source/main.c **** 						strcpy(reindeerData.longitude, parsedLon);
+ 294:../source/main.c **** 						break;
+ 295:../source/main.c **** 					}
+ 296:../source/main.c **** 					memset(GPS_recBuf, 0, 600);
+ 297:../source/main.c **** 					GPS_bufPtr = 0;
+ 298:../source/main.c **** 					GPS_strReady = 0;
+ 299:../source/main.c **** 				}
+ 300:../source/main.c **** 
+ 301:../source/main.c **** 			}
+ 302:../source/main.c **** 			printf("Parsed latitude: %s\r\n", reindeerData.latitude);
+ 303:../source/main.c **** 			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
+ 304:../source/main.c **** 			break;
+ 305:../source/main.c **** 		}
+ 306:../source/main.c **** 
+ 307:../source/main.c **** 		if (PC_strReady) {
+ 308:../source/main.c **** 
+ 309:../source/main.c **** 			if (strstr(PC_recBuf, "iot") != NULL) {
+ 310:../source/main.c **** 				printf("Starting Reindeer IoT cycle\r\n");
+ 311:../source/main.c **** 				break;
+ 312:../source/main.c **** 			} else if (strstr(PC_recBuf, "gpsinfo=1") != NULL) {
+ 313:../source/main.c **** 				GPIO_ClearPinsOutput(GPIOD, 1 << 1u);
+ 314:../source/main.c **** 				streamGps = 1;
+ 315:../source/main.c **** 			} else if (strstr(PC_recBuf, "gpsinfo=0") != NULL) {
+ 316:../source/main.c **** 				GPIO_SetPinsOutput(GPIOD, 1 << 1u);
+ 317:../source/main.c **** 				streamGps = 0;
+ 318:../source/main.c **** 			} else if (strstr(PC_recBuf, "rfoff") != NULL) {
+ 319:../source/main.c **** 				GPIO_ClearPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
+ 320:../source/main.c **** 			} else if (strstr(PC_recBuf, "rfon") != NULL) {
+ 321:../source/main.c **** 				GPIO_SetPinsOutput(GPIOB, 1 << 11u); //Power on RF modules
+ 322:../source/main.c **** 			} else if (strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
+ 323:../source/main.c **** 			{
+ 324:../source/main.c **** 				printf("send to gps\r\n");
+ 325:../source/main.c **** 				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf + 2); //Calculate UBX checksum and add it to the messa
+ 326:../source/main.c **** 				UART2_send(PC_recBuf, ubxMsgLen); //Send UBX message to module
+ 327:../source/main.c **** 			} else {
+ 328:../source/main.c **** 
+ 329:../source/main.c **** 				UART3_send(PC_recBuf);
+ 330:../source/main.c **** 
+ 331:../source/main.c **** 			}
+ 332:../source/main.c **** 			memset(PC_recBuf, 0, strlen(PC_recBuf));
+ 333:../source/main.c **** 			PC_strReady = 0;
+ 334:../source/main.c **** 			PC_bufPtr = 0;
+ 335:../source/main.c **** 		}
+ 336:../source/main.c **** 
+ 337:../source/main.c **** 		if (UART3_strReady) {
+ 338:../source/main.c **** 			moduleResponseTimeout = millis() + RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial val
+ 339:../source/main.c **** 
+ 340:../source/main.c **** 			while (millis() < moduleResponseTimeout)
+ 341:../source/main.c **** 
+ 342:../source/main.c **** 			{
+ 343:../source/main.c **** 
+ 344:../source/main.c **** 				if (breakIfAtOk()) {
+ 345:../source/main.c **** 					break;
+ 346:../source/main.c **** 				}
+ 347:../source/main.c **** 
+ 348:../source/main.c **** 			}
+ 349:../source/main.c **** 
+ 350:../source/main.c **** 			//now the timeout has expired since last character had arrived, so we can process data
+ 351:../source/main.c **** 
+ 352:../source/main.c **** 			printf(UART3_recBuf);
+ 353:../source/main.c **** 			printf("\r\n");
+ 354:../source/main.c **** 			memset(UART3_recBuf, 0, 500);
+ 355:../source/main.c **** 			UART3_bufPtr = 0;
+ 356:../source/main.c **** 			UART3_strReady = 0;
+ 357:../source/main.c **** 		}
+ 358:../source/main.c **** 
+ 359:../source/main.c **** 		/*
+ 360:../source/main.c **** 		 * If GPS string is ready and GPS data streaming is enabled, enter here to process GPS data buffe
+ 361:../source/main.c **** 		 */
+ 362:../source/main.c **** 		if (GPS_strReady && streamGps) {
+ 363:../source/main.c **** 
+ 364:../source/main.c **** 			printf(GPS_recBuf);
+ 365:../source/main.c **** 			printf("\r\n"); //First print out whole buffer
+ 366:../source/main.c **** 
+ 367:../source/main.c **** 			if (getGPS()) {
+ 368:../source/main.c **** 				//char testLat[12] = ("6500.02359");
+ 369:../source/main.c **** 				//char testLon[12] = ("02530.56951");
+ 370:../source/main.c **** 
+ 371:../source/main.c **** 				//parseData(testLat,testLon);
+ 372:../source/main.c **** 
+ 373:../source/main.c **** 				strcpy(reindeerData.latitude, parsedLat);
+ 374:../source/main.c **** 				strcpy(reindeerData.longitude, parsedLon);
+ 375:../source/main.c **** 				break;
+ 376:../source/main.c **** 			}
+ 377:../source/main.c **** 
+ 378:../source/main.c **** 			printf("Parsed latitude: %s\r\n", reindeerData.latitude);
+ 379:../source/main.c **** 			printf("Parsed longitude: %s\r\n", reindeerData.longitude);
+ 380:../source/main.c **** 
+ 381:../source/main.c **** 			char* ubxResponseStartPtr = strstr(GPS_recBuf, "\xb5\x62"); //Find pointer to UBX header. If the
+ 382:../source/main.c **** 																		//will be NULL
+ 383:../source/main.c **** 
+ 384:../source/main.c **** 			if (ubxResponseStartPtr != NULL) //If pointer is not null, it means UBX response header is found
+ 385:../source/main.c **** 			{
+ 386:../source/main.c **** 				printf("Found UBX response\r\n");
+ 387:../source/main.c **** 
+ 388:../source/main.c **** 				uint8_t responseLength = *(ubxResponseStartPtr + 4); //Find out UBX response length, it is alwa
+ 389:../source/main.c **** 																	 //from beginning of the packet. * means dereferencing pointer
+ 390:../source/main.c **** 				//dereferencing means "accessing the value where pointer points"
+ 391:../source/main.c **** 
+ 392:../source/main.c **** 				printf("UBX response length: %02x\r\n", responseLength);
+ 393:../source/main.c **** 
+ 394:../source/main.c **** 				printUbxResponseHex(ubxResponseStartPtr,
+ 395:../source/main.c **** 						responseLength + 6 + 2); //Print UBX response message. Function wants to know
+ 396:../source/main.c **** 				//how many chars to print. We must add 6+2 to print header and crc too
+ 397:../source/main.c **** 			}
+ 398:../source/main.c **** 
+ 399:../source/main.c **** 			memset(GPS_recBuf, 0, 600);
+ 400:../source/main.c **** 			GPS_bufPtr = 0;
+ 401:../source/main.c **** 			GPS_strReady = 0;
+ 402:../source/main.c **** 		}
+ 403:../source/main.c **** 
+ 404:../source/main.c **** 	}
+ 405:../source/main.c **** 
+ 406:../source/main.c **** 	/*
+ 407:../source/main.c **** 	 * Assemble data to json format and then to POST message
+ 408:../source/main.c **** 	 */
+ 409:../source/main.c **** 
+ 410:../source/main.c **** 	uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
+ 659              		.loc 1 410 0
+ 660 013c 11A9     		add	r1, sp, #68
+ 661 013e 07A8     		add	r0, sp, #28
+ 240:../source/main.c **** 	reindeerData.batteryLevel = 45;
+ 662              		.loc 1 240 0
+ 663 0140 8DF84030 		strb	r3, [sp, #64]
+ 664              		.loc 1 410 0
+ 665 0144 FFF7FEFF 		bl	assembleMqtt
+ 666              	.LVL68:
+ 411:../source/main.c **** 
+ 412:../source/main.c **** 	//NB_send_msg(mqttMessage, msgLen);
+ 413:../source/main.c **** 	NB_create_pdp_send(mqttMessage, msgLen);
+ 667              		.loc 1 413 0
+ 668 0148 0146     		mov	r1, r0
+ 669 014a 11A8     		add	r0, sp, #68
+ 670              	.LVL69:
+ 671 014c FFF7FEFF 		bl	NB_create_pdp_send
+ 672              	.LVL70:
+ 414:../source/main.c **** 	printf("Roger\r\n");
+ 673              		.loc 1 414 0
+ 674 0150 1448     		ldr	r0, .L28+68
+ 675 0152 FFF7FEFF 		bl	puts
+ 676              	.LVL71:
+ 415:../source/main.c **** 
+ 416:../source/main.c **** 	//parseData(testLat, testLon);
+ 417:../source/main.c **** }
+ 677              		.loc 1 417 0
+ 678 0156 2046     		mov	r0, r4
+ 679 0158 0DF5037D 		add	sp, sp, #524
+ 680              		.cfi_def_cfa_offset 12
+ 681              		@ sp needed
+ 682 015c 30BD     		pop	{r4, r5, pc}
+ 683              	.L29:
+ 684 015e 00BF     		.align	2
+ 685              	.L28:
+ 686 0160 00D00740 		.word	1074253824
+ 687 0164 00E100E0 		.word	-536813312
+ 688 0168 00000000 		.word	ms_ticks
+ 689 016c 10E000E0 		.word	-536813552
+ 690 0170 00ED00E0 		.word	-536810240
+ 691 0174 00E00740 		.word	1074257920
+ 692 0178 40F00F40 		.word	1074786368
+ 693 017c 00000000 		.word	smc_power_mode_vlls_config
+ 694 0180 00C00740 		.word	1074249728
+ 695 0184 00000440 		.word	1074003968
+ 696 0188 00000000 		.word	.LANCHOR1
+ 697 018c C0F00F40 		.word	1074786496
+ 698 0190 00000000 		.word	.LC0
+ 699 0194 8F000000 		.word	.LC1
+ 700 0198 00000000 		.word	.LANCHOR2
+ 701 019c E2000000 		.word	.LC4
+ 702 01a0 E8000000 		.word	.LC5
+ 703 01a4 EE000000 		.word	.LC6
+ 704              		.cfi_endproc
+ 705              	.LFE226:
+ 707              		.section	.text.LLWU_IRQHandler,"ax",%progbits
+ 708              		.align	1
+ 709              		.global	LLWU_IRQHandler
+ 710              		.syntax unified
+ 711              		.thumb
+ 712              		.thumb_func
+ 713              		.fpu fpv4-sp-d16
+ 715              	LLWU_IRQHandler:
+ 716              	.LFB227:
+ 418:../source/main.c **** /*
+ 419:../source/main.c ****  void PORTC_IRQHandler() {
+ 420:../source/main.c **** 
+ 421:../source/main.c ****  PORTC->PCR[6] |= 0x01000000;
+ 422:../source/main.c **** 
+ 423:../source/main.c ****  while ( PORTC->PCR[6] & 0x01000000) {
+ 424:../source/main.c **** 
+ 425:../source/main.c ****  }
+ 426:../source/main.c **** 
+ 427:../source/main.c **** 			GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
+ 428:../source/main.c **** 
+ 429:../source/main.c **** 
+ 430:../source/main.c **** 
+ 431:../source/main.c **** 
+ 432:../source/main.c **** 	LPTMR_Deinit(LPTMR0);			// Deinitiate timer to reset timer counte
+ 433:../source/main.c **** 	LPTMR_Init(LPTMR0, &lptmr_config);
+ 434:../source/main.c **** 	LPTMR_SetTimerPeriod(LPTMR0, 5000);  // 3000 for 20hz data rat
+ 435:../source/main.c **** 	LPTMR_EnableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);	//Sets Timer Interrupt Enable bit to 1
+ 436:../source/main.c **** 	LPTMR_StartTimer(LPTMR0);
+ 437:../source/main.c **** 
+ 438:../source/main.c **** 
+ 439:../source/main.c **** 
+ 440:../source/main.c **** }
+ 441:../source/main.c **** 
+ 442:../source/main.c **** 
+ 443:../source/main.c ****  }
+ 444:../source/main.c **** 
+ 445:../source/main.c ****  */
+ 446:../source/main.c **** 
+ 447:../source/main.c **** void LLWU_IRQHandler() {
+ 717              		.loc 1 447 0
+ 718              		.cfi_startproc
+ 719              		@ args = 0, pretend = 0, frame = 0
+ 720              		@ frame_needed = 0, uses_anonymous_args = 0
+ 721              		@ link register save eliminated.
+ 448:../source/main.c **** 
+ 449:../source/main.c **** 	if ( LLWU->F3 & 0x01) {	// 1 = LPTMR interrupt, 2 = Accel interrupt, 0 = No interrupts
+ 722              		.loc 1 449 0
+ 723 0000 0F4B     		ldr	r3, .L36
+ 724 0002 DA79     		ldrb	r2, [r3, #7]	@ zero_extendqisi2
+ 725 0004 D107     		lsls	r1, r2, #31
+ 726 0006 10D5     		bpl	.L31
+ 450:../source/main.c **** 		wake = 1;
+ 727              		.loc 1 450 0
+ 728 0008 0E4B     		ldr	r3, .L36+4
+ 729 000a 0122     		movs	r2, #1
+ 730 000c 1A70     		strb	r2, [r3]
+ 731              	.LVL72:
+ 732              	.LBB120:
+ 733              	.LBB121:
+ 734              		.file 6 "../drivers/fsl_clock.h"
    1:../drivers/fsl_clock.h **** /*
    2:../drivers/fsl_clock.h ****  * The Clear BSD License
    3:../drivers/fsl_clock.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
@@ -5210,105 +4785,105 @@
  693:../drivers/fsl_clock.h **** {
  694:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
  695:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
- 1115              		.loc 6 695 0
- 1116 000e 0E4A     		ldr	r2, .L77+8
- 1117 0010 1368     		ldr	r3, [r2]
- 1118 0012 43F00103 		orr	r3, r3, #1
- 1119 0016 1360     		str	r3, [r2]
- 1120              	.LVL119:
- 1121              	.LBE147:
- 1122              	.LBE146:
- 428:../source/main.c **** 		CLOCK_EnableClock(kCLOCK_Lptmr0);
- 429:../source/main.c **** 		LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
- 1123              		.loc 1 429 0
- 1124 0018 0C4A     		ldr	r2, .L77+12
- 1125 001a 1368     		ldr	r3, [r2]
- 1126 001c 43F08003 		orr	r3, r3, #128
- 1127 0020 1360     		str	r3, [r2]
- 1128              	.L73:
- 430:../source/main.c **** 
- 431:../source/main.c **** 	}
- 432:../source/main.c **** 
- 433:../source/main.c **** 	else if ( LLWU->F2 & 0x01) {// 0x04 for stock frdm acc wakeup reg, 0x01 for customized
- 434:../source/main.c **** 		wake = 2;
- 435:../source/main.c **** 		LLWU->F2 |= 0x01;
- 436:../source/main.c **** 	}
- 437:../source/main.c **** 
- 438:../source/main.c **** 	LLWU->F2 = 0x01;
- 1129              		.loc 1 438 0
- 1130 0022 074B     		ldr	r3, .L77
- 1131 0024 0122     		movs	r2, #1
- 1132 0026 9A71     		strb	r2, [r3, #6]
- 439:../source/main.c **** }
- 1133              		.loc 1 439 0
- 1134 0028 7047     		bx	lr
- 1135              	.L72:
- 433:../source/main.c **** 		wake = 2;
- 1136              		.loc 1 433 0
- 1137 002a 9A79     		ldrb	r2, [r3, #6]	@ zero_extendqisi2
- 1138 002c D207     		lsls	r2, r2, #31
- 1139 002e F8D5     		bpl	.L73
- 434:../source/main.c **** 		LLWU->F2 |= 0x01;
- 1140              		.loc 1 434 0
- 1141 0030 044A     		ldr	r2, .L77+4
- 1142 0032 0221     		movs	r1, #2
- 1143 0034 1170     		strb	r1, [r2]
- 435:../source/main.c **** 	}
- 1144              		.loc 1 435 0
- 1145 0036 9A79     		ldrb	r2, [r3, #6]	@ zero_extendqisi2
- 1146 0038 42F00102 		orr	r2, r2, #1
- 1147 003c 9A71     		strb	r2, [r3, #6]
- 1148 003e F0E7     		b	.L73
- 1149              	.L78:
- 1150              		.align	2
- 1151              	.L77:
- 1152 0040 00C00740 		.word	1074249728
- 1153 0044 00000000 		.word	.LANCHOR3
- 1154 0048 38800440 		.word	1074036792
- 1155 004c 00000440 		.word	1074003968
- 1156              		.cfi_endproc
- 1157              	.LFE227:
- 1159              		.section	.text.LPTMR0_IRQHandler,"ax",%progbits
- 1160              		.align	1
- 1161              		.global	LPTMR0_IRQHandler
- 1162              		.syntax unified
- 1163              		.thumb
- 1164              		.thumb_func
- 1165              		.fpu fpv4-sp-d16
- 1167              	LPTMR0_IRQHandler:
- 1168              	.LFB228:
- 440:../source/main.c **** 
- 441:../source/main.c **** void LPTMR0_IRQHandler() {
- 1169              		.loc 1 441 0
- 1170              		.cfi_startproc
- 1171              		@ args = 0, pretend = 0, frame = 0
- 1172              		@ frame_needed = 0, uses_anonymous_args = 0
- 1173              		@ link register save eliminated.
- 442:../source/main.c **** 
- 443:../source/main.c **** 	LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;		// Clear the interrupt flag
- 1174              		.loc 1 443 0
- 1175 0000 084B     		ldr	r3, .L82
- 1176 0002 1A68     		ldr	r2, [r3]
- 1177 0004 42F08002 		orr	r2, r2, #128
- 1178 0008 1A60     		str	r2, [r3]
- 1179              	.L80:
- 444:../source/main.c **** 	while ( LPTMR0->CSR & LPTMR_CSR_TCF_MASK) {
- 1180              		.loc 1 444 0 discriminator 1
- 1181 000a 1A68     		ldr	r2, [r3]
- 1182 000c 1206     		lsls	r2, r2, #24
- 1183 000e FCD4     		bmi	.L80
- 445:../source/main.c **** 
- 446:../source/main.c **** 	}
- 447:../source/main.c **** 
- 448:../source/main.c **** 	PMC->REGSC |= 0x08;
- 1184              		.loc 1 448 0
- 1185 0010 054A     		ldr	r2, .L82+4
- 1186 0012 9378     		ldrb	r3, [r2, #2]	@ zero_extendqisi2
- 1187 0014 43F00803 		orr	r3, r3, #8
- 1188 0018 9370     		strb	r3, [r2, #2]
- 1189              	.LVL120:
- 1190              	.LBB148:
- 1191              	.LBB149:
+ 735              		.loc 6 695 0
+ 736 000e 0E4A     		ldr	r2, .L36+8
+ 737 0010 1368     		ldr	r3, [r2]
+ 738 0012 43F00103 		orr	r3, r3, #1
+ 739 0016 1360     		str	r3, [r2]
+ 740              	.LVL73:
+ 741              	.LBE121:
+ 742              	.LBE120:
+ 451:../source/main.c **** 		CLOCK_EnableClock(kCLOCK_Lptmr0);
+ 452:../source/main.c **** 		LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
+ 743              		.loc 1 452 0
+ 744 0018 0C4A     		ldr	r2, .L36+12
+ 745 001a 1368     		ldr	r3, [r2]
+ 746 001c 43F08003 		orr	r3, r3, #128
+ 747 0020 1360     		str	r3, [r2]
+ 748              	.L32:
+ 453:../source/main.c **** 
+ 454:../source/main.c **** 	}
+ 455:../source/main.c **** 
+ 456:../source/main.c **** 	else if ( LLWU->F2 & 0x01) {// 0x04 for stock frdm acc wakeup reg, 0x01 for customized
+ 457:../source/main.c **** 		wake = 2;
+ 458:../source/main.c **** 		LLWU->F2 |= 0x01;
+ 459:../source/main.c **** 	}
+ 460:../source/main.c **** 
+ 461:../source/main.c **** 	LLWU->F2 = 0x01;
+ 749              		.loc 1 461 0
+ 750 0022 074B     		ldr	r3, .L36
+ 751 0024 0122     		movs	r2, #1
+ 752 0026 9A71     		strb	r2, [r3, #6]
+ 462:../source/main.c **** }
+ 753              		.loc 1 462 0
+ 754 0028 7047     		bx	lr
+ 755              	.L31:
+ 456:../source/main.c **** 		wake = 2;
+ 756              		.loc 1 456 0
+ 757 002a 9A79     		ldrb	r2, [r3, #6]	@ zero_extendqisi2
+ 758 002c D207     		lsls	r2, r2, #31
+ 759 002e F8D5     		bpl	.L32
+ 457:../source/main.c **** 		LLWU->F2 |= 0x01;
+ 760              		.loc 1 457 0
+ 761 0030 044A     		ldr	r2, .L36+4
+ 762 0032 0221     		movs	r1, #2
+ 763 0034 1170     		strb	r1, [r2]
+ 458:../source/main.c **** 	}
+ 764              		.loc 1 458 0
+ 765 0036 9A79     		ldrb	r2, [r3, #6]	@ zero_extendqisi2
+ 766 0038 42F00102 		orr	r2, r2, #1
+ 767 003c 9A71     		strb	r2, [r3, #6]
+ 768 003e F0E7     		b	.L32
+ 769              	.L37:
+ 770              		.align	2
+ 771              	.L36:
+ 772 0040 00C00740 		.word	1074249728
+ 773 0044 00000000 		.word	.LANCHOR3
+ 774 0048 38800440 		.word	1074036792
+ 775 004c 00000440 		.word	1074003968
+ 776              		.cfi_endproc
+ 777              	.LFE227:
+ 779              		.section	.text.LPTMR0_IRQHandler,"ax",%progbits
+ 780              		.align	1
+ 781              		.global	LPTMR0_IRQHandler
+ 782              		.syntax unified
+ 783              		.thumb
+ 784              		.thumb_func
+ 785              		.fpu fpv4-sp-d16
+ 787              	LPTMR0_IRQHandler:
+ 788              	.LFB228:
+ 463:../source/main.c **** 
+ 464:../source/main.c **** void LPTMR0_IRQHandler() {
+ 789              		.loc 1 464 0
+ 790              		.cfi_startproc
+ 791              		@ args = 0, pretend = 0, frame = 0
+ 792              		@ frame_needed = 0, uses_anonymous_args = 0
+ 793              		@ link register save eliminated.
+ 465:../source/main.c **** 
+ 466:../source/main.c **** 	LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;		// Clear the interrupt flag
+ 794              		.loc 1 466 0
+ 795 0000 084B     		ldr	r3, .L41
+ 796 0002 1A68     		ldr	r2, [r3]
+ 797 0004 42F08002 		orr	r2, r2, #128
+ 798 0008 1A60     		str	r2, [r3]
+ 799              	.L39:
+ 467:../source/main.c **** 	while ( LPTMR0->CSR & LPTMR_CSR_TCF_MASK) {
+ 800              		.loc 1 467 0 discriminator 1
+ 801 000a 1A68     		ldr	r2, [r3]
+ 802 000c 1206     		lsls	r2, r2, #24
+ 803 000e FCD4     		bmi	.L39
+ 468:../source/main.c **** 
+ 469:../source/main.c **** 	}
+ 470:../source/main.c **** 
+ 471:../source/main.c **** 	PMC->REGSC |= 0x08;
+ 804              		.loc 1 471 0
+ 805 0010 054A     		ldr	r2, .L41+4
+ 806 0012 9378     		ldrb	r3, [r2, #2]	@ zero_extendqisi2
+ 807 0014 43F00803 		orr	r3, r3, #8
+ 808 0018 9370     		strb	r3, [r2, #2]
+ 809              	.LVL74:
+ 810              	.LBB122:
+ 811              	.LBB123:
  211:../drivers/fsl_gpio.h **** }
  212:../drivers/fsl_gpio.h **** 
  213:../drivers/fsl_gpio.h **** /*!
@@ -5332,539 +4907,451 @@
  231:../drivers/fsl_gpio.h **** static inline void GPIO_PortToggle(GPIO_Type *base, uint32_t mask)
  232:../drivers/fsl_gpio.h **** {
  233:../drivers/fsl_gpio.h ****     base->PTOR = mask;
- 1192              		.loc 5 233 0
- 1193 001a 044B     		ldr	r3, .L82+8
- 1194 001c 4FF40012 		mov	r2, #2097152
- 1195 0020 DA60     		str	r2, [r3, #12]
- 1196              	.LVL121:
- 1197              	.LBE149:
- 1198              	.LBE148:
- 449:../source/main.c **** 
- 450:../source/main.c **** 	GPIO_PortToggle(GPIOB, 1 << 21u); //light blue LED
- 451:../source/main.c **** }
- 1199              		.loc 1 451 0
- 1200 0022 7047     		bx	lr
- 1201              	.L83:
- 1202              		.align	2
- 1203              	.L82:
- 1204 0024 00000440 		.word	1074003968
- 1205 0028 00D00740 		.word	1074253824
- 1206 002c 40F00F40 		.word	1074786368
- 1207              		.cfi_endproc
- 1208              	.LFE228:
- 1210              		.section	.text.UART3_RX_TX_IRQHandler,"ax",%progbits
- 1211              		.align	1
- 1212              		.global	UART3_RX_TX_IRQHandler
- 1213              		.syntax unified
- 1214              		.thumb
- 1215              		.thumb_func
- 1216              		.fpu fpv4-sp-d16
- 1218              	UART3_RX_TX_IRQHandler:
- 1219              	.LFB229:
- 452:../source/main.c **** 
- 453:../source/main.c **** void UART3_RX_TX_IRQHandler() {
- 1220              		.loc 1 453 0
- 1221              		.cfi_startproc
- 1222              		@ args = 0, pretend = 0, frame = 0
- 1223              		@ frame_needed = 0, uses_anonymous_args = 0
- 1224 0000 10B5     		push	{r4, lr}
- 1225              		.cfi_def_cfa_offset 8
- 1226              		.cfi_offset 4, -8
- 1227              		.cfi_offset 14, -4
- 454:../source/main.c **** 
- 455:../source/main.c **** 	UART_ClearStatusFlags(UART3, kUART_RxDataRegFullFlag);
- 1228              		.loc 1 455 0
- 1229 0002 0E4C     		ldr	r4, .L88
- 1230 0004 2021     		movs	r1, #32
- 1231 0006 2046     		mov	r0, r4
- 1232 0008 FFF7FEFF 		bl	UART_ClearStatusFlags
- 1233              	.LVL122:
- 1234              	.LBB150:
- 1235              	.LBB151:
- 1236              		.loc 5 233 0
- 1237 000c 0C4B     		ldr	r3, .L88+4
- 1238 000e 4FF48002 		mov	r2, #4194304
- 1239 0012 DA60     		str	r2, [r3, #12]
- 1240              	.LVL123:
- 1241              	.LBE151:
- 1242              	.LBE150:
- 456:../source/main.c **** 	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from NB Iiootee module
- 457:../source/main.c **** 
- 458:../source/main.c **** 	uint8_t uartData = UART3->D;
- 1243              		.loc 1 458 0
- 1244 0014 E379     		ldrb	r3, [r4, #7]	@ zero_extendqisi2
- 1245              	.LVL124:
- 459:../source/main.c **** 	if (uartData != 0) {
- 1246              		.loc 1 459 0
- 1247 0016 03F0FF01 		and	r1, r3, #255
- 1248 001a 73B1     		cbz	r3, .L84
- 460:../source/main.c **** 
- 461:../source/main.c **** 		UART3_recBuf[UART3_bufPtr] = uartData;
- 1249              		.loc 1 461 0
- 1250 001c 094A     		ldr	r2, .L88+8
- 1251 001e 0A48     		ldr	r0, .L88+12
- 1252 0020 1388     		ldrh	r3, [r2]
- 1253              	.LVL125:
- 1254 0022 9BB2     		uxth	r3, r3
- 462:../source/main.c **** 		UART3_bufPtr++;
- 463:../source/main.c **** 
- 464:../source/main.c **** 		if (uartData == 0x0d) {
- 1255              		.loc 1 464 0
- 1256 0024 0D29     		cmp	r1, #13
- 461:../source/main.c **** 		UART3_bufPtr++;
- 1257              		.loc 1 461 0
- 1258 0026 C154     		strb	r1, [r0, r3]
- 462:../source/main.c **** 		UART3_bufPtr++;
- 1259              		.loc 1 462 0
- 1260 0028 1388     		ldrh	r3, [r2]
- 1261 002a 03F10103 		add	r3, r3, #1
- 1262 002e 9BB2     		uxth	r3, r3
- 1263 0030 1380     		strh	r3, [r2]	@ movhi
- 465:../source/main.c **** 			UART3_strReady = 1;
- 1264              		.loc 1 465 0
- 1265 0032 02BF     		ittt	eq
- 1266 0034 054B     		ldreq	r3, .L88+16
- 1267 0036 0122     		moveq	r2, #1
- 1268 0038 1A70     		strbeq	r2, [r3]
- 1269              	.L84:
- 466:../source/main.c **** 			//UART3_bufPtr = 0;
- 467:../source/main.c **** 		}
- 468:../source/main.c **** 
- 469:../source/main.c **** 	}
- 470:../source/main.c **** 
- 471:../source/main.c **** }
- 1270              		.loc 1 471 0
- 1271 003a 10BD     		pop	{r4, pc}
- 1272              	.L89:
- 1273              		.align	2
- 1274              	.L88:
- 1275 003c 00D00640 		.word	1074188288
- 1276 0040 40F00F40 		.word	1074786368
- 1277 0044 00000000 		.word	.LANCHOR10
- 1278 0048 00000000 		.word	UART3_recBuf
- 1279 004c 00000000 		.word	.LANCHOR0
- 1280              		.cfi_endproc
- 1281              	.LFE229:
- 1283              		.section	.text.UART2_RX_TX_IRQHandler,"ax",%progbits
- 1284              		.align	1
- 1285              		.global	UART2_RX_TX_IRQHandler
- 1286              		.syntax unified
- 1287              		.thumb
- 1288              		.thumb_func
- 1289              		.fpu fpv4-sp-d16
- 1291              	UART2_RX_TX_IRQHandler:
- 1292              	.LFB230:
+ 812              		.loc 5 233 0
+ 813 001a 044B     		ldr	r3, .L41+8
+ 814 001c 4FF40012 		mov	r2, #2097152
+ 815 0020 DA60     		str	r2, [r3, #12]
+ 816              	.LVL75:
+ 817              	.LBE123:
+ 818              	.LBE122:
  472:../source/main.c **** 
- 473:../source/main.c **** void UART2_RX_TX_IRQHandler() {
- 1293              		.loc 1 473 0
- 1294              		.cfi_startproc
- 1295              		@ args = 0, pretend = 0, frame = 0
- 1296              		@ frame_needed = 0, uses_anonymous_args = 0
- 1297 0000 10B5     		push	{r4, lr}
- 1298              		.cfi_def_cfa_offset 8
- 1299              		.cfi_offset 4, -8
- 1300              		.cfi_offset 14, -4
- 474:../source/main.c **** 
- 475:../source/main.c **** 	UART_ClearStatusFlags(UART2, kUART_RxDataRegFullFlag);
- 1301              		.loc 1 475 0
- 1302 0002 0F4C     		ldr	r4, .L93
- 1303 0004 2021     		movs	r1, #32
- 1304 0006 2046     		mov	r0, r4
- 1305 0008 FFF7FEFF 		bl	UART_ClearStatusFlags
- 1306              	.LVL126:
- 1307              	.LBB152:
- 1308              	.LBB153:
- 1309              		.loc 5 233 0
- 1310 000c 0D4B     		ldr	r3, .L93+4
- 1311 000e 0E49     		ldr	r1, .L93+8
- 1312 0010 4FF48002 		mov	r2, #4194304
- 1313 0014 DA60     		str	r2, [r3, #12]
- 1314              	.LVL127:
- 1315              	.LBE153:
- 1316              	.LBE152:
- 476:../source/main.c **** 	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from GPS module
+ 473:../source/main.c **** 	GPIO_PortToggle(GPIOB, 1 << 21u); //light blue LED
+ 474:../source/main.c **** }
+ 819              		.loc 1 474 0
+ 820 0022 7047     		bx	lr
+ 821              	.L42:
+ 822              		.align	2
+ 823              	.L41:
+ 824 0024 00000440 		.word	1074003968
+ 825 0028 00D00740 		.word	1074253824
+ 826 002c 40F00F40 		.word	1074786368
+ 827              		.cfi_endproc
+ 828              	.LFE228:
+ 830              		.section	.text.UART3_RX_TX_IRQHandler,"ax",%progbits
+ 831              		.align	1
+ 832              		.global	UART3_RX_TX_IRQHandler
+ 833              		.syntax unified
+ 834              		.thumb
+ 835              		.thumb_func
+ 836              		.fpu fpv4-sp-d16
+ 838              	UART3_RX_TX_IRQHandler:
+ 839              	.LFB229:
+ 475:../source/main.c **** 
+ 476:../source/main.c **** void UART3_RX_TX_IRQHandler() {
+ 840              		.loc 1 476 0
+ 841              		.cfi_startproc
+ 842              		@ args = 0, pretend = 0, frame = 0
+ 843              		@ frame_needed = 0, uses_anonymous_args = 0
+ 844 0000 10B5     		push	{r4, lr}
+ 845              		.cfi_def_cfa_offset 8
+ 846              		.cfi_offset 4, -8
+ 847              		.cfi_offset 14, -4
  477:../source/main.c **** 
- 478:../source/main.c **** 	uint8_t uartData = UART2->D;
- 479:../source/main.c **** 
- 480:../source/main.c **** 	/*
- 481:../source/main.c **** 	 * Here we use different method for collecting GPS data. because there can be other data than char
- 482:../source/main.c **** 	 * like 0x00 in UBX messages, normal string functions would fail (mistaken null terminator)
- 483:../source/main.c **** 	 * so we must collect every byte from the gps module
- 484:../source/main.c **** 	 * so fill buffer to almost full with GPS data, then put GPS_strReady high and stop filling.
- 485:../source/main.c **** 	 * Start filling again when data has been read and GPS_strReady is low.
- 486:../source/main.c **** 	 *
- 487:../source/main.c **** 	 */
- 488:../source/main.c **** 	if (GPS_strReady == 0) {
- 1317              		.loc 1 488 0
- 1318 0016 0D4A     		ldr	r2, .L93+12
- 478:../source/main.c **** 
- 1319              		.loc 1 478 0
- 1320 0018 E079     		ldrb	r0, [r4, #7]	@ zero_extendqisi2
- 1321              		.loc 1 488 0
- 1322 001a 1478     		ldrb	r4, [r2]	@ zero_extendqisi2
- 478:../source/main.c **** 
- 1323              		.loc 1 478 0
- 1324 001c C0B2     		uxtb	r0, r0
- 1325              	.LVL128:
- 1326              		.loc 1 488 0
- 1327 001e 3CB9     		cbnz	r4, .L91
- 489:../source/main.c **** 		GPS_recBuf[GPS_bufPtr] = uartData; //put new byte to buffer
- 1328              		.loc 1 489 0
- 1329 0020 0B88     		ldrh	r3, [r1]
- 1330 0022 0B4C     		ldr	r4, .L93+16
- 1331 0024 9BB2     		uxth	r3, r3
- 1332 0026 E054     		strb	r0, [r4, r3]
- 490:../source/main.c **** 		GPS_bufPtr++;
- 1333              		.loc 1 490 0
- 1334 0028 0B88     		ldrh	r3, [r1]
- 1335 002a 0133     		adds	r3, r3, #1
- 1336 002c 9BB2     		uxth	r3, r3
- 1337 002e 0B80     		strh	r3, [r1]	@ movhi
- 1338              	.L91:
- 491:../source/main.c **** 	}
- 492:../source/main.c **** 
- 493:../source/main.c **** 	/*
- 494:../source/main.c **** 	 * When buffer is almost full, put strReady high and stop filling it
- 495:../source/main.c **** 	 */
- 496:../source/main.c **** 	if (GPS_bufPtr > 499) {
- 1339              		.loc 1 496 0
- 1340 0030 0B88     		ldrh	r3, [r1]
- 1341 0032 B3F5FA7F 		cmp	r3, #500
- 497:../source/main.c **** 		GPS_strReady = 1;
- 1342              		.loc 1 497 0
- 1343 0036 24BF     		itt	cs
- 1344 0038 0123     		movcs	r3, #1
- 1345 003a 1370     		strbcs	r3, [r2]
- 498:../source/main.c **** 	}
- 499:../source/main.c **** 
- 500:../source/main.c **** }
- 1346              		.loc 1 500 0
- 1347 003c 10BD     		pop	{r4, pc}
- 1348              	.L94:
- 1349 003e 00BF     		.align	2
- 1350              	.L93:
- 1351 0040 00C00640 		.word	1074184192
- 1352 0044 40F00F40 		.word	1074786368
- 1353 0048 00000000 		.word	.LANCHOR11
- 1354 004c 00000000 		.word	.LANCHOR4
- 1355 0050 00000000 		.word	GPS_recBuf
- 1356              		.cfi_endproc
- 1357              	.LFE230:
- 1359              		.section	.text.UART0_RX_TX_IRQHandler,"ax",%progbits
- 1360              		.align	1
- 1361              		.global	UART0_RX_TX_IRQHandler
- 1362              		.syntax unified
- 1363              		.thumb
- 1364              		.thumb_func
- 1365              		.fpu fpv4-sp-d16
- 1367              	UART0_RX_TX_IRQHandler:
- 1368              	.LFB231:
- 501:../source/main.c **** 
- 502:../source/main.c **** void UART0_RX_TX_IRQHandler() {
- 1369              		.loc 1 502 0
- 1370              		.cfi_startproc
- 1371              		@ args = 0, pretend = 0, frame = 0
- 1372              		@ frame_needed = 0, uses_anonymous_args = 0
- 1373 0000 10B5     		push	{r4, lr}
- 1374              		.cfi_def_cfa_offset 8
- 1375              		.cfi_offset 4, -8
- 1376              		.cfi_offset 14, -4
- 503:../source/main.c **** 
- 504:../source/main.c **** 	UART_ClearStatusFlags(UART0, kUART_RxDataRegFullFlag);
- 1377              		.loc 1 504 0
- 1378 0002 0D4C     		ldr	r4, .L97
- 1379 0004 2021     		movs	r1, #32
- 1380 0006 2046     		mov	r0, r4
- 1381 0008 FFF7FEFF 		bl	UART_ClearStatusFlags
- 1382              	.LVL129:
- 1383              	.LBB154:
- 1384              	.LBB155:
- 1385              		.loc 5 233 0
- 1386 000c 0B4B     		ldr	r3, .L97+4
- 1387              	.LBE155:
- 1388              	.LBE154:
- 505:../source/main.c **** 	GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
- 506:../source/main.c **** 
- 507:../source/main.c **** 	uint8_t uartData = UART0->D;
- 508:../source/main.c **** 
- 509:../source/main.c **** 	PC_recBuf[PC_bufPtr] = uartData;
- 1389              		.loc 1 509 0
- 1390 000e 0C49     		ldr	r1, .L97+8
- 1391 0010 0C48     		ldr	r0, .L97+12
- 1392              	.LBB157:
- 1393              	.LBB156:
- 1394              		.loc 5 233 0
- 1395 0012 4FF40012 		mov	r2, #2097152
- 1396 0016 DA60     		str	r2, [r3, #12]
- 1397              	.LVL130:
- 1398              	.LBE156:
- 1399              	.LBE157:
- 507:../source/main.c **** 
- 1400              		.loc 1 507 0
- 1401 0018 E279     		ldrb	r2, [r4, #7]	@ zero_extendqisi2
- 1402              		.loc 1 509 0
- 1403 001a 0B88     		ldrh	r3, [r1]
- 1404 001c 9BB2     		uxth	r3, r3
- 507:../source/main.c **** 
- 1405              		.loc 1 507 0
- 1406 001e D2B2     		uxtb	r2, r2
- 1407              	.LVL131:
- 1408              		.loc 1 509 0
- 1409 0020 C254     		strb	r2, [r0, r3]
- 510:../source/main.c **** 	PC_bufPtr++;
- 1410              		.loc 1 510 0
- 1411 0022 0B88     		ldrh	r3, [r1]
- 1412 0024 0133     		adds	r3, r3, #1
- 1413 0026 9BB2     		uxth	r3, r3
- 511:../source/main.c **** 
- 512:../source/main.c **** 	if (uartData == 0x0d) {
- 1414              		.loc 1 512 0
- 1415 0028 0D2A     		cmp	r2, #13
- 510:../source/main.c **** 	PC_bufPtr++;
- 1416              		.loc 1 510 0
- 1417 002a 0B80     		strh	r3, [r1]	@ movhi
- 513:../source/main.c **** 		PC_strReady = 1;
- 1418              		.loc 1 513 0
- 1419 002c 02BF     		ittt	eq
- 1420 002e 064B     		ldreq	r3, .L97+16
- 1421 0030 0122     		moveq	r2, #1
- 1422              	.LVL132:
- 1423 0032 1A70     		strbeq	r2, [r3]
- 514:../source/main.c **** 
- 515:../source/main.c **** 	}
+ 478:../source/main.c **** 	UART_ClearStatusFlags(UART3, kUART_RxDataRegFullFlag);
+ 848              		.loc 1 478 0
+ 849 0002 0E4C     		ldr	r4, .L47
+ 850 0004 2021     		movs	r1, #32
+ 851 0006 2046     		mov	r0, r4
+ 852 0008 FFF7FEFF 		bl	UART_ClearStatusFlags
+ 853              	.LVL76:
+ 854              	.LBB124:
+ 855              	.LBB125:
+ 856              		.loc 5 233 0
+ 857 000c 0C4B     		ldr	r3, .L47+4
+ 858 000e 4FF48002 		mov	r2, #4194304
+ 859 0012 DA60     		str	r2, [r3, #12]
+ 860              	.LVL77:
+ 861              	.LBE125:
+ 862              	.LBE124:
+ 479:../source/main.c **** 	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from NB Iiootee module
+ 480:../source/main.c **** 
+ 481:../source/main.c **** 	uint8_t uartData = UART3->D;
+ 863              		.loc 1 481 0
+ 864 0014 E379     		ldrb	r3, [r4, #7]	@ zero_extendqisi2
+ 865              	.LVL78:
+ 482:../source/main.c **** 	if (uartData != 0) {
+ 866              		.loc 1 482 0
+ 867 0016 03F0FF01 		and	r1, r3, #255
+ 868 001a 73B1     		cbz	r3, .L43
+ 483:../source/main.c **** 
+ 484:../source/main.c **** 		UART3_recBuf[UART3_bufPtr] = uartData;
+ 869              		.loc 1 484 0
+ 870 001c 094A     		ldr	r2, .L47+8
+ 871 001e 0A48     		ldr	r0, .L47+12
+ 872 0020 1388     		ldrh	r3, [r2]
+ 873              	.LVL79:
+ 874 0022 9BB2     		uxth	r3, r3
+ 485:../source/main.c **** 		UART3_bufPtr++;
+ 486:../source/main.c **** 
+ 487:../source/main.c **** 		if (uartData == 0x0d) {
+ 875              		.loc 1 487 0
+ 876 0024 0D29     		cmp	r1, #13
+ 484:../source/main.c **** 		UART3_bufPtr++;
+ 877              		.loc 1 484 0
+ 878 0026 C154     		strb	r1, [r0, r3]
+ 485:../source/main.c **** 		UART3_bufPtr++;
+ 879              		.loc 1 485 0
+ 880 0028 1388     		ldrh	r3, [r2]
+ 881 002a 03F10103 		add	r3, r3, #1
+ 882 002e 9BB2     		uxth	r3, r3
+ 883 0030 1380     		strh	r3, [r2]	@ movhi
+ 488:../source/main.c **** 			UART3_strReady = 1;
+ 884              		.loc 1 488 0
+ 885 0032 02BF     		ittt	eq
+ 886 0034 054B     		ldreq	r3, .L47+16
+ 887 0036 0122     		moveq	r2, #1
+ 888 0038 1A70     		strbeq	r2, [r3]
+ 889              	.L43:
+ 489:../source/main.c **** 			//UART3_bufPtr = 0;
+ 490:../source/main.c **** 		}
+ 491:../source/main.c **** 
+ 492:../source/main.c **** 	}
+ 493:../source/main.c **** 
+ 494:../source/main.c **** }
+ 890              		.loc 1 494 0
+ 891 003a 10BD     		pop	{r4, pc}
+ 892              	.L48:
+ 893              		.align	2
+ 894              	.L47:
+ 895 003c 00D00640 		.word	1074188288
+ 896 0040 40F00F40 		.word	1074786368
+ 897 0044 00000000 		.word	.LANCHOR4
+ 898 0048 00000000 		.word	UART3_recBuf
+ 899 004c 00000000 		.word	.LANCHOR0
+ 900              		.cfi_endproc
+ 901              	.LFE229:
+ 903              		.section	.text.UART2_RX_TX_IRQHandler,"ax",%progbits
+ 904              		.align	1
+ 905              		.global	UART2_RX_TX_IRQHandler
+ 906              		.syntax unified
+ 907              		.thumb
+ 908              		.thumb_func
+ 909              		.fpu fpv4-sp-d16
+ 911              	UART2_RX_TX_IRQHandler:
+ 912              	.LFB230:
+ 495:../source/main.c **** 
+ 496:../source/main.c **** void UART2_RX_TX_IRQHandler() {
+ 913              		.loc 1 496 0
+ 914              		.cfi_startproc
+ 915              		@ args = 0, pretend = 0, frame = 0
+ 916              		@ frame_needed = 0, uses_anonymous_args = 0
+ 917 0000 10B5     		push	{r4, lr}
+ 918              		.cfi_def_cfa_offset 8
+ 919              		.cfi_offset 4, -8
+ 920              		.cfi_offset 14, -4
+ 497:../source/main.c **** 
+ 498:../source/main.c **** 	UART_ClearStatusFlags(UART2, kUART_RxDataRegFullFlag);
+ 921              		.loc 1 498 0
+ 922 0002 104C     		ldr	r4, .L52
+ 923 0004 2021     		movs	r1, #32
+ 924 0006 2046     		mov	r0, r4
+ 925 0008 FFF7FEFF 		bl	UART_ClearStatusFlags
+ 926              	.LVL80:
+ 927              	.LBB126:
+ 928              	.LBB127:
+ 929              		.loc 5 233 0
+ 930 000c 0E4B     		ldr	r3, .L52+4
+ 931 000e 0F48     		ldr	r0, .L52+8
+ 932 0010 4FF48002 		mov	r2, #4194304
+ 933 0014 DA60     		str	r2, [r3, #12]
+ 934              	.LVL81:
+ 935              	.LBE127:
+ 936              	.LBE126:
+ 499:../source/main.c **** 	GPIO_PortToggle(GPIOB, 1 << 22u); //toggle RED led to indicate data arrived from GPS module
+ 500:../source/main.c **** 
+ 501:../source/main.c **** 		uint8_t uartData = UART2->D;
+ 502:../source/main.c **** 		/*
+ 503:../source/main.c **** 		 * Here we use different method for collecting GPS data. because there can be other data than cha
+ 504:../source/main.c **** 		 * like 0x00 in UBX messages, normal string functions would fail (mistaken null terminator)
+ 505:../source/main.c **** 		 * so we must collect every byte from the gps module
+ 506:../source/main.c **** 		 * so fill buffer to almost full with GPS data, then put GPS_strReady high and stop filling.
+ 507:../source/main.c **** 		 * Start filling again when data has been read and GPS_strReady is low.
+ 508:../source/main.c **** 		 *
+ 509:../source/main.c **** 		 */
+ 510:../source/main.c **** 		if(GPS_strReady == 0)
+ 937              		.loc 1 510 0
+ 938 0016 0E4A     		ldr	r2, .L52+12
+ 501:../source/main.c **** 		/*
+ 939              		.loc 1 501 0
+ 940 0018 E179     		ldrb	r1, [r4, #7]	@ zero_extendqisi2
+ 941              		.loc 1 510 0
+ 942 001a 1478     		ldrb	r4, [r2]	@ zero_extendqisi2
+ 501:../source/main.c **** 		/*
+ 943              		.loc 1 501 0
+ 944 001c C9B2     		uxtb	r1, r1
+ 945              	.LVL82:
+ 946              		.loc 1 510 0
+ 947 001e 3CB9     		cbnz	r4, .L50
+ 511:../source/main.c **** 		{
+ 512:../source/main.c **** 
+ 513:../source/main.c **** 			GPS_recBuf[GPS_bufPtr] = uartData; //put new byte to buffer
+ 948              		.loc 1 513 0
+ 949 0020 0388     		ldrh	r3, [r0]
+ 950 0022 0C4C     		ldr	r4, .L52+16
+ 951 0024 9BB2     		uxth	r3, r3
+ 952 0026 E154     		strb	r1, [r4, r3]
+ 514:../source/main.c **** 			GPS_bufPtr++;
+ 953              		.loc 1 514 0
+ 954 0028 0388     		ldrh	r3, [r0]
+ 955 002a 0133     		adds	r3, r3, #1
+ 956 002c 9BB2     		uxth	r3, r3
+ 957 002e 0380     		strh	r3, [r0]	@ movhi
+ 958              	.L50:
+ 515:../source/main.c **** 		}
  516:../source/main.c **** 
- 517:../source/main.c **** }
- 1424              		.loc 1 517 0
- 1425 0034 10BD     		pop	{r4, pc}
- 1426              	.L98:
- 1427 0036 00BF     		.align	2
- 1428              	.L97:
- 1429 0038 00A00640 		.word	1074176000
- 1430 003c 40F00F40 		.word	1074786368
- 1431 0040 00000000 		.word	.LANCHOR8
- 1432 0044 00000000 		.word	.LANCHOR6
- 1433 0048 00000000 		.word	.LANCHOR5
- 1434              		.cfi_endproc
- 1435              	.LFE231:
- 1437              		.comm	ms_ticks,4,4
- 1438              		.global	moduleResponseTimeout
- 1439              		.comm	parsedLon,15,1
- 1440              		.comm	parsedLat,15,1
- 1441              		.global	streamGps
- 1442              		.global	GPS_strReady
- 1443              		.global	GPS_bufPtr
- 1444              		.comm	GPS_recBuf,600,1
- 1445              		.global	PC_strReady
- 1446              		.global	PC_bufPtr
- 1447              		.comm	UART3_recBuf,500,1
- 1448              		.global	UART3_bufPtr
- 1449              		.global	UART3_strReady
- 1450              		.global	wake
- 1451              		.comm	uart_config,16,4
- 1452              		.comm	smc_power_mode_vlls_config,2,1
- 1453              		.comm	lptmr_config,7,1
- 1454              		.section	.rodata
- 1455              		.set	.LANCHOR2,. + 0
- 1456              	.LC2:
- 1457 0000 36353030 		.ascii	"6500.53\000"
- 1457      2E353300 
- 1458 0008 000000   		.space	3
- 1459              	.LC3:
- 1460 000b 30323533 		.ascii	"02534.554\000"
- 1460      342E3535 
- 1460      3400
- 1461 0015 00       		.space	1
- 1462              	.LC10:
- 1463 0016 36353030 		.ascii	"6500.02359\000"
- 1463      2E303233 
- 1463      353900
- 1464 0021 00       		.space	1
- 1465              		.section	.bss.GPS_bufPtr,"aw",%nobits
- 1466              		.align	1
- 1467              		.set	.LANCHOR11,. + 0
- 1470              	GPS_bufPtr:
- 1471 0000 0000     		.space	2
- 1472              		.section	.bss.GPS_strReady,"aw",%nobits
- 1473              		.set	.LANCHOR4,. + 0
- 1476              	GPS_strReady:
- 1477 0000 00       		.space	1
- 1478              		.section	.bss.PC_bufPtr,"aw",%nobits
- 1479              		.align	1
- 1480              		.set	.LANCHOR8,. + 0
- 1483              	PC_bufPtr:
- 1484 0000 0000     		.space	2
- 1485              		.section	.bss.PC_recBuf,"aw",%nobits
- 1486              		.set	.LANCHOR6,. + 0
- 1489              	PC_recBuf:
- 1490 0000 00000000 		.space	500
- 1490      00000000 
- 1490      00000000 
- 1490      00000000 
- 1490      00000000 
- 1491              		.section	.bss.PC_strReady,"aw",%nobits
- 1492              		.set	.LANCHOR5,. + 0
- 1495              	PC_strReady:
- 1496 0000 00       		.space	1
- 1497              		.section	.bss.UART3_bufPtr,"aw",%nobits
- 1498              		.align	1
- 1499              		.set	.LANCHOR10,. + 0
- 1502              	UART3_bufPtr:
- 1503 0000 0000     		.space	2
- 1504              		.section	.bss.UART3_strReady,"aw",%nobits
- 1505              		.set	.LANCHOR0,. + 0
- 1508              	UART3_strReady:
- 1509 0000 00       		.space	1
- 1510              		.section	.bss.streamGps,"aw",%nobits
- 1511              		.set	.LANCHOR7,. + 0
- 1514              	streamGps:
- 1515 0000 00       		.space	1
- 1516              		.section	.data.moduleResponseTimeout,"aw",%progbits
- 1517              		.align	2
- 1518              		.set	.LANCHOR9,. + 0
- 1521              	moduleResponseTimeout:
- 1522 0000 D0070000 		.word	2000
- 1523              		.section	.data.wake,"aw",%progbits
- 1524              		.set	.LANCHOR3,. + 0
- 1527              	wake:
- 1528 0000 02       		.byte	2
- 1529              		.section	.rodata.LED_configOutput.10761,"a",%progbits
- 1530              		.set	.LANCHOR1,. + 0
- 1533              	LED_configOutput.10761:
- 1534 0000 01       		.byte	1
- 1535 0001 01       		.byte	1
- 1536              		.section	.rodata.main.str1.1,"aMS",%progbits,1
- 1537              	.LC0:
- 1538 0000 5265696E 		.ascii	"Reindeer IoT has started\015\012Command \"iot\" to "
- 1538      64656572 
- 1538      20496F54 
- 1538      20686173 
- 1538      20737461 
- 1539 002b 73746172 		.ascii	"start executing reindeer track cycle\015\012Command"
- 1539      74206578 
- 1539      65637574 
- 1539      696E6720 
- 1539      7265696E 
- 1540 0058 20226770 		.ascii	" \"gpsinfo=1\" or \"gpsinfo=0\" to switch GPS data "
- 1540      73696E66 
- 1540      6F3D3122 
- 1540      206F7220 
- 1540      22677073 
- 1541 0087 6F6E2F6F 		.ascii	"on/off\015\000"
- 1541      66660D00 
- 1542              	.LC1:
- 1543 008f 4F722065 		.ascii	"Or enter normal AT commands here for SARA-N2\015\012"
- 1543      6E746572 
- 1543      206E6F72 
- 1543      6D616C20 
- 1543      41542063 
- 1544 00bd 4D6F6475 		.ascii	"Modules powered on and booting now!\015\000"
- 1544      6C657320 
- 1544      706F7765 
- 1544      72656420 
- 1544      6F6E2061 
- 1545              	.LC4:
- 1546 00e2 31313131 		.ascii	"11111\000"
- 1546      3100
- 1547              	.LC5:
- 1548 00e8 66616C73 		.ascii	"false\000"
- 1548      6500
- 1549              	.LC6:
- 1550 00ee 576F6B65 		.ascii	"Woken by ACCEL, reindeer is !!!ALIVE!!!\015\000"
- 1550      6E206279 
- 1550      20414343 
- 1550      454C2C20 
- 1550      7265696E 
- 1551              	.LC7:
- 1552 0117 74727565 		.ascii	"true\000"
- 1552      00
- 1553              	.LC8:
- 1554 011c 576F6B65 		.ascii	"Woken by LPTMR, reindeer is !!!%s!!\015\012\000"
- 1554      6E206279 
- 1554      204C5054 
- 1554      4D522C20 
- 1554      7265696E 
- 1555              	.LC9:
- 1556 0142 0D00     		.ascii	"\015\000"
- 1557              	.LC12:
- 1558 0144 50617273 		.ascii	"Parsed latitude: %s\015\012\000"
- 1558      6564206C 
- 1558      61746974 
- 1558      7564653A 
- 1558      2025730D 
- 1559              	.LC13:
- 1560 015a 50617273 		.ascii	"Parsed longitude: %s\015\012\000"
- 1560      6564206C 
- 1560      6F6E6769 
- 1560      74756465 
- 1560      3A202573 
- 1561              	.LC14:
- 1562 0171 696F7400 		.ascii	"iot\000"
- 1563              	.LC15:
- 1564 0175 53746172 		.ascii	"Starting Reindeer IoT cycle\015\000"
- 1564      74696E67 
- 1564      20526569 
- 1564      6E646565 
- 1564      7220496F 
- 1565              	.LC16:
- 1566 0192 67707369 		.ascii	"gpsinfo=1\000"
- 1566      6E666F3D 
- 1566      3100
- 1567              	.LC17:
- 1568 019c 67707369 		.ascii	"gpsinfo=0\000"
- 1568      6E666F3D 
- 1568      3000
- 1569              	.LC18:
- 1570 01a6 72666F66 		.ascii	"rfoff\000"
- 1570      6600
- 1571              	.LC19:
- 1572 01ac 72666F6E 		.ascii	"rfon\000"
- 1572      00
- 1573              	.LC20:
- 1574 01b1 B56200   		.ascii	"\265b\000"
- 1575              	.LC21:
- 1576 01b4 73656E64 		.ascii	"send to gps\015\000"
- 1576      20746F20 
- 1576      6770730D 
- 1576      00
- 1577              	.LC22:
- 1578 01c1 466F756E 		.ascii	"Found UBX response\015\000"
- 1578      64205542 
- 1578      58207265 
- 1578      73706F6E 
- 1578      73650D00 
- 1579              	.LC23:
- 1580 01d5 55425820 		.ascii	"UBX response length: %02x\015\012\000"
- 1580      72657370 
- 1580      6F6E7365 
- 1580      206C656E 
- 1580      6774683A 
- 1581              	.LC11:
- 1582 01f1 30323533 		.ascii	"02530.56951\000"
- 1582      302E3536 
- 1582      39353100 
- 1583              		.text
- 1584              	.Letext0:
- 1585              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
- 1586              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
- 1587              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
- 1588              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
- 1589              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
- 1590              		.file 12 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
- 1591              		.file 13 "../CMSIS/MK64F12.h"
- 1592              		.file 14 "../CMSIS/system_MK64F12.h"
- 1593              		.file 15 "../drivers/fsl_common.h"
- 1594              		.file 16 "../board/clock_config.h"
- 1595              		.file 17 "../drivers/fsl_uart.h"
- 1596              		.file 18 "../source/at_func.h"
- 1597              		.file 19 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
- 1598              		.file 20 "../source/gps_func.h"
- 1599              		.file 21 "../source/nbiot_func.h"
- 1600              		.file 22 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
- 1601              		.file 23 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
- 1602              		.file 24 "<built-in>"
- 1603              		.file 25 "../board/pin_mux.h"
- 1604              		.file 26 "../board/board.h"
- 1605              		.file 27 "../source/i2c_func.h"
- 1606              		.file 28 "../source/adc_func.h"
- 1607              		.file 29 "../source/acc_func.h"
- 1608              		.file 30 "../source/timing.h"
+ 517:../source/main.c **** 		if(GPS_bufPtr > 500)
+ 959              		.loc 1 517 0
+ 960 0030 0388     		ldrh	r3, [r0]
+ 961 0032 B3F5FA7F 		cmp	r3, #500
+ 962 0036 03D9     		bls	.L49
+ 518:../source/main.c **** 		{
+ 519:../source/main.c **** 			if(uartData == 0x0a)
+ 963              		.loc 1 519 0
+ 964 0038 0A29     		cmp	r1, #10
+ 520:../source/main.c **** 			{
+ 521:../source/main.c **** 				GPS_strReady = 1;
+ 965              		.loc 1 521 0
+ 966 003a 04BF     		itt	eq
+ 967 003c 0123     		moveq	r3, #1
+ 968 003e 1370     		strbeq	r3, [r2]
+ 969              	.L49:
+ 522:../source/main.c **** 			}
+ 523:../source/main.c **** 		}
+ 524:../source/main.c **** 
+ 525:../source/main.c **** 		/*
+ 526:../source/main.c **** 		 * When buffer is almost full, put strReady high and stop filling it
+ 527:../source/main.c **** 		 */
+ 528:../source/main.c **** 		/*if (GPS_bufPtr > 499) {
+ 529:../source/main.c **** 			GPS_strReady = 1;
+ 530:../source/main.c **** 		}*/
+ 531:../source/main.c **** 
+ 532:../source/main.c **** 
+ 533:../source/main.c **** }
+ 970              		.loc 1 533 0
+ 971 0040 10BD     		pop	{r4, pc}
+ 972              	.L53:
+ 973 0042 00BF     		.align	2
+ 974              	.L52:
+ 975 0044 00C00640 		.word	1074184192
+ 976 0048 40F00F40 		.word	1074786368
+ 977 004c 00000000 		.word	.LANCHOR6
+ 978 0050 00000000 		.word	.LANCHOR5
+ 979 0054 00000000 		.word	GPS_recBuf
+ 980              		.cfi_endproc
+ 981              	.LFE230:
+ 983              		.section	.text.UART0_RX_TX_IRQHandler,"ax",%progbits
+ 984              		.align	1
+ 985              		.global	UART0_RX_TX_IRQHandler
+ 986              		.syntax unified
+ 987              		.thumb
+ 988              		.thumb_func
+ 989              		.fpu fpv4-sp-d16
+ 991              	UART0_RX_TX_IRQHandler:
+ 992              	.LFB231:
+ 534:../source/main.c **** 
+ 535:../source/main.c **** void UART0_RX_TX_IRQHandler() {
+ 993              		.loc 1 535 0
+ 994              		.cfi_startproc
+ 995              		@ args = 0, pretend = 0, frame = 0
+ 996              		@ frame_needed = 0, uses_anonymous_args = 0
+ 997 0000 10B5     		push	{r4, lr}
+ 998              		.cfi_def_cfa_offset 8
+ 999              		.cfi_offset 4, -8
+ 1000              		.cfi_offset 14, -4
+ 536:../source/main.c **** 
+ 537:../source/main.c **** 	UART_ClearStatusFlags(UART0, kUART_RxDataRegFullFlag);
+ 1001              		.loc 1 537 0
+ 1002 0002 0B4C     		ldr	r4, .L56
+ 1003 0004 2021     		movs	r1, #32
+ 1004 0006 2046     		mov	r0, r4
+ 1005 0008 FFF7FEFF 		bl	UART_ClearStatusFlags
+ 1006              	.LVL83:
+ 1007              	.LBB128:
+ 1008              	.LBB129:
+ 1009              		.loc 5 233 0
+ 1010 000c 094B     		ldr	r3, .L56+4
+ 1011 000e 4FF40012 		mov	r2, #2097152
+ 1012 0012 DA60     		str	r2, [r3, #12]
+ 1013              	.LVL84:
+ 1014              	.LBE129:
+ 1015              	.LBE128:
+ 538:../source/main.c **** 	GPIO_PortToggle(GPIOB, 1 << 21u); //toggle BLUE led to indicate data arrived from computer
+ 539:../source/main.c **** 
+ 540:../source/main.c **** 	uint8_t uartData = UART0->D;
+ 541:../source/main.c **** 
+ 542:../source/main.c **** 	PC_recBuf[PC_bufPtr] = uartData;
+ 1016              		.loc 1 542 0
+ 1017 0014 084A     		ldr	r2, .L56+8
+ 540:../source/main.c **** 
+ 1018              		.loc 1 540 0
+ 1019 0016 E179     		ldrb	r1, [r4, #7]	@ zero_extendqisi2
+ 1020              	.LVL85:
+ 1021              		.loc 1 542 0
+ 1022 0018 1388     		ldrh	r3, [r2]
+ 543:../source/main.c **** 	PC_bufPtr++;
+ 1023              		.loc 1 543 0
+ 1024 001a 1388     		ldrh	r3, [r2]
+ 1025 001c 0133     		adds	r3, r3, #1
+ 1026 001e 9BB2     		uxth	r3, r3
+ 544:../source/main.c **** 
+ 545:../source/main.c **** 	if (uartData == 0x0d) {
+ 1027              		.loc 1 545 0
+ 1028 0020 0D29     		cmp	r1, #13
+ 543:../source/main.c **** 	PC_bufPtr++;
+ 1029              		.loc 1 543 0
+ 1030 0022 1380     		strh	r3, [r2]	@ movhi
+ 546:../source/main.c **** 		PC_strReady = 1;
+ 1031              		.loc 1 546 0
+ 1032 0024 02BF     		ittt	eq
+ 1033 0026 054B     		ldreq	r3, .L56+12
+ 1034 0028 0122     		moveq	r2, #1
+ 1035 002a 1A70     		strbeq	r2, [r3]
+ 547:../source/main.c **** 
+ 548:../source/main.c **** 	}
+ 549:../source/main.c **** 
+ 550:../source/main.c **** }
+ 1036              		.loc 1 550 0
+ 1037 002c 10BD     		pop	{r4, pc}
+ 1038              	.L57:
+ 1039 002e 00BF     		.align	2
+ 1040              	.L56:
+ 1041 0030 00A00640 		.word	1074176000
+ 1042 0034 40F00F40 		.word	1074786368
+ 1043 0038 00000000 		.word	.LANCHOR7
+ 1044 003c 00000000 		.word	.LANCHOR8
+ 1045              		.cfi_endproc
+ 1046              	.LFE231:
+ 1048              		.comm	ms_ticks,4,4
+ 1049              		.global	moduleResponseTimeout
+ 1050              		.comm	parsedLon,15,1
+ 1051              		.comm	parsedLat,15,1
+ 1052              		.global	streamGps
+ 1053              		.global	GPS_strReady
+ 1054              		.global	GPS_bufPtr
+ 1055              		.comm	GPS_recBuf,600,1
+ 1056              		.global	PC_strReady
+ 1057              		.global	PC_bufPtr
+ 1058              		.comm	UART3_recBuf,500,1
+ 1059              		.global	UART3_bufPtr
+ 1060              		.global	UART3_strReady
+ 1061              		.global	wake
+ 1062              		.comm	uart_config,16,4
+ 1063              		.comm	smc_power_mode_vlls_config,2,1
+ 1064              		.comm	lptmr_config,7,1
+ 1065              		.section	.rodata
+ 1066              		.set	.LANCHOR2,. + 0
+ 1067              	.LC2:
+ 1068 0000 36353030 		.ascii	"6500.53\000"
+ 1068      2E353300 
+ 1069 0008 000000   		.space	3
+ 1070              	.LC3:
+ 1071 000b 30323533 		.ascii	"02534.554\000"
+ 1071      342E3535 
+ 1071      3400
+ 1072 0015 00       		.space	1
+ 1073              		.section	.bss.GPS_bufPtr,"aw",%nobits
+ 1074              		.align	1
+ 1075              		.set	.LANCHOR6,. + 0
+ 1078              	GPS_bufPtr:
+ 1079 0000 0000     		.space	2
+ 1080              		.section	.bss.GPS_strReady,"aw",%nobits
+ 1081              		.set	.LANCHOR5,. + 0
+ 1084              	GPS_strReady:
+ 1085 0000 00       		.space	1
+ 1086              		.section	.bss.PC_bufPtr,"aw",%nobits
+ 1087              		.align	1
+ 1088              		.set	.LANCHOR7,. + 0
+ 1091              	PC_bufPtr:
+ 1092 0000 0000     		.space	2
+ 1093              		.section	.bss.PC_strReady,"aw",%nobits
+ 1094              		.set	.LANCHOR8,. + 0
+ 1097              	PC_strReady:
+ 1098 0000 00       		.space	1
+ 1099              		.section	.bss.UART3_bufPtr,"aw",%nobits
+ 1100              		.align	1
+ 1101              		.set	.LANCHOR4,. + 0
+ 1104              	UART3_bufPtr:
+ 1105 0000 0000     		.space	2
+ 1106              		.section	.bss.UART3_strReady,"aw",%nobits
+ 1107              		.set	.LANCHOR0,. + 0
+ 1110              	UART3_strReady:
+ 1111 0000 00       		.space	1
+ 1112              		.section	.bss.streamGps,"aw",%nobits
+ 1115              	streamGps:
+ 1116 0000 00       		.space	1
+ 1117              		.section	.data.moduleResponseTimeout,"aw",%progbits
+ 1118              		.align	2
+ 1121              	moduleResponseTimeout:
+ 1122 0000 D0070000 		.word	2000
+ 1123              		.section	.data.wake,"aw",%progbits
+ 1124              		.set	.LANCHOR3,. + 0
+ 1127              	wake:
+ 1128 0000 02       		.byte	2
+ 1129              		.section	.rodata.LED_configOutput.10761,"a",%progbits
+ 1130              		.set	.LANCHOR1,. + 0
+ 1133              	LED_configOutput.10761:
+ 1134 0000 01       		.byte	1
+ 1135 0001 01       		.byte	1
+ 1136              		.section	.rodata.main.str1.1,"aMS",%progbits,1
+ 1137              	.LC0:
+ 1138 0000 5265696E 		.ascii	"Reindeer IoT has started\015\012Command \"iot\" to "
+ 1138      64656572 
+ 1138      20496F54 
+ 1138      20686173 
+ 1138      20737461 
+ 1139 002b 73746172 		.ascii	"start executing reindeer track cycle\015\012Command"
+ 1139      74206578 
+ 1139      65637574 
+ 1139      696E6720 
+ 1139      7265696E 
+ 1140 0058 20226770 		.ascii	" \"gpsinfo=1\" or \"gpsinfo=0\" to switch GPS data "
+ 1140      73696E66 
+ 1140      6F3D3122 
+ 1140      206F7220 
+ 1140      22677073 
+ 1141 0087 6F6E2F6F 		.ascii	"on/off\015\000"
+ 1141      66660D00 
+ 1142              	.LC1:
+ 1143 008f 4F722065 		.ascii	"Or enter normal AT commands here for SARA-N2\015\012"
+ 1143      6E746572 
+ 1143      206E6F72 
+ 1143      6D616C20 
+ 1143      41542063 
+ 1144 00bd 4D6F6475 		.ascii	"Modules powered on and booting now!\015\000"
+ 1144      6C657320 
+ 1144      706F7765 
+ 1144      72656420 
+ 1144      6F6E2061 
+ 1145              	.LC4:
+ 1146 00e2 31313131 		.ascii	"11111\000"
+ 1146      3100
+ 1147              	.LC5:
+ 1148 00e8 66616C73 		.ascii	"false\000"
+ 1148      6500
+ 1149              	.LC6:
+ 1150 00ee 526F6765 		.ascii	"Roger\015\000"
+ 1150      720D00
+ 1151              		.text
+ 1152              	.Letext0:
+ 1153              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1154              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1155              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1156              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1157              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1158              		.file 12 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1159              		.file 13 "../CMSIS/MK64F12.h"
+ 1160              		.file 14 "../CMSIS/system_MK64F12.h"
+ 1161              		.file 15 "../drivers/fsl_common.h"
+ 1162              		.file 16 "../board/clock_config.h"
+ 1163              		.file 17 "../drivers/fsl_uart.h"
+ 1164              		.file 18 "../source/at_func.h"
+ 1165              		.file 19 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 1166              		.file 20 "../source/gps_func.h"
+ 1167              		.file 21 "../source/nbiot_func.h"
+ 1168              		.file 22 "../board/pin_mux.h"
+ 1169              		.file 23 "../board/board.h"
+ 1170              		.file 24 "../source/i2c_func.h"
+ 1171              		.file 25 "../source/adc_func.h"
+ 1172              		.file 26 "../source/acc_func.h"
+ 1173              		.file 27 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ 1174              		.file 28 "<built-in>"

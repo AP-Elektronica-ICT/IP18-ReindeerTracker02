@@ -1,0 +1,3046 @@
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"fsl_flexio_i2s_dma.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.FLEXIO_I2S_TransferTxCreateHandleDMA,"ax",%progbits
+  16              		.align	1
+  17              		.global	FLEXIO_I2S_TransferTxCreateHandleDMA
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	FLEXIO_I2S_TransferTxCreateHandleDMA:
+  24              	.LFB92:
+  25              		.file 1 "../drivers/fsl_flexio_i2s_dma.c"
+   1:../drivers/fsl_flexio_i2s_dma.c **** /*
+   2:../drivers/fsl_flexio_i2s_dma.c ****  * The Clear BSD License
+   3:../drivers/fsl_flexio_i2s_dma.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_flexio_i2s_dma.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_flexio_i2s_dma.c ****  * All rights reserved.
+   6:../drivers/fsl_flexio_i2s_dma.c ****  *
+   7:../drivers/fsl_flexio_i2s_dma.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_flexio_i2s_dma.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_flexio_i2s_dma.c ****  * that the following conditions are met:
+  10:../drivers/fsl_flexio_i2s_dma.c ****  *
+  11:../drivers/fsl_flexio_i2s_dma.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_flexio_i2s_dma.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_flexio_i2s_dma.c ****  *
+  14:../drivers/fsl_flexio_i2s_dma.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_flexio_i2s_dma.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_flexio_i2s_dma.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_flexio_i2s_dma.c ****  *
+  18:../drivers/fsl_flexio_i2s_dma.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_flexio_i2s_dma.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_flexio_i2s_dma.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_flexio_i2s_dma.c ****  *
+  22:../drivers/fsl_flexio_i2s_dma.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_flexio_i2s_dma.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_flexio_i2s_dma.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_flexio_i2s_dma.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_flexio_i2s_dma.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_flexio_i2s_dma.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_flexio_i2s_dma.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_flexio_i2s_dma.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_flexio_i2s_dma.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_flexio_i2s_dma.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_flexio_i2s_dma.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_flexio_i2s_dma.c ****  */
+  34:../drivers/fsl_flexio_i2s_dma.c **** 
+  35:../drivers/fsl_flexio_i2s_dma.c **** #include "fsl_flexio_i2s_dma.h"
+  36:../drivers/fsl_flexio_i2s_dma.c **** 
+  37:../drivers/fsl_flexio_i2s_dma.c **** /*******************************************************************************
+  38:../drivers/fsl_flexio_i2s_dma.c ****  * Definitations
+  39:../drivers/fsl_flexio_i2s_dma.c ****  ******************************************************************************/
+  40:../drivers/fsl_flexio_i2s_dma.c **** 
+  41:../drivers/fsl_flexio_i2s_dma.c **** /*<! Structure definition for flexio_i2s_dma_private_handle_t. The structure is private. */
+  42:../drivers/fsl_flexio_i2s_dma.c **** typedef struct _flexio_i2s_dma_private_handle
+  43:../drivers/fsl_flexio_i2s_dma.c **** {
+  44:../drivers/fsl_flexio_i2s_dma.c ****     FLEXIO_I2S_Type *base;
+  45:../drivers/fsl_flexio_i2s_dma.c ****     flexio_i2s_dma_handle_t *handle;
+  46:../drivers/fsl_flexio_i2s_dma.c **** } flexio_i2s_dma_private_handle_t;
+  47:../drivers/fsl_flexio_i2s_dma.c **** 
+  48:../drivers/fsl_flexio_i2s_dma.c **** enum _flexio_i2s_dma_transfer_state
+  49:../drivers/fsl_flexio_i2s_dma.c **** {
+  50:../drivers/fsl_flexio_i2s_dma.c ****     kFLEXIO_I2S_Busy = 0x0U, /*!< FLEXIO I2S is busy */
+  51:../drivers/fsl_flexio_i2s_dma.c ****     kFLEXIO_I2S_Idle,        /*!< Transfer is done. */
+  52:../drivers/fsl_flexio_i2s_dma.c **** };
+  53:../drivers/fsl_flexio_i2s_dma.c **** 
+  54:../drivers/fsl_flexio_i2s_dma.c **** /*<! Private handle only used for internally. */
+  55:../drivers/fsl_flexio_i2s_dma.c **** static flexio_i2s_dma_private_handle_t s_dmaPrivateHandle[2];
+  56:../drivers/fsl_flexio_i2s_dma.c **** 
+  57:../drivers/fsl_flexio_i2s_dma.c **** /*******************************************************************************
+  58:../drivers/fsl_flexio_i2s_dma.c ****  * Prototypes
+  59:../drivers/fsl_flexio_i2s_dma.c ****  ******************************************************************************/
+  60:../drivers/fsl_flexio_i2s_dma.c **** /*!
+  61:../drivers/fsl_flexio_i2s_dma.c ****  * @brief FLEXIO I2S DMA callback for send.
+  62:../drivers/fsl_flexio_i2s_dma.c ****  *
+  63:../drivers/fsl_flexio_i2s_dma.c ****  * @param handle pointer to flexio_i2s_dma_handle_t structure which stores the transfer state.
+  64:../drivers/fsl_flexio_i2s_dma.c ****  * @param userData Parameter for user callback.
+  65:../drivers/fsl_flexio_i2s_dma.c ****  */
+  66:../drivers/fsl_flexio_i2s_dma.c **** static void FLEXIO_I2S_TxDMACallback(dma_handle_t *handle, void *userData);
+  67:../drivers/fsl_flexio_i2s_dma.c **** 
+  68:../drivers/fsl_flexio_i2s_dma.c **** /*!
+  69:../drivers/fsl_flexio_i2s_dma.c ****  * @brief FLEXIO I2S DMA callback for receive.
+  70:../drivers/fsl_flexio_i2s_dma.c ****  *
+  71:../drivers/fsl_flexio_i2s_dma.c ****  * @param handle pointer to flexio_i2s_dma_handle_t structure which stores the transfer state.
+  72:../drivers/fsl_flexio_i2s_dma.c ****  * @param userData Parameter for user callback.
+  73:../drivers/fsl_flexio_i2s_dma.c ****  */
+  74:../drivers/fsl_flexio_i2s_dma.c **** static void FLEXIO_I2S_RxDMACallback(dma_handle_t *handle, void *userData);
+  75:../drivers/fsl_flexio_i2s_dma.c **** 
+  76:../drivers/fsl_flexio_i2s_dma.c **** /*******************************************************************************
+  77:../drivers/fsl_flexio_i2s_dma.c **** * Code
+  78:../drivers/fsl_flexio_i2s_dma.c **** ******************************************************************************/
+  79:../drivers/fsl_flexio_i2s_dma.c **** static void FLEXIO_I2S_TxDMACallback(dma_handle_t *handle, void *userData)
+  80:../drivers/fsl_flexio_i2s_dma.c **** {
+  81:../drivers/fsl_flexio_i2s_dma.c ****     flexio_i2s_dma_private_handle_t *privHandle = (flexio_i2s_dma_private_handle_t *)userData;
+  82:../drivers/fsl_flexio_i2s_dma.c ****     flexio_i2s_dma_handle_t *flexio_i2sHandle = privHandle->handle;
+  83:../drivers/fsl_flexio_i2s_dma.c **** 
+  84:../drivers/fsl_flexio_i2s_dma.c ****     /* If finished a blcok, call the callback function */
+  85:../drivers/fsl_flexio_i2s_dma.c ****     memset(&flexio_i2sHandle->queue[flexio_i2sHandle->queueDriver], 0, sizeof(flexio_i2s_transfer_t
+  86:../drivers/fsl_flexio_i2s_dma.c ****     flexio_i2sHandle->queueDriver = (flexio_i2sHandle->queueDriver + 1) % FLEXIO_I2S_XFER_QUEUE_SIZ
+  87:../drivers/fsl_flexio_i2s_dma.c ****     if (flexio_i2sHandle->callback)
+  88:../drivers/fsl_flexio_i2s_dma.c ****     {
+  89:../drivers/fsl_flexio_i2s_dma.c ****         (flexio_i2sHandle->callback)(privHandle->base, flexio_i2sHandle, kStatus_Success, flexio_i2
+  90:../drivers/fsl_flexio_i2s_dma.c ****     }
+  91:../drivers/fsl_flexio_i2s_dma.c **** 
+  92:../drivers/fsl_flexio_i2s_dma.c ****     /* If all data finished, just stop the transfer */
+  93:../drivers/fsl_flexio_i2s_dma.c ****     if (flexio_i2sHandle->queue[flexio_i2sHandle->queueDriver].data == NULL)
+  94:../drivers/fsl_flexio_i2s_dma.c ****     {
+  95:../drivers/fsl_flexio_i2s_dma.c ****         FLEXIO_I2S_TransferAbortSendDMA(privHandle->base, flexio_i2sHandle);
+  96:../drivers/fsl_flexio_i2s_dma.c ****     }
+  97:../drivers/fsl_flexio_i2s_dma.c **** }
+  98:../drivers/fsl_flexio_i2s_dma.c **** 
+  99:../drivers/fsl_flexio_i2s_dma.c **** static void FLEXIO_I2S_RxDMACallback(dma_handle_t *handle, void *userData)
+ 100:../drivers/fsl_flexio_i2s_dma.c **** {
+ 101:../drivers/fsl_flexio_i2s_dma.c ****     flexio_i2s_dma_private_handle_t *privHandle = (flexio_i2s_dma_private_handle_t *)userData;
+ 102:../drivers/fsl_flexio_i2s_dma.c ****     flexio_i2s_dma_handle_t *flexio_i2sHandle = privHandle->handle;
+ 103:../drivers/fsl_flexio_i2s_dma.c **** 
+ 104:../drivers/fsl_flexio_i2s_dma.c ****     /* If finished a blcok, call the callback function */
+ 105:../drivers/fsl_flexio_i2s_dma.c ****     memset(&flexio_i2sHandle->queue[flexio_i2sHandle->queueDriver], 0, sizeof(flexio_i2s_transfer_t
+ 106:../drivers/fsl_flexio_i2s_dma.c ****     flexio_i2sHandle->queueDriver = (flexio_i2sHandle->queueDriver + 1) % FLEXIO_I2S_XFER_QUEUE_SIZ
+ 107:../drivers/fsl_flexio_i2s_dma.c ****     if (flexio_i2sHandle->callback)
+ 108:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 109:../drivers/fsl_flexio_i2s_dma.c ****         (flexio_i2sHandle->callback)(privHandle->base, flexio_i2sHandle, kStatus_Success, flexio_i2
+ 110:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 111:../drivers/fsl_flexio_i2s_dma.c **** 
+ 112:../drivers/fsl_flexio_i2s_dma.c ****     /* If all data finished, just stop the transfer */
+ 113:../drivers/fsl_flexio_i2s_dma.c ****     if (flexio_i2sHandle->queue[flexio_i2sHandle->queueDriver].data == NULL)
+ 114:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 115:../drivers/fsl_flexio_i2s_dma.c ****         FLEXIO_I2S_TransferAbortReceiveDMA(privHandle->base, flexio_i2sHandle);
+ 116:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 117:../drivers/fsl_flexio_i2s_dma.c **** }
+ 118:../drivers/fsl_flexio_i2s_dma.c **** 
+ 119:../drivers/fsl_flexio_i2s_dma.c **** void FLEXIO_I2S_TransferTxCreateHandleDMA(FLEXIO_I2S_Type *base,
+ 120:../drivers/fsl_flexio_i2s_dma.c ****                                           flexio_i2s_dma_handle_t *handle,
+ 121:../drivers/fsl_flexio_i2s_dma.c ****                                           flexio_i2s_dma_callback_t callback,
+ 122:../drivers/fsl_flexio_i2s_dma.c ****                                           void *userData,
+ 123:../drivers/fsl_flexio_i2s_dma.c ****                                           dma_handle_t *dmaHandle)
+ 124:../drivers/fsl_flexio_i2s_dma.c **** {
+  26              		.loc 1 124 0
+  27              		.cfi_startproc
+  28              		@ args = 4, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              	.LVL0:
+  31 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  32              		.cfi_def_cfa_offset 24
+  33              		.cfi_offset 3, -24
+  34              		.cfi_offset 4, -20
+  35              		.cfi_offset 5, -16
+  36              		.cfi_offset 6, -12
+  37              		.cfi_offset 7, -8
+  38              		.cfi_offset 14, -4
+  39 0002 0500     		movs	r5, r0
+  40 0004 0C00     		movs	r4, r1
+  41 0006 1700     		movs	r7, r2
+  42 0008 1E00     		movs	r6, r3
+ 125:../drivers/fsl_flexio_i2s_dma.c ****     assert(handle && dmaHandle);
+ 126:../drivers/fsl_flexio_i2s_dma.c **** 
+ 127:../drivers/fsl_flexio_i2s_dma.c ****     /* Zero the handle */
+ 128:../drivers/fsl_flexio_i2s_dma.c ****     memset(handle, 0, sizeof(*handle));
+  43              		.loc 1 128 0
+  44 000a 081D     		adds	r0, r1, #4
+  45              	.LVL1:
+  46 000c 4422     		movs	r2, #68
+  47              	.LVL2:
+  48 000e 0021     		movs	r1, #0
+  49              	.LVL3:
+  50 0010 FFF7FEFF 		bl	memset
+  51              	.LVL4:
+ 129:../drivers/fsl_flexio_i2s_dma.c **** 
+ 130:../drivers/fsl_flexio_i2s_dma.c ****     /* Set flexio_i2s base to handle */
+ 131:../drivers/fsl_flexio_i2s_dma.c ****     handle->dmaHandle = dmaHandle;
+  52              		.loc 1 131 0
+  53 0014 069B     		ldr	r3, [sp, #24]
+  54 0016 2360     		str	r3, [r4]
+ 132:../drivers/fsl_flexio_i2s_dma.c ****     handle->callback = callback;
+  55              		.loc 1 132 0
+  56 0018 E760     		str	r7, [r4, #12]
+ 133:../drivers/fsl_flexio_i2s_dma.c ****     handle->userData = userData;
+  57              		.loc 1 133 0
+  58 001a 2661     		str	r6, [r4, #16]
+ 134:../drivers/fsl_flexio_i2s_dma.c **** 
+ 135:../drivers/fsl_flexio_i2s_dma.c ****     /* Set FLEXIO I2S state to idle */
+ 136:../drivers/fsl_flexio_i2s_dma.c ****     handle->state = kFLEXIO_I2S_Idle;
+  59              		.loc 1 136 0
+  60 001c 0123     		movs	r3, #1
+  61 001e A360     		str	r3, [r4, #8]
+ 137:../drivers/fsl_flexio_i2s_dma.c **** 
+ 138:../drivers/fsl_flexio_i2s_dma.c ****     s_dmaPrivateHandle[0].base = base;
+  62              		.loc 1 138 0
+  63 0020 034A     		ldr	r2, .L2
+  64 0022 1560     		str	r5, [r2]
+ 139:../drivers/fsl_flexio_i2s_dma.c ****     s_dmaPrivateHandle[0].handle = handle;
+  65              		.loc 1 139 0
+  66 0024 5460     		str	r4, [r2, #4]
+ 140:../drivers/fsl_flexio_i2s_dma.c **** 
+ 141:../drivers/fsl_flexio_i2s_dma.c ****     /* Install callback for Tx dma channel */
+ 142:../drivers/fsl_flexio_i2s_dma.c ****     DMA_SetCallback(dmaHandle, FLEXIO_I2S_TxDMACallback, &s_dmaPrivateHandle[0]);
+  67              		.loc 1 142 0
+  68 0026 0349     		ldr	r1, .L2+4
+  69 0028 0698     		ldr	r0, [sp, #24]
+  70 002a FFF7FEFF 		bl	DMA_SetCallback
+  71              	.LVL5:
+ 143:../drivers/fsl_flexio_i2s_dma.c **** }
+  72              		.loc 1 143 0
+  73              		@ sp needed
+  74              	.LVL6:
+  75              	.LVL7:
+  76              	.LVL8:
+  77              	.LVL9:
+  78 002e F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+  79              	.L3:
+  80              		.align	2
+  81              	.L2:
+  82 0030 00000000 		.word	.LANCHOR0
+  83 0034 00000000 		.word	FLEXIO_I2S_TxDMACallback
+  84              		.cfi_endproc
+  85              	.LFE92:
+  87              		.section	.text.FLEXIO_I2S_TransferRxCreateHandleDMA,"ax",%progbits
+  88              		.align	1
+  89              		.global	FLEXIO_I2S_TransferRxCreateHandleDMA
+  90              		.syntax unified
+  91              		.code	16
+  92              		.thumb_func
+  93              		.fpu softvfp
+  95              	FLEXIO_I2S_TransferRxCreateHandleDMA:
+  96              	.LFB93:
+ 144:../drivers/fsl_flexio_i2s_dma.c **** 
+ 145:../drivers/fsl_flexio_i2s_dma.c **** void FLEXIO_I2S_TransferRxCreateHandleDMA(FLEXIO_I2S_Type *base,
+ 146:../drivers/fsl_flexio_i2s_dma.c ****                                           flexio_i2s_dma_handle_t *handle,
+ 147:../drivers/fsl_flexio_i2s_dma.c ****                                           flexio_i2s_dma_callback_t callback,
+ 148:../drivers/fsl_flexio_i2s_dma.c ****                                           void *userData,
+ 149:../drivers/fsl_flexio_i2s_dma.c ****                                           dma_handle_t *dmaHandle)
+ 150:../drivers/fsl_flexio_i2s_dma.c **** {
+  97              		.loc 1 150 0
+  98              		.cfi_startproc
+  99              		@ args = 4, pretend = 0, frame = 0
+ 100              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101              	.LVL10:
+ 102 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 103              		.cfi_def_cfa_offset 24
+ 104              		.cfi_offset 3, -24
+ 105              		.cfi_offset 4, -20
+ 106              		.cfi_offset 5, -16
+ 107              		.cfi_offset 6, -12
+ 108              		.cfi_offset 7, -8
+ 109              		.cfi_offset 14, -4
+ 110 0002 0500     		movs	r5, r0
+ 111 0004 0C00     		movs	r4, r1
+ 112 0006 1700     		movs	r7, r2
+ 113 0008 1E00     		movs	r6, r3
+ 151:../drivers/fsl_flexio_i2s_dma.c ****     assert(handle && dmaHandle);
+ 152:../drivers/fsl_flexio_i2s_dma.c **** 
+ 153:../drivers/fsl_flexio_i2s_dma.c ****     /* Zero the handle */
+ 154:../drivers/fsl_flexio_i2s_dma.c ****     memset(handle, 0, sizeof(*handle));
+ 114              		.loc 1 154 0
+ 115 000a 081D     		adds	r0, r1, #4
+ 116              	.LVL11:
+ 117 000c 4422     		movs	r2, #68
+ 118              	.LVL12:
+ 119 000e 0021     		movs	r1, #0
+ 120              	.LVL13:
+ 121 0010 FFF7FEFF 		bl	memset
+ 122              	.LVL14:
+ 155:../drivers/fsl_flexio_i2s_dma.c **** 
+ 156:../drivers/fsl_flexio_i2s_dma.c ****     /* Set flexio_i2s base to handle */
+ 157:../drivers/fsl_flexio_i2s_dma.c ****     handle->dmaHandle = dmaHandle;
+ 123              		.loc 1 157 0
+ 124 0014 069B     		ldr	r3, [sp, #24]
+ 125 0016 2360     		str	r3, [r4]
+ 158:../drivers/fsl_flexio_i2s_dma.c ****     handle->callback = callback;
+ 126              		.loc 1 158 0
+ 127 0018 E760     		str	r7, [r4, #12]
+ 159:../drivers/fsl_flexio_i2s_dma.c ****     handle->userData = userData;
+ 128              		.loc 1 159 0
+ 129 001a 2661     		str	r6, [r4, #16]
+ 160:../drivers/fsl_flexio_i2s_dma.c **** 
+ 161:../drivers/fsl_flexio_i2s_dma.c ****     /* Set FLEXIO I2S state to idle */
+ 162:../drivers/fsl_flexio_i2s_dma.c ****     handle->state = kFLEXIO_I2S_Idle;
+ 130              		.loc 1 162 0
+ 131 001c 0123     		movs	r3, #1
+ 132 001e A360     		str	r3, [r4, #8]
+ 163:../drivers/fsl_flexio_i2s_dma.c **** 
+ 164:../drivers/fsl_flexio_i2s_dma.c ****     s_dmaPrivateHandle[1].base = base;
+ 133              		.loc 1 164 0
+ 134 0020 044A     		ldr	r2, .L5
+ 135 0022 9560     		str	r5, [r2, #8]
+ 165:../drivers/fsl_flexio_i2s_dma.c ****     s_dmaPrivateHandle[1].handle = handle;
+ 136              		.loc 1 165 0
+ 137 0024 D460     		str	r4, [r2, #12]
+ 166:../drivers/fsl_flexio_i2s_dma.c **** 
+ 167:../drivers/fsl_flexio_i2s_dma.c ****     /* Install callback for Tx dma channel */
+ 168:../drivers/fsl_flexio_i2s_dma.c ****     DMA_SetCallback(dmaHandle, FLEXIO_I2S_RxDMACallback, &s_dmaPrivateHandle[1]);
+ 138              		.loc 1 168 0
+ 139 0026 0832     		adds	r2, r2, #8
+ 140 0028 0349     		ldr	r1, .L5+4
+ 141 002a 0698     		ldr	r0, [sp, #24]
+ 142 002c FFF7FEFF 		bl	DMA_SetCallback
+ 143              	.LVL15:
+ 169:../drivers/fsl_flexio_i2s_dma.c **** }
+ 144              		.loc 1 169 0
+ 145              		@ sp needed
+ 146              	.LVL16:
+ 147              	.LVL17:
+ 148              	.LVL18:
+ 149              	.LVL19:
+ 150 0030 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 151              	.L6:
+ 152 0032 C046     		.align	2
+ 153              	.L5:
+ 154 0034 00000000 		.word	.LANCHOR0
+ 155 0038 00000000 		.word	FLEXIO_I2S_RxDMACallback
+ 156              		.cfi_endproc
+ 157              	.LFE93:
+ 159              		.section	.text.FLEXIO_I2S_TransferSetFormatDMA,"ax",%progbits
+ 160              		.align	1
+ 161              		.global	FLEXIO_I2S_TransferSetFormatDMA
+ 162              		.syntax unified
+ 163              		.code	16
+ 164              		.thumb_func
+ 165              		.fpu softvfp
+ 167              	FLEXIO_I2S_TransferSetFormatDMA:
+ 168              	.LFB94:
+ 170:../drivers/fsl_flexio_i2s_dma.c **** 
+ 171:../drivers/fsl_flexio_i2s_dma.c **** void FLEXIO_I2S_TransferSetFormatDMA(FLEXIO_I2S_Type *base,
+ 172:../drivers/fsl_flexio_i2s_dma.c ****                                      flexio_i2s_dma_handle_t *handle,
+ 173:../drivers/fsl_flexio_i2s_dma.c ****                                      flexio_i2s_format_t *format,
+ 174:../drivers/fsl_flexio_i2s_dma.c ****                                      uint32_t srcClock_Hz)
+ 175:../drivers/fsl_flexio_i2s_dma.c **** {
+ 169              		.loc 1 175 0
+ 170              		.cfi_startproc
+ 171              		@ args = 0, pretend = 0, frame = 0
+ 172              		@ frame_needed = 0, uses_anonymous_args = 0
+ 173              	.LVL20:
+ 174 0000 70B5     		push	{r4, r5, r6, lr}
+ 175              		.cfi_def_cfa_offset 16
+ 176              		.cfi_offset 4, -16
+ 177              		.cfi_offset 5, -12
+ 178              		.cfi_offset 6, -8
+ 179              		.cfi_offset 14, -4
+ 180 0002 0D00     		movs	r5, r1
+ 181 0004 1400     		movs	r4, r2
+ 176:../drivers/fsl_flexio_i2s_dma.c ****     assert(handle && format);
+ 177:../drivers/fsl_flexio_i2s_dma.c **** 
+ 178:../drivers/fsl_flexio_i2s_dma.c ****     /* Configure the audio format to FLEXIO I2S registers */
+ 179:../drivers/fsl_flexio_i2s_dma.c ****     if (srcClock_Hz != 0)
+ 182              		.loc 1 179 0
+ 183 0006 002B     		cmp	r3, #0
+ 184 0008 06D1     		bne	.L10
+ 180:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 181:../drivers/fsl_flexio_i2s_dma.c ****         /* It is master */
+ 182:../drivers/fsl_flexio_i2s_dma.c ****         FLEXIO_I2S_MasterSetFormat(base, format, srcClock_Hz);
+ 183:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 184:../drivers/fsl_flexio_i2s_dma.c ****     else
+ 185:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 186:../drivers/fsl_flexio_i2s_dma.c ****         FLEXIO_I2S_SlaveSetFormat(base, format);
+ 185              		.loc 1 186 0
+ 186 000a 1100     		movs	r1, r2
+ 187              	.LVL21:
+ 188 000c FFF7FEFF 		bl	FLEXIO_I2S_SlaveSetFormat
+ 189              	.LVL22:
+ 190              	.L9:
+ 187:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 188:../drivers/fsl_flexio_i2s_dma.c **** 
+ 189:../drivers/fsl_flexio_i2s_dma.c ****     /* Get the tranfer size from format, this should be used in DMA configuration */
+ 190:../drivers/fsl_flexio_i2s_dma.c ****     handle->bytesPerFrame = format->bitWidth / 8U;
+ 191              		.loc 1 190 0
+ 192 0010 2378     		ldrb	r3, [r4]
+ 193 0012 DB08     		lsrs	r3, r3, #3
+ 194 0014 2B71     		strb	r3, [r5, #4]
+ 191:../drivers/fsl_flexio_i2s_dma.c **** }
+ 195              		.loc 1 191 0
+ 196              		@ sp needed
+ 197              	.LVL23:
+ 198              	.LVL24:
+ 199 0016 70BD     		pop	{r4, r5, r6, pc}
+ 200              	.LVL25:
+ 201              	.L10:
+ 182:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 202              		.loc 1 182 0
+ 203 0018 1A00     		movs	r2, r3
+ 204              	.LVL26:
+ 205 001a 2100     		movs	r1, r4
+ 206              	.LVL27:
+ 207 001c FFF7FEFF 		bl	FLEXIO_I2S_MasterSetFormat
+ 208              	.LVL28:
+ 209 0020 F6E7     		b	.L9
+ 210              		.cfi_endproc
+ 211              	.LFE94:
+ 213              		.section	.text.FLEXIO_I2S_TransferSendDMA,"ax",%progbits
+ 214              		.align	1
+ 215              		.global	FLEXIO_I2S_TransferSendDMA
+ 216              		.syntax unified
+ 217              		.code	16
+ 218              		.thumb_func
+ 219              		.fpu softvfp
+ 221              	FLEXIO_I2S_TransferSendDMA:
+ 222              	.LFB95:
+ 192:../drivers/fsl_flexio_i2s_dma.c **** 
+ 193:../drivers/fsl_flexio_i2s_dma.c **** status_t FLEXIO_I2S_TransferSendDMA(FLEXIO_I2S_Type *base, flexio_i2s_dma_handle_t *handle, flexio_
+ 194:../drivers/fsl_flexio_i2s_dma.c **** {
+ 223              		.loc 1 194 0
+ 224              		.cfi_startproc
+ 225              		@ args = 0, pretend = 0, frame = 16
+ 226              		@ frame_needed = 0, uses_anonymous_args = 0
+ 227              	.LVL29:
+ 228 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 229              		.cfi_def_cfa_offset 20
+ 230              		.cfi_offset 4, -20
+ 231              		.cfi_offset 5, -16
+ 232              		.cfi_offset 6, -12
+ 233              		.cfi_offset 7, -8
+ 234              		.cfi_offset 14, -4
+ 235 0002 89B0     		sub	sp, sp, #36
+ 236              		.cfi_def_cfa_offset 56
+ 237 0004 0600     		movs	r6, r0
+ 238 0006 0C00     		movs	r4, r1
+ 239 0008 1500     		movs	r5, r2
+ 195:../drivers/fsl_flexio_i2s_dma.c ****     assert(handle && xfer);
+ 196:../drivers/fsl_flexio_i2s_dma.c **** 
+ 197:../drivers/fsl_flexio_i2s_dma.c ****     dma_transfer_config_t config = {0};
+ 240              		.loc 1 197 0
+ 241 000a 1022     		movs	r2, #16
+ 242              	.LVL30:
+ 243 000c 0021     		movs	r1, #0
+ 244              	.LVL31:
+ 245 000e 04A8     		add	r0, sp, #16
+ 246              	.LVL32:
+ 247 0010 FFF7FEFF 		bl	memset
+ 248              	.LVL33:
+ 249              	.LBB38:
+ 250              	.LBB39:
+ 251              		.file 2 "../drivers/fsl_flexio_i2s.h"
+   1:../drivers/fsl_flexio_i2s.h **** /*
+   2:../drivers/fsl_flexio_i2s.h ****  * The Clear BSD License
+   3:../drivers/fsl_flexio_i2s.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_flexio_i2s.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_flexio_i2s.h ****  * All rights reserved.
+   6:../drivers/fsl_flexio_i2s.h ****  *
+   7:../drivers/fsl_flexio_i2s.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_flexio_i2s.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_flexio_i2s.h ****  * that the following conditions are met:
+  10:../drivers/fsl_flexio_i2s.h ****  *
+  11:../drivers/fsl_flexio_i2s.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_flexio_i2s.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_flexio_i2s.h ****  *
+  14:../drivers/fsl_flexio_i2s.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_flexio_i2s.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_flexio_i2s.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_flexio_i2s.h ****  *
+  18:../drivers/fsl_flexio_i2s.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_flexio_i2s.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_flexio_i2s.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_flexio_i2s.h ****  *
+  22:../drivers/fsl_flexio_i2s.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_flexio_i2s.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_flexio_i2s.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_flexio_i2s.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_flexio_i2s.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_flexio_i2s.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_flexio_i2s.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_flexio_i2s.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_flexio_i2s.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_flexio_i2s.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_flexio_i2s.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_flexio_i2s.h ****  */
+  34:../drivers/fsl_flexio_i2s.h **** #ifndef _FSL_FLEXIO_I2S_H_
+  35:../drivers/fsl_flexio_i2s.h **** #define _FSL_FLEXIO_I2S_H_
+  36:../drivers/fsl_flexio_i2s.h **** 
+  37:../drivers/fsl_flexio_i2s.h **** #include "fsl_common.h"
+  38:../drivers/fsl_flexio_i2s.h **** #include "fsl_flexio.h"
+  39:../drivers/fsl_flexio_i2s.h **** 
+  40:../drivers/fsl_flexio_i2s.h **** /*!
+  41:../drivers/fsl_flexio_i2s.h ****  * @addtogroup flexio_i2s
+  42:../drivers/fsl_flexio_i2s.h ****  * @{
+  43:../drivers/fsl_flexio_i2s.h ****  */
+  44:../drivers/fsl_flexio_i2s.h **** 
+  45:../drivers/fsl_flexio_i2s.h **** /*******************************************************************************
+  46:../drivers/fsl_flexio_i2s.h ****  * Definitions
+  47:../drivers/fsl_flexio_i2s.h ****  ******************************************************************************/
+  48:../drivers/fsl_flexio_i2s.h **** 
+  49:../drivers/fsl_flexio_i2s.h **** /*! @name Driver version */
+  50:../drivers/fsl_flexio_i2s.h **** /*@{*/
+  51:../drivers/fsl_flexio_i2s.h **** /*! @brief FlexIO I2S driver version 2.1.3. */
+  52:../drivers/fsl_flexio_i2s.h **** #define FSL_FLEXIO_I2S_DRIVER_VERSION (MAKE_VERSION(2, 1, 3))
+  53:../drivers/fsl_flexio_i2s.h **** /*@}*/
+  54:../drivers/fsl_flexio_i2s.h **** 
+  55:../drivers/fsl_flexio_i2s.h **** /*! @brief FlexIO I2S transfer status */
+  56:../drivers/fsl_flexio_i2s.h **** enum _flexio_i2s_status
+  57:../drivers/fsl_flexio_i2s.h **** {
+  58:../drivers/fsl_flexio_i2s.h ****     kStatus_FLEXIO_I2S_Idle = MAKE_STATUS(kStatusGroup_FLEXIO_I2S, 0),      /*!< FlexIO I2S is in i
+  59:../drivers/fsl_flexio_i2s.h ****     kStatus_FLEXIO_I2S_TxBusy = MAKE_STATUS(kStatusGroup_FLEXIO_I2S, 1),    /*!< FlexIO I2S Tx is b
+  60:../drivers/fsl_flexio_i2s.h ****     kStatus_FLEXIO_I2S_RxBusy = MAKE_STATUS(kStatusGroup_FLEXIO_I2S, 2),    /*!< FlexIO I2S Tx is b
+  61:../drivers/fsl_flexio_i2s.h ****     kStatus_FLEXIO_I2S_Error = MAKE_STATUS(kStatusGroup_FLEXIO_I2S, 3),     /*!< FlexIO I2S error o
+  62:../drivers/fsl_flexio_i2s.h ****     kStatus_FLEXIO_I2S_QueueFull = MAKE_STATUS(kStatusGroup_FLEXIO_I2S, 4), /*!< FlexIO I2S transfe
+  63:../drivers/fsl_flexio_i2s.h **** };
+  64:../drivers/fsl_flexio_i2s.h **** 
+  65:../drivers/fsl_flexio_i2s.h **** /*! @brief Define FlexIO I2S access structure typedef */
+  66:../drivers/fsl_flexio_i2s.h **** typedef struct _flexio_i2s_type
+  67:../drivers/fsl_flexio_i2s.h **** {
+  68:../drivers/fsl_flexio_i2s.h ****     FLEXIO_Type *flexioBase; /*!< FlexIO base pointer */
+  69:../drivers/fsl_flexio_i2s.h ****     uint8_t txPinIndex;      /*!< Tx data pin index in FlexIO pins */
+  70:../drivers/fsl_flexio_i2s.h ****     uint8_t rxPinIndex;      /*!< Rx data pin index */
+  71:../drivers/fsl_flexio_i2s.h ****     uint8_t bclkPinIndex;    /*!< Bit clock pin index */
+  72:../drivers/fsl_flexio_i2s.h ****     uint8_t fsPinIndex;      /*!< Frame sync pin index */
+  73:../drivers/fsl_flexio_i2s.h ****     uint8_t txShifterIndex;  /*!< Tx data shifter index */
+  74:../drivers/fsl_flexio_i2s.h ****     uint8_t rxShifterIndex;  /*!< Rx data shifter index */
+  75:../drivers/fsl_flexio_i2s.h ****     uint8_t bclkTimerIndex;  /*!< Bit clock timer index */
+  76:../drivers/fsl_flexio_i2s.h ****     uint8_t fsTimerIndex;    /*!< Frame sync timer index */
+  77:../drivers/fsl_flexio_i2s.h **** } FLEXIO_I2S_Type;
+  78:../drivers/fsl_flexio_i2s.h **** 
+  79:../drivers/fsl_flexio_i2s.h **** /*! @brief Master or slave mode */
+  80:../drivers/fsl_flexio_i2s.h **** typedef enum _flexio_i2s_master_slave
+  81:../drivers/fsl_flexio_i2s.h **** {
+  82:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_Master = 0x0U, /*!< Master mode */
+  83:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_Slave = 0x1U   /*!< Slave mode */
+  84:../drivers/fsl_flexio_i2s.h **** } flexio_i2s_master_slave_t;
+  85:../drivers/fsl_flexio_i2s.h **** 
+  86:../drivers/fsl_flexio_i2s.h **** /*! @brief Define FlexIO FlexIO I2S interrupt mask. */
+  87:../drivers/fsl_flexio_i2s.h **** enum _flexio_i2s_interrupt_enable
+  88:../drivers/fsl_flexio_i2s.h **** {
+  89:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_TxDataRegEmptyInterruptEnable = 0x1U, /*!< Transmit buffer empty interrupt enable. 
+  90:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_RxDataRegFullInterruptEnable = 0x2U,  /*!< Receive buffer full interrupt enable. */
+  91:../drivers/fsl_flexio_i2s.h **** };
+  92:../drivers/fsl_flexio_i2s.h **** 
+  93:../drivers/fsl_flexio_i2s.h **** /*! @brief Define FlexIO FlexIO I2S status mask. */
+  94:../drivers/fsl_flexio_i2s.h **** enum _flexio_i2s_status_flags
+  95:../drivers/fsl_flexio_i2s.h **** {
+  96:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_TxDataRegEmptyFlag = 0x1U, /*!< Transmit buffer empty flag. */
+  97:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_RxDataRegFullFlag = 0x2U,  /*!< Receive buffer full flag. */
+  98:../drivers/fsl_flexio_i2s.h **** };
+  99:../drivers/fsl_flexio_i2s.h **** 
+ 100:../drivers/fsl_flexio_i2s.h **** /*! @brief FlexIO I2S configure structure */
+ 101:../drivers/fsl_flexio_i2s.h **** typedef struct _flexio_i2s_config
+ 102:../drivers/fsl_flexio_i2s.h **** {
+ 103:../drivers/fsl_flexio_i2s.h ****     bool enableI2S;                                  /*!< Enable FlexIO I2S */
+ 104:../drivers/fsl_flexio_i2s.h ****     flexio_i2s_master_slave_t masterSlave;           /*!< Master or slave */
+ 105:../drivers/fsl_flexio_i2s.h ****     flexio_pin_polarity_t txPinPolarity;             /*!< Tx data pin polarity, active high or low 
+ 106:../drivers/fsl_flexio_i2s.h ****     flexio_pin_polarity_t rxPinPolarity;             /*!< Rx data pin polarity */
+ 107:../drivers/fsl_flexio_i2s.h ****     flexio_pin_polarity_t bclkPinPolarity;           /*!< Bit clock pin polarity */
+ 108:../drivers/fsl_flexio_i2s.h ****     flexio_pin_polarity_t fsPinPolarity;             /*!< Frame sync pin polarity */
+ 109:../drivers/fsl_flexio_i2s.h ****     flexio_shifter_timer_polarity_t txTimerPolarity; /*!< Tx data valid on bclk rising or falling e
+ 110:../drivers/fsl_flexio_i2s.h ****     flexio_shifter_timer_polarity_t rxTimerPolarity; /*!< Rx data valid on bclk rising or falling e
+ 111:../drivers/fsl_flexio_i2s.h **** } flexio_i2s_config_t;
+ 112:../drivers/fsl_flexio_i2s.h **** 
+ 113:../drivers/fsl_flexio_i2s.h **** /*! @brief FlexIO I2S audio format, FlexIO I2S only support the same format in Tx and Rx */
+ 114:../drivers/fsl_flexio_i2s.h **** typedef struct _flexio_i2s_format
+ 115:../drivers/fsl_flexio_i2s.h **** {
+ 116:../drivers/fsl_flexio_i2s.h ****     uint8_t bitWidth;       /*!< Bit width of audio data, always 8/16/24/32 bits */
+ 117:../drivers/fsl_flexio_i2s.h ****     uint32_t sampleRate_Hz; /*!< Sample rate of the audio data */
+ 118:../drivers/fsl_flexio_i2s.h **** } flexio_i2s_format_t;
+ 119:../drivers/fsl_flexio_i2s.h **** 
+ 120:../drivers/fsl_flexio_i2s.h **** /*!@brief FlexIO I2S transfer queue size, user can refine it according to use case. */
+ 121:../drivers/fsl_flexio_i2s.h **** #define FLEXIO_I2S_XFER_QUEUE_SIZE (4)
+ 122:../drivers/fsl_flexio_i2s.h **** 
+ 123:../drivers/fsl_flexio_i2s.h **** /*! @brief Audio sample rate */
+ 124:../drivers/fsl_flexio_i2s.h **** typedef enum _flexio_i2s_sample_rate
+ 125:../drivers/fsl_flexio_i2s.h **** {
+ 126:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_SampleRate8KHz = 8000U,     /*!< Sample rate 8000Hz */
+ 127:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_SampleRate11025Hz = 11025U, /*!< Sample rate 11025Hz */
+ 128:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_SampleRate12KHz = 12000U,   /*!< Sample rate 12000Hz */
+ 129:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_SampleRate16KHz = 16000U,   /*!< Sample rate 16000Hz */
+ 130:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_SampleRate22050Hz = 22050U, /*!< Sample rate 22050Hz */
+ 131:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_SampleRate24KHz = 24000U,   /*!< Sample rate 24000Hz */
+ 132:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_SampleRate32KHz = 32000U,   /*!< Sample rate 32000Hz */
+ 133:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_SampleRate44100Hz = 44100U, /*!< Sample rate 44100Hz */
+ 134:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_SampleRate48KHz = 48000U,   /*!< Sample rate 48000Hz */
+ 135:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_SampleRate96KHz = 96000U    /*!< Sample rate 96000Hz */
+ 136:../drivers/fsl_flexio_i2s.h **** } flexio_i2s_sample_rate_t;
+ 137:../drivers/fsl_flexio_i2s.h **** 
+ 138:../drivers/fsl_flexio_i2s.h **** /*! @brief Audio word width */
+ 139:../drivers/fsl_flexio_i2s.h **** typedef enum _flexio_i2s_word_width
+ 140:../drivers/fsl_flexio_i2s.h **** {
+ 141:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_WordWidth8bits = 8U,   /*!< Audio data width 8 bits */
+ 142:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_WordWidth16bits = 16U, /*!< Audio data width 16 bits */
+ 143:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_WordWidth24bits = 24U, /*!< Audio data width 24 bits */
+ 144:../drivers/fsl_flexio_i2s.h ****     kFLEXIO_I2S_WordWidth32bits = 32U  /*!< Audio data width 32 bits */
+ 145:../drivers/fsl_flexio_i2s.h **** } flexio_i2s_word_width_t;
+ 146:../drivers/fsl_flexio_i2s.h **** 
+ 147:../drivers/fsl_flexio_i2s.h **** /*! @brief Define FlexIO I2S transfer structure. */
+ 148:../drivers/fsl_flexio_i2s.h **** typedef struct _flexio_i2s_transfer
+ 149:../drivers/fsl_flexio_i2s.h **** {
+ 150:../drivers/fsl_flexio_i2s.h ****     uint8_t *data;   /*!< Data buffer start pointer */
+ 151:../drivers/fsl_flexio_i2s.h ****     size_t dataSize; /*!< Bytes to be transferred. */
+ 152:../drivers/fsl_flexio_i2s.h **** } flexio_i2s_transfer_t;
+ 153:../drivers/fsl_flexio_i2s.h **** 
+ 154:../drivers/fsl_flexio_i2s.h **** typedef struct _flexio_i2s_handle flexio_i2s_handle_t;
+ 155:../drivers/fsl_flexio_i2s.h **** 
+ 156:../drivers/fsl_flexio_i2s.h **** /*! @brief FlexIO I2S xfer callback prototype */
+ 157:../drivers/fsl_flexio_i2s.h **** typedef void (*flexio_i2s_callback_t)(FLEXIO_I2S_Type *base,
+ 158:../drivers/fsl_flexio_i2s.h ****                                       flexio_i2s_handle_t *handle,
+ 159:../drivers/fsl_flexio_i2s.h ****                                       status_t status,
+ 160:../drivers/fsl_flexio_i2s.h ****                                       void *userData);
+ 161:../drivers/fsl_flexio_i2s.h **** 
+ 162:../drivers/fsl_flexio_i2s.h **** /*! @brief Define FlexIO I2S handle structure. */
+ 163:../drivers/fsl_flexio_i2s.h **** struct _flexio_i2s_handle
+ 164:../drivers/fsl_flexio_i2s.h **** {
+ 165:../drivers/fsl_flexio_i2s.h ****     uint32_t state;                                          /*!< Internal state */
+ 166:../drivers/fsl_flexio_i2s.h ****     flexio_i2s_callback_t callback;                          /*!< Callback function called at trans
+ 167:../drivers/fsl_flexio_i2s.h ****     void *userData;                                          /*!< Callback parameter passed to call
+ 168:../drivers/fsl_flexio_i2s.h ****     uint8_t bitWidth;                                        /*!< Bit width for transfer, 8/16/24/3
+ 169:../drivers/fsl_flexio_i2s.h ****     flexio_i2s_transfer_t queue[FLEXIO_I2S_XFER_QUEUE_SIZE]; /*!< Transfer queue storing queued tra
+ 170:../drivers/fsl_flexio_i2s.h ****     size_t transferSize[FLEXIO_I2S_XFER_QUEUE_SIZE];         /*!< Data bytes need to transfer */
+ 171:../drivers/fsl_flexio_i2s.h ****     volatile uint8_t queueUser;                              /*!< Index for user to queue transfer 
+ 172:../drivers/fsl_flexio_i2s.h ****     volatile uint8_t queueDriver;                            /*!< Index for driver to get the trans
+ 173:../drivers/fsl_flexio_i2s.h **** };
+ 174:../drivers/fsl_flexio_i2s.h **** 
+ 175:../drivers/fsl_flexio_i2s.h **** /*******************************************************************************
+ 176:../drivers/fsl_flexio_i2s.h ****  * API
+ 177:../drivers/fsl_flexio_i2s.h ****  ******************************************************************************/
+ 178:../drivers/fsl_flexio_i2s.h **** 
+ 179:../drivers/fsl_flexio_i2s.h **** #if defined(__cplusplus)
+ 180:../drivers/fsl_flexio_i2s.h **** extern "C" {
+ 181:../drivers/fsl_flexio_i2s.h **** #endif /*_cplusplus*/
+ 182:../drivers/fsl_flexio_i2s.h **** 
+ 183:../drivers/fsl_flexio_i2s.h **** /*!
+ 184:../drivers/fsl_flexio_i2s.h ****  * @name Initialization and deinitialization
+ 185:../drivers/fsl_flexio_i2s.h ****  * @{
+ 186:../drivers/fsl_flexio_i2s.h ****  */
+ 187:../drivers/fsl_flexio_i2s.h **** 
+ 188:../drivers/fsl_flexio_i2s.h **** /*!
+ 189:../drivers/fsl_flexio_i2s.h ****  * @brief Initializes the FlexIO I2S.
+ 190:../drivers/fsl_flexio_i2s.h ****  *
+ 191:../drivers/fsl_flexio_i2s.h ****  * This API configures FlexIO pins and shifter to I2S and configures the FlexIO I2S with a configur
+ 192:../drivers/fsl_flexio_i2s.h ****  * The configuration structure can be filled by the user, or be set with default values by
+ 193:../drivers/fsl_flexio_i2s.h ****  * FLEXIO_I2S_GetDefaultConfig().
+ 194:../drivers/fsl_flexio_i2s.h ****  *
+ 195:../drivers/fsl_flexio_i2s.h ****  * @note  This API should be called at the beginning of the application to use
+ 196:../drivers/fsl_flexio_i2s.h ****  * the FlexIO I2S driver. Otherwise, any access to the FlexIO I2S module can cause hard fault
+ 197:../drivers/fsl_flexio_i2s.h ****  * because the clock is not enabled.
+ 198:../drivers/fsl_flexio_i2s.h ****  *
+ 199:../drivers/fsl_flexio_i2s.h ****  * @param base FlexIO I2S base pointer
+ 200:../drivers/fsl_flexio_i2s.h ****  * @param config FlexIO I2S configure structure.
+ 201:../drivers/fsl_flexio_i2s.h **** */
+ 202:../drivers/fsl_flexio_i2s.h **** void FLEXIO_I2S_Init(FLEXIO_I2S_Type *base, const flexio_i2s_config_t *config);
+ 203:../drivers/fsl_flexio_i2s.h **** 
+ 204:../drivers/fsl_flexio_i2s.h **** /*!
+ 205:../drivers/fsl_flexio_i2s.h ****  * @brief  Sets the FlexIO I2S configuration structure to default values.
+ 206:../drivers/fsl_flexio_i2s.h ****  *
+ 207:../drivers/fsl_flexio_i2s.h ****  * The purpose of this API is to get the configuration structure initialized for use in FLEXIO_I2S_
+ 208:../drivers/fsl_flexio_i2s.h ****  * Users may use the initialized structure unchanged in FLEXIO_I2S_Init() or modify
+ 209:../drivers/fsl_flexio_i2s.h ****  * some fields of the structure before calling FLEXIO_I2S_Init().
+ 210:../drivers/fsl_flexio_i2s.h ****  *
+ 211:../drivers/fsl_flexio_i2s.h ****  * @param config pointer to master configuration structure
+ 212:../drivers/fsl_flexio_i2s.h ****  */
+ 213:../drivers/fsl_flexio_i2s.h **** void FLEXIO_I2S_GetDefaultConfig(flexio_i2s_config_t *config);
+ 214:../drivers/fsl_flexio_i2s.h **** 
+ 215:../drivers/fsl_flexio_i2s.h **** /*!
+ 216:../drivers/fsl_flexio_i2s.h ****  * @brief De-initializes the FlexIO I2S.
+ 217:../drivers/fsl_flexio_i2s.h ****  *
+ 218:../drivers/fsl_flexio_i2s.h ****  * Calling this API resets the FlexIO I2S shifter and timer config. After calling this API,
+ 219:../drivers/fsl_flexio_i2s.h ****  * call the FLEXO_I2S_Init to use the FlexIO I2S module.
+ 220:../drivers/fsl_flexio_i2s.h ****  *
+ 221:../drivers/fsl_flexio_i2s.h ****  * @param base FlexIO I2S base pointer
+ 222:../drivers/fsl_flexio_i2s.h **** */
+ 223:../drivers/fsl_flexio_i2s.h **** void FLEXIO_I2S_Deinit(FLEXIO_I2S_Type *base);
+ 224:../drivers/fsl_flexio_i2s.h **** 
+ 225:../drivers/fsl_flexio_i2s.h **** /*!
+ 226:../drivers/fsl_flexio_i2s.h ****  * @brief Enables/disables the FlexIO I2S module operation.
+ 227:../drivers/fsl_flexio_i2s.h ****  *
+ 228:../drivers/fsl_flexio_i2s.h ****  * @param base Pointer to FLEXIO_I2S_Type
+ 229:../drivers/fsl_flexio_i2s.h ****  * @param enable True to enable, false dose not have any effect.
+ 230:../drivers/fsl_flexio_i2s.h **** */
+ 231:../drivers/fsl_flexio_i2s.h **** static inline void FLEXIO_I2S_Enable(FLEXIO_I2S_Type *base, bool enable)
+ 232:../drivers/fsl_flexio_i2s.h **** {
+ 233:../drivers/fsl_flexio_i2s.h ****     if (enable)
+ 234:../drivers/fsl_flexio_i2s.h ****     {
+ 235:../drivers/fsl_flexio_i2s.h ****         base->flexioBase->CTRL |= FLEXIO_CTRL_FLEXEN_MASK;
+ 236:../drivers/fsl_flexio_i2s.h ****     }
+ 237:../drivers/fsl_flexio_i2s.h **** }
+ 238:../drivers/fsl_flexio_i2s.h **** 
+ 239:../drivers/fsl_flexio_i2s.h **** /*! @} */
+ 240:../drivers/fsl_flexio_i2s.h **** 
+ 241:../drivers/fsl_flexio_i2s.h **** /*!
+ 242:../drivers/fsl_flexio_i2s.h ****  * @name Status
+ 243:../drivers/fsl_flexio_i2s.h ****  * @{
+ 244:../drivers/fsl_flexio_i2s.h ****  */
+ 245:../drivers/fsl_flexio_i2s.h **** 
+ 246:../drivers/fsl_flexio_i2s.h **** /*!
+ 247:../drivers/fsl_flexio_i2s.h ****  * @brief Gets the FlexIO I2S status flags.
+ 248:../drivers/fsl_flexio_i2s.h ****  *
+ 249:../drivers/fsl_flexio_i2s.h ****  * @param base Pointer to FLEXIO_I2S_Type structure
+ 250:../drivers/fsl_flexio_i2s.h ****  * @return Status flag, which are ORed by the enumerators in the _flexio_i2s_status_flags.
+ 251:../drivers/fsl_flexio_i2s.h **** */
+ 252:../drivers/fsl_flexio_i2s.h **** uint32_t FLEXIO_I2S_GetStatusFlags(FLEXIO_I2S_Type *base);
+ 253:../drivers/fsl_flexio_i2s.h **** 
+ 254:../drivers/fsl_flexio_i2s.h **** /*! @} */
+ 255:../drivers/fsl_flexio_i2s.h **** 
+ 256:../drivers/fsl_flexio_i2s.h **** /*!
+ 257:../drivers/fsl_flexio_i2s.h ****  * @name Interrupts
+ 258:../drivers/fsl_flexio_i2s.h ****  * @{
+ 259:../drivers/fsl_flexio_i2s.h ****  */
+ 260:../drivers/fsl_flexio_i2s.h **** 
+ 261:../drivers/fsl_flexio_i2s.h **** /*!
+ 262:../drivers/fsl_flexio_i2s.h ****  * @brief Enables the FlexIO I2S interrupt.
+ 263:../drivers/fsl_flexio_i2s.h ****  *
+ 264:../drivers/fsl_flexio_i2s.h ****  * This function enables the FlexIO UART interrupt.
+ 265:../drivers/fsl_flexio_i2s.h ****  *
+ 266:../drivers/fsl_flexio_i2s.h ****  * @param base Pointer to FLEXIO_I2S_Type structure
+ 267:../drivers/fsl_flexio_i2s.h ****  * @param mask interrupt source
+ 268:../drivers/fsl_flexio_i2s.h ****  */
+ 269:../drivers/fsl_flexio_i2s.h **** void FLEXIO_I2S_EnableInterrupts(FLEXIO_I2S_Type *base, uint32_t mask);
+ 270:../drivers/fsl_flexio_i2s.h **** 
+ 271:../drivers/fsl_flexio_i2s.h **** /*!
+ 272:../drivers/fsl_flexio_i2s.h ****  * @brief Disables the FlexIO I2S interrupt.
+ 273:../drivers/fsl_flexio_i2s.h ****  *
+ 274:../drivers/fsl_flexio_i2s.h ****  * This function enables the FlexIO UART interrupt.
+ 275:../drivers/fsl_flexio_i2s.h ****  *
+ 276:../drivers/fsl_flexio_i2s.h ****  * @param base pointer to FLEXIO_I2S_Type structure
+ 277:../drivers/fsl_flexio_i2s.h ****  * @param mask interrupt source
+ 278:../drivers/fsl_flexio_i2s.h ****  */
+ 279:../drivers/fsl_flexio_i2s.h **** void FLEXIO_I2S_DisableInterrupts(FLEXIO_I2S_Type *base, uint32_t mask);
+ 280:../drivers/fsl_flexio_i2s.h **** 
+ 281:../drivers/fsl_flexio_i2s.h **** /*! @} */
+ 282:../drivers/fsl_flexio_i2s.h **** 
+ 283:../drivers/fsl_flexio_i2s.h **** /*!
+ 284:../drivers/fsl_flexio_i2s.h ****  * @name DMA Control
+ 285:../drivers/fsl_flexio_i2s.h ****  * @{
+ 286:../drivers/fsl_flexio_i2s.h ****  */
+ 287:../drivers/fsl_flexio_i2s.h **** 
+ 288:../drivers/fsl_flexio_i2s.h **** /*!
+ 289:../drivers/fsl_flexio_i2s.h ****  * @brief Enables/disables the FlexIO I2S Tx DMA requests.
+ 290:../drivers/fsl_flexio_i2s.h ****  *
+ 291:../drivers/fsl_flexio_i2s.h ****  * @param base FlexIO I2S base pointer
+ 292:../drivers/fsl_flexio_i2s.h ****  * @param enable True means enable DMA, false means disable DMA.
+ 293:../drivers/fsl_flexio_i2s.h ****  */
+ 294:../drivers/fsl_flexio_i2s.h **** static inline void FLEXIO_I2S_TxEnableDMA(FLEXIO_I2S_Type *base, bool enable)
+ 295:../drivers/fsl_flexio_i2s.h **** {
+ 296:../drivers/fsl_flexio_i2s.h ****     FLEXIO_EnableShifterStatusDMA(base->flexioBase, 1 << base->txShifterIndex, enable);
+ 297:../drivers/fsl_flexio_i2s.h **** }
+ 298:../drivers/fsl_flexio_i2s.h **** 
+ 299:../drivers/fsl_flexio_i2s.h **** /*!
+ 300:../drivers/fsl_flexio_i2s.h ****  * @brief Enables/disables the FlexIO I2S Rx DMA requests.
+ 301:../drivers/fsl_flexio_i2s.h ****  *
+ 302:../drivers/fsl_flexio_i2s.h ****  * @param base FlexIO I2S base pointer
+ 303:../drivers/fsl_flexio_i2s.h ****  * @param enable True means enable DMA, false means disable DMA.
+ 304:../drivers/fsl_flexio_i2s.h ****  */
+ 305:../drivers/fsl_flexio_i2s.h **** static inline void FLEXIO_I2S_RxEnableDMA(FLEXIO_I2S_Type *base, bool enable)
+ 306:../drivers/fsl_flexio_i2s.h **** {
+ 307:../drivers/fsl_flexio_i2s.h ****     FLEXIO_EnableShifterStatusDMA(base->flexioBase, 1 << base->rxShifterIndex, enable);
+ 308:../drivers/fsl_flexio_i2s.h **** }
+ 309:../drivers/fsl_flexio_i2s.h **** 
+ 310:../drivers/fsl_flexio_i2s.h **** /*!
+ 311:../drivers/fsl_flexio_i2s.h ****  * @brief Gets the FlexIO I2S send data register address.
+ 312:../drivers/fsl_flexio_i2s.h ****  *
+ 313:../drivers/fsl_flexio_i2s.h ****  * This function returns the I2S data register address, mainly used by DMA/eDMA.
+ 314:../drivers/fsl_flexio_i2s.h ****  *
+ 315:../drivers/fsl_flexio_i2s.h ****  * @param base Pointer to FLEXIO_I2S_Type structure
+ 316:../drivers/fsl_flexio_i2s.h ****  * @return FlexIO i2s send data register address.
+ 317:../drivers/fsl_flexio_i2s.h ****  */
+ 318:../drivers/fsl_flexio_i2s.h **** static inline uint32_t FLEXIO_I2S_TxGetDataRegisterAddress(FLEXIO_I2S_Type *base)
+ 319:../drivers/fsl_flexio_i2s.h **** {
+ 320:../drivers/fsl_flexio_i2s.h ****     return FLEXIO_GetShifterBufferAddress(base->flexioBase, kFLEXIO_ShifterBufferBitSwapped, base->
+ 252              		.loc 2 320 0
+ 253 0014 327A     		ldrb	r2, [r6, #8]
+ 254 0016 0121     		movs	r1, #1
+ 255 0018 3068     		ldr	r0, [r6]
+ 256 001a FFF7FEFF 		bl	FLEXIO_GetShifterBufferAddress
+ 257              	.LVL34:
+ 258              	.LBE39:
+ 259              	.LBE38:
+ 198:../drivers/fsl_flexio_i2s_dma.c ****     uint32_t destAddr = FLEXIO_I2S_TxGetDataRegisterAddress(base) + (4U - handle->bytesPerFrame);
+ 260              		.loc 1 198 0
+ 261 001e 2279     		ldrb	r2, [r4, #4]
+ 262 0020 801A     		subs	r0, r0, r2
+ 263 0022 031D     		adds	r3, r0, #4
+ 264              	.LVL35:
+ 199:../drivers/fsl_flexio_i2s_dma.c **** 
+ 200:../drivers/fsl_flexio_i2s_dma.c ****     /* Check if input parameter invalid */
+ 201:../drivers/fsl_flexio_i2s_dma.c ****     if ((xfer->data == NULL) || (xfer->dataSize == 0U))
+ 265              		.loc 1 201 0
+ 266 0024 2968     		ldr	r1, [r5]
+ 267 0026 0029     		cmp	r1, #0
+ 268 0028 50D0     		beq	.L13
+ 269              		.loc 1 201 0 is_stmt 0 discriminator 1
+ 270 002a 6968     		ldr	r1, [r5, #4]
+ 271 002c 0029     		cmp	r1, #0
+ 272 002e 4FD0     		beq	.L14
+ 202:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 203:../drivers/fsl_flexio_i2s_dma.c ****         return kStatus_InvalidArgument;
+ 204:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 205:../drivers/fsl_flexio_i2s_dma.c **** 
+ 206:../drivers/fsl_flexio_i2s_dma.c ****     if (handle->queue[handle->queueUser].data)
+ 273              		.loc 1 206 0 is_stmt 1
+ 274 0030 4421     		movs	r1, #68
+ 275 0032 615C     		ldrb	r1, [r4, r1]
+ 276 0034 0231     		adds	r1, r1, #2
+ 277 0036 C900     		lsls	r1, r1, #3
+ 278 0038 6118     		adds	r1, r4, r1
+ 279 003a 4968     		ldr	r1, [r1, #4]
+ 280 003c 0029     		cmp	r1, #0
+ 281 003e 03D0     		beq	.L16
+ 207:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 208:../drivers/fsl_flexio_i2s_dma.c ****         return kStatus_FLEXIO_I2S_QueueFull;
+ 282              		.loc 1 208 0
+ 283 0040 9020     		movs	r0, #144
+ 284 0042 0001     		lsls	r0, r0, #4
+ 285              	.LVL36:
+ 286              	.L11:
+ 209:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 210:../drivers/fsl_flexio_i2s_dma.c **** 
+ 211:../drivers/fsl_flexio_i2s_dma.c ****     /* Change the state of handle */
+ 212:../drivers/fsl_flexio_i2s_dma.c ****     handle->state = kFLEXIO_I2S_Busy;
+ 213:../drivers/fsl_flexio_i2s_dma.c **** 
+ 214:../drivers/fsl_flexio_i2s_dma.c ****     /* Update the queue state */
+ 215:../drivers/fsl_flexio_i2s_dma.c ****     handle->queue[handle->queueUser].data = xfer->data;
+ 216:../drivers/fsl_flexio_i2s_dma.c ****     handle->queue[handle->queueUser].dataSize = xfer->dataSize;
+ 217:../drivers/fsl_flexio_i2s_dma.c ****     handle->transferSize[handle->queueUser] = xfer->dataSize;
+ 218:../drivers/fsl_flexio_i2s_dma.c ****     handle->queueUser = (handle->queueUser + 1) % FLEXIO_I2S_XFER_QUEUE_SIZE;
+ 219:../drivers/fsl_flexio_i2s_dma.c **** 
+ 220:../drivers/fsl_flexio_i2s_dma.c ****     DMA_PrepareTransfer(&config, xfer->data, handle->bytesPerFrame, (void *)destAddr, handle->bytes
+ 221:../drivers/fsl_flexio_i2s_dma.c ****                         xfer->dataSize, kDMA_MemoryToPeripheral);
+ 222:../drivers/fsl_flexio_i2s_dma.c **** 
+ 223:../drivers/fsl_flexio_i2s_dma.c ****     /* Configure DMA channel */
+ 224:../drivers/fsl_flexio_i2s_dma.c ****     DMA_SubmitTransfer(handle->dmaHandle, &config, true);
+ 225:../drivers/fsl_flexio_i2s_dma.c **** 
+ 226:../drivers/fsl_flexio_i2s_dma.c ****     /* Start DMA transfer */
+ 227:../drivers/fsl_flexio_i2s_dma.c ****     DMA_StartTransfer(handle->dmaHandle);
+ 228:../drivers/fsl_flexio_i2s_dma.c **** 
+ 229:../drivers/fsl_flexio_i2s_dma.c ****     /* Enable DMA enable bit */
+ 230:../drivers/fsl_flexio_i2s_dma.c ****     FLEXIO_I2S_TxEnableDMA(base, true);
+ 231:../drivers/fsl_flexio_i2s_dma.c **** 
+ 232:../drivers/fsl_flexio_i2s_dma.c ****     /* Enable FLEXIO I2S Tx clock */
+ 233:../drivers/fsl_flexio_i2s_dma.c ****     FLEXIO_I2S_Enable(base, true);
+ 234:../drivers/fsl_flexio_i2s_dma.c **** 
+ 235:../drivers/fsl_flexio_i2s_dma.c ****     return kStatus_Success;
+ 236:../drivers/fsl_flexio_i2s_dma.c **** }
+ 287              		.loc 1 236 0
+ 288 0044 09B0     		add	sp, sp, #36
+ 289              		@ sp needed
+ 290              	.LVL37:
+ 291              	.LVL38:
+ 292              	.LVL39:
+ 293 0046 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 294              	.LVL40:
+ 295              	.L16:
+ 212:../drivers/fsl_flexio_i2s_dma.c **** 
+ 296              		.loc 1 212 0
+ 297 0048 A160     		str	r1, [r4, #8]
+ 215:../drivers/fsl_flexio_i2s_dma.c ****     handle->queue[handle->queueUser].dataSize = xfer->dataSize;
+ 298              		.loc 1 215 0
+ 299 004a 4420     		movs	r0, #68
+ 300 004c 215C     		ldrb	r1, [r4, r0]
+ 301 004e 0231     		adds	r1, r1, #2
+ 302 0050 C900     		lsls	r1, r1, #3
+ 303 0052 6118     		adds	r1, r4, r1
+ 304 0054 2F68     		ldr	r7, [r5]
+ 305 0056 4F60     		str	r7, [r1, #4]
+ 216:../drivers/fsl_flexio_i2s_dma.c ****     handle->transferSize[handle->queueUser] = xfer->dataSize;
+ 306              		.loc 1 216 0
+ 307 0058 215C     		ldrb	r1, [r4, r0]
+ 308 005a 0231     		adds	r1, r1, #2
+ 309 005c C900     		lsls	r1, r1, #3
+ 310 005e 6118     		adds	r1, r4, r1
+ 311 0060 6F68     		ldr	r7, [r5, #4]
+ 312 0062 8F60     		str	r7, [r1, #8]
+ 217:../drivers/fsl_flexio_i2s_dma.c ****     handle->queueUser = (handle->queueUser + 1) % FLEXIO_I2S_XFER_QUEUE_SIZE;
+ 313              		.loc 1 217 0
+ 314 0064 215C     		ldrb	r1, [r4, r0]
+ 315 0066 0C31     		adds	r1, r1, #12
+ 316 0068 8900     		lsls	r1, r1, #2
+ 317 006a 6118     		adds	r1, r4, r1
+ 318 006c 6F68     		ldr	r7, [r5, #4]
+ 319 006e 4F60     		str	r7, [r1, #4]
+ 218:../drivers/fsl_flexio_i2s_dma.c **** 
+ 320              		.loc 1 218 0
+ 321 0070 275C     		ldrb	r7, [r4, r0]
+ 322 0072 0137     		adds	r7, r7, #1
+ 323 0074 0321     		movs	r1, #3
+ 324 0076 3940     		ands	r1, r7
+ 325 0078 2154     		strb	r1, [r4, r0]
+ 220:../drivers/fsl_flexio_i2s_dma.c ****                         xfer->dataSize, kDMA_MemoryToPeripheral);
+ 326              		.loc 1 220 0
+ 327 007a 2968     		ldr	r1, [r5]
+ 221:../drivers/fsl_flexio_i2s_dma.c **** 
+ 328              		.loc 1 221 0
+ 329 007c 6868     		ldr	r0, [r5, #4]
+ 330 007e 0190     		str	r0, [sp, #4]
+ 220:../drivers/fsl_flexio_i2s_dma.c ****                         xfer->dataSize, kDMA_MemoryToPeripheral);
+ 331              		.loc 1 220 0
+ 332 0080 0220     		movs	r0, #2
+ 333 0082 0290     		str	r0, [sp, #8]
+ 334 0084 0092     		str	r2, [sp]
+ 335 0086 04A8     		add	r0, sp, #16
+ 336 0088 FFF7FEFF 		bl	DMA_PrepareTransfer
+ 337              	.LVL41:
+ 224:../drivers/fsl_flexio_i2s_dma.c **** 
+ 338              		.loc 1 224 0
+ 339 008c 0122     		movs	r2, #1
+ 340 008e 04A9     		add	r1, sp, #16
+ 341 0090 2068     		ldr	r0, [r4]
+ 342 0092 FFF7FEFF 		bl	DMA_SubmitTransfer
+ 343              	.LVL42:
+ 227:../drivers/fsl_flexio_i2s_dma.c **** 
+ 344              		.loc 1 227 0
+ 345 0096 2268     		ldr	r2, [r4]
+ 346              	.LVL43:
+ 347              	.LBB40:
+ 348              	.LBB41:
+ 349              		.file 3 "../drivers/fsl_dma.h"
+   1:../drivers/fsl_dma.h **** /*
+   2:../drivers/fsl_dma.h ****  * The Clear BSD License
+   3:../drivers/fsl_dma.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_dma.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_dma.h ****  * All rights reserved.
+   6:../drivers/fsl_dma.h ****  *
+   7:../drivers/fsl_dma.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_dma.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_dma.h ****  * that the following conditions are met:
+  10:../drivers/fsl_dma.h ****  *
+  11:../drivers/fsl_dma.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_dma.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_dma.h ****  *
+  14:../drivers/fsl_dma.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_dma.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_dma.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_dma.h ****  *
+  18:../drivers/fsl_dma.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_dma.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_dma.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_dma.h ****  *
+  22:../drivers/fsl_dma.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_dma.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_dma.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_dma.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_dma.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_dma.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_dma.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_dma.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_dma.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_dma.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_dma.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_dma.h ****  */
+  34:../drivers/fsl_dma.h **** 
+  35:../drivers/fsl_dma.h **** #ifndef _FSL_DMA_H_
+  36:../drivers/fsl_dma.h **** #define _FSL_DMA_H_
+  37:../drivers/fsl_dma.h **** 
+  38:../drivers/fsl_dma.h **** #include "fsl_common.h"
+  39:../drivers/fsl_dma.h **** 
+  40:../drivers/fsl_dma.h **** /*!
+  41:../drivers/fsl_dma.h ****  * @addtogroup dma
+  42:../drivers/fsl_dma.h ****  * @{
+  43:../drivers/fsl_dma.h ****  */
+  44:../drivers/fsl_dma.h **** 
+  45:../drivers/fsl_dma.h **** 
+  46:../drivers/fsl_dma.h **** /*******************************************************************************
+  47:../drivers/fsl_dma.h ****  * Definitions
+  48:../drivers/fsl_dma.h ****  ******************************************************************************/
+  49:../drivers/fsl_dma.h **** 
+  50:../drivers/fsl_dma.h **** /*! @name Driver version */
+  51:../drivers/fsl_dma.h **** /*@{*/
+  52:../drivers/fsl_dma.h **** /*! @brief DMA driver version 2.0.1. */
+  53:../drivers/fsl_dma.h **** #define FSL_DMA_DRIVER_VERSION (MAKE_VERSION(2, 0, 1))
+  54:../drivers/fsl_dma.h **** /*@}*/
+  55:../drivers/fsl_dma.h **** 
+  56:../drivers/fsl_dma.h **** /*! @brief status flag for the DMA driver. */
+  57:../drivers/fsl_dma.h **** enum _dma_channel_status_flags
+  58:../drivers/fsl_dma.h **** {
+  59:../drivers/fsl_dma.h ****     kDMA_TransactionsBCRFlag = DMA_DSR_BCR_BCR_MASK,       /*!< Contains the number of bytes yet to
+  60:../drivers/fsl_dma.h ****                                                                 transferred for a given block */
+  61:../drivers/fsl_dma.h ****     kDMA_TransactionsDoneFlag = DMA_DSR_BCR_DONE_MASK,     /*!< Transactions Done */
+  62:../drivers/fsl_dma.h ****     kDMA_TransactionsBusyFlag = DMA_DSR_BCR_BSY_MASK,      /*!< Transactions Busy */
+  63:../drivers/fsl_dma.h ****     kDMA_TransactionsRequestFlag = DMA_DSR_BCR_REQ_MASK,   /*!< Transactions Request */
+  64:../drivers/fsl_dma.h ****     kDMA_BusErrorOnDestinationFlag = DMA_DSR_BCR_BED_MASK, /*!< Bus Error on Destination */
+  65:../drivers/fsl_dma.h ****     kDMA_BusErrorOnSourceFlag = DMA_DSR_BCR_BES_MASK,      /*!< Bus Error on Source */
+  66:../drivers/fsl_dma.h ****     kDMA_ConfigurationErrorFlag = DMA_DSR_BCR_CE_MASK,     /*!< Configuration Error */
+  67:../drivers/fsl_dma.h **** };
+  68:../drivers/fsl_dma.h **** 
+  69:../drivers/fsl_dma.h **** /*! @brief DMA transfer size type*/
+  70:../drivers/fsl_dma.h **** typedef enum _dma_transfer_size
+  71:../drivers/fsl_dma.h **** {
+  72:../drivers/fsl_dma.h ****     kDMA_Transfersize32bits = 0x0U, /*!< 32 bits are transferred for every read/write */
+  73:../drivers/fsl_dma.h ****     kDMA_Transfersize8bits,         /*!< 8 bits are transferred for every read/write */
+  74:../drivers/fsl_dma.h ****     kDMA_Transfersize16bits,        /*!< 16b its are transferred for every read/write */
+  75:../drivers/fsl_dma.h **** } dma_transfer_size_t;
+  76:../drivers/fsl_dma.h **** 
+  77:../drivers/fsl_dma.h **** /*! @brief Configuration type for the DMA modulo */
+  78:../drivers/fsl_dma.h **** typedef enum _dma_modulo
+  79:../drivers/fsl_dma.h **** {
+  80:../drivers/fsl_dma.h ****     kDMA_ModuloDisable = 0x0U, /*!< Buffer disabled */
+  81:../drivers/fsl_dma.h ****     kDMA_Modulo16Bytes,        /*!< Circular buffer size is 16 bytes. */
+  82:../drivers/fsl_dma.h ****     kDMA_Modulo32Bytes,        /*!< Circular buffer size is 32 bytes. */
+  83:../drivers/fsl_dma.h ****     kDMA_Modulo64Bytes,        /*!< Circular buffer size is 64 bytes. */
+  84:../drivers/fsl_dma.h ****     kDMA_Modulo128Bytes,       /*!< Circular buffer size is 128 bytes. */
+  85:../drivers/fsl_dma.h ****     kDMA_Modulo256Bytes,       /*!< Circular buffer size is 256 bytes. */
+  86:../drivers/fsl_dma.h ****     kDMA_Modulo512Bytes,       /*!< Circular buffer size is 512 bytes. */
+  87:../drivers/fsl_dma.h ****     kDMA_Modulo1KBytes,        /*!< Circular buffer size is 1 KB. */
+  88:../drivers/fsl_dma.h ****     kDMA_Modulo2KBytes,        /*!< Circular buffer size is 2 KB. */
+  89:../drivers/fsl_dma.h ****     kDMA_Modulo4KBytes,        /*!< Circular buffer size is 4 KB. */
+  90:../drivers/fsl_dma.h ****     kDMA_Modulo8KBytes,        /*!< Circular buffer size is 8 KB. */
+  91:../drivers/fsl_dma.h ****     kDMA_Modulo16KBytes,       /*!< Circular buffer size is 16 KB. */
+  92:../drivers/fsl_dma.h ****     kDMA_Modulo32KBytes,       /*!< Circular buffer size is 32 KB. */
+  93:../drivers/fsl_dma.h ****     kDMA_Modulo64KBytes,       /*!< Circular buffer size is 64 KB. */
+  94:../drivers/fsl_dma.h ****     kDMA_Modulo128KBytes,      /*!< Circular buffer size is 128 KB. */
+  95:../drivers/fsl_dma.h ****     kDMA_Modulo256KBytes,      /*!< Circular buffer size is 256 KB. */
+  96:../drivers/fsl_dma.h **** } dma_modulo_t;
+  97:../drivers/fsl_dma.h **** 
+  98:../drivers/fsl_dma.h **** /*! @brief DMA channel link type */
+  99:../drivers/fsl_dma.h **** typedef enum _dma_channel_link_type
+ 100:../drivers/fsl_dma.h **** {
+ 101:../drivers/fsl_dma.h ****     kDMA_ChannelLinkDisable = 0x0U,      /*!< No channel link. */
+ 102:../drivers/fsl_dma.h ****     kDMA_ChannelLinkChannel1AndChannel2, /*!< Perform a link to channel LCH1 after each cycle-steal
+ 103:../drivers/fsl_dma.h ****                                               followed by a link to LCH2 after the BCR decrements t
+ 104:../drivers/fsl_dma.h ****     kDMA_ChannelLinkChannel1,            /*!< Perform a link to LCH1 after each cycle-steal transfe
+ 105:../drivers/fsl_dma.h ****     kDMA_ChannelLinkChannel1AfterBCR0,   /*!< Perform a link to LCH1 after the BCR decrements. */
+ 106:../drivers/fsl_dma.h **** } dma_channel_link_type_t;
+ 107:../drivers/fsl_dma.h **** 
+ 108:../drivers/fsl_dma.h **** /*! @brief DMA transfer type */
+ 109:../drivers/fsl_dma.h **** typedef enum _dma_transfer_type
+ 110:../drivers/fsl_dma.h **** {
+ 111:../drivers/fsl_dma.h ****     kDMA_MemoryToMemory = 0x0U, /*!< Memory to Memory transfer. */
+ 112:../drivers/fsl_dma.h ****     kDMA_PeripheralToMemory,    /*!< Peripheral to Memory transfer. */
+ 113:../drivers/fsl_dma.h ****     kDMA_MemoryToPeripheral,    /*!< Memory to Peripheral transfer. */
+ 114:../drivers/fsl_dma.h **** } dma_transfer_type_t;
+ 115:../drivers/fsl_dma.h **** 
+ 116:../drivers/fsl_dma.h **** /*! @brief DMA transfer options */
+ 117:../drivers/fsl_dma.h **** typedef enum _dma_transfer_options
+ 118:../drivers/fsl_dma.h **** {
+ 119:../drivers/fsl_dma.h ****     kDMA_NoOptions = 0x0U, /*!< Transfer without options. */
+ 120:../drivers/fsl_dma.h ****     kDMA_EnableInterrupt,  /*!< Enable interrupt while transfer complete. */
+ 121:../drivers/fsl_dma.h **** } dma_transfer_options_t;
+ 122:../drivers/fsl_dma.h **** 
+ 123:../drivers/fsl_dma.h **** /*! @brief DMA transfer status */
+ 124:../drivers/fsl_dma.h **** enum _dma_transfer_status
+ 125:../drivers/fsl_dma.h **** {
+ 126:../drivers/fsl_dma.h ****     kStatus_DMA_Busy = MAKE_STATUS(kStatusGroup_DMA, 0),
+ 127:../drivers/fsl_dma.h **** };
+ 128:../drivers/fsl_dma.h **** 
+ 129:../drivers/fsl_dma.h **** /*! @brief DMA transfer configuration structure */
+ 130:../drivers/fsl_dma.h **** typedef struct _dma_transfer_config
+ 131:../drivers/fsl_dma.h **** {
+ 132:../drivers/fsl_dma.h ****     uint32_t srcAddr;             /*!< DMA transfer source address. */
+ 133:../drivers/fsl_dma.h ****     uint32_t destAddr;            /*!< DMA destination address.*/
+ 134:../drivers/fsl_dma.h ****     bool enableSrcIncrement;      /*!< Source address increase after each transfer. */
+ 135:../drivers/fsl_dma.h ****     dma_transfer_size_t srcSize;  /*!< Source transfer size unit. */
+ 136:../drivers/fsl_dma.h ****     bool enableDestIncrement;     /*!< Destination address increase after each transfer. */
+ 137:../drivers/fsl_dma.h ****     dma_transfer_size_t destSize; /*!< Destination transfer unit.*/
+ 138:../drivers/fsl_dma.h ****     uint32_t transferSize;        /*!< The number of bytes to be transferred. */
+ 139:../drivers/fsl_dma.h **** } dma_transfer_config_t;
+ 140:../drivers/fsl_dma.h **** 
+ 141:../drivers/fsl_dma.h **** /*! @brief DMA transfer configuration structure */
+ 142:../drivers/fsl_dma.h **** typedef struct _dma_channel_link_config
+ 143:../drivers/fsl_dma.h **** {
+ 144:../drivers/fsl_dma.h ****     dma_channel_link_type_t linkType; /*!< Channel link type. */
+ 145:../drivers/fsl_dma.h ****     uint32_t channel1;                /*!< The index of channel 1. */
+ 146:../drivers/fsl_dma.h ****     uint32_t channel2;                /*!< The index of channel 2. */
+ 147:../drivers/fsl_dma.h **** } dma_channel_link_config_t;
+ 148:../drivers/fsl_dma.h **** 
+ 149:../drivers/fsl_dma.h **** struct _dma_handle;
+ 150:../drivers/fsl_dma.h **** /*! @brief Callback function prototype for the DMA driver. */
+ 151:../drivers/fsl_dma.h **** typedef void (*dma_callback)(struct _dma_handle *handle, void *userData);
+ 152:../drivers/fsl_dma.h **** 
+ 153:../drivers/fsl_dma.h **** /*! @brief DMA DMA handle structure */
+ 154:../drivers/fsl_dma.h **** typedef struct _dma_handle
+ 155:../drivers/fsl_dma.h **** {
+ 156:../drivers/fsl_dma.h ****     DMA_Type *base;        /*!< DMA peripheral address. */
+ 157:../drivers/fsl_dma.h ****     uint8_t channel;       /*!< DMA channel used. */
+ 158:../drivers/fsl_dma.h ****     dma_callback callback; /*!< DMA callback function.*/
+ 159:../drivers/fsl_dma.h ****     void *userData;        /*!< Callback parameter. */
+ 160:../drivers/fsl_dma.h **** } dma_handle_t;
+ 161:../drivers/fsl_dma.h **** 
+ 162:../drivers/fsl_dma.h **** /*******************************************************************************
+ 163:../drivers/fsl_dma.h ****  * API
+ 164:../drivers/fsl_dma.h ****  ******************************************************************************/
+ 165:../drivers/fsl_dma.h **** #if defined(__cplusplus)
+ 166:../drivers/fsl_dma.h **** extern "C" {
+ 167:../drivers/fsl_dma.h **** #endif /* __cplusplus */
+ 168:../drivers/fsl_dma.h **** 
+ 169:../drivers/fsl_dma.h **** /*!
+ 170:../drivers/fsl_dma.h ****  * @name DMA Initialization and De-initialization
+ 171:../drivers/fsl_dma.h ****  * @{
+ 172:../drivers/fsl_dma.h ****  */
+ 173:../drivers/fsl_dma.h **** 
+ 174:../drivers/fsl_dma.h **** /*!
+ 175:../drivers/fsl_dma.h ****  * @brief Initializes the DMA peripheral.
+ 176:../drivers/fsl_dma.h ****  *
+ 177:../drivers/fsl_dma.h ****  * This function ungates the DMA clock.
+ 178:../drivers/fsl_dma.h ****  *
+ 179:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 180:../drivers/fsl_dma.h ****  */
+ 181:../drivers/fsl_dma.h **** void DMA_Init(DMA_Type *base);
+ 182:../drivers/fsl_dma.h **** 
+ 183:../drivers/fsl_dma.h **** /*!
+ 184:../drivers/fsl_dma.h ****  * @brief Deinitializes the DMA peripheral.
+ 185:../drivers/fsl_dma.h ****  *
+ 186:../drivers/fsl_dma.h ****  * This function gates the DMA clock.
+ 187:../drivers/fsl_dma.h ****  *
+ 188:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 189:../drivers/fsl_dma.h ****  */
+ 190:../drivers/fsl_dma.h **** void DMA_Deinit(DMA_Type *base);
+ 191:../drivers/fsl_dma.h **** 
+ 192:../drivers/fsl_dma.h **** /* @} */
+ 193:../drivers/fsl_dma.h **** /*!
+ 194:../drivers/fsl_dma.h ****  * @name DMA Channel Operation
+ 195:../drivers/fsl_dma.h ****  * @{
+ 196:../drivers/fsl_dma.h ****  */
+ 197:../drivers/fsl_dma.h **** 
+ 198:../drivers/fsl_dma.h **** /*!
+ 199:../drivers/fsl_dma.h ****  * @brief Resets the DMA channel.
+ 200:../drivers/fsl_dma.h ****  *
+ 201:../drivers/fsl_dma.h ****  * Sets all register values to reset values and enables
+ 202:../drivers/fsl_dma.h ****  * the cycle steal and auto stop channel request features.
+ 203:../drivers/fsl_dma.h ****  *
+ 204:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 205:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 206:../drivers/fsl_dma.h ****  */
+ 207:../drivers/fsl_dma.h **** void DMA_ResetChannel(DMA_Type *base, uint32_t channel);
+ 208:../drivers/fsl_dma.h **** 
+ 209:../drivers/fsl_dma.h **** /*!
+ 210:../drivers/fsl_dma.h ****  * @brief Configures the DMA transfer attribute.
+ 211:../drivers/fsl_dma.h ****  *
+ 212:../drivers/fsl_dma.h ****  * This function configures the transfer attribute including the source address,
+ 213:../drivers/fsl_dma.h ****  * destination address, transfer size, and so on.
+ 214:../drivers/fsl_dma.h ****  * This example shows how to set up the the dma_transfer_config_t
+ 215:../drivers/fsl_dma.h ****  * parameters and how to call the DMA_ConfigBasicTransfer function.
+ 216:../drivers/fsl_dma.h ****  * @code
+ 217:../drivers/fsl_dma.h ****  *   dma_transfer_config_t transferConfig;
+ 218:../drivers/fsl_dma.h ****  *   memset(&transferConfig, 0, sizeof(transferConfig));
+ 219:../drivers/fsl_dma.h ****  *   transferConfig.srcAddr = (uint32_t)srcAddr;
+ 220:../drivers/fsl_dma.h ****  *   transferConfig.destAddr = (uint32_t)destAddr;
+ 221:../drivers/fsl_dma.h ****  *   transferConfig.enbaleSrcIncrement = true;
+ 222:../drivers/fsl_dma.h ****  *   transferConfig.enableDestIncrement = true;
+ 223:../drivers/fsl_dma.h ****  *   transferConfig.srcSize = kDMA_Transfersize32bits;
+ 224:../drivers/fsl_dma.h ****  *   transferConfig.destSize = kDMA_Transfersize32bits;
+ 225:../drivers/fsl_dma.h ****  *   transferConfig.transferSize = sizeof(uint32_t) * BUFF_LENGTH;
+ 226:../drivers/fsl_dma.h ****  *   DMA_SetTransferConfig(DMA0, 0, &transferConfig);
+ 227:../drivers/fsl_dma.h ****  * @endcode
+ 228:../drivers/fsl_dma.h ****  *
+ 229:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 230:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 231:../drivers/fsl_dma.h ****  * @param config Pointer to the DMA transfer configuration structure.
+ 232:../drivers/fsl_dma.h ****  */
+ 233:../drivers/fsl_dma.h **** void DMA_SetTransferConfig(DMA_Type *base, uint32_t channel, const dma_transfer_config_t *config);
+ 234:../drivers/fsl_dma.h **** 
+ 235:../drivers/fsl_dma.h **** /*!
+ 236:../drivers/fsl_dma.h ****  * @brief Configures the DMA channel link feature.
+ 237:../drivers/fsl_dma.h ****  *
+ 238:../drivers/fsl_dma.h ****  * This function allows DMA channels to have their transfers linked. The current DMA channel
+ 239:../drivers/fsl_dma.h ****  * triggers a DMA request to the linked channels (LCH1 or LCH2) depending on the channel link
+ 240:../drivers/fsl_dma.h ****  * type.
+ 241:../drivers/fsl_dma.h ****  * Perform a link to channel LCH1 after each cycle-steal transfer followed by a link to LCH2
+ 242:../drivers/fsl_dma.h ****  * after the BCR decrements to 0 if the type is kDMA_ChannelLinkChannel1AndChannel2.
+ 243:../drivers/fsl_dma.h ****  * Perform a link to LCH1 after each cycle-steal transfer if the type is kDMA_ChannelLinkChannel1.
+ 244:../drivers/fsl_dma.h ****  * Perform a link to LCH1 after the BCR decrements to 0 if the type is kDMA_ChannelLinkChannel1Afte
+ 245:../drivers/fsl_dma.h ****  *
+ 246:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 247:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 248:../drivers/fsl_dma.h ****  * @param config Pointer to the channel link configuration structure.
+ 249:../drivers/fsl_dma.h ****  */
+ 250:../drivers/fsl_dma.h **** void DMA_SetChannelLinkConfig(DMA_Type *base, uint32_t channel, const dma_channel_link_config_t *co
+ 251:../drivers/fsl_dma.h **** 
+ 252:../drivers/fsl_dma.h **** /*!
+ 253:../drivers/fsl_dma.h ****  * @brief Sets the DMA source address for the DMA transfer.
+ 254:../drivers/fsl_dma.h ****  *
+ 255:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 256:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 257:../drivers/fsl_dma.h ****  * @param srcAddr DMA source address.
+ 258:../drivers/fsl_dma.h ****  */
+ 259:../drivers/fsl_dma.h **** static inline void DMA_SetSourceAddress(DMA_Type *base, uint32_t channel, uint32_t srcAddr)
+ 260:../drivers/fsl_dma.h **** {
+ 261:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 262:../drivers/fsl_dma.h **** 
+ 263:../drivers/fsl_dma.h ****     base->DMA[channel].SAR = srcAddr;
+ 264:../drivers/fsl_dma.h **** }
+ 265:../drivers/fsl_dma.h **** 
+ 266:../drivers/fsl_dma.h **** /*!
+ 267:../drivers/fsl_dma.h ****  * @brief Sets the DMA destination address for the DMA transfer.
+ 268:../drivers/fsl_dma.h ****  *
+ 269:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 270:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 271:../drivers/fsl_dma.h ****  * @param destAddr DMA destination address.
+ 272:../drivers/fsl_dma.h ****  */
+ 273:../drivers/fsl_dma.h **** static inline void DMA_SetDestinationAddress(DMA_Type *base, uint32_t channel, uint32_t destAddr)
+ 274:../drivers/fsl_dma.h **** {
+ 275:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 276:../drivers/fsl_dma.h **** 
+ 277:../drivers/fsl_dma.h ****     base->DMA[channel].DAR = destAddr;
+ 278:../drivers/fsl_dma.h **** }
+ 279:../drivers/fsl_dma.h **** 
+ 280:../drivers/fsl_dma.h **** /*!
+ 281:../drivers/fsl_dma.h ****  * @brief Sets the DMA transfer size for the DMA transfer.
+ 282:../drivers/fsl_dma.h ****  *
+ 283:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 284:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 285:../drivers/fsl_dma.h ****  * @param size The number of bytes to be transferred.
+ 286:../drivers/fsl_dma.h ****  */
+ 287:../drivers/fsl_dma.h **** static inline void DMA_SetTransferSize(DMA_Type *base, uint32_t channel, uint32_t size)
+ 288:../drivers/fsl_dma.h **** {
+ 289:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 290:../drivers/fsl_dma.h **** 
+ 291:../drivers/fsl_dma.h ****     base->DMA[channel].DSR_BCR = DMA_DSR_BCR_BCR(size);
+ 292:../drivers/fsl_dma.h **** }
+ 293:../drivers/fsl_dma.h **** 
+ 294:../drivers/fsl_dma.h **** /*!
+ 295:../drivers/fsl_dma.h ****  * @brief Sets the DMA modulo for the DMA transfer.
+ 296:../drivers/fsl_dma.h ****  *
+ 297:../drivers/fsl_dma.h ****  * This function defines a specific address range specified to be the value after (SAR + SSIZE)/(DA
+ 298:../drivers/fsl_dma.h ****  * calculation is performed or the original register value. It provides the ability to implement a 
+ 299:../drivers/fsl_dma.h ****  * data queue easily.
+ 300:../drivers/fsl_dma.h ****  *
+ 301:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 302:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 303:../drivers/fsl_dma.h ****  * @param srcModulo source address modulo.
+ 304:../drivers/fsl_dma.h ****  * @param destModulo destination address modulo.
+ 305:../drivers/fsl_dma.h ****  */
+ 306:../drivers/fsl_dma.h **** void DMA_SetModulo(DMA_Type *base, uint32_t channel, dma_modulo_t srcModulo, dma_modulo_t destModul
+ 307:../drivers/fsl_dma.h **** 
+ 308:../drivers/fsl_dma.h **** /*!
+ 309:../drivers/fsl_dma.h ****  * @brief Enables the DMA cycle steal for the DMA transfer.
+ 310:../drivers/fsl_dma.h ****  *
+ 311:../drivers/fsl_dma.h ****  * If the cycle steal feature is enabled (true), the DMA controller forces a single read/write tran
+ 312:../drivers/fsl_dma.h ****  *  or it continuously makes read/write transfers until the BCR decrements to 0.
+ 313:../drivers/fsl_dma.h ****  *
+ 314:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 315:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 316:../drivers/fsl_dma.h ****  * @param enable The command for enable (true) or disable (false).
+ 317:../drivers/fsl_dma.h ****  */
+ 318:../drivers/fsl_dma.h **** static inline void DMA_EnableCycleSteal(DMA_Type *base, uint32_t channel, bool enable)
+ 319:../drivers/fsl_dma.h **** {
+ 320:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 321:../drivers/fsl_dma.h **** 
+ 322:../drivers/fsl_dma.h ****     base->DMA[channel].DCR = (base->DMA[channel].DCR & (~DMA_DCR_CS_MASK)) | DMA_DCR_CS(enable);
+ 323:../drivers/fsl_dma.h **** }
+ 324:../drivers/fsl_dma.h **** 
+ 325:../drivers/fsl_dma.h **** /*!
+ 326:../drivers/fsl_dma.h ****  * @brief Enables the DMA auto align for the DMA transfer.
+ 327:../drivers/fsl_dma.h ****  *
+ 328:../drivers/fsl_dma.h ****  * If the auto align feature is enabled (true), the appropriate address register increments
+ 329:../drivers/fsl_dma.h ****  * regardless of DINC or SINC.
+ 330:../drivers/fsl_dma.h ****  *
+ 331:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 332:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 333:../drivers/fsl_dma.h ****  * @param enable The command for enable (true) or disable (false).
+ 334:../drivers/fsl_dma.h ****  */
+ 335:../drivers/fsl_dma.h **** static inline void DMA_EnableAutoAlign(DMA_Type *base, uint32_t channel, bool enable)
+ 336:../drivers/fsl_dma.h **** {
+ 337:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 338:../drivers/fsl_dma.h **** 
+ 339:../drivers/fsl_dma.h ****     base->DMA[channel].DCR = (base->DMA[channel].DCR & (~DMA_DCR_AA_MASK)) | DMA_DCR_AA(enable);
+ 340:../drivers/fsl_dma.h **** }
+ 341:../drivers/fsl_dma.h **** 
+ 342:../drivers/fsl_dma.h **** /*!
+ 343:../drivers/fsl_dma.h ****  * @brief Enables the DMA async request for the DMA transfer.
+ 344:../drivers/fsl_dma.h ****  *
+ 345:../drivers/fsl_dma.h ****  * If the async request feature is enabled (true), the DMA supports asynchronous DREQs
+ 346:../drivers/fsl_dma.h ****  * while the MCU is in stop mode.
+ 347:../drivers/fsl_dma.h ****  *
+ 348:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 349:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 350:../drivers/fsl_dma.h ****  * @param enable The command for enable (true) or disable (false).
+ 351:../drivers/fsl_dma.h ****  */
+ 352:../drivers/fsl_dma.h **** static inline void DMA_EnableAsyncRequest(DMA_Type *base, uint32_t channel, bool enable)
+ 353:../drivers/fsl_dma.h **** {
+ 354:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 355:../drivers/fsl_dma.h **** 
+ 356:../drivers/fsl_dma.h ****     base->DMA[channel].DCR = (base->DMA[channel].DCR & (~DMA_DCR_EADREQ_MASK)) | DMA_DCR_EADREQ(ena
+ 357:../drivers/fsl_dma.h **** }
+ 358:../drivers/fsl_dma.h **** 
+ 359:../drivers/fsl_dma.h **** /*!
+ 360:../drivers/fsl_dma.h ****  * @brief Enables an interrupt for the DMA transfer.
+ 361:../drivers/fsl_dma.h ****  *
+ 362:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 363:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 364:../drivers/fsl_dma.h ****  */
+ 365:../drivers/fsl_dma.h **** static inline void DMA_EnableInterrupts(DMA_Type *base, uint32_t channel)
+ 366:../drivers/fsl_dma.h **** {
+ 367:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 368:../drivers/fsl_dma.h **** 
+ 369:../drivers/fsl_dma.h ****     base->DMA[channel].DCR |= DMA_DCR_EINT(true);
+ 370:../drivers/fsl_dma.h **** }
+ 371:../drivers/fsl_dma.h **** 
+ 372:../drivers/fsl_dma.h **** /*!
+ 373:../drivers/fsl_dma.h ****  * @brief Disables an interrupt for the DMA transfer.
+ 374:../drivers/fsl_dma.h ****  *
+ 375:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 376:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 377:../drivers/fsl_dma.h ****  */
+ 378:../drivers/fsl_dma.h **** static inline void DMA_DisableInterrupts(DMA_Type *base, uint32_t channel)
+ 379:../drivers/fsl_dma.h **** {
+ 380:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 381:../drivers/fsl_dma.h **** 
+ 382:../drivers/fsl_dma.h ****     base->DMA[channel].DCR &= ~DMA_DCR_EINT_MASK;
+ 383:../drivers/fsl_dma.h **** }
+ 384:../drivers/fsl_dma.h **** 
+ 385:../drivers/fsl_dma.h **** /* @} */
+ 386:../drivers/fsl_dma.h **** /*!
+ 387:../drivers/fsl_dma.h ****  * @name DMA Channel Transfer Operation
+ 388:../drivers/fsl_dma.h ****  * @{
+ 389:../drivers/fsl_dma.h ****  */
+ 390:../drivers/fsl_dma.h **** 
+ 391:../drivers/fsl_dma.h **** /*!
+ 392:../drivers/fsl_dma.h ****  * @brief Enables the DMA hardware channel request.
+ 393:../drivers/fsl_dma.h ****  *
+ 394:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 395:../drivers/fsl_dma.h ****  * @param channel The DMA channel number.
+ 396:../drivers/fsl_dma.h ****  */
+ 397:../drivers/fsl_dma.h **** static inline void DMA_EnableChannelRequest(DMA_Type *base, uint32_t channel)
+ 398:../drivers/fsl_dma.h **** {
+ 399:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 400:../drivers/fsl_dma.h **** 
+ 401:../drivers/fsl_dma.h ****     base->DMA[channel].DCR |= DMA_DCR_ERQ_MASK;
+ 402:../drivers/fsl_dma.h **** }
+ 403:../drivers/fsl_dma.h **** 
+ 404:../drivers/fsl_dma.h **** /*!
+ 405:../drivers/fsl_dma.h ****  * @brief Disables the DMA hardware channel request.
+ 406:../drivers/fsl_dma.h ****  *
+ 407:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 408:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 409:../drivers/fsl_dma.h ****  */
+ 410:../drivers/fsl_dma.h **** static inline void DMA_DisableChannelRequest(DMA_Type *base, uint32_t channel)
+ 411:../drivers/fsl_dma.h **** {
+ 412:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 413:../drivers/fsl_dma.h **** 
+ 414:../drivers/fsl_dma.h ****     base->DMA[channel].DCR &= ~DMA_DCR_ERQ_MASK;
+ 415:../drivers/fsl_dma.h **** }
+ 416:../drivers/fsl_dma.h **** 
+ 417:../drivers/fsl_dma.h **** /*!
+ 418:../drivers/fsl_dma.h ****  * @brief Starts the DMA transfer with a software trigger.
+ 419:../drivers/fsl_dma.h ****  *
+ 420:../drivers/fsl_dma.h ****  * This function starts only one read/write iteration.
+ 421:../drivers/fsl_dma.h ****  *
+ 422:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 423:../drivers/fsl_dma.h ****  * @param channel The DMA channel number.
+ 424:../drivers/fsl_dma.h ****  */
+ 425:../drivers/fsl_dma.h **** static inline void DMA_TriggerChannelStart(DMA_Type *base, uint32_t channel)
+ 426:../drivers/fsl_dma.h **** {
+ 427:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 428:../drivers/fsl_dma.h **** 
+ 429:../drivers/fsl_dma.h ****     base->DMA[channel].DCR |= DMA_DCR_START_MASK;
+ 430:../drivers/fsl_dma.h **** }
+ 431:../drivers/fsl_dma.h **** 
+ 432:../drivers/fsl_dma.h **** /* @} */
+ 433:../drivers/fsl_dma.h **** /*!
+ 434:../drivers/fsl_dma.h ****  * @name DMA Channel Status Operation
+ 435:../drivers/fsl_dma.h ****  * @{
+ 436:../drivers/fsl_dma.h ****  */
+ 437:../drivers/fsl_dma.h **** 
+ 438:../drivers/fsl_dma.h **** /*!
+ 439:../drivers/fsl_dma.h ****  * @brief Gets the remaining bytes of the current DMA transfer.
+ 440:../drivers/fsl_dma.h ****  *
+ 441:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 442:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 443:../drivers/fsl_dma.h ****  * @return The number of bytes which have not been transferred yet.
+ 444:../drivers/fsl_dma.h ****  */
+ 445:../drivers/fsl_dma.h **** static inline uint32_t DMA_GetRemainingBytes(DMA_Type *base, uint32_t channel)
+ 446:../drivers/fsl_dma.h **** {
+ 447:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 448:../drivers/fsl_dma.h **** 
+ 449:../drivers/fsl_dma.h ****     return (base->DMA[channel].DSR_BCR & DMA_DSR_BCR_BCR_MASK) >> DMA_DSR_BCR_BCR_SHIFT;
+ 450:../drivers/fsl_dma.h **** }
+ 451:../drivers/fsl_dma.h **** 
+ 452:../drivers/fsl_dma.h **** /*!
+ 453:../drivers/fsl_dma.h ****  * @brief Gets the DMA channel status flags.
+ 454:../drivers/fsl_dma.h ****  *
+ 455:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 456:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 457:../drivers/fsl_dma.h ****  * @return The mask of the channel status. Use the _dma_channel_status_flags
+ 458:../drivers/fsl_dma.h ****  *         type to decode the return 32 bit variables.
+ 459:../drivers/fsl_dma.h ****  */
+ 460:../drivers/fsl_dma.h **** static inline uint32_t DMA_GetChannelStatusFlags(DMA_Type *base, uint32_t channel)
+ 461:../drivers/fsl_dma.h **** {
+ 462:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 463:../drivers/fsl_dma.h **** 
+ 464:../drivers/fsl_dma.h ****     return base->DMA[channel].DSR_BCR;
+ 465:../drivers/fsl_dma.h **** }
+ 466:../drivers/fsl_dma.h **** 
+ 467:../drivers/fsl_dma.h **** /*!
+ 468:../drivers/fsl_dma.h ****  * @brief Clears the DMA channel status flags.
+ 469:../drivers/fsl_dma.h ****  *
+ 470:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 471:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 472:../drivers/fsl_dma.h ****  * @param mask The mask of the channel status to be cleared. Use
+ 473:../drivers/fsl_dma.h ****  *             the defined _dma_channel_status_flags type.
+ 474:../drivers/fsl_dma.h ****  */
+ 475:../drivers/fsl_dma.h **** static inline void DMA_ClearChannelStatusFlags(DMA_Type *base, uint32_t channel, uint32_t mask)
+ 476:../drivers/fsl_dma.h **** {
+ 477:../drivers/fsl_dma.h ****     assert(channel < FSL_FEATURE_DMAMUX_MODULE_CHANNEL);
+ 478:../drivers/fsl_dma.h **** 
+ 479:../drivers/fsl_dma.h ****     if (mask != 0U)
+ 480:../drivers/fsl_dma.h ****     {
+ 481:../drivers/fsl_dma.h ****         base->DMA[channel].DSR_BCR |= DMA_DSR_BCR_DONE(true);
+ 482:../drivers/fsl_dma.h ****     }
+ 483:../drivers/fsl_dma.h **** }
+ 484:../drivers/fsl_dma.h **** 
+ 485:../drivers/fsl_dma.h **** /* @} */
+ 486:../drivers/fsl_dma.h **** /*!
+ 487:../drivers/fsl_dma.h ****  * @name DMA Channel Transactional Operation
+ 488:../drivers/fsl_dma.h ****  * @{
+ 489:../drivers/fsl_dma.h ****  */
+ 490:../drivers/fsl_dma.h **** 
+ 491:../drivers/fsl_dma.h **** /*!
+ 492:../drivers/fsl_dma.h ****  * @brief Creates the DMA handle.
+ 493:../drivers/fsl_dma.h ****  *
+ 494:../drivers/fsl_dma.h ****  * This function is called first if using the transactional API for the DMA. This function
+ 495:../drivers/fsl_dma.h ****  * initializes the internal state of the DMA handle.
+ 496:../drivers/fsl_dma.h ****  *
+ 497:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer. The DMA handle stores callback function and
+ 498:../drivers/fsl_dma.h ****  *               parameters.
+ 499:../drivers/fsl_dma.h ****  * @param base DMA peripheral base address.
+ 500:../drivers/fsl_dma.h ****  * @param channel DMA channel number.
+ 501:../drivers/fsl_dma.h ****  */
+ 502:../drivers/fsl_dma.h **** void DMA_CreateHandle(dma_handle_t *handle, DMA_Type *base, uint32_t channel);
+ 503:../drivers/fsl_dma.h **** 
+ 504:../drivers/fsl_dma.h **** /*!
+ 505:../drivers/fsl_dma.h ****  * @brief Sets the DMA callback function.
+ 506:../drivers/fsl_dma.h ****  *
+ 507:../drivers/fsl_dma.h ****  * This callback is called in the DMA IRQ handler. Use the callback to do something
+ 508:../drivers/fsl_dma.h ****  * after the current transfer complete.
+ 509:../drivers/fsl_dma.h ****  *
+ 510:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer.
+ 511:../drivers/fsl_dma.h ****  * @param callback DMA callback function pointer.
+ 512:../drivers/fsl_dma.h ****  * @param userData Parameter for callback function. If it is not needed, just set to NULL.
+ 513:../drivers/fsl_dma.h ****  */
+ 514:../drivers/fsl_dma.h **** void DMA_SetCallback(dma_handle_t *handle, dma_callback callback, void *userData);
+ 515:../drivers/fsl_dma.h **** 
+ 516:../drivers/fsl_dma.h **** /*!
+ 517:../drivers/fsl_dma.h ****  * @brief Prepares the DMA transfer configuration structure.
+ 518:../drivers/fsl_dma.h ****  *
+ 519:../drivers/fsl_dma.h ****  * This function prepares the transfer configuration structure according to the user input.
+ 520:../drivers/fsl_dma.h ****  *
+ 521:../drivers/fsl_dma.h ****  * @param config Pointer to the user configuration structure of type dma_transfer_config_t.
+ 522:../drivers/fsl_dma.h ****  * @param srcAddr DMA transfer source address.
+ 523:../drivers/fsl_dma.h ****  * @param srcWidth DMA transfer source address width (byte).
+ 524:../drivers/fsl_dma.h ****  * @param destAddr DMA transfer destination address.
+ 525:../drivers/fsl_dma.h ****  * @param destWidth DMA transfer destination address width (byte).
+ 526:../drivers/fsl_dma.h ****  * @param transferBytes DMA transfer bytes to be transferred.
+ 527:../drivers/fsl_dma.h ****  * @param type DMA transfer type.
+ 528:../drivers/fsl_dma.h ****  */
+ 529:../drivers/fsl_dma.h **** void DMA_PrepareTransfer(dma_transfer_config_t *config,
+ 530:../drivers/fsl_dma.h ****                          void *srcAddr,
+ 531:../drivers/fsl_dma.h ****                          uint32_t srcWidth,
+ 532:../drivers/fsl_dma.h ****                          void *destAddr,
+ 533:../drivers/fsl_dma.h ****                          uint32_t destWidth,
+ 534:../drivers/fsl_dma.h ****                          uint32_t transferBytes,
+ 535:../drivers/fsl_dma.h ****                          dma_transfer_type_t type);
+ 536:../drivers/fsl_dma.h **** 
+ 537:../drivers/fsl_dma.h **** /*!
+ 538:../drivers/fsl_dma.h ****  * @brief Submits the DMA transfer request.
+ 539:../drivers/fsl_dma.h ****  *
+ 540:../drivers/fsl_dma.h ****  * This function submits the DMA transfer request according to the transfer configuration structure
+ 541:../drivers/fsl_dma.h ****  *
+ 542:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer.
+ 543:../drivers/fsl_dma.h ****  * @param config Pointer to DMA transfer configuration structure.
+ 544:../drivers/fsl_dma.h ****  * @param options Additional configurations for transfer. Use
+ 545:../drivers/fsl_dma.h ****  *                the defined dma_transfer_options_t type.
+ 546:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Success It indicates that the DMA submit transfer request succeeded.
+ 547:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Busy It indicates that the DMA is busy. Submit transfer request is not allow
+ 548:../drivers/fsl_dma.h ****  * @note This function can't process multi transfer request.
+ 549:../drivers/fsl_dma.h ****  */
+ 550:../drivers/fsl_dma.h **** status_t DMA_SubmitTransfer(dma_handle_t *handle, const dma_transfer_config_t *config, uint32_t opt
+ 551:../drivers/fsl_dma.h **** 
+ 552:../drivers/fsl_dma.h **** /*!
+ 553:../drivers/fsl_dma.h ****  * @brief DMA starts a transfer.
+ 554:../drivers/fsl_dma.h ****  *
+ 555:../drivers/fsl_dma.h ****  * This function enables the channel request. Call this function
+ 556:../drivers/fsl_dma.h ****  * after submitting a transfer request.
+ 557:../drivers/fsl_dma.h ****  *
+ 558:../drivers/fsl_dma.h ****  * @param handle DMA handle pointer.
+ 559:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Success It indicates that the DMA start transfer succeed.
+ 560:../drivers/fsl_dma.h ****  * @retval kStatus_DMA_Busy It indicates that the DMA has started a transfer.
+ 561:../drivers/fsl_dma.h ****  */
+ 562:../drivers/fsl_dma.h **** static inline void DMA_StartTransfer(dma_handle_t *handle)
+ 563:../drivers/fsl_dma.h **** {
+ 564:../drivers/fsl_dma.h ****     assert(handle != NULL);
+ 565:../drivers/fsl_dma.h **** 
+ 566:../drivers/fsl_dma.h ****     handle->base->DMA[handle->channel].DCR |= DMA_DCR_ERQ_MASK;
+ 350              		.loc 3 566 0
+ 351 0098 1368     		ldr	r3, [r2]
+ 352 009a 1279     		ldrb	r2, [r2, #4]
+ 353              	.LVL44:
+ 354 009c 1201     		lsls	r2, r2, #4
+ 355 009e 9B18     		adds	r3, r3, r2
+ 356 00a0 0D33     		adds	r3, r3, #13
+ 357 00a2 FF33     		adds	r3, r3, #255
+ 358 00a4 1968     		ldr	r1, [r3]
+ 359 00a6 8022     		movs	r2, #128
+ 360 00a8 D205     		lsls	r2, r2, #23
+ 361 00aa 0A43     		orrs	r2, r1
+ 362 00ac 1A60     		str	r2, [r3]
+ 363              	.LVL45:
+ 364              	.LBE41:
+ 365              	.LBE40:
+ 366              	.LBB42:
+ 367              	.LBB43:
+ 296:../drivers/fsl_flexio_i2s.h **** }
+ 368              		.loc 2 296 0
+ 369 00ae 3368     		ldr	r3, [r6]
+ 370 00b0 327A     		ldrb	r2, [r6, #8]
+ 371 00b2 0121     		movs	r1, #1
+ 372 00b4 0800     		movs	r0, r1
+ 373 00b6 9040     		lsls	r0, r0, r2
+ 374 00b8 0200     		movs	r2, r0
+ 375              	.LVL46:
+ 376              	.LBB44:
+ 377              	.LBB45:
+ 378              		.file 4 "../drivers/fsl_flexio.h"
+   1:../drivers/fsl_flexio.h **** /*
+   2:../drivers/fsl_flexio.h ****  * The Clear BSD License
+   3:../drivers/fsl_flexio.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_flexio.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_flexio.h ****  * All rights reserved.
+   6:../drivers/fsl_flexio.h ****  *
+   7:../drivers/fsl_flexio.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_flexio.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_flexio.h ****  * that the following conditions are met:
+  10:../drivers/fsl_flexio.h ****  *
+  11:../drivers/fsl_flexio.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_flexio.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_flexio.h ****  *
+  14:../drivers/fsl_flexio.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_flexio.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_flexio.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_flexio.h ****  *
+  18:../drivers/fsl_flexio.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_flexio.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_flexio.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_flexio.h ****  *
+  22:../drivers/fsl_flexio.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_flexio.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_flexio.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_flexio.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_flexio.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_flexio.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_flexio.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_flexio.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_flexio.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_flexio.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_flexio.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_flexio.h ****  */
+  34:../drivers/fsl_flexio.h **** #ifndef _FSL_FLEXIO_H_
+  35:../drivers/fsl_flexio.h **** #define _FSL_FLEXIO_H_
+  36:../drivers/fsl_flexio.h **** 
+  37:../drivers/fsl_flexio.h **** #include "fsl_common.h"
+  38:../drivers/fsl_flexio.h **** 
+  39:../drivers/fsl_flexio.h **** /*!
+  40:../drivers/fsl_flexio.h ****  * @addtogroup flexio_driver
+  41:../drivers/fsl_flexio.h ****  * @{
+  42:../drivers/fsl_flexio.h ****  */
+  43:../drivers/fsl_flexio.h **** 
+  44:../drivers/fsl_flexio.h **** /*******************************************************************************
+  45:../drivers/fsl_flexio.h ****  * Definitions
+  46:../drivers/fsl_flexio.h ****  ******************************************************************************/
+  47:../drivers/fsl_flexio.h **** 
+  48:../drivers/fsl_flexio.h **** /*! @name Driver version */
+  49:../drivers/fsl_flexio.h **** /*@{*/
+  50:../drivers/fsl_flexio.h **** /*! @brief FlexIO driver version 2.0.2. */
+  51:../drivers/fsl_flexio.h **** #define FSL_FLEXIO_DRIVER_VERSION (MAKE_VERSION(2, 0, 2))
+  52:../drivers/fsl_flexio.h **** /*@}*/
+  53:../drivers/fsl_flexio.h **** 
+  54:../drivers/fsl_flexio.h **** /*! @brief Calculate FlexIO timer trigger.*/
+  55:../drivers/fsl_flexio.h **** #define FLEXIO_TIMER_TRIGGER_SEL_PININPUT(x) ((uint32_t)(x) << 1U)
+  56:../drivers/fsl_flexio.h **** #define FLEXIO_TIMER_TRIGGER_SEL_SHIFTnSTAT(x) (((uint32_t)(x) << 2U) | 0x1U)
+  57:../drivers/fsl_flexio.h **** #define FLEXIO_TIMER_TRIGGER_SEL_TIMn(x) (((uint32_t)(x) << 2U) | 0x3U)
+  58:../drivers/fsl_flexio.h **** 
+  59:../drivers/fsl_flexio.h **** /*! @brief Define time of timer trigger polarity.*/
+  60:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_trigger_polarity
+  61:../drivers/fsl_flexio.h **** {
+  62:../drivers/fsl_flexio.h ****     kFLEXIO_TimerTriggerPolarityActiveHigh = 0x0U, /*!< Active high. */
+  63:../drivers/fsl_flexio.h ****     kFLEXIO_TimerTriggerPolarityActiveLow = 0x1U,  /*!< Active low. */
+  64:../drivers/fsl_flexio.h **** } flexio_timer_trigger_polarity_t;
+  65:../drivers/fsl_flexio.h **** 
+  66:../drivers/fsl_flexio.h **** /*! @brief Define type of timer trigger source.*/
+  67:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_trigger_source
+  68:../drivers/fsl_flexio.h **** {
+  69:../drivers/fsl_flexio.h ****     kFLEXIO_TimerTriggerSourceExternal = 0x0U, /*!< External trigger selected. */
+  70:../drivers/fsl_flexio.h ****     kFLEXIO_TimerTriggerSourceInternal = 0x1U, /*!< Internal trigger selected. */
+  71:../drivers/fsl_flexio.h **** } flexio_timer_trigger_source_t;
+  72:../drivers/fsl_flexio.h **** 
+  73:../drivers/fsl_flexio.h **** /*! @brief Define type of timer/shifter pin configuration.*/
+  74:../drivers/fsl_flexio.h **** typedef enum _flexio_pin_config
+  75:../drivers/fsl_flexio.h **** {
+  76:../drivers/fsl_flexio.h ****     kFLEXIO_PinConfigOutputDisabled = 0x0U,         /*!< Pin output disabled. */
+  77:../drivers/fsl_flexio.h ****     kFLEXIO_PinConfigOpenDrainOrBidirection = 0x1U, /*!< Pin open drain or bidirectional output ena
+  78:../drivers/fsl_flexio.h ****     kFLEXIO_PinConfigBidirectionOutputData = 0x2U,  /*!< Pin bidirectional output data. */
+  79:../drivers/fsl_flexio.h ****     kFLEXIO_PinConfigOutput = 0x3U,                 /*!< Pin output. */
+  80:../drivers/fsl_flexio.h **** } flexio_pin_config_t;
+  81:../drivers/fsl_flexio.h **** 
+  82:../drivers/fsl_flexio.h **** /*! @brief Definition of pin polarity.*/
+  83:../drivers/fsl_flexio.h **** typedef enum _flexio_pin_polarity
+  84:../drivers/fsl_flexio.h **** {
+  85:../drivers/fsl_flexio.h ****     kFLEXIO_PinActiveHigh = 0x0U, /*!< Active high. */
+  86:../drivers/fsl_flexio.h ****     kFLEXIO_PinActiveLow = 0x1U,  /*!< Active low. */
+  87:../drivers/fsl_flexio.h **** } flexio_pin_polarity_t;
+  88:../drivers/fsl_flexio.h **** 
+  89:../drivers/fsl_flexio.h **** /*! @brief Define type of timer work mode.*/
+  90:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_mode
+  91:../drivers/fsl_flexio.h **** {
+  92:../drivers/fsl_flexio.h ****     kFLEXIO_TimerModeDisabled = 0x0U,        /*!< Timer Disabled. */
+  93:../drivers/fsl_flexio.h ****     kFLEXIO_TimerModeDual8BitBaudBit = 0x1U, /*!< Dual 8-bit counters baud/bit mode. */
+  94:../drivers/fsl_flexio.h ****     kFLEXIO_TimerModeDual8BitPWM = 0x2U,     /*!< Dual 8-bit counters PWM mode. */
+  95:../drivers/fsl_flexio.h ****     kFLEXIO_TimerModeSingle16Bit = 0x3U,     /*!< Single 16-bit counter mode. */
+  96:../drivers/fsl_flexio.h **** } flexio_timer_mode_t;
+  97:../drivers/fsl_flexio.h **** 
+  98:../drivers/fsl_flexio.h **** /*! @brief Define type of timer initial output or timer reset condition.*/
+  99:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_output
+ 100:../drivers/fsl_flexio.h **** {
+ 101:../drivers/fsl_flexio.h ****     kFLEXIO_TimerOutputOneNotAffectedByReset = 0x0U,  /*!< Logic one when enabled and is not affect
+ 102:../drivers/fsl_flexio.h ****                                                        reset. */
+ 103:../drivers/fsl_flexio.h ****     kFLEXIO_TimerOutputZeroNotAffectedByReset = 0x1U, /*!< Logic zero when enabled and is not affec
+ 104:../drivers/fsl_flexio.h ****                                                        reset. */
+ 105:../drivers/fsl_flexio.h ****     kFLEXIO_TimerOutputOneAffectedByReset = 0x2U,     /*!< Logic one when enabled and on timer rese
+ 106:../drivers/fsl_flexio.h ****     kFLEXIO_TimerOutputZeroAffectedByReset = 0x3U,    /*!< Logic zero when enabled and on timer res
+ 107:../drivers/fsl_flexio.h **** } flexio_timer_output_t;
+ 108:../drivers/fsl_flexio.h **** 
+ 109:../drivers/fsl_flexio.h **** /*! @brief Define type of timer decrement.*/
+ 110:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_decrement_source
+ 111:../drivers/fsl_flexio.h **** {
+ 112:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDecSrcOnFlexIOClockShiftTimerOutput = 0x0U,   /*!< Decrement counter on FlexIO clo
+ 113:../drivers/fsl_flexio.h ****                                                                 equals Timer output. */
+ 114:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDecSrcOnTriggerInputShiftTimerOutput = 0x1U,  /*!< Decrement counter on Trigger in
+ 115:../drivers/fsl_flexio.h ****                                                                 Shift clock equals Timer output. */
+ 116:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDecSrcOnPinInputShiftPinInput = 0x2U,         /*!< Decrement counter on Pin input 
+ 117:../drivers/fsl_flexio.h ****                                                                 Shift clock equals Pin input. */
+ 118:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDecSrcOnTriggerInputShiftTriggerInput = 0x3U, /*!< Decrement counter on Trigger in
+ 119:../drivers/fsl_flexio.h ****                                                                 Shift clock equals Trigger input. *
+ 120:../drivers/fsl_flexio.h **** } flexio_timer_decrement_source_t;
+ 121:../drivers/fsl_flexio.h **** 
+ 122:../drivers/fsl_flexio.h **** /*! @brief Define type of timer reset condition.*/
+ 123:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_reset_condition
+ 124:../drivers/fsl_flexio.h **** {
+ 125:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetNever = 0x0U,                            /*!< Timer never reset. */
+ 126:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetOnTimerPinEqualToTimerOutput = 0x2U,     /*!< Timer reset on Timer Pin equal 
+ 127:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetOnTimerTriggerEqualToTimerOutput = 0x3U, /*!< Timer reset on Timer Trigger eq
+ 128:../drivers/fsl_flexio.h ****                                                                 Timer Output. */
+ 129:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetOnTimerPinRisingEdge = 0x4U,             /*!< Timer reset on Timer Pin rising
+ 130:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetOnTimerTriggerRisingEdge = 0x6U,         /*!< Timer reset on Trigger rising e
+ 131:../drivers/fsl_flexio.h ****     kFLEXIO_TimerResetOnTimerTriggerBothEdge = 0x7U,           /*!< Timer reset on Trigger rising o
+ 132:../drivers/fsl_flexio.h **** } flexio_timer_reset_condition_t;
+ 133:../drivers/fsl_flexio.h **** 
+ 134:../drivers/fsl_flexio.h **** /*! @brief Define type of timer disable condition.*/
+ 135:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_disable_condition
+ 136:../drivers/fsl_flexio.h **** {
+ 137:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableNever = 0x0U,                    /*!< Timer never disabled. */
+ 138:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnPreTimerDisable = 0x1U,        /*!< Timer disabled on Timer N-1 disable. 
+ 139:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnTimerCompare = 0x2U,           /*!< Timer disabled on Timer compare. */
+ 140:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnTimerCompareTriggerLow = 0x3U, /*!< Timer disabled on Timer compare and T
+ 141:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnPinBothEdge = 0x4U,            /*!< Timer disabled on Pin rising or falli
+ 142:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnPinBothEdgeTriggerHigh = 0x5U, /*!< Timer disabled on Pin rising or falli
+ 143:../drivers/fsl_flexio.h ****                                                           Trigger is high. */
+ 144:../drivers/fsl_flexio.h ****     kFLEXIO_TimerDisableOnTriggerFallingEdge = 0x6U,     /*!< Timer disabled on Trigger falling edg
+ 145:../drivers/fsl_flexio.h **** } flexio_timer_disable_condition_t;
+ 146:../drivers/fsl_flexio.h **** 
+ 147:../drivers/fsl_flexio.h **** /*! @brief Define type of timer enable condition.*/
+ 148:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_enable_condition
+ 149:../drivers/fsl_flexio.h **** {
+ 150:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnabledAlways = 0x0U,                    /*!< Timer always enabled. */
+ 151:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnPrevTimerEnable = 0x1U,          /*!< Timer enabled on Timer N-1 enable. *
+ 152:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnTriggerHigh = 0x2U,              /*!< Timer enabled on Trigger high. */
+ 153:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnTriggerHighPinHigh = 0x3U,       /*!< Timer enabled on Trigger high and Pi
+ 154:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnPinRisingEdge = 0x4U,            /*!< Timer enabled on Pin rising edge. */
+ 155:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnPinRisingEdgeTriggerHigh = 0x5U, /*!< Timer enabled on Pin rising edge and
+ 156:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnTriggerRisingEdge = 0x6U,        /*!< Timer enabled on Trigger rising edge
+ 157:../drivers/fsl_flexio.h ****     kFLEXIO_TimerEnableOnTriggerBothEdge = 0x7U,          /*!< Timer enabled on Trigger rising or f
+ 158:../drivers/fsl_flexio.h **** } flexio_timer_enable_condition_t;
+ 159:../drivers/fsl_flexio.h **** 
+ 160:../drivers/fsl_flexio.h **** /*! @brief Define type of timer stop bit generate condition.*/
+ 161:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_stop_bit_condition
+ 162:../drivers/fsl_flexio.h **** {
+ 163:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStopBitDisabled = 0x0U,                    /*!< Stop bit disabled. */
+ 164:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStopBitEnableOnTimerCompare = 0x1U,        /*!< Stop bit is enabled on timer compa
+ 165:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStopBitEnableOnTimerDisable = 0x2U,        /*!< Stop bit is enabled on timer disab
+ 166:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStopBitEnableOnTimerCompareDisable = 0x3U, /*!< Stop bit is enabled on timer compa
+ 167:../drivers/fsl_flexio.h ****                                                              disable. */
+ 168:../drivers/fsl_flexio.h **** } flexio_timer_stop_bit_condition_t;
+ 169:../drivers/fsl_flexio.h **** 
+ 170:../drivers/fsl_flexio.h **** /*! @brief Define type of timer start bit generate condition.*/
+ 171:../drivers/fsl_flexio.h **** typedef enum _flexio_timer_start_bit_condition
+ 172:../drivers/fsl_flexio.h **** {
+ 173:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStartBitDisabled = 0x0U, /*!< Start bit disabled. */
+ 174:../drivers/fsl_flexio.h ****     kFLEXIO_TimerStartBitEnabled = 0x1U,  /*!< Start bit enabled. */
+ 175:../drivers/fsl_flexio.h **** } flexio_timer_start_bit_condition_t;
+ 176:../drivers/fsl_flexio.h **** 
+ 177:../drivers/fsl_flexio.h **** /*! @brief Define type of timer polarity for shifter control. */
+ 178:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_timer_polarity
+ 179:../drivers/fsl_flexio.h **** {
+ 180:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterTimerPolarityOnPositive = 0x0U, /* Shift on positive edge of shift clock. */
+ 181:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterTimerPolarityOnNegitive = 0x1U, /* Shift on negative edge of shift clock. */
+ 182:../drivers/fsl_flexio.h **** } flexio_shifter_timer_polarity_t;
+ 183:../drivers/fsl_flexio.h **** 
+ 184:../drivers/fsl_flexio.h **** /*! @brief Define type of shifter working mode.*/
+ 185:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_mode
+ 186:../drivers/fsl_flexio.h **** {
+ 187:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterDisabled = 0x0U,            /*!< Shifter is disabled. */
+ 188:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeReceive = 0x1U,         /*!< Receive mode. */
+ 189:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeTransmit = 0x2U,        /*!< Transmit mode. */
+ 190:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeMatchStore = 0x4U,      /*!< Match store mode. */
+ 191:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeMatchContinuous = 0x5U, /*!< Match continuous mode. */
+ 192:../drivers/fsl_flexio.h **** #if FSL_FEATURE_FLEXIO_HAS_STATE_MODE
+ 193:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeState = 0x6U, /*!< SHIFTBUF contents are used for storing
+ 194:../drivers/fsl_flexio.h ****                                       programmable state attributes. */
+ 195:../drivers/fsl_flexio.h **** #endif                               /* FSL_FEATURE_FLEXIO_HAS_STATE_MODE */
+ 196:../drivers/fsl_flexio.h **** #if FSL_FEATURE_FLEXIO_HAS_LOGIC_MODE
+ 197:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterModeLogic = 0x7U, /*!< SHIFTBUF contents are used for implementing
+ 198:../drivers/fsl_flexio.h ****                                      programmable logic look up table. */
+ 199:../drivers/fsl_flexio.h **** #endif                               /* FSL_FEATURE_FLEXIO_HAS_LOGIC_MODE */
+ 200:../drivers/fsl_flexio.h **** } flexio_shifter_mode_t;
+ 201:../drivers/fsl_flexio.h **** 
+ 202:../drivers/fsl_flexio.h **** /*! @brief Define type of shifter input source.*/
+ 203:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_input_source
+ 204:../drivers/fsl_flexio.h **** {
+ 205:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterInputFromPin = 0x0U,               /*!< Shifter input from pin. */
+ 206:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterInputFromNextShifterOutput = 0x1U, /*!< Shifter input from Shifter N+1. */
+ 207:../drivers/fsl_flexio.h **** } flexio_shifter_input_source_t;
+ 208:../drivers/fsl_flexio.h **** 
+ 209:../drivers/fsl_flexio.h **** /*! @brief Define of STOP bit configuration.*/
+ 210:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_stop_bit
+ 211:../drivers/fsl_flexio.h **** {
+ 212:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStopBitDisable = 0x0U, /*!< Disable shifter stop bit. */
+ 213:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStopBitLow = 0x2U,     /*!< Set shifter stop bit to logic low level. */
+ 214:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStopBitHigh = 0x3U,    /*!< Set shifter stop bit to logic high level. */
+ 215:../drivers/fsl_flexio.h **** } flexio_shifter_stop_bit_t;
+ 216:../drivers/fsl_flexio.h **** 
+ 217:../drivers/fsl_flexio.h **** /*! @brief Define type of START bit configuration.*/
+ 218:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_start_bit
+ 219:../drivers/fsl_flexio.h **** {
+ 220:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStartBitDisabledLoadDataOnEnable = 0x0U, /*!< Disable shifter start bit, transmi
+ 221:../drivers/fsl_flexio.h ****                                                              data on enable. */
+ 222:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStartBitDisabledLoadDataOnShift = 0x1U,  /*!< Disable shifter start bit, transmi
+ 223:../drivers/fsl_flexio.h ****                                                              data on first shift. */
+ 224:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStartBitLow = 0x2U,                      /*!< Set shifter start bit to logic low
+ 225:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterStartBitHigh = 0x3U,                     /*!< Set shifter start bit to logic hig
+ 226:../drivers/fsl_flexio.h **** } flexio_shifter_start_bit_t;
+ 227:../drivers/fsl_flexio.h **** 
+ 228:../drivers/fsl_flexio.h **** /*! @brief Define FlexIO shifter buffer type*/
+ 229:../drivers/fsl_flexio.h **** typedef enum _flexio_shifter_buffer_type
+ 230:../drivers/fsl_flexio.h **** {
+ 231:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBuffer = 0x0U,               /*!< Shifter Buffer N Register. */
+ 232:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferBitSwapped = 0x1U,     /*!< Shifter Buffer N Bit Byte Swapped Register. */
+ 233:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferByteSwapped = 0x2U,    /*!< Shifter Buffer N Byte Swapped Register. */
+ 234:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferBitByteSwapped = 0x3U, /*!< Shifter Buffer N Bit Swapped Register. */
+ 235:../drivers/fsl_flexio.h **** #if defined(FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFER_NIBBLE_BYTE_SWAP) && FSL_FEATURE_FLEXIO_HAS_SHFT_BUF
+ 236:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferNibbleByteSwapped = 0x4U, /*!< Shifter Buffer N Nibble Byte Swapped Regist
+ 237:../drivers/fsl_flexio.h **** #endif                                             /*FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFER_NIBBLE_BYTE
+ 238:../drivers/fsl_flexio.h **** #if defined(FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFER_HALF_WORD_SWAP) && FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFE
+ 239:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferHalfWordSwapped = 0x5U, /*!< Shifter Buffer N Half Word Swapped Register. 
+ 240:../drivers/fsl_flexio.h **** #endif
+ 241:../drivers/fsl_flexio.h **** #if defined(FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFER_NIBBLE_SWAP) && FSL_FEATURE_FLEXIO_HAS_SHFT_BUFFER_N
+ 242:../drivers/fsl_flexio.h ****     kFLEXIO_ShifterBufferNibbleSwapped = 0x6U, /*!< Shifter Buffer N Nibble Swapped Register. */
+ 243:../drivers/fsl_flexio.h **** #endif
+ 244:../drivers/fsl_flexio.h **** } flexio_shifter_buffer_type_t;
+ 245:../drivers/fsl_flexio.h **** 
+ 246:../drivers/fsl_flexio.h **** /*! @brief Define FlexIO user configuration structure. */
+ 247:../drivers/fsl_flexio.h **** typedef struct _flexio_config_
+ 248:../drivers/fsl_flexio.h **** {
+ 249:../drivers/fsl_flexio.h ****     bool enableFlexio;     /*!< Enable/disable FlexIO module */
+ 250:../drivers/fsl_flexio.h ****     bool enableInDoze;     /*!< Enable/disable FlexIO operation in doze mode */
+ 251:../drivers/fsl_flexio.h ****     bool enableInDebug;    /*!< Enable/disable FlexIO operation in debug mode */
+ 252:../drivers/fsl_flexio.h ****     bool enableFastAccess; /*!< Enable/disable fast access to FlexIO registers, fast access require
+ 253:../drivers/fsl_flexio.h ****                            the FlexIO clock to be at least twice the frequency of the bus clock. */
+ 254:../drivers/fsl_flexio.h **** } flexio_config_t;
+ 255:../drivers/fsl_flexio.h **** 
+ 256:../drivers/fsl_flexio.h **** /*! @brief Define FlexIO timer configuration structure. */
+ 257:../drivers/fsl_flexio.h **** typedef struct _flexio_timer_config
+ 258:../drivers/fsl_flexio.h **** {
+ 259:../drivers/fsl_flexio.h ****     /* Trigger. */
+ 260:../drivers/fsl_flexio.h ****     uint32_t triggerSelect;                          /*!< The internal trigger selection number usi
+ 261:../drivers/fsl_flexio.h ****     flexio_timer_trigger_polarity_t triggerPolarity; /*!< Trigger Polarity. */
+ 262:../drivers/fsl_flexio.h ****     flexio_timer_trigger_source_t triggerSource;     /*!< Trigger Source, internal (see 'trgsel') o
+ 263:../drivers/fsl_flexio.h ****     /* Pin. */
+ 264:../drivers/fsl_flexio.h ****     flexio_pin_config_t pinConfig;     /*!< Timer Pin Configuration. */
+ 265:../drivers/fsl_flexio.h ****     uint32_t pinSelect;                /*!< Timer Pin number Select. */
+ 266:../drivers/fsl_flexio.h ****     flexio_pin_polarity_t pinPolarity; /*!< Timer Pin Polarity. */
+ 267:../drivers/fsl_flexio.h ****     /* Timer. */
+ 268:../drivers/fsl_flexio.h ****     flexio_timer_mode_t timerMode;                  /*!< Timer work Mode. */
+ 269:../drivers/fsl_flexio.h ****     flexio_timer_output_t timerOutput;              /*!< Configures the initial state of the Timer 
+ 270:../drivers/fsl_flexio.h ****                                                     whether it is affected by the Timer reset. */
+ 271:../drivers/fsl_flexio.h ****     flexio_timer_decrement_source_t timerDecrement; /*!< Configures the source of the Timer decreme
+ 272:../drivers/fsl_flexio.h ****                                                     source of the Shift clock. */
+ 273:../drivers/fsl_flexio.h ****     flexio_timer_reset_condition_t timerReset;      /*!< Configures the condition that causes the t
+ 274:../drivers/fsl_flexio.h ****                                                     (and optionally the timer output) to be reset. 
+ 275:../drivers/fsl_flexio.h ****     flexio_timer_disable_condition_t timerDisable;  /*!< Configures the condition that causes the T
+ 276:../drivers/fsl_flexio.h ****                                                     disabled and stop decrementing. */
+ 277:../drivers/fsl_flexio.h ****     flexio_timer_enable_condition_t timerEnable;    /*!< Configures the condition that causes the T
+ 278:../drivers/fsl_flexio.h ****                                                     enabled and start decrementing. */
+ 279:../drivers/fsl_flexio.h ****     flexio_timer_stop_bit_condition_t timerStop;    /*!< Timer STOP Bit generation. */
+ 280:../drivers/fsl_flexio.h ****     flexio_timer_start_bit_condition_t timerStart;  /*!< Timer STRAT Bit generation. */
+ 281:../drivers/fsl_flexio.h ****     uint32_t timerCompare;                          /*!< Value for Timer Compare N Register. */
+ 282:../drivers/fsl_flexio.h **** } flexio_timer_config_t;
+ 283:../drivers/fsl_flexio.h **** 
+ 284:../drivers/fsl_flexio.h **** /*! @brief Define FlexIO shifter configuration structure. */
+ 285:../drivers/fsl_flexio.h **** typedef struct _flexio_shifter_config
+ 286:../drivers/fsl_flexio.h **** {
+ 287:../drivers/fsl_flexio.h ****     /* Timer. */
+ 288:../drivers/fsl_flexio.h ****     uint32_t timerSelect;                          /*!< Selects which Timer is used for controlling
+ 289:../drivers/fsl_flexio.h ****                                                     logic/shift register and generating the Shift c
+ 290:../drivers/fsl_flexio.h ****     flexio_shifter_timer_polarity_t timerPolarity; /*!< Timer Polarity. */
+ 291:../drivers/fsl_flexio.h ****     /* Pin. */
+ 292:../drivers/fsl_flexio.h ****     flexio_pin_config_t pinConfig;     /*!< Shifter Pin Configuration. */
+ 293:../drivers/fsl_flexio.h ****     uint32_t pinSelect;                /*!< Shifter Pin number Select. */
+ 294:../drivers/fsl_flexio.h ****     flexio_pin_polarity_t pinPolarity; /*!< Shifter Pin Polarity. */
+ 295:../drivers/fsl_flexio.h ****     /* Shifter. */
+ 296:../drivers/fsl_flexio.h ****     flexio_shifter_mode_t shifterMode; /*!< Configures the mode of the Shifter. */
+ 297:../drivers/fsl_flexio.h **** #if FSL_FEATURE_FLEXIO_HAS_PARALLEL_WIDTH
+ 298:../drivers/fsl_flexio.h ****     uint32_t parallelWidth;                    /*!< Configures the parallel width when using parall
+ 299:../drivers/fsl_flexio.h **** #endif                                         /* FSL_FEATURE_FLEXIO_HAS_PARALLEL_WIDTH */
+ 300:../drivers/fsl_flexio.h ****     flexio_shifter_input_source_t inputSource; /*!< Selects the input source for the shifter. */
+ 301:../drivers/fsl_flexio.h ****     flexio_shifter_stop_bit_t shifterStop;     /*!< Shifter STOP bit. */
+ 302:../drivers/fsl_flexio.h ****     flexio_shifter_start_bit_t shifterStart;   /*!< Shifter START bit. */
+ 303:../drivers/fsl_flexio.h **** } flexio_shifter_config_t;
+ 304:../drivers/fsl_flexio.h **** 
+ 305:../drivers/fsl_flexio.h **** /*! @brief typedef for FlexIO simulated driver interrupt handler.*/
+ 306:../drivers/fsl_flexio.h **** typedef void (*flexio_isr_t)(void *base, void *handle);
+ 307:../drivers/fsl_flexio.h **** 
+ 308:../drivers/fsl_flexio.h **** /*******************************************************************************
+ 309:../drivers/fsl_flexio.h ****  * API
+ 310:../drivers/fsl_flexio.h ****  ******************************************************************************/
+ 311:../drivers/fsl_flexio.h **** 
+ 312:../drivers/fsl_flexio.h **** #if defined(__cplusplus)
+ 313:../drivers/fsl_flexio.h **** extern "C" {
+ 314:../drivers/fsl_flexio.h **** #endif /*_cplusplus*/
+ 315:../drivers/fsl_flexio.h **** 
+ 316:../drivers/fsl_flexio.h **** /*!
+ 317:../drivers/fsl_flexio.h ****  * @name FlexIO Initialization and De-initialization
+ 318:../drivers/fsl_flexio.h ****  * @{
+ 319:../drivers/fsl_flexio.h ****  */
+ 320:../drivers/fsl_flexio.h **** 
+ 321:../drivers/fsl_flexio.h **** /*!
+ 322:../drivers/fsl_flexio.h ****  * @brief Gets the default configuration to configure the FlexIO module. The configuration
+ 323:../drivers/fsl_flexio.h ****  * can used directly to call the FLEXIO_Configure().
+ 324:../drivers/fsl_flexio.h ****  *
+ 325:../drivers/fsl_flexio.h ****  * Example:
+ 326:../drivers/fsl_flexio.h ****    @code
+ 327:../drivers/fsl_flexio.h ****    flexio_config_t config;
+ 328:../drivers/fsl_flexio.h ****    FLEXIO_GetDefaultConfig(&config);
+ 329:../drivers/fsl_flexio.h ****    @endcode
+ 330:../drivers/fsl_flexio.h ****  *
+ 331:../drivers/fsl_flexio.h ****  * @param userConfig pointer to flexio_config_t structure
+ 332:../drivers/fsl_flexio.h **** */
+ 333:../drivers/fsl_flexio.h **** void FLEXIO_GetDefaultConfig(flexio_config_t *userConfig);
+ 334:../drivers/fsl_flexio.h **** 
+ 335:../drivers/fsl_flexio.h **** /*!
+ 336:../drivers/fsl_flexio.h ****  * @brief Configures the FlexIO with a FlexIO configuration. The configuration structure
+ 337:../drivers/fsl_flexio.h ****  * can be filled by the user or be set with default values by FLEXIO_GetDefaultConfig().
+ 338:../drivers/fsl_flexio.h ****  *
+ 339:../drivers/fsl_flexio.h ****  * Example
+ 340:../drivers/fsl_flexio.h ****    @code
+ 341:../drivers/fsl_flexio.h ****    flexio_config_t config = {
+ 342:../drivers/fsl_flexio.h ****    .enableFlexio = true,
+ 343:../drivers/fsl_flexio.h ****    .enableInDoze = false,
+ 344:../drivers/fsl_flexio.h ****    .enableInDebug = true,
+ 345:../drivers/fsl_flexio.h ****    .enableFastAccess = false
+ 346:../drivers/fsl_flexio.h ****    };
+ 347:../drivers/fsl_flexio.h ****    FLEXIO_Configure(base, &config);
+ 348:../drivers/fsl_flexio.h ****    @endcode
+ 349:../drivers/fsl_flexio.h ****  *
+ 350:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 351:../drivers/fsl_flexio.h ****  * @param userConfig pointer to flexio_config_t structure
+ 352:../drivers/fsl_flexio.h **** */
+ 353:../drivers/fsl_flexio.h **** void FLEXIO_Init(FLEXIO_Type *base, const flexio_config_t *userConfig);
+ 354:../drivers/fsl_flexio.h **** 
+ 355:../drivers/fsl_flexio.h **** /*!
+ 356:../drivers/fsl_flexio.h ****  * @brief Gates the FlexIO clock. Call this API to stop the FlexIO clock.
+ 357:../drivers/fsl_flexio.h ****  *
+ 358:../drivers/fsl_flexio.h ****  * @note After calling this API, call the FLEXO_Init to use the FlexIO module.
+ 359:../drivers/fsl_flexio.h ****  *
+ 360:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 361:../drivers/fsl_flexio.h **** */
+ 362:../drivers/fsl_flexio.h **** void FLEXIO_Deinit(FLEXIO_Type *base);
+ 363:../drivers/fsl_flexio.h **** 
+ 364:../drivers/fsl_flexio.h **** /* @} */
+ 365:../drivers/fsl_flexio.h **** 
+ 366:../drivers/fsl_flexio.h **** /*!
+ 367:../drivers/fsl_flexio.h ****  * @name FlexIO Basic Operation
+ 368:../drivers/fsl_flexio.h ****  * @{
+ 369:../drivers/fsl_flexio.h ****  */
+ 370:../drivers/fsl_flexio.h **** 
+ 371:../drivers/fsl_flexio.h **** /*!
+ 372:../drivers/fsl_flexio.h ****  * @brief Resets the FlexIO module.
+ 373:../drivers/fsl_flexio.h ****  *
+ 374:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 375:../drivers/fsl_flexio.h **** */
+ 376:../drivers/fsl_flexio.h **** void FLEXIO_Reset(FLEXIO_Type *base);
+ 377:../drivers/fsl_flexio.h **** 
+ 378:../drivers/fsl_flexio.h **** /*!
+ 379:../drivers/fsl_flexio.h ****  * @brief Enables the FlexIO module operation.
+ 380:../drivers/fsl_flexio.h ****  *
+ 381:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 382:../drivers/fsl_flexio.h ****  * @param enable true to enable, false to disable.
+ 383:../drivers/fsl_flexio.h **** */
+ 384:../drivers/fsl_flexio.h **** static inline void FLEXIO_Enable(FLEXIO_Type *base, bool enable)
+ 385:../drivers/fsl_flexio.h **** {
+ 386:../drivers/fsl_flexio.h ****     if (enable)
+ 387:../drivers/fsl_flexio.h ****     {
+ 388:../drivers/fsl_flexio.h ****         base->CTRL |= FLEXIO_CTRL_FLEXEN_MASK;
+ 389:../drivers/fsl_flexio.h ****     }
+ 390:../drivers/fsl_flexio.h ****     else
+ 391:../drivers/fsl_flexio.h ****     {
+ 392:../drivers/fsl_flexio.h ****         base->CTRL &= ~FLEXIO_CTRL_FLEXEN_MASK;
+ 393:../drivers/fsl_flexio.h ****     }
+ 394:../drivers/fsl_flexio.h **** }
+ 395:../drivers/fsl_flexio.h **** 
+ 396:../drivers/fsl_flexio.h **** #if defined(FSL_FEATURE_FLEXIO_HAS_PIN_STATUS) && FSL_FEATURE_FLEXIO_HAS_PIN_STATUS
+ 397:../drivers/fsl_flexio.h **** /*!
+ 398:../drivers/fsl_flexio.h ****  * @brief Reads the input data on each of the FlexIO pins.
+ 399:../drivers/fsl_flexio.h ****  *
+ 400:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 401:../drivers/fsl_flexio.h ****  * @return FlexIO pin input data
+ 402:../drivers/fsl_flexio.h **** */
+ 403:../drivers/fsl_flexio.h **** static inline uint32_t FLEXIO_ReadPinInput(FLEXIO_Type *base)
+ 404:../drivers/fsl_flexio.h **** {
+ 405:../drivers/fsl_flexio.h ****     return base->PIN;
+ 406:../drivers/fsl_flexio.h **** }
+ 407:../drivers/fsl_flexio.h **** #endif /*FSL_FEATURE_FLEXIO_HAS_PIN_STATUS*/
+ 408:../drivers/fsl_flexio.h **** 
+ 409:../drivers/fsl_flexio.h **** #if defined(FSL_FEATURE_FLEXIO_HAS_STATE_MODE) && FSL_FEATURE_FLEXIO_HAS_STATE_MODE
+ 410:../drivers/fsl_flexio.h **** /*!
+ 411:../drivers/fsl_flexio.h ****  * @brief Gets the current state pointer for state mode use.
+ 412:../drivers/fsl_flexio.h ****  *
+ 413:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 414:../drivers/fsl_flexio.h ****  * @return current State pointer
+ 415:../drivers/fsl_flexio.h **** */
+ 416:../drivers/fsl_flexio.h **** static inline uint8_t FLEXIO_GetShifterState(FLEXIO_Type *base)
+ 417:../drivers/fsl_flexio.h **** {
+ 418:../drivers/fsl_flexio.h ****     return ((base->SHIFTSTATE) & FLEXIO_SHIFTSTATE_STATE_MASK);
+ 419:../drivers/fsl_flexio.h **** }
+ 420:../drivers/fsl_flexio.h **** #endif /*FSL_FEATURE_FLEXIO_HAS_STATE_MODE*/
+ 421:../drivers/fsl_flexio.h **** 
+ 422:../drivers/fsl_flexio.h **** /*!
+ 423:../drivers/fsl_flexio.h ****  * @brief Configures the shifter with the shifter configuration. The configuration structure
+ 424:../drivers/fsl_flexio.h ****  * covers both the SHIFTCTL and SHIFTCFG registers. To configure the shifter to the proper
+ 425:../drivers/fsl_flexio.h ****  * mode, select which timer controls the shifter to shift, whether to generate start bit/stop
+ 426:../drivers/fsl_flexio.h ****  *  bit, and the polarity of start bit and stop bit.
+ 427:../drivers/fsl_flexio.h ****  *
+ 428:../drivers/fsl_flexio.h ****  * Example
+ 429:../drivers/fsl_flexio.h ****    @code
+ 430:../drivers/fsl_flexio.h ****    flexio_shifter_config_t config = {
+ 431:../drivers/fsl_flexio.h ****    .timerSelect = 0,
+ 432:../drivers/fsl_flexio.h ****    .timerPolarity = kFLEXIO_ShifterTimerPolarityOnPositive,
+ 433:../drivers/fsl_flexio.h ****    .pinConfig = kFLEXIO_PinConfigOpenDrainOrBidirection,
+ 434:../drivers/fsl_flexio.h ****    .pinPolarity = kFLEXIO_PinActiveLow,
+ 435:../drivers/fsl_flexio.h ****    .shifterMode = kFLEXIO_ShifterModeTransmit,
+ 436:../drivers/fsl_flexio.h ****    .inputSource = kFLEXIO_ShifterInputFromPin,
+ 437:../drivers/fsl_flexio.h ****    .shifterStop = kFLEXIO_ShifterStopBitHigh,
+ 438:../drivers/fsl_flexio.h ****    .shifterStart = kFLEXIO_ShifterStartBitLow
+ 439:../drivers/fsl_flexio.h ****    };
+ 440:../drivers/fsl_flexio.h ****    FLEXIO_SetShifterConfig(base, &config);
+ 441:../drivers/fsl_flexio.h ****    @endcode
+ 442:../drivers/fsl_flexio.h ****  *
+ 443:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 444:../drivers/fsl_flexio.h ****  * @param index Shifter index
+ 445:../drivers/fsl_flexio.h ****  * @param shifterConfig Pointer to flexio_shifter_config_t structure
+ 446:../drivers/fsl_flexio.h **** */
+ 447:../drivers/fsl_flexio.h **** void FLEXIO_SetShifterConfig(FLEXIO_Type *base, uint8_t index, const flexio_shifter_config_t *shift
+ 448:../drivers/fsl_flexio.h **** /*!
+ 449:../drivers/fsl_flexio.h ****  * @brief Configures the timer with the timer configuration. The configuration structure
+ 450:../drivers/fsl_flexio.h ****  * covers both the TIMCTL and TIMCFG registers. To configure the timer to the proper
+ 451:../drivers/fsl_flexio.h ****  * mode, select trigger source for timer and the timer pin output and the timing for timer.
+ 452:../drivers/fsl_flexio.h ****  *
+ 453:../drivers/fsl_flexio.h ****  * Example
+ 454:../drivers/fsl_flexio.h ****    @code
+ 455:../drivers/fsl_flexio.h ****    flexio_timer_config_t config = {
+ 456:../drivers/fsl_flexio.h ****    .triggerSelect = FLEXIO_TIMER_TRIGGER_SEL_SHIFTnSTAT(0),
+ 457:../drivers/fsl_flexio.h ****    .triggerPolarity = kFLEXIO_TimerTriggerPolarityActiveLow,
+ 458:../drivers/fsl_flexio.h ****    .triggerSource = kFLEXIO_TimerTriggerSourceInternal,
+ 459:../drivers/fsl_flexio.h ****    .pinConfig = kFLEXIO_PinConfigOpenDrainOrBidirection,
+ 460:../drivers/fsl_flexio.h ****    .pinSelect = 0,
+ 461:../drivers/fsl_flexio.h ****    .pinPolarity = kFLEXIO_PinActiveHigh,
+ 462:../drivers/fsl_flexio.h ****    .timerMode = kFLEXIO_TimerModeDual8BitBaudBit,
+ 463:../drivers/fsl_flexio.h ****    .timerOutput = kFLEXIO_TimerOutputZeroNotAffectedByReset,
+ 464:../drivers/fsl_flexio.h ****    .timerDecrement = kFLEXIO_TimerDecSrcOnFlexIOClockShiftTimerOutput,
+ 465:../drivers/fsl_flexio.h ****    .timerReset = kFLEXIO_TimerResetOnTimerPinEqualToTimerOutput,
+ 466:../drivers/fsl_flexio.h ****    .timerDisable = kFLEXIO_TimerDisableOnTimerCompare,
+ 467:../drivers/fsl_flexio.h ****    .timerEnable = kFLEXIO_TimerEnableOnTriggerHigh,
+ 468:../drivers/fsl_flexio.h ****    .timerStop = kFLEXIO_TimerStopBitEnableOnTimerDisable,
+ 469:../drivers/fsl_flexio.h ****    .timerStart = kFLEXIO_TimerStartBitEnabled
+ 470:../drivers/fsl_flexio.h ****    };
+ 471:../drivers/fsl_flexio.h ****    FLEXIO_SetTimerConfig(base, &config);
+ 472:../drivers/fsl_flexio.h ****    @endcode
+ 473:../drivers/fsl_flexio.h ****  *
+ 474:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 475:../drivers/fsl_flexio.h ****  * @param index Timer index
+ 476:../drivers/fsl_flexio.h ****  * @param timerConfig Pointer to the flexio_timer_config_t structure
+ 477:../drivers/fsl_flexio.h **** */
+ 478:../drivers/fsl_flexio.h **** void FLEXIO_SetTimerConfig(FLEXIO_Type *base, uint8_t index, const flexio_timer_config_t *timerConf
+ 479:../drivers/fsl_flexio.h **** 
+ 480:../drivers/fsl_flexio.h **** /* @} */
+ 481:../drivers/fsl_flexio.h **** 
+ 482:../drivers/fsl_flexio.h **** /*!
+ 483:../drivers/fsl_flexio.h ****  * @name FlexIO Interrupt Operation
+ 484:../drivers/fsl_flexio.h ****  * @{
+ 485:../drivers/fsl_flexio.h ****  */
+ 486:../drivers/fsl_flexio.h **** 
+ 487:../drivers/fsl_flexio.h **** /*!
+ 488:../drivers/fsl_flexio.h ****  * @brief Enables the shifter status interrupt. The interrupt generates when the corresponding SSF 
+ 489:../drivers/fsl_flexio.h ****  *
+ 490:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 491:../drivers/fsl_flexio.h ****  * @param mask The shifter status mask which can be calculated by (1 << shifter index)
+ 492:../drivers/fsl_flexio.h ****  * @note For multiple shifter status interrupt enable, for example, two shifter status enable, can 
+ 493:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 494:../drivers/fsl_flexio.h **** */
+ 495:../drivers/fsl_flexio.h **** static inline void FLEXIO_EnableShifterStatusInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 496:../drivers/fsl_flexio.h **** {
+ 497:../drivers/fsl_flexio.h ****     base->SHIFTSIEN |= mask;
+ 498:../drivers/fsl_flexio.h **** }
+ 499:../drivers/fsl_flexio.h **** 
+ 500:../drivers/fsl_flexio.h **** /*!
+ 501:../drivers/fsl_flexio.h ****  * @brief Disables the shifter status interrupt. The interrupt won't generate when the correspondin
+ 502:../drivers/fsl_flexio.h ****  *
+ 503:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 504:../drivers/fsl_flexio.h ****  * @param mask The shifter status mask which can be calculated by (1 << shifter index)
+ 505:../drivers/fsl_flexio.h ****  * @note For multiple shifter status interrupt enable, for example, two shifter status enable, can 
+ 506:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 507:../drivers/fsl_flexio.h **** */
+ 508:../drivers/fsl_flexio.h **** static inline void FLEXIO_DisableShifterStatusInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 509:../drivers/fsl_flexio.h **** {
+ 510:../drivers/fsl_flexio.h ****     base->SHIFTSIEN &= ~mask;
+ 511:../drivers/fsl_flexio.h **** }
+ 512:../drivers/fsl_flexio.h **** 
+ 513:../drivers/fsl_flexio.h **** /*!
+ 514:../drivers/fsl_flexio.h ****  * @brief Enables the shifter error interrupt. The interrupt generates when the corresponding SEF i
+ 515:../drivers/fsl_flexio.h ****  *
+ 516:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 517:../drivers/fsl_flexio.h ****  * @param mask The shifter error mask which can be calculated by (1 << shifter index)
+ 518:../drivers/fsl_flexio.h ****  * @note For multiple shifter error interrupt enable, for example, two shifter error enable, can ca
+ 519:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 520:../drivers/fsl_flexio.h **** */
+ 521:../drivers/fsl_flexio.h **** static inline void FLEXIO_EnableShifterErrorInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 522:../drivers/fsl_flexio.h **** {
+ 523:../drivers/fsl_flexio.h ****     base->SHIFTEIEN |= mask;
+ 524:../drivers/fsl_flexio.h **** }
+ 525:../drivers/fsl_flexio.h **** 
+ 526:../drivers/fsl_flexio.h **** /*!
+ 527:../drivers/fsl_flexio.h ****  * @brief Disables the shifter error interrupt. The interrupt won't generate when the corresponding
+ 528:../drivers/fsl_flexio.h ****  *
+ 529:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 530:../drivers/fsl_flexio.h ****  * @param mask The shifter error mask which can be calculated by (1 << shifter index)
+ 531:../drivers/fsl_flexio.h ****  * @note For multiple shifter error interrupt enable, for example, two shifter error enable, can ca
+ 532:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 533:../drivers/fsl_flexio.h **** */
+ 534:../drivers/fsl_flexio.h **** static inline void FLEXIO_DisableShifterErrorInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 535:../drivers/fsl_flexio.h **** {
+ 536:../drivers/fsl_flexio.h ****     base->SHIFTEIEN &= ~mask;
+ 537:../drivers/fsl_flexio.h **** }
+ 538:../drivers/fsl_flexio.h **** 
+ 539:../drivers/fsl_flexio.h **** /*!
+ 540:../drivers/fsl_flexio.h ****  * @brief Enables the timer status interrupt. The interrupt generates when the corresponding SSF is
+ 541:../drivers/fsl_flexio.h ****  *
+ 542:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 543:../drivers/fsl_flexio.h ****  * @param mask The timer status mask which can be calculated by (1 << timer index)
+ 544:../drivers/fsl_flexio.h ****  * @note For multiple timer status interrupt enable, for example, two timer status enable, can calc
+ 545:../drivers/fsl_flexio.h ****  * the mask by using ((1 << timer index0) | (1 << timer index1))
+ 546:../drivers/fsl_flexio.h **** */
+ 547:../drivers/fsl_flexio.h **** static inline void FLEXIO_EnableTimerStatusInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 548:../drivers/fsl_flexio.h **** {
+ 549:../drivers/fsl_flexio.h ****     base->TIMIEN |= mask;
+ 550:../drivers/fsl_flexio.h **** }
+ 551:../drivers/fsl_flexio.h **** 
+ 552:../drivers/fsl_flexio.h **** /*!
+ 553:../drivers/fsl_flexio.h ****  * @brief Disables the timer status interrupt. The interrupt won't generate when the corresponding 
+ 554:../drivers/fsl_flexio.h ****  *
+ 555:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 556:../drivers/fsl_flexio.h ****  * @param mask The timer status mask which can be calculated by (1 << timer index)
+ 557:../drivers/fsl_flexio.h ****  * @note For multiple timer status interrupt enable, for example, two timer status enable, can calc
+ 558:../drivers/fsl_flexio.h ****  * the mask by using ((1 << timer index0) | (1 << timer index1))
+ 559:../drivers/fsl_flexio.h **** */
+ 560:../drivers/fsl_flexio.h **** static inline void FLEXIO_DisableTimerStatusInterrupts(FLEXIO_Type *base, uint32_t mask)
+ 561:../drivers/fsl_flexio.h **** {
+ 562:../drivers/fsl_flexio.h ****     base->TIMIEN &= ~mask;
+ 563:../drivers/fsl_flexio.h **** }
+ 564:../drivers/fsl_flexio.h **** 
+ 565:../drivers/fsl_flexio.h **** /* @} */
+ 566:../drivers/fsl_flexio.h **** 
+ 567:../drivers/fsl_flexio.h **** /*!
+ 568:../drivers/fsl_flexio.h ****  * @name FlexIO Status Operation
+ 569:../drivers/fsl_flexio.h ****  * @{
+ 570:../drivers/fsl_flexio.h ****  */
+ 571:../drivers/fsl_flexio.h **** 
+ 572:../drivers/fsl_flexio.h **** /*!
+ 573:../drivers/fsl_flexio.h ****  * @brief Gets the shifter status flags.
+ 574:../drivers/fsl_flexio.h ****  *
+ 575:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 576:../drivers/fsl_flexio.h ****  * @return Shifter status flags
+ 577:../drivers/fsl_flexio.h **** */
+ 578:../drivers/fsl_flexio.h **** static inline uint32_t FLEXIO_GetShifterStatusFlags(FLEXIO_Type *base)
+ 579:../drivers/fsl_flexio.h **** {
+ 580:../drivers/fsl_flexio.h ****     return ((base->SHIFTSTAT) & FLEXIO_SHIFTSTAT_SSF_MASK);
+ 581:../drivers/fsl_flexio.h **** }
+ 582:../drivers/fsl_flexio.h **** 
+ 583:../drivers/fsl_flexio.h **** /*!
+ 584:../drivers/fsl_flexio.h ****  * @brief Clears the shifter status flags.
+ 585:../drivers/fsl_flexio.h ****  *
+ 586:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 587:../drivers/fsl_flexio.h ****  * @param mask The shifter status mask which can be calculated by (1 << shifter index)
+ 588:../drivers/fsl_flexio.h ****  * @note For clearing multiple shifter status flags, for example, two shifter status flags, can cal
+ 589:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 590:../drivers/fsl_flexio.h **** */
+ 591:../drivers/fsl_flexio.h **** static inline void FLEXIO_ClearShifterStatusFlags(FLEXIO_Type *base, uint32_t mask)
+ 592:../drivers/fsl_flexio.h **** {
+ 593:../drivers/fsl_flexio.h ****     base->SHIFTSTAT = mask;
+ 594:../drivers/fsl_flexio.h **** }
+ 595:../drivers/fsl_flexio.h **** 
+ 596:../drivers/fsl_flexio.h **** /*!
+ 597:../drivers/fsl_flexio.h ****  * @brief Gets the shifter error flags.
+ 598:../drivers/fsl_flexio.h ****  *
+ 599:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 600:../drivers/fsl_flexio.h ****  * @return Shifter error flags
+ 601:../drivers/fsl_flexio.h **** */
+ 602:../drivers/fsl_flexio.h **** static inline uint32_t FLEXIO_GetShifterErrorFlags(FLEXIO_Type *base)
+ 603:../drivers/fsl_flexio.h **** {
+ 604:../drivers/fsl_flexio.h ****     return ((base->SHIFTERR) & FLEXIO_SHIFTERR_SEF_MASK);
+ 605:../drivers/fsl_flexio.h **** }
+ 606:../drivers/fsl_flexio.h **** 
+ 607:../drivers/fsl_flexio.h **** /*!
+ 608:../drivers/fsl_flexio.h ****  * @brief Clears the shifter error flags.
+ 609:../drivers/fsl_flexio.h ****  *
+ 610:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 611:../drivers/fsl_flexio.h ****  * @param mask The shifter error mask which can be calculated by (1 << shifter index)
+ 612:../drivers/fsl_flexio.h ****  * @note For clearing multiple shifter error flags, for example, two shifter error flags, can calcu
+ 613:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 614:../drivers/fsl_flexio.h **** */
+ 615:../drivers/fsl_flexio.h **** static inline void FLEXIO_ClearShifterErrorFlags(FLEXIO_Type *base, uint32_t mask)
+ 616:../drivers/fsl_flexio.h **** {
+ 617:../drivers/fsl_flexio.h ****     base->SHIFTERR = mask;
+ 618:../drivers/fsl_flexio.h **** }
+ 619:../drivers/fsl_flexio.h **** 
+ 620:../drivers/fsl_flexio.h **** /*!
+ 621:../drivers/fsl_flexio.h ****  * @brief Gets the timer status flags.
+ 622:../drivers/fsl_flexio.h ****  *
+ 623:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 624:../drivers/fsl_flexio.h ****  * @return Timer status flags
+ 625:../drivers/fsl_flexio.h **** */
+ 626:../drivers/fsl_flexio.h **** static inline uint32_t FLEXIO_GetTimerStatusFlags(FLEXIO_Type *base)
+ 627:../drivers/fsl_flexio.h **** {
+ 628:../drivers/fsl_flexio.h ****     return ((base->TIMSTAT) & FLEXIO_TIMSTAT_TSF_MASK);
+ 629:../drivers/fsl_flexio.h **** }
+ 630:../drivers/fsl_flexio.h **** 
+ 631:../drivers/fsl_flexio.h **** /*!
+ 632:../drivers/fsl_flexio.h ****  * @brief Clears the timer status flags.
+ 633:../drivers/fsl_flexio.h ****  *
+ 634:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 635:../drivers/fsl_flexio.h ****  * @param mask The timer status mask which can be calculated by (1 << timer index)
+ 636:../drivers/fsl_flexio.h ****  * @note For clearing multiple timer status flags, for example, two timer status flags, can calcula
+ 637:../drivers/fsl_flexio.h ****  * the mask by using ((1 << timer index0) | (1 << timer index1))
+ 638:../drivers/fsl_flexio.h **** */
+ 639:../drivers/fsl_flexio.h **** static inline void FLEXIO_ClearTimerStatusFlags(FLEXIO_Type *base, uint32_t mask)
+ 640:../drivers/fsl_flexio.h **** {
+ 641:../drivers/fsl_flexio.h ****     base->TIMSTAT = mask;
+ 642:../drivers/fsl_flexio.h **** }
+ 643:../drivers/fsl_flexio.h **** 
+ 644:../drivers/fsl_flexio.h **** /* @} */
+ 645:../drivers/fsl_flexio.h **** 
+ 646:../drivers/fsl_flexio.h **** /*!
+ 647:../drivers/fsl_flexio.h ****  * @name FlexIO DMA Operation
+ 648:../drivers/fsl_flexio.h ****  * @{
+ 649:../drivers/fsl_flexio.h ****  */
+ 650:../drivers/fsl_flexio.h **** 
+ 651:../drivers/fsl_flexio.h **** /*!
+ 652:../drivers/fsl_flexio.h ****  * @brief Enables/disables the shifter status DMA. The DMA request  generates when the correspondin
+ 653:../drivers/fsl_flexio.h ****  *
+ 654:../drivers/fsl_flexio.h ****  * @note For multiple shifter status DMA enables, for example, calculate
+ 655:../drivers/fsl_flexio.h ****  * the mask by using ((1 << shifter index0) | (1 << shifter index1))
+ 656:../drivers/fsl_flexio.h ****  *
+ 657:../drivers/fsl_flexio.h ****  * @param base FlexIO peripheral base address
+ 658:../drivers/fsl_flexio.h ****  * @param mask The shifter status mask which can be calculated by (1 << shifter index)
+ 659:../drivers/fsl_flexio.h ****  * @param enable True to enable, false to disable.
+ 660:../drivers/fsl_flexio.h **** */
+ 661:../drivers/fsl_flexio.h **** static inline void FLEXIO_EnableShifterStatusDMA(FLEXIO_Type *base, uint32_t mask, bool enable)
+ 662:../drivers/fsl_flexio.h **** {
+ 663:../drivers/fsl_flexio.h ****     if (enable)
+ 664:../drivers/fsl_flexio.h ****     {
+ 665:../drivers/fsl_flexio.h ****         base->SHIFTSDEN |= mask;
+ 379              		.loc 4 665 0
+ 380 00ba 186B     		ldr	r0, [r3, #48]
+ 381              	.LVL47:
+ 382 00bc 0243     		orrs	r2, r0
+ 383              	.LVL48:
+ 384 00be 1A63     		str	r2, [r3, #48]
+ 385              	.LVL49:
+ 386              	.LBE45:
+ 387              	.LBE44:
+ 388              	.LBE43:
+ 389              	.LBE42:
+ 390              	.LBB46:
+ 391              	.LBB47:
+ 235:../drivers/fsl_flexio_i2s.h ****     }
+ 392              		.loc 2 235 0
+ 393 00c0 3268     		ldr	r2, [r6]
+ 394 00c2 9368     		ldr	r3, [r2, #8]
+ 395 00c4 0B43     		orrs	r3, r1
+ 396 00c6 9360     		str	r3, [r2, #8]
+ 397              	.LVL50:
+ 398              	.LBE47:
+ 399              	.LBE46:
+ 235:../drivers/fsl_flexio_i2s_dma.c **** }
+ 400              		.loc 1 235 0
+ 401 00c8 0020     		movs	r0, #0
+ 402 00ca BBE7     		b	.L11
+ 403              	.LVL51:
+ 404              	.L13:
+ 203:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 405              		.loc 1 203 0
+ 406 00cc 0420     		movs	r0, #4
+ 407 00ce B9E7     		b	.L11
+ 408              	.L14:
+ 409 00d0 0420     		movs	r0, #4
+ 410 00d2 B7E7     		b	.L11
+ 411              		.cfi_endproc
+ 412              	.LFE95:
+ 414              		.section	.text.FLEXIO_I2S_TransferReceiveDMA,"ax",%progbits
+ 415              		.align	1
+ 416              		.global	FLEXIO_I2S_TransferReceiveDMA
+ 417              		.syntax unified
+ 418              		.code	16
+ 419              		.thumb_func
+ 420              		.fpu softvfp
+ 422              	FLEXIO_I2S_TransferReceiveDMA:
+ 423              	.LFB96:
+ 237:../drivers/fsl_flexio_i2s_dma.c **** 
+ 238:../drivers/fsl_flexio_i2s_dma.c **** status_t FLEXIO_I2S_TransferReceiveDMA(FLEXIO_I2S_Type *base,
+ 239:../drivers/fsl_flexio_i2s_dma.c ****                                        flexio_i2s_dma_handle_t *handle,
+ 240:../drivers/fsl_flexio_i2s_dma.c ****                                        flexio_i2s_transfer_t *xfer)
+ 241:../drivers/fsl_flexio_i2s_dma.c **** {
+ 424              		.loc 1 241 0
+ 425              		.cfi_startproc
+ 426              		@ args = 0, pretend = 0, frame = 16
+ 427              		@ frame_needed = 0, uses_anonymous_args = 0
+ 428              	.LVL52:
+ 429 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 430              		.cfi_def_cfa_offset 20
+ 431              		.cfi_offset 4, -20
+ 432              		.cfi_offset 5, -16
+ 433              		.cfi_offset 6, -12
+ 434              		.cfi_offset 7, -8
+ 435              		.cfi_offset 14, -4
+ 436 0002 89B0     		sub	sp, sp, #36
+ 437              		.cfi_def_cfa_offset 56
+ 438 0004 0600     		movs	r6, r0
+ 439 0006 0C00     		movs	r4, r1
+ 440 0008 1500     		movs	r5, r2
+ 242:../drivers/fsl_flexio_i2s_dma.c ****     assert(handle && xfer);
+ 243:../drivers/fsl_flexio_i2s_dma.c **** 
+ 244:../drivers/fsl_flexio_i2s_dma.c ****     dma_transfer_config_t config = {0};
+ 441              		.loc 1 244 0
+ 442 000a 1022     		movs	r2, #16
+ 443              	.LVL53:
+ 444 000c 0021     		movs	r1, #0
+ 445              	.LVL54:
+ 446 000e 04A8     		add	r0, sp, #16
+ 447              	.LVL55:
+ 448 0010 FFF7FEFF 		bl	memset
+ 449              	.LVL56:
+ 450              	.LBB48:
+ 451              	.LBB49:
+ 321:../drivers/fsl_flexio_i2s.h **** }
+ 322:../drivers/fsl_flexio_i2s.h **** 
+ 323:../drivers/fsl_flexio_i2s.h **** /*!
+ 324:../drivers/fsl_flexio_i2s.h ****  * @brief Gets the FlexIO I2S receive data register address.
+ 325:../drivers/fsl_flexio_i2s.h ****  *
+ 326:../drivers/fsl_flexio_i2s.h ****  * This function returns the I2S data register address, mainly used by DMA/eDMA.
+ 327:../drivers/fsl_flexio_i2s.h ****  *
+ 328:../drivers/fsl_flexio_i2s.h ****  * @param base Pointer to FLEXIO_I2S_Type structure
+ 329:../drivers/fsl_flexio_i2s.h ****  * @return FlexIO i2s receive data register address.
+ 330:../drivers/fsl_flexio_i2s.h ****  */
+ 331:../drivers/fsl_flexio_i2s.h **** static inline uint32_t FLEXIO_I2S_RxGetDataRegisterAddress(FLEXIO_I2S_Type *base)
+ 332:../drivers/fsl_flexio_i2s.h **** {
+ 333:../drivers/fsl_flexio_i2s.h ****     return FLEXIO_GetShifterBufferAddress(base->flexioBase, kFLEXIO_ShifterBufferBitSwapped, base->
+ 452              		.loc 2 333 0
+ 453 0014 727A     		ldrb	r2, [r6, #9]
+ 454 0016 0121     		movs	r1, #1
+ 455 0018 3068     		ldr	r0, [r6]
+ 456 001a FFF7FEFF 		bl	FLEXIO_GetShifterBufferAddress
+ 457              	.LVL57:
+ 458              	.LBE49:
+ 459              	.LBE48:
+ 245:../drivers/fsl_flexio_i2s_dma.c ****     uint32_t srcAddr = FLEXIO_I2S_RxGetDataRegisterAddress(base) + (4U - handle->bytesPerFrame);
+ 460              		.loc 1 245 0
+ 461 001e 2279     		ldrb	r2, [r4, #4]
+ 462 0020 801A     		subs	r0, r0, r2
+ 463 0022 011D     		adds	r1, r0, #4
+ 464              	.LVL58:
+ 246:../drivers/fsl_flexio_i2s_dma.c **** 
+ 247:../drivers/fsl_flexio_i2s_dma.c ****     /* Check if input parameter invalid */
+ 248:../drivers/fsl_flexio_i2s_dma.c ****     if ((xfer->data == NULL) || (xfer->dataSize == 0U))
+ 465              		.loc 1 248 0
+ 466 0024 2B68     		ldr	r3, [r5]
+ 467 0026 002B     		cmp	r3, #0
+ 468 0028 4FD0     		beq	.L19
+ 469              		.loc 1 248 0 is_stmt 0 discriminator 1
+ 470 002a 6B68     		ldr	r3, [r5, #4]
+ 471 002c 002B     		cmp	r3, #0
+ 472 002e 4ED0     		beq	.L20
+ 249:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 250:../drivers/fsl_flexio_i2s_dma.c ****         return kStatus_InvalidArgument;
+ 251:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 252:../drivers/fsl_flexio_i2s_dma.c **** 
+ 253:../drivers/fsl_flexio_i2s_dma.c ****     if (handle->queue[handle->queueUser].data)
+ 473              		.loc 1 253 0 is_stmt 1
+ 474 0030 4423     		movs	r3, #68
+ 475 0032 E35C     		ldrb	r3, [r4, r3]
+ 476 0034 0233     		adds	r3, r3, #2
+ 477 0036 DB00     		lsls	r3, r3, #3
+ 478 0038 E318     		adds	r3, r4, r3
+ 479 003a 5B68     		ldr	r3, [r3, #4]
+ 480 003c 002B     		cmp	r3, #0
+ 481 003e 03D0     		beq	.L22
+ 254:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 255:../drivers/fsl_flexio_i2s_dma.c ****         return kStatus_FLEXIO_I2S_QueueFull;
+ 482              		.loc 1 255 0
+ 483 0040 9020     		movs	r0, #144
+ 484 0042 0001     		lsls	r0, r0, #4
+ 485              	.LVL59:
+ 486              	.L17:
+ 256:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 257:../drivers/fsl_flexio_i2s_dma.c **** 
+ 258:../drivers/fsl_flexio_i2s_dma.c ****     /* Change the state of handle */
+ 259:../drivers/fsl_flexio_i2s_dma.c ****     handle->state = kFLEXIO_I2S_Busy;
+ 260:../drivers/fsl_flexio_i2s_dma.c **** 
+ 261:../drivers/fsl_flexio_i2s_dma.c ****     /* Update queue state  */
+ 262:../drivers/fsl_flexio_i2s_dma.c ****     handle->queue[handle->queueUser].data = xfer->data;
+ 263:../drivers/fsl_flexio_i2s_dma.c ****     handle->queue[handle->queueUser].dataSize = xfer->dataSize;
+ 264:../drivers/fsl_flexio_i2s_dma.c ****     handle->transferSize[handle->queueUser] = xfer->dataSize;
+ 265:../drivers/fsl_flexio_i2s_dma.c ****     handle->queueUser = (handle->queueUser + 1) % FLEXIO_I2S_XFER_QUEUE_SIZE;
+ 266:../drivers/fsl_flexio_i2s_dma.c **** 
+ 267:../drivers/fsl_flexio_i2s_dma.c ****     /* Prepare dma configure */
+ 268:../drivers/fsl_flexio_i2s_dma.c ****     DMA_PrepareTransfer(&config, (void *)srcAddr, handle->bytesPerFrame, xfer->data, handle->bytesP
+ 269:../drivers/fsl_flexio_i2s_dma.c ****                         xfer->dataSize, kDMA_PeripheralToMemory);
+ 270:../drivers/fsl_flexio_i2s_dma.c **** 
+ 271:../drivers/fsl_flexio_i2s_dma.c ****     DMA_SubmitTransfer(handle->dmaHandle, &config, true);
+ 272:../drivers/fsl_flexio_i2s_dma.c **** 
+ 273:../drivers/fsl_flexio_i2s_dma.c ****     /* Start DMA transfer */
+ 274:../drivers/fsl_flexio_i2s_dma.c ****     DMA_StartTransfer(handle->dmaHandle);
+ 275:../drivers/fsl_flexio_i2s_dma.c **** 
+ 276:../drivers/fsl_flexio_i2s_dma.c ****     /* Enable DMA enable bit */
+ 277:../drivers/fsl_flexio_i2s_dma.c ****     FLEXIO_I2S_RxEnableDMA(base, true);
+ 278:../drivers/fsl_flexio_i2s_dma.c **** 
+ 279:../drivers/fsl_flexio_i2s_dma.c ****     /* Enable FLEXIO I2S Rx clock */
+ 280:../drivers/fsl_flexio_i2s_dma.c ****     FLEXIO_I2S_Enable(base, true);
+ 281:../drivers/fsl_flexio_i2s_dma.c **** 
+ 282:../drivers/fsl_flexio_i2s_dma.c ****     return kStatus_Success;
+ 283:../drivers/fsl_flexio_i2s_dma.c **** }
+ 487              		.loc 1 283 0
+ 488 0044 09B0     		add	sp, sp, #36
+ 489              		@ sp needed
+ 490              	.LVL60:
+ 491              	.LVL61:
+ 492 0046 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 493              	.LVL62:
+ 494              	.L22:
+ 259:../drivers/fsl_flexio_i2s_dma.c **** 
+ 495              		.loc 1 259 0
+ 496 0048 A360     		str	r3, [r4, #8]
+ 262:../drivers/fsl_flexio_i2s_dma.c ****     handle->queue[handle->queueUser].dataSize = xfer->dataSize;
+ 497              		.loc 1 262 0
+ 498 004a 4420     		movs	r0, #68
+ 499 004c 235C     		ldrb	r3, [r4, r0]
+ 500 004e 0233     		adds	r3, r3, #2
+ 501 0050 DB00     		lsls	r3, r3, #3
+ 502 0052 E318     		adds	r3, r4, r3
+ 503 0054 2F68     		ldr	r7, [r5]
+ 504 0056 5F60     		str	r7, [r3, #4]
+ 263:../drivers/fsl_flexio_i2s_dma.c ****     handle->transferSize[handle->queueUser] = xfer->dataSize;
+ 505              		.loc 1 263 0
+ 506 0058 235C     		ldrb	r3, [r4, r0]
+ 507 005a 0233     		adds	r3, r3, #2
+ 508 005c DB00     		lsls	r3, r3, #3
+ 509 005e E318     		adds	r3, r4, r3
+ 510 0060 6F68     		ldr	r7, [r5, #4]
+ 511 0062 9F60     		str	r7, [r3, #8]
+ 264:../drivers/fsl_flexio_i2s_dma.c ****     handle->queueUser = (handle->queueUser + 1) % FLEXIO_I2S_XFER_QUEUE_SIZE;
+ 512              		.loc 1 264 0
+ 513 0064 235C     		ldrb	r3, [r4, r0]
+ 514 0066 0C33     		adds	r3, r3, #12
+ 515 0068 9B00     		lsls	r3, r3, #2
+ 516 006a E318     		adds	r3, r4, r3
+ 517 006c 6F68     		ldr	r7, [r5, #4]
+ 518 006e 5F60     		str	r7, [r3, #4]
+ 265:../drivers/fsl_flexio_i2s_dma.c **** 
+ 519              		.loc 1 265 0
+ 520 0070 275C     		ldrb	r7, [r4, r0]
+ 521 0072 0137     		adds	r7, r7, #1
+ 522 0074 0323     		movs	r3, #3
+ 523 0076 3B40     		ands	r3, r7
+ 524 0078 2354     		strb	r3, [r4, r0]
+ 268:../drivers/fsl_flexio_i2s_dma.c ****                         xfer->dataSize, kDMA_PeripheralToMemory);
+ 525              		.loc 1 268 0
+ 526 007a 2B68     		ldr	r3, [r5]
+ 269:../drivers/fsl_flexio_i2s_dma.c **** 
+ 527              		.loc 1 269 0
+ 528 007c 6868     		ldr	r0, [r5, #4]
+ 529 007e 0190     		str	r0, [sp, #4]
+ 268:../drivers/fsl_flexio_i2s_dma.c ****                         xfer->dataSize, kDMA_PeripheralToMemory);
+ 530              		.loc 1 268 0
+ 531 0080 0125     		movs	r5, #1
+ 532              	.LVL63:
+ 533 0082 0295     		str	r5, [sp, #8]
+ 534 0084 0092     		str	r2, [sp]
+ 535 0086 04A8     		add	r0, sp, #16
+ 536 0088 FFF7FEFF 		bl	DMA_PrepareTransfer
+ 537              	.LVL64:
+ 271:../drivers/fsl_flexio_i2s_dma.c **** 
+ 538              		.loc 1 271 0
+ 539 008c 0122     		movs	r2, #1
+ 540 008e 04A9     		add	r1, sp, #16
+ 541 0090 2068     		ldr	r0, [r4]
+ 542 0092 FFF7FEFF 		bl	DMA_SubmitTransfer
+ 543              	.LVL65:
+ 274:../drivers/fsl_flexio_i2s_dma.c **** 
+ 544              		.loc 1 274 0
+ 545 0096 2268     		ldr	r2, [r4]
+ 546              	.LVL66:
+ 547              	.LBB50:
+ 548              	.LBB51:
+ 549              		.loc 3 566 0
+ 550 0098 1368     		ldr	r3, [r2]
+ 551 009a 1279     		ldrb	r2, [r2, #4]
+ 552              	.LVL67:
+ 553 009c 1201     		lsls	r2, r2, #4
+ 554 009e 9B18     		adds	r3, r3, r2
+ 555 00a0 0D33     		adds	r3, r3, #13
+ 556 00a2 FF33     		adds	r3, r3, #255
+ 557 00a4 1968     		ldr	r1, [r3]
+ 558 00a6 8022     		movs	r2, #128
+ 559 00a8 D205     		lsls	r2, r2, #23
+ 560 00aa 0A43     		orrs	r2, r1
+ 561 00ac 1A60     		str	r2, [r3]
+ 562              	.LVL68:
+ 563              	.LBE51:
+ 564              	.LBE50:
+ 565              	.LBB52:
+ 566              	.LBB53:
+ 307:../drivers/fsl_flexio_i2s.h **** }
+ 567              		.loc 2 307 0
+ 568 00ae 3268     		ldr	r2, [r6]
+ 569 00b0 737A     		ldrb	r3, [r6, #9]
+ 570 00b2 2900     		movs	r1, r5
+ 571 00b4 9940     		lsls	r1, r1, r3
+ 572 00b6 0B00     		movs	r3, r1
+ 573              	.LVL69:
+ 574              	.LBB54:
+ 575              	.LBB55:
+ 576              		.loc 4 665 0
+ 577 00b8 116B     		ldr	r1, [r2, #48]
+ 578              	.LVL70:
+ 579 00ba 0B43     		orrs	r3, r1
+ 580              	.LVL71:
+ 581 00bc 1363     		str	r3, [r2, #48]
+ 582              	.LVL72:
+ 583              	.LBE55:
+ 584              	.LBE54:
+ 585              	.LBE53:
+ 586              	.LBE52:
+ 587              	.LBB56:
+ 588              	.LBB57:
+ 235:../drivers/fsl_flexio_i2s.h ****     }
+ 589              		.loc 2 235 0
+ 590 00be 3268     		ldr	r2, [r6]
+ 591 00c0 9368     		ldr	r3, [r2, #8]
+ 592 00c2 2B43     		orrs	r3, r5
+ 593 00c4 9360     		str	r3, [r2, #8]
+ 594              	.LVL73:
+ 595              	.LBE57:
+ 596              	.LBE56:
+ 282:../drivers/fsl_flexio_i2s_dma.c **** }
+ 597              		.loc 1 282 0
+ 598 00c6 0020     		movs	r0, #0
+ 599 00c8 BCE7     		b	.L17
+ 600              	.LVL74:
+ 601              	.L19:
+ 250:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 602              		.loc 1 250 0
+ 603 00ca 0420     		movs	r0, #4
+ 604 00cc BAE7     		b	.L17
+ 605              	.L20:
+ 606 00ce 0420     		movs	r0, #4
+ 607 00d0 B8E7     		b	.L17
+ 608              		.cfi_endproc
+ 609              	.LFE96:
+ 611              		.section	.text.FLEXIO_I2S_TransferAbortSendDMA,"ax",%progbits
+ 612              		.align	1
+ 613              		.global	FLEXIO_I2S_TransferAbortSendDMA
+ 614              		.syntax unified
+ 615              		.code	16
+ 616              		.thumb_func
+ 617              		.fpu softvfp
+ 619              	FLEXIO_I2S_TransferAbortSendDMA:
+ 620              	.LFB97:
+ 284:../drivers/fsl_flexio_i2s_dma.c **** 
+ 285:../drivers/fsl_flexio_i2s_dma.c **** void FLEXIO_I2S_TransferAbortSendDMA(FLEXIO_I2S_Type *base, flexio_i2s_dma_handle_t *handle)
+ 286:../drivers/fsl_flexio_i2s_dma.c **** {
+ 621              		.loc 1 286 0
+ 622              		.cfi_startproc
+ 623              		@ args = 0, pretend = 0, frame = 0
+ 624              		@ frame_needed = 0, uses_anonymous_args = 0
+ 625              	.LVL75:
+ 626 0000 70B5     		push	{r4, r5, r6, lr}
+ 627              		.cfi_def_cfa_offset 16
+ 628              		.cfi_offset 4, -16
+ 629              		.cfi_offset 5, -12
+ 630              		.cfi_offset 6, -8
+ 631              		.cfi_offset 14, -4
+ 632 0002 0500     		movs	r5, r0
+ 633 0004 0C00     		movs	r4, r1
+ 287:../drivers/fsl_flexio_i2s_dma.c ****     assert(handle);
+ 288:../drivers/fsl_flexio_i2s_dma.c **** 
+ 289:../drivers/fsl_flexio_i2s_dma.c ****     /* Disable dma */
+ 290:../drivers/fsl_flexio_i2s_dma.c ****     DMA_AbortTransfer(handle->dmaHandle);
+ 634              		.loc 1 290 0
+ 635 0006 0868     		ldr	r0, [r1]
+ 636              	.LVL76:
+ 637 0008 FFF7FEFF 		bl	DMA_AbortTransfer
+ 638              	.LVL77:
+ 639              	.LBB58:
+ 640              	.LBB59:
+ 296:../drivers/fsl_flexio_i2s.h **** }
+ 641              		.loc 2 296 0
+ 642 000c 2968     		ldr	r1, [r5]
+ 643 000e 2B7A     		ldrb	r3, [r5, #8]
+ 644 0010 0122     		movs	r2, #1
+ 645 0012 1000     		movs	r0, r2
+ 646 0014 9840     		lsls	r0, r0, r3
+ 647              	.LVL78:
+ 648              	.LBB60:
+ 649              	.LBB61:
+ 666:../drivers/fsl_flexio.h ****     }
+ 667:../drivers/fsl_flexio.h ****     else
+ 668:../drivers/fsl_flexio.h ****     {
+ 669:../drivers/fsl_flexio.h ****         base->SHIFTSDEN &= ~mask;
+ 650              		.loc 4 669 0
+ 651 0016 0B6B     		ldr	r3, [r1, #48]
+ 652 0018 8343     		bics	r3, r0
+ 653 001a 0B63     		str	r3, [r1, #48]
+ 654              	.LVL79:
+ 655              	.LBE61:
+ 656              	.LBE60:
+ 657              	.LBE59:
+ 658              	.LBE58:
+ 291:../drivers/fsl_flexio_i2s_dma.c **** 
+ 292:../drivers/fsl_flexio_i2s_dma.c ****     /* Disable DMA enable bit */
+ 293:../drivers/fsl_flexio_i2s_dma.c ****     FLEXIO_I2S_TxEnableDMA(base, false);
+ 294:../drivers/fsl_flexio_i2s_dma.c **** 
+ 295:../drivers/fsl_flexio_i2s_dma.c ****     /* Set the handle state */
+ 296:../drivers/fsl_flexio_i2s_dma.c ****     handle->state = kFLEXIO_I2S_Idle;
+ 659              		.loc 1 296 0
+ 660 001c A260     		str	r2, [r4, #8]
+ 297:../drivers/fsl_flexio_i2s_dma.c **** }
+ 661              		.loc 1 297 0
+ 662              		@ sp needed
+ 663              	.LVL80:
+ 664              	.LVL81:
+ 665 001e 70BD     		pop	{r4, r5, r6, pc}
+ 666              		.cfi_endproc
+ 667              	.LFE97:
+ 669              		.section	.text.FLEXIO_I2S_TxDMACallback,"ax",%progbits
+ 670              		.align	1
+ 671              		.syntax unified
+ 672              		.code	16
+ 673              		.thumb_func
+ 674              		.fpu softvfp
+ 676              	FLEXIO_I2S_TxDMACallback:
+ 677              	.LFB90:
+  80:../drivers/fsl_flexio_i2s_dma.c ****     flexio_i2s_dma_private_handle_t *privHandle = (flexio_i2s_dma_private_handle_t *)userData;
+ 678              		.loc 1 80 0
+ 679              		.cfi_startproc
+ 680              		@ args = 0, pretend = 0, frame = 0
+ 681              		@ frame_needed = 0, uses_anonymous_args = 0
+ 682              	.LVL82:
+ 683 0000 70B5     		push	{r4, r5, r6, lr}
+ 684              		.cfi_def_cfa_offset 16
+ 685              		.cfi_offset 4, -16
+ 686              		.cfi_offset 5, -12
+ 687              		.cfi_offset 6, -8
+ 688              		.cfi_offset 14, -4
+ 689 0002 0D00     		movs	r5, r1
+ 690              	.LVL83:
+  82:../drivers/fsl_flexio_i2s_dma.c **** 
+ 691              		.loc 1 82 0
+ 692 0004 4C68     		ldr	r4, [r1, #4]
+ 693              	.LVL84:
+  85:../drivers/fsl_flexio_i2s_dma.c ****     flexio_i2sHandle->queueDriver = (flexio_i2sHandle->queueDriver + 1) % FLEXIO_I2S_XFER_QUEUE_SIZ
+ 694              		.loc 1 85 0
+ 695 0006 4526     		movs	r6, #69
+ 696 0008 A05D     		ldrb	r0, [r4, r6]
+ 697              	.LVL85:
+ 698 000a 0230     		adds	r0, r0, #2
+ 699 000c C000     		lsls	r0, r0, #3
+ 700 000e 2018     		adds	r0, r4, r0
+ 701 0010 0430     		adds	r0, r0, #4
+ 702 0012 0822     		movs	r2, #8
+ 703 0014 0021     		movs	r1, #0
+ 704              	.LVL86:
+ 705 0016 FFF7FEFF 		bl	memset
+ 706              	.LVL87:
+  86:../drivers/fsl_flexio_i2s_dma.c ****     if (flexio_i2sHandle->callback)
+ 707              		.loc 1 86 0
+ 708 001a A25D     		ldrb	r2, [r4, r6]
+ 709 001c 0132     		adds	r2, r2, #1
+ 710 001e 0323     		movs	r3, #3
+ 711 0020 1340     		ands	r3, r2
+ 712 0022 A355     		strb	r3, [r4, r6]
+  87:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 713              		.loc 1 87 0
+ 714 0024 E668     		ldr	r6, [r4, #12]
+ 715 0026 002E     		cmp	r6, #0
+ 716 0028 04D0     		beq	.L25
+  89:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 717              		.loc 1 89 0
+ 718 002a 2369     		ldr	r3, [r4, #16]
+ 719 002c 0022     		movs	r2, #0
+ 720 002e 2100     		movs	r1, r4
+ 721 0030 2868     		ldr	r0, [r5]
+ 722 0032 B047     		blx	r6
+ 723              	.LVL88:
+ 724              	.L25:
+  93:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 725              		.loc 1 93 0
+ 726 0034 4523     		movs	r3, #69
+ 727 0036 E35C     		ldrb	r3, [r4, r3]
+ 728 0038 0233     		adds	r3, r3, #2
+ 729 003a DB00     		lsls	r3, r3, #3
+ 730 003c E318     		adds	r3, r4, r3
+ 731 003e 5B68     		ldr	r3, [r3, #4]
+ 732 0040 002B     		cmp	r3, #0
+ 733 0042 00D0     		beq	.L27
+ 734              	.L24:
+  97:../drivers/fsl_flexio_i2s_dma.c **** 
+ 735              		.loc 1 97 0
+ 736              		@ sp needed
+ 737              	.LVL89:
+ 738              	.LVL90:
+ 739 0044 70BD     		pop	{r4, r5, r6, pc}
+ 740              	.LVL91:
+ 741              	.L27:
+  95:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 742              		.loc 1 95 0
+ 743 0046 2868     		ldr	r0, [r5]
+ 744 0048 2100     		movs	r1, r4
+ 745 004a FFF7FEFF 		bl	FLEXIO_I2S_TransferAbortSendDMA
+ 746              	.LVL92:
+  97:../drivers/fsl_flexio_i2s_dma.c **** 
+ 747              		.loc 1 97 0
+ 748 004e F9E7     		b	.L24
+ 749              		.cfi_endproc
+ 750              	.LFE90:
+ 752              		.section	.text.FLEXIO_I2S_TransferAbortReceiveDMA,"ax",%progbits
+ 753              		.align	1
+ 754              		.global	FLEXIO_I2S_TransferAbortReceiveDMA
+ 755              		.syntax unified
+ 756              		.code	16
+ 757              		.thumb_func
+ 758              		.fpu softvfp
+ 760              	FLEXIO_I2S_TransferAbortReceiveDMA:
+ 761              	.LFB98:
+ 298:../drivers/fsl_flexio_i2s_dma.c **** 
+ 299:../drivers/fsl_flexio_i2s_dma.c **** void FLEXIO_I2S_TransferAbortReceiveDMA(FLEXIO_I2S_Type *base, flexio_i2s_dma_handle_t *handle)
+ 300:../drivers/fsl_flexio_i2s_dma.c **** {
+ 762              		.loc 1 300 0
+ 763              		.cfi_startproc
+ 764              		@ args = 0, pretend = 0, frame = 0
+ 765              		@ frame_needed = 0, uses_anonymous_args = 0
+ 766              	.LVL93:
+ 767 0000 70B5     		push	{r4, r5, r6, lr}
+ 768              		.cfi_def_cfa_offset 16
+ 769              		.cfi_offset 4, -16
+ 770              		.cfi_offset 5, -12
+ 771              		.cfi_offset 6, -8
+ 772              		.cfi_offset 14, -4
+ 773 0002 0500     		movs	r5, r0
+ 774 0004 0C00     		movs	r4, r1
+ 301:../drivers/fsl_flexio_i2s_dma.c ****     assert(handle);
+ 302:../drivers/fsl_flexio_i2s_dma.c **** 
+ 303:../drivers/fsl_flexio_i2s_dma.c ****     /* Disable dma */
+ 304:../drivers/fsl_flexio_i2s_dma.c ****     DMA_AbortTransfer(handle->dmaHandle);
+ 775              		.loc 1 304 0
+ 776 0006 0868     		ldr	r0, [r1]
+ 777              	.LVL94:
+ 778 0008 FFF7FEFF 		bl	DMA_AbortTransfer
+ 779              	.LVL95:
+ 780              	.LBB62:
+ 781              	.LBB63:
+ 307:../drivers/fsl_flexio_i2s.h **** }
+ 782              		.loc 2 307 0
+ 783 000c 2968     		ldr	r1, [r5]
+ 784 000e 6B7A     		ldrb	r3, [r5, #9]
+ 785 0010 0122     		movs	r2, #1
+ 786 0012 1000     		movs	r0, r2
+ 787 0014 9840     		lsls	r0, r0, r3
+ 788              	.LVL96:
+ 789              	.LBB64:
+ 790              	.LBB65:
+ 791              		.loc 4 669 0
+ 792 0016 0B6B     		ldr	r3, [r1, #48]
+ 793 0018 8343     		bics	r3, r0
+ 794 001a 0B63     		str	r3, [r1, #48]
+ 795              	.LVL97:
+ 796              	.LBE65:
+ 797              	.LBE64:
+ 798              	.LBE63:
+ 799              	.LBE62:
+ 305:../drivers/fsl_flexio_i2s_dma.c **** 
+ 306:../drivers/fsl_flexio_i2s_dma.c ****     /* Disable DMA enable bit */
+ 307:../drivers/fsl_flexio_i2s_dma.c ****     FLEXIO_I2S_RxEnableDMA(base, false);
+ 308:../drivers/fsl_flexio_i2s_dma.c **** 
+ 309:../drivers/fsl_flexio_i2s_dma.c ****     /* Set the handle state */
+ 310:../drivers/fsl_flexio_i2s_dma.c ****     handle->state = kFLEXIO_I2S_Idle;
+ 800              		.loc 1 310 0
+ 801 001c A260     		str	r2, [r4, #8]
+ 311:../drivers/fsl_flexio_i2s_dma.c **** }
+ 802              		.loc 1 311 0
+ 803              		@ sp needed
+ 804              	.LVL98:
+ 805              	.LVL99:
+ 806 001e 70BD     		pop	{r4, r5, r6, pc}
+ 807              		.cfi_endproc
+ 808              	.LFE98:
+ 810              		.section	.text.FLEXIO_I2S_RxDMACallback,"ax",%progbits
+ 811              		.align	1
+ 812              		.syntax unified
+ 813              		.code	16
+ 814              		.thumb_func
+ 815              		.fpu softvfp
+ 817              	FLEXIO_I2S_RxDMACallback:
+ 818              	.LFB91:
+ 100:../drivers/fsl_flexio_i2s_dma.c ****     flexio_i2s_dma_private_handle_t *privHandle = (flexio_i2s_dma_private_handle_t *)userData;
+ 819              		.loc 1 100 0
+ 820              		.cfi_startproc
+ 821              		@ args = 0, pretend = 0, frame = 0
+ 822              		@ frame_needed = 0, uses_anonymous_args = 0
+ 823              	.LVL100:
+ 824 0000 70B5     		push	{r4, r5, r6, lr}
+ 825              		.cfi_def_cfa_offset 16
+ 826              		.cfi_offset 4, -16
+ 827              		.cfi_offset 5, -12
+ 828              		.cfi_offset 6, -8
+ 829              		.cfi_offset 14, -4
+ 830 0002 0D00     		movs	r5, r1
+ 831              	.LVL101:
+ 102:../drivers/fsl_flexio_i2s_dma.c **** 
+ 832              		.loc 1 102 0
+ 833 0004 4C68     		ldr	r4, [r1, #4]
+ 834              	.LVL102:
+ 105:../drivers/fsl_flexio_i2s_dma.c ****     flexio_i2sHandle->queueDriver = (flexio_i2sHandle->queueDriver + 1) % FLEXIO_I2S_XFER_QUEUE_SIZ
+ 835              		.loc 1 105 0
+ 836 0006 4526     		movs	r6, #69
+ 837 0008 A05D     		ldrb	r0, [r4, r6]
+ 838              	.LVL103:
+ 839 000a 0230     		adds	r0, r0, #2
+ 840 000c C000     		lsls	r0, r0, #3
+ 841 000e 2018     		adds	r0, r4, r0
+ 842 0010 0430     		adds	r0, r0, #4
+ 843 0012 0822     		movs	r2, #8
+ 844 0014 0021     		movs	r1, #0
+ 845              	.LVL104:
+ 846 0016 FFF7FEFF 		bl	memset
+ 847              	.LVL105:
+ 106:../drivers/fsl_flexio_i2s_dma.c ****     if (flexio_i2sHandle->callback)
+ 848              		.loc 1 106 0
+ 849 001a A25D     		ldrb	r2, [r4, r6]
+ 850 001c 0132     		adds	r2, r2, #1
+ 851 001e 0323     		movs	r3, #3
+ 852 0020 1340     		ands	r3, r2
+ 853 0022 A355     		strb	r3, [r4, r6]
+ 107:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 854              		.loc 1 107 0
+ 855 0024 E668     		ldr	r6, [r4, #12]
+ 856 0026 002E     		cmp	r6, #0
+ 857 0028 04D0     		beq	.L30
+ 109:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 858              		.loc 1 109 0
+ 859 002a 2369     		ldr	r3, [r4, #16]
+ 860 002c 0022     		movs	r2, #0
+ 861 002e 2100     		movs	r1, r4
+ 862 0030 2868     		ldr	r0, [r5]
+ 863 0032 B047     		blx	r6
+ 864              	.LVL106:
+ 865              	.L30:
+ 113:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 866              		.loc 1 113 0
+ 867 0034 4523     		movs	r3, #69
+ 868 0036 E35C     		ldrb	r3, [r4, r3]
+ 869 0038 0233     		adds	r3, r3, #2
+ 870 003a DB00     		lsls	r3, r3, #3
+ 871 003c E318     		adds	r3, r4, r3
+ 872 003e 5B68     		ldr	r3, [r3, #4]
+ 873 0040 002B     		cmp	r3, #0
+ 874 0042 00D0     		beq	.L32
+ 875              	.L29:
+ 117:../drivers/fsl_flexio_i2s_dma.c **** 
+ 876              		.loc 1 117 0
+ 877              		@ sp needed
+ 878              	.LVL107:
+ 879              	.LVL108:
+ 880 0044 70BD     		pop	{r4, r5, r6, pc}
+ 881              	.LVL109:
+ 882              	.L32:
+ 115:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 883              		.loc 1 115 0
+ 884 0046 2868     		ldr	r0, [r5]
+ 885 0048 2100     		movs	r1, r4
+ 886 004a FFF7FEFF 		bl	FLEXIO_I2S_TransferAbortReceiveDMA
+ 887              	.LVL110:
+ 117:../drivers/fsl_flexio_i2s_dma.c **** 
+ 888              		.loc 1 117 0
+ 889 004e F9E7     		b	.L29
+ 890              		.cfi_endproc
+ 891              	.LFE91:
+ 893              		.section	.text.FLEXIO_I2S_TransferGetSendCountDMA,"ax",%progbits
+ 894              		.align	1
+ 895              		.global	FLEXIO_I2S_TransferGetSendCountDMA
+ 896              		.syntax unified
+ 897              		.code	16
+ 898              		.thumb_func
+ 899              		.fpu softvfp
+ 901              	FLEXIO_I2S_TransferGetSendCountDMA:
+ 902              	.LFB99:
+ 312:../drivers/fsl_flexio_i2s_dma.c **** 
+ 313:../drivers/fsl_flexio_i2s_dma.c **** status_t FLEXIO_I2S_TransferGetSendCountDMA(FLEXIO_I2S_Type *base, flexio_i2s_dma_handle_t *handle,
+ 314:../drivers/fsl_flexio_i2s_dma.c **** {
+ 903              		.loc 1 314 0
+ 904              		.cfi_startproc
+ 905              		@ args = 0, pretend = 0, frame = 0
+ 906              		@ frame_needed = 0, uses_anonymous_args = 0
+ 907              		@ link register save eliminated.
+ 908              	.LVL111:
+ 315:../drivers/fsl_flexio_i2s_dma.c ****     assert(handle);
+ 316:../drivers/fsl_flexio_i2s_dma.c **** 
+ 317:../drivers/fsl_flexio_i2s_dma.c ****     status_t status = kStatus_Success;
+ 318:../drivers/fsl_flexio_i2s_dma.c **** 
+ 319:../drivers/fsl_flexio_i2s_dma.c ****     if (handle->state != kFLEXIO_I2S_Busy)
+ 909              		.loc 1 319 0
+ 910 0000 8B68     		ldr	r3, [r1, #8]
+ 911 0002 002B     		cmp	r3, #0
+ 912 0004 13D1     		bne	.L35
+ 320:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 321:../drivers/fsl_flexio_i2s_dma.c ****         status = kStatus_NoTransferInProgress;
+ 322:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 323:../drivers/fsl_flexio_i2s_dma.c ****     else
+ 324:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 325:../drivers/fsl_flexio_i2s_dma.c ****         *count = handle->transferSize[handle->queueDriver] -
+ 913              		.loc 1 325 0
+ 914 0006 4533     		adds	r3, r3, #69
+ 915 0008 CB5C     		ldrb	r3, [r1, r3]
+ 916 000a 0C33     		adds	r3, r3, #12
+ 917 000c 9B00     		lsls	r3, r3, #2
+ 918 000e CB18     		adds	r3, r1, r3
+ 919 0010 5868     		ldr	r0, [r3, #4]
+ 920              	.LVL112:
+ 326:../drivers/fsl_flexio_i2s_dma.c ****                  DMA_GetRemainingBytes(handle->dmaHandle->base, handle->dmaHandle->channel);
+ 921              		.loc 1 326 0
+ 922 0012 0B68     		ldr	r3, [r1]
+ 923 0014 1968     		ldr	r1, [r3]
+ 924              	.LVL113:
+ 925 0016 1B79     		ldrb	r3, [r3, #4]
+ 926              	.LVL114:
+ 927              	.LBB66:
+ 928              	.LBB67:
+ 449:../drivers/fsl_dma.h **** }
+ 929              		.loc 3 449 0
+ 930 0018 1B01     		lsls	r3, r3, #4
+ 931              	.LVL115:
+ 932 001a C918     		adds	r1, r1, r3
+ 933              	.LVL116:
+ 934 001c 0931     		adds	r1, r1, #9
+ 935 001e FF31     		adds	r1, r1, #255
+ 936 0020 0B68     		ldr	r3, [r1]
+ 937 0022 1B02     		lsls	r3, r3, #8
+ 938 0024 1B0A     		lsrs	r3, r3, #8
+ 939              	.LVL117:
+ 940              	.LBE67:
+ 941              	.LBE66:
+ 325:../drivers/fsl_flexio_i2s_dma.c ****                  DMA_GetRemainingBytes(handle->dmaHandle->base, handle->dmaHandle->channel);
+ 942              		.loc 1 325 0
+ 943 0026 C31A     		subs	r3, r0, r3
+ 944 0028 1360     		str	r3, [r2]
+ 317:../drivers/fsl_flexio_i2s_dma.c **** 
+ 945              		.loc 1 317 0
+ 946 002a 0020     		movs	r0, #0
+ 947              	.LVL118:
+ 948              	.L33:
+ 327:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 328:../drivers/fsl_flexio_i2s_dma.c **** 
+ 329:../drivers/fsl_flexio_i2s_dma.c ****     return status;
+ 330:../drivers/fsl_flexio_i2s_dma.c **** }
+ 949              		.loc 1 330 0
+ 950              		@ sp needed
+ 951 002c 7047     		bx	lr
+ 952              	.LVL119:
+ 953              	.L35:
+ 321:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 954              		.loc 1 321 0
+ 955 002e 0620     		movs	r0, #6
+ 956              	.LVL120:
+ 329:../drivers/fsl_flexio_i2s_dma.c **** }
+ 957              		.loc 1 329 0
+ 958 0030 FCE7     		b	.L33
+ 959              		.cfi_endproc
+ 960              	.LFE99:
+ 962              		.section	.text.FLEXIO_I2S_TransferGetReceiveCountDMA,"ax",%progbits
+ 963              		.align	1
+ 964              		.global	FLEXIO_I2S_TransferGetReceiveCountDMA
+ 965              		.syntax unified
+ 966              		.code	16
+ 967              		.thumb_func
+ 968              		.fpu softvfp
+ 970              	FLEXIO_I2S_TransferGetReceiveCountDMA:
+ 971              	.LFB100:
+ 331:../drivers/fsl_flexio_i2s_dma.c **** 
+ 332:../drivers/fsl_flexio_i2s_dma.c **** status_t FLEXIO_I2S_TransferGetReceiveCountDMA(FLEXIO_I2S_Type *base, flexio_i2s_dma_handle_t *hand
+ 333:../drivers/fsl_flexio_i2s_dma.c **** {
+ 972              		.loc 1 333 0
+ 973              		.cfi_startproc
+ 974              		@ args = 0, pretend = 0, frame = 0
+ 975              		@ frame_needed = 0, uses_anonymous_args = 0
+ 976              		@ link register save eliminated.
+ 977              	.LVL121:
+ 334:../drivers/fsl_flexio_i2s_dma.c ****     assert(handle);
+ 335:../drivers/fsl_flexio_i2s_dma.c **** 
+ 336:../drivers/fsl_flexio_i2s_dma.c ****     status_t status = kStatus_Success;
+ 337:../drivers/fsl_flexio_i2s_dma.c **** 
+ 338:../drivers/fsl_flexio_i2s_dma.c ****     if (handle->state != kFLEXIO_I2S_Busy)
+ 978              		.loc 1 338 0
+ 979 0000 8B68     		ldr	r3, [r1, #8]
+ 980 0002 002B     		cmp	r3, #0
+ 981 0004 13D1     		bne	.L38
+ 339:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 340:../drivers/fsl_flexio_i2s_dma.c ****         status = kStatus_NoTransferInProgress;
+ 341:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 342:../drivers/fsl_flexio_i2s_dma.c ****     else
+ 343:../drivers/fsl_flexio_i2s_dma.c ****     {
+ 344:../drivers/fsl_flexio_i2s_dma.c ****         *count = handle->transferSize[handle->queueDriver] -
+ 982              		.loc 1 344 0
+ 983 0006 4533     		adds	r3, r3, #69
+ 984 0008 CB5C     		ldrb	r3, [r1, r3]
+ 985 000a 0C33     		adds	r3, r3, #12
+ 986 000c 9B00     		lsls	r3, r3, #2
+ 987 000e CB18     		adds	r3, r1, r3
+ 988 0010 5868     		ldr	r0, [r3, #4]
+ 989              	.LVL122:
+ 345:../drivers/fsl_flexio_i2s_dma.c ****                  DMA_GetRemainingBytes(handle->dmaHandle->base, handle->dmaHandle->channel);
+ 990              		.loc 1 345 0
+ 991 0012 0B68     		ldr	r3, [r1]
+ 992 0014 1968     		ldr	r1, [r3]
+ 993              	.LVL123:
+ 994 0016 1B79     		ldrb	r3, [r3, #4]
+ 995              	.LVL124:
+ 996              	.LBB68:
+ 997              	.LBB69:
+ 449:../drivers/fsl_dma.h **** }
+ 998              		.loc 3 449 0
+ 999 0018 1B01     		lsls	r3, r3, #4
+ 1000              	.LVL125:
+ 1001 001a C918     		adds	r1, r1, r3
+ 1002              	.LVL126:
+ 1003 001c 0931     		adds	r1, r1, #9
+ 1004 001e FF31     		adds	r1, r1, #255
+ 1005 0020 0B68     		ldr	r3, [r1]
+ 1006 0022 1B02     		lsls	r3, r3, #8
+ 1007 0024 1B0A     		lsrs	r3, r3, #8
+ 1008              	.LVL127:
+ 1009              	.LBE69:
+ 1010              	.LBE68:
+ 344:../drivers/fsl_flexio_i2s_dma.c ****                  DMA_GetRemainingBytes(handle->dmaHandle->base, handle->dmaHandle->channel);
+ 1011              		.loc 1 344 0
+ 1012 0026 C31A     		subs	r3, r0, r3
+ 1013 0028 1360     		str	r3, [r2]
+ 336:../drivers/fsl_flexio_i2s_dma.c **** 
+ 1014              		.loc 1 336 0
+ 1015 002a 0020     		movs	r0, #0
+ 1016              	.LVL128:
+ 1017              	.L36:
+ 346:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 347:../drivers/fsl_flexio_i2s_dma.c **** 
+ 348:../drivers/fsl_flexio_i2s_dma.c ****     return status;
+ 349:../drivers/fsl_flexio_i2s_dma.c **** }
+ 1018              		.loc 1 349 0
+ 1019              		@ sp needed
+ 1020 002c 7047     		bx	lr
+ 1021              	.LVL129:
+ 1022              	.L38:
+ 340:../drivers/fsl_flexio_i2s_dma.c ****     }
+ 1023              		.loc 1 340 0
+ 1024 002e 0620     		movs	r0, #6
+ 1025              	.LVL130:
+ 348:../drivers/fsl_flexio_i2s_dma.c **** }
+ 1026              		.loc 1 348 0
+ 1027 0030 FCE7     		b	.L36
+ 1028              		.cfi_endproc
+ 1029              	.LFE100:
+ 1031              		.section	.bss.s_dmaPrivateHandle,"aw",%nobits
+ 1032              		.align	2
+ 1033              		.set	.LANCHOR0,. + 0
+ 1036              	s_dmaPrivateHandle:
+ 1037 0000 00000000 		.space	16
+ 1037      00000000 
+ 1037      00000000 
+ 1037      00000000 
+ 1038              		.text
+ 1039              	.Letext0:
+ 1040              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1041              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1042              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1043              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1044              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1045              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1046              		.file 11 "../CMSIS/system_MKL17Z4.h"
+ 1047              		.file 12 "../CMSIS/MKL17Z4.h"
+ 1048              		.file 13 "../drivers/fsl_common.h"
+ 1049              		.file 14 "../drivers/fsl_clock.h"
+ 1050              		.file 15 "../drivers/fsl_flexio_i2s_dma.h"
+ 1051              		.file 16 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fsl_flexio_i2s_dma.c
+     /tmp/cctCccod.s:16     .text.FLEXIO_I2S_TransferTxCreateHandleDMA:0000000000000000 $t
+     /tmp/cctCccod.s:23     .text.FLEXIO_I2S_TransferTxCreateHandleDMA:0000000000000000 FLEXIO_I2S_TransferTxCreateHandleDMA
+     /tmp/cctCccod.s:82     .text.FLEXIO_I2S_TransferTxCreateHandleDMA:0000000000000030 $d
+     /tmp/cctCccod.s:676    .text.FLEXIO_I2S_TxDMACallback:0000000000000000 FLEXIO_I2S_TxDMACallback
+     /tmp/cctCccod.s:88     .text.FLEXIO_I2S_TransferRxCreateHandleDMA:0000000000000000 $t
+     /tmp/cctCccod.s:95     .text.FLEXIO_I2S_TransferRxCreateHandleDMA:0000000000000000 FLEXIO_I2S_TransferRxCreateHandleDMA
+     /tmp/cctCccod.s:154    .text.FLEXIO_I2S_TransferRxCreateHandleDMA:0000000000000034 $d
+     /tmp/cctCccod.s:817    .text.FLEXIO_I2S_RxDMACallback:0000000000000000 FLEXIO_I2S_RxDMACallback
+     /tmp/cctCccod.s:160    .text.FLEXIO_I2S_TransferSetFormatDMA:0000000000000000 $t
+     /tmp/cctCccod.s:167    .text.FLEXIO_I2S_TransferSetFormatDMA:0000000000000000 FLEXIO_I2S_TransferSetFormatDMA
+     /tmp/cctCccod.s:214    .text.FLEXIO_I2S_TransferSendDMA:0000000000000000 $t
+     /tmp/cctCccod.s:221    .text.FLEXIO_I2S_TransferSendDMA:0000000000000000 FLEXIO_I2S_TransferSendDMA
+     /tmp/cctCccod.s:415    .text.FLEXIO_I2S_TransferReceiveDMA:0000000000000000 $t
+     /tmp/cctCccod.s:422    .text.FLEXIO_I2S_TransferReceiveDMA:0000000000000000 FLEXIO_I2S_TransferReceiveDMA
+     /tmp/cctCccod.s:612    .text.FLEXIO_I2S_TransferAbortSendDMA:0000000000000000 $t
+     /tmp/cctCccod.s:619    .text.FLEXIO_I2S_TransferAbortSendDMA:0000000000000000 FLEXIO_I2S_TransferAbortSendDMA
+     /tmp/cctCccod.s:670    .text.FLEXIO_I2S_TxDMACallback:0000000000000000 $t
+     /tmp/cctCccod.s:753    .text.FLEXIO_I2S_TransferAbortReceiveDMA:0000000000000000 $t
+     /tmp/cctCccod.s:760    .text.FLEXIO_I2S_TransferAbortReceiveDMA:0000000000000000 FLEXIO_I2S_TransferAbortReceiveDMA
+     /tmp/cctCccod.s:811    .text.FLEXIO_I2S_RxDMACallback:0000000000000000 $t
+     /tmp/cctCccod.s:894    .text.FLEXIO_I2S_TransferGetSendCountDMA:0000000000000000 $t
+     /tmp/cctCccod.s:901    .text.FLEXIO_I2S_TransferGetSendCountDMA:0000000000000000 FLEXIO_I2S_TransferGetSendCountDMA
+     /tmp/cctCccod.s:963    .text.FLEXIO_I2S_TransferGetReceiveCountDMA:0000000000000000 $t
+     /tmp/cctCccod.s:970    .text.FLEXIO_I2S_TransferGetReceiveCountDMA:0000000000000000 FLEXIO_I2S_TransferGetReceiveCountDMA
+     /tmp/cctCccod.s:1032   .bss.s_dmaPrivateHandle:0000000000000000 $d
+     /tmp/cctCccod.s:1036   .bss.s_dmaPrivateHandle:0000000000000000 s_dmaPrivateHandle
+
+UNDEFINED SYMBOLS
+memset
+DMA_SetCallback
+FLEXIO_I2S_SlaveSetFormat
+FLEXIO_I2S_MasterSetFormat
+FLEXIO_GetShifterBufferAddress
+DMA_PrepareTransfer
+DMA_SubmitTransfer
+DMA_AbortTransfer
