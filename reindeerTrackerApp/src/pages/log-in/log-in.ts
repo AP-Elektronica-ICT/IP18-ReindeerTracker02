@@ -81,7 +81,7 @@ export class LogInPage {
   ionViewDidLoad() {
     console.log(this.auth.isAuthenticated());
     if (this.auth.isAuthenticated()) {
-      this.navCtrl.push(HomePage);
+      this.navCtrl.setRoot(HomePage);
     }
   }
 
