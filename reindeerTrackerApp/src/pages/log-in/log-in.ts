@@ -91,7 +91,8 @@ export class LogInPage {
     const password = form.controls.password.value;
     this.auth.loginWithEmailPassword(email, password)
       .then(res => {
-        this.navCtrl.push(HomePage);
+        //this.navCtrl.push(HomePage);
+        this.navCtrl.setRoot(HomePage);
       })
       .catch(err => {
         this.loginError = true;
