@@ -1,0 +1,1670 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_dac.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DAC_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	DAC_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	DAC_Init:
+  26              	.LFB153:
+  27              		.file 1 "../drivers/fsl_dac.c"
+   1:../drivers/fsl_dac.c **** /*
+   2:../drivers/fsl_dac.c ****  * The Clear BSD License
+   3:../drivers/fsl_dac.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_dac.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_dac.c ****  * All rights reserved.
+   6:../drivers/fsl_dac.c ****  *
+   7:../drivers/fsl_dac.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_dac.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_dac.c ****  * that the following conditions are met:
+  10:../drivers/fsl_dac.c ****  *
+  11:../drivers/fsl_dac.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_dac.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_dac.c ****  *
+  14:../drivers/fsl_dac.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_dac.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_dac.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_dac.c ****  *
+  18:../drivers/fsl_dac.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_dac.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_dac.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_dac.c ****  *
+  22:../drivers/fsl_dac.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_dac.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_dac.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_dac.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_dac.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_dac.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_dac.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_dac.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_dac.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_dac.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_dac.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_dac.c ****  */
+  34:../drivers/fsl_dac.c **** 
+  35:../drivers/fsl_dac.c **** #include "fsl_dac.h"
+  36:../drivers/fsl_dac.c **** 
+  37:../drivers/fsl_dac.c **** /*******************************************************************************
+  38:../drivers/fsl_dac.c ****  * Prototypes
+  39:../drivers/fsl_dac.c ****  ******************************************************************************/
+  40:../drivers/fsl_dac.c **** /*!
+  41:../drivers/fsl_dac.c ****  * @brief Get instance number for DAC module.
+  42:../drivers/fsl_dac.c ****  *
+  43:../drivers/fsl_dac.c ****  * @param base DAC peripheral base address
+  44:../drivers/fsl_dac.c ****  */
+  45:../drivers/fsl_dac.c **** static uint32_t DAC_GetInstance(DAC_Type *base);
+  46:../drivers/fsl_dac.c **** 
+  47:../drivers/fsl_dac.c **** /*******************************************************************************
+  48:../drivers/fsl_dac.c ****  * Variables
+  49:../drivers/fsl_dac.c ****  ******************************************************************************/
+  50:../drivers/fsl_dac.c **** /*! @brief Pointers to DAC bases for each instance. */
+  51:../drivers/fsl_dac.c **** static DAC_Type *const s_dacBases[] = DAC_BASE_PTRS;
+  52:../drivers/fsl_dac.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+  53:../drivers/fsl_dac.c **** /*! @brief Pointers to DAC clocks for each instance. */
+  54:../drivers/fsl_dac.c **** static const clock_ip_name_t s_dacClocks[] = DAC_CLOCKS;
+  55:../drivers/fsl_dac.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+  56:../drivers/fsl_dac.c **** 
+  57:../drivers/fsl_dac.c **** /*******************************************************************************
+  58:../drivers/fsl_dac.c ****  * Codes
+  59:../drivers/fsl_dac.c ****  ******************************************************************************/
+  60:../drivers/fsl_dac.c **** static uint32_t DAC_GetInstance(DAC_Type *base)
+  61:../drivers/fsl_dac.c **** {
+  62:../drivers/fsl_dac.c ****     uint32_t instance;
+  63:../drivers/fsl_dac.c **** 
+  64:../drivers/fsl_dac.c ****     /* Find the instance index from base address mappings. */
+  65:../drivers/fsl_dac.c ****     for (instance = 0; instance < ARRAY_SIZE(s_dacBases); instance++)
+  66:../drivers/fsl_dac.c ****     {
+  67:../drivers/fsl_dac.c ****         if (s_dacBases[instance] == base)
+  68:../drivers/fsl_dac.c ****         {
+  69:../drivers/fsl_dac.c ****             break;
+  70:../drivers/fsl_dac.c ****         }
+  71:../drivers/fsl_dac.c ****     }
+  72:../drivers/fsl_dac.c **** 
+  73:../drivers/fsl_dac.c ****     assert(instance < ARRAY_SIZE(s_dacBases));
+  74:../drivers/fsl_dac.c **** 
+  75:../drivers/fsl_dac.c ****     return instance;
+  76:../drivers/fsl_dac.c **** }
+  77:../drivers/fsl_dac.c **** 
+  78:../drivers/fsl_dac.c **** void DAC_Init(DAC_Type *base, const dac_config_t *config)
+  79:../drivers/fsl_dac.c **** {
+  28              		.loc 1 79 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33              	.LBB8:
+  34              	.LBB9:
+  67:../drivers/fsl_dac.c ****         {
+  35              		.loc 1 67 0
+  36 0000 144B     		ldr	r3, .L10
+  37 0002 9842     		cmp	r0, r3
+  38              	.LBE9:
+  39              	.LBE8:
+  40              		.loc 1 79 0
+  41 0004 30B5     		push	{r4, r5, lr}
+  42              		.cfi_def_cfa_offset 12
+  43              		.cfi_offset 4, -12
+  44              		.cfi_offset 5, -8
+  45              		.cfi_offset 14, -4
+  46              	.LBB12:
+  47              	.LBB10:
+  67:../drivers/fsl_dac.c ****         {
+  48              		.loc 1 67 0
+  49 0006 23D0     		beq	.L5
+  50              	.LVL1:
+  65:../drivers/fsl_dac.c ****     {
+  51              		.loc 1 65 0
+  52 0008 03F58053 		add	r3, r3, #4096
+  53 000c 9842     		cmp	r0, r3
+  54 000e 0CBF     		ite	eq
+  55 0010 0123     		moveq	r3, #1
+  56 0012 0223     		movne	r3, #2
+  57              	.LVL2:
+  58              	.L2:
+  59              	.LBE10:
+  60              	.LBE12:
+  80:../drivers/fsl_dac.c ****     assert(NULL != config);
+  81:../drivers/fsl_dac.c **** 
+  82:../drivers/fsl_dac.c ****     uint8_t tmp8;
+  83:../drivers/fsl_dac.c **** 
+  84:../drivers/fsl_dac.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+  85:../drivers/fsl_dac.c ****     /* Enable the clock. */
+  86:../drivers/fsl_dac.c ****     CLOCK_EnableClock(s_dacClocks[DAC_GetInstance(base)]);
+  61              		.loc 1 86 0
+  62 0014 104A     		ldr	r2, .L10+4
+  63 0016 52F82340 		ldr	r4, [r2, r3, lsl #2]
+  64              	.LVL3:
+  65              	.LBB13:
+  66              	.LBB14:
+  67              		.file 2 "../drivers/fsl_clock.h"
+   1:../drivers/fsl_clock.h **** /*
+   2:../drivers/fsl_clock.h ****  * The Clear BSD License
+   3:../drivers/fsl_clock.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_clock.h ****  * Copyright (c) 2016 - 2017 , NXP
+   5:../drivers/fsl_clock.h ****  * All rights reserved.
+   6:../drivers/fsl_clock.h ****  *
+   7:../drivers/fsl_clock.h ****  *
+   8:../drivers/fsl_clock.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   9:../drivers/fsl_clock.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+  10:../drivers/fsl_clock.h ****  * that the following conditions are met:
+  11:../drivers/fsl_clock.h ****  *
+  12:../drivers/fsl_clock.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  13:../drivers/fsl_clock.h ****  *   of conditions and the following disclaimer.
+  14:../drivers/fsl_clock.h ****  *
+  15:../drivers/fsl_clock.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  16:../drivers/fsl_clock.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  17:../drivers/fsl_clock.h ****  *   other materials provided with the distribution.
+  18:../drivers/fsl_clock.h ****  *
+  19:../drivers/fsl_clock.h ****  * o Neither the name of copyright holder nor the names of its
+  20:../drivers/fsl_clock.h ****  *   contributors may be used to endorse or promote products derived from this
+  21:../drivers/fsl_clock.h ****  *   software without specific prior written permission.
+  22:../drivers/fsl_clock.h ****  *
+  23:../drivers/fsl_clock.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  24:../drivers/fsl_clock.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  25:../drivers/fsl_clock.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  26:../drivers/fsl_clock.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  27:../drivers/fsl_clock.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  28:../drivers/fsl_clock.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  29:../drivers/fsl_clock.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  30:../drivers/fsl_clock.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  31:../drivers/fsl_clock.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  32:../drivers/fsl_clock.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  33:../drivers/fsl_clock.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  34:../drivers/fsl_clock.h ****  */
+  35:../drivers/fsl_clock.h **** 
+  36:../drivers/fsl_clock.h **** #ifndef _FSL_CLOCK_H_
+  37:../drivers/fsl_clock.h **** #define _FSL_CLOCK_H_
+  38:../drivers/fsl_clock.h **** 
+  39:../drivers/fsl_clock.h **** #include "fsl_common.h"
+  40:../drivers/fsl_clock.h **** 
+  41:../drivers/fsl_clock.h **** /*! @addtogroup clock */
+  42:../drivers/fsl_clock.h **** /*! @{ */
+  43:../drivers/fsl_clock.h **** 
+  44:../drivers/fsl_clock.h **** /*! @file */
+  45:../drivers/fsl_clock.h **** 
+  46:../drivers/fsl_clock.h **** /*******************************************************************************
+  47:../drivers/fsl_clock.h ****  * Configurations
+  48:../drivers/fsl_clock.h ****  ******************************************************************************/
+  49:../drivers/fsl_clock.h **** 
+  50:../drivers/fsl_clock.h **** /*! @brief Configures whether to check a parameter in a function.
+  51:../drivers/fsl_clock.h ****  *
+  52:../drivers/fsl_clock.h ****  * Some MCG settings must be changed with conditions, for example:
+  53:../drivers/fsl_clock.h ****  *  1. MCGIRCLK settings, such as the source, divider, and the trim value should not change when
+  54:../drivers/fsl_clock.h ****  *     MCGIRCLK is used as a system clock source.
+  55:../drivers/fsl_clock.h ****  *  2. MCG_C7[OSCSEL] should not be changed  when the external reference clock is used
+  56:../drivers/fsl_clock.h ****  *     as a system clock source. For example, in FBE/BLPE/PBE modes.
+  57:../drivers/fsl_clock.h ****  *  3. The users should only switch between the supported clock modes.
+  58:../drivers/fsl_clock.h ****  *
+  59:../drivers/fsl_clock.h ****  * MCG functions check the parameter and MCG status before setting, if not allowed
+  60:../drivers/fsl_clock.h ****  * to change, the functions return error. The parameter checking increases code size,
+  61:../drivers/fsl_clock.h ****  * if code size is a critical requirement, change #MCG_CONFIG_CHECK_PARAM to 0 to
+  62:../drivers/fsl_clock.h ****  * disable parameter checking.
+  63:../drivers/fsl_clock.h ****  */
+  64:../drivers/fsl_clock.h **** #ifndef MCG_CONFIG_CHECK_PARAM
+  65:../drivers/fsl_clock.h **** #define MCG_CONFIG_CHECK_PARAM 0U
+  66:../drivers/fsl_clock.h **** #endif
+  67:../drivers/fsl_clock.h **** 
+  68:../drivers/fsl_clock.h **** /*! @brief Configure whether driver controls clock
+  69:../drivers/fsl_clock.h ****  *
+  70:../drivers/fsl_clock.h ****  * When set to 0, peripheral drivers will enable clock in initialize function
+  71:../drivers/fsl_clock.h ****  * and disable clock in de-initialize function. When set to 1, peripheral
+  72:../drivers/fsl_clock.h ****  * driver will not control the clock, application could contol the clock out of
+  73:../drivers/fsl_clock.h ****  * the driver.
+  74:../drivers/fsl_clock.h ****  *
+  75:../drivers/fsl_clock.h ****  * @note All drivers share this feature switcher. If it is set to 1, application
+  76:../drivers/fsl_clock.h ****  * should handle clock enable and disable for all drivers.
+  77:../drivers/fsl_clock.h ****  */
+  78:../drivers/fsl_clock.h **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL))
+  79:../drivers/fsl_clock.h **** #define FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL 0
+  80:../drivers/fsl_clock.h **** #endif
+  81:../drivers/fsl_clock.h **** 
+  82:../drivers/fsl_clock.h **** /*******************************************************************************
+  83:../drivers/fsl_clock.h ****  * Definitions
+  84:../drivers/fsl_clock.h ****  ******************************************************************************/
+  85:../drivers/fsl_clock.h **** 
+  86:../drivers/fsl_clock.h **** /*! @name Driver version */
+  87:../drivers/fsl_clock.h **** /*@{*/
+  88:../drivers/fsl_clock.h **** /*! @brief CLOCK driver version 2.2.1. */
+  89:../drivers/fsl_clock.h **** #define FSL_CLOCK_DRIVER_VERSION (MAKE_VERSION(2, 2, 1))
+  90:../drivers/fsl_clock.h **** /*@}*/
+  91:../drivers/fsl_clock.h **** 
+  92:../drivers/fsl_clock.h **** /*! @brief External XTAL0 (OSC0) clock frequency.
+  93:../drivers/fsl_clock.h ****  *
+  94:../drivers/fsl_clock.h ****  * The XTAL0/EXTAL0 (OSC0) clock frequency in Hz. When the clock is set up, use the
+  95:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal0Freq to set the value in the clock driver. For example,
+  96:../drivers/fsl_clock.h ****  * if XTAL0 is 8 MHz:
+  97:../drivers/fsl_clock.h ****  * @code
+  98:../drivers/fsl_clock.h ****  * CLOCK_InitOsc0(...); // Set up the OSC0
+  99:../drivers/fsl_clock.h ****  * CLOCK_SetXtal0Freq(80000000); // Set the XTAL0 value to the clock driver.
+ 100:../drivers/fsl_clock.h ****  * @endcode
+ 101:../drivers/fsl_clock.h ****  *
+ 102:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where only one core needs to set up the
+ 103:../drivers/fsl_clock.h ****  * OSC0 using the CLOCK_InitOsc0. All other cores need to call the CLOCK_SetXtal0Freq
+ 104:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+ 105:../drivers/fsl_clock.h ****  */
+ 106:../drivers/fsl_clock.h **** extern uint32_t g_xtal0Freq;
+ 107:../drivers/fsl_clock.h **** 
+ 108:../drivers/fsl_clock.h **** /*! @brief External XTAL32/EXTAL32/RTC_CLKIN clock frequency.
+ 109:../drivers/fsl_clock.h ****  *
+ 110:../drivers/fsl_clock.h ****  * The XTAL32/EXTAL32/RTC_CLKIN clock frequency in Hz. When the clock is set up, use the
+ 111:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal32Freq to set the value in the clock driver.
+ 112:../drivers/fsl_clock.h ****  *
+ 113:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where only one core needs to set up
+ 114:../drivers/fsl_clock.h ****  * the clock. All other cores need to call the CLOCK_SetXtal32Freq
+ 115:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+ 116:../drivers/fsl_clock.h ****  */
+ 117:../drivers/fsl_clock.h **** extern uint32_t g_xtal32Freq;
+ 118:../drivers/fsl_clock.h **** 
+ 119:../drivers/fsl_clock.h **** /*! @brief IRC48M clock frequency in Hz. */
+ 120:../drivers/fsl_clock.h **** #define MCG_INTERNAL_IRC_48M 48000000U
+ 121:../drivers/fsl_clock.h **** 
+ 122:../drivers/fsl_clock.h **** #if (defined(OSC) && !(defined(OSC0)))
+ 123:../drivers/fsl_clock.h **** #define OSC0 OSC
+ 124:../drivers/fsl_clock.h **** #endif
+ 125:../drivers/fsl_clock.h **** 
+ 126:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DMAMUX. */
+ 127:../drivers/fsl_clock.h **** #define DMAMUX_CLOCKS  \
+ 128:../drivers/fsl_clock.h ****     {                  \
+ 129:../drivers/fsl_clock.h ****         kCLOCK_Dmamux0 \
+ 130:../drivers/fsl_clock.h ****     }
+ 131:../drivers/fsl_clock.h **** 
+ 132:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for RTC. */
+ 133:../drivers/fsl_clock.h **** #define RTC_CLOCKS  \
+ 134:../drivers/fsl_clock.h ****     {               \
+ 135:../drivers/fsl_clock.h ****         kCLOCK_Rtc0 \
+ 136:../drivers/fsl_clock.h ****     }
+ 137:../drivers/fsl_clock.h **** 
+ 138:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for ENET. */
+ 139:../drivers/fsl_clock.h **** #define ENET_CLOCKS  \
+ 140:../drivers/fsl_clock.h ****     {                \
+ 141:../drivers/fsl_clock.h ****         kCLOCK_Enet0 \
+ 142:../drivers/fsl_clock.h ****     }
+ 143:../drivers/fsl_clock.h **** 
+ 144:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PORT. */
+ 145:../drivers/fsl_clock.h **** #define PORT_CLOCKS                                                          \
+ 146:../drivers/fsl_clock.h ****     {                                                                        \
+ 147:../drivers/fsl_clock.h ****         kCLOCK_PortA, kCLOCK_PortB, kCLOCK_PortC, kCLOCK_PortD, kCLOCK_PortE \
+ 148:../drivers/fsl_clock.h ****     }
+ 149:../drivers/fsl_clock.h **** 
+ 150:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SAI. */
+ 151:../drivers/fsl_clock.h **** #define SAI_CLOCKS  \
+ 152:../drivers/fsl_clock.h ****     {               \
+ 153:../drivers/fsl_clock.h ****         kCLOCK_Sai0 \
+ 154:../drivers/fsl_clock.h ****     }
+ 155:../drivers/fsl_clock.h **** 
+ 156:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FLEXBUS. */
+ 157:../drivers/fsl_clock.h **** #define FLEXBUS_CLOCKS  \
+ 158:../drivers/fsl_clock.h ****     {                   \
+ 159:../drivers/fsl_clock.h ****         kCLOCK_Flexbus0 \
+ 160:../drivers/fsl_clock.h ****     }
+ 161:../drivers/fsl_clock.h **** 
+ 162:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for EWM. */
+ 163:../drivers/fsl_clock.h **** #define EWM_CLOCKS  \
+ 164:../drivers/fsl_clock.h ****     {               \
+ 165:../drivers/fsl_clock.h ****         kCLOCK_Ewm0 \
+ 166:../drivers/fsl_clock.h ****     }
+ 167:../drivers/fsl_clock.h **** 
+ 168:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PIT. */
+ 169:../drivers/fsl_clock.h **** #define PIT_CLOCKS  \
+ 170:../drivers/fsl_clock.h ****     {               \
+ 171:../drivers/fsl_clock.h ****         kCLOCK_Pit0 \
+ 172:../drivers/fsl_clock.h ****     }
+ 173:../drivers/fsl_clock.h **** 
+ 174:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DSPI. */
+ 175:../drivers/fsl_clock.h **** #define DSPI_CLOCKS                           \
+ 176:../drivers/fsl_clock.h ****     {                                         \
+ 177:../drivers/fsl_clock.h ****         kCLOCK_Spi0, kCLOCK_Spi1, kCLOCK_Spi2 \
+ 178:../drivers/fsl_clock.h ****     }
+ 179:../drivers/fsl_clock.h **** 
+ 180:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for LPTMR. */
+ 181:../drivers/fsl_clock.h **** #define LPTMR_CLOCKS  \
+ 182:../drivers/fsl_clock.h ****     {                 \
+ 183:../drivers/fsl_clock.h ****         kCLOCK_Lptmr0 \
+ 184:../drivers/fsl_clock.h ****     }
+ 185:../drivers/fsl_clock.h **** 
+ 186:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SDHC. */
+ 187:../drivers/fsl_clock.h **** #define SDHC_CLOCKS  \
+ 188:../drivers/fsl_clock.h ****     {                \
+ 189:../drivers/fsl_clock.h ****         kCLOCK_Sdhc0 \
+ 190:../drivers/fsl_clock.h ****     }
+ 191:../drivers/fsl_clock.h **** 
+ 192:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FTM. */
+ 193:../drivers/fsl_clock.h **** #define FTM_CLOCKS                                         \
+ 194:../drivers/fsl_clock.h ****     {                                                      \
+ 195:../drivers/fsl_clock.h ****         kCLOCK_Ftm0, kCLOCK_Ftm1, kCLOCK_Ftm2, kCLOCK_Ftm3 \
+ 196:../drivers/fsl_clock.h ****     }
+ 197:../drivers/fsl_clock.h **** 
+ 198:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for EDMA. */
+ 199:../drivers/fsl_clock.h **** #define EDMA_CLOCKS \
+ 200:../drivers/fsl_clock.h ****     {               \
+ 201:../drivers/fsl_clock.h ****         kCLOCK_Dma0 \
+ 202:../drivers/fsl_clock.h ****     }
+ 203:../drivers/fsl_clock.h **** 
+ 204:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FLEXCAN. */
+ 205:../drivers/fsl_clock.h **** #define FLEXCAN_CLOCKS  \
+ 206:../drivers/fsl_clock.h ****     {                   \
+ 207:../drivers/fsl_clock.h ****         kCLOCK_Flexcan0 \
+ 208:../drivers/fsl_clock.h ****     }
+ 209:../drivers/fsl_clock.h **** 
+ 210:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DAC. */
+ 211:../drivers/fsl_clock.h **** #define DAC_CLOCKS               \
+ 212:../drivers/fsl_clock.h ****     {                            \
+ 213:../drivers/fsl_clock.h ****         kCLOCK_Dac0, kCLOCK_Dac1 \
+ 214:../drivers/fsl_clock.h ****     }
+ 215:../drivers/fsl_clock.h **** 
+ 216:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for ADC16. */
+ 217:../drivers/fsl_clock.h **** #define ADC16_CLOCKS             \
+ 218:../drivers/fsl_clock.h ****     {                            \
+ 219:../drivers/fsl_clock.h ****         kCLOCK_Adc0, kCLOCK_Adc1 \
+ 220:../drivers/fsl_clock.h ****     }
+ 221:../drivers/fsl_clock.h **** 
+ 222:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for MPU. */
+ 223:../drivers/fsl_clock.h **** #define SYSMPU_CLOCKS  \
+ 224:../drivers/fsl_clock.h ****     {                  \
+ 225:../drivers/fsl_clock.h ****         kCLOCK_Sysmpu0 \
+ 226:../drivers/fsl_clock.h ****     }
+ 227:../drivers/fsl_clock.h **** 
+ 228:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for VREF. */
+ 229:../drivers/fsl_clock.h **** #define VREF_CLOCKS  \
+ 230:../drivers/fsl_clock.h ****     {                \
+ 231:../drivers/fsl_clock.h ****         kCLOCK_Vref0 \
+ 232:../drivers/fsl_clock.h ****     }
+ 233:../drivers/fsl_clock.h **** 
+ 234:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CMT. */
+ 235:../drivers/fsl_clock.h **** #define CMT_CLOCKS  \
+ 236:../drivers/fsl_clock.h ****     {               \
+ 237:../drivers/fsl_clock.h ****         kCLOCK_Cmt0 \
+ 238:../drivers/fsl_clock.h ****     }
+ 239:../drivers/fsl_clock.h **** 
+ 240:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for UART. */
+ 241:../drivers/fsl_clock.h **** #define UART_CLOCKS                                                                        \
+ 242:../drivers/fsl_clock.h ****     {                                                                                      \
+ 243:../drivers/fsl_clock.h ****         kCLOCK_Uart0, kCLOCK_Uart1, kCLOCK_Uart2, kCLOCK_Uart3, kCLOCK_Uart4, kCLOCK_Uart5 \
+ 244:../drivers/fsl_clock.h ****     }
+ 245:../drivers/fsl_clock.h **** 
+ 246:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for RNGA. */
+ 247:../drivers/fsl_clock.h **** #define RNGA_CLOCKS  \
+ 248:../drivers/fsl_clock.h ****     {                \
+ 249:../drivers/fsl_clock.h ****         kCLOCK_Rnga0 \
+ 250:../drivers/fsl_clock.h ****     }
+ 251:../drivers/fsl_clock.h **** 
+ 252:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CRC. */
+ 253:../drivers/fsl_clock.h **** #define CRC_CLOCKS  \
+ 254:../drivers/fsl_clock.h ****     {               \
+ 255:../drivers/fsl_clock.h ****         kCLOCK_Crc0 \
+ 256:../drivers/fsl_clock.h ****     }
+ 257:../drivers/fsl_clock.h **** 
+ 258:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for I2C. */
+ 259:../drivers/fsl_clock.h **** #define I2C_CLOCKS                            \
+ 260:../drivers/fsl_clock.h ****     {                                         \
+ 261:../drivers/fsl_clock.h ****         kCLOCK_I2c0, kCLOCK_I2c1, kCLOCK_I2c2 \
+ 262:../drivers/fsl_clock.h ****     }
+ 263:../drivers/fsl_clock.h **** 
+ 264:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PDB. */
+ 265:../drivers/fsl_clock.h **** #define PDB_CLOCKS  \
+ 266:../drivers/fsl_clock.h ****     {               \
+ 267:../drivers/fsl_clock.h ****         kCLOCK_Pdb0 \
+ 268:../drivers/fsl_clock.h ****     }
+ 269:../drivers/fsl_clock.h **** 
+ 270:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FTF. */
+ 271:../drivers/fsl_clock.h **** #define FTF_CLOCKS  \
+ 272:../drivers/fsl_clock.h ****     {               \
+ 273:../drivers/fsl_clock.h ****         kCLOCK_Ftf0 \
+ 274:../drivers/fsl_clock.h ****     }
+ 275:../drivers/fsl_clock.h **** 
+ 276:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CMP. */
+ 277:../drivers/fsl_clock.h **** #define CMP_CLOCKS                            \
+ 278:../drivers/fsl_clock.h ****     {                                         \
+ 279:../drivers/fsl_clock.h ****         kCLOCK_Cmp0, kCLOCK_Cmp1, kCLOCK_Cmp2 \
+ 280:../drivers/fsl_clock.h ****     }
+ 281:../drivers/fsl_clock.h **** 
+ 282:../drivers/fsl_clock.h **** /*!
+ 283:../drivers/fsl_clock.h ****  * @brief LPO clock frequency.
+ 284:../drivers/fsl_clock.h ****  */
+ 285:../drivers/fsl_clock.h **** #define LPO_CLK_FREQ 1000U
+ 286:../drivers/fsl_clock.h **** 
+ 287:../drivers/fsl_clock.h **** /*! @brief Peripherals clock source definition. */
+ 288:../drivers/fsl_clock.h **** #define SYS_CLK kCLOCK_CoreSysClk
+ 289:../drivers/fsl_clock.h **** #define BUS_CLK kCLOCK_BusClk
+ 290:../drivers/fsl_clock.h **** 
+ 291:../drivers/fsl_clock.h **** #define I2C0_CLK_SRC BUS_CLK
+ 292:../drivers/fsl_clock.h **** #define I2C1_CLK_SRC BUS_CLK
+ 293:../drivers/fsl_clock.h **** #define I2C2_CLK_SRC BUS_CLK
+ 294:../drivers/fsl_clock.h **** #define DSPI0_CLK_SRC BUS_CLK
+ 295:../drivers/fsl_clock.h **** #define DSPI1_CLK_SRC BUS_CLK
+ 296:../drivers/fsl_clock.h **** #define DSPI2_CLK_SRC BUS_CLK
+ 297:../drivers/fsl_clock.h **** #define UART0_CLK_SRC SYS_CLK
+ 298:../drivers/fsl_clock.h **** #define UART1_CLK_SRC SYS_CLK
+ 299:../drivers/fsl_clock.h **** #define UART2_CLK_SRC BUS_CLK
+ 300:../drivers/fsl_clock.h **** #define UART3_CLK_SRC BUS_CLK
+ 301:../drivers/fsl_clock.h **** #define UART4_CLK_SRC BUS_CLK
+ 302:../drivers/fsl_clock.h **** #define UART5_CLK_SRC BUS_CLK
+ 303:../drivers/fsl_clock.h **** 
+ 304:../drivers/fsl_clock.h **** /*! @brief Clock name used to get clock frequency. */
+ 305:../drivers/fsl_clock.h **** typedef enum _clock_name
+ 306:../drivers/fsl_clock.h **** {
+ 307:../drivers/fsl_clock.h **** 
+ 308:../drivers/fsl_clock.h ****     /* ----------------------------- System layer clock -------------------------------*/
+ 309:../drivers/fsl_clock.h ****     kCLOCK_CoreSysClk,    /*!< Core/system clock                                         */
+ 310:../drivers/fsl_clock.h ****     kCLOCK_PlatClk,       /*!< Platform clock                                            */
+ 311:../drivers/fsl_clock.h ****     kCLOCK_BusClk,        /*!< Bus clock                                                 */
+ 312:../drivers/fsl_clock.h ****     kCLOCK_FlexBusClk,    /*!< FlexBus clock                                             */
+ 313:../drivers/fsl_clock.h ****     kCLOCK_FlashClk,      /*!< Flash clock                                               */
+ 314:../drivers/fsl_clock.h ****     kCLOCK_FastPeriphClk, /*!< Fast peripheral clock                                     */
+ 315:../drivers/fsl_clock.h ****     kCLOCK_PllFllSelClk,  /*!< The clock after SIM[PLLFLLSEL].                           */
+ 316:../drivers/fsl_clock.h **** 
+ 317:../drivers/fsl_clock.h ****     /* ---------------------------------- OSC clock -----------------------------------*/
+ 318:../drivers/fsl_clock.h ****     kCLOCK_Er32kClk,       /*!< External reference 32K clock (ERCLK32K)                   */
+ 319:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClk,      /*!< OSC0 external reference clock (OSC0ERCLK)                 */
+ 320:../drivers/fsl_clock.h ****     kCLOCK_Osc1ErClk,      /*!< OSC1 external reference clock (OSC1ERCLK)                 */
+ 321:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClkUndiv, /*!< OSC0 external reference undivided clock(OSC0ERCLK_UNDIV). */
+ 322:../drivers/fsl_clock.h **** 
+ 323:../drivers/fsl_clock.h ****     /* ----------------------------- MCG and MCG-Lite clock ---------------------------*/
+ 324:../drivers/fsl_clock.h ****     kCLOCK_McgFixedFreqClk,   /*!< MCG fixed frequency clock (MCGFFCLK)                      */
+ 325:../drivers/fsl_clock.h ****     kCLOCK_McgInternalRefClk, /*!< MCG internal reference clock (MCGIRCLK)                   */
+ 326:../drivers/fsl_clock.h ****     kCLOCK_McgFllClk,         /*!< MCGFLLCLK                                                 */
+ 327:../drivers/fsl_clock.h ****     kCLOCK_McgPll0Clk,        /*!< MCGPLL0CLK                                                */
+ 328:../drivers/fsl_clock.h ****     kCLOCK_McgPll1Clk,        /*!< MCGPLL1CLK                                                */
+ 329:../drivers/fsl_clock.h ****     kCLOCK_McgExtPllClk,      /*!< EXT_PLLCLK                                                */
+ 330:../drivers/fsl_clock.h ****     kCLOCK_McgPeriphClk,      /*!< MCG peripheral clock (MCGPCLK)                            */
+ 331:../drivers/fsl_clock.h ****     kCLOCK_McgIrc48MClk,      /*!< MCG IRC48M clock                                          */
+ 332:../drivers/fsl_clock.h **** 
+ 333:../drivers/fsl_clock.h ****     /* --------------------------------- Other clock ----------------------------------*/
+ 334:../drivers/fsl_clock.h ****     kCLOCK_LpoClk, /*!< LPO clock                                                 */
+ 335:../drivers/fsl_clock.h **** 
+ 336:../drivers/fsl_clock.h **** } clock_name_t;
+ 337:../drivers/fsl_clock.h **** 
+ 338:../drivers/fsl_clock.h **** /*! @brief USB clock source definition. */
+ 339:../drivers/fsl_clock.h **** typedef enum _clock_usb_src
+ 340:../drivers/fsl_clock.h **** {
+ 341:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcPll0 = SIM_SOPT2_USBSRC(1U) | SIM_SOPT2_PLLFLLSEL(1U),   /*!< Use PLL0.      */
+ 342:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcIrc48M = SIM_SOPT2_USBSRC(1U) | SIM_SOPT2_PLLFLLSEL(3U), /*!< Use IRC48M.    */
+ 343:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcExt = SIM_SOPT2_USBSRC(0U)                               /*!< Use USB_CLKIN. */
+ 344:../drivers/fsl_clock.h **** } clock_usb_src_t;
+ 345:../drivers/fsl_clock.h **** 
+ 346:../drivers/fsl_clock.h **** /*------------------------------------------------------------------------------
+ 347:../drivers/fsl_clock.h **** 
+ 348:../drivers/fsl_clock.h ****  clock_gate_t definition:
+ 349:../drivers/fsl_clock.h **** 
+ 350:../drivers/fsl_clock.h ****  31                              16                              0
+ 351:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 352:../drivers/fsl_clock.h ****  | SIM_SCGC register offset       |   control bit offset in SCGC |
+ 353:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 354:../drivers/fsl_clock.h **** 
+ 355:../drivers/fsl_clock.h ****  For example, the SDHC clock gate is controlled by SIM_SCGC3[17], the
+ 356:../drivers/fsl_clock.h ****  SIM_SCGC3 offset in SIM is 0x1030, then kCLOCK_GateSdhc0 is defined as
+ 357:../drivers/fsl_clock.h **** 
+ 358:../drivers/fsl_clock.h ****               kCLOCK_GateSdhc0 = (0x1030 << 16) | 17;
+ 359:../drivers/fsl_clock.h **** 
+ 360:../drivers/fsl_clock.h **** ------------------------------------------------------------------------------*/
+ 361:../drivers/fsl_clock.h **** 
+ 362:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_SHIFT 16U
+ 363:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_MASK 0xFFFF0000U
+ 364:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_SHIFT 0U
+ 365:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_MASK 0x0000FFFFU
+ 366:../drivers/fsl_clock.h **** 
+ 367:../drivers/fsl_clock.h **** #define CLK_GATE_DEFINE(reg_offset, bit_shift)                                  \
+ 368:../drivers/fsl_clock.h ****     ((((reg_offset) << CLK_GATE_REG_OFFSET_SHIFT) & CLK_GATE_REG_OFFSET_MASK) | \
+ 369:../drivers/fsl_clock.h ****      (((bit_shift) << CLK_GATE_BIT_SHIFT_SHIFT) & CLK_GATE_BIT_SHIFT_MASK))
+ 370:../drivers/fsl_clock.h **** 
+ 371:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_REG_OFFSET(x) (((x)&CLK_GATE_REG_OFFSET_MASK) >> CLK_GATE_REG_OFFSET_SHIF
+ 372:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_BITS_SHIFT(x) (((x)&CLK_GATE_BIT_SHIFT_MASK) >> CLK_GATE_BIT_SHIFT_SHIFT)
+ 373:../drivers/fsl_clock.h **** 
+ 374:../drivers/fsl_clock.h **** /*! @brief Clock gate name used for CLOCK_EnableClock/CLOCK_DisableClock. */
+ 375:../drivers/fsl_clock.h **** typedef enum _clock_ip_name
+ 376:../drivers/fsl_clock.h **** {
+ 377:../drivers/fsl_clock.h ****     kCLOCK_IpInvalid = 0U,
+ 378:../drivers/fsl_clock.h ****     kCLOCK_I2c2 = CLK_GATE_DEFINE(0x1028U, 6U),
+ 379:../drivers/fsl_clock.h ****     kCLOCK_Uart4 = CLK_GATE_DEFINE(0x1028U, 10U),
+ 380:../drivers/fsl_clock.h ****     kCLOCK_Uart5 = CLK_GATE_DEFINE(0x1028U, 11U),
+ 381:../drivers/fsl_clock.h **** 
+ 382:../drivers/fsl_clock.h ****     kCLOCK_Enet0 = CLK_GATE_DEFINE(0x102CU, 0U),
+ 383:../drivers/fsl_clock.h ****     kCLOCK_Dac0 = CLK_GATE_DEFINE(0x102CU, 12U),
+ 384:../drivers/fsl_clock.h ****     kCLOCK_Dac1 = CLK_GATE_DEFINE(0x102CU, 13U),
+ 385:../drivers/fsl_clock.h **** 
+ 386:../drivers/fsl_clock.h ****     kCLOCK_Spi2 = CLK_GATE_DEFINE(0x1030U, 12U),
+ 387:../drivers/fsl_clock.h ****     kCLOCK_Sdhc0 = CLK_GATE_DEFINE(0x1030U, 17U),
+ 388:../drivers/fsl_clock.h ****     kCLOCK_Ftm3 = CLK_GATE_DEFINE(0x1030U, 25U),
+ 389:../drivers/fsl_clock.h ****     kCLOCK_Adc1 = CLK_GATE_DEFINE(0x1030U, 27U),
+ 390:../drivers/fsl_clock.h **** 
+ 391:../drivers/fsl_clock.h ****     kCLOCK_Ewm0 = CLK_GATE_DEFINE(0x1034U, 1U),
+ 392:../drivers/fsl_clock.h ****     kCLOCK_Cmt0 = CLK_GATE_DEFINE(0x1034U, 2U),
+ 393:../drivers/fsl_clock.h ****     kCLOCK_I2c0 = CLK_GATE_DEFINE(0x1034U, 6U),
+ 394:../drivers/fsl_clock.h ****     kCLOCK_I2c1 = CLK_GATE_DEFINE(0x1034U, 7U),
+ 395:../drivers/fsl_clock.h ****     kCLOCK_Uart0 = CLK_GATE_DEFINE(0x1034U, 10U),
+ 396:../drivers/fsl_clock.h ****     kCLOCK_Uart1 = CLK_GATE_DEFINE(0x1034U, 11U),
+ 397:../drivers/fsl_clock.h ****     kCLOCK_Uart2 = CLK_GATE_DEFINE(0x1034U, 12U),
+ 398:../drivers/fsl_clock.h ****     kCLOCK_Uart3 = CLK_GATE_DEFINE(0x1034U, 13U),
+ 399:../drivers/fsl_clock.h ****     kCLOCK_Usbfs0 = CLK_GATE_DEFINE(0x1034U, 18U),
+ 400:../drivers/fsl_clock.h ****     kCLOCK_Cmp0 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 401:../drivers/fsl_clock.h ****     kCLOCK_Cmp1 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 402:../drivers/fsl_clock.h ****     kCLOCK_Cmp2 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 403:../drivers/fsl_clock.h ****     kCLOCK_Vref0 = CLK_GATE_DEFINE(0x1034U, 20U),
+ 404:../drivers/fsl_clock.h **** 
+ 405:../drivers/fsl_clock.h ****     kCLOCK_Lptmr0 = CLK_GATE_DEFINE(0x1038U, 0U),
+ 406:../drivers/fsl_clock.h ****     kCLOCK_PortA = CLK_GATE_DEFINE(0x1038U, 9U),
+ 407:../drivers/fsl_clock.h ****     kCLOCK_PortB = CLK_GATE_DEFINE(0x1038U, 10U),
+ 408:../drivers/fsl_clock.h ****     kCLOCK_PortC = CLK_GATE_DEFINE(0x1038U, 11U),
+ 409:../drivers/fsl_clock.h ****     kCLOCK_PortD = CLK_GATE_DEFINE(0x1038U, 12U),
+ 410:../drivers/fsl_clock.h ****     kCLOCK_PortE = CLK_GATE_DEFINE(0x1038U, 13U),
+ 411:../drivers/fsl_clock.h **** 
+ 412:../drivers/fsl_clock.h ****     kCLOCK_Ftf0 = CLK_GATE_DEFINE(0x103CU, 0U),
+ 413:../drivers/fsl_clock.h ****     kCLOCK_Dmamux0 = CLK_GATE_DEFINE(0x103CU, 1U),
+ 414:../drivers/fsl_clock.h ****     kCLOCK_Flexcan0 = CLK_GATE_DEFINE(0x103CU, 4U),
+ 415:../drivers/fsl_clock.h ****     kCLOCK_Rnga0 = CLK_GATE_DEFINE(0x103CU, 9U),
+ 416:../drivers/fsl_clock.h ****     kCLOCK_Spi0 = CLK_GATE_DEFINE(0x103CU, 12U),
+ 417:../drivers/fsl_clock.h ****     kCLOCK_Spi1 = CLK_GATE_DEFINE(0x103CU, 13U),
+ 418:../drivers/fsl_clock.h ****     kCLOCK_Sai0 = CLK_GATE_DEFINE(0x103CU, 15U),
+ 419:../drivers/fsl_clock.h ****     kCLOCK_Crc0 = CLK_GATE_DEFINE(0x103CU, 18U),
+ 420:../drivers/fsl_clock.h ****     kCLOCK_Usbdcd0 = CLK_GATE_DEFINE(0x103CU, 21U),
+ 421:../drivers/fsl_clock.h ****     kCLOCK_Pdb0 = CLK_GATE_DEFINE(0x103CU, 22U),
+ 422:../drivers/fsl_clock.h ****     kCLOCK_Pit0 = CLK_GATE_DEFINE(0x103CU, 23U),
+ 423:../drivers/fsl_clock.h ****     kCLOCK_Ftm0 = CLK_GATE_DEFINE(0x103CU, 24U),
+ 424:../drivers/fsl_clock.h ****     kCLOCK_Ftm1 = CLK_GATE_DEFINE(0x103CU, 25U),
+ 425:../drivers/fsl_clock.h ****     kCLOCK_Ftm2 = CLK_GATE_DEFINE(0x103CU, 26U),
+ 426:../drivers/fsl_clock.h ****     kCLOCK_Adc0 = CLK_GATE_DEFINE(0x103CU, 27U),
+ 427:../drivers/fsl_clock.h ****     kCLOCK_Rtc0 = CLK_GATE_DEFINE(0x103CU, 29U),
+ 428:../drivers/fsl_clock.h **** 
+ 429:../drivers/fsl_clock.h ****     kCLOCK_Flexbus0 = CLK_GATE_DEFINE(0x1040U, 0U),
+ 430:../drivers/fsl_clock.h ****     kCLOCK_Dma0 = CLK_GATE_DEFINE(0x1040U, 1U),
+ 431:../drivers/fsl_clock.h ****     kCLOCK_Sysmpu0 = CLK_GATE_DEFINE(0x1040U, 2U),
+ 432:../drivers/fsl_clock.h **** } clock_ip_name_t;
+ 433:../drivers/fsl_clock.h **** 
+ 434:../drivers/fsl_clock.h **** /*!@brief SIM configuration structure for clock setting. */
+ 435:../drivers/fsl_clock.h **** typedef struct _sim_clock_config
+ 436:../drivers/fsl_clock.h **** {
+ 437:../drivers/fsl_clock.h ****     uint8_t pllFllSel; /*!< PLL/FLL/IRC48M selection.    */
+ 438:../drivers/fsl_clock.h ****     uint8_t er32kSrc;  /*!< ERCLK32K source selection.   */
+ 439:../drivers/fsl_clock.h ****     uint32_t clkdiv1;  /*!< SIM_CLKDIV1.                 */
+ 440:../drivers/fsl_clock.h **** } sim_clock_config_t;
+ 441:../drivers/fsl_clock.h **** 
+ 442:../drivers/fsl_clock.h **** /*! @brief OSC work mode. */
+ 443:../drivers/fsl_clock.h **** typedef enum _osc_mode
+ 444:../drivers/fsl_clock.h **** {
+ 445:../drivers/fsl_clock.h ****     kOSC_ModeExt = 0U, /*!< Use an external clock.   */
+ 446:../drivers/fsl_clock.h **** #if (defined(MCG_C2_EREFS_MASK) && !(defined(MCG_C2_EREFS0_MASK)))
+ 447:../drivers/fsl_clock.h ****     kOSC_ModeOscLowPower = MCG_C2_EREFS_MASK, /*!< Oscillator low power. */
+ 448:../drivers/fsl_clock.h **** #else
+ 449:../drivers/fsl_clock.h ****     kOSC_ModeOscLowPower = MCG_C2_EREFS0_MASK, /*!< Oscillator low power. */
+ 450:../drivers/fsl_clock.h **** #endif
+ 451:../drivers/fsl_clock.h ****     kOSC_ModeOscHighGain = 0U
+ 452:../drivers/fsl_clock.h **** #if (defined(MCG_C2_EREFS_MASK) && !(defined(MCG_C2_EREFS0_MASK)))
+ 453:../drivers/fsl_clock.h ****                            |
+ 454:../drivers/fsl_clock.h ****                            MCG_C2_EREFS_MASK
+ 455:../drivers/fsl_clock.h **** #else
+ 456:../drivers/fsl_clock.h ****                            |
+ 457:../drivers/fsl_clock.h ****                            MCG_C2_EREFS0_MASK
+ 458:../drivers/fsl_clock.h **** #endif
+ 459:../drivers/fsl_clock.h **** #if (defined(MCG_C2_HGO_MASK) && !(defined(MCG_C2_HGO0_MASK)))
+ 460:../drivers/fsl_clock.h ****                            |
+ 461:../drivers/fsl_clock.h ****                            MCG_C2_HGO_MASK, /*!< Oscillator high gain. */
+ 462:../drivers/fsl_clock.h **** #else
+ 463:../drivers/fsl_clock.h ****                            |
+ 464:../drivers/fsl_clock.h ****                            MCG_C2_HGO0_MASK, /*!< Oscillator high gain. */
+ 465:../drivers/fsl_clock.h **** #endif
+ 466:../drivers/fsl_clock.h **** } osc_mode_t;
+ 467:../drivers/fsl_clock.h **** 
+ 468:../drivers/fsl_clock.h **** /*! @brief Oscillator capacitor load setting.*/
+ 469:../drivers/fsl_clock.h **** enum _osc_cap_load
+ 470:../drivers/fsl_clock.h **** {
+ 471:../drivers/fsl_clock.h ****     kOSC_Cap2P = OSC_CR_SC2P_MASK,  /*!< 2  pF capacitor load */
+ 472:../drivers/fsl_clock.h ****     kOSC_Cap4P = OSC_CR_SC4P_MASK,  /*!< 4  pF capacitor load */
+ 473:../drivers/fsl_clock.h ****     kOSC_Cap8P = OSC_CR_SC8P_MASK,  /*!< 8  pF capacitor load */
+ 474:../drivers/fsl_clock.h ****     kOSC_Cap16P = OSC_CR_SC16P_MASK /*!< 16 pF capacitor load */
+ 475:../drivers/fsl_clock.h **** };
+ 476:../drivers/fsl_clock.h **** 
+ 477:../drivers/fsl_clock.h **** /*! @brief OSCERCLK enable mode. */
+ 478:../drivers/fsl_clock.h **** enum _oscer_enable_mode
+ 479:../drivers/fsl_clock.h **** {
+ 480:../drivers/fsl_clock.h ****     kOSC_ErClkEnable = OSC_CR_ERCLKEN_MASK,       /*!< Enable.              */
+ 481:../drivers/fsl_clock.h ****     kOSC_ErClkEnableInStop = OSC_CR_EREFSTEN_MASK /*!< Enable in stop mode. */
+ 482:../drivers/fsl_clock.h **** };
+ 483:../drivers/fsl_clock.h **** 
+ 484:../drivers/fsl_clock.h **** /*! @brief OSC configuration for OSCERCLK. */
+ 485:../drivers/fsl_clock.h **** typedef struct _oscer_config
+ 486:../drivers/fsl_clock.h **** {
+ 487:../drivers/fsl_clock.h ****     uint8_t enableMode; /*!< OSCERCLK enable mode. OR'ed value of @ref _oscer_enable_mode. */
+ 488:../drivers/fsl_clock.h **** 
+ 489:../drivers/fsl_clock.h **** } oscer_config_t;
+ 490:../drivers/fsl_clock.h **** 
+ 491:../drivers/fsl_clock.h **** /*!
+ 492:../drivers/fsl_clock.h ****  * @brief OSC Initialization Configuration Structure
+ 493:../drivers/fsl_clock.h ****  *
+ 494:../drivers/fsl_clock.h ****  * Defines the configuration data structure to initialize the OSC.
+ 495:../drivers/fsl_clock.h ****  * When porting to a new board, set the following members
+ 496:../drivers/fsl_clock.h ****  * according to the board setting:
+ 497:../drivers/fsl_clock.h ****  * 1. freq: The external frequency.
+ 498:../drivers/fsl_clock.h ****  * 2. workMode: The OSC module mode.
+ 499:../drivers/fsl_clock.h ****  */
+ 500:../drivers/fsl_clock.h **** typedef struct _osc_config
+ 501:../drivers/fsl_clock.h **** {
+ 502:../drivers/fsl_clock.h ****     uint32_t freq;              /*!< External clock frequency.    */
+ 503:../drivers/fsl_clock.h ****     uint8_t capLoad;            /*!< Capacitor load setting.      */
+ 504:../drivers/fsl_clock.h ****     osc_mode_t workMode;        /*!< OSC work mode setting.       */
+ 505:../drivers/fsl_clock.h ****     oscer_config_t oscerConfig; /*!< Configuration for OSCERCLK.  */
+ 506:../drivers/fsl_clock.h **** } osc_config_t;
+ 507:../drivers/fsl_clock.h **** 
+ 508:../drivers/fsl_clock.h **** /*! @brief MCG FLL reference clock source select. */
+ 509:../drivers/fsl_clock.h **** typedef enum _mcg_fll_src
+ 510:../drivers/fsl_clock.h **** {
+ 511:../drivers/fsl_clock.h ****     kMCG_FllSrcExternal, /*!< External reference clock is selected          */
+ 512:../drivers/fsl_clock.h ****     kMCG_FllSrcInternal  /*!< The slow internal reference clock is selected */
+ 513:../drivers/fsl_clock.h **** } mcg_fll_src_t;
+ 514:../drivers/fsl_clock.h **** 
+ 515:../drivers/fsl_clock.h **** /*! @brief MCG internal reference clock select */
+ 516:../drivers/fsl_clock.h **** typedef enum _mcg_irc_mode
+ 517:../drivers/fsl_clock.h **** {
+ 518:../drivers/fsl_clock.h ****     kMCG_IrcSlow, /*!< Slow internal reference clock selected */
+ 519:../drivers/fsl_clock.h ****     kMCG_IrcFast  /*!< Fast internal reference clock selected */
+ 520:../drivers/fsl_clock.h **** } mcg_irc_mode_t;
+ 521:../drivers/fsl_clock.h **** 
+ 522:../drivers/fsl_clock.h **** /*! @brief MCG DCO Maximum Frequency with 32.768 kHz Reference */
+ 523:../drivers/fsl_clock.h **** typedef enum _mcg_dmx32
+ 524:../drivers/fsl_clock.h **** {
+ 525:../drivers/fsl_clock.h ****     kMCG_Dmx32Default, /*!< DCO has a default range of 25% */
+ 526:../drivers/fsl_clock.h ****     kMCG_Dmx32Fine     /*!< DCO is fine-tuned for maximum frequency with 32.768 kHz reference */
+ 527:../drivers/fsl_clock.h **** } mcg_dmx32_t;
+ 528:../drivers/fsl_clock.h **** 
+ 529:../drivers/fsl_clock.h **** /*! @brief MCG DCO range select */
+ 530:../drivers/fsl_clock.h **** typedef enum _mcg_drs
+ 531:../drivers/fsl_clock.h **** {
+ 532:../drivers/fsl_clock.h ****     kMCG_DrsLow,     /*!< Low frequency range       */
+ 533:../drivers/fsl_clock.h ****     kMCG_DrsMid,     /*!< Mid frequency range       */
+ 534:../drivers/fsl_clock.h ****     kMCG_DrsMidHigh, /*!< Mid-High frequency range  */
+ 535:../drivers/fsl_clock.h ****     kMCG_DrsHigh     /*!< High frequency range      */
+ 536:../drivers/fsl_clock.h **** } mcg_drs_t;
+ 537:../drivers/fsl_clock.h **** 
+ 538:../drivers/fsl_clock.h **** /*! @brief MCG PLL reference clock select */
+ 539:../drivers/fsl_clock.h **** typedef enum _mcg_pll_ref_src
+ 540:../drivers/fsl_clock.h **** {
+ 541:../drivers/fsl_clock.h ****     kMCG_PllRefOsc0, /*!< Selects OSC0 as PLL reference clock                 */
+ 542:../drivers/fsl_clock.h ****     kMCG_PllRefOsc1  /*!< Selects OSC1 as PLL reference clock                 */
+ 543:../drivers/fsl_clock.h **** } mcg_pll_ref_src_t;
+ 544:../drivers/fsl_clock.h **** 
+ 545:../drivers/fsl_clock.h **** /*! @brief MCGOUT clock source. */
+ 546:../drivers/fsl_clock.h **** typedef enum _mcg_clkout_src
+ 547:../drivers/fsl_clock.h **** {
+ 548:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcOut,      /*!< Output of the FLL is selected (reset default)  */
+ 549:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcInternal, /*!< Internal reference clock is selected           */
+ 550:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcExternal, /*!< External reference clock is selected           */
+ 551:../drivers/fsl_clock.h **** } mcg_clkout_src_t;
+ 552:../drivers/fsl_clock.h **** 
+ 553:../drivers/fsl_clock.h **** /*! @brief MCG Automatic Trim Machine Select */
+ 554:../drivers/fsl_clock.h **** typedef enum _mcg_atm_select
+ 555:../drivers/fsl_clock.h **** {
+ 556:../drivers/fsl_clock.h ****     kMCG_AtmSel32k, /*!< 32 kHz Internal Reference Clock selected  */
+ 557:../drivers/fsl_clock.h ****     kMCG_AtmSel4m   /*!< 4 MHz Internal Reference Clock selected   */
+ 558:../drivers/fsl_clock.h **** } mcg_atm_select_t;
+ 559:../drivers/fsl_clock.h **** 
+ 560:../drivers/fsl_clock.h **** /*! @brief MCG OSC Clock Select */
+ 561:../drivers/fsl_clock.h **** typedef enum _mcg_oscsel
+ 562:../drivers/fsl_clock.h **** {
+ 563:../drivers/fsl_clock.h ****     kMCG_OscselOsc, /*!< Selects System Oscillator (OSCCLK) */
+ 564:../drivers/fsl_clock.h ****     kMCG_OscselRtc, /*!< Selects 32 kHz RTC Oscillator      */
+ 565:../drivers/fsl_clock.h ****     kMCG_OscselIrc  /*!< Selects 48 MHz IRC Oscillator      */
+ 566:../drivers/fsl_clock.h **** } mcg_oscsel_t;
+ 567:../drivers/fsl_clock.h **** 
+ 568:../drivers/fsl_clock.h **** /*! @brief MCG PLLCS select */
+ 569:../drivers/fsl_clock.h **** typedef enum _mcg_pll_clk_select
+ 570:../drivers/fsl_clock.h **** {
+ 571:../drivers/fsl_clock.h ****     kMCG_PllClkSelPll0, /*!< PLL0 output clock is selected  */
+ 572:../drivers/fsl_clock.h ****     kMCG_PllClkSelPll1  /* PLL1 output clock is selected    */
+ 573:../drivers/fsl_clock.h **** } mcg_pll_clk_select_t;
+ 574:../drivers/fsl_clock.h **** 
+ 575:../drivers/fsl_clock.h **** /*! @brief MCG clock monitor mode. */
+ 576:../drivers/fsl_clock.h **** typedef enum _mcg_monitor_mode
+ 577:../drivers/fsl_clock.h **** {
+ 578:../drivers/fsl_clock.h ****     kMCG_MonitorNone, /*!< Clock monitor is disabled.         */
+ 579:../drivers/fsl_clock.h ****     kMCG_MonitorInt,  /*!< Trigger interrupt when clock lost. */
+ 580:../drivers/fsl_clock.h ****     kMCG_MonitorReset /*!< System reset when clock lost.      */
+ 581:../drivers/fsl_clock.h **** } mcg_monitor_mode_t;
+ 582:../drivers/fsl_clock.h **** 
+ 583:../drivers/fsl_clock.h **** /*! @brief MCG status. */
+ 584:../drivers/fsl_clock.h **** enum _mcg_status
+ 585:../drivers/fsl_clock.h **** {
+ 586:../drivers/fsl_clock.h ****     kStatus_MCG_ModeUnreachable = MAKE_STATUS(kStatusGroup_MCG, 0),       /*!< Can't switch to targ
+ 587:../drivers/fsl_clock.h ****     kStatus_MCG_ModeInvalid = MAKE_STATUS(kStatusGroup_MCG, 1),           /*!< Current mode invalid
+ 588:../drivers/fsl_clock.h ****                                                                                function. */
+ 589:../drivers/fsl_clock.h ****     kStatus_MCG_AtmBusClockInvalid = MAKE_STATUS(kStatusGroup_MCG, 2),    /*!< Invalid bus clock fo
+ 590:../drivers/fsl_clock.h ****     kStatus_MCG_AtmDesiredFreqInvalid = MAKE_STATUS(kStatusGroup_MCG, 3), /*!< Invalid desired freq
+ 591:../drivers/fsl_clock.h ****     kStatus_MCG_AtmIrcUsed = MAKE_STATUS(kStatusGroup_MCG, 4),            /*!< IRC is used when usi
+ 592:../drivers/fsl_clock.h ****     kStatus_MCG_AtmHardwareFail = MAKE_STATUS(kStatusGroup_MCG, 5),       /*!< Hardware fail occurs
+ 593:../drivers/fsl_clock.h ****     kStatus_MCG_SourceUsed = MAKE_STATUS(kStatusGroup_MCG, 6)             /*!< Can't change the clo
+ 594:../drivers/fsl_clock.h ****                                                                                it is in use. */
+ 595:../drivers/fsl_clock.h **** };
+ 596:../drivers/fsl_clock.h **** 
+ 597:../drivers/fsl_clock.h **** /*! @brief MCG status flags. */
+ 598:../drivers/fsl_clock.h **** enum _mcg_status_flags_t
+ 599:../drivers/fsl_clock.h **** {
+ 600:../drivers/fsl_clock.h ****     kMCG_Osc0LostFlag = (1U << 0U),   /*!< OSC0 lost.         */
+ 601:../drivers/fsl_clock.h ****     kMCG_Osc0InitFlag = (1U << 1U),   /*!< OSC0 crystal initialized. */
+ 602:../drivers/fsl_clock.h ****     kMCG_RtcOscLostFlag = (1U << 4U), /*!< RTC OSC lost.      */
+ 603:../drivers/fsl_clock.h ****     kMCG_Pll0LostFlag = (1U << 5U),   /*!< PLL0 lost.         */
+ 604:../drivers/fsl_clock.h ****     kMCG_Pll0LockFlag = (1U << 6U),   /*!< PLL0 locked.       */
+ 605:../drivers/fsl_clock.h **** };
+ 606:../drivers/fsl_clock.h **** 
+ 607:../drivers/fsl_clock.h **** /*! @brief MCG internal reference clock (MCGIRCLK) enable mode definition. */
+ 608:../drivers/fsl_clock.h **** enum _mcg_irclk_enable_mode
+ 609:../drivers/fsl_clock.h **** {
+ 610:../drivers/fsl_clock.h ****     kMCG_IrclkEnable = MCG_C1_IRCLKEN_MASK,       /*!< MCGIRCLK enable.              */
+ 611:../drivers/fsl_clock.h ****     kMCG_IrclkEnableInStop = MCG_C1_IREFSTEN_MASK /*!< MCGIRCLK enable in stop mode. */
+ 612:../drivers/fsl_clock.h **** };
+ 613:../drivers/fsl_clock.h **** 
+ 614:../drivers/fsl_clock.h **** /*! @brief MCG PLL clock enable mode definition. */
+ 615:../drivers/fsl_clock.h **** enum _mcg_pll_enable_mode
+ 616:../drivers/fsl_clock.h **** {
+ 617:../drivers/fsl_clock.h ****     kMCG_PllEnableIndependent = MCG_C5_PLLCLKEN0_MASK, /*!< MCGPLLCLK enable independent of the
+ 618:../drivers/fsl_clock.h ****                                                            MCG clock mode. Generally, the PLL
+ 619:../drivers/fsl_clock.h ****                                                            is disabled in FLL modes
+ 620:../drivers/fsl_clock.h ****                                                            (FEI/FBI/FEE/FBE). Setting the PLL clock
+ 621:../drivers/fsl_clock.h ****                                                            enable independent, enables the
+ 622:../drivers/fsl_clock.h ****                                                            PLL in the FLL modes.          */
+ 623:../drivers/fsl_clock.h ****     kMCG_PllEnableInStop = MCG_C5_PLLSTEN0_MASK        /*!< MCGPLLCLK enable in STOP mode. */
+ 624:../drivers/fsl_clock.h **** };
+ 625:../drivers/fsl_clock.h **** 
+ 626:../drivers/fsl_clock.h **** /*! @brief MCG mode definitions */
+ 627:../drivers/fsl_clock.h **** typedef enum _mcg_mode
+ 628:../drivers/fsl_clock.h **** {
+ 629:../drivers/fsl_clock.h ****     kMCG_ModeFEI = 0U, /*!< FEI   - FLL Engaged Internal         */
+ 630:../drivers/fsl_clock.h ****     kMCG_ModeFBI,      /*!< FBI   - FLL Bypassed Internal        */
+ 631:../drivers/fsl_clock.h ****     kMCG_ModeBLPI,     /*!< BLPI  - Bypassed Low Power Internal  */
+ 632:../drivers/fsl_clock.h ****     kMCG_ModeFEE,      /*!< FEE   - FLL Engaged External         */
+ 633:../drivers/fsl_clock.h ****     kMCG_ModeFBE,      /*!< FBE   - FLL Bypassed External        */
+ 634:../drivers/fsl_clock.h ****     kMCG_ModeBLPE,     /*!< BLPE  - Bypassed Low Power External  */
+ 635:../drivers/fsl_clock.h ****     kMCG_ModePBE,      /*!< PBE   - PLL Bypassed External        */
+ 636:../drivers/fsl_clock.h ****     kMCG_ModePEE,      /*!< PEE   - PLL Engaged External         */
+ 637:../drivers/fsl_clock.h ****     kMCG_ModeError     /*!< Unknown mode                         */
+ 638:../drivers/fsl_clock.h **** } mcg_mode_t;
+ 639:../drivers/fsl_clock.h **** 
+ 640:../drivers/fsl_clock.h **** /*! @brief MCG PLL configuration. */
+ 641:../drivers/fsl_clock.h **** typedef struct _mcg_pll_config
+ 642:../drivers/fsl_clock.h **** {
+ 643:../drivers/fsl_clock.h ****     uint8_t enableMode; /*!< Enable mode. OR'ed value of @ref _mcg_pll_enable_mode. */
+ 644:../drivers/fsl_clock.h ****     uint8_t prdiv;      /*!< Reference divider PRDIV.    */
+ 645:../drivers/fsl_clock.h ****     uint8_t vdiv;       /*!< VCO divider VDIV.           */
+ 646:../drivers/fsl_clock.h **** } mcg_pll_config_t;
+ 647:../drivers/fsl_clock.h **** 
+ 648:../drivers/fsl_clock.h **** /*! @brief MCG mode change configuration structure
+ 649:../drivers/fsl_clock.h ****  *
+ 650:../drivers/fsl_clock.h ****  * When porting to a new board, set the following members
+ 651:../drivers/fsl_clock.h ****  * according to the board setting:
+ 652:../drivers/fsl_clock.h ****  * 1. frdiv: If the FLL uses the external reference clock, set this
+ 653:../drivers/fsl_clock.h ****  *    value to ensure that the external reference clock divided by frdiv is
+ 654:../drivers/fsl_clock.h ****  *    in the 31.25 kHz to 39.0625 kHz range.
+ 655:../drivers/fsl_clock.h ****  * 2. The PLL reference clock divider PRDIV: PLL reference clock frequency after
+ 656:../drivers/fsl_clock.h ****  *    PRDIV should be in the FSL_FEATURE_MCG_PLL_REF_MIN to
+ 657:../drivers/fsl_clock.h ****  *    FSL_FEATURE_MCG_PLL_REF_MAX range.
+ 658:../drivers/fsl_clock.h ****  */
+ 659:../drivers/fsl_clock.h **** typedef struct _mcg_config
+ 660:../drivers/fsl_clock.h **** {
+ 661:../drivers/fsl_clock.h ****     mcg_mode_t mcgMode; /*!< MCG mode.                   */
+ 662:../drivers/fsl_clock.h **** 
+ 663:../drivers/fsl_clock.h ****     /* ----------------------- MCGIRCCLK settings ------------------------ */
+ 664:../drivers/fsl_clock.h ****     uint8_t irclkEnableMode; /*!< MCGIRCLK enable mode.       */
+ 665:../drivers/fsl_clock.h ****     mcg_irc_mode_t ircs;     /*!< Source, MCG_C2[IRCS].       */
+ 666:../drivers/fsl_clock.h ****     uint8_t fcrdiv;          /*!< Divider, MCG_SC[FCRDIV].    */
+ 667:../drivers/fsl_clock.h **** 
+ 668:../drivers/fsl_clock.h ****     /* ------------------------ MCG FLL settings ------------------------- */
+ 669:../drivers/fsl_clock.h ****     uint8_t frdiv;       /*!< Divider MCG_C1[FRDIV].      */
+ 670:../drivers/fsl_clock.h ****     mcg_drs_t drs;       /*!< DCO range MCG_C4[DRST_DRS]. */
+ 671:../drivers/fsl_clock.h ****     mcg_dmx32_t dmx32;   /*!< MCG_C4[DMX32].              */
+ 672:../drivers/fsl_clock.h ****     mcg_oscsel_t oscsel; /*!< OSC select MCG_C7[OSCSEL].  */
+ 673:../drivers/fsl_clock.h **** 
+ 674:../drivers/fsl_clock.h ****     /* ------------------------ MCG PLL settings ------------------------- */
+ 675:../drivers/fsl_clock.h ****     mcg_pll_config_t pll0Config; /*!< MCGPLL0CLK configuration.   */
+ 676:../drivers/fsl_clock.h **** 
+ 677:../drivers/fsl_clock.h **** } mcg_config_t;
+ 678:../drivers/fsl_clock.h **** 
+ 679:../drivers/fsl_clock.h **** /*******************************************************************************
+ 680:../drivers/fsl_clock.h ****  * API
+ 681:../drivers/fsl_clock.h ****  ******************************************************************************/
+ 682:../drivers/fsl_clock.h **** 
+ 683:../drivers/fsl_clock.h **** #if defined(__cplusplus)
+ 684:../drivers/fsl_clock.h **** extern "C" {
+ 685:../drivers/fsl_clock.h **** #endif /* __cplusplus */
+ 686:../drivers/fsl_clock.h **** 
+ 687:../drivers/fsl_clock.h **** /*!
+ 688:../drivers/fsl_clock.h ****  * @brief Enable the clock for specific IP.
+ 689:../drivers/fsl_clock.h ****  *
+ 690:../drivers/fsl_clock.h ****  * @param name  Which clock to enable, see \ref clock_ip_name_t.
+ 691:../drivers/fsl_clock.h ****  */
+ 692:../drivers/fsl_clock.h **** static inline void CLOCK_EnableClock(clock_ip_name_t name)
+ 693:../drivers/fsl_clock.h **** {
+ 694:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+  68              		.loc 2 694 0
+  69 001a 230C     		lsrs	r3, r4, #16
+  70 001c 03F18043 		add	r3, r3, #1073741824
+  71 0020 03F58E23 		add	r3, r3, #290816
+ 695:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+  72              		.loc 2 695 0
+  73 0024 A4B2     		uxth	r4, r4
+  74              	.LVL4:
+  75 0026 1D68     		ldr	r5, [r3]
+  76 0028 0122     		movs	r2, #1
+  77 002a A240     		lsls	r2, r2, r4
+  78 002c 2A43     		orrs	r2, r2, r5
+  79 002e 1A60     		str	r2, [r3]
+  80              	.LBE14:
+  81              	.LBE13:
+  87:../drivers/fsl_dac.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+  88:../drivers/fsl_dac.c **** 
+  89:../drivers/fsl_dac.c ****     /* Configure. */
+  90:../drivers/fsl_dac.c ****     /* DACx_C0. */
+  91:../drivers/fsl_dac.c ****     tmp8 = base->C0 & ~(DAC_C0_DACRFS_MASK | DAC_C0_LPEN_MASK);
+  92:../drivers/fsl_dac.c ****     if (kDAC_ReferenceVoltageSourceVref2 == config->referenceVoltageSource)
+  82              		.loc 1 92 0
+  83 0030 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+  91:../drivers/fsl_dac.c ****     if (kDAC_ReferenceVoltageSourceVref2 == config->referenceVoltageSource)
+  84              		.loc 1 91 0
+  85 0032 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
+  86              		.loc 1 92 0
+  87 0036 012A     		cmp	r2, #1
+  93:../drivers/fsl_dac.c ****     {
+  94:../drivers/fsl_dac.c ****         tmp8 |= DAC_C0_DACRFS_MASK;
+  95:../drivers/fsl_dac.c ****     }
+  96:../drivers/fsl_dac.c ****     if (config->enableLowPowerMode)
+  88              		.loc 1 96 0
+  89 0038 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+  91:../drivers/fsl_dac.c ****     if (kDAC_ReferenceVoltageSourceVref2 == config->referenceVoltageSource)
+  90              		.loc 1 91 0
+  91 003a 03F0B703 		and	r3, r3, #183
+  92              	.LVL5:
+  94:../drivers/fsl_dac.c ****     }
+  93              		.loc 1 94 0
+  94 003e 08BF     		it	eq
+  95 0040 43F04003 		orreq	r3, r3, #64
+  96              	.LVL6:
+  97              		.loc 1 96 0
+  98 0044 0AB1     		cbz	r2, .L4
+  97:../drivers/fsl_dac.c ****     {
+  98:../drivers/fsl_dac.c ****         tmp8 |= DAC_C0_LPEN_MASK;
+  99              		.loc 1 98 0
+ 100 0046 43F00803 		orr	r3, r3, #8
+ 101              	.LVL7:
+ 102              	.L4:
+  99:../drivers/fsl_dac.c ****     }
+ 100:../drivers/fsl_dac.c ****     base->C0 = tmp8;
+ 103              		.loc 1 100 0
+ 104 004a 80F82130 		strb	r3, [r0, #33]
+ 105 004e 30BD     		pop	{r4, r5, pc}
+ 106              	.LVL8:
+ 107              	.L5:
+ 108              	.LBB15:
+ 109              	.LBB11:
+  65:../drivers/fsl_dac.c ****     {
+ 110              		.loc 1 65 0
+ 111 0050 0023     		movs	r3, #0
+ 112 0052 DFE7     		b	.L2
+ 113              	.L11:
+ 114              		.align	2
+ 115              	.L10:
+ 116 0054 00C00C40 		.word	1074577408
+ 117 0058 00000000 		.word	.LANCHOR0
+ 118              	.LBE11:
+ 119              	.LBE15:
+ 120              		.cfi_endproc
+ 121              	.LFE153:
+ 123              		.section	.text.DAC_Deinit,"ax",%progbits
+ 124              		.align	1
+ 125              		.global	DAC_Deinit
+ 126              		.syntax unified
+ 127              		.thumb
+ 128              		.thumb_func
+ 129              		.fpu fpv4-sp-d16
+ 131              	DAC_Deinit:
+ 132              	.LFB154:
+ 101:../drivers/fsl_dac.c **** 
+ 102:../drivers/fsl_dac.c ****     /* DAC_Enable(base, true); */
+ 103:../drivers/fsl_dac.c ****     /* Tip: The DAC output can be enabled till then after user sets their own available data in app
+ 104:../drivers/fsl_dac.c **** }
+ 105:../drivers/fsl_dac.c **** 
+ 106:../drivers/fsl_dac.c **** void DAC_Deinit(DAC_Type *base)
+ 107:../drivers/fsl_dac.c **** {
+ 133              		.loc 1 107 0
+ 134              		.cfi_startproc
+ 135              		@ args = 0, pretend = 0, frame = 0
+ 136              		@ frame_needed = 0, uses_anonymous_args = 0
+ 137              		@ link register save eliminated.
+ 138              	.LVL9:
+ 139              	.LBB22:
+ 140              	.LBB23:
+ 141              		.file 3 "../drivers/fsl_dac.h"
+   1:../drivers/fsl_dac.h **** /*
+   2:../drivers/fsl_dac.h ****  * The Clear BSD License
+   3:../drivers/fsl_dac.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_dac.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_dac.h ****  * All rights reserved.
+   6:../drivers/fsl_dac.h ****  *
+   7:../drivers/fsl_dac.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_dac.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_dac.h ****  * that the following conditions are met:
+  10:../drivers/fsl_dac.h ****  *
+  11:../drivers/fsl_dac.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_dac.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_dac.h ****  *
+  14:../drivers/fsl_dac.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_dac.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_dac.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_dac.h ****  *
+  18:../drivers/fsl_dac.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_dac.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_dac.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_dac.h ****  *
+  22:../drivers/fsl_dac.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_dac.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_dac.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_dac.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_dac.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_dac.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_dac.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_dac.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_dac.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_dac.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_dac.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_dac.h ****  */
+  34:../drivers/fsl_dac.h **** 
+  35:../drivers/fsl_dac.h **** #ifndef _FSL_DAC_H_
+  36:../drivers/fsl_dac.h **** #define _FSL_DAC_H_
+  37:../drivers/fsl_dac.h **** 
+  38:../drivers/fsl_dac.h **** #include "fsl_common.h"
+  39:../drivers/fsl_dac.h **** 
+  40:../drivers/fsl_dac.h **** /*!
+  41:../drivers/fsl_dac.h ****  * @addtogroup dac
+  42:../drivers/fsl_dac.h ****  * @{
+  43:../drivers/fsl_dac.h ****  */
+  44:../drivers/fsl_dac.h **** 
+  45:../drivers/fsl_dac.h **** 
+  46:../drivers/fsl_dac.h **** /*******************************************************************************
+  47:../drivers/fsl_dac.h ****  * Definitions
+  48:../drivers/fsl_dac.h ****  ******************************************************************************/
+  49:../drivers/fsl_dac.h **** 
+  50:../drivers/fsl_dac.h **** /*! @name Driver version */
+  51:../drivers/fsl_dac.h **** /*@{*/
+  52:../drivers/fsl_dac.h **** /*! @brief DAC driver version 2.0.1. */
+  53:../drivers/fsl_dac.h **** #define FSL_DAC_DRIVER_VERSION (MAKE_VERSION(2, 0, 1))
+  54:../drivers/fsl_dac.h **** /*@}*/
+  55:../drivers/fsl_dac.h **** 
+  56:../drivers/fsl_dac.h **** /*!
+  57:../drivers/fsl_dac.h ****  * @brief DAC buffer flags.
+  58:../drivers/fsl_dac.h ****  */
+  59:../drivers/fsl_dac.h **** enum _dac_buffer_status_flags
+  60:../drivers/fsl_dac.h **** {
+  61:../drivers/fsl_dac.h **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION
+  62:../drivers/fsl_dac.h ****     kDAC_BufferWatermarkFlag = DAC_SR_DACBFWMF_MASK,                  /*!< DAC Buffer Watermark Fla
+  63:../drivers/fsl_dac.h **** #endif                                                                /* FSL_FEATURE_DAC_HAS_WATERM
+  64:../drivers/fsl_dac.h ****     kDAC_BufferReadPointerTopPositionFlag = DAC_SR_DACBFRPTF_MASK,    /*!< DAC Buffer Read Pointer 
+  65:../drivers/fsl_dac.h ****     kDAC_BufferReadPointerBottomPositionFlag = DAC_SR_DACBFRPBF_MASK, /*!< DAC Buffer Read Pointer 
+  66:../drivers/fsl_dac.h ****                                                                            Flag. */
+  67:../drivers/fsl_dac.h **** };
+  68:../drivers/fsl_dac.h **** 
+  69:../drivers/fsl_dac.h **** /*!
+  70:../drivers/fsl_dac.h ****  * @brief DAC buffer interrupts.
+  71:../drivers/fsl_dac.h ****  */
+  72:../drivers/fsl_dac.h **** enum _dac_buffer_interrupt_enable
+  73:../drivers/fsl_dac.h **** {
+  74:../drivers/fsl_dac.h **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION
+  75:../drivers/fsl_dac.h ****     kDAC_BufferWatermarkInterruptEnable = DAC_C0_DACBWIEN_MASK,         /*!< DAC Buffer Watermark I
+  76:../drivers/fsl_dac.h **** #endif                                                                  /* FSL_FEATURE_DAC_HAS_WATE
+  77:../drivers/fsl_dac.h ****     kDAC_BufferReadPointerTopInterruptEnable = DAC_C0_DACBTIEN_MASK,    /*!< DAC Buffer Read Pointe
+  78:../drivers/fsl_dac.h ****                                                                              Enable. */
+  79:../drivers/fsl_dac.h ****     kDAC_BufferReadPointerBottomInterruptEnable = DAC_C0_DACBBIEN_MASK, /*!< DAC Buffer Read Pointe
+  80:../drivers/fsl_dac.h ****                                                                              Interrupt Enable */
+  81:../drivers/fsl_dac.h **** };
+  82:../drivers/fsl_dac.h **** 
+  83:../drivers/fsl_dac.h **** /*!
+  84:../drivers/fsl_dac.h ****  * @brief DAC reference voltage source.
+  85:../drivers/fsl_dac.h ****  */
+  86:../drivers/fsl_dac.h **** typedef enum _dac_reference_voltage_source
+  87:../drivers/fsl_dac.h **** {
+  88:../drivers/fsl_dac.h ****     kDAC_ReferenceVoltageSourceVref1 = 0U, /*!< The DAC selects DACREF_1 as the reference voltage. 
+  89:../drivers/fsl_dac.h ****     kDAC_ReferenceVoltageSourceVref2 = 1U, /*!< The DAC selects DACREF_2 as the reference voltage. 
+  90:../drivers/fsl_dac.h **** } dac_reference_voltage_source_t;
+  91:../drivers/fsl_dac.h **** 
+  92:../drivers/fsl_dac.h **** /*!
+  93:../drivers/fsl_dac.h ****  * @brief DAC buffer trigger mode.
+  94:../drivers/fsl_dac.h ****  */
+  95:../drivers/fsl_dac.h **** typedef enum _dac_buffer_trigger_mode
+  96:../drivers/fsl_dac.h **** {
+  97:../drivers/fsl_dac.h ****     kDAC_BufferTriggerByHardwareMode = 0U, /*!< The DAC hardware trigger is selected. */
+  98:../drivers/fsl_dac.h ****     kDAC_BufferTriggerBySoftwareMode = 1U, /*!< The DAC software trigger is selected. */
+  99:../drivers/fsl_dac.h **** } dac_buffer_trigger_mode_t;
+ 100:../drivers/fsl_dac.h **** 
+ 101:../drivers/fsl_dac.h **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION
+ 102:../drivers/fsl_dac.h **** /*!
+ 103:../drivers/fsl_dac.h ****  * @brief DAC buffer watermark.
+ 104:../drivers/fsl_dac.h ****  */
+ 105:../drivers/fsl_dac.h **** typedef enum _dac_buffer_watermark
+ 106:../drivers/fsl_dac.h **** {
+ 107:../drivers/fsl_dac.h **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_1_WORD) && FSL_FEATURE_DAC_HAS_WATERMARK_1_WORD
+ 108:../drivers/fsl_dac.h ****     kDAC_BufferWatermark1Word = 0U, /*!< 1 word  away from the upper limit. */
+ 109:../drivers/fsl_dac.h **** #endif                              /* FSL_FEATURE_DAC_HAS_WATERMARK_1_WORD */
+ 110:../drivers/fsl_dac.h **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_2_WORDS) && FSL_FEATURE_DAC_HAS_WATERMARK_2_WORDS
+ 111:../drivers/fsl_dac.h ****     kDAC_BufferWatermark2Word = 1U, /*!< 2 words away from the upper limit. */
+ 112:../drivers/fsl_dac.h **** #endif                              /* FSL_FEATURE_DAC_HAS_WATERMARK_2_WORDS */
+ 113:../drivers/fsl_dac.h **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_3_WORDS) && FSL_FEATURE_DAC_HAS_WATERMARK_3_WORDS
+ 114:../drivers/fsl_dac.h ****     kDAC_BufferWatermark3Word = 2U, /*!< 3 words away from the upper limit. */
+ 115:../drivers/fsl_dac.h **** #endif                              /* FSL_FEATURE_DAC_HAS_WATERMARK_3_WORDS */
+ 116:../drivers/fsl_dac.h **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_4_WORDS) && FSL_FEATURE_DAC_HAS_WATERMARK_4_WORDS
+ 117:../drivers/fsl_dac.h ****     kDAC_BufferWatermark4Word = 3U, /*!< 4 words away from the upper limit. */
+ 118:../drivers/fsl_dac.h **** #endif                              /* FSL_FEATURE_DAC_HAS_WATERMARK_4_WORDS */
+ 119:../drivers/fsl_dac.h **** } dac_buffer_watermark_t;
+ 120:../drivers/fsl_dac.h **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION */
+ 121:../drivers/fsl_dac.h **** 
+ 122:../drivers/fsl_dac.h **** /*!
+ 123:../drivers/fsl_dac.h ****  * @brief DAC buffer work mode.
+ 124:../drivers/fsl_dac.h ****  */
+ 125:../drivers/fsl_dac.h **** typedef enum _dac_buffer_work_mode
+ 126:../drivers/fsl_dac.h **** {
+ 127:../drivers/fsl_dac.h ****     kDAC_BufferWorkAsNormalMode = 0U, /*!< Normal mode. */
+ 128:../drivers/fsl_dac.h **** #if defined(FSL_FEATURE_DAC_HAS_BUFFER_SWING_MODE) && FSL_FEATURE_DAC_HAS_BUFFER_SWING_MODE
+ 129:../drivers/fsl_dac.h ****     kDAC_BufferWorkAsSwingMode,       /*!< Swing mode. */
+ 130:../drivers/fsl_dac.h **** #endif                                /* FSL_FEATURE_DAC_HAS_BUFFER_SWING_MODE */
+ 131:../drivers/fsl_dac.h ****     kDAC_BufferWorkAsOneTimeScanMode, /*!< One-Time Scan mode. */
+ 132:../drivers/fsl_dac.h **** #if defined(FSL_FEATURE_DAC_HAS_BUFFER_FIFO_MODE) && FSL_FEATURE_DAC_HAS_BUFFER_FIFO_MODE
+ 133:../drivers/fsl_dac.h ****     kDAC_BufferWorkAsFIFOMode, /*!< FIFO mode. */
+ 134:../drivers/fsl_dac.h **** #endif                         /* FSL_FEATURE_DAC_HAS_BUFFER_FIFO_MODE */
+ 135:../drivers/fsl_dac.h **** } dac_buffer_work_mode_t;
+ 136:../drivers/fsl_dac.h **** 
+ 137:../drivers/fsl_dac.h **** /*!
+ 138:../drivers/fsl_dac.h ****  * @brief DAC module configuration.
+ 139:../drivers/fsl_dac.h ****  */
+ 140:../drivers/fsl_dac.h **** typedef struct _dac_config
+ 141:../drivers/fsl_dac.h **** {
+ 142:../drivers/fsl_dac.h ****     dac_reference_voltage_source_t referenceVoltageSource; /*!< Select the DAC reference voltage so
+ 143:../drivers/fsl_dac.h ****     bool enableLowPowerMode;                               /*!< Enable the low-power mode. */
+ 144:../drivers/fsl_dac.h **** } dac_config_t;
+ 145:../drivers/fsl_dac.h **** 
+ 146:../drivers/fsl_dac.h **** /*!
+ 147:../drivers/fsl_dac.h ****  * @brief DAC buffer configuration.
+ 148:../drivers/fsl_dac.h ****  */
+ 149:../drivers/fsl_dac.h **** typedef struct _dac_buffer_config
+ 150:../drivers/fsl_dac.h **** {
+ 151:../drivers/fsl_dac.h ****     dac_buffer_trigger_mode_t triggerMode; /*!< Select the buffer's trigger mode. */
+ 152:../drivers/fsl_dac.h **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION
+ 153:../drivers/fsl_dac.h ****     dac_buffer_watermark_t watermark; /*!< Select the buffer's watermark. */
+ 154:../drivers/fsl_dac.h **** #endif                                /* FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION */
+ 155:../drivers/fsl_dac.h ****     dac_buffer_work_mode_t workMode;  /*!< Select the buffer's work mode. */
+ 156:../drivers/fsl_dac.h ****     uint8_t upperLimit;               /*!< Set the upper limit for the buffer index.
+ 157:../drivers/fsl_dac.h ****                                            Normally, 0-15 is available for a buffer with 16 items. 
+ 158:../drivers/fsl_dac.h **** } dac_buffer_config_t;
+ 159:../drivers/fsl_dac.h **** 
+ 160:../drivers/fsl_dac.h **** /*******************************************************************************
+ 161:../drivers/fsl_dac.h ****  * API
+ 162:../drivers/fsl_dac.h ****  ******************************************************************************/
+ 163:../drivers/fsl_dac.h **** #if defined(__cplusplus)
+ 164:../drivers/fsl_dac.h **** extern "C" {
+ 165:../drivers/fsl_dac.h **** #endif
+ 166:../drivers/fsl_dac.h **** 
+ 167:../drivers/fsl_dac.h **** /*!
+ 168:../drivers/fsl_dac.h ****  * @name Initialization
+ 169:../drivers/fsl_dac.h ****  * @{
+ 170:../drivers/fsl_dac.h ****  */
+ 171:../drivers/fsl_dac.h **** 
+ 172:../drivers/fsl_dac.h **** /*!
+ 173:../drivers/fsl_dac.h ****  * @brief Initializes the DAC module.
+ 174:../drivers/fsl_dac.h ****  *
+ 175:../drivers/fsl_dac.h ****  * This function initializes the DAC module including the following operations.
+ 176:../drivers/fsl_dac.h ****  *  - Enabling the clock for DAC module.
+ 177:../drivers/fsl_dac.h ****  *  - Configuring the DAC converter with a user configuration.
+ 178:../drivers/fsl_dac.h ****  *  - Enabling the DAC module.
+ 179:../drivers/fsl_dac.h ****  *
+ 180:../drivers/fsl_dac.h ****  * @param base DAC peripheral base address.
+ 181:../drivers/fsl_dac.h ****  * @param config Pointer to the configuration structure. See "dac_config_t".
+ 182:../drivers/fsl_dac.h ****  */
+ 183:../drivers/fsl_dac.h **** void DAC_Init(DAC_Type *base, const dac_config_t *config);
+ 184:../drivers/fsl_dac.h **** 
+ 185:../drivers/fsl_dac.h **** /*!
+ 186:../drivers/fsl_dac.h ****  * @brief De-initializes the DAC module.
+ 187:../drivers/fsl_dac.h ****  *
+ 188:../drivers/fsl_dac.h ****  * This function de-initializes the DAC module including the following operations.
+ 189:../drivers/fsl_dac.h ****  *  - Disabling the DAC module.
+ 190:../drivers/fsl_dac.h ****  *  - Disabling the clock for the DAC module.
+ 191:../drivers/fsl_dac.h ****  *
+ 192:../drivers/fsl_dac.h ****  * @param base DAC peripheral base address.
+ 193:../drivers/fsl_dac.h ****  */
+ 194:../drivers/fsl_dac.h **** void DAC_Deinit(DAC_Type *base);
+ 195:../drivers/fsl_dac.h **** 
+ 196:../drivers/fsl_dac.h **** /*!
+ 197:../drivers/fsl_dac.h ****  * @brief Initializes the DAC user configuration structure.
+ 198:../drivers/fsl_dac.h ****  *
+ 199:../drivers/fsl_dac.h ****  * This function initializes the user configuration structure to a default value. The default value
+ 200:../drivers/fsl_dac.h ****  * @code
+ 201:../drivers/fsl_dac.h ****  *   config->referenceVoltageSource = kDAC_ReferenceVoltageSourceVref2;
+ 202:../drivers/fsl_dac.h ****  *   config->enableLowPowerMode = false;
+ 203:../drivers/fsl_dac.h ****  * @endcode
+ 204:../drivers/fsl_dac.h ****  * @param config Pointer to the configuration structure. See "dac_config_t".
+ 205:../drivers/fsl_dac.h ****  */
+ 206:../drivers/fsl_dac.h **** void DAC_GetDefaultConfig(dac_config_t *config);
+ 207:../drivers/fsl_dac.h **** 
+ 208:../drivers/fsl_dac.h **** /*!
+ 209:../drivers/fsl_dac.h ****  * @brief Enables the DAC module.
+ 210:../drivers/fsl_dac.h ****  *
+ 211:../drivers/fsl_dac.h ****  * @param base DAC peripheral base address.
+ 212:../drivers/fsl_dac.h ****  * @param enable Enables or disables the feature.
+ 213:../drivers/fsl_dac.h ****  */
+ 214:../drivers/fsl_dac.h **** static inline void DAC_Enable(DAC_Type *base, bool enable)
+ 215:../drivers/fsl_dac.h **** {
+ 216:../drivers/fsl_dac.h ****     if (enable)
+ 217:../drivers/fsl_dac.h ****     {
+ 218:../drivers/fsl_dac.h ****         base->C0 |= DAC_C0_DACEN_MASK;
+ 219:../drivers/fsl_dac.h ****     }
+ 220:../drivers/fsl_dac.h ****     else
+ 221:../drivers/fsl_dac.h ****     {
+ 222:../drivers/fsl_dac.h ****         base->C0 &= ~DAC_C0_DACEN_MASK;
+ 142              		.loc 3 222 0
+ 143 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
+ 144 0004 03F07F03 		and	r3, r3, #127
+ 145 0008 80F82130 		strb	r3, [r0, #33]
+ 146              	.LVL10:
+ 147              	.LBE23:
+ 148              	.LBE22:
+ 149              	.LBB24:
+ 150              	.LBB25:
+  67:../drivers/fsl_dac.c ****         {
+ 151              		.loc 1 67 0
+ 152 000c 0D4B     		ldr	r3, .L16
+ 153 000e 9842     		cmp	r0, r3
+ 154 0010 16D0     		beq	.L14
+ 155              	.LVL11:
+  65:../drivers/fsl_dac.c ****     {
+ 156              		.loc 1 65 0
+ 157 0012 03F58053 		add	r3, r3, #4096
+ 158 0016 9842     		cmp	r0, r3
+ 159 0018 0CBF     		ite	eq
+ 160 001a 0120     		moveq	r0, #1
+ 161 001c 0220     		movne	r0, #2
+ 162              	.LVL12:
+ 163              	.L13:
+ 164              	.LBE25:
+ 165              	.LBE24:
+ 108:../drivers/fsl_dac.c ****     DAC_Enable(base, false);
+ 109:../drivers/fsl_dac.c **** 
+ 110:../drivers/fsl_dac.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+ 111:../drivers/fsl_dac.c ****     /* Disable the clock. */
+ 112:../drivers/fsl_dac.c ****     CLOCK_DisableClock(s_dacClocks[DAC_GetInstance(base)]);
+ 166              		.loc 1 112 0
+ 167 001e 0A4B     		ldr	r3, .L16+4
+ 168 0020 53F82020 		ldr	r2, [r3, r0, lsl #2]
+ 169              	.LVL13:
+ 170              	.LBB27:
+ 171              	.LBB28:
+ 696:../drivers/fsl_clock.h **** }
+ 697:../drivers/fsl_clock.h **** 
+ 698:../drivers/fsl_clock.h **** /*!
+ 699:../drivers/fsl_clock.h ****  * @brief Disable the clock for specific IP.
+ 700:../drivers/fsl_clock.h ****  *
+ 701:../drivers/fsl_clock.h ****  * @param name  Which clock to disable, see \ref clock_ip_name_t.
+ 702:../drivers/fsl_clock.h ****  */
+ 703:../drivers/fsl_clock.h **** static inline void CLOCK_DisableClock(clock_ip_name_t name)
+ 704:../drivers/fsl_clock.h **** {
+ 705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+ 172              		.loc 2 705 0
+ 173 0024 130C     		lsrs	r3, r2, #16
+ 174 0026 03F18043 		add	r3, r3, #1073741824
+ 175 002a 03F58E23 		add	r3, r3, #290816
+ 706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+ 176              		.loc 2 706 0
+ 177 002e 92B2     		uxth	r2, r2
+ 178              	.LVL14:
+ 179 0030 1968     		ldr	r1, [r3]
+ 180 0032 0120     		movs	r0, #1
+ 181              	.LVL15:
+ 182 0034 00FA02F2 		lsl	r2, r0, r2
+ 183 0038 21EA0202 		bic	r2, r1, r2
+ 184 003c 1A60     		str	r2, [r3]
+ 185 003e 7047     		bx	lr
+ 186              	.LVL16:
+ 187              	.L14:
+ 188              	.LBE28:
+ 189              	.LBE27:
+ 190              	.LBB29:
+ 191              	.LBB26:
+  65:../drivers/fsl_dac.c ****     {
+ 192              		.loc 1 65 0
+ 193 0040 0020     		movs	r0, #0
+ 194              	.LVL17:
+ 195 0042 ECE7     		b	.L13
+ 196              	.L17:
+ 197              		.align	2
+ 198              	.L16:
+ 199 0044 00C00C40 		.word	1074577408
+ 200 0048 00000000 		.word	.LANCHOR0
+ 201              	.LBE26:
+ 202              	.LBE29:
+ 203              		.cfi_endproc
+ 204              	.LFE154:
+ 206              		.section	.text.DAC_GetDefaultConfig,"ax",%progbits
+ 207              		.align	1
+ 208              		.global	DAC_GetDefaultConfig
+ 209              		.syntax unified
+ 210              		.thumb
+ 211              		.thumb_func
+ 212              		.fpu fpv4-sp-d16
+ 214              	DAC_GetDefaultConfig:
+ 215              	.LFB155:
+ 113:../drivers/fsl_dac.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+ 114:../drivers/fsl_dac.c **** }
+ 115:../drivers/fsl_dac.c **** 
+ 116:../drivers/fsl_dac.c **** void DAC_GetDefaultConfig(dac_config_t *config)
+ 117:../drivers/fsl_dac.c **** {
+ 216              		.loc 1 117 0
+ 217              		.cfi_startproc
+ 218              		@ args = 0, pretend = 0, frame = 0
+ 219              		@ frame_needed = 0, uses_anonymous_args = 0
+ 220              		@ link register save eliminated.
+ 221              	.LVL18:
+ 118:../drivers/fsl_dac.c ****     assert(NULL != config);
+ 119:../drivers/fsl_dac.c **** 
+ 120:../drivers/fsl_dac.c ****     config->referenceVoltageSource = kDAC_ReferenceVoltageSourceVref2;
+ 222              		.loc 1 120 0
+ 223 0000 0123     		movs	r3, #1
+ 224 0002 0370     		strb	r3, [r0]
+ 121:../drivers/fsl_dac.c ****     config->enableLowPowerMode = false;
+ 225              		.loc 1 121 0
+ 226 0004 0023     		movs	r3, #0
+ 227 0006 4370     		strb	r3, [r0, #1]
+ 228 0008 7047     		bx	lr
+ 229              		.cfi_endproc
+ 230              	.LFE155:
+ 232              		.section	.text.DAC_SetBufferConfig,"ax",%progbits
+ 233              		.align	1
+ 234              		.global	DAC_SetBufferConfig
+ 235              		.syntax unified
+ 236              		.thumb
+ 237              		.thumb_func
+ 238              		.fpu fpv4-sp-d16
+ 240              	DAC_SetBufferConfig:
+ 241              	.LFB156:
+ 122:../drivers/fsl_dac.c **** }
+ 123:../drivers/fsl_dac.c **** 
+ 124:../drivers/fsl_dac.c **** void DAC_SetBufferConfig(DAC_Type *base, const dac_buffer_config_t *config)
+ 125:../drivers/fsl_dac.c **** {
+ 242              		.loc 1 125 0
+ 243              		.cfi_startproc
+ 244              		@ args = 0, pretend = 0, frame = 0
+ 245              		@ frame_needed = 0, uses_anonymous_args = 0
+ 246              		@ link register save eliminated.
+ 247              	.LVL19:
+ 126:../drivers/fsl_dac.c ****     assert(NULL != config);
+ 127:../drivers/fsl_dac.c **** 
+ 128:../drivers/fsl_dac.c ****     uint8_t tmp8;
+ 129:../drivers/fsl_dac.c **** 
+ 130:../drivers/fsl_dac.c ****     /* DACx_C0. */
+ 131:../drivers/fsl_dac.c ****     tmp8 = base->C0 & ~(DAC_C0_DACTRGSEL_MASK);
+ 248              		.loc 1 131 0
+ 249 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
+ 132:../drivers/fsl_dac.c ****     if (kDAC_BufferTriggerBySoftwareMode == config->triggerMode)
+ 250              		.loc 1 132 0
+ 251 0004 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 131:../drivers/fsl_dac.c ****     if (kDAC_BufferTriggerBySoftwareMode == config->triggerMode)
+ 252              		.loc 1 131 0
+ 253 0006 03F0DF03 		and	r3, r3, #223
+ 254              	.LVL20:
+ 255              		.loc 1 132 0
+ 256 000a 012A     		cmp	r2, #1
+ 133:../drivers/fsl_dac.c ****     {
+ 134:../drivers/fsl_dac.c ****         tmp8 |= DAC_C0_DACTRGSEL_MASK;
+ 257              		.loc 1 134 0
+ 258 000c 08BF     		it	eq
+ 259 000e 43F02003 		orreq	r3, r3, #32
+ 260              	.LVL21:
+ 135:../drivers/fsl_dac.c ****     }
+ 136:../drivers/fsl_dac.c ****     base->C0 = tmp8;
+ 261              		.loc 1 136 0
+ 262 0012 80F82130 		strb	r3, [r0, #33]
+ 137:../drivers/fsl_dac.c **** 
+ 138:../drivers/fsl_dac.c ****     /* DACx_C1. */
+ 139:../drivers/fsl_dac.c ****     tmp8 = base->C1 &
+ 140:../drivers/fsl_dac.c ****            ~(
+ 141:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION
+ 142:../drivers/fsl_dac.c ****                DAC_C1_DACBFWM_MASK |
+ 143:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION */
+ 144:../drivers/fsl_dac.c ****                DAC_C1_DACBFMD_MASK);
+ 145:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION
+ 146:../drivers/fsl_dac.c ****     tmp8 |= DAC_C1_DACBFWM(config->watermark);
+ 263              		.loc 1 146 0
+ 264 0016 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+ 139:../drivers/fsl_dac.c ****            ~(
+ 265              		.loc 1 139 0
+ 266 0018 90F82230 		ldrb	r3, [r0, #34]	@ zero_extendqisi2
+ 267              	.LVL22:
+ 268              		.loc 1 146 0
+ 269 001c D200     		lsls	r2, r2, #3
+ 270 001e 02F01802 		and	r2, r2, #24
+ 139:../drivers/fsl_dac.c ****            ~(
+ 271              		.loc 1 139 0
+ 272 0022 03F0E103 		and	r3, r3, #225
+ 273              	.LVL23:
+ 274              		.loc 1 146 0
+ 275 0026 1343     		orrs	r3, r3, r2
+ 276              	.LVL24:
+ 147:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION */
+ 148:../drivers/fsl_dac.c ****     tmp8 |= DAC_C1_DACBFMD(config->workMode);
+ 277              		.loc 1 148 0
+ 278 0028 8A78     		ldrb	r2, [r1, #2]	@ zero_extendqisi2
+ 279 002a 5200     		lsls	r2, r2, #1
+ 280 002c 02F00602 		and	r2, r2, #6
+ 281 0030 1343     		orrs	r3, r3, r2
+ 282              	.LVL25:
+ 149:../drivers/fsl_dac.c ****     base->C1 = tmp8;
+ 283              		.loc 1 149 0
+ 284 0032 80F82230 		strb	r3, [r0, #34]
+ 150:../drivers/fsl_dac.c **** 
+ 151:../drivers/fsl_dac.c ****     /* DACx_C2. */
+ 152:../drivers/fsl_dac.c ****     tmp8 = base->C2 & ~DAC_C2_DACBFUP_MASK;
+ 285              		.loc 1 152 0
+ 286 0036 90F82330 		ldrb	r3, [r0, #35]	@ zero_extendqisi2
+ 287              	.LVL26:
+ 153:../drivers/fsl_dac.c ****     tmp8 |= DAC_C2_DACBFUP(config->upperLimit);
+ 288              		.loc 1 153 0
+ 289 003a CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
+ 152:../drivers/fsl_dac.c ****     tmp8 |= DAC_C2_DACBFUP(config->upperLimit);
+ 290              		.loc 1 152 0
+ 291 003c 03F0F003 		and	r3, r3, #240
+ 292              	.LVL27:
+ 293              		.loc 1 153 0
+ 294 0040 02F00F02 		and	r2, r2, #15
+ 295 0044 1343     		orrs	r3, r3, r2
+ 296              	.LVL28:
+ 154:../drivers/fsl_dac.c ****     base->C2 = tmp8;
+ 297              		.loc 1 154 0
+ 298 0046 80F82330 		strb	r3, [r0, #35]
+ 299 004a 7047     		bx	lr
+ 300              		.cfi_endproc
+ 301              	.LFE156:
+ 303              		.section	.text.DAC_GetDefaultBufferConfig,"ax",%progbits
+ 304              		.align	1
+ 305              		.global	DAC_GetDefaultBufferConfig
+ 306              		.syntax unified
+ 307              		.thumb
+ 308              		.thumb_func
+ 309              		.fpu fpv4-sp-d16
+ 311              	DAC_GetDefaultBufferConfig:
+ 312              	.LFB157:
+ 155:../drivers/fsl_dac.c **** }
+ 156:../drivers/fsl_dac.c **** 
+ 157:../drivers/fsl_dac.c **** void DAC_GetDefaultBufferConfig(dac_buffer_config_t *config)
+ 158:../drivers/fsl_dac.c **** {
+ 313              		.loc 1 158 0
+ 314              		.cfi_startproc
+ 315              		@ args = 0, pretend = 0, frame = 0
+ 316              		@ frame_needed = 0, uses_anonymous_args = 0
+ 317              		@ link register save eliminated.
+ 318              	.LVL29:
+ 159:../drivers/fsl_dac.c ****     assert(NULL != config);
+ 160:../drivers/fsl_dac.c **** 
+ 161:../drivers/fsl_dac.c ****     config->triggerMode = kDAC_BufferTriggerBySoftwareMode;
+ 319              		.loc 1 161 0
+ 320 0000 0123     		movs	r3, #1
+ 321 0002 0370     		strb	r3, [r0]
+ 162:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION
+ 163:../drivers/fsl_dac.c ****     config->watermark = kDAC_BufferWatermark1Word;
+ 322              		.loc 1 163 0
+ 323 0004 0023     		movs	r3, #0
+ 324 0006 4370     		strb	r3, [r0, #1]
+ 164:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION */
+ 165:../drivers/fsl_dac.c ****     config->workMode = kDAC_BufferWorkAsNormalMode;
+ 325              		.loc 1 165 0
+ 326 0008 8370     		strb	r3, [r0, #2]
+ 166:../drivers/fsl_dac.c ****     config->upperLimit = DAC_DATL_COUNT - 1U;
+ 327              		.loc 1 166 0
+ 328 000a 0F23     		movs	r3, #15
+ 329 000c C370     		strb	r3, [r0, #3]
+ 330 000e 7047     		bx	lr
+ 331              		.cfi_endproc
+ 332              	.LFE157:
+ 334              		.section	.text.DAC_SetBufferValue,"ax",%progbits
+ 335              		.align	1
+ 336              		.global	DAC_SetBufferValue
+ 337              		.syntax unified
+ 338              		.thumb
+ 339              		.thumb_func
+ 340              		.fpu fpv4-sp-d16
+ 342              	DAC_SetBufferValue:
+ 343              	.LFB158:
+ 167:../drivers/fsl_dac.c **** }
+ 168:../drivers/fsl_dac.c **** 
+ 169:../drivers/fsl_dac.c **** void DAC_SetBufferValue(DAC_Type *base, uint8_t index, uint16_t value)
+ 170:../drivers/fsl_dac.c **** {
+ 344              		.loc 1 170 0
+ 345              		.cfi_startproc
+ 346              		@ args = 0, pretend = 0, frame = 0
+ 347              		@ frame_needed = 0, uses_anonymous_args = 0
+ 348              	.LVL30:
+ 349 0000 10B5     		push	{r4, lr}
+ 350              		.cfi_def_cfa_offset 8
+ 351              		.cfi_offset 4, -8
+ 352              		.cfi_offset 14, -4
+ 353 0002 00EB4103 		add	r3, r0, r1, lsl #1
+ 171:../drivers/fsl_dac.c ****     assert(index < DAC_DATL_COUNT);
+ 172:../drivers/fsl_dac.c **** 
+ 173:../drivers/fsl_dac.c ****     base->DAT[index].DATL = (uint8_t)(0xFFU & value);         /* Low 8-bit. */
+ 354              		.loc 1 173 0
+ 355 0006 D4B2     		uxtb	r4, r2
+ 174:../drivers/fsl_dac.c ****     base->DAT[index].DATH = (uint8_t)((0xF00U & value) >> 8); /* High 4-bit. */
+ 356              		.loc 1 174 0
+ 357 0008 C2F30322 		ubfx	r2, r2, #8, #4
+ 358              	.LVL31:
+ 173:../drivers/fsl_dac.c ****     base->DAT[index].DATH = (uint8_t)((0xF00U & value) >> 8); /* High 4-bit. */
+ 359              		.loc 1 173 0
+ 360 000c 00F81140 		strb	r4, [r0, r1, lsl #1]
+ 361              		.loc 1 174 0
+ 362 0010 5A70     		strb	r2, [r3, #1]
+ 363 0012 10BD     		pop	{r4, pc}
+ 364              		.cfi_endproc
+ 365              	.LFE158:
+ 367              		.section	.text.DAC_SetBufferReadPointer,"ax",%progbits
+ 368              		.align	1
+ 369              		.global	DAC_SetBufferReadPointer
+ 370              		.syntax unified
+ 371              		.thumb
+ 372              		.thumb_func
+ 373              		.fpu fpv4-sp-d16
+ 375              	DAC_SetBufferReadPointer:
+ 376              	.LFB159:
+ 175:../drivers/fsl_dac.c **** }
+ 176:../drivers/fsl_dac.c **** 
+ 177:../drivers/fsl_dac.c **** void DAC_SetBufferReadPointer(DAC_Type *base, uint8_t index)
+ 178:../drivers/fsl_dac.c **** {
+ 377              		.loc 1 178 0
+ 378              		.cfi_startproc
+ 379              		@ args = 0, pretend = 0, frame = 0
+ 380              		@ frame_needed = 0, uses_anonymous_args = 0
+ 381              		@ link register save eliminated.
+ 382              	.LVL32:
+ 179:../drivers/fsl_dac.c ****     assert(index < DAC_DATL_COUNT);
+ 180:../drivers/fsl_dac.c **** 
+ 181:../drivers/fsl_dac.c ****     uint8_t tmp8 = base->C2 & ~DAC_C2_DACBFRP_MASK;
+ 383              		.loc 1 181 0
+ 384 0000 90F82330 		ldrb	r3, [r0, #35]	@ zero_extendqisi2
+ 385 0004 03F00F03 		and	r3, r3, #15
+ 386              	.LVL33:
+ 182:../drivers/fsl_dac.c **** 
+ 183:../drivers/fsl_dac.c ****     tmp8 |= DAC_C2_DACBFRP(index);
+ 387              		.loc 1 183 0
+ 388 0008 43EA0111 		orr	r1, r3, r1, lsl #4
+ 389              	.LVL34:
+ 390 000c C9B2     		uxtb	r1, r1
+ 391              	.LVL35:
+ 184:../drivers/fsl_dac.c ****     base->C2 = tmp8;
+ 392              		.loc 1 184 0
+ 393 000e 80F82310 		strb	r1, [r0, #35]
+ 394 0012 7047     		bx	lr
+ 395              		.cfi_endproc
+ 396              	.LFE159:
+ 398              		.section	.text.DAC_EnableBufferInterrupts,"ax",%progbits
+ 399              		.align	1
+ 400              		.global	DAC_EnableBufferInterrupts
+ 401              		.syntax unified
+ 402              		.thumb
+ 403              		.thumb_func
+ 404              		.fpu fpv4-sp-d16
+ 406              	DAC_EnableBufferInterrupts:
+ 407              	.LFB160:
+ 185:../drivers/fsl_dac.c **** }
+ 186:../drivers/fsl_dac.c **** 
+ 187:../drivers/fsl_dac.c **** void DAC_EnableBufferInterrupts(DAC_Type *base, uint32_t mask)
+ 188:../drivers/fsl_dac.c **** {
+ 408              		.loc 1 188 0
+ 409              		.cfi_startproc
+ 410              		@ args = 0, pretend = 0, frame = 0
+ 411              		@ frame_needed = 0, uses_anonymous_args = 0
+ 412              		@ link register save eliminated.
+ 413              	.LVL36:
+ 189:../drivers/fsl_dac.c ****     mask &= (
+ 190:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION
+ 191:../drivers/fsl_dac.c ****         DAC_C0_DACBWIEN_MASK |
+ 192:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION */
+ 193:../drivers/fsl_dac.c ****         DAC_C0_DACBTIEN_MASK | DAC_C0_DACBBIEN_MASK);
+ 194:../drivers/fsl_dac.c ****     base->C0 |= ((uint8_t)mask); /* Write 1 to enable. */
+ 414              		.loc 1 194 0
+ 415 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
+ 189:../drivers/fsl_dac.c ****     mask &= (
+ 416              		.loc 1 189 0
+ 417 0004 01F00701 		and	r1, r1, #7
+ 418              	.LVL37:
+ 419              		.loc 1 194 0
+ 420 0008 0B43     		orrs	r3, r3, r1
+ 421 000a 80F82130 		strb	r3, [r0, #33]
+ 422 000e 7047     		bx	lr
+ 423              		.cfi_endproc
+ 424              	.LFE160:
+ 426              		.section	.text.DAC_DisableBufferInterrupts,"ax",%progbits
+ 427              		.align	1
+ 428              		.global	DAC_DisableBufferInterrupts
+ 429              		.syntax unified
+ 430              		.thumb
+ 431              		.thumb_func
+ 432              		.fpu fpv4-sp-d16
+ 434              	DAC_DisableBufferInterrupts:
+ 435              	.LFB161:
+ 195:../drivers/fsl_dac.c **** }
+ 196:../drivers/fsl_dac.c **** 
+ 197:../drivers/fsl_dac.c **** void DAC_DisableBufferInterrupts(DAC_Type *base, uint32_t mask)
+ 198:../drivers/fsl_dac.c **** {
+ 436              		.loc 1 198 0
+ 437              		.cfi_startproc
+ 438              		@ args = 0, pretend = 0, frame = 0
+ 439              		@ frame_needed = 0, uses_anonymous_args = 0
+ 440              		@ link register save eliminated.
+ 441              	.LVL38:
+ 199:../drivers/fsl_dac.c ****     mask &= (
+ 200:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION
+ 201:../drivers/fsl_dac.c ****         DAC_C0_DACBWIEN_MASK |
+ 202:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION */
+ 203:../drivers/fsl_dac.c ****         DAC_C0_DACBTIEN_MASK | DAC_C0_DACBBIEN_MASK);
+ 204:../drivers/fsl_dac.c ****     base->C0 &= (uint8_t)(~((uint8_t)mask)); /* Write 0 to disable. */
+ 442              		.loc 1 204 0
+ 443 0000 90F82130 		ldrb	r3, [r0, #33]	@ zero_extendqisi2
+ 199:../drivers/fsl_dac.c ****     mask &= (
+ 444              		.loc 1 199 0
+ 445 0004 01F00701 		and	r1, r1, #7
+ 446              	.LVL39:
+ 447              		.loc 1 204 0
+ 448 0008 23EA0103 		bic	r3, r3, r1
+ 449 000c 80F82130 		strb	r3, [r0, #33]
+ 450 0010 7047     		bx	lr
+ 451              		.cfi_endproc
+ 452              	.LFE161:
+ 454              		.section	.text.DAC_GetBufferStatusFlags,"ax",%progbits
+ 455              		.align	1
+ 456              		.global	DAC_GetBufferStatusFlags
+ 457              		.syntax unified
+ 458              		.thumb
+ 459              		.thumb_func
+ 460              		.fpu fpv4-sp-d16
+ 462              	DAC_GetBufferStatusFlags:
+ 463              	.LFB162:
+ 205:../drivers/fsl_dac.c **** }
+ 206:../drivers/fsl_dac.c **** 
+ 207:../drivers/fsl_dac.c **** uint32_t DAC_GetBufferStatusFlags(DAC_Type *base)
+ 208:../drivers/fsl_dac.c **** {
+ 464              		.loc 1 208 0
+ 465              		.cfi_startproc
+ 466              		@ args = 0, pretend = 0, frame = 0
+ 467              		@ frame_needed = 0, uses_anonymous_args = 0
+ 468              		@ link register save eliminated.
+ 469              	.LVL40:
+ 209:../drivers/fsl_dac.c ****     return (uint32_t)(base->SR & (
+ 470              		.loc 1 209 0
+ 471 0000 90F82000 		ldrb	r0, [r0, #32]	@ zero_extendqisi2
+ 472              	.LVL41:
+ 210:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION
+ 211:../drivers/fsl_dac.c ****                                      DAC_SR_DACBFWMF_MASK |
+ 212:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION */
+ 213:../drivers/fsl_dac.c ****                                      DAC_SR_DACBFRPTF_MASK | DAC_SR_DACBFRPBF_MASK));
+ 214:../drivers/fsl_dac.c **** }
+ 473              		.loc 1 214 0
+ 474 0004 00F00700 		and	r0, r0, #7
+ 475 0008 7047     		bx	lr
+ 476              		.cfi_endproc
+ 477              	.LFE162:
+ 479              		.section	.text.DAC_ClearBufferStatusFlags,"ax",%progbits
+ 480              		.align	1
+ 481              		.global	DAC_ClearBufferStatusFlags
+ 482              		.syntax unified
+ 483              		.thumb
+ 484              		.thumb_func
+ 485              		.fpu fpv4-sp-d16
+ 487              	DAC_ClearBufferStatusFlags:
+ 488              	.LFB163:
+ 215:../drivers/fsl_dac.c **** 
+ 216:../drivers/fsl_dac.c **** void DAC_ClearBufferStatusFlags(DAC_Type *base, uint32_t mask)
+ 217:../drivers/fsl_dac.c **** {
+ 489              		.loc 1 217 0
+ 490              		.cfi_startproc
+ 491              		@ args = 0, pretend = 0, frame = 0
+ 492              		@ frame_needed = 0, uses_anonymous_args = 0
+ 493              		@ link register save eliminated.
+ 494              	.LVL42:
+ 218:../drivers/fsl_dac.c ****     mask &= (
+ 219:../drivers/fsl_dac.c **** #if defined(FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION) && FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION
+ 220:../drivers/fsl_dac.c ****         DAC_SR_DACBFWMF_MASK |
+ 221:../drivers/fsl_dac.c **** #endif /* FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION */
+ 222:../drivers/fsl_dac.c ****         DAC_SR_DACBFRPTF_MASK | DAC_SR_DACBFRPBF_MASK);
+ 223:../drivers/fsl_dac.c ****     base->SR &= (uint8_t)(~((uint8_t)mask)); /* Write 0 to clear flags. */
+ 495              		.loc 1 223 0
+ 496 0000 90F82030 		ldrb	r3, [r0, #32]	@ zero_extendqisi2
+ 218:../drivers/fsl_dac.c ****     mask &= (
+ 497              		.loc 1 218 0
+ 498 0004 01F00701 		and	r1, r1, #7
+ 499              	.LVL43:
+ 500              		.loc 1 223 0
+ 501 0008 23EA0103 		bic	r3, r3, r1
+ 502 000c 80F82030 		strb	r3, [r0, #32]
+ 503 0010 7047     		bx	lr
+ 504              		.cfi_endproc
+ 505              	.LFE163:
+ 507              		.section	.rodata.s_dacClocks,"a",%progbits
+ 508              		.align	2
+ 509              		.set	.LANCHOR0,. + 0
+ 512              	s_dacClocks:
+ 513 0000 0C002C10 		.word	271319052
+ 514 0004 0D002C10 		.word	271319053
+ 515              		.text
+ 516              	.Letext0:
+ 517              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 518              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 519              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 520              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 521              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+ 522              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+ 523              		.file 10 "../CMSIS/core_cm4.h"
+ 524              		.file 11 "../CMSIS/system_MK64F12.h"
+ 525              		.file 12 "../CMSIS/MK64F12.h"

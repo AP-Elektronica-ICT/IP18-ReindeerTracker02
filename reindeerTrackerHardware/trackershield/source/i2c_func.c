@@ -10,6 +10,11 @@
 #include "fsl_i2c.h"
 #include "fsl_port.h"
 
+#define FRDM_ACC_SADDR 0x1D
+#define TRACKER_ACC_SADDR 0x1C
+
+#define ACC_SADDR FRDM_ACC_SADDR
+
 void initI2C()
 {
 
@@ -23,7 +28,7 @@ void initI2C()
 
 	config.enableMaster = true;
     config.enableStopHold = false;
-    config.baudRate_Bps = 200000;
+    config.baudRate_Bps = 100000;
     config.glitchFilterWidth = 0;
 
 	I2C_MasterInit(I2C0, &config, ClkSrcFreq);
@@ -35,7 +40,7 @@ void initI2C()
 void accWriteReg(uint8_t reg, uint8_t data)
 {
 
-	I2C_MasterStart(I2C0, 0x1D, kI2C_Write);
+	I2C_MasterStart(I2C0, ACC_SADDR, kI2C_Write);
 
 	/* Wait until the data register is ready for transmit. */
     while (!(I2C0->S & kI2C_IntPendingFlag)){}
@@ -67,7 +72,7 @@ uint8_t accReadReg(uint8_t reg)
 {
 	uint8_t data = 0;
 
-	I2C_MasterStart(I2C0, 0x1D, kI2C_Write); //do START condition and send slave address
+	I2C_MasterStart(I2C0, ACC_SADDR, kI2C_Write); //do START condition and send slave address
 
 	/* Wait until the data register is ready for transmit. */
     while (!(I2C0->S & kI2C_IntPendingFlag)){}
@@ -84,7 +89,7 @@ uint8_t accReadReg(uint8_t reg)
 	}
 	I2C0->S |= kI2C_IntPendingFlag;
 
-	I2C_MasterRepeatedStart(I2C0, 0x1D, kI2C_Read);
+	I2C_MasterRepeatedStart(I2C0, ACC_SADDR, kI2C_Read);
 
 	while (!(I2C0->S & kI2C_IntPendingFlag))  {}
 	/* Clear the IICIF flag. */

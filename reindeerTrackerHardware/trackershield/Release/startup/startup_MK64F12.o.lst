@@ -1,0 +1,1050 @@
+   1              	# 1 "../startup/startup_MK64F12.S"
+   1              	/* ---------------------------------------------------------------------------------------*/
+   1              	...
+   0              	
+   0              	
+   2              	/*  @file:    startup_MK64F12.s                                                           */
+   3              	/*  @purpose: CMSIS Cortex-M4 Core Device Startup File                                    */
+   4              	/*            MK64F12                                                                     */
+   5              	/*  @version: 2.9                                                                         */
+   6              	/*  @date:    2016-3-21                                                                   */
+   7              	/*  @build:   b170730                                                                     */
+   8              	/* ---------------------------------------------------------------------------------------*/
+   9              	/*                                                                                        */
+  10              	/* Copyright 1997-2016 Freescale Semiconductor, Inc.                                      */
+  11              	/* Copyright 2016-2017 NXP                                                                */
+  12              	/* Redistribution and use in source and binary forms, with or without modification,       */
+  13              	/* are permitted provided that the following conditions are met:                          */
+  14              	/*                                                                                        */
+  15              	/* 1. Redistributions of source code must retain the above copyright notice, this list    */
+  16              	/*   of conditions and the following disclaimer.                                          */
+  17              	/*                                                                                        */
+  18              	/* 2. Redistributions in binary form must reproduce the above copyright notice, this      */
+  19              	/*   list of conditions and the following disclaimer in the documentation and/or          */
+  20              	/*   other materials provided with the distribution.                                      */
+  21              	/*                                                                                        */
+  22              	/* 3. Neither the name of the copyright holder nor the names of its                       */
+  23              	/*   contributors may be used to endorse or promote products derived from this            */
+  24              	/*   software without specific prior written permission.                                  */
+  25              	/*                                                                                        */
+  26              	/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND        */
+  27              	/* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED          */
+  28              	/* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE                 */
+  29              	/* DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR       */
+  30              	/* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES         */
+  31              	/* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;           */
+  32              	/* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON         */
+  33              	/* ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT                */
+  34              	/* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS          */
+  35              	/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                           */
+  36              	/*****************************************************************************/
+  37              	/* Version: GCC for ARM Embedded Processors                                  */
+  38              	/*****************************************************************************/
+  39              	    .syntax unified
+  40              	    .arch armv7-m
+  41              	
+  42              	    .section .isr_vector, "a"
+  43              	    .align 2
+  44              	    .globl __isr_vector
+  45              	__isr_vector:
+  46 0000 00000000 	    .long   __StackTop                                      /* Top of Stack */
+  47 0004 00000000 	    .long   Reset_Handler                                   /* Reset Handler */
+  48 0008 00000000 	    .long   NMI_Handler                                     /* NMI Handler*/
+  49 000c 00000000 	    .long   HardFault_Handler                               /* Hard Fault Handler*/
+  50 0010 00000000 	    .long   MemManage_Handler                               /* MPU Fault Handler*/
+  51 0014 00000000 	    .long   BusFault_Handler                                /* Bus Fault Handler*/
+  52 0018 00000000 	    .long   UsageFault_Handler                              /* Usage Fault Handler*/
+  53 001c 00000000 	    .long   0                                               /* Reserved*/
+  54 0020 00000000 	    .long   0                                               /* Reserved*/
+  55 0024 00000000 	    .long   0                                               /* Reserved*/
+  56 0028 00000000 	    .long   0                                               /* Reserved*/
+  57 002c 00000000 	    .long   SVC_Handler                                     /* SVCall Handler*/
+  58 0030 00000000 	    .long   DebugMon_Handler                                /* Debug Monitor Handler*/
+  59 0034 00000000 	    .long   0                                               /* Reserved*/
+  60 0038 00000000 	    .long   PendSV_Handler                                  /* PendSV Handler*/
+  61 003c 00000000 	    .long   SysTick_Handler                                 /* SysTick Handler*/
+  62              	
+  63              	                                                            /* External Interrupts*/
+  64 0040 00000000 	    .long   DMA0_IRQHandler                                 /* DMA Channel 0 Transfer Complete*/
+  65 0044 00000000 	    .long   DMA1_IRQHandler                                 /* DMA Channel 1 Transfer Complete*/
+  66 0048 00000000 	    .long   DMA2_IRQHandler                                 /* DMA Channel 2 Transfer Complete*/
+  67 004c 00000000 	    .long   DMA3_IRQHandler                                 /* DMA Channel 3 Transfer Complete*/
+  68 0050 00000000 	    .long   DMA4_IRQHandler                                 /* DMA Channel 4 Transfer Complete*/
+  69 0054 00000000 	    .long   DMA5_IRQHandler                                 /* DMA Channel 5 Transfer Complete*/
+  70 0058 00000000 	    .long   DMA6_IRQHandler                                 /* DMA Channel 6 Transfer Complete*/
+  71 005c 00000000 	    .long   DMA7_IRQHandler                                 /* DMA Channel 7 Transfer Complete*/
+  72 0060 00000000 	    .long   DMA8_IRQHandler                                 /* DMA Channel 8 Transfer Complete*/
+  73 0064 00000000 	    .long   DMA9_IRQHandler                                 /* DMA Channel 9 Transfer Complete*/
+  74 0068 00000000 	    .long   DMA10_IRQHandler                                /* DMA Channel 10 Transfer Complete*/
+  75 006c 00000000 	    .long   DMA11_IRQHandler                                /* DMA Channel 11 Transfer Complete*/
+  76 0070 00000000 	    .long   DMA12_IRQHandler                                /* DMA Channel 12 Transfer Complete*/
+  77 0074 00000000 	    .long   DMA13_IRQHandler                                /* DMA Channel 13 Transfer Complete*/
+  78 0078 00000000 	    .long   DMA14_IRQHandler                                /* DMA Channel 14 Transfer Complete*/
+  79 007c 00000000 	    .long   DMA15_IRQHandler                                /* DMA Channel 15 Transfer Complete*/
+  80 0080 00000000 	    .long   DMA_Error_IRQHandler                            /* DMA Error Interrupt*/
+  81 0084 00000000 	    .long   MCM_IRQHandler                                  /* Normal Interrupt*/
+  82 0088 00000000 	    .long   FTFE_IRQHandler                                 /* FTFE Command complete interrupt*/
+  83 008c 00000000 	    .long   Read_Collision_IRQHandler                       /* Read Collision Interrupt*/
+  84 0090 00000000 	    .long   LVD_LVW_IRQHandler                              /* Low Voltage Detect, Low Voltage Warn
+  85 0094 00000000 	    .long   LLWU_IRQHandler                                 /* Low Leakage Wakeup Unit*/
+  86 0098 00000000 	    .long   WDOG_EWM_IRQHandler                             /* WDOG Interrupt*/
+  87 009c 00000000 	    .long   RNG_IRQHandler                                  /* RNG Interrupt*/
+  88 00a0 00000000 	    .long   I2C0_IRQHandler                                 /* I2C0 interrupt*/
+  89 00a4 00000000 	    .long   I2C1_IRQHandler                                 /* I2C1 interrupt*/
+  90 00a8 00000000 	    .long   SPI0_IRQHandler                                 /* SPI0 Interrupt*/
+  91 00ac 00000000 	    .long   SPI1_IRQHandler                                 /* SPI1 Interrupt*/
+  92 00b0 00000000 	    .long   I2S0_Tx_IRQHandler                              /* I2S0 transmit interrupt*/
+  93 00b4 00000000 	    .long   I2S0_Rx_IRQHandler                              /* I2S0 receive interrupt*/
+  94 00b8 00000000 	    .long   UART0_LON_IRQHandler                            /* UART0 LON interrupt*/
+  95 00bc 00000000 	    .long   UART0_RX_TX_IRQHandler                          /* UART0 Receive/Transmit interrupt*/
+  96 00c0 00000000 	    .long   UART0_ERR_IRQHandler                            /* UART0 Error interrupt*/
+  97 00c4 00000000 	    .long   UART1_RX_TX_IRQHandler                          /* UART1 Receive/Transmit interrupt*/
+  98 00c8 00000000 	    .long   UART1_ERR_IRQHandler                            /* UART1 Error interrupt*/
+  99 00cc 00000000 	    .long   UART2_RX_TX_IRQHandler                          /* UART2 Receive/Transmit interrupt*/
+ 100 00d0 00000000 	    .long   UART2_ERR_IRQHandler                            /* UART2 Error interrupt*/
+ 101 00d4 00000000 	    .long   UART3_RX_TX_IRQHandler                          /* UART3 Receive/Transmit interrupt*/
+ 102 00d8 00000000 	    .long   UART3_ERR_IRQHandler                            /* UART3 Error interrupt*/
+ 103 00dc 00000000 	    .long   ADC0_IRQHandler                                 /* ADC0 interrupt*/
+ 104 00e0 00000000 	    .long   CMP0_IRQHandler                                 /* CMP0 interrupt*/
+ 105 00e4 00000000 	    .long   CMP1_IRQHandler                                 /* CMP1 interrupt*/
+ 106 00e8 00000000 	    .long   FTM0_IRQHandler                                 /* FTM0 fault, overflow and channels in
+ 107 00ec 00000000 	    .long   FTM1_IRQHandler                                 /* FTM1 fault, overflow and channels in
+ 108 00f0 00000000 	    .long   FTM2_IRQHandler                                 /* FTM2 fault, overflow and channels in
+ 109 00f4 00000000 	    .long   CMT_IRQHandler                                  /* CMT interrupt*/
+ 110 00f8 00000000 	    .long   RTC_IRQHandler                                  /* RTC interrupt*/
+ 111 00fc 00000000 	    .long   RTC_Seconds_IRQHandler                          /* RTC seconds interrupt*/
+ 112 0100 00000000 	    .long   PIT0_IRQHandler                                 /* PIT timer channel 0 interrupt*/
+ 113 0104 00000000 	    .long   PIT1_IRQHandler                                 /* PIT timer channel 1 interrupt*/
+ 114 0108 00000000 	    .long   PIT2_IRQHandler                                 /* PIT timer channel 2 interrupt*/
+ 115 010c 00000000 	    .long   PIT3_IRQHandler                                 /* PIT timer channel 3 interrupt*/
+ 116 0110 00000000 	    .long   PDB0_IRQHandler                                 /* PDB0 Interrupt*/
+ 117 0114 00000000 	    .long   USB0_IRQHandler                                 /* USB0 interrupt*/
+ 118 0118 00000000 	    .long   USBDCD_IRQHandler                               /* USBDCD Interrupt*/
+ 119 011c 00000000 	    .long   Reserved71_IRQHandler                           /* Reserved interrupt 71*/
+ 120 0120 00000000 	    .long   DAC0_IRQHandler                                 /* DAC0 interrupt*/
+ 121 0124 00000000 	    .long   MCG_IRQHandler                                  /* MCG Interrupt*/
+ 122 0128 00000000 	    .long   LPTMR0_IRQHandler                               /* LPTimer interrupt*/
+ 123 012c 00000000 	    .long   PORTA_IRQHandler                                /* Port A interrupt*/
+ 124 0130 00000000 	    .long   PORTB_IRQHandler                                /* Port B interrupt*/
+ 125 0134 00000000 	    .long   PORTC_IRQHandler                                /* Port C interrupt*/
+ 126 0138 00000000 	    .long   PORTD_IRQHandler                                /* Port D interrupt*/
+ 127 013c 00000000 	    .long   PORTE_IRQHandler                                /* Port E interrupt*/
+ 128 0140 00000000 	    .long   SWI_IRQHandler                                  /* Software interrupt*/
+ 129 0144 00000000 	    .long   SPI2_IRQHandler                                 /* SPI2 Interrupt*/
+ 130 0148 00000000 	    .long   UART4_RX_TX_IRQHandler                          /* UART4 Receive/Transmit interrupt*/
+ 131 014c 00000000 	    .long   UART4_ERR_IRQHandler                            /* UART4 Error interrupt*/
+ 132 0150 00000000 	    .long   UART5_RX_TX_IRQHandler                          /* UART5 Receive/Transmit interrupt*/
+ 133 0154 00000000 	    .long   UART5_ERR_IRQHandler                            /* UART5 Error interrupt*/
+ 134 0158 00000000 	    .long   CMP2_IRQHandler                                 /* CMP2 interrupt*/
+ 135 015c 00000000 	    .long   FTM3_IRQHandler                                 /* FTM3 fault, overflow and channels in
+ 136 0160 00000000 	    .long   DAC1_IRQHandler                                 /* DAC1 interrupt*/
+ 137 0164 00000000 	    .long   ADC1_IRQHandler                                 /* ADC1 interrupt*/
+ 138 0168 00000000 	    .long   I2C2_IRQHandler                                 /* I2C2 interrupt*/
+ 139 016c 00000000 	    .long   CAN0_ORed_Message_buffer_IRQHandler             /* CAN0 OR'd message buffers interrupt*
+ 140 0170 00000000 	    .long   CAN0_Bus_Off_IRQHandler                         /* CAN0 bus off interrupt*/
+ 141 0174 00000000 	    .long   CAN0_Error_IRQHandler                           /* CAN0 error interrupt*/
+ 142 0178 00000000 	    .long   CAN0_Tx_Warning_IRQHandler                      /* CAN0 Tx warning interrupt*/
+ 143 017c 00000000 	    .long   CAN0_Rx_Warning_IRQHandler                      /* CAN0 Rx warning interrupt*/
+ 144 0180 00000000 	    .long   CAN0_Wake_Up_IRQHandler                         /* CAN0 wake up interrupt*/
+ 145 0184 00000000 	    .long   SDHC_IRQHandler                                 /* SDHC interrupt*/
+ 146 0188 00000000 	    .long   ENET_1588_Timer_IRQHandler                      /* Ethernet MAC IEEE 1588 Timer Interru
+ 147 018c 00000000 	    .long   ENET_Transmit_IRQHandler                        /* Ethernet MAC Transmit Interrupt*/
+ 148 0190 00000000 	    .long   ENET_Receive_IRQHandler                         /* Ethernet MAC Receive Interrupt*/
+ 149 0194 00000000 	    .long   ENET_Error_IRQHandler                           /* Ethernet MAC Error and miscelaneous 
+ 150 0198 00000000 	    .long   DefaultISR                                      /* 102*/
+ 151 019c 00000000 	    .long   DefaultISR                                      /* 103*/
+ 152 01a0 00000000 	    .long   DefaultISR                                      /* 104*/
+ 153 01a4 00000000 	    .long   DefaultISR                                      /* 105*/
+ 154 01a8 00000000 	    .long   DefaultISR                                      /* 106*/
+ 155 01ac 00000000 	    .long   DefaultISR                                      /* 107*/
+ 156 01b0 00000000 	    .long   DefaultISR                                      /* 108*/
+ 157 01b4 00000000 	    .long   DefaultISR                                      /* 109*/
+ 158 01b8 00000000 	    .long   DefaultISR                                      /* 110*/
+ 159 01bc 00000000 	    .long   DefaultISR                                      /* 111*/
+ 160 01c0 00000000 	    .long   DefaultISR                                      /* 112*/
+ 161 01c4 00000000 	    .long   DefaultISR                                      /* 113*/
+ 162 01c8 00000000 	    .long   DefaultISR                                      /* 114*/
+ 163 01cc 00000000 	    .long   DefaultISR                                      /* 115*/
+ 164 01d0 00000000 	    .long   DefaultISR                                      /* 116*/
+ 165 01d4 00000000 	    .long   DefaultISR                                      /* 117*/
+ 166 01d8 00000000 	    .long   DefaultISR                                      /* 118*/
+ 167 01dc 00000000 	    .long   DefaultISR                                      /* 119*/
+ 168 01e0 00000000 	    .long   DefaultISR                                      /* 120*/
+ 169 01e4 00000000 	    .long   DefaultISR                                      /* 121*/
+ 170 01e8 00000000 	    .long   DefaultISR                                      /* 122*/
+ 171 01ec 00000000 	    .long   DefaultISR                                      /* 123*/
+ 172 01f0 00000000 	    .long   DefaultISR                                      /* 124*/
+ 173 01f4 00000000 	    .long   DefaultISR                                      /* 125*/
+ 174 01f8 00000000 	    .long   DefaultISR                                      /* 126*/
+ 175 01fc 00000000 	    .long   DefaultISR                                      /* 127*/
+ 176 0200 00000000 	    .long   DefaultISR                                      /* 128*/
+ 177 0204 00000000 	    .long   DefaultISR                                      /* 129*/
+ 178 0208 00000000 	    .long   DefaultISR                                      /* 130*/
+ 179 020c 00000000 	    .long   DefaultISR                                      /* 131*/
+ 180 0210 00000000 	    .long   DefaultISR                                      /* 132*/
+ 181 0214 00000000 	    .long   DefaultISR                                      /* 133*/
+ 182 0218 00000000 	    .long   DefaultISR                                      /* 134*/
+ 183 021c 00000000 	    .long   DefaultISR                                      /* 135*/
+ 184 0220 00000000 	    .long   DefaultISR                                      /* 136*/
+ 185 0224 00000000 	    .long   DefaultISR                                      /* 137*/
+ 186 0228 00000000 	    .long   DefaultISR                                      /* 138*/
+ 187 022c 00000000 	    .long   DefaultISR                                      /* 139*/
+ 188 0230 00000000 	    .long   DefaultISR                                      /* 140*/
+ 189 0234 00000000 	    .long   DefaultISR                                      /* 141*/
+ 190 0238 00000000 	    .long   DefaultISR                                      /* 142*/
+ 191 023c 00000000 	    .long   DefaultISR                                      /* 143*/
+ 192 0240 00000000 	    .long   DefaultISR                                      /* 144*/
+ 193 0244 00000000 	    .long   DefaultISR                                      /* 145*/
+ 194 0248 00000000 	    .long   DefaultISR                                      /* 146*/
+ 195 024c 00000000 	    .long   DefaultISR                                      /* 147*/
+ 196 0250 00000000 	    .long   DefaultISR                                      /* 148*/
+ 197 0254 00000000 	    .long   DefaultISR                                      /* 149*/
+ 198 0258 00000000 	    .long   DefaultISR                                      /* 150*/
+ 199 025c 00000000 	    .long   DefaultISR                                      /* 151*/
+ 200 0260 00000000 	    .long   DefaultISR                                      /* 152*/
+ 201 0264 00000000 	    .long   DefaultISR                                      /* 153*/
+ 202 0268 00000000 	    .long   DefaultISR                                      /* 154*/
+ 203 026c 00000000 	    .long   DefaultISR                                      /* 155*/
+ 204 0270 00000000 	    .long   DefaultISR                                      /* 156*/
+ 205 0274 00000000 	    .long   DefaultISR                                      /* 157*/
+ 206 0278 00000000 	    .long   DefaultISR                                      /* 158*/
+ 207 027c 00000000 	    .long   DefaultISR                                      /* 159*/
+ 208 0280 00000000 	    .long   DefaultISR                                      /* 160*/
+ 209 0284 00000000 	    .long   DefaultISR                                      /* 161*/
+ 210 0288 00000000 	    .long   DefaultISR                                      /* 162*/
+ 211 028c 00000000 	    .long   DefaultISR                                      /* 163*/
+ 212 0290 00000000 	    .long   DefaultISR                                      /* 164*/
+ 213 0294 00000000 	    .long   DefaultISR                                      /* 165*/
+ 214 0298 00000000 	    .long   DefaultISR                                      /* 166*/
+ 215 029c 00000000 	    .long   DefaultISR                                      /* 167*/
+ 216 02a0 00000000 	    .long   DefaultISR                                      /* 168*/
+ 217 02a4 00000000 	    .long   DefaultISR                                      /* 169*/
+ 218 02a8 00000000 	    .long   DefaultISR                                      /* 170*/
+ 219 02ac 00000000 	    .long   DefaultISR                                      /* 171*/
+ 220 02b0 00000000 	    .long   DefaultISR                                      /* 172*/
+ 221 02b4 00000000 	    .long   DefaultISR                                      /* 173*/
+ 222 02b8 00000000 	    .long   DefaultISR                                      /* 174*/
+ 223 02bc 00000000 	    .long   DefaultISR                                      /* 175*/
+ 224 02c0 00000000 	    .long   DefaultISR                                      /* 176*/
+ 225 02c4 00000000 	    .long   DefaultISR                                      /* 177*/
+ 226 02c8 00000000 	    .long   DefaultISR                                      /* 178*/
+ 227 02cc 00000000 	    .long   DefaultISR                                      /* 179*/
+ 228 02d0 00000000 	    .long   DefaultISR                                      /* 180*/
+ 229 02d4 00000000 	    .long   DefaultISR                                      /* 181*/
+ 230 02d8 00000000 	    .long   DefaultISR                                      /* 182*/
+ 231 02dc 00000000 	    .long   DefaultISR                                      /* 183*/
+ 232 02e0 00000000 	    .long   DefaultISR                                      /* 184*/
+ 233 02e4 00000000 	    .long   DefaultISR                                      /* 185*/
+ 234 02e8 00000000 	    .long   DefaultISR                                      /* 186*/
+ 235 02ec 00000000 	    .long   DefaultISR                                      /* 187*/
+ 236 02f0 00000000 	    .long   DefaultISR                                      /* 188*/
+ 237 02f4 00000000 	    .long   DefaultISR                                      /* 189*/
+ 238 02f8 00000000 	    .long   DefaultISR                                      /* 190*/
+ 239 02fc 00000000 	    .long   DefaultISR                                      /* 191*/
+ 240 0300 00000000 	    .long   DefaultISR                                      /* 192*/
+ 241 0304 00000000 	    .long   DefaultISR                                      /* 193*/
+ 242 0308 00000000 	    .long   DefaultISR                                      /* 194*/
+ 243 030c 00000000 	    .long   DefaultISR                                      /* 195*/
+ 244 0310 00000000 	    .long   DefaultISR                                      /* 196*/
+ 245 0314 00000000 	    .long   DefaultISR                                      /* 197*/
+ 246 0318 00000000 	    .long   DefaultISR                                      /* 198*/
+ 247 031c 00000000 	    .long   DefaultISR                                      /* 199*/
+ 248 0320 00000000 	    .long   DefaultISR                                      /* 200*/
+ 249 0324 00000000 	    .long   DefaultISR                                      /* 201*/
+ 250 0328 00000000 	    .long   DefaultISR                                      /* 202*/
+ 251 032c 00000000 	    .long   DefaultISR                                      /* 203*/
+ 252 0330 00000000 	    .long   DefaultISR                                      /* 204*/
+ 253 0334 00000000 	    .long   DefaultISR                                      /* 205*/
+ 254 0338 00000000 	    .long   DefaultISR                                      /* 206*/
+ 255 033c 00000000 	    .long   DefaultISR                                      /* 207*/
+ 256 0340 00000000 	    .long   DefaultISR                                      /* 208*/
+ 257 0344 00000000 	    .long   DefaultISR                                      /* 209*/
+ 258 0348 00000000 	    .long   DefaultISR                                      /* 210*/
+ 259 034c 00000000 	    .long   DefaultISR                                      /* 211*/
+ 260 0350 00000000 	    .long   DefaultISR                                      /* 212*/
+ 261 0354 00000000 	    .long   DefaultISR                                      /* 213*/
+ 262 0358 00000000 	    .long   DefaultISR                                      /* 214*/
+ 263 035c 00000000 	    .long   DefaultISR                                      /* 215*/
+ 264 0360 00000000 	    .long   DefaultISR                                      /* 216*/
+ 265 0364 00000000 	    .long   DefaultISR                                      /* 217*/
+ 266 0368 00000000 	    .long   DefaultISR                                      /* 218*/
+ 267 036c 00000000 	    .long   DefaultISR                                      /* 219*/
+ 268 0370 00000000 	    .long   DefaultISR                                      /* 220*/
+ 269 0374 00000000 	    .long   DefaultISR                                      /* 221*/
+ 270 0378 00000000 	    .long   DefaultISR                                      /* 222*/
+ 271 037c 00000000 	    .long   DefaultISR                                      /* 223*/
+ 272 0380 00000000 	    .long   DefaultISR                                      /* 224*/
+ 273 0384 00000000 	    .long   DefaultISR                                      /* 225*/
+ 274 0388 00000000 	    .long   DefaultISR                                      /* 226*/
+ 275 038c 00000000 	    .long   DefaultISR                                      /* 227*/
+ 276 0390 00000000 	    .long   DefaultISR                                      /* 228*/
+ 277 0394 00000000 	    .long   DefaultISR                                      /* 229*/
+ 278 0398 00000000 	    .long   DefaultISR                                      /* 230*/
+ 279 039c 00000000 	    .long   DefaultISR                                      /* 231*/
+ 280 03a0 00000000 	    .long   DefaultISR                                      /* 232*/
+ 281 03a4 00000000 	    .long   DefaultISR                                      /* 233*/
+ 282 03a8 00000000 	    .long   DefaultISR                                      /* 234*/
+ 283 03ac 00000000 	    .long   DefaultISR                                      /* 235*/
+ 284 03b0 00000000 	    .long   DefaultISR                                      /* 236*/
+ 285 03b4 00000000 	    .long   DefaultISR                                      /* 237*/
+ 286 03b8 00000000 	    .long   DefaultISR                                      /* 238*/
+ 287 03bc 00000000 	    .long   DefaultISR                                      /* 239*/
+ 288 03c0 00000000 	    .long   DefaultISR                                      /* 240*/
+ 289 03c4 00000000 	    .long   DefaultISR                                      /* 241*/
+ 290 03c8 00000000 	    .long   DefaultISR                                      /* 242*/
+ 291 03cc 00000000 	    .long   DefaultISR                                      /* 243*/
+ 292 03d0 00000000 	    .long   DefaultISR                                      /* 244*/
+ 293 03d4 00000000 	    .long   DefaultISR                                      /* 245*/
+ 294 03d8 00000000 	    .long   DefaultISR                                      /* 246*/
+ 295 03dc 00000000 	    .long   DefaultISR                                      /* 247*/
+ 296 03e0 00000000 	    .long   DefaultISR                                      /* 248*/
+ 297 03e4 00000000 	    .long   DefaultISR                                      /* 249*/
+ 298 03e8 00000000 	    .long   DefaultISR                                      /* 250*/
+ 299 03ec 00000000 	    .long   DefaultISR                                      /* 251*/
+ 300 03f0 00000000 	    .long   DefaultISR                                      /* 252*/
+ 301 03f4 00000000 	    .long   DefaultISR                                      /* 253*/
+ 302 03f8 00000000 	    .long   DefaultISR                                      /* 254*/
+ 303 03fc FFFFFFFF 	    .long   0xFFFFFFFF                                      /*  Reserved for user TRIM value*/
+ 304              	
+ 306              	
+ 307              	/* Flash Configuration */
+ 308              	    .section .FlashConfig, "a"
+ 309 0000 FFFFFFFF 	    .long 0xFFFFFFFF
+ 310 0004 FFFFFFFF 	    .long 0xFFFFFFFF
+ 311 0008 FFFFFFFF 	    .long 0xFFFFFFFF
+ 312 000c FEFFFFFF 	    .long 0xFFFFFFFE
+ 313              	
+ 314              	    .text
+ 315              	    .thumb
+ 316              	
+ 317              	/* Reset Handler */
+ 318              	
+ 319              	    .thumb_func
+ 320              	    .align 2
+ 321              	    .globl   Reset_Handler
+ 322              	    .weak    Reset_Handler
+ 324              	Reset_Handler:
+ 325 0000 72B6     	    cpsid   i               /* Mask interrupts */
+ 326              	    .equ    VTOR, 0xE000ED08
+ 327 0002 0A48     	    ldr     r0, =VTOR
+ 328 0004 0A49     	    ldr     r1, =__isr_vector
+ 329 0006 0160     	    str     r1, [r0]
+ 330 0008 0A68     	    ldr     r2, [r1]
+ 331 000a 82F30888 	    msr     msp, r2
+ 332              	#ifndef __NO_SYSTEM_INIT
+ 333 000e 0948     	    ldr   r0,=SystemInit
+ 334 0010 8047     	    blx   r0
+ 335              	#endif
+ 336              	/*     Loop to copy data from read only memory to RAM. The ranges
+ 337              	 *      of copy from/to are specified by following symbols evaluated in
+ 338              	 *      linker script.
+ 339              	 *      __etext: End of code section, i.e., begin of data sections to copy from.
+ 340              	 *      __data_start__/__data_end__: RAM address range that data should be
+ 341              	 *      copied to. Both must be aligned to 4 bytes boundary.  */
+ 342              	
+ 343 0012 0949     	    ldr    r1, =__etext
+ 344 0014 094A     	    ldr    r2, =__data_start__
+ 345 0016 0A4B     	    ldr    r3, =__data_end__
+ 346              	
+ 347              	#if 1
+ 348              	/* Here are two copies of loop implemenations. First one favors code size
+ 349              	 * and the second one favors performance. Default uses the first one.
+ 350              	 * Change to "#if 0" to use the second one */
+ 351              	.LC0:
+ 352 0018 9A42     	    cmp     r2, r3
+ 353 001a BEBF     	    ittt    lt
+ 354 001c 51F8040B 	    ldrlt   r0, [r1], #4
+ 355 0020 42F8040B 	    strlt   r0, [r2], #4
+ 356 0024 F8E7     	    blt    .LC0
+ 357              	#else
+ 358              	    subs    r3, r2
+ 359              	    ble    .LC1
+ 360              	.LC0:
+ 361              	    subs    r3, #4
+ 362              	    ldr    r0, [r1, r3]
+ 363              	    str    r0, [r2, r3]
+ 364              	    bgt    .LC0
+ 365              	.LC1:
+ 366              	#endif
+ 367              	
+ 368              	#ifdef __STARTUP_CLEAR_BSS
+ 369              	/*     This part of work usually is done in C library startup code. Otherwise,
+ 370              	 *     define this macro to enable it in this startup.
+ 371              	 *
+ 372              	 *     Loop to zero out BSS section, which uses following symbols
+ 373              	 *     in linker script:
+ 374              	 *      __bss_start__: start of BSS section. Must align to 4
+ 375              	 *      __bss_end__: end of BSS section. Must align to 4
+ 376              	 */
+ 377              	    ldr r1, =__bss_start__
+ 378              	    ldr r2, =__bss_end__
+ 379              	
+ 380              	    movs    r0, 0
+ 381              	.LC2:
+ 382              	    cmp     r1, r2
+ 383              	    itt    lt
+ 384              	    strlt   r0, [r1], #4
+ 385              	    blt    .LC2
+ 386              	#endif /* __STARTUP_CLEAR_BSS */
+ 387              	
+ 388 0026 62B6     	    cpsie   i               /* Unmask interrupts */
+ 389              	#ifndef __START
+ 390              	#define __START _start
+ 391              	#endif
+ 392              	#ifndef __ATOLLIC__
+ 393 0028 0648     	    ldr   r0,=__START
+ 394 002a 8047     	    blx   r0
+ 395              	#else
+ 396              	    ldr   r0,=__libc_init_array
+ 397              	    blx   r0
+ 398              	    ldr   r0,=main
+ 399              	    bx    r0
+ 400              	#endif
+ 401 002c 08ED00E0 	    .pool
+ 401      00000000 
+ 401      00000000 
+ 401      00000000 
+ 401      00000000 
+ 403              	
+ 404              	    .align  1
+ 405              	    .thumb_func
+ 406              	    .weak DefaultISR
+ 408              	DefaultISR:
+ 409 0048 FFF7FEBF 	    b DefaultISR
+ 411              	
+ 412              	    .align 1
+ 413              	    .thumb_func
+ 414              	    .weak NMI_Handler
+ 416              	NMI_Handler:
+ 417 004c 3548     	    ldr   r0,=NMI_Handler
+ 418 004e 0047     	    bx    r0
+ 420              	
+ 421              	    .align 1
+ 422              	    .thumb_func
+ 423              	    .weak HardFault_Handler
+ 425              	HardFault_Handler:
+ 426 0050 3548     	    ldr   r0,=HardFault_Handler
+ 427 0052 0047     	    bx    r0
+ 429              	
+ 430              	    .align 1
+ 431              	    .thumb_func
+ 432              	    .weak SVC_Handler
+ 434              	SVC_Handler:
+ 435 0054 3548     	    ldr   r0,=SVC_Handler
+ 436 0056 0047     	    bx    r0
+ 438              	
+ 439              	    .align 1
+ 440              	    .thumb_func
+ 441              	    .weak PendSV_Handler
+ 443              	PendSV_Handler:
+ 444 0058 3548     	    ldr   r0,=PendSV_Handler
+ 445 005a 0047     	    bx    r0
+ 447              	
+ 448              	    .align 1
+ 449              	    .thumb_func
+ 450              	    .weak SysTick_Handler
+ 452              	SysTick_Handler:
+ 453 005c 3548     	    ldr   r0,=SysTick_Handler
+ 454 005e 0047     	    bx    r0
+ 456              	
+ 457              	    .align 1
+ 458              	    .thumb_func
+ 459              	    .weak DMA0_IRQHandler
+ 461              	DMA0_IRQHandler:
+ 462 0060 3548     	    ldr   r0,=DMA0_DriverIRQHandler
+ 463 0062 0047     	    bx    r0
+ 465              	
+ 466              	    .align 1
+ 467              	    .thumb_func
+ 468              	    .weak DMA1_IRQHandler
+ 470              	DMA1_IRQHandler:
+ 471 0064 3548     	    ldr   r0,=DMA1_DriverIRQHandler
+ 472 0066 0047     	    bx    r0
+ 474              	
+ 475              	    .align 1
+ 476              	    .thumb_func
+ 477              	    .weak DMA2_IRQHandler
+ 479              	DMA2_IRQHandler:
+ 480 0068 3548     	    ldr   r0,=DMA2_DriverIRQHandler
+ 481 006a 0047     	    bx    r0
+ 483              	
+ 484              	    .align 1
+ 485              	    .thumb_func
+ 486              	    .weak DMA3_IRQHandler
+ 488              	DMA3_IRQHandler:
+ 489 006c 3548     	    ldr   r0,=DMA3_DriverIRQHandler
+ 490 006e 0047     	    bx    r0
+ 492              	
+ 493              	    .align 1
+ 494              	    .thumb_func
+ 495              	    .weak DMA4_IRQHandler
+ 497              	DMA4_IRQHandler:
+ 498 0070 3548     	    ldr   r0,=DMA4_DriverIRQHandler
+ 499 0072 0047     	    bx    r0
+ 501              	
+ 502              	    .align 1
+ 503              	    .thumb_func
+ 504              	    .weak DMA5_IRQHandler
+ 506              	DMA5_IRQHandler:
+ 507 0074 3548     	    ldr   r0,=DMA5_DriverIRQHandler
+ 508 0076 0047     	    bx    r0
+ 510              	
+ 511              	    .align 1
+ 512              	    .thumb_func
+ 513              	    .weak DMA6_IRQHandler
+ 515              	DMA6_IRQHandler:
+ 516 0078 3548     	    ldr   r0,=DMA6_DriverIRQHandler
+ 517 007a 0047     	    bx    r0
+ 519              	
+ 520              	    .align 1
+ 521              	    .thumb_func
+ 522              	    .weak DMA7_IRQHandler
+ 524              	DMA7_IRQHandler:
+ 525 007c 3548     	    ldr   r0,=DMA7_DriverIRQHandler
+ 526 007e 0047     	    bx    r0
+ 528              	
+ 529              	    .align 1
+ 530              	    .thumb_func
+ 531              	    .weak DMA8_IRQHandler
+ 533              	DMA8_IRQHandler:
+ 534 0080 3548     	    ldr   r0,=DMA8_DriverIRQHandler
+ 535 0082 0047     	    bx    r0
+ 537              	
+ 538              	    .align 1
+ 539              	    .thumb_func
+ 540              	    .weak DMA9_IRQHandler
+ 542              	DMA9_IRQHandler:
+ 543 0084 3548     	    ldr   r0,=DMA9_DriverIRQHandler
+ 544 0086 0047     	    bx    r0
+ 546              	
+ 547              	    .align 1
+ 548              	    .thumb_func
+ 549              	    .weak DMA10_IRQHandler
+ 551              	DMA10_IRQHandler:
+ 552 0088 3548     	    ldr   r0,=DMA10_DriverIRQHandler
+ 553 008a 0047     	    bx    r0
+ 555              	
+ 556              	    .align 1
+ 557              	    .thumb_func
+ 558              	    .weak DMA11_IRQHandler
+ 560              	DMA11_IRQHandler:
+ 561 008c 3548     	    ldr   r0,=DMA11_DriverIRQHandler
+ 562 008e 0047     	    bx    r0
+ 564              	
+ 565              	    .align 1
+ 566              	    .thumb_func
+ 567              	    .weak DMA12_IRQHandler
+ 569              	DMA12_IRQHandler:
+ 570 0090 3548     	    ldr   r0,=DMA12_DriverIRQHandler
+ 571 0092 0047     	    bx    r0
+ 573              	
+ 574              	    .align 1
+ 575              	    .thumb_func
+ 576              	    .weak DMA13_IRQHandler
+ 578              	DMA13_IRQHandler:
+ 579 0094 3548     	    ldr   r0,=DMA13_DriverIRQHandler
+ 580 0096 0047     	    bx    r0
+ 582              	
+ 583              	    .align 1
+ 584              	    .thumb_func
+ 585              	    .weak DMA14_IRQHandler
+ 587              	DMA14_IRQHandler:
+ 588 0098 3548     	    ldr   r0,=DMA14_DriverIRQHandler
+ 589 009a 0047     	    bx    r0
+ 591              	
+ 592              	    .align 1
+ 593              	    .thumb_func
+ 594              	    .weak DMA15_IRQHandler
+ 596              	DMA15_IRQHandler:
+ 597 009c 3548     	    ldr   r0,=DMA15_DriverIRQHandler
+ 598 009e 0047     	    bx    r0
+ 600              	
+ 601              	    .align 1
+ 602              	    .thumb_func
+ 603              	    .weak DMA_Error_IRQHandler
+ 605              	DMA_Error_IRQHandler:
+ 606 00a0 3548     	    ldr   r0,=DMA_Error_DriverIRQHandler
+ 607 00a2 0047     	    bx    r0
+ 609              	
+ 610              	    .align 1
+ 611              	    .thumb_func
+ 612              	    .weak I2C0_IRQHandler
+ 614              	I2C0_IRQHandler:
+ 615 00a4 3548     	    ldr   r0,=I2C0_DriverIRQHandler
+ 616 00a6 0047     	    bx    r0
+ 618              	
+ 619              	    .align 1
+ 620              	    .thumb_func
+ 621              	    .weak I2C1_IRQHandler
+ 623              	I2C1_IRQHandler:
+ 624 00a8 3548     	    ldr   r0,=I2C1_DriverIRQHandler
+ 625 00aa 0047     	    bx    r0
+ 627              	
+ 628              	    .align 1
+ 629              	    .thumb_func
+ 630              	    .weak SPI0_IRQHandler
+ 632              	SPI0_IRQHandler:
+ 633 00ac 3548     	    ldr   r0,=SPI0_DriverIRQHandler
+ 634 00ae 0047     	    bx    r0
+ 636              	
+ 637              	    .align 1
+ 638              	    .thumb_func
+ 639              	    .weak SPI1_IRQHandler
+ 641              	SPI1_IRQHandler:
+ 642 00b0 3548     	    ldr   r0,=SPI1_DriverIRQHandler
+ 643 00b2 0047     	    bx    r0
+ 645              	
+ 646              	    .align 1
+ 647              	    .thumb_func
+ 648              	    .weak I2S0_Tx_IRQHandler
+ 650              	I2S0_Tx_IRQHandler:
+ 651 00b4 3548     	    ldr   r0,=I2S0_Tx_DriverIRQHandler
+ 652 00b6 0047     	    bx    r0
+ 654              	
+ 655              	    .align 1
+ 656              	    .thumb_func
+ 657              	    .weak I2S0_Rx_IRQHandler
+ 659              	I2S0_Rx_IRQHandler:
+ 660 00b8 3548     	    ldr   r0,=I2S0_Rx_DriverIRQHandler
+ 661 00ba 0047     	    bx    r0
+ 663              	
+ 664              	    .align 1
+ 665              	    .thumb_func
+ 666              	    .weak UART0_LON_IRQHandler
+ 668              	UART0_LON_IRQHandler:
+ 669 00bc 3548     	    ldr   r0,=UART0_LON_DriverIRQHandler
+ 670 00be 0047     	    bx    r0
+ 672              	
+ 673              	    .align 1
+ 674              	    .thumb_func
+ 675              	    .weak UART0_RX_TX_IRQHandler
+ 677              	UART0_RX_TX_IRQHandler:
+ 678 00c0 3548     	    ldr   r0,=UART0_RX_TX_DriverIRQHandler
+ 679 00c2 0047     	    bx    r0
+ 681              	
+ 682              	    .align 1
+ 683              	    .thumb_func
+ 684              	    .weak UART0_ERR_IRQHandler
+ 686              	UART0_ERR_IRQHandler:
+ 687 00c4 3548     	    ldr   r0,=UART0_ERR_DriverIRQHandler
+ 688 00c6 0047     	    bx    r0
+ 690              	
+ 691              	    .align 1
+ 692              	    .thumb_func
+ 693              	    .weak UART1_RX_TX_IRQHandler
+ 695              	UART1_RX_TX_IRQHandler:
+ 696 00c8 3548     	    ldr   r0,=UART1_RX_TX_DriverIRQHandler
+ 697 00ca 0047     	    bx    r0
+ 699              	
+ 700              	    .align 1
+ 701              	    .thumb_func
+ 702              	    .weak UART1_ERR_IRQHandler
+ 704              	UART1_ERR_IRQHandler:
+ 705 00cc 3548     	    ldr   r0,=UART1_ERR_DriverIRQHandler
+ 706 00ce 0047     	    bx    r0
+ 708              	
+ 709              	    .align 1
+ 710              	    .thumb_func
+ 711              	    .weak UART2_RX_TX_IRQHandler
+ 713              	UART2_RX_TX_IRQHandler:
+ 714 00d0 3548     	    ldr   r0,=UART2_RX_TX_DriverIRQHandler
+ 715 00d2 0047     	    bx    r0
+ 717              	
+ 718              	    .align 1
+ 719              	    .thumb_func
+ 720              	    .weak UART2_ERR_IRQHandler
+ 722              	UART2_ERR_IRQHandler:
+ 723 00d4 3548     	    ldr   r0,=UART2_ERR_DriverIRQHandler
+ 724 00d6 0047     	    bx    r0
+ 726              	
+ 727              	    .align 1
+ 728              	    .thumb_func
+ 729              	    .weak UART3_RX_TX_IRQHandler
+ 731              	UART3_RX_TX_IRQHandler:
+ 732 00d8 3548     	    ldr   r0,=UART3_RX_TX_DriverIRQHandler
+ 733 00da 0047     	    bx    r0
+ 735              	
+ 736              	    .align 1
+ 737              	    .thumb_func
+ 738              	    .weak UART3_ERR_IRQHandler
+ 740              	UART3_ERR_IRQHandler:
+ 741 00dc 3548     	    ldr   r0,=UART3_ERR_DriverIRQHandler
+ 742 00de 0047     	    bx    r0
+ 744              	
+ 745              	    .align 1
+ 746              	    .thumb_func
+ 747              	    .weak SPI2_IRQHandler
+ 749              	SPI2_IRQHandler:
+ 750 00e0 3548     	    ldr   r0,=SPI2_DriverIRQHandler
+ 751 00e2 0047     	    bx    r0
+ 753              	
+ 754              	    .align 1
+ 755              	    .thumb_func
+ 756              	    .weak UART4_RX_TX_IRQHandler
+ 758              	UART4_RX_TX_IRQHandler:
+ 759 00e4 3548     	    ldr   r0,=UART4_RX_TX_DriverIRQHandler
+ 760 00e6 0047     	    bx    r0
+ 762              	
+ 763              	    .align 1
+ 764              	    .thumb_func
+ 765              	    .weak UART4_ERR_IRQHandler
+ 767              	UART4_ERR_IRQHandler:
+ 768 00e8 3548     	    ldr   r0,=UART4_ERR_DriverIRQHandler
+ 769 00ea 0047     	    bx    r0
+ 771              	
+ 772              	    .align 1
+ 773              	    .thumb_func
+ 774              	    .weak UART5_RX_TX_IRQHandler
+ 776              	UART5_RX_TX_IRQHandler:
+ 777 00ec 3548     	    ldr   r0,=UART5_RX_TX_DriverIRQHandler
+ 778 00ee 0047     	    bx    r0
+ 780              	
+ 781              	    .align 1
+ 782              	    .thumb_func
+ 783              	    .weak UART5_ERR_IRQHandler
+ 785              	UART5_ERR_IRQHandler:
+ 786 00f0 3548     	    ldr   r0,=UART5_ERR_DriverIRQHandler
+ 787 00f2 0047     	    bx    r0
+ 789              	
+ 790              	    .align 1
+ 791              	    .thumb_func
+ 792              	    .weak I2C2_IRQHandler
+ 794              	I2C2_IRQHandler:
+ 795 00f4 3548     	    ldr   r0,=I2C2_DriverIRQHandler
+ 796 00f6 0047     	    bx    r0
+ 798              	
+ 799              	    .align 1
+ 800              	    .thumb_func
+ 801              	    .weak CAN0_ORed_Message_buffer_IRQHandler
+ 803              	CAN0_ORed_Message_buffer_IRQHandler:
+ 804 00f8 3548     	    ldr   r0,=CAN0_DriverIRQHandler
+ 805 00fa 0047     	    bx    r0
+ 807              	
+ 808              	    .align 1
+ 809              	    .thumb_func
+ 810              	    .weak CAN0_Bus_Off_IRQHandler
+ 812              	CAN0_Bus_Off_IRQHandler:
+ 813 00fc 3448     	    ldr   r0,=CAN0_DriverIRQHandler
+ 814 00fe 0047     	    bx    r0
+ 816              	
+ 817              	    .align 1
+ 818              	    .thumb_func
+ 819              	    .weak CAN0_Error_IRQHandler
+ 821              	CAN0_Error_IRQHandler:
+ 822 0100 3348     	    ldr   r0,=CAN0_DriverIRQHandler
+ 823 0102 0047     	    bx    r0
+ 825              	
+ 826              	    .align 1
+ 827              	    .thumb_func
+ 828              	    .weak CAN0_Tx_Warning_IRQHandler
+ 830              	CAN0_Tx_Warning_IRQHandler:
+ 831 0104 3248     	    ldr   r0,=CAN0_DriverIRQHandler
+ 832 0106 0047     	    bx    r0
+ 834              	
+ 835              	    .align 1
+ 836              	    .thumb_func
+ 837              	    .weak CAN0_Rx_Warning_IRQHandler
+ 839              	CAN0_Rx_Warning_IRQHandler:
+ 840 0108 3148     	    ldr   r0,=CAN0_DriverIRQHandler
+ 841 010a 0047     	    bx    r0
+ 843              	
+ 844              	    .align 1
+ 845              	    .thumb_func
+ 846              	    .weak CAN0_Wake_Up_IRQHandler
+ 848              	CAN0_Wake_Up_IRQHandler:
+ 849 010c 3048     	    ldr   r0,=CAN0_DriverIRQHandler
+ 850 010e 0047     	    bx    r0
+ 852              	
+ 853              	    .align 1
+ 854              	    .thumb_func
+ 855              	    .weak SDHC_IRQHandler
+ 857              	SDHC_IRQHandler:
+ 858 0110 3048     	    ldr   r0,=SDHC_DriverIRQHandler
+ 859 0112 0047     	    bx    r0
+ 861              	
+ 862              	    .align 1
+ 863              	    .thumb_func
+ 864              	    .weak ENET_1588_Timer_IRQHandler
+ 866              	ENET_1588_Timer_IRQHandler:
+ 867 0114 3048     	    ldr   r0,=ENET_1588_Timer_DriverIRQHandler
+ 868 0116 0047     	    bx    r0
+ 870              	
+ 871              	    .align 1
+ 872              	    .thumb_func
+ 873              	    .weak ENET_Transmit_IRQHandler
+ 875              	ENET_Transmit_IRQHandler:
+ 876 0118 3048     	    ldr   r0,=ENET_Transmit_DriverIRQHandler
+ 877 011a 0047     	    bx    r0
+ 879              	
+ 880              	    .align 1
+ 881              	    .thumb_func
+ 882              	    .weak ENET_Receive_IRQHandler
+ 884              	ENET_Receive_IRQHandler:
+ 885 011c 3048     	    ldr   r0,=ENET_Receive_DriverIRQHandler
+ 886 011e 0047     	    bx    r0
+ 888              	
+ 889              	    .align 1
+ 890              	    .thumb_func
+ 891              	    .weak ENET_Error_IRQHandler
+ 893              	ENET_Error_IRQHandler:
+ 894 0120 3048     	    ldr   r0,=ENET_Error_DriverIRQHandler
+ 895 0122 0047     	    bx    r0
+ 897              	
+ 898              	
+ 899              	/*    Macro to define default handlers. Default handler
+ 900              	 *    will be weak symbol and just dead loops. They can be
+ 901              	 *    overwritten by other handlers */
+ 902              	    .macro def_irq_handler  handler_name
+ 903              	    .weak \handler_name
+ 904              	    .set  \handler_name, DefaultISR
+ 905              	    .endm
+ 906              	
+ 907              	/* Exception Handlers */
+ 908              	    def_irq_handler    MemManage_Handler
+ 909              	    def_irq_handler    BusFault_Handler
+ 910              	    def_irq_handler    UsageFault_Handler
+ 911              	    def_irq_handler    DebugMon_Handler
+ 912              	    def_irq_handler    DMA0_DriverIRQHandler
+ 913              	    def_irq_handler    DMA1_DriverIRQHandler
+ 914              	    def_irq_handler    DMA2_DriverIRQHandler
+ 915              	    def_irq_handler    DMA3_DriverIRQHandler
+ 916              	    def_irq_handler    DMA4_DriverIRQHandler
+ 917              	    def_irq_handler    DMA5_DriverIRQHandler
+ 918              	    def_irq_handler    DMA6_DriverIRQHandler
+ 919              	    def_irq_handler    DMA7_DriverIRQHandler
+ 920              	    def_irq_handler    DMA8_DriverIRQHandler
+ 921              	    def_irq_handler    DMA9_DriverIRQHandler
+ 922              	    def_irq_handler    DMA10_DriverIRQHandler
+ 923              	    def_irq_handler    DMA11_DriverIRQHandler
+ 924              	    def_irq_handler    DMA12_DriverIRQHandler
+ 925              	    def_irq_handler    DMA13_DriverIRQHandler
+ 926              	    def_irq_handler    DMA14_DriverIRQHandler
+ 927              	    def_irq_handler    DMA15_DriverIRQHandler
+ 928              	    def_irq_handler    DMA_Error_DriverIRQHandler
+ 929              	    def_irq_handler    MCM_IRQHandler
+ 930              	    def_irq_handler    FTFE_IRQHandler
+ 931              	    def_irq_handler    Read_Collision_IRQHandler
+ 932              	    def_irq_handler    LVD_LVW_IRQHandler
+ 933              	    def_irq_handler    LLWU_IRQHandler
+ 934              	    def_irq_handler    WDOG_EWM_IRQHandler
+ 935              	    def_irq_handler    RNG_IRQHandler
+ 936              	    def_irq_handler    I2C0_DriverIRQHandler
+ 937              	    def_irq_handler    I2C1_DriverIRQHandler
+ 938              	    def_irq_handler    SPI0_DriverIRQHandler
+ 939              	    def_irq_handler    SPI1_DriverIRQHandler
+ 940              	    def_irq_handler    I2S0_Tx_DriverIRQHandler
+ 941              	    def_irq_handler    I2S0_Rx_DriverIRQHandler
+ 942              	    def_irq_handler    UART0_LON_DriverIRQHandler
+ 943              	    def_irq_handler    UART0_RX_TX_DriverIRQHandler
+ 944              	    def_irq_handler    UART0_ERR_DriverIRQHandler
+ 945              	    def_irq_handler    UART1_RX_TX_DriverIRQHandler
+ 946              	    def_irq_handler    UART1_ERR_DriverIRQHandler
+ 947              	    def_irq_handler    UART2_RX_TX_DriverIRQHandler
+ 948              	    def_irq_handler    UART2_ERR_DriverIRQHandler
+ 949              	    def_irq_handler    UART3_RX_TX_DriverIRQHandler
+ 950              	    def_irq_handler    UART3_ERR_DriverIRQHandler
+ 951              	    def_irq_handler    ADC0_IRQHandler
+ 952              	    def_irq_handler    CMP0_IRQHandler
+ 953              	    def_irq_handler    CMP1_IRQHandler
+ 954              	    def_irq_handler    FTM0_IRQHandler
+ 955              	    def_irq_handler    FTM1_IRQHandler
+ 956              	    def_irq_handler    FTM2_IRQHandler
+ 957              	    def_irq_handler    CMT_IRQHandler
+ 958              	    def_irq_handler    RTC_IRQHandler
+ 959              	    def_irq_handler    RTC_Seconds_IRQHandler
+ 960              	    def_irq_handler    PIT0_IRQHandler
+ 961              	    def_irq_handler    PIT1_IRQHandler
+ 962              	    def_irq_handler    PIT2_IRQHandler
+ 963              	    def_irq_handler    PIT3_IRQHandler
+ 964              	    def_irq_handler    PDB0_IRQHandler
+ 965              	    def_irq_handler    USB0_IRQHandler
+ 966              	    def_irq_handler    USBDCD_IRQHandler
+ 967              	    def_irq_handler    Reserved71_IRQHandler
+ 968              	    def_irq_handler    DAC0_IRQHandler
+ 969              	    def_irq_handler    MCG_IRQHandler
+ 970              	    def_irq_handler    LPTMR0_IRQHandler
+ 971              	    def_irq_handler    PORTA_IRQHandler
+ 972              	    def_irq_handler    PORTB_IRQHandler
+ 973              	    def_irq_handler    PORTC_IRQHandler
+ 974              	    def_irq_handler    PORTD_IRQHandler
+ 975              	    def_irq_handler    PORTE_IRQHandler
+ 976              	    def_irq_handler    SWI_IRQHandler
+ 977              	    def_irq_handler    SPI2_DriverIRQHandler
+ 978              	    def_irq_handler    UART4_RX_TX_DriverIRQHandler
+ 979              	    def_irq_handler    UART4_ERR_DriverIRQHandler
+ 980              	    def_irq_handler    UART5_RX_TX_DriverIRQHandler
+ 981              	    def_irq_handler    UART5_ERR_DriverIRQHandler
+ 982              	    def_irq_handler    CMP2_IRQHandler
+ 983              	    def_irq_handler    FTM3_IRQHandler
+ 984              	    def_irq_handler    DAC1_IRQHandler
+ 985              	    def_irq_handler    ADC1_IRQHandler
+ 986              	    def_irq_handler    I2C2_DriverIRQHandler
+ 987              	    def_irq_handler    CAN0_DriverIRQHandler
+ 988              	    def_irq_handler    SDHC_DriverIRQHandler
+ 989              	    def_irq_handler    ENET_1588_Timer_DriverIRQHandler
+ 990              	    def_irq_handler    ENET_Transmit_DriverIRQHandler
+ 991              	    def_irq_handler    ENET_Receive_DriverIRQHandler
+ 992              	    def_irq_handler    ENET_Error_DriverIRQHandler
+ 993              	
+ 994 0124 00000000 	    .end
+ 994      00000000 
+ 994      00000000 
+ 994      00000000 
+ 994      00000000 
+DEFINED SYMBOLS
+../startup/startup_MK64F12.S:43     .isr_vector:0000000000000000 $d
+../startup/startup_MK64F12.S:45     .isr_vector:0000000000000000 __isr_vector
+../startup/startup_MK64F12.S:324    .text:0000000000000000 Reset_Handler
+../startup/startup_MK64F12.S:416    .text:000000000000004c NMI_Handler
+../startup/startup_MK64F12.S:425    .text:0000000000000050 HardFault_Handler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 MemManage_Handler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 BusFault_Handler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UsageFault_Handler
+../startup/startup_MK64F12.S:434    .text:0000000000000054 SVC_Handler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DebugMon_Handler
+../startup/startup_MK64F12.S:443    .text:0000000000000058 PendSV_Handler
+../startup/startup_MK64F12.S:452    .text:000000000000005c SysTick_Handler
+../startup/startup_MK64F12.S:461    .text:0000000000000060 DMA0_IRQHandler
+../startup/startup_MK64F12.S:470    .text:0000000000000064 DMA1_IRQHandler
+../startup/startup_MK64F12.S:479    .text:0000000000000068 DMA2_IRQHandler
+../startup/startup_MK64F12.S:488    .text:000000000000006c DMA3_IRQHandler
+../startup/startup_MK64F12.S:497    .text:0000000000000070 DMA4_IRQHandler
+../startup/startup_MK64F12.S:506    .text:0000000000000074 DMA5_IRQHandler
+../startup/startup_MK64F12.S:515    .text:0000000000000078 DMA6_IRQHandler
+../startup/startup_MK64F12.S:524    .text:000000000000007c DMA7_IRQHandler
+../startup/startup_MK64F12.S:533    .text:0000000000000080 DMA8_IRQHandler
+../startup/startup_MK64F12.S:542    .text:0000000000000084 DMA9_IRQHandler
+../startup/startup_MK64F12.S:551    .text:0000000000000088 DMA10_IRQHandler
+../startup/startup_MK64F12.S:560    .text:000000000000008c DMA11_IRQHandler
+../startup/startup_MK64F12.S:569    .text:0000000000000090 DMA12_IRQHandler
+../startup/startup_MK64F12.S:578    .text:0000000000000094 DMA13_IRQHandler
+../startup/startup_MK64F12.S:587    .text:0000000000000098 DMA14_IRQHandler
+../startup/startup_MK64F12.S:596    .text:000000000000009c DMA15_IRQHandler
+../startup/startup_MK64F12.S:605    .text:00000000000000a0 DMA_Error_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 MCM_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 FTFE_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 Read_Collision_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 LVD_LVW_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 LLWU_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 WDOG_EWM_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 RNG_IRQHandler
+../startup/startup_MK64F12.S:614    .text:00000000000000a4 I2C0_IRQHandler
+../startup/startup_MK64F12.S:623    .text:00000000000000a8 I2C1_IRQHandler
+../startup/startup_MK64F12.S:632    .text:00000000000000ac SPI0_IRQHandler
+../startup/startup_MK64F12.S:641    .text:00000000000000b0 SPI1_IRQHandler
+../startup/startup_MK64F12.S:650    .text:00000000000000b4 I2S0_Tx_IRQHandler
+../startup/startup_MK64F12.S:659    .text:00000000000000b8 I2S0_Rx_IRQHandler
+../startup/startup_MK64F12.S:668    .text:00000000000000bc UART0_LON_IRQHandler
+../startup/startup_MK64F12.S:677    .text:00000000000000c0 UART0_RX_TX_IRQHandler
+../startup/startup_MK64F12.S:686    .text:00000000000000c4 UART0_ERR_IRQHandler
+../startup/startup_MK64F12.S:695    .text:00000000000000c8 UART1_RX_TX_IRQHandler
+../startup/startup_MK64F12.S:704    .text:00000000000000cc UART1_ERR_IRQHandler
+../startup/startup_MK64F12.S:713    .text:00000000000000d0 UART2_RX_TX_IRQHandler
+../startup/startup_MK64F12.S:722    .text:00000000000000d4 UART2_ERR_IRQHandler
+../startup/startup_MK64F12.S:731    .text:00000000000000d8 UART3_RX_TX_IRQHandler
+../startup/startup_MK64F12.S:740    .text:00000000000000dc UART3_ERR_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 ADC0_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 CMP0_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 CMP1_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 FTM0_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 FTM1_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 FTM2_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 CMT_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 RTC_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 RTC_Seconds_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 PIT0_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 PIT1_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 PIT2_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 PIT3_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 PDB0_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 USB0_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 USBDCD_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 Reserved71_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DAC0_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 MCG_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 LPTMR0_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 PORTA_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 PORTB_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 PORTC_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 PORTD_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 PORTE_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 SWI_IRQHandler
+../startup/startup_MK64F12.S:749    .text:00000000000000e0 SPI2_IRQHandler
+../startup/startup_MK64F12.S:758    .text:00000000000000e4 UART4_RX_TX_IRQHandler
+../startup/startup_MK64F12.S:767    .text:00000000000000e8 UART4_ERR_IRQHandler
+../startup/startup_MK64F12.S:776    .text:00000000000000ec UART5_RX_TX_IRQHandler
+../startup/startup_MK64F12.S:785    .text:00000000000000f0 UART5_ERR_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 CMP2_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 FTM3_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DAC1_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 ADC1_IRQHandler
+../startup/startup_MK64F12.S:794    .text:00000000000000f4 I2C2_IRQHandler
+../startup/startup_MK64F12.S:803    .text:00000000000000f8 CAN0_ORed_Message_buffer_IRQHandler
+../startup/startup_MK64F12.S:812    .text:00000000000000fc CAN0_Bus_Off_IRQHandler
+../startup/startup_MK64F12.S:821    .text:0000000000000100 CAN0_Error_IRQHandler
+../startup/startup_MK64F12.S:830    .text:0000000000000104 CAN0_Tx_Warning_IRQHandler
+../startup/startup_MK64F12.S:839    .text:0000000000000108 CAN0_Rx_Warning_IRQHandler
+../startup/startup_MK64F12.S:848    .text:000000000000010c CAN0_Wake_Up_IRQHandler
+../startup/startup_MK64F12.S:857    .text:0000000000000110 SDHC_IRQHandler
+../startup/startup_MK64F12.S:866    .text:0000000000000114 ENET_1588_Timer_IRQHandler
+../startup/startup_MK64F12.S:875    .text:0000000000000118 ENET_Transmit_IRQHandler
+../startup/startup_MK64F12.S:884    .text:000000000000011c ENET_Receive_IRQHandler
+../startup/startup_MK64F12.S:893    .text:0000000000000120 ENET_Error_IRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DefaultISR
+../startup/startup_MK64F12.S:320    .text:0000000000000000 $t
+../startup/startup_MK64F12.S:326    *ABS*:00000000e000ed08 VTOR
+../startup/startup_MK64F12.S:401    .text:000000000000002c $d
+../startup/startup_MK64F12.S:404    .text:0000000000000048 $t
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA0_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA1_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA2_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA3_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA4_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA5_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA6_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA7_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA8_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA9_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA10_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA11_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA12_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA13_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA14_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA15_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 DMA_Error_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 I2C0_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 I2C1_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 SPI0_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 SPI1_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 I2S0_Tx_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 I2S0_Rx_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART0_LON_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART0_RX_TX_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART0_ERR_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART1_RX_TX_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART1_ERR_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART2_RX_TX_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART2_ERR_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART3_RX_TX_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART3_ERR_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 SPI2_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART4_RX_TX_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART4_ERR_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART5_RX_TX_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 UART5_ERR_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 I2C2_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 CAN0_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 SDHC_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 ENET_1588_Timer_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 ENET_Transmit_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 ENET_Receive_DriverIRQHandler
+../startup/startup_MK64F12.S:408    .text:0000000000000048 ENET_Error_DriverIRQHandler
+../startup/startup_MK64F12.S:994    .text:0000000000000124 $d
+
+UNDEFINED SYMBOLS
+__StackTop
+SystemInit
+__etext
+__data_start__
+__data_end__
+_start

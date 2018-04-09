@@ -1,0 +1,114 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_rcm.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.RCM_ConfigureResetPinFilter,"ax",%progbits
+  18              		.align	1
+  19              		.global	RCM_ConfigureResetPinFilter
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	RCM_ConfigureResetPinFilter:
+  26              	.LFB149:
+  27              		.file 1 "../drivers/fsl_rcm.c"
+   1:../drivers/fsl_rcm.c **** /*
+   2:../drivers/fsl_rcm.c ****  * The Clear BSD License
+   3:../drivers/fsl_rcm.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_rcm.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_rcm.c ****  * All rights reserved.
+   6:../drivers/fsl_rcm.c ****  *
+   7:../drivers/fsl_rcm.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_rcm.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_rcm.c ****  * that the following conditions are met:
+  10:../drivers/fsl_rcm.c ****  *
+  11:../drivers/fsl_rcm.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_rcm.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_rcm.c ****  *
+  14:../drivers/fsl_rcm.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_rcm.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_rcm.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_rcm.c ****  *
+  18:../drivers/fsl_rcm.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_rcm.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_rcm.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_rcm.c ****  *
+  22:../drivers/fsl_rcm.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_rcm.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_rcm.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_rcm.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_rcm.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_rcm.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_rcm.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_rcm.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_rcm.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_rcm.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_rcm.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_rcm.c ****  */
+  34:../drivers/fsl_rcm.c **** 
+  35:../drivers/fsl_rcm.c **** #include "fsl_rcm.h"
+  36:../drivers/fsl_rcm.c **** 
+  37:../drivers/fsl_rcm.c **** void RCM_ConfigureResetPinFilter(RCM_Type *base, const rcm_reset_pin_filter_config_t *config)
+  38:../drivers/fsl_rcm.c **** {
+  28              		.loc 1 38 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+  39:../drivers/fsl_rcm.c ****     assert(config);
+  40:../drivers/fsl_rcm.c **** 
+  41:../drivers/fsl_rcm.c **** #if (defined(FSL_FEATURE_RCM_REG_WIDTH) && (FSL_FEATURE_RCM_REG_WIDTH == 32))
+  42:../drivers/fsl_rcm.c ****     uint32_t reg;
+  43:../drivers/fsl_rcm.c **** 
+  44:../drivers/fsl_rcm.c ****     reg = (((uint32_t)config->enableFilterInStop << RCM_RPC_RSTFLTSS_SHIFT) | (uint32_t)config->fil
+  45:../drivers/fsl_rcm.c ****     if (config->filterInRunWait == kRCM_FilterBusClock)
+  46:../drivers/fsl_rcm.c ****     {
+  47:../drivers/fsl_rcm.c ****         reg |= ((uint32_t)config->busClockFilterCount << RCM_RPC_RSTFLTSEL_SHIFT);
+  48:../drivers/fsl_rcm.c ****     }
+  49:../drivers/fsl_rcm.c ****     base->RPC = reg;
+  50:../drivers/fsl_rcm.c **** #else
+  51:../drivers/fsl_rcm.c ****     base->RPFC = ((uint8_t)(config->enableFilterInStop << RCM_RPFC_RSTFLTSS_SHIFT) | (uint8_t)confi
+  34              		.loc 1 51 0
+  35 0000 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+  36 0002 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+  37 0004 42EA8303 		orr	r3, r2, r3, lsl #2
+  38 0008 DBB2     		uxtb	r3, r3
+  39 000a 0371     		strb	r3, [r0, #4]
+  52:../drivers/fsl_rcm.c ****     if (config->filterInRunWait == kRCM_FilterBusClock)
+  40              		.loc 1 52 0
+  41 000c 012A     		cmp	r2, #1
+  53:../drivers/fsl_rcm.c ****     {
+  54:../drivers/fsl_rcm.c ****         base->RPFW = config->busClockFilterCount;
+  42              		.loc 1 54 0
+  43 000e 04BF     		itt	eq
+  44 0010 8B78     		ldrbeq	r3, [r1, #2]	@ zero_extendqisi2
+  45 0012 4371     		strbeq	r3, [r0, #5]
+  46 0014 7047     		bx	lr
+  47              		.cfi_endproc
+  48              	.LFE149:
+  50              		.text
+  51              	.Letext0:
+  52              		.file 2 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+  53              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+  54              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+  55              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+  56              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+  57              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+  58              		.file 8 "../CMSIS/core_cm4.h"
+  59              		.file 9 "../CMSIS/system_MK64F12.h"
+  60              		.file 10 "../CMSIS/MK64F12.h"
+  61              		.file 11 "../drivers/fsl_clock.h"
+  62              		.file 12 "../drivers/fsl_rcm.h"

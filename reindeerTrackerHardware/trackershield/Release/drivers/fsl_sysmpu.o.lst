@@ -1,0 +1,1899 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_sysmpu.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.SYSMPU_Deinit,"ax",%progbits
+  18              		.align	1
+  19              		.global	SYSMPU_Deinit
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	SYSMPU_Deinit:
+  26              	.LFB150:
+  27              		.file 1 "../drivers/fsl_sysmpu.c"
+   1:../drivers/fsl_sysmpu.c **** /*
+   2:../drivers/fsl_sysmpu.c ****  * The Clear BSD License
+   3:../drivers/fsl_sysmpu.c ****  * Copyright (c) 2015 - 2016, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_sysmpu.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_sysmpu.c ****  * All rights reserved.
+   6:../drivers/fsl_sysmpu.c ****  *
+   7:../drivers/fsl_sysmpu.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_sysmpu.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_sysmpu.c ****  * that the following conditions are met:
+  10:../drivers/fsl_sysmpu.c ****  *
+  11:../drivers/fsl_sysmpu.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_sysmpu.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_sysmpu.c ****  *
+  14:../drivers/fsl_sysmpu.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_sysmpu.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_sysmpu.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_sysmpu.c ****  *
+  18:../drivers/fsl_sysmpu.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_sysmpu.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_sysmpu.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_sysmpu.c ****  *
+  22:../drivers/fsl_sysmpu.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_sysmpu.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_sysmpu.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_sysmpu.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_sysmpu.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_sysmpu.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_sysmpu.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_sysmpu.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_sysmpu.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_sysmpu.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_sysmpu.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_sysmpu.c ****  */
+  34:../drivers/fsl_sysmpu.c **** 
+  35:../drivers/fsl_sysmpu.c **** #include "fsl_sysmpu.h"
+  36:../drivers/fsl_sysmpu.c **** 
+  37:../drivers/fsl_sysmpu.c **** /*******************************************************************************
+  38:../drivers/fsl_sysmpu.c ****  * Variables
+  39:../drivers/fsl_sysmpu.c ****  ******************************************************************************/
+  40:../drivers/fsl_sysmpu.c **** 
+  41:../drivers/fsl_sysmpu.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+  42:../drivers/fsl_sysmpu.c **** const clock_ip_name_t g_sysmpuClock[FSL_FEATURE_SOC_SYSMPU_COUNT] = SYSMPU_CLOCKS;
+  43:../drivers/fsl_sysmpu.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+  44:../drivers/fsl_sysmpu.c **** 
+  45:../drivers/fsl_sysmpu.c **** /*******************************************************************************
+  46:../drivers/fsl_sysmpu.c ****  * Codes
+  47:../drivers/fsl_sysmpu.c ****  ******************************************************************************/
+  48:../drivers/fsl_sysmpu.c **** 
+  49:../drivers/fsl_sysmpu.c **** void SYSMPU_Init(SYSMPU_Type *base, const sysmpu_config_t *config)
+  50:../drivers/fsl_sysmpu.c **** {
+  51:../drivers/fsl_sysmpu.c ****     assert(config);
+  52:../drivers/fsl_sysmpu.c ****     uint8_t count;
+  53:../drivers/fsl_sysmpu.c **** 
+  54:../drivers/fsl_sysmpu.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+  55:../drivers/fsl_sysmpu.c ****     /* Un-gate SYSMPU clock */
+  56:../drivers/fsl_sysmpu.c ****     CLOCK_EnableClock(g_sysmpuClock[0]);
+  57:../drivers/fsl_sysmpu.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+  58:../drivers/fsl_sysmpu.c **** 
+  59:../drivers/fsl_sysmpu.c ****     /* Initializes the regions. */
+  60:../drivers/fsl_sysmpu.c ****     for (count = 1; count < FSL_FEATURE_SYSMPU_DESCRIPTOR_COUNT; count++)
+  61:../drivers/fsl_sysmpu.c ****     {
+  62:../drivers/fsl_sysmpu.c ****         base->WORD[count][3] = 0; /* VLD/VID+PID. */
+  63:../drivers/fsl_sysmpu.c ****         base->WORD[count][0] = 0; /* Start address. */
+  64:../drivers/fsl_sysmpu.c ****         base->WORD[count][1] = 0; /* End address. */
+  65:../drivers/fsl_sysmpu.c ****         base->WORD[count][2] = 0; /* Access rights. */
+  66:../drivers/fsl_sysmpu.c ****         base->RGDAAC[count] = 0;  /* Alternate access rights. */
+  67:../drivers/fsl_sysmpu.c ****     }
+  68:../drivers/fsl_sysmpu.c **** 
+  69:../drivers/fsl_sysmpu.c ****     /* SYSMPU configure. */
+  70:../drivers/fsl_sysmpu.c ****     while (config)
+  71:../drivers/fsl_sysmpu.c ****     {
+  72:../drivers/fsl_sysmpu.c ****         SYSMPU_SetRegionConfig(base, &(config->regionConfig));
+  73:../drivers/fsl_sysmpu.c ****         config = config->next;
+  74:../drivers/fsl_sysmpu.c ****     }
+  75:../drivers/fsl_sysmpu.c ****     /* Enable SYSMPU. */
+  76:../drivers/fsl_sysmpu.c ****     SYSMPU_Enable(base, true);
+  77:../drivers/fsl_sysmpu.c **** }
+  78:../drivers/fsl_sysmpu.c **** 
+  79:../drivers/fsl_sysmpu.c **** void SYSMPU_Deinit(SYSMPU_Type *base)
+  80:../drivers/fsl_sysmpu.c **** {
+  28              		.loc 1 80 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+  34              	.LBB10:
+  35              	.LBB11:
+  36              		.file 2 "../drivers/fsl_sysmpu.h"
+   1:../drivers/fsl_sysmpu.h **** /*
+   2:../drivers/fsl_sysmpu.h ****  * The Clear BSD License
+   3:../drivers/fsl_sysmpu.h ****  * Copyright (c) 2015 - 2016, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_sysmpu.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_sysmpu.h ****  * All rights reserved.
+   6:../drivers/fsl_sysmpu.h ****  *
+   7:../drivers/fsl_sysmpu.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_sysmpu.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_sysmpu.h ****  * that the following conditions are met:
+  10:../drivers/fsl_sysmpu.h ****  *
+  11:../drivers/fsl_sysmpu.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_sysmpu.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_sysmpu.h ****  *
+  14:../drivers/fsl_sysmpu.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_sysmpu.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_sysmpu.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_sysmpu.h ****  *
+  18:../drivers/fsl_sysmpu.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_sysmpu.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_sysmpu.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_sysmpu.h ****  *
+  22:../drivers/fsl_sysmpu.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_sysmpu.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_sysmpu.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_sysmpu.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_sysmpu.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_sysmpu.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_sysmpu.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_sysmpu.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_sysmpu.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_sysmpu.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_sysmpu.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_sysmpu.h ****  */
+  34:../drivers/fsl_sysmpu.h **** #ifndef _FSL_SYSMPU_H_
+  35:../drivers/fsl_sysmpu.h **** #define _FSL_SYSMPU_H_
+  36:../drivers/fsl_sysmpu.h **** 
+  37:../drivers/fsl_sysmpu.h **** #include "fsl_common.h"
+  38:../drivers/fsl_sysmpu.h **** 
+  39:../drivers/fsl_sysmpu.h **** /*!
+  40:../drivers/fsl_sysmpu.h ****  * @addtogroup sysmpu
+  41:../drivers/fsl_sysmpu.h ****  * @{
+  42:../drivers/fsl_sysmpu.h ****  */
+  43:../drivers/fsl_sysmpu.h **** 
+  44:../drivers/fsl_sysmpu.h **** 
+  45:../drivers/fsl_sysmpu.h **** /*******************************************************************************
+  46:../drivers/fsl_sysmpu.h ****  * Definitions
+  47:../drivers/fsl_sysmpu.h ****  ******************************************************************************/
+  48:../drivers/fsl_sysmpu.h **** 
+  49:../drivers/fsl_sysmpu.h **** /*! @name Driver version */
+  50:../drivers/fsl_sysmpu.h **** /*@{*/
+  51:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU driver version 2.2.0. */
+  52:../drivers/fsl_sysmpu.h **** #define FSL_SYSMPU_DRIVER_VERSION (MAKE_VERSION(2, 2, 0))
+  53:../drivers/fsl_sysmpu.h **** /*@}*/
+  54:../drivers/fsl_sysmpu.h **** 
+  55:../drivers/fsl_sysmpu.h **** /*! @brief define the start master port with read and write attributes. */
+  56:../drivers/fsl_sysmpu.h **** #define SYSMPU_MASTER_RWATTRIBUTE_START_PORT (4)
+  57:../drivers/fsl_sysmpu.h **** 
+  58:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU the bit shift for masters with privilege rights: read write and execute. */
+  59:../drivers/fsl_sysmpu.h **** #define SYSMPU_REGION_RWXRIGHTS_MASTER_SHIFT(n) (n * 6)
+  60:../drivers/fsl_sysmpu.h **** 
+  61:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU masters with read, write and execute rights bit mask. */
+  62:../drivers/fsl_sysmpu.h **** #define SYSMPU_REGION_RWXRIGHTS_MASTER_MASK(n) (0x1Fu << SYSMPU_REGION_RWXRIGHTS_MASTER_SHIFT(n))
+  63:../drivers/fsl_sysmpu.h **** 
+  64:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU masters with read, write and execute rights bit width. */
+  65:../drivers/fsl_sysmpu.h **** #define SYSMPU_REGION_RWXRIGHTS_MASTER_WIDTH 5
+  66:../drivers/fsl_sysmpu.h **** 
+  67:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU masters with read, write and execute rights priority setting. */
+  68:../drivers/fsl_sysmpu.h **** #define SYSMPU_REGION_RWXRIGHTS_MASTER(n, x) \
+  69:../drivers/fsl_sysmpu.h ****     (((uint32_t)(((uint32_t)(x)) << SYSMPU_REGION_RWXRIGHTS_MASTER_SHIFT(n))) & SYSMPU_REGION_RWXRI
+  70:../drivers/fsl_sysmpu.h **** 
+  71:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU masters with read, write and execute rights process enable bit shift. */
+  72:../drivers/fsl_sysmpu.h **** #define SYSMPU_REGION_RWXRIGHTS_MASTER_PE_SHIFT(n) (n * 6 + SYSMPU_REGION_RWXRIGHTS_MASTER_WIDTH)
+  73:../drivers/fsl_sysmpu.h **** 
+  74:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU masters with read, write and execute rights process enable bit mask. */
+  75:../drivers/fsl_sysmpu.h **** #define SYSMPU_REGION_RWXRIGHTS_MASTER_PE_MASK(n) (0x1u << SYSMPU_REGION_RWXRIGHTS_MASTER_PE_SHIFT(
+  76:../drivers/fsl_sysmpu.h **** 
+  77:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU masters with read, write and execute rights process enable setting. */
+  78:../drivers/fsl_sysmpu.h **** #define SYSMPU_REGION_RWXRIGHTS_MASTER_PE(n, x) \
+  79:../drivers/fsl_sysmpu.h ****     (((uint32_t)(((uint32_t)(x)) << SYSMPU_REGION_RWXRIGHTS_MASTER_PE_SHIFT(n))) & SYSMPU_REGION_RW
+  80:../drivers/fsl_sysmpu.h **** 
+  81:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU masters with normal read write permission bit shift. */
+  82:../drivers/fsl_sysmpu.h **** #define SYSMPU_REGION_RWRIGHTS_MASTER_SHIFT(n) ((n - SYSMPU_MASTER_RWATTRIBUTE_START_PORT) * 2 + 24
+  83:../drivers/fsl_sysmpu.h **** 
+  84:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU masters with normal read write rights bit mask. */
+  85:../drivers/fsl_sysmpu.h **** #define SYSMPU_REGION_RWRIGHTS_MASTER_MASK(n) (0x3u << SYSMPU_REGION_RWRIGHTS_MASTER_SHIFT(n))
+  86:../drivers/fsl_sysmpu.h **** 
+  87:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU masters with normal read write rights priority setting. */
+  88:../drivers/fsl_sysmpu.h **** #define SYSMPU_REGION_RWRIGHTS_MASTER(n, x) \
+  89:../drivers/fsl_sysmpu.h ****     (((uint32_t)(((uint32_t)(x)) << SYSMPU_REGION_RWRIGHTS_MASTER_SHIFT(n))) & SYSMPU_REGION_RWRIGH
+  90:../drivers/fsl_sysmpu.h **** 
+  91:../drivers/fsl_sysmpu.h **** 
+  92:../drivers/fsl_sysmpu.h **** /*! @brief Describes the number of SYSMPU regions. */
+  93:../drivers/fsl_sysmpu.h **** typedef enum _sysmpu_region_total_num
+  94:../drivers/fsl_sysmpu.h **** {
+  95:../drivers/fsl_sysmpu.h ****     kSYSMPU_8Regions = 0x0U,  /*!< SYSMPU supports 8 regions.  */
+  96:../drivers/fsl_sysmpu.h ****     kSYSMPU_12Regions = 0x1U, /*!< SYSMPU supports 12 regions. */
+  97:../drivers/fsl_sysmpu.h ****     kSYSMPU_16Regions = 0x2U  /*!< SYSMPU supports 16 regions. */
+  98:../drivers/fsl_sysmpu.h **** } sysmpu_region_total_num_t;
+  99:../drivers/fsl_sysmpu.h **** 
+ 100:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU slave port number. */
+ 101:../drivers/fsl_sysmpu.h **** typedef enum _sysmpu_slave
+ 102:../drivers/fsl_sysmpu.h **** {
+ 103:../drivers/fsl_sysmpu.h ****     kSYSMPU_Slave0 = 0U, /*!< SYSMPU slave port 0. */
+ 104:../drivers/fsl_sysmpu.h ****     kSYSMPU_Slave1 = 1U, /*!< SYSMPU slave port 1. */
+ 105:../drivers/fsl_sysmpu.h ****     kSYSMPU_Slave2 = 2U, /*!< SYSMPU slave port 2. */
+ 106:../drivers/fsl_sysmpu.h ****     kSYSMPU_Slave3 = 3U, /*!< SYSMPU slave port 3. */
+ 107:../drivers/fsl_sysmpu.h ****     kSYSMPU_Slave4 = 4U, /*!< SYSMPU slave port 4. */
+ 108:../drivers/fsl_sysmpu.h **** #if FSL_FEATURE_SYSMPU_SLAVE_COUNT > 5
+ 109:../drivers/fsl_sysmpu.h ****     kSYSMPU_Slave5 = 5U, /*!< SYSMPU slave port 5. */
+ 110:../drivers/fsl_sysmpu.h **** #endif
+ 111:../drivers/fsl_sysmpu.h **** #if FSL_FEATURE_SYSMPU_SLAVE_COUNT > 6
+ 112:../drivers/fsl_sysmpu.h ****     kSYSMPU_Slave6 = 6U, /*!< SYSMPU slave port 6. */
+ 113:../drivers/fsl_sysmpu.h **** #endif
+ 114:../drivers/fsl_sysmpu.h **** #if FSL_FEATURE_SYSMPU_SLAVE_COUNT > 7
+ 115:../drivers/fsl_sysmpu.h ****     kSYSMPU_Slave7 = 7U, /*!< SYSMPU slave port 7. */
+ 116:../drivers/fsl_sysmpu.h **** #endif
+ 117:../drivers/fsl_sysmpu.h **** } sysmpu_slave_t;
+ 118:../drivers/fsl_sysmpu.h **** 
+ 119:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU error access control detail. */
+ 120:../drivers/fsl_sysmpu.h **** typedef enum _sysmpu_err_access_control
+ 121:../drivers/fsl_sysmpu.h **** {
+ 122:../drivers/fsl_sysmpu.h ****     kSYSMPU_NoRegionHit = 0U,        /*!< No region hit error. */
+ 123:../drivers/fsl_sysmpu.h ****     kSYSMPU_NoneOverlappRegion = 1U, /*!< Access single region error. */
+ 124:../drivers/fsl_sysmpu.h ****     kSYSMPU_OverlappRegion = 2U      /*!< Access overlapping region error. */
+ 125:../drivers/fsl_sysmpu.h **** } sysmpu_err_access_control_t;
+ 126:../drivers/fsl_sysmpu.h **** 
+ 127:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU error access type. */
+ 128:../drivers/fsl_sysmpu.h **** typedef enum _sysmpu_err_access_type
+ 129:../drivers/fsl_sysmpu.h **** {
+ 130:../drivers/fsl_sysmpu.h ****     kSYSMPU_ErrTypeRead = 0U, /*!< SYSMPU error access type --- read.  */
+ 131:../drivers/fsl_sysmpu.h ****     kSYSMPU_ErrTypeWrite = 1U /*!< SYSMPU error access type --- write. */
+ 132:../drivers/fsl_sysmpu.h **** } sysmpu_err_access_type_t;
+ 133:../drivers/fsl_sysmpu.h **** 
+ 134:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU access error attributes.*/
+ 135:../drivers/fsl_sysmpu.h **** typedef enum _sysmpu_err_attributes
+ 136:../drivers/fsl_sysmpu.h **** {
+ 137:../drivers/fsl_sysmpu.h ****     kSYSMPU_InstructionAccessInUserMode = 0U,       /*!< Access instruction error in user mode. */
+ 138:../drivers/fsl_sysmpu.h ****     kSYSMPU_DataAccessInUserMode = 1U,              /*!< Access data error in user mode. */
+ 139:../drivers/fsl_sysmpu.h ****     kSYSMPU_InstructionAccessInSupervisorMode = 2U, /*!< Access instruction error in supervisor mod
+ 140:../drivers/fsl_sysmpu.h ****     kSYSMPU_DataAccessInSupervisorMode = 3U         /*!< Access data error in supervisor mode. */
+ 141:../drivers/fsl_sysmpu.h **** } sysmpu_err_attributes_t;
+ 142:../drivers/fsl_sysmpu.h **** 
+ 143:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU access rights in supervisor mode for bus master 0 ~ 3. */
+ 144:../drivers/fsl_sysmpu.h **** typedef enum _sysmpu_supervisor_access_rights
+ 145:../drivers/fsl_sysmpu.h **** {
+ 146:../drivers/fsl_sysmpu.h ****     kSYSMPU_SupervisorReadWriteExecute = 0U, /*!< Read write and execute operations are allowed in 
+ 147:../drivers/fsl_sysmpu.h ****     kSYSMPU_SupervisorReadExecute = 1U,      /*!< Read and execute operations are allowed in superv
+ 148:../drivers/fsl_sysmpu.h ****     kSYSMPU_SupervisorReadWrite = 2U,        /*!< Read write operations are allowed in supervisor m
+ 149:../drivers/fsl_sysmpu.h ****     kSYSMPU_SupervisorEqualToUsermode = 3U   /*!< Access permission equal to user mode. */
+ 150:../drivers/fsl_sysmpu.h **** } sysmpu_supervisor_access_rights_t;
+ 151:../drivers/fsl_sysmpu.h **** 
+ 152:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU access rights in user mode for bus master 0 ~ 3. */
+ 153:../drivers/fsl_sysmpu.h **** typedef enum _sysmpu_user_access_rights
+ 154:../drivers/fsl_sysmpu.h **** {
+ 155:../drivers/fsl_sysmpu.h ****     kSYSMPU_UserNoAccessRights = 0U,  /*!< No access allowed in user mode.  */
+ 156:../drivers/fsl_sysmpu.h ****     kSYSMPU_UserExecute = 1U,         /*!< Execute operation is allowed in user mode. */
+ 157:../drivers/fsl_sysmpu.h ****     kSYSMPU_UserWrite = 2U,           /*!< Write operation is allowed in user mode. */
+ 158:../drivers/fsl_sysmpu.h ****     kSYSMPU_UserWriteExecute = 3U,    /*!< Write and execute operations are allowed in user mode. *
+ 159:../drivers/fsl_sysmpu.h ****     kSYSMPU_UserRead = 4U,            /*!< Read is allowed in user mode. */
+ 160:../drivers/fsl_sysmpu.h ****     kSYSMPU_UserReadExecute = 5U,     /*!< Read and execute operations are allowed in user mode. */
+ 161:../drivers/fsl_sysmpu.h ****     kSYSMPU_UserReadWrite = 6U,       /*!< Read and write operations are allowed in user mode. */
+ 162:../drivers/fsl_sysmpu.h ****     kSYSMPU_UserReadWriteExecute = 7U /*!< Read write and execute operations are allowed in user mo
+ 163:../drivers/fsl_sysmpu.h **** } sysmpu_user_access_rights_t;
+ 164:../drivers/fsl_sysmpu.h **** 
+ 165:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU hardware basic information. */
+ 166:../drivers/fsl_sysmpu.h **** typedef struct _sysmpu_hardware_info
+ 167:../drivers/fsl_sysmpu.h **** {
+ 168:../drivers/fsl_sysmpu.h ****     uint8_t hardwareRevisionLevel;         /*!< Specifies the SYSMPU's hardware and definition reve
+ 169:../drivers/fsl_sysmpu.h ****     uint8_t slavePortsNumbers;             /*!< Specifies the number of slave ports connected to SY
+ 170:../drivers/fsl_sysmpu.h ****     sysmpu_region_total_num_t regionsNumbers; /*!< Indicates the number of region descriptors imple
+ 171:../drivers/fsl_sysmpu.h **** } sysmpu_hardware_info_t;
+ 172:../drivers/fsl_sysmpu.h **** 
+ 173:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU detail error access information. */
+ 174:../drivers/fsl_sysmpu.h **** typedef struct _sysmpu_access_err_info
+ 175:../drivers/fsl_sysmpu.h **** {
+ 176:../drivers/fsl_sysmpu.h ****     uint32_t master;                        /*!< Access error master. */
+ 177:../drivers/fsl_sysmpu.h ****     sysmpu_err_attributes_t attributes;        /*!< Access error attributes. */
+ 178:../drivers/fsl_sysmpu.h ****     sysmpu_err_access_type_t accessType;       /*!< Access error type. */
+ 179:../drivers/fsl_sysmpu.h ****     sysmpu_err_access_control_t accessControl; /*!< Access error control. */
+ 180:../drivers/fsl_sysmpu.h ****     uint32_t address;                       /*!< Access error address. */
+ 181:../drivers/fsl_sysmpu.h **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
+ 182:../drivers/fsl_sysmpu.h ****     uint8_t processorIdentification; /*!< Access error processor identification. */
+ 183:../drivers/fsl_sysmpu.h **** #endif                               /* FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER */
+ 184:../drivers/fsl_sysmpu.h **** } sysmpu_access_err_info_t;
+ 185:../drivers/fsl_sysmpu.h **** 
+ 186:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU read/write/execute rights control for bus master 0 ~ 3. */
+ 187:../drivers/fsl_sysmpu.h **** typedef struct _sysmpu_rwxrights_master_access_control
+ 188:../drivers/fsl_sysmpu.h **** {
+ 189:../drivers/fsl_sysmpu.h ****     sysmpu_supervisor_access_rights_t superAccessRights; /*!< Master access rights in supervisor mo
+ 190:../drivers/fsl_sysmpu.h ****     sysmpu_user_access_rights_t userAccessRights;        /*!< Master access rights in user mode. */
+ 191:../drivers/fsl_sysmpu.h **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
+ 192:../drivers/fsl_sysmpu.h ****     bool processIdentifierEnable; /*!< Enables or disables process identifier. */
+ 193:../drivers/fsl_sysmpu.h **** #endif                            /* FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER */
+ 194:../drivers/fsl_sysmpu.h **** } sysmpu_rwxrights_master_access_control_t;
+ 195:../drivers/fsl_sysmpu.h **** 
+ 196:../drivers/fsl_sysmpu.h **** /*! @brief SYSMPU read/write access control for bus master 4 ~ 7. */
+ 197:../drivers/fsl_sysmpu.h **** typedef struct _sysmpu_rwrights_master_access_control
+ 198:../drivers/fsl_sysmpu.h **** {
+ 199:../drivers/fsl_sysmpu.h ****     bool writeEnable; /*!< Enables or disables write permission. */
+ 200:../drivers/fsl_sysmpu.h ****     bool readEnable;  /*!< Enables or disables read permission.  */
+ 201:../drivers/fsl_sysmpu.h **** } sysmpu_rwrights_master_access_control_t;
+ 202:../drivers/fsl_sysmpu.h **** 
+ 203:../drivers/fsl_sysmpu.h **** /*!
+ 204:../drivers/fsl_sysmpu.h ****  * @brief SYSMPU region configuration structure.
+ 205:../drivers/fsl_sysmpu.h ****  *
+ 206:../drivers/fsl_sysmpu.h ****  * This structure is used to configure the regionNum region.
+ 207:../drivers/fsl_sysmpu.h ****  * The accessRights1[0] ~ accessRights1[3] are used to configure the bus master
+ 208:../drivers/fsl_sysmpu.h ****  * 0 ~ 3 with the privilege rights setting. The accessRights2[0] ~ accessRights2[3]
+ 209:../drivers/fsl_sysmpu.h ****  * are used to configure the high master 4 ~ 7 with the normal read write permission.
+ 210:../drivers/fsl_sysmpu.h ****  * The master port assignment is the chip configuration. Normally, the core is the
+ 211:../drivers/fsl_sysmpu.h ****  * master 0, debugger is the master 1.
+ 212:../drivers/fsl_sysmpu.h ****  * Note that the SYSMPU assigns a priority scheme where the debugger is treated as the highest
+ 213:../drivers/fsl_sysmpu.h ****  * priority master followed by the core and then all the remaining masters.
+ 214:../drivers/fsl_sysmpu.h ****  * SYSMPU protection does not allow writes from the core to affect the "regionNum 0" start
+ 215:../drivers/fsl_sysmpu.h ****  * and end address nor the permissions associated with the debugger. It can only write
+ 216:../drivers/fsl_sysmpu.h ****  * the permission fields associated with the other masters. This protection guarantees that
+ 217:../drivers/fsl_sysmpu.h ****  * the debugger always has access to the entire address space and those rights can't
+ 218:../drivers/fsl_sysmpu.h ****  * be changed by the core or any other bus master. Prepare
+ 219:../drivers/fsl_sysmpu.h ****  * the region configuration when regionNum is 0.
+ 220:../drivers/fsl_sysmpu.h ****  */
+ 221:../drivers/fsl_sysmpu.h **** typedef struct _sysmpu_region_config
+ 222:../drivers/fsl_sysmpu.h **** {
+ 223:../drivers/fsl_sysmpu.h ****     uint32_t regionNum;    /*!< SYSMPU region number, range form 0 ~ FSL_FEATURE_SYSMPU_DESCRIPTOR_
+ 224:../drivers/fsl_sysmpu.h ****     uint32_t startAddress; /*!< Memory region start address. Note: bit0 ~ bit4 always be marked as 
+ 225:../drivers/fsl_sysmpu.h ****                               start address is 0-modulo-32 byte address.  */
+ 226:../drivers/fsl_sysmpu.h ****     uint32_t endAddress; /*!< Memory region end address. Note: bit0 ~ bit4 always be marked as 1 by
+ 227:../drivers/fsl_sysmpu.h ****                           address is 31-modulo-32 byte address. */
+ 228:../drivers/fsl_sysmpu.h ****     sysmpu_rwxrights_master_access_control_t accessRights1[4]; /*!< Masters with read, write and ex
+ 229:../drivers/fsl_sysmpu.h ****     sysmpu_rwrights_master_access_control_t accessRights2[4];  /*!< Masters with normal read write 
+ 230:../drivers/fsl_sysmpu.h **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
+ 231:../drivers/fsl_sysmpu.h ****     uint8_t processIdentifier; /*!< Process identifier used when "processIdentifierEnable" set with
+ 232:../drivers/fsl_sysmpu.h ****     uint8_t
+ 233:../drivers/fsl_sysmpu.h ****         processIdMask; /*!< Process identifier mask. The setting bit will ignore the same bit in pr
+ 234:../drivers/fsl_sysmpu.h **** #endif                 /* FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER */
+ 235:../drivers/fsl_sysmpu.h **** } sysmpu_region_config_t;
+ 236:../drivers/fsl_sysmpu.h **** 
+ 237:../drivers/fsl_sysmpu.h **** /*!
+ 238:../drivers/fsl_sysmpu.h ****  * @brief The configuration structure for the SYSMPU initialization.
+ 239:../drivers/fsl_sysmpu.h ****  *
+ 240:../drivers/fsl_sysmpu.h ****  * This structure is used when calling the SYSMPU_Init function.
+ 241:../drivers/fsl_sysmpu.h ****  */
+ 242:../drivers/fsl_sysmpu.h **** typedef struct _sysmpu_config
+ 243:../drivers/fsl_sysmpu.h **** {
+ 244:../drivers/fsl_sysmpu.h ****     sysmpu_region_config_t regionConfig; /*!< Region access permission. */
+ 245:../drivers/fsl_sysmpu.h ****     struct _sysmpu_config *next;         /*!< Pointer to the next structure. */
+ 246:../drivers/fsl_sysmpu.h **** } sysmpu_config_t;
+ 247:../drivers/fsl_sysmpu.h **** 
+ 248:../drivers/fsl_sysmpu.h **** /*******************************************************************************
+ 249:../drivers/fsl_sysmpu.h ****  * API
+ 250:../drivers/fsl_sysmpu.h ****  ******************************************************************************/
+ 251:../drivers/fsl_sysmpu.h **** 
+ 252:../drivers/fsl_sysmpu.h **** #if defined(__cplusplus)
+ 253:../drivers/fsl_sysmpu.h **** extern "C" {
+ 254:../drivers/fsl_sysmpu.h **** #endif /* _cplusplus */
+ 255:../drivers/fsl_sysmpu.h **** 
+ 256:../drivers/fsl_sysmpu.h **** /*!
+ 257:../drivers/fsl_sysmpu.h ****  * @name Initialization and deinitialization
+ 258:../drivers/fsl_sysmpu.h ****  * @{
+ 259:../drivers/fsl_sysmpu.h ****  */
+ 260:../drivers/fsl_sysmpu.h **** 
+ 261:../drivers/fsl_sysmpu.h **** /*!
+ 262:../drivers/fsl_sysmpu.h ****  * @brief Initializes the SYSMPU with the user configuration structure.
+ 263:../drivers/fsl_sysmpu.h ****  *
+ 264:../drivers/fsl_sysmpu.h ****  * This function configures the SYSMPU module with the user-defined configuration.
+ 265:../drivers/fsl_sysmpu.h ****  *
+ 266:../drivers/fsl_sysmpu.h ****  * @param base     SYSMPU peripheral base address.
+ 267:../drivers/fsl_sysmpu.h ****  * @param config   The pointer to the configuration structure.
+ 268:../drivers/fsl_sysmpu.h ****  */
+ 269:../drivers/fsl_sysmpu.h **** void SYSMPU_Init(SYSMPU_Type *base, const sysmpu_config_t *config);
+ 270:../drivers/fsl_sysmpu.h **** 
+ 271:../drivers/fsl_sysmpu.h **** /*!
+ 272:../drivers/fsl_sysmpu.h ****  * @brief Deinitializes the SYSMPU regions.
+ 273:../drivers/fsl_sysmpu.h ****  *
+ 274:../drivers/fsl_sysmpu.h ****  * @param base     SYSMPU peripheral base address.
+ 275:../drivers/fsl_sysmpu.h ****  */
+ 276:../drivers/fsl_sysmpu.h **** void SYSMPU_Deinit(SYSMPU_Type *base);
+ 277:../drivers/fsl_sysmpu.h **** 
+ 278:../drivers/fsl_sysmpu.h **** /* @}*/
+ 279:../drivers/fsl_sysmpu.h **** 
+ 280:../drivers/fsl_sysmpu.h **** /*!
+ 281:../drivers/fsl_sysmpu.h ****  * @name Basic Control Operations
+ 282:../drivers/fsl_sysmpu.h ****  * @{
+ 283:../drivers/fsl_sysmpu.h ****  */
+ 284:../drivers/fsl_sysmpu.h **** 
+ 285:../drivers/fsl_sysmpu.h **** /*!
+ 286:../drivers/fsl_sysmpu.h ****  * @brief Enables/disables the SYSMPU globally.
+ 287:../drivers/fsl_sysmpu.h ****  *
+ 288:../drivers/fsl_sysmpu.h ****  * Call this API to enable or disable the SYSMPU module.
+ 289:../drivers/fsl_sysmpu.h ****  *
+ 290:../drivers/fsl_sysmpu.h ****  * @param base     SYSMPU peripheral base address.
+ 291:../drivers/fsl_sysmpu.h ****  * @param enable   True enable SYSMPU, false disable SYSMPU.
+ 292:../drivers/fsl_sysmpu.h ****  */
+ 293:../drivers/fsl_sysmpu.h **** static inline void SYSMPU_Enable(SYSMPU_Type *base, bool enable)
+ 294:../drivers/fsl_sysmpu.h **** {
+ 295:../drivers/fsl_sysmpu.h ****     if (enable)
+ 296:../drivers/fsl_sysmpu.h ****     {
+ 297:../drivers/fsl_sysmpu.h ****         /* Enable the SYSMPU globally. */
+ 298:../drivers/fsl_sysmpu.h ****         base->CESR |= SYSMPU_CESR_VLD_MASK;
+ 299:../drivers/fsl_sysmpu.h ****     }
+ 300:../drivers/fsl_sysmpu.h ****     else
+ 301:../drivers/fsl_sysmpu.h ****     { /* Disable the SYSMPU globally. */
+ 302:../drivers/fsl_sysmpu.h ****         base->CESR &= ~SYSMPU_CESR_VLD_MASK;
+  37              		.loc 2 302 0
+  38 0000 0368     		ldr	r3, [r0]
+  39              	.LBE11:
+  40              	.LBE10:
+  41              	.LBB13:
+  42              	.LBB14:
+  43              		.file 3 "../drivers/fsl_clock.h"
+   1:../drivers/fsl_clock.h **** /*
+   2:../drivers/fsl_clock.h ****  * The Clear BSD License
+   3:../drivers/fsl_clock.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_clock.h ****  * Copyright (c) 2016 - 2017 , NXP
+   5:../drivers/fsl_clock.h ****  * All rights reserved.
+   6:../drivers/fsl_clock.h ****  *
+   7:../drivers/fsl_clock.h ****  *
+   8:../drivers/fsl_clock.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   9:../drivers/fsl_clock.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+  10:../drivers/fsl_clock.h ****  * that the following conditions are met:
+  11:../drivers/fsl_clock.h ****  *
+  12:../drivers/fsl_clock.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  13:../drivers/fsl_clock.h ****  *   of conditions and the following disclaimer.
+  14:../drivers/fsl_clock.h ****  *
+  15:../drivers/fsl_clock.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  16:../drivers/fsl_clock.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  17:../drivers/fsl_clock.h ****  *   other materials provided with the distribution.
+  18:../drivers/fsl_clock.h ****  *
+  19:../drivers/fsl_clock.h ****  * o Neither the name of copyright holder nor the names of its
+  20:../drivers/fsl_clock.h ****  *   contributors may be used to endorse or promote products derived from this
+  21:../drivers/fsl_clock.h ****  *   software without specific prior written permission.
+  22:../drivers/fsl_clock.h ****  *
+  23:../drivers/fsl_clock.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  24:../drivers/fsl_clock.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  25:../drivers/fsl_clock.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  26:../drivers/fsl_clock.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  27:../drivers/fsl_clock.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  28:../drivers/fsl_clock.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  29:../drivers/fsl_clock.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  30:../drivers/fsl_clock.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  31:../drivers/fsl_clock.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  32:../drivers/fsl_clock.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  33:../drivers/fsl_clock.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  34:../drivers/fsl_clock.h ****  */
+  35:../drivers/fsl_clock.h **** 
+  36:../drivers/fsl_clock.h **** #ifndef _FSL_CLOCK_H_
+  37:../drivers/fsl_clock.h **** #define _FSL_CLOCK_H_
+  38:../drivers/fsl_clock.h **** 
+  39:../drivers/fsl_clock.h **** #include "fsl_common.h"
+  40:../drivers/fsl_clock.h **** 
+  41:../drivers/fsl_clock.h **** /*! @addtogroup clock */
+  42:../drivers/fsl_clock.h **** /*! @{ */
+  43:../drivers/fsl_clock.h **** 
+  44:../drivers/fsl_clock.h **** /*! @file */
+  45:../drivers/fsl_clock.h **** 
+  46:../drivers/fsl_clock.h **** /*******************************************************************************
+  47:../drivers/fsl_clock.h ****  * Configurations
+  48:../drivers/fsl_clock.h ****  ******************************************************************************/
+  49:../drivers/fsl_clock.h **** 
+  50:../drivers/fsl_clock.h **** /*! @brief Configures whether to check a parameter in a function.
+  51:../drivers/fsl_clock.h ****  *
+  52:../drivers/fsl_clock.h ****  * Some MCG settings must be changed with conditions, for example:
+  53:../drivers/fsl_clock.h ****  *  1. MCGIRCLK settings, such as the source, divider, and the trim value should not change when
+  54:../drivers/fsl_clock.h ****  *     MCGIRCLK is used as a system clock source.
+  55:../drivers/fsl_clock.h ****  *  2. MCG_C7[OSCSEL] should not be changed  when the external reference clock is used
+  56:../drivers/fsl_clock.h ****  *     as a system clock source. For example, in FBE/BLPE/PBE modes.
+  57:../drivers/fsl_clock.h ****  *  3. The users should only switch between the supported clock modes.
+  58:../drivers/fsl_clock.h ****  *
+  59:../drivers/fsl_clock.h ****  * MCG functions check the parameter and MCG status before setting, if not allowed
+  60:../drivers/fsl_clock.h ****  * to change, the functions return error. The parameter checking increases code size,
+  61:../drivers/fsl_clock.h ****  * if code size is a critical requirement, change #MCG_CONFIG_CHECK_PARAM to 0 to
+  62:../drivers/fsl_clock.h ****  * disable parameter checking.
+  63:../drivers/fsl_clock.h ****  */
+  64:../drivers/fsl_clock.h **** #ifndef MCG_CONFIG_CHECK_PARAM
+  65:../drivers/fsl_clock.h **** #define MCG_CONFIG_CHECK_PARAM 0U
+  66:../drivers/fsl_clock.h **** #endif
+  67:../drivers/fsl_clock.h **** 
+  68:../drivers/fsl_clock.h **** /*! @brief Configure whether driver controls clock
+  69:../drivers/fsl_clock.h ****  *
+  70:../drivers/fsl_clock.h ****  * When set to 0, peripheral drivers will enable clock in initialize function
+  71:../drivers/fsl_clock.h ****  * and disable clock in de-initialize function. When set to 1, peripheral
+  72:../drivers/fsl_clock.h ****  * driver will not control the clock, application could contol the clock out of
+  73:../drivers/fsl_clock.h ****  * the driver.
+  74:../drivers/fsl_clock.h ****  *
+  75:../drivers/fsl_clock.h ****  * @note All drivers share this feature switcher. If it is set to 1, application
+  76:../drivers/fsl_clock.h ****  * should handle clock enable and disable for all drivers.
+  77:../drivers/fsl_clock.h ****  */
+  78:../drivers/fsl_clock.h **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL))
+  79:../drivers/fsl_clock.h **** #define FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL 0
+  80:../drivers/fsl_clock.h **** #endif
+  81:../drivers/fsl_clock.h **** 
+  82:../drivers/fsl_clock.h **** /*******************************************************************************
+  83:../drivers/fsl_clock.h ****  * Definitions
+  84:../drivers/fsl_clock.h ****  ******************************************************************************/
+  85:../drivers/fsl_clock.h **** 
+  86:../drivers/fsl_clock.h **** /*! @name Driver version */
+  87:../drivers/fsl_clock.h **** /*@{*/
+  88:../drivers/fsl_clock.h **** /*! @brief CLOCK driver version 2.2.1. */
+  89:../drivers/fsl_clock.h **** #define FSL_CLOCK_DRIVER_VERSION (MAKE_VERSION(2, 2, 1))
+  90:../drivers/fsl_clock.h **** /*@}*/
+  91:../drivers/fsl_clock.h **** 
+  92:../drivers/fsl_clock.h **** /*! @brief External XTAL0 (OSC0) clock frequency.
+  93:../drivers/fsl_clock.h ****  *
+  94:../drivers/fsl_clock.h ****  * The XTAL0/EXTAL0 (OSC0) clock frequency in Hz. When the clock is set up, use the
+  95:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal0Freq to set the value in the clock driver. For example,
+  96:../drivers/fsl_clock.h ****  * if XTAL0 is 8 MHz:
+  97:../drivers/fsl_clock.h ****  * @code
+  98:../drivers/fsl_clock.h ****  * CLOCK_InitOsc0(...); // Set up the OSC0
+  99:../drivers/fsl_clock.h ****  * CLOCK_SetXtal0Freq(80000000); // Set the XTAL0 value to the clock driver.
+ 100:../drivers/fsl_clock.h ****  * @endcode
+ 101:../drivers/fsl_clock.h ****  *
+ 102:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where only one core needs to set up the
+ 103:../drivers/fsl_clock.h ****  * OSC0 using the CLOCK_InitOsc0. All other cores need to call the CLOCK_SetXtal0Freq
+ 104:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+ 105:../drivers/fsl_clock.h ****  */
+ 106:../drivers/fsl_clock.h **** extern uint32_t g_xtal0Freq;
+ 107:../drivers/fsl_clock.h **** 
+ 108:../drivers/fsl_clock.h **** /*! @brief External XTAL32/EXTAL32/RTC_CLKIN clock frequency.
+ 109:../drivers/fsl_clock.h ****  *
+ 110:../drivers/fsl_clock.h ****  * The XTAL32/EXTAL32/RTC_CLKIN clock frequency in Hz. When the clock is set up, use the
+ 111:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal32Freq to set the value in the clock driver.
+ 112:../drivers/fsl_clock.h ****  *
+ 113:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where only one core needs to set up
+ 114:../drivers/fsl_clock.h ****  * the clock. All other cores need to call the CLOCK_SetXtal32Freq
+ 115:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+ 116:../drivers/fsl_clock.h ****  */
+ 117:../drivers/fsl_clock.h **** extern uint32_t g_xtal32Freq;
+ 118:../drivers/fsl_clock.h **** 
+ 119:../drivers/fsl_clock.h **** /*! @brief IRC48M clock frequency in Hz. */
+ 120:../drivers/fsl_clock.h **** #define MCG_INTERNAL_IRC_48M 48000000U
+ 121:../drivers/fsl_clock.h **** 
+ 122:../drivers/fsl_clock.h **** #if (defined(OSC) && !(defined(OSC0)))
+ 123:../drivers/fsl_clock.h **** #define OSC0 OSC
+ 124:../drivers/fsl_clock.h **** #endif
+ 125:../drivers/fsl_clock.h **** 
+ 126:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DMAMUX. */
+ 127:../drivers/fsl_clock.h **** #define DMAMUX_CLOCKS  \
+ 128:../drivers/fsl_clock.h ****     {                  \
+ 129:../drivers/fsl_clock.h ****         kCLOCK_Dmamux0 \
+ 130:../drivers/fsl_clock.h ****     }
+ 131:../drivers/fsl_clock.h **** 
+ 132:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for RTC. */
+ 133:../drivers/fsl_clock.h **** #define RTC_CLOCKS  \
+ 134:../drivers/fsl_clock.h ****     {               \
+ 135:../drivers/fsl_clock.h ****         kCLOCK_Rtc0 \
+ 136:../drivers/fsl_clock.h ****     }
+ 137:../drivers/fsl_clock.h **** 
+ 138:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for ENET. */
+ 139:../drivers/fsl_clock.h **** #define ENET_CLOCKS  \
+ 140:../drivers/fsl_clock.h ****     {                \
+ 141:../drivers/fsl_clock.h ****         kCLOCK_Enet0 \
+ 142:../drivers/fsl_clock.h ****     }
+ 143:../drivers/fsl_clock.h **** 
+ 144:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PORT. */
+ 145:../drivers/fsl_clock.h **** #define PORT_CLOCKS                                                          \
+ 146:../drivers/fsl_clock.h ****     {                                                                        \
+ 147:../drivers/fsl_clock.h ****         kCLOCK_PortA, kCLOCK_PortB, kCLOCK_PortC, kCLOCK_PortD, kCLOCK_PortE \
+ 148:../drivers/fsl_clock.h ****     }
+ 149:../drivers/fsl_clock.h **** 
+ 150:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SAI. */
+ 151:../drivers/fsl_clock.h **** #define SAI_CLOCKS  \
+ 152:../drivers/fsl_clock.h ****     {               \
+ 153:../drivers/fsl_clock.h ****         kCLOCK_Sai0 \
+ 154:../drivers/fsl_clock.h ****     }
+ 155:../drivers/fsl_clock.h **** 
+ 156:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FLEXBUS. */
+ 157:../drivers/fsl_clock.h **** #define FLEXBUS_CLOCKS  \
+ 158:../drivers/fsl_clock.h ****     {                   \
+ 159:../drivers/fsl_clock.h ****         kCLOCK_Flexbus0 \
+ 160:../drivers/fsl_clock.h ****     }
+ 161:../drivers/fsl_clock.h **** 
+ 162:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for EWM. */
+ 163:../drivers/fsl_clock.h **** #define EWM_CLOCKS  \
+ 164:../drivers/fsl_clock.h ****     {               \
+ 165:../drivers/fsl_clock.h ****         kCLOCK_Ewm0 \
+ 166:../drivers/fsl_clock.h ****     }
+ 167:../drivers/fsl_clock.h **** 
+ 168:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PIT. */
+ 169:../drivers/fsl_clock.h **** #define PIT_CLOCKS  \
+ 170:../drivers/fsl_clock.h ****     {               \
+ 171:../drivers/fsl_clock.h ****         kCLOCK_Pit0 \
+ 172:../drivers/fsl_clock.h ****     }
+ 173:../drivers/fsl_clock.h **** 
+ 174:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DSPI. */
+ 175:../drivers/fsl_clock.h **** #define DSPI_CLOCKS                           \
+ 176:../drivers/fsl_clock.h ****     {                                         \
+ 177:../drivers/fsl_clock.h ****         kCLOCK_Spi0, kCLOCK_Spi1, kCLOCK_Spi2 \
+ 178:../drivers/fsl_clock.h ****     }
+ 179:../drivers/fsl_clock.h **** 
+ 180:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for LPTMR. */
+ 181:../drivers/fsl_clock.h **** #define LPTMR_CLOCKS  \
+ 182:../drivers/fsl_clock.h ****     {                 \
+ 183:../drivers/fsl_clock.h ****         kCLOCK_Lptmr0 \
+ 184:../drivers/fsl_clock.h ****     }
+ 185:../drivers/fsl_clock.h **** 
+ 186:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SDHC. */
+ 187:../drivers/fsl_clock.h **** #define SDHC_CLOCKS  \
+ 188:../drivers/fsl_clock.h ****     {                \
+ 189:../drivers/fsl_clock.h ****         kCLOCK_Sdhc0 \
+ 190:../drivers/fsl_clock.h ****     }
+ 191:../drivers/fsl_clock.h **** 
+ 192:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FTM. */
+ 193:../drivers/fsl_clock.h **** #define FTM_CLOCKS                                         \
+ 194:../drivers/fsl_clock.h ****     {                                                      \
+ 195:../drivers/fsl_clock.h ****         kCLOCK_Ftm0, kCLOCK_Ftm1, kCLOCK_Ftm2, kCLOCK_Ftm3 \
+ 196:../drivers/fsl_clock.h ****     }
+ 197:../drivers/fsl_clock.h **** 
+ 198:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for EDMA. */
+ 199:../drivers/fsl_clock.h **** #define EDMA_CLOCKS \
+ 200:../drivers/fsl_clock.h ****     {               \
+ 201:../drivers/fsl_clock.h ****         kCLOCK_Dma0 \
+ 202:../drivers/fsl_clock.h ****     }
+ 203:../drivers/fsl_clock.h **** 
+ 204:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FLEXCAN. */
+ 205:../drivers/fsl_clock.h **** #define FLEXCAN_CLOCKS  \
+ 206:../drivers/fsl_clock.h ****     {                   \
+ 207:../drivers/fsl_clock.h ****         kCLOCK_Flexcan0 \
+ 208:../drivers/fsl_clock.h ****     }
+ 209:../drivers/fsl_clock.h **** 
+ 210:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DAC. */
+ 211:../drivers/fsl_clock.h **** #define DAC_CLOCKS               \
+ 212:../drivers/fsl_clock.h ****     {                            \
+ 213:../drivers/fsl_clock.h ****         kCLOCK_Dac0, kCLOCK_Dac1 \
+ 214:../drivers/fsl_clock.h ****     }
+ 215:../drivers/fsl_clock.h **** 
+ 216:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for ADC16. */
+ 217:../drivers/fsl_clock.h **** #define ADC16_CLOCKS             \
+ 218:../drivers/fsl_clock.h ****     {                            \
+ 219:../drivers/fsl_clock.h ****         kCLOCK_Adc0, kCLOCK_Adc1 \
+ 220:../drivers/fsl_clock.h ****     }
+ 221:../drivers/fsl_clock.h **** 
+ 222:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for MPU. */
+ 223:../drivers/fsl_clock.h **** #define SYSMPU_CLOCKS  \
+ 224:../drivers/fsl_clock.h ****     {                  \
+ 225:../drivers/fsl_clock.h ****         kCLOCK_Sysmpu0 \
+ 226:../drivers/fsl_clock.h ****     }
+ 227:../drivers/fsl_clock.h **** 
+ 228:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for VREF. */
+ 229:../drivers/fsl_clock.h **** #define VREF_CLOCKS  \
+ 230:../drivers/fsl_clock.h ****     {                \
+ 231:../drivers/fsl_clock.h ****         kCLOCK_Vref0 \
+ 232:../drivers/fsl_clock.h ****     }
+ 233:../drivers/fsl_clock.h **** 
+ 234:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CMT. */
+ 235:../drivers/fsl_clock.h **** #define CMT_CLOCKS  \
+ 236:../drivers/fsl_clock.h ****     {               \
+ 237:../drivers/fsl_clock.h ****         kCLOCK_Cmt0 \
+ 238:../drivers/fsl_clock.h ****     }
+ 239:../drivers/fsl_clock.h **** 
+ 240:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for UART. */
+ 241:../drivers/fsl_clock.h **** #define UART_CLOCKS                                                                        \
+ 242:../drivers/fsl_clock.h ****     {                                                                                      \
+ 243:../drivers/fsl_clock.h ****         kCLOCK_Uart0, kCLOCK_Uart1, kCLOCK_Uart2, kCLOCK_Uart3, kCLOCK_Uart4, kCLOCK_Uart5 \
+ 244:../drivers/fsl_clock.h ****     }
+ 245:../drivers/fsl_clock.h **** 
+ 246:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for RNGA. */
+ 247:../drivers/fsl_clock.h **** #define RNGA_CLOCKS  \
+ 248:../drivers/fsl_clock.h ****     {                \
+ 249:../drivers/fsl_clock.h ****         kCLOCK_Rnga0 \
+ 250:../drivers/fsl_clock.h ****     }
+ 251:../drivers/fsl_clock.h **** 
+ 252:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CRC. */
+ 253:../drivers/fsl_clock.h **** #define CRC_CLOCKS  \
+ 254:../drivers/fsl_clock.h ****     {               \
+ 255:../drivers/fsl_clock.h ****         kCLOCK_Crc0 \
+ 256:../drivers/fsl_clock.h ****     }
+ 257:../drivers/fsl_clock.h **** 
+ 258:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for I2C. */
+ 259:../drivers/fsl_clock.h **** #define I2C_CLOCKS                            \
+ 260:../drivers/fsl_clock.h ****     {                                         \
+ 261:../drivers/fsl_clock.h ****         kCLOCK_I2c0, kCLOCK_I2c1, kCLOCK_I2c2 \
+ 262:../drivers/fsl_clock.h ****     }
+ 263:../drivers/fsl_clock.h **** 
+ 264:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PDB. */
+ 265:../drivers/fsl_clock.h **** #define PDB_CLOCKS  \
+ 266:../drivers/fsl_clock.h ****     {               \
+ 267:../drivers/fsl_clock.h ****         kCLOCK_Pdb0 \
+ 268:../drivers/fsl_clock.h ****     }
+ 269:../drivers/fsl_clock.h **** 
+ 270:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FTF. */
+ 271:../drivers/fsl_clock.h **** #define FTF_CLOCKS  \
+ 272:../drivers/fsl_clock.h ****     {               \
+ 273:../drivers/fsl_clock.h ****         kCLOCK_Ftf0 \
+ 274:../drivers/fsl_clock.h ****     }
+ 275:../drivers/fsl_clock.h **** 
+ 276:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CMP. */
+ 277:../drivers/fsl_clock.h **** #define CMP_CLOCKS                            \
+ 278:../drivers/fsl_clock.h ****     {                                         \
+ 279:../drivers/fsl_clock.h ****         kCLOCK_Cmp0, kCLOCK_Cmp1, kCLOCK_Cmp2 \
+ 280:../drivers/fsl_clock.h ****     }
+ 281:../drivers/fsl_clock.h **** 
+ 282:../drivers/fsl_clock.h **** /*!
+ 283:../drivers/fsl_clock.h ****  * @brief LPO clock frequency.
+ 284:../drivers/fsl_clock.h ****  */
+ 285:../drivers/fsl_clock.h **** #define LPO_CLK_FREQ 1000U
+ 286:../drivers/fsl_clock.h **** 
+ 287:../drivers/fsl_clock.h **** /*! @brief Peripherals clock source definition. */
+ 288:../drivers/fsl_clock.h **** #define SYS_CLK kCLOCK_CoreSysClk
+ 289:../drivers/fsl_clock.h **** #define BUS_CLK kCLOCK_BusClk
+ 290:../drivers/fsl_clock.h **** 
+ 291:../drivers/fsl_clock.h **** #define I2C0_CLK_SRC BUS_CLK
+ 292:../drivers/fsl_clock.h **** #define I2C1_CLK_SRC BUS_CLK
+ 293:../drivers/fsl_clock.h **** #define I2C2_CLK_SRC BUS_CLK
+ 294:../drivers/fsl_clock.h **** #define DSPI0_CLK_SRC BUS_CLK
+ 295:../drivers/fsl_clock.h **** #define DSPI1_CLK_SRC BUS_CLK
+ 296:../drivers/fsl_clock.h **** #define DSPI2_CLK_SRC BUS_CLK
+ 297:../drivers/fsl_clock.h **** #define UART0_CLK_SRC SYS_CLK
+ 298:../drivers/fsl_clock.h **** #define UART1_CLK_SRC SYS_CLK
+ 299:../drivers/fsl_clock.h **** #define UART2_CLK_SRC BUS_CLK
+ 300:../drivers/fsl_clock.h **** #define UART3_CLK_SRC BUS_CLK
+ 301:../drivers/fsl_clock.h **** #define UART4_CLK_SRC BUS_CLK
+ 302:../drivers/fsl_clock.h **** #define UART5_CLK_SRC BUS_CLK
+ 303:../drivers/fsl_clock.h **** 
+ 304:../drivers/fsl_clock.h **** /*! @brief Clock name used to get clock frequency. */
+ 305:../drivers/fsl_clock.h **** typedef enum _clock_name
+ 306:../drivers/fsl_clock.h **** {
+ 307:../drivers/fsl_clock.h **** 
+ 308:../drivers/fsl_clock.h ****     /* ----------------------------- System layer clock -------------------------------*/
+ 309:../drivers/fsl_clock.h ****     kCLOCK_CoreSysClk,    /*!< Core/system clock                                         */
+ 310:../drivers/fsl_clock.h ****     kCLOCK_PlatClk,       /*!< Platform clock                                            */
+ 311:../drivers/fsl_clock.h ****     kCLOCK_BusClk,        /*!< Bus clock                                                 */
+ 312:../drivers/fsl_clock.h ****     kCLOCK_FlexBusClk,    /*!< FlexBus clock                                             */
+ 313:../drivers/fsl_clock.h ****     kCLOCK_FlashClk,      /*!< Flash clock                                               */
+ 314:../drivers/fsl_clock.h ****     kCLOCK_FastPeriphClk, /*!< Fast peripheral clock                                     */
+ 315:../drivers/fsl_clock.h ****     kCLOCK_PllFllSelClk,  /*!< The clock after SIM[PLLFLLSEL].                           */
+ 316:../drivers/fsl_clock.h **** 
+ 317:../drivers/fsl_clock.h ****     /* ---------------------------------- OSC clock -----------------------------------*/
+ 318:../drivers/fsl_clock.h ****     kCLOCK_Er32kClk,       /*!< External reference 32K clock (ERCLK32K)                   */
+ 319:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClk,      /*!< OSC0 external reference clock (OSC0ERCLK)                 */
+ 320:../drivers/fsl_clock.h ****     kCLOCK_Osc1ErClk,      /*!< OSC1 external reference clock (OSC1ERCLK)                 */
+ 321:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClkUndiv, /*!< OSC0 external reference undivided clock(OSC0ERCLK_UNDIV). */
+ 322:../drivers/fsl_clock.h **** 
+ 323:../drivers/fsl_clock.h ****     /* ----------------------------- MCG and MCG-Lite clock ---------------------------*/
+ 324:../drivers/fsl_clock.h ****     kCLOCK_McgFixedFreqClk,   /*!< MCG fixed frequency clock (MCGFFCLK)                      */
+ 325:../drivers/fsl_clock.h ****     kCLOCK_McgInternalRefClk, /*!< MCG internal reference clock (MCGIRCLK)                   */
+ 326:../drivers/fsl_clock.h ****     kCLOCK_McgFllClk,         /*!< MCGFLLCLK                                                 */
+ 327:../drivers/fsl_clock.h ****     kCLOCK_McgPll0Clk,        /*!< MCGPLL0CLK                                                */
+ 328:../drivers/fsl_clock.h ****     kCLOCK_McgPll1Clk,        /*!< MCGPLL1CLK                                                */
+ 329:../drivers/fsl_clock.h ****     kCLOCK_McgExtPllClk,      /*!< EXT_PLLCLK                                                */
+ 330:../drivers/fsl_clock.h ****     kCLOCK_McgPeriphClk,      /*!< MCG peripheral clock (MCGPCLK)                            */
+ 331:../drivers/fsl_clock.h ****     kCLOCK_McgIrc48MClk,      /*!< MCG IRC48M clock                                          */
+ 332:../drivers/fsl_clock.h **** 
+ 333:../drivers/fsl_clock.h ****     /* --------------------------------- Other clock ----------------------------------*/
+ 334:../drivers/fsl_clock.h ****     kCLOCK_LpoClk, /*!< LPO clock                                                 */
+ 335:../drivers/fsl_clock.h **** 
+ 336:../drivers/fsl_clock.h **** } clock_name_t;
+ 337:../drivers/fsl_clock.h **** 
+ 338:../drivers/fsl_clock.h **** /*! @brief USB clock source definition. */
+ 339:../drivers/fsl_clock.h **** typedef enum _clock_usb_src
+ 340:../drivers/fsl_clock.h **** {
+ 341:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcPll0 = SIM_SOPT2_USBSRC(1U) | SIM_SOPT2_PLLFLLSEL(1U),   /*!< Use PLL0.      */
+ 342:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcIrc48M = SIM_SOPT2_USBSRC(1U) | SIM_SOPT2_PLLFLLSEL(3U), /*!< Use IRC48M.    */
+ 343:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcExt = SIM_SOPT2_USBSRC(0U)                               /*!< Use USB_CLKIN. */
+ 344:../drivers/fsl_clock.h **** } clock_usb_src_t;
+ 345:../drivers/fsl_clock.h **** 
+ 346:../drivers/fsl_clock.h **** /*------------------------------------------------------------------------------
+ 347:../drivers/fsl_clock.h **** 
+ 348:../drivers/fsl_clock.h ****  clock_gate_t definition:
+ 349:../drivers/fsl_clock.h **** 
+ 350:../drivers/fsl_clock.h ****  31                              16                              0
+ 351:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 352:../drivers/fsl_clock.h ****  | SIM_SCGC register offset       |   control bit offset in SCGC |
+ 353:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 354:../drivers/fsl_clock.h **** 
+ 355:../drivers/fsl_clock.h ****  For example, the SDHC clock gate is controlled by SIM_SCGC3[17], the
+ 356:../drivers/fsl_clock.h ****  SIM_SCGC3 offset in SIM is 0x1030, then kCLOCK_GateSdhc0 is defined as
+ 357:../drivers/fsl_clock.h **** 
+ 358:../drivers/fsl_clock.h ****               kCLOCK_GateSdhc0 = (0x1030 << 16) | 17;
+ 359:../drivers/fsl_clock.h **** 
+ 360:../drivers/fsl_clock.h **** ------------------------------------------------------------------------------*/
+ 361:../drivers/fsl_clock.h **** 
+ 362:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_SHIFT 16U
+ 363:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_MASK 0xFFFF0000U
+ 364:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_SHIFT 0U
+ 365:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_MASK 0x0000FFFFU
+ 366:../drivers/fsl_clock.h **** 
+ 367:../drivers/fsl_clock.h **** #define CLK_GATE_DEFINE(reg_offset, bit_shift)                                  \
+ 368:../drivers/fsl_clock.h ****     ((((reg_offset) << CLK_GATE_REG_OFFSET_SHIFT) & CLK_GATE_REG_OFFSET_MASK) | \
+ 369:../drivers/fsl_clock.h ****      (((bit_shift) << CLK_GATE_BIT_SHIFT_SHIFT) & CLK_GATE_BIT_SHIFT_MASK))
+ 370:../drivers/fsl_clock.h **** 
+ 371:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_REG_OFFSET(x) (((x)&CLK_GATE_REG_OFFSET_MASK) >> CLK_GATE_REG_OFFSET_SHIF
+ 372:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_BITS_SHIFT(x) (((x)&CLK_GATE_BIT_SHIFT_MASK) >> CLK_GATE_BIT_SHIFT_SHIFT)
+ 373:../drivers/fsl_clock.h **** 
+ 374:../drivers/fsl_clock.h **** /*! @brief Clock gate name used for CLOCK_EnableClock/CLOCK_DisableClock. */
+ 375:../drivers/fsl_clock.h **** typedef enum _clock_ip_name
+ 376:../drivers/fsl_clock.h **** {
+ 377:../drivers/fsl_clock.h ****     kCLOCK_IpInvalid = 0U,
+ 378:../drivers/fsl_clock.h ****     kCLOCK_I2c2 = CLK_GATE_DEFINE(0x1028U, 6U),
+ 379:../drivers/fsl_clock.h ****     kCLOCK_Uart4 = CLK_GATE_DEFINE(0x1028U, 10U),
+ 380:../drivers/fsl_clock.h ****     kCLOCK_Uart5 = CLK_GATE_DEFINE(0x1028U, 11U),
+ 381:../drivers/fsl_clock.h **** 
+ 382:../drivers/fsl_clock.h ****     kCLOCK_Enet0 = CLK_GATE_DEFINE(0x102CU, 0U),
+ 383:../drivers/fsl_clock.h ****     kCLOCK_Dac0 = CLK_GATE_DEFINE(0x102CU, 12U),
+ 384:../drivers/fsl_clock.h ****     kCLOCK_Dac1 = CLK_GATE_DEFINE(0x102CU, 13U),
+ 385:../drivers/fsl_clock.h **** 
+ 386:../drivers/fsl_clock.h ****     kCLOCK_Spi2 = CLK_GATE_DEFINE(0x1030U, 12U),
+ 387:../drivers/fsl_clock.h ****     kCLOCK_Sdhc0 = CLK_GATE_DEFINE(0x1030U, 17U),
+ 388:../drivers/fsl_clock.h ****     kCLOCK_Ftm3 = CLK_GATE_DEFINE(0x1030U, 25U),
+ 389:../drivers/fsl_clock.h ****     kCLOCK_Adc1 = CLK_GATE_DEFINE(0x1030U, 27U),
+ 390:../drivers/fsl_clock.h **** 
+ 391:../drivers/fsl_clock.h ****     kCLOCK_Ewm0 = CLK_GATE_DEFINE(0x1034U, 1U),
+ 392:../drivers/fsl_clock.h ****     kCLOCK_Cmt0 = CLK_GATE_DEFINE(0x1034U, 2U),
+ 393:../drivers/fsl_clock.h ****     kCLOCK_I2c0 = CLK_GATE_DEFINE(0x1034U, 6U),
+ 394:../drivers/fsl_clock.h ****     kCLOCK_I2c1 = CLK_GATE_DEFINE(0x1034U, 7U),
+ 395:../drivers/fsl_clock.h ****     kCLOCK_Uart0 = CLK_GATE_DEFINE(0x1034U, 10U),
+ 396:../drivers/fsl_clock.h ****     kCLOCK_Uart1 = CLK_GATE_DEFINE(0x1034U, 11U),
+ 397:../drivers/fsl_clock.h ****     kCLOCK_Uart2 = CLK_GATE_DEFINE(0x1034U, 12U),
+ 398:../drivers/fsl_clock.h ****     kCLOCK_Uart3 = CLK_GATE_DEFINE(0x1034U, 13U),
+ 399:../drivers/fsl_clock.h ****     kCLOCK_Usbfs0 = CLK_GATE_DEFINE(0x1034U, 18U),
+ 400:../drivers/fsl_clock.h ****     kCLOCK_Cmp0 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 401:../drivers/fsl_clock.h ****     kCLOCK_Cmp1 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 402:../drivers/fsl_clock.h ****     kCLOCK_Cmp2 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 403:../drivers/fsl_clock.h ****     kCLOCK_Vref0 = CLK_GATE_DEFINE(0x1034U, 20U),
+ 404:../drivers/fsl_clock.h **** 
+ 405:../drivers/fsl_clock.h ****     kCLOCK_Lptmr0 = CLK_GATE_DEFINE(0x1038U, 0U),
+ 406:../drivers/fsl_clock.h ****     kCLOCK_PortA = CLK_GATE_DEFINE(0x1038U, 9U),
+ 407:../drivers/fsl_clock.h ****     kCLOCK_PortB = CLK_GATE_DEFINE(0x1038U, 10U),
+ 408:../drivers/fsl_clock.h ****     kCLOCK_PortC = CLK_GATE_DEFINE(0x1038U, 11U),
+ 409:../drivers/fsl_clock.h ****     kCLOCK_PortD = CLK_GATE_DEFINE(0x1038U, 12U),
+ 410:../drivers/fsl_clock.h ****     kCLOCK_PortE = CLK_GATE_DEFINE(0x1038U, 13U),
+ 411:../drivers/fsl_clock.h **** 
+ 412:../drivers/fsl_clock.h ****     kCLOCK_Ftf0 = CLK_GATE_DEFINE(0x103CU, 0U),
+ 413:../drivers/fsl_clock.h ****     kCLOCK_Dmamux0 = CLK_GATE_DEFINE(0x103CU, 1U),
+ 414:../drivers/fsl_clock.h ****     kCLOCK_Flexcan0 = CLK_GATE_DEFINE(0x103CU, 4U),
+ 415:../drivers/fsl_clock.h ****     kCLOCK_Rnga0 = CLK_GATE_DEFINE(0x103CU, 9U),
+ 416:../drivers/fsl_clock.h ****     kCLOCK_Spi0 = CLK_GATE_DEFINE(0x103CU, 12U),
+ 417:../drivers/fsl_clock.h ****     kCLOCK_Spi1 = CLK_GATE_DEFINE(0x103CU, 13U),
+ 418:../drivers/fsl_clock.h ****     kCLOCK_Sai0 = CLK_GATE_DEFINE(0x103CU, 15U),
+ 419:../drivers/fsl_clock.h ****     kCLOCK_Crc0 = CLK_GATE_DEFINE(0x103CU, 18U),
+ 420:../drivers/fsl_clock.h ****     kCLOCK_Usbdcd0 = CLK_GATE_DEFINE(0x103CU, 21U),
+ 421:../drivers/fsl_clock.h ****     kCLOCK_Pdb0 = CLK_GATE_DEFINE(0x103CU, 22U),
+ 422:../drivers/fsl_clock.h ****     kCLOCK_Pit0 = CLK_GATE_DEFINE(0x103CU, 23U),
+ 423:../drivers/fsl_clock.h ****     kCLOCK_Ftm0 = CLK_GATE_DEFINE(0x103CU, 24U),
+ 424:../drivers/fsl_clock.h ****     kCLOCK_Ftm1 = CLK_GATE_DEFINE(0x103CU, 25U),
+ 425:../drivers/fsl_clock.h ****     kCLOCK_Ftm2 = CLK_GATE_DEFINE(0x103CU, 26U),
+ 426:../drivers/fsl_clock.h ****     kCLOCK_Adc0 = CLK_GATE_DEFINE(0x103CU, 27U),
+ 427:../drivers/fsl_clock.h ****     kCLOCK_Rtc0 = CLK_GATE_DEFINE(0x103CU, 29U),
+ 428:../drivers/fsl_clock.h **** 
+ 429:../drivers/fsl_clock.h ****     kCLOCK_Flexbus0 = CLK_GATE_DEFINE(0x1040U, 0U),
+ 430:../drivers/fsl_clock.h ****     kCLOCK_Dma0 = CLK_GATE_DEFINE(0x1040U, 1U),
+ 431:../drivers/fsl_clock.h ****     kCLOCK_Sysmpu0 = CLK_GATE_DEFINE(0x1040U, 2U),
+ 432:../drivers/fsl_clock.h **** } clock_ip_name_t;
+ 433:../drivers/fsl_clock.h **** 
+ 434:../drivers/fsl_clock.h **** /*!@brief SIM configuration structure for clock setting. */
+ 435:../drivers/fsl_clock.h **** typedef struct _sim_clock_config
+ 436:../drivers/fsl_clock.h **** {
+ 437:../drivers/fsl_clock.h ****     uint8_t pllFllSel; /*!< PLL/FLL/IRC48M selection.    */
+ 438:../drivers/fsl_clock.h ****     uint8_t er32kSrc;  /*!< ERCLK32K source selection.   */
+ 439:../drivers/fsl_clock.h ****     uint32_t clkdiv1;  /*!< SIM_CLKDIV1.                 */
+ 440:../drivers/fsl_clock.h **** } sim_clock_config_t;
+ 441:../drivers/fsl_clock.h **** 
+ 442:../drivers/fsl_clock.h **** /*! @brief OSC work mode. */
+ 443:../drivers/fsl_clock.h **** typedef enum _osc_mode
+ 444:../drivers/fsl_clock.h **** {
+ 445:../drivers/fsl_clock.h ****     kOSC_ModeExt = 0U, /*!< Use an external clock.   */
+ 446:../drivers/fsl_clock.h **** #if (defined(MCG_C2_EREFS_MASK) && !(defined(MCG_C2_EREFS0_MASK)))
+ 447:../drivers/fsl_clock.h ****     kOSC_ModeOscLowPower = MCG_C2_EREFS_MASK, /*!< Oscillator low power. */
+ 448:../drivers/fsl_clock.h **** #else
+ 449:../drivers/fsl_clock.h ****     kOSC_ModeOscLowPower = MCG_C2_EREFS0_MASK, /*!< Oscillator low power. */
+ 450:../drivers/fsl_clock.h **** #endif
+ 451:../drivers/fsl_clock.h ****     kOSC_ModeOscHighGain = 0U
+ 452:../drivers/fsl_clock.h **** #if (defined(MCG_C2_EREFS_MASK) && !(defined(MCG_C2_EREFS0_MASK)))
+ 453:../drivers/fsl_clock.h ****                            |
+ 454:../drivers/fsl_clock.h ****                            MCG_C2_EREFS_MASK
+ 455:../drivers/fsl_clock.h **** #else
+ 456:../drivers/fsl_clock.h ****                            |
+ 457:../drivers/fsl_clock.h ****                            MCG_C2_EREFS0_MASK
+ 458:../drivers/fsl_clock.h **** #endif
+ 459:../drivers/fsl_clock.h **** #if (defined(MCG_C2_HGO_MASK) && !(defined(MCG_C2_HGO0_MASK)))
+ 460:../drivers/fsl_clock.h ****                            |
+ 461:../drivers/fsl_clock.h ****                            MCG_C2_HGO_MASK, /*!< Oscillator high gain. */
+ 462:../drivers/fsl_clock.h **** #else
+ 463:../drivers/fsl_clock.h ****                            |
+ 464:../drivers/fsl_clock.h ****                            MCG_C2_HGO0_MASK, /*!< Oscillator high gain. */
+ 465:../drivers/fsl_clock.h **** #endif
+ 466:../drivers/fsl_clock.h **** } osc_mode_t;
+ 467:../drivers/fsl_clock.h **** 
+ 468:../drivers/fsl_clock.h **** /*! @brief Oscillator capacitor load setting.*/
+ 469:../drivers/fsl_clock.h **** enum _osc_cap_load
+ 470:../drivers/fsl_clock.h **** {
+ 471:../drivers/fsl_clock.h ****     kOSC_Cap2P = OSC_CR_SC2P_MASK,  /*!< 2  pF capacitor load */
+ 472:../drivers/fsl_clock.h ****     kOSC_Cap4P = OSC_CR_SC4P_MASK,  /*!< 4  pF capacitor load */
+ 473:../drivers/fsl_clock.h ****     kOSC_Cap8P = OSC_CR_SC8P_MASK,  /*!< 8  pF capacitor load */
+ 474:../drivers/fsl_clock.h ****     kOSC_Cap16P = OSC_CR_SC16P_MASK /*!< 16 pF capacitor load */
+ 475:../drivers/fsl_clock.h **** };
+ 476:../drivers/fsl_clock.h **** 
+ 477:../drivers/fsl_clock.h **** /*! @brief OSCERCLK enable mode. */
+ 478:../drivers/fsl_clock.h **** enum _oscer_enable_mode
+ 479:../drivers/fsl_clock.h **** {
+ 480:../drivers/fsl_clock.h ****     kOSC_ErClkEnable = OSC_CR_ERCLKEN_MASK,       /*!< Enable.              */
+ 481:../drivers/fsl_clock.h ****     kOSC_ErClkEnableInStop = OSC_CR_EREFSTEN_MASK /*!< Enable in stop mode. */
+ 482:../drivers/fsl_clock.h **** };
+ 483:../drivers/fsl_clock.h **** 
+ 484:../drivers/fsl_clock.h **** /*! @brief OSC configuration for OSCERCLK. */
+ 485:../drivers/fsl_clock.h **** typedef struct _oscer_config
+ 486:../drivers/fsl_clock.h **** {
+ 487:../drivers/fsl_clock.h ****     uint8_t enableMode; /*!< OSCERCLK enable mode. OR'ed value of @ref _oscer_enable_mode. */
+ 488:../drivers/fsl_clock.h **** 
+ 489:../drivers/fsl_clock.h **** } oscer_config_t;
+ 490:../drivers/fsl_clock.h **** 
+ 491:../drivers/fsl_clock.h **** /*!
+ 492:../drivers/fsl_clock.h ****  * @brief OSC Initialization Configuration Structure
+ 493:../drivers/fsl_clock.h ****  *
+ 494:../drivers/fsl_clock.h ****  * Defines the configuration data structure to initialize the OSC.
+ 495:../drivers/fsl_clock.h ****  * When porting to a new board, set the following members
+ 496:../drivers/fsl_clock.h ****  * according to the board setting:
+ 497:../drivers/fsl_clock.h ****  * 1. freq: The external frequency.
+ 498:../drivers/fsl_clock.h ****  * 2. workMode: The OSC module mode.
+ 499:../drivers/fsl_clock.h ****  */
+ 500:../drivers/fsl_clock.h **** typedef struct _osc_config
+ 501:../drivers/fsl_clock.h **** {
+ 502:../drivers/fsl_clock.h ****     uint32_t freq;              /*!< External clock frequency.    */
+ 503:../drivers/fsl_clock.h ****     uint8_t capLoad;            /*!< Capacitor load setting.      */
+ 504:../drivers/fsl_clock.h ****     osc_mode_t workMode;        /*!< OSC work mode setting.       */
+ 505:../drivers/fsl_clock.h ****     oscer_config_t oscerConfig; /*!< Configuration for OSCERCLK.  */
+ 506:../drivers/fsl_clock.h **** } osc_config_t;
+ 507:../drivers/fsl_clock.h **** 
+ 508:../drivers/fsl_clock.h **** /*! @brief MCG FLL reference clock source select. */
+ 509:../drivers/fsl_clock.h **** typedef enum _mcg_fll_src
+ 510:../drivers/fsl_clock.h **** {
+ 511:../drivers/fsl_clock.h ****     kMCG_FllSrcExternal, /*!< External reference clock is selected          */
+ 512:../drivers/fsl_clock.h ****     kMCG_FllSrcInternal  /*!< The slow internal reference clock is selected */
+ 513:../drivers/fsl_clock.h **** } mcg_fll_src_t;
+ 514:../drivers/fsl_clock.h **** 
+ 515:../drivers/fsl_clock.h **** /*! @brief MCG internal reference clock select */
+ 516:../drivers/fsl_clock.h **** typedef enum _mcg_irc_mode
+ 517:../drivers/fsl_clock.h **** {
+ 518:../drivers/fsl_clock.h ****     kMCG_IrcSlow, /*!< Slow internal reference clock selected */
+ 519:../drivers/fsl_clock.h ****     kMCG_IrcFast  /*!< Fast internal reference clock selected */
+ 520:../drivers/fsl_clock.h **** } mcg_irc_mode_t;
+ 521:../drivers/fsl_clock.h **** 
+ 522:../drivers/fsl_clock.h **** /*! @brief MCG DCO Maximum Frequency with 32.768 kHz Reference */
+ 523:../drivers/fsl_clock.h **** typedef enum _mcg_dmx32
+ 524:../drivers/fsl_clock.h **** {
+ 525:../drivers/fsl_clock.h ****     kMCG_Dmx32Default, /*!< DCO has a default range of 25% */
+ 526:../drivers/fsl_clock.h ****     kMCG_Dmx32Fine     /*!< DCO is fine-tuned for maximum frequency with 32.768 kHz reference */
+ 527:../drivers/fsl_clock.h **** } mcg_dmx32_t;
+ 528:../drivers/fsl_clock.h **** 
+ 529:../drivers/fsl_clock.h **** /*! @brief MCG DCO range select */
+ 530:../drivers/fsl_clock.h **** typedef enum _mcg_drs
+ 531:../drivers/fsl_clock.h **** {
+ 532:../drivers/fsl_clock.h ****     kMCG_DrsLow,     /*!< Low frequency range       */
+ 533:../drivers/fsl_clock.h ****     kMCG_DrsMid,     /*!< Mid frequency range       */
+ 534:../drivers/fsl_clock.h ****     kMCG_DrsMidHigh, /*!< Mid-High frequency range  */
+ 535:../drivers/fsl_clock.h ****     kMCG_DrsHigh     /*!< High frequency range      */
+ 536:../drivers/fsl_clock.h **** } mcg_drs_t;
+ 537:../drivers/fsl_clock.h **** 
+ 538:../drivers/fsl_clock.h **** /*! @brief MCG PLL reference clock select */
+ 539:../drivers/fsl_clock.h **** typedef enum _mcg_pll_ref_src
+ 540:../drivers/fsl_clock.h **** {
+ 541:../drivers/fsl_clock.h ****     kMCG_PllRefOsc0, /*!< Selects OSC0 as PLL reference clock                 */
+ 542:../drivers/fsl_clock.h ****     kMCG_PllRefOsc1  /*!< Selects OSC1 as PLL reference clock                 */
+ 543:../drivers/fsl_clock.h **** } mcg_pll_ref_src_t;
+ 544:../drivers/fsl_clock.h **** 
+ 545:../drivers/fsl_clock.h **** /*! @brief MCGOUT clock source. */
+ 546:../drivers/fsl_clock.h **** typedef enum _mcg_clkout_src
+ 547:../drivers/fsl_clock.h **** {
+ 548:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcOut,      /*!< Output of the FLL is selected (reset default)  */
+ 549:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcInternal, /*!< Internal reference clock is selected           */
+ 550:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcExternal, /*!< External reference clock is selected           */
+ 551:../drivers/fsl_clock.h **** } mcg_clkout_src_t;
+ 552:../drivers/fsl_clock.h **** 
+ 553:../drivers/fsl_clock.h **** /*! @brief MCG Automatic Trim Machine Select */
+ 554:../drivers/fsl_clock.h **** typedef enum _mcg_atm_select
+ 555:../drivers/fsl_clock.h **** {
+ 556:../drivers/fsl_clock.h ****     kMCG_AtmSel32k, /*!< 32 kHz Internal Reference Clock selected  */
+ 557:../drivers/fsl_clock.h ****     kMCG_AtmSel4m   /*!< 4 MHz Internal Reference Clock selected   */
+ 558:../drivers/fsl_clock.h **** } mcg_atm_select_t;
+ 559:../drivers/fsl_clock.h **** 
+ 560:../drivers/fsl_clock.h **** /*! @brief MCG OSC Clock Select */
+ 561:../drivers/fsl_clock.h **** typedef enum _mcg_oscsel
+ 562:../drivers/fsl_clock.h **** {
+ 563:../drivers/fsl_clock.h ****     kMCG_OscselOsc, /*!< Selects System Oscillator (OSCCLK) */
+ 564:../drivers/fsl_clock.h ****     kMCG_OscselRtc, /*!< Selects 32 kHz RTC Oscillator      */
+ 565:../drivers/fsl_clock.h ****     kMCG_OscselIrc  /*!< Selects 48 MHz IRC Oscillator      */
+ 566:../drivers/fsl_clock.h **** } mcg_oscsel_t;
+ 567:../drivers/fsl_clock.h **** 
+ 568:../drivers/fsl_clock.h **** /*! @brief MCG PLLCS select */
+ 569:../drivers/fsl_clock.h **** typedef enum _mcg_pll_clk_select
+ 570:../drivers/fsl_clock.h **** {
+ 571:../drivers/fsl_clock.h ****     kMCG_PllClkSelPll0, /*!< PLL0 output clock is selected  */
+ 572:../drivers/fsl_clock.h ****     kMCG_PllClkSelPll1  /* PLL1 output clock is selected    */
+ 573:../drivers/fsl_clock.h **** } mcg_pll_clk_select_t;
+ 574:../drivers/fsl_clock.h **** 
+ 575:../drivers/fsl_clock.h **** /*! @brief MCG clock monitor mode. */
+ 576:../drivers/fsl_clock.h **** typedef enum _mcg_monitor_mode
+ 577:../drivers/fsl_clock.h **** {
+ 578:../drivers/fsl_clock.h ****     kMCG_MonitorNone, /*!< Clock monitor is disabled.         */
+ 579:../drivers/fsl_clock.h ****     kMCG_MonitorInt,  /*!< Trigger interrupt when clock lost. */
+ 580:../drivers/fsl_clock.h ****     kMCG_MonitorReset /*!< System reset when clock lost.      */
+ 581:../drivers/fsl_clock.h **** } mcg_monitor_mode_t;
+ 582:../drivers/fsl_clock.h **** 
+ 583:../drivers/fsl_clock.h **** /*! @brief MCG status. */
+ 584:../drivers/fsl_clock.h **** enum _mcg_status
+ 585:../drivers/fsl_clock.h **** {
+ 586:../drivers/fsl_clock.h ****     kStatus_MCG_ModeUnreachable = MAKE_STATUS(kStatusGroup_MCG, 0),       /*!< Can't switch to targ
+ 587:../drivers/fsl_clock.h ****     kStatus_MCG_ModeInvalid = MAKE_STATUS(kStatusGroup_MCG, 1),           /*!< Current mode invalid
+ 588:../drivers/fsl_clock.h ****                                                                                function. */
+ 589:../drivers/fsl_clock.h ****     kStatus_MCG_AtmBusClockInvalid = MAKE_STATUS(kStatusGroup_MCG, 2),    /*!< Invalid bus clock fo
+ 590:../drivers/fsl_clock.h ****     kStatus_MCG_AtmDesiredFreqInvalid = MAKE_STATUS(kStatusGroup_MCG, 3), /*!< Invalid desired freq
+ 591:../drivers/fsl_clock.h ****     kStatus_MCG_AtmIrcUsed = MAKE_STATUS(kStatusGroup_MCG, 4),            /*!< IRC is used when usi
+ 592:../drivers/fsl_clock.h ****     kStatus_MCG_AtmHardwareFail = MAKE_STATUS(kStatusGroup_MCG, 5),       /*!< Hardware fail occurs
+ 593:../drivers/fsl_clock.h ****     kStatus_MCG_SourceUsed = MAKE_STATUS(kStatusGroup_MCG, 6)             /*!< Can't change the clo
+ 594:../drivers/fsl_clock.h ****                                                                                it is in use. */
+ 595:../drivers/fsl_clock.h **** };
+ 596:../drivers/fsl_clock.h **** 
+ 597:../drivers/fsl_clock.h **** /*! @brief MCG status flags. */
+ 598:../drivers/fsl_clock.h **** enum _mcg_status_flags_t
+ 599:../drivers/fsl_clock.h **** {
+ 600:../drivers/fsl_clock.h ****     kMCG_Osc0LostFlag = (1U << 0U),   /*!< OSC0 lost.         */
+ 601:../drivers/fsl_clock.h ****     kMCG_Osc0InitFlag = (1U << 1U),   /*!< OSC0 crystal initialized. */
+ 602:../drivers/fsl_clock.h ****     kMCG_RtcOscLostFlag = (1U << 4U), /*!< RTC OSC lost.      */
+ 603:../drivers/fsl_clock.h ****     kMCG_Pll0LostFlag = (1U << 5U),   /*!< PLL0 lost.         */
+ 604:../drivers/fsl_clock.h ****     kMCG_Pll0LockFlag = (1U << 6U),   /*!< PLL0 locked.       */
+ 605:../drivers/fsl_clock.h **** };
+ 606:../drivers/fsl_clock.h **** 
+ 607:../drivers/fsl_clock.h **** /*! @brief MCG internal reference clock (MCGIRCLK) enable mode definition. */
+ 608:../drivers/fsl_clock.h **** enum _mcg_irclk_enable_mode
+ 609:../drivers/fsl_clock.h **** {
+ 610:../drivers/fsl_clock.h ****     kMCG_IrclkEnable = MCG_C1_IRCLKEN_MASK,       /*!< MCGIRCLK enable.              */
+ 611:../drivers/fsl_clock.h ****     kMCG_IrclkEnableInStop = MCG_C1_IREFSTEN_MASK /*!< MCGIRCLK enable in stop mode. */
+ 612:../drivers/fsl_clock.h **** };
+ 613:../drivers/fsl_clock.h **** 
+ 614:../drivers/fsl_clock.h **** /*! @brief MCG PLL clock enable mode definition. */
+ 615:../drivers/fsl_clock.h **** enum _mcg_pll_enable_mode
+ 616:../drivers/fsl_clock.h **** {
+ 617:../drivers/fsl_clock.h ****     kMCG_PllEnableIndependent = MCG_C5_PLLCLKEN0_MASK, /*!< MCGPLLCLK enable independent of the
+ 618:../drivers/fsl_clock.h ****                                                            MCG clock mode. Generally, the PLL
+ 619:../drivers/fsl_clock.h ****                                                            is disabled in FLL modes
+ 620:../drivers/fsl_clock.h ****                                                            (FEI/FBI/FEE/FBE). Setting the PLL clock
+ 621:../drivers/fsl_clock.h ****                                                            enable independent, enables the
+ 622:../drivers/fsl_clock.h ****                                                            PLL in the FLL modes.          */
+ 623:../drivers/fsl_clock.h ****     kMCG_PllEnableInStop = MCG_C5_PLLSTEN0_MASK        /*!< MCGPLLCLK enable in STOP mode. */
+ 624:../drivers/fsl_clock.h **** };
+ 625:../drivers/fsl_clock.h **** 
+ 626:../drivers/fsl_clock.h **** /*! @brief MCG mode definitions */
+ 627:../drivers/fsl_clock.h **** typedef enum _mcg_mode
+ 628:../drivers/fsl_clock.h **** {
+ 629:../drivers/fsl_clock.h ****     kMCG_ModeFEI = 0U, /*!< FEI   - FLL Engaged Internal         */
+ 630:../drivers/fsl_clock.h ****     kMCG_ModeFBI,      /*!< FBI   - FLL Bypassed Internal        */
+ 631:../drivers/fsl_clock.h ****     kMCG_ModeBLPI,     /*!< BLPI  - Bypassed Low Power Internal  */
+ 632:../drivers/fsl_clock.h ****     kMCG_ModeFEE,      /*!< FEE   - FLL Engaged External         */
+ 633:../drivers/fsl_clock.h ****     kMCG_ModeFBE,      /*!< FBE   - FLL Bypassed External        */
+ 634:../drivers/fsl_clock.h ****     kMCG_ModeBLPE,     /*!< BLPE  - Bypassed Low Power External  */
+ 635:../drivers/fsl_clock.h ****     kMCG_ModePBE,      /*!< PBE   - PLL Bypassed External        */
+ 636:../drivers/fsl_clock.h ****     kMCG_ModePEE,      /*!< PEE   - PLL Engaged External         */
+ 637:../drivers/fsl_clock.h ****     kMCG_ModeError     /*!< Unknown mode                         */
+ 638:../drivers/fsl_clock.h **** } mcg_mode_t;
+ 639:../drivers/fsl_clock.h **** 
+ 640:../drivers/fsl_clock.h **** /*! @brief MCG PLL configuration. */
+ 641:../drivers/fsl_clock.h **** typedef struct _mcg_pll_config
+ 642:../drivers/fsl_clock.h **** {
+ 643:../drivers/fsl_clock.h ****     uint8_t enableMode; /*!< Enable mode. OR'ed value of @ref _mcg_pll_enable_mode. */
+ 644:../drivers/fsl_clock.h ****     uint8_t prdiv;      /*!< Reference divider PRDIV.    */
+ 645:../drivers/fsl_clock.h ****     uint8_t vdiv;       /*!< VCO divider VDIV.           */
+ 646:../drivers/fsl_clock.h **** } mcg_pll_config_t;
+ 647:../drivers/fsl_clock.h **** 
+ 648:../drivers/fsl_clock.h **** /*! @brief MCG mode change configuration structure
+ 649:../drivers/fsl_clock.h ****  *
+ 650:../drivers/fsl_clock.h ****  * When porting to a new board, set the following members
+ 651:../drivers/fsl_clock.h ****  * according to the board setting:
+ 652:../drivers/fsl_clock.h ****  * 1. frdiv: If the FLL uses the external reference clock, set this
+ 653:../drivers/fsl_clock.h ****  *    value to ensure that the external reference clock divided by frdiv is
+ 654:../drivers/fsl_clock.h ****  *    in the 31.25 kHz to 39.0625 kHz range.
+ 655:../drivers/fsl_clock.h ****  * 2. The PLL reference clock divider PRDIV: PLL reference clock frequency after
+ 656:../drivers/fsl_clock.h ****  *    PRDIV should be in the FSL_FEATURE_MCG_PLL_REF_MIN to
+ 657:../drivers/fsl_clock.h ****  *    FSL_FEATURE_MCG_PLL_REF_MAX range.
+ 658:../drivers/fsl_clock.h ****  */
+ 659:../drivers/fsl_clock.h **** typedef struct _mcg_config
+ 660:../drivers/fsl_clock.h **** {
+ 661:../drivers/fsl_clock.h ****     mcg_mode_t mcgMode; /*!< MCG mode.                   */
+ 662:../drivers/fsl_clock.h **** 
+ 663:../drivers/fsl_clock.h ****     /* ----------------------- MCGIRCCLK settings ------------------------ */
+ 664:../drivers/fsl_clock.h ****     uint8_t irclkEnableMode; /*!< MCGIRCLK enable mode.       */
+ 665:../drivers/fsl_clock.h ****     mcg_irc_mode_t ircs;     /*!< Source, MCG_C2[IRCS].       */
+ 666:../drivers/fsl_clock.h ****     uint8_t fcrdiv;          /*!< Divider, MCG_SC[FCRDIV].    */
+ 667:../drivers/fsl_clock.h **** 
+ 668:../drivers/fsl_clock.h ****     /* ------------------------ MCG FLL settings ------------------------- */
+ 669:../drivers/fsl_clock.h ****     uint8_t frdiv;       /*!< Divider MCG_C1[FRDIV].      */
+ 670:../drivers/fsl_clock.h ****     mcg_drs_t drs;       /*!< DCO range MCG_C4[DRST_DRS]. */
+ 671:../drivers/fsl_clock.h ****     mcg_dmx32_t dmx32;   /*!< MCG_C4[DMX32].              */
+ 672:../drivers/fsl_clock.h ****     mcg_oscsel_t oscsel; /*!< OSC select MCG_C7[OSCSEL].  */
+ 673:../drivers/fsl_clock.h **** 
+ 674:../drivers/fsl_clock.h ****     /* ------------------------ MCG PLL settings ------------------------- */
+ 675:../drivers/fsl_clock.h ****     mcg_pll_config_t pll0Config; /*!< MCGPLL0CLK configuration.   */
+ 676:../drivers/fsl_clock.h **** 
+ 677:../drivers/fsl_clock.h **** } mcg_config_t;
+ 678:../drivers/fsl_clock.h **** 
+ 679:../drivers/fsl_clock.h **** /*******************************************************************************
+ 680:../drivers/fsl_clock.h ****  * API
+ 681:../drivers/fsl_clock.h ****  ******************************************************************************/
+ 682:../drivers/fsl_clock.h **** 
+ 683:../drivers/fsl_clock.h **** #if defined(__cplusplus)
+ 684:../drivers/fsl_clock.h **** extern "C" {
+ 685:../drivers/fsl_clock.h **** #endif /* __cplusplus */
+ 686:../drivers/fsl_clock.h **** 
+ 687:../drivers/fsl_clock.h **** /*!
+ 688:../drivers/fsl_clock.h ****  * @brief Enable the clock for specific IP.
+ 689:../drivers/fsl_clock.h ****  *
+ 690:../drivers/fsl_clock.h ****  * @param name  Which clock to enable, see \ref clock_ip_name_t.
+ 691:../drivers/fsl_clock.h ****  */
+ 692:../drivers/fsl_clock.h **** static inline void CLOCK_EnableClock(clock_ip_name_t name)
+ 693:../drivers/fsl_clock.h **** {
+ 694:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+ 695:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+ 696:../drivers/fsl_clock.h **** }
+ 697:../drivers/fsl_clock.h **** 
+ 698:../drivers/fsl_clock.h **** /*!
+ 699:../drivers/fsl_clock.h ****  * @brief Disable the clock for specific IP.
+ 700:../drivers/fsl_clock.h ****  *
+ 701:../drivers/fsl_clock.h ****  * @param name  Which clock to disable, see \ref clock_ip_name_t.
+ 702:../drivers/fsl_clock.h ****  */
+ 703:../drivers/fsl_clock.h **** static inline void CLOCK_DisableClock(clock_ip_name_t name)
+ 704:../drivers/fsl_clock.h **** {
+ 705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+ 706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+  44              		.loc 3 706 0
+  45 0002 044A     		ldr	r2, .L2
+  46              	.LBE14:
+  47              	.LBE13:
+  48              	.LBB16:
+  49              	.LBB12:
+  50              		.loc 2 302 0
+  51 0004 23F00103 		bic	r3, r3, #1
+  52 0008 0360     		str	r3, [r0]
+  53              	.LVL1:
+  54              	.LBE12:
+  55              	.LBE16:
+  56              	.LBB17:
+  57              	.LBB15:
+  58              		.loc 3 706 0
+  59 000a 1368     		ldr	r3, [r2]
+  60 000c 23F00403 		bic	r3, r3, #4
+  61 0010 1360     		str	r3, [r2]
+  62              	.LVL2:
+  63 0012 7047     		bx	lr
+  64              	.L3:
+  65              		.align	2
+  66              	.L2:
+  67 0014 40800440 		.word	1074036800
+  68              	.LBE15:
+  69              	.LBE17:
+  70              		.cfi_endproc
+  71              	.LFE150:
+  73              		.section	.text.SYSMPU_GetHardwareInfo,"ax",%progbits
+  74              		.align	1
+  75              		.global	SYSMPU_GetHardwareInfo
+  76              		.syntax unified
+  77              		.thumb
+  78              		.thumb_func
+  79              		.fpu fpv4-sp-d16
+  81              	SYSMPU_GetHardwareInfo:
+  82              	.LFB151:
+  81:../drivers/fsl_sysmpu.c ****     /* Disable SYSMPU. */
+  82:../drivers/fsl_sysmpu.c ****     SYSMPU_Enable(base, false);
+  83:../drivers/fsl_sysmpu.c **** 
+  84:../drivers/fsl_sysmpu.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+  85:../drivers/fsl_sysmpu.c ****     /* Gate the clock. */
+  86:../drivers/fsl_sysmpu.c ****     CLOCK_DisableClock(g_sysmpuClock[0]);
+  87:../drivers/fsl_sysmpu.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+  88:../drivers/fsl_sysmpu.c **** }
+  89:../drivers/fsl_sysmpu.c **** 
+  90:../drivers/fsl_sysmpu.c **** void SYSMPU_GetHardwareInfo(SYSMPU_Type *base, sysmpu_hardware_info_t *hardwareInform)
+  91:../drivers/fsl_sysmpu.c **** {
+  83              		.loc 1 91 0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 0
+  86              		@ frame_needed = 0, uses_anonymous_args = 0
+  87              		@ link register save eliminated.
+  88              	.LVL3:
+  92:../drivers/fsl_sysmpu.c ****     assert(hardwareInform);
+  93:../drivers/fsl_sysmpu.c **** 
+  94:../drivers/fsl_sysmpu.c ****     uint32_t cesReg = base->CESR;
+  89              		.loc 1 94 0
+  90 0000 0368     		ldr	r3, [r0]
+  91              	.LVL4:
+  95:../drivers/fsl_sysmpu.c **** 
+  96:../drivers/fsl_sysmpu.c ****     hardwareInform->hardwareRevisionLevel = (cesReg & SYSMPU_CESR_HRL_MASK) >> SYSMPU_CESR_HRL_SHIF
+  92              		.loc 1 96 0
+  93 0002 C3F30342 		ubfx	r2, r3, #16, #4
+  94 0006 0A70     		strb	r2, [r1]
+  97:../drivers/fsl_sysmpu.c ****     hardwareInform->slavePortsNumbers = (cesReg & SYSMPU_CESR_NSP_MASK) >> SYSMPU_CESR_NSP_SHIFT;
+  95              		.loc 1 97 0
+  96 0008 C3F30332 		ubfx	r2, r3, #12, #4
+  98:../drivers/fsl_sysmpu.c ****     hardwareInform->regionsNumbers = (sysmpu_region_total_num_t)((cesReg & SYSMPU_CESR_NRGD_MASK) >
+  97              		.loc 1 98 0
+  98 000c C3F30323 		ubfx	r3, r3, #8, #4
+  99              	.LVL5:
+  97:../drivers/fsl_sysmpu.c ****     hardwareInform->slavePortsNumbers = (cesReg & SYSMPU_CESR_NSP_MASK) >> SYSMPU_CESR_NSP_SHIFT;
+ 100              		.loc 1 97 0
+ 101 0010 4A70     		strb	r2, [r1, #1]
+ 102              		.loc 1 98 0
+ 103 0012 8B70     		strb	r3, [r1, #2]
+ 104 0014 7047     		bx	lr
+ 105              		.cfi_endproc
+ 106              	.LFE151:
+ 108              		.section	.text.SYSMPU_SetRegionConfig,"ax",%progbits
+ 109              		.align	1
+ 110              		.global	SYSMPU_SetRegionConfig
+ 111              		.syntax unified
+ 112              		.thumb
+ 113              		.thumb_func
+ 114              		.fpu fpv4-sp-d16
+ 116              	SYSMPU_SetRegionConfig:
+ 117              	.LFB152:
+  99:../drivers/fsl_sysmpu.c **** }
+ 100:../drivers/fsl_sysmpu.c **** 
+ 101:../drivers/fsl_sysmpu.c **** void SYSMPU_SetRegionConfig(SYSMPU_Type *base, const sysmpu_region_config_t *regionConfig)
+ 102:../drivers/fsl_sysmpu.c **** {
+ 118              		.loc 1 102 0
+ 119              		.cfi_startproc
+ 120              		@ args = 0, pretend = 0, frame = 0
+ 121              		@ frame_needed = 0, uses_anonymous_args = 0
+ 122              	.LVL6:
+ 123 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 124              		.cfi_def_cfa_offset 24
+ 125              		.cfi_offset 4, -24
+ 126              		.cfi_offset 5, -20
+ 127              		.cfi_offset 6, -16
+ 128              		.cfi_offset 7, -12
+ 129              		.cfi_offset 8, -8
+ 130              		.cfi_offset 14, -4
+ 103:../drivers/fsl_sysmpu.c ****     assert(regionConfig);
+ 104:../drivers/fsl_sysmpu.c ****     assert(regionConfig->regionNum < FSL_FEATURE_SYSMPU_DESCRIPTOR_COUNT);
+ 105:../drivers/fsl_sysmpu.c **** 
+ 106:../drivers/fsl_sysmpu.c ****     uint32_t wordReg = 0;
+ 107:../drivers/fsl_sysmpu.c ****     uint8_t msPortNum;
+ 108:../drivers/fsl_sysmpu.c ****     uint8_t regNumber = regionConfig->regionNum;
+ 109:../drivers/fsl_sysmpu.c **** 
+ 110:../drivers/fsl_sysmpu.c ****     /* The start and end address of the region descriptor. */
+ 111:../drivers/fsl_sysmpu.c ****     base->WORD[regNumber][0] = regionConfig->startAddress;
+ 131              		.loc 1 111 0
+ 132 0004 0C78     		ldrb	r4, [r1]	@ zero_extendqisi2
+ 133 0006 4A68     		ldr	r2, [r1, #4]
+ 134 0008 04F14003 		add	r3, r4, #64
+ 135 000c 1B01     		lsls	r3, r3, #4
+ 112:../drivers/fsl_sysmpu.c ****     base->WORD[regNumber][1] = regionConfig->endAddress;
+ 136              		.loc 1 112 0
+ 137 000e 2401     		lsls	r4, r4, #4
+ 111:../drivers/fsl_sysmpu.c ****     base->WORD[regNumber][1] = regionConfig->endAddress;
+ 138              		.loc 1 111 0
+ 139 0010 C250     		str	r2, [r0, r3]
+ 140              		.loc 1 112 0
+ 141 0012 0319     		adds	r3, r0, r4
+ 142 0014 8A68     		ldr	r2, [r1, #8]
+ 143 0016 C3F80424 		str	r2, [r3, #1028]
+ 144              	.LVL7:
+ 145 001a 0E46     		mov	r6, r1
+ 146 001c 0523     		movs	r3, #5
+ 106:../drivers/fsl_sysmpu.c ****     uint8_t msPortNum;
+ 147              		.loc 1 106 0
+ 148 001e 0025     		movs	r5, #0
+ 113:../drivers/fsl_sysmpu.c **** 
+ 114:../drivers/fsl_sysmpu.c ****     /* Set the privilege rights for master 0 ~ master 3. */
+ 115:../drivers/fsl_sysmpu.c ****     for (msPortNum = 0; msPortNum < SYSMPU_MASTER_RWATTRIBUTE_START_PORT; msPortNum++)
+ 116:../drivers/fsl_sysmpu.c ****     {
+ 117:../drivers/fsl_sysmpu.c ****         wordReg |= SYSMPU_REGION_RWXRIGHTS_MASTER(
+ 149              		.loc 1 117 0
+ 150 0020 4FF01F0C 		mov	ip, #31
+ 118:../drivers/fsl_sysmpu.c ****             msPortNum, (((uint32_t)regionConfig->accessRights1[msPortNum].superAccessRights << 3U) 
+ 119:../drivers/fsl_sysmpu.c ****                         (uint32_t)regionConfig->accessRights1[msPortNum].userAccessRights));
+ 120:../drivers/fsl_sysmpu.c **** 
+ 121:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
+ 122:../drivers/fsl_sysmpu.c ****         wordReg |=
+ 123:../drivers/fsl_sysmpu.c ****             SYSMPU_REGION_RWXRIGHTS_MASTER_PE(msPortNum, regionConfig->accessRights1[msPortNum].pro
+ 151              		.loc 1 123 0
+ 152 0024 4FF0010E 		mov	lr, #1
+ 153              	.LVL8:
+ 154              	.L6:
+ 117:../drivers/fsl_sysmpu.c ****             msPortNum, (((uint32_t)regionConfig->accessRights1[msPortNum].superAccessRights << 3U) 
+ 155              		.loc 1 117 0 discriminator 3
+ 156 0028 96F80C80 		ldrb	r8, [r6, #12]	@ zero_extendqisi2
+ 157 002c 727B     		ldrb	r2, [r6, #13]	@ zero_extendqisi2
+ 158 002e 42EAC802 		orr	r2, r2, r8, lsl #3
+ 159 0032 5F1F     		subs	r7, r3, #5
+ 160              	.LVL9:
+ 161 0034 0CEA0202 		and	r2, ip, r2
+ 162 0038 BA40     		lsls	r2, r2, r7
+ 163              		.loc 1 123 0 discriminator 3
+ 164 003a B77B     		ldrb	r7, [r6, #14]	@ zero_extendqisi2
+ 165              	.LVL10:
+ 166 003c 0EEA0707 		and	r7, lr, r7
+ 167 0040 9F40     		lsls	r7, r7, r3
+ 168 0042 0633     		adds	r3, r3, #6
+ 169              	.LVL11:
+ 122:../drivers/fsl_sysmpu.c ****             SYSMPU_REGION_RWXRIGHTS_MASTER_PE(msPortNum, regionConfig->accessRights1[msPortNum].pro
+ 170              		.loc 1 122 0 discriminator 3
+ 171 0044 3A43     		orrs	r2, r2, r7
+ 115:../drivers/fsl_sysmpu.c ****     {
+ 172              		.loc 1 115 0 discriminator 3
+ 173 0046 1D2B     		cmp	r3, #29
+ 122:../drivers/fsl_sysmpu.c ****             SYSMPU_REGION_RWXRIGHTS_MASTER_PE(msPortNum, regionConfig->accessRights1[msPortNum].pro
+ 174              		.loc 1 122 0 discriminator 3
+ 175 0048 45EA0205 		orr	r5, r5, r2
+ 176              	.LVL12:
+ 177 004c 06F10306 		add	r6, r6, #3
+ 115:../drivers/fsl_sysmpu.c ****     {
+ 178              		.loc 1 115 0 discriminator 3
+ 179 0050 EAD1     		bne	.L6
+ 180              	.LVL13:
+ 124:../drivers/fsl_sysmpu.c **** #endif /* FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER */
+ 125:../drivers/fsl_sysmpu.c ****     }
+ 126:../drivers/fsl_sysmpu.c **** 
+ 127:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_MASTER_COUNT > SYSMPU_MASTER_RWATTRIBUTE_START_PORT
+ 128:../drivers/fsl_sysmpu.c ****     /* Set the normal read write rights for master 4 ~ master 7. */
+ 129:../drivers/fsl_sysmpu.c ****     for (msPortNum = SYSMPU_MASTER_RWATTRIBUTE_START_PORT; msPortNum < FSL_FEATURE_SYSMPU_MASTER_CO
+ 130:../drivers/fsl_sysmpu.c ****          msPortNum++)
+ 131:../drivers/fsl_sysmpu.c ****     {
+ 132:../drivers/fsl_sysmpu.c ****         wordReg |= SYSMPU_REGION_RWRIGHTS_MASTER(msPortNum,
+ 181              		.loc 1 132 0 discriminator 1
+ 182 0052 4A7E     		ldrb	r2, [r1, #25]	@ zero_extendqisi2
+ 183 0054 0B7E     		ldrb	r3, [r1, #24]	@ zero_extendqisi2
+ 184              	.LVL14:
+ 185 0056 CE7E     		ldrb	r6, [r1, #27]	@ zero_extendqisi2
+ 186 0058 43EA4203 		orr	r3, r3, r2, lsl #1
+ 187              	.LVL15:
+ 188 005c 8A7E     		ldrb	r2, [r1, #26]	@ zero_extendqisi2
+ 189 005e 42EA4602 		orr	r2, r2, r6, lsl #1
+ 190 0062 1B06     		lsls	r3, r3, #24
+ 191 0064 9206     		lsls	r2, r2, #26
+ 192 0066 02F04062 		and	r2, r2, #201326592
+ 193 006a 03F04073 		and	r3, r3, #50331648
+ 194 006e 1343     		orrs	r3, r3, r2
+ 133:../drivers/fsl_sysmpu.c ****             ((uint32_t)regionConfig->accessRights2[msPortNum - SYSMPU_MASTER_RWATTRIBUTE_START_PORT
+ 134:../drivers/fsl_sysmpu.c ****             (uint32_t)regionConfig->accessRights2[msPortNum - SYSMPU_MASTER_RWATTRIBUTE_START_PORT]
+ 135:../drivers/fsl_sysmpu.c ****     }
+ 136:../drivers/fsl_sysmpu.c **** #endif /* FSL_FEATURE_SYSMPU_MASTER_COUNT > SYSMPU_MASTER_RWATTRIBUTE_START_PORT */
+ 137:../drivers/fsl_sysmpu.c **** 
+ 138:../drivers/fsl_sysmpu.c ****     /* Set region descriptor access rights. */
+ 139:../drivers/fsl_sysmpu.c ****     base->WORD[regNumber][2] = wordReg;
+ 195              		.loc 1 139 0 discriminator 1
+ 196 0070 2044     		add	r0, r0, r4
+ 197              	.LVL16:
+ 132:../drivers/fsl_sysmpu.c ****             ((uint32_t)regionConfig->accessRights2[msPortNum - SYSMPU_MASTER_RWATTRIBUTE_START_PORT
+ 198              		.loc 1 132 0 discriminator 1
+ 199 0072 2B43     		orrs	r3, r3, r5
+ 200              	.LVL17:
+ 201              		.loc 1 139 0 discriminator 1
+ 202 0074 C0F80834 		str	r3, [r0, #1032]
+ 203              	.LVL18:
+ 140:../drivers/fsl_sysmpu.c **** 
+ 141:../drivers/fsl_sysmpu.c ****     wordReg = SYSMPU_WORD_VLD(1);
+ 142:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
+ 143:../drivers/fsl_sysmpu.c ****     wordReg |= SYSMPU_WORD_PID(regionConfig->processIdentifier) | SYSMPU_WORD_PIDMASK(regionConfig-
+ 204              		.loc 1 143 0 discriminator 1
+ 205 0078 91F82030 		ldrb	r3, [r1, #32]	@ zero_extendqisi2
+ 206 007c 91F82120 		ldrb	r2, [r1, #33]	@ zero_extendqisi2
+ 207 0080 1B06     		lsls	r3, r3, #24
+ 208 0082 43F00103 		orr	r3, r3, #1
+ 209 0086 43EA0243 		orr	r3, r3, r2, lsl #16
+ 210              	.LVL19:
+ 144:../drivers/fsl_sysmpu.c **** #endif /* FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER */
+ 145:../drivers/fsl_sysmpu.c **** 
+ 146:../drivers/fsl_sysmpu.c ****     base->WORD[regNumber][3] = wordReg;
+ 211              		.loc 1 146 0 discriminator 1
+ 212 008a C0F80C34 		str	r3, [r0, #1036]
+ 213 008e BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 214              		.cfi_endproc
+ 215              	.LFE152:
+ 217              		.section	.text.SYSMPU_Init,"ax",%progbits
+ 218              		.align	1
+ 219              		.global	SYSMPU_Init
+ 220              		.syntax unified
+ 221              		.thumb
+ 222              		.thumb_func
+ 223              		.fpu fpv4-sp-d16
+ 225              	SYSMPU_Init:
+ 226              	.LFB149:
+  50:../drivers/fsl_sysmpu.c ****     assert(config);
+ 227              		.loc 1 50 0
+ 228              		.cfi_startproc
+ 229              		@ args = 0, pretend = 0, frame = 0
+ 230              		@ frame_needed = 0, uses_anonymous_args = 0
+ 231              	.LVL20:
+ 232              	.LBB22:
+ 233              	.LBB23:
+ 695:../drivers/fsl_clock.h **** }
+ 234              		.loc 3 695 0
+ 235 0000 144A     		ldr	r2, .L13
+ 236              	.LBE23:
+ 237              	.LBE22:
+  50:../drivers/fsl_sysmpu.c ****     assert(config);
+ 238              		.loc 1 50 0
+ 239 0002 38B5     		push	{r3, r4, r5, lr}
+ 240              		.cfi_def_cfa_offset 16
+ 241              		.cfi_offset 3, -16
+ 242              		.cfi_offset 4, -12
+ 243              		.cfi_offset 5, -8
+ 244              		.cfi_offset 14, -4
+ 245              	.LBB26:
+ 246              	.LBB24:
+ 695:../drivers/fsl_clock.h **** }
+ 247              		.loc 3 695 0
+ 248 0004 1368     		ldr	r3, [r2]
+ 249 0006 43F00403 		orr	r3, r3, #4
+ 250 000a 1360     		str	r3, [r2]
+ 251              	.LVL21:
+ 252              	.LBE24:
+ 253              	.LBE26:
+  50:../drivers/fsl_sysmpu.c ****     assert(config);
+ 254              		.loc 1 50 0
+ 255 000c 0446     		mov	r4, r0
+ 256 000e 0D46     		mov	r5, r1
+ 257              	.LBB27:
+ 258              	.LBB25:
+ 695:../drivers/fsl_clock.h **** }
+ 259              		.loc 3 695 0
+ 260 0010 0123     		movs	r3, #1
+ 261              	.LBE25:
+ 262              	.LBE27:
+  62:../drivers/fsl_sysmpu.c ****         base->WORD[count][0] = 0; /* Start address. */
+ 263              		.loc 1 62 0
+ 264 0012 0022     		movs	r2, #0
+ 265              	.LVL22:
+ 266              	.L9:
+  63:../drivers/fsl_sysmpu.c ****         base->WORD[count][1] = 0; /* End address. */
+ 267              		.loc 1 63 0 discriminator 3
+ 268 0014 03F14000 		add	r0, r3, #64
+  62:../drivers/fsl_sysmpu.c ****         base->WORD[count][0] = 0; /* Start address. */
+ 269              		.loc 1 62 0 discriminator 3
+ 270 0018 04EB0311 		add	r1, r4, r3, lsl #4
+  63:../drivers/fsl_sysmpu.c ****         base->WORD[count][1] = 0; /* End address. */
+ 271              		.loc 1 63 0 discriminator 3
+ 272 001c 0001     		lsls	r0, r0, #4
+  62:../drivers/fsl_sysmpu.c ****         base->WORD[count][0] = 0; /* Start address. */
+ 273              		.loc 1 62 0 discriminator 3
+ 274 001e C1F80C24 		str	r2, [r1, #1036]
+  63:../drivers/fsl_sysmpu.c ****         base->WORD[count][1] = 0; /* End address. */
+ 275              		.loc 1 63 0 discriminator 3
+ 276 0022 2250     		str	r2, [r4, r0]
+  64:../drivers/fsl_sysmpu.c ****         base->WORD[count][2] = 0; /* Access rights. */
+ 277              		.loc 1 64 0 discriminator 3
+ 278 0024 C1F80424 		str	r2, [r1, #1028]
+  65:../drivers/fsl_sysmpu.c ****         base->RGDAAC[count] = 0;  /* Alternate access rights. */
+ 279              		.loc 1 65 0 discriminator 3
+ 280 0028 C1F80824 		str	r2, [r1, #1032]
+  66:../drivers/fsl_sysmpu.c ****     }
+ 281              		.loc 1 66 0 discriminator 3
+ 282 002c 03F50071 		add	r1, r3, #512
+ 283 0030 0133     		adds	r3, r3, #1
+ 284              	.LVL23:
+  60:../drivers/fsl_sysmpu.c ****     {
+ 285              		.loc 1 60 0 discriminator 3
+ 286 0032 0C2B     		cmp	r3, #12
+  66:../drivers/fsl_sysmpu.c ****     }
+ 287              		.loc 1 66 0 discriminator 3
+ 288 0034 44F82120 		str	r2, [r4, r1, lsl #2]
+  60:../drivers/fsl_sysmpu.c ****     {
+ 289              		.loc 1 60 0 discriminator 3
+ 290 0038 ECD1     		bne	.L9
+ 291              	.L10:
+  70:../drivers/fsl_sysmpu.c ****     {
+ 292              		.loc 1 70 0
+ 293 003a 25B9     		cbnz	r5, .L11
+ 294              	.LVL24:
+ 295              	.LBB28:
+ 296              	.LBB29:
+ 298:../drivers/fsl_sysmpu.h ****     }
+ 297              		.loc 2 298 0
+ 298 003c 2368     		ldr	r3, [r4]
+ 299 003e 43F00103 		orr	r3, r3, #1
+ 300 0042 2360     		str	r3, [r4]
+ 301              	.LVL25:
+ 302 0044 38BD     		pop	{r3, r4, r5, pc}
+ 303              	.LVL26:
+ 304              	.L11:
+ 305              	.LBE29:
+ 306              	.LBE28:
+  72:../drivers/fsl_sysmpu.c ****         config = config->next;
+ 307              		.loc 1 72 0
+ 308 0046 2946     		mov	r1, r5
+ 309 0048 2046     		mov	r0, r4
+ 310 004a FFF7FEFF 		bl	SYSMPU_SetRegionConfig
+ 311              	.LVL27:
+  73:../drivers/fsl_sysmpu.c ****     }
+ 312              		.loc 1 73 0
+ 313 004e 6D6A     		ldr	r5, [r5, #36]
+ 314              	.LVL28:
+ 315 0050 F3E7     		b	.L10
+ 316              	.L14:
+ 317 0052 00BF     		.align	2
+ 318              	.L13:
+ 319 0054 40800440 		.word	1074036800
+ 320              		.cfi_endproc
+ 321              	.LFE149:
+ 323              		.section	.text.SYSMPU_SetRegionAddr,"ax",%progbits
+ 324              		.align	1
+ 325              		.global	SYSMPU_SetRegionAddr
+ 326              		.syntax unified
+ 327              		.thumb
+ 328              		.thumb_func
+ 329              		.fpu fpv4-sp-d16
+ 331              	SYSMPU_SetRegionAddr:
+ 332              	.LFB153:
+ 147:../drivers/fsl_sysmpu.c **** }
+ 148:../drivers/fsl_sysmpu.c **** 
+ 149:../drivers/fsl_sysmpu.c **** void SYSMPU_SetRegionAddr(SYSMPU_Type *base, uint32_t regionNum, uint32_t startAddr, uint32_t endAd
+ 150:../drivers/fsl_sysmpu.c **** {
+ 333              		.loc 1 150 0
+ 334              		.cfi_startproc
+ 335              		@ args = 0, pretend = 0, frame = 0
+ 336              		@ frame_needed = 0, uses_anonymous_args = 0
+ 337              	.LVL29:
+ 338 0000 10B5     		push	{r4, lr}
+ 339              		.cfi_def_cfa_offset 8
+ 340              		.cfi_offset 4, -8
+ 341              		.cfi_offset 14, -4
+ 151:../drivers/fsl_sysmpu.c ****     assert(regionNum < FSL_FEATURE_SYSMPU_DESCRIPTOR_COUNT);
+ 152:../drivers/fsl_sysmpu.c **** 
+ 153:../drivers/fsl_sysmpu.c ****     base->WORD[regionNum][0] = startAddr;
+ 342              		.loc 1 153 0
+ 343 0002 01F14004 		add	r4, r1, #64
+ 344 0006 2401     		lsls	r4, r4, #4
+ 345 0008 0251     		str	r2, [r0, r4]
+ 154:../drivers/fsl_sysmpu.c ****     base->WORD[regionNum][1] = endAddr;
+ 346              		.loc 1 154 0
+ 347 000a 00EB0110 		add	r0, r0, r1, lsl #4
+ 348              	.LVL30:
+ 349 000e C0F80434 		str	r3, [r0, #1028]
+ 350 0012 10BD     		pop	{r4, pc}
+ 351              		.cfi_endproc
+ 352              	.LFE153:
+ 354              		.section	.text.SYSMPU_SetRegionRwxMasterAccessRights,"ax",%progbits
+ 355              		.align	1
+ 356              		.global	SYSMPU_SetRegionRwxMasterAccessRights
+ 357              		.syntax unified
+ 358              		.thumb
+ 359              		.thumb_func
+ 360              		.fpu fpv4-sp-d16
+ 362              	SYSMPU_SetRegionRwxMasterAccessRights:
+ 363              	.LFB154:
+ 155:../drivers/fsl_sysmpu.c **** }
+ 156:../drivers/fsl_sysmpu.c **** 
+ 157:../drivers/fsl_sysmpu.c **** void SYSMPU_SetRegionRwxMasterAccessRights(SYSMPU_Type *base,
+ 158:../drivers/fsl_sysmpu.c ****                                         uint32_t regionNum,
+ 159:../drivers/fsl_sysmpu.c ****                                         uint32_t masterNum,
+ 160:../drivers/fsl_sysmpu.c ****                                         const sysmpu_rwxrights_master_access_control_t *accessRight
+ 161:../drivers/fsl_sysmpu.c **** {
+ 364              		.loc 1 161 0
+ 365              		.cfi_startproc
+ 366              		@ args = 0, pretend = 0, frame = 0
+ 367              		@ frame_needed = 0, uses_anonymous_args = 0
+ 368              	.LVL31:
+ 369 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 370              		.cfi_def_cfa_offset 20
+ 371              		.cfi_offset 4, -20
+ 372              		.cfi_offset 5, -16
+ 373              		.cfi_offset 6, -12
+ 374              		.cfi_offset 7, -8
+ 375              		.cfi_offset 14, -4
+ 162:../drivers/fsl_sysmpu.c ****     assert(accessRights);
+ 163:../drivers/fsl_sysmpu.c ****     assert(regionNum < FSL_FEATURE_SYSMPU_DESCRIPTOR_COUNT);
+ 164:../drivers/fsl_sysmpu.c ****     assert(masterNum < SYSMPU_MASTER_RWATTRIBUTE_START_PORT);
+ 165:../drivers/fsl_sysmpu.c **** 
+ 166:../drivers/fsl_sysmpu.c ****     uint32_t mask = SYSMPU_REGION_RWXRIGHTS_MASTER_MASK(masterNum);
+ 376              		.loc 1 166 0
+ 377 0002 0624     		movs	r4, #6
+ 378 0004 5443     		muls	r4, r2, r4
+ 379 0006 00EB8101 		add	r1, r0, r1, lsl #2
+ 380              	.LVL32:
+ 381 000a 1F22     		movs	r2, #31
+ 382              	.LVL33:
+ 167:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
+ 168:../drivers/fsl_sysmpu.c **** 
+ 169:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
+ 170:../drivers/fsl_sysmpu.c ****     mask |= SYSMPU_REGION_RWXRIGHTS_MASTER_PE_MASK(masterNum);
+ 383              		.loc 1 170 0
+ 384 000c 601D     		adds	r0, r4, #5
+ 385              	.LVL34:
+ 386 000e 0125     		movs	r5, #1
+ 166:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
+ 387              		.loc 1 166 0
+ 388 0010 02FA04F6 		lsl	r6, r2, r4
+ 389              	.LVL35:
+ 167:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
+ 390              		.loc 1 167 0
+ 391 0014 D1F80078 		ldr	r7, [r1, #2048]
+ 392              	.LVL36:
+ 171:../drivers/fsl_sysmpu.c **** #endif
+ 172:../drivers/fsl_sysmpu.c **** 
+ 173:../drivers/fsl_sysmpu.c ****     /* Build rights control value. */
+ 174:../drivers/fsl_sysmpu.c ****     right &= ~mask;
+ 175:../drivers/fsl_sysmpu.c ****     right |= SYSMPU_REGION_RWXRIGHTS_MASTER(
+ 393              		.loc 1 175 0
+ 394 0018 93F800E0 		ldrb	lr, [r3]	@ zero_extendqisi2
+ 170:../drivers/fsl_sysmpu.c **** #endif
+ 395              		.loc 1 170 0
+ 396 001c 8540     		lsls	r5, r5, r0
+ 397              	.LVL37:
+ 398 001e 46EA0502 		orr	r2, r6, r5
+ 399              	.LVL38:
+ 174:../drivers/fsl_sysmpu.c ****     right |= SYSMPU_REGION_RWXRIGHTS_MASTER(
+ 400              		.loc 1 174 0
+ 401 0022 27EA0207 		bic	r7, r7, r2
+ 402              	.LVL39:
+ 403              		.loc 1 175 0
+ 404 0026 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 405              	.LVL40:
+ 176:../drivers/fsl_sysmpu.c ****         masterNum, ((uint32_t)(accessRights->superAccessRights << 3U) | accessRights->userAccessRig
+ 177:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
+ 178:../drivers/fsl_sysmpu.c ****     right |= SYSMPU_REGION_RWXRIGHTS_MASTER_PE(masterNum, accessRights->processIdentifierEnable);
+ 406              		.loc 1 178 0
+ 407 0028 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 408              	.LVL41:
+ 175:../drivers/fsl_sysmpu.c ****         masterNum, ((uint32_t)(accessRights->superAccessRights << 3U) | accessRights->userAccessRig
+ 409              		.loc 1 175 0
+ 410 002a 42EACE02 		orr	r2, r2, lr, lsl #3
+ 411              	.LVL42:
+ 412 002e A240     		lsls	r2, r2, r4
+ 413              		.loc 1 178 0
+ 414 0030 8340     		lsls	r3, r3, r0
+ 175:../drivers/fsl_sysmpu.c ****         masterNum, ((uint32_t)(accessRights->superAccessRights << 3U) | accessRights->userAccessRig
+ 415              		.loc 1 175 0
+ 416 0032 3240     		ands	r2, r2, r6
+ 417              		.loc 1 178 0
+ 418 0034 2B40     		ands	r3, r3, r5
+ 419 0036 1343     		orrs	r3, r3, r2
+ 420 0038 3B43     		orrs	r3, r3, r7
+ 421              	.LVL43:
+ 179:../drivers/fsl_sysmpu.c **** #endif /* FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER */
+ 180:../drivers/fsl_sysmpu.c **** 
+ 181:../drivers/fsl_sysmpu.c ****     /* Set low master region access rights. */
+ 182:../drivers/fsl_sysmpu.c ****     base->RGDAAC[regionNum] = right;
+ 422              		.loc 1 182 0
+ 423 003a C1F80038 		str	r3, [r1, #2048]
+ 424 003e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 425              		.cfi_endproc
+ 426              	.LFE154:
+ 428              		.section	.text.SYSMPU_SetRegionRwMasterAccessRights,"ax",%progbits
+ 429              		.align	1
+ 430              		.global	SYSMPU_SetRegionRwMasterAccessRights
+ 431              		.syntax unified
+ 432              		.thumb
+ 433              		.thumb_func
+ 434              		.fpu fpv4-sp-d16
+ 436              	SYSMPU_SetRegionRwMasterAccessRights:
+ 437              	.LFB155:
+ 183:../drivers/fsl_sysmpu.c **** }
+ 184:../drivers/fsl_sysmpu.c **** 
+ 185:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_MASTER_COUNT > 4
+ 186:../drivers/fsl_sysmpu.c **** void SYSMPU_SetRegionRwMasterAccessRights(SYSMPU_Type *base,
+ 187:../drivers/fsl_sysmpu.c ****                                        uint32_t regionNum,
+ 188:../drivers/fsl_sysmpu.c ****                                        uint32_t masterNum,
+ 189:../drivers/fsl_sysmpu.c ****                                        const sysmpu_rwrights_master_access_control_t *accessRights)
+ 190:../drivers/fsl_sysmpu.c **** {
+ 438              		.loc 1 190 0
+ 439              		.cfi_startproc
+ 440              		@ args = 0, pretend = 0, frame = 0
+ 441              		@ frame_needed = 0, uses_anonymous_args = 0
+ 442              	.LVL44:
+ 191:../drivers/fsl_sysmpu.c ****     assert(accessRights);
+ 192:../drivers/fsl_sysmpu.c ****     assert(regionNum < FSL_FEATURE_SYSMPU_DESCRIPTOR_COUNT);
+ 193:../drivers/fsl_sysmpu.c ****     assert(masterNum >= SYSMPU_MASTER_RWATTRIBUTE_START_PORT);
+ 194:../drivers/fsl_sysmpu.c ****     assert(masterNum <= (FSL_FEATURE_SYSMPU_MASTER_COUNT - 1));
+ 195:../drivers/fsl_sysmpu.c **** 
+ 196:../drivers/fsl_sysmpu.c ****     uint32_t mask = SYSMPU_REGION_RWRIGHTS_MASTER_MASK(masterNum);
+ 443              		.loc 1 196 0
+ 444 0000 0832     		adds	r2, r2, #8
+ 445              	.LVL45:
+ 190:../drivers/fsl_sysmpu.c ****     assert(accessRights);
+ 446              		.loc 1 190 0
+ 447 0002 30B5     		push	{r4, r5, lr}
+ 448              		.cfi_def_cfa_offset 12
+ 449              		.cfi_offset 4, -12
+ 450              		.cfi_offset 5, -8
+ 451              		.cfi_offset 14, -4
+ 452 0004 00EB8101 		add	r1, r0, r1, lsl #2
+ 453              	.LVL46:
+ 454              		.loc 1 196 0
+ 455 0008 5500     		lsls	r5, r2, #1
+ 456              	.LVL47:
+ 197:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
+ 198:../drivers/fsl_sysmpu.c **** 
+ 199:../drivers/fsl_sysmpu.c ****     /* Build rights control value. */
+ 200:../drivers/fsl_sysmpu.c ****     right &= ~mask;
+ 201:../drivers/fsl_sysmpu.c ****     right |=
+ 202:../drivers/fsl_sysmpu.c ****         SYSMPU_REGION_RWRIGHTS_MASTER(masterNum, (((uint32_t)accessRights->readEnable << 1U) | acce
+ 457              		.loc 1 202 0
+ 458 000a 5878     		ldrb	r0, [r3, #1]	@ zero_extendqisi2
+ 459              	.LVL48:
+ 460 000c 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 461              	.LVL49:
+ 197:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
+ 462              		.loc 1 197 0
+ 463 000e D1F80048 		ldr	r4, [r1, #2048]
+ 464              	.LVL50:
+ 465              		.loc 1 202 0
+ 466 0012 42EA4002 		orr	r2, r2, r0, lsl #1
+ 467 0016 AA40     		lsls	r2, r2, r5
+ 196:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
+ 468              		.loc 1 196 0
+ 469 0018 0323     		movs	r3, #3
+ 470              	.LVL51:
+ 471 001a 6240     		eors	r2, r2, r4
+ 472 001c 03FA05F5 		lsl	r5, r3, r5
+ 473              	.LVL52:
+ 474 0020 2A40     		ands	r2, r2, r5
+ 201:../drivers/fsl_sysmpu.c ****         SYSMPU_REGION_RWRIGHTS_MASTER(masterNum, (((uint32_t)accessRights->readEnable << 1U) | acce
+ 475              		.loc 1 201 0
+ 476 0022 6240     		eors	r2, r2, r4
+ 477              	.LVL53:
+ 203:../drivers/fsl_sysmpu.c ****     /* Set low master region access rights. */
+ 204:../drivers/fsl_sysmpu.c ****     base->RGDAAC[regionNum] = right;
+ 478              		.loc 1 204 0
+ 479 0024 C1F80028 		str	r2, [r1, #2048]
+ 480 0028 30BD     		pop	{r4, r5, pc}
+ 481              		.cfi_endproc
+ 482              	.LFE155:
+ 484              		.section	.text.SYSMPU_GetSlavePortErrorStatus,"ax",%progbits
+ 485              		.align	1
+ 486              		.global	SYSMPU_GetSlavePortErrorStatus
+ 487              		.syntax unified
+ 488              		.thumb
+ 489              		.thumb_func
+ 490              		.fpu fpv4-sp-d16
+ 492              	SYSMPU_GetSlavePortErrorStatus:
+ 493              	.LFB156:
+ 205:../drivers/fsl_sysmpu.c **** }
+ 206:../drivers/fsl_sysmpu.c **** #endif /* FSL_FEATURE_SYSMPU_MASTER_COUNT > 4 */
+ 207:../drivers/fsl_sysmpu.c **** 
+ 208:../drivers/fsl_sysmpu.c **** bool SYSMPU_GetSlavePortErrorStatus(SYSMPU_Type *base, sysmpu_slave_t slaveNum)
+ 209:../drivers/fsl_sysmpu.c **** {
+ 494              		.loc 1 209 0
+ 495              		.cfi_startproc
+ 496              		@ args = 0, pretend = 0, frame = 0
+ 497              		@ frame_needed = 0, uses_anonymous_args = 0
+ 498              		@ link register save eliminated.
+ 499              	.LVL54:
+ 210:../drivers/fsl_sysmpu.c ****     uint8_t sperr;
+ 211:../drivers/fsl_sysmpu.c **** 
+ 212:../drivers/fsl_sysmpu.c ****     sperr = ((base->CESR & SYSMPU_CESR_SPERR_MASK) >> SYSMPU_CESR_SPERR_SHIFT) & (0x1U << (FSL_FEAT
+ 500              		.loc 1 212 0
+ 501 0000 0268     		ldr	r2, [r0]
+ 502              	.LVL55:
+ 503 0002 0123     		movs	r3, #1
+ 504 0004 C1F10401 		rsb	r1, r1, #4
+ 505              	.LVL56:
+ 506 0008 03FA01F1 		lsl	r1, r3, r1
+ 213:../drivers/fsl_sysmpu.c **** 
+ 214:../drivers/fsl_sysmpu.c ****     return (sperr != 0) ? true : false;
+ 507              		.loc 1 214 0
+ 508 000c 11EAD263 		ands	r3, r1, r2, lsr #27
+ 215:../drivers/fsl_sysmpu.c **** }
+ 509              		.loc 1 215 0
+ 510 0010 14BF     		ite	ne
+ 511 0012 0120     		movne	r0, #1
+ 512              	.LVL57:
+ 513 0014 0020     		moveq	r0, #0
+ 514 0016 7047     		bx	lr
+ 515              		.cfi_endproc
+ 516              	.LFE156:
+ 518              		.section	.text.SYSMPU_GetDetailErrorAccessInfo,"ax",%progbits
+ 519              		.align	1
+ 520              		.global	SYSMPU_GetDetailErrorAccessInfo
+ 521              		.syntax unified
+ 522              		.thumb
+ 523              		.thumb_func
+ 524              		.fpu fpv4-sp-d16
+ 526              	SYSMPU_GetDetailErrorAccessInfo:
+ 527              	.LFB157:
+ 216:../drivers/fsl_sysmpu.c **** 
+ 217:../drivers/fsl_sysmpu.c **** void SYSMPU_GetDetailErrorAccessInfo(SYSMPU_Type *base, sysmpu_slave_t slaveNum, sysmpu_access_err_
+ 218:../drivers/fsl_sysmpu.c **** {
+ 528              		.loc 1 218 0
+ 529              		.cfi_startproc
+ 530              		@ args = 0, pretend = 0, frame = 0
+ 531              		@ frame_needed = 0, uses_anonymous_args = 0
+ 532              	.LVL58:
+ 533 0000 30B5     		push	{r4, r5, lr}
+ 534              		.cfi_def_cfa_offset 12
+ 535              		.cfi_offset 4, -12
+ 536              		.cfi_offset 5, -8
+ 537              		.cfi_offset 14, -4
+ 538 0002 00EBC104 		add	r4, r0, r1, lsl #3
+ 219:../drivers/fsl_sysmpu.c ****     assert(errInform);
+ 220:../drivers/fsl_sysmpu.c **** 
+ 221:../drivers/fsl_sysmpu.c ****     uint16_t value;
+ 222:../drivers/fsl_sysmpu.c ****     uint32_t cesReg;
+ 223:../drivers/fsl_sysmpu.c **** 
+ 224:../drivers/fsl_sysmpu.c ****     /* Error address. */
+ 225:../drivers/fsl_sysmpu.c ****     errInform->address = base->SP[slaveNum].EAR;
+ 539              		.loc 1 225 0
+ 540 0006 2369     		ldr	r3, [r4, #16]
+ 541 0008 9360     		str	r3, [r2, #8]
+ 226:../drivers/fsl_sysmpu.c **** 
+ 227:../drivers/fsl_sysmpu.c ****     /* Error detail information. */
+ 228:../drivers/fsl_sysmpu.c ****     value = (base->SP[slaveNum].EDR & SYSMPU_EDR_EACD_MASK) >> SYSMPU_EDR_EACD_SHIFT;
+ 542              		.loc 1 228 0
+ 543 000a 6369     		ldr	r3, [r4, #20]
+ 544              	.LVL59:
+ 229:../drivers/fsl_sysmpu.c ****     if (!value)
+ 545              		.loc 1 229 0
+ 546 000c 1B0C     		lsrs	r3, r3, #16
+ 547              	.LVL60:
+ 548 000e 18D1     		bne	.L20
+ 549              	.L23:
+ 230:../drivers/fsl_sysmpu.c ****     {
+ 231:../drivers/fsl_sysmpu.c ****         errInform->accessControl = kSYSMPU_NoRegionHit;
+ 232:../drivers/fsl_sysmpu.c ****     }
+ 233:../drivers/fsl_sysmpu.c ****     else if (!(value & (uint16_t)(value - 1)))
+ 234:../drivers/fsl_sysmpu.c ****     {
+ 235:../drivers/fsl_sysmpu.c ****         errInform->accessControl = kSYSMPU_NoneOverlappRegion;
+ 236:../drivers/fsl_sysmpu.c ****     }
+ 237:../drivers/fsl_sysmpu.c ****     else
+ 238:../drivers/fsl_sysmpu.c ****     {
+ 239:../drivers/fsl_sysmpu.c ****         errInform->accessControl = kSYSMPU_OverlappRegion;
+ 550              		.loc 1 239 0
+ 551 0010 9371     		strb	r3, [r2, #6]
+ 240:../drivers/fsl_sysmpu.c ****     }
+ 241:../drivers/fsl_sysmpu.c **** 
+ 242:../drivers/fsl_sysmpu.c ****     value = base->SP[slaveNum].EDR;
+ 552              		.loc 1 242 0
+ 553 0012 6369     		ldr	r3, [r4, #20]
+ 554              	.LVL61:
+ 243:../drivers/fsl_sysmpu.c ****     errInform->master = (uint32_t)((value & SYSMPU_EDR_EMN_MASK) >> SYSMPU_EDR_EMN_SHIFT);
+ 555              		.loc 1 243 0
+ 556 0014 C3F30314 		ubfx	r4, r3, #4, #4
+ 557 0018 1460     		str	r4, [r2]
+ 244:../drivers/fsl_sysmpu.c ****     errInform->attributes = (sysmpu_err_attributes_t)((value & SYSMPU_EDR_EATTR_MASK) >> SYSMPU_EDR
+ 558              		.loc 1 244 0
+ 559 001a C3F34204 		ubfx	r4, r3, #1, #3
+ 560 001e 1471     		strb	r4, [r2, #4]
+ 245:../drivers/fsl_sysmpu.c ****     errInform->accessType = (sysmpu_err_access_type_t)((value & SYSMPU_EDR_ERW_MASK) >> SYSMPU_EDR_
+ 561              		.loc 1 245 0
+ 562 0020 03F00104 		and	r4, r3, #1
+ 246:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
+ 247:../drivers/fsl_sysmpu.c ****     errInform->processorIdentification = (uint8_t)((value & SYSMPU_EDR_EPID_MASK) >> SYSMPU_EDR_EPI
+ 563              		.loc 1 247 0
+ 564 0024 C3F30723 		ubfx	r3, r3, #8, #8
+ 565              	.LVL62:
+ 566 0028 1373     		strb	r3, [r2, #12]
+ 245:../drivers/fsl_sysmpu.c ****     errInform->accessType = (sysmpu_err_access_type_t)((value & SYSMPU_EDR_ERW_MASK) >> SYSMPU_EDR_
+ 567              		.loc 1 245 0
+ 568 002a 5471     		strb	r4, [r2, #5]
+ 248:../drivers/fsl_sysmpu.c **** #endif
+ 249:../drivers/fsl_sysmpu.c **** 
+ 250:../drivers/fsl_sysmpu.c ****     /* Clears error slave port bit. */
+ 251:../drivers/fsl_sysmpu.c ****     cesReg = (base->CESR & ~SYSMPU_CESR_SPERR_MASK) | ((0x1U << (FSL_FEATURE_SYSMPU_SLAVE_COUNT - s
+ 569              		.loc 1 251 0
+ 570 002c 0268     		ldr	r2, [r0]
+ 571              	.LVL63:
+ 572 002e C1F10403 		rsb	r3, r1, #4
+ 573 0032 4FF00061 		mov	r1, #134217728
+ 574              	.LVL64:
+ 575 0036 9940     		lsls	r1, r1, r3
+ 576 0038 22F07843 		bic	r3, r2, #-134217728
+ 577 003c 1943     		orrs	r1, r1, r3
+ 578              	.LVL65:
+ 252:../drivers/fsl_sysmpu.c ****     base->CESR = cesReg;
+ 579              		.loc 1 252 0
+ 580 003e 0160     		str	r1, [r0]
+ 581 0040 30BD     		pop	{r4, r5, pc}
+ 582              	.LVL66:
+ 583              	.L20:
+ 233:../drivers/fsl_sysmpu.c ****     {
+ 584              		.loc 1 233 0
+ 585 0042 5D1E     		subs	r5, r3, #1
+ 586 0044 1D42     		tst	r5, r3
+ 235:../drivers/fsl_sysmpu.c ****     }
+ 587              		.loc 1 235 0
+ 588 0046 0CBF     		ite	eq
+ 589 0048 0123     		moveq	r3, #1
+ 239:../drivers/fsl_sysmpu.c ****     }
+ 590              		.loc 1 239 0
+ 591 004a 0223     		movne	r3, #2
+ 592 004c E0E7     		b	.L23
+ 593              		.cfi_endproc
+ 594              	.LFE157:
+ 596              		.global	g_sysmpuClock
+ 597              		.section	.rodata.g_sysmpuClock,"a",%progbits
+ 598              		.align	2
+ 601              	g_sysmpuClock:
+ 602 0000 02004010 		.word	272629762
+ 603              		.text
+ 604              	.Letext0:
+ 605              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
+ 606              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
+ 607              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
+ 608              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
+ 609              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
+ 610              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
+ 611              		.file 10 "../CMSIS/core_cm4.h"
+ 612              		.file 11 "../CMSIS/system_MK64F12.h"
+ 613              		.file 12 "../CMSIS/MK64F12.h"
+ 614              		.file 13 "../drivers/fsl_common.h"

@@ -1,0 +1,1608 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_io.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.IO_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	IO_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	IO_Init:
+  26              	.LFB154:
+  27              		.file 1 "../utilities/fsl_io.c"
+   1:../utilities/fsl_io.c **** /*
+   2:../utilities/fsl_io.c ****  * The Clear BSD License
+   3:../utilities/fsl_io.c ****  * Copyright 2017 NXP
+   4:../utilities/fsl_io.c ****  * All rights reserved.
+   5:../utilities/fsl_io.c ****  *
+   6:../utilities/fsl_io.c ****  *
+   7:../utilities/fsl_io.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../utilities/fsl_io.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../utilities/fsl_io.c ****  * that the following conditions are met:
+  10:../utilities/fsl_io.c ****  *
+  11:../utilities/fsl_io.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../utilities/fsl_io.c ****  *   of conditions and the following disclaimer.
+  13:../utilities/fsl_io.c ****  *
+  14:../utilities/fsl_io.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../utilities/fsl_io.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../utilities/fsl_io.c ****  *   other materials provided with the distribution.
+  17:../utilities/fsl_io.c ****  *
+  18:../utilities/fsl_io.c ****  * o Neither the name of Freescale Semiconductor, Inc. nor the names of its
+  19:../utilities/fsl_io.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../utilities/fsl_io.c ****  *   software without specific prior written permission.
+  21:../utilities/fsl_io.c ****  *
+  22:../utilities/fsl_io.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../utilities/fsl_io.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../utilities/fsl_io.c ****  * ANY EPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../utilities/fsl_io.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../utilities/fsl_io.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../utilities/fsl_io.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../utilities/fsl_io.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../utilities/fsl_io.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../utilities/fsl_io.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../utilities/fsl_io.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../utilities/fsl_io.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../utilities/fsl_io.c ****  *
+  34:../utilities/fsl_io.c ****  */
+  35:../utilities/fsl_io.c **** #include "fsl_io.h"
+  36:../utilities/fsl_io.c **** #include "fsl_debug_console_conf.h"
+  37:../utilities/fsl_io.c **** 
+  38:../utilities/fsl_io.c **** /*******************************************************************************
+  39:../utilities/fsl_io.c ****  * Definitions
+  40:../utilities/fsl_io.c ****  ******************************************************************************/
+  41:../utilities/fsl_io.c **** /* check avaliable device  */
+  42:../utilities/fsl_io.c **** #if (defined(FSL_FEATURE_SOC_UART_COUNT) && (FSL_FEATURE_SOC_UART_COUNT != 0))
+  43:../utilities/fsl_io.c **** #define DEBUG_CONSOLE_IO_UART
+  44:../utilities/fsl_io.c **** #endif
+  45:../utilities/fsl_io.c **** 
+  46:../utilities/fsl_io.c **** #if (defined(FSL_FEATURE_SOC_IUART_COUNT) && (FSL_FEATURE_SOC_IUART_COUNT != 0))
+  47:../utilities/fsl_io.c **** #define DEBUG_CONSOLE_IO_IUART
+  48:../utilities/fsl_io.c **** #endif
+  49:../utilities/fsl_io.c **** 
+  50:../utilities/fsl_io.c **** #if (defined(FSL_FEATURE_SOC_LPUART_COUNT) && (FSL_FEATURE_SOC_LPUART_COUNT != 0))
+  51:../utilities/fsl_io.c **** #define DEBUG_CONSOLE_IO_LPUART
+  52:../utilities/fsl_io.c **** #endif
+  53:../utilities/fsl_io.c **** 
+  54:../utilities/fsl_io.c **** #if (defined(FSL_FEATURE_SOC_LPSCI_COUNT) && (FSL_FEATURE_SOC_LPSCI_COUNT != 0))
+  55:../utilities/fsl_io.c **** #define DEBUG_CONSOLE_IO_LPSCI
+  56:../utilities/fsl_io.c **** #endif
+  57:../utilities/fsl_io.c **** 
+  58:../utilities/fsl_io.c **** #if ((defined(FSL_FEATURE_SOC_USB_COUNT) && (FSL_FEATURE_SOC_USB_COUNT != 0)) && defined(BOARD_USE_
+  59:../utilities/fsl_io.c **** #define DEBUG_CONSOLE_IO_USBCDC
+  60:../utilities/fsl_io.c **** #endif
+  61:../utilities/fsl_io.c **** 
+  62:../utilities/fsl_io.c **** #if (defined(FSL_FEATURE_SOC_FLEXCOMM_COUNT) && (FSL_FEATURE_SOC_FLEXCOMM_COUNT != 0))
+  63:../utilities/fsl_io.c **** #define DEBUG_CONSOLE_IO_FLEXCOMM
+  64:../utilities/fsl_io.c **** #endif
+  65:../utilities/fsl_io.c **** 
+  66:../utilities/fsl_io.c **** #if (defined(FSL_FEATURE_SOC_VFIFO_COUNT) && (FSL_FEATURE_SOC_VFIFO_COUNT != 0))
+  67:../utilities/fsl_io.c **** #define DEBUG_CONSOLE_IO_VUSART
+  68:../utilities/fsl_io.c **** #endif
+  69:../utilities/fsl_io.c **** 
+  70:../utilities/fsl_io.c **** /* configuration for debug console device */
+  71:../utilities/fsl_io.c **** /* If new device is required as the low level device for debug console,
+  72:../utilities/fsl_io.c ****  * Add the #elif branch and add the preprocessor macro to judge whether
+  73:../utilities/fsl_io.c ****  * this kind of device exist in this SOC. */
+  74:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_UART) || (defined DEBUG_CONSOLE_IO_IUART)
+  75:../utilities/fsl_io.c **** #include "fsl_uart.h"
+  76:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+  77:../utilities/fsl_io.c **** static uart_handle_t s_ioUartHandler;
+  78:../utilities/fsl_io.c **** #endif /* DEBUG_CONSOLE_TRANSFER_NON_BLOCKING */
+  79:../utilities/fsl_io.c **** #endif /* defined DEBUG_CONSOLE_IO_UART) || (defined DEBUG_CONSOLE_IO_IUART */
+  80:../utilities/fsl_io.c **** 
+  81:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPUART
+  82:../utilities/fsl_io.c **** #include "fsl_lpuart.h"
+  83:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+  84:../utilities/fsl_io.c **** static lpuart_handle_t s_ioLpuartHandler;
+  85:../utilities/fsl_io.c **** #endif /* DEBUG_CONSOLE_TRANSFER_NON_BLOCKING */
+  86:../utilities/fsl_io.c **** #endif /* DEBUG_CONSOLE_IO_LPUART */
+  87:../utilities/fsl_io.c **** 
+  88:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPSCI
+  89:../utilities/fsl_io.c **** #include "fsl_lpsci.h"
+  90:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+  91:../utilities/fsl_io.c **** static lpsci_handle_t s_ioLpsciHandler;
+  92:../utilities/fsl_io.c **** #endif /* DEBUG_CONSOLE_TRANSFER_NON_BLOCKING */
+  93:../utilities/fsl_io.c **** #endif /* DEBUG_CONSOLE_IO_LPSCI */
+  94:../utilities/fsl_io.c **** 
+  95:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_USBCDC
+  96:../utilities/fsl_io.c **** #include "usb_device_config.h"
+  97:../utilities/fsl_io.c **** #include "usb.h"
+  98:../utilities/fsl_io.c **** #include "usb_device_cdc_acm.h"
+  99:../utilities/fsl_io.c **** #include "usb_device_ch9.h"
+ 100:../utilities/fsl_io.c **** #include "virtual_com.h"
+ 101:../utilities/fsl_io.c **** #endif /* DEBUG_CONSOLE_IO_USBCDC */
+ 102:../utilities/fsl_io.c **** 
+ 103:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_FLEXCOMM) || (defined DEBUG_CONSOLE_IO_VUSART)
+ 104:../utilities/fsl_io.c **** #include "fsl_usart.h"
+ 105:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 106:../utilities/fsl_io.c **** static usart_handle_t s_ioUsartHandler;
+ 107:../utilities/fsl_io.c **** #endif /* DEBUG_CONSOLE_TRANSFER_NON_BLOCKING */
+ 108:../utilities/fsl_io.c **** #endif /* defined DEBUG_CONSOLE_IO_FLEXCOMM) || (defined DEBUG_CONSOLE_IO_VUSART */
+ 109:../utilities/fsl_io.c **** 
+ 110:../utilities/fsl_io.c **** /*******************************************************************************
+ 111:../utilities/fsl_io.c ****  * Variables
+ 112:../utilities/fsl_io.c ****  ******************************************************************************/
+ 113:../utilities/fsl_io.c **** 
+ 114:../utilities/fsl_io.c **** /*! @brief Debug console IO state information. */
+ 115:../utilities/fsl_io.c **** static io_state_t s_debugConsoleIO = {
+ 116:../utilities/fsl_io.c ****     .ioBase = NULL,
+ 117:../utilities/fsl_io.c ****     .ioType = DEBUG_CONSOLE_DEVICE_TYPE_NONE,
+ 118:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 119:../utilities/fsl_io.c ****     .callBack = NULL,
+ 120:../utilities/fsl_io.c **** #endif /* DEBUG_CONSOLE_TRANSFER_NON_BLOCKING */
+ 121:../utilities/fsl_io.c **** };
+ 122:../utilities/fsl_io.c **** 
+ 123:../utilities/fsl_io.c **** /*******************************************************************************
+ 124:../utilities/fsl_io.c ****  * Code
+ 125:../utilities/fsl_io.c ****  ******************************************************************************/
+ 126:../utilities/fsl_io.c **** 
+ 127:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 128:../utilities/fsl_io.c **** 
+ 129:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_UART) || (defined DEBUG_CONSOLE_IO_IUART)
+ 130:../utilities/fsl_io.c **** static void UART_Callback(UART_Type *base, uart_handle_t *handle, status_t status, void *userData)
+ 131:../utilities/fsl_io.c **** {
+ 132:../utilities/fsl_io.c ****     bool tx = false, rx = false;
+ 133:../utilities/fsl_io.c ****     size_t size = 0U;
+ 134:../utilities/fsl_io.c **** 
+ 135:../utilities/fsl_io.c ****     if (status == kStatus_UART_RxIdle)
+ 136:../utilities/fsl_io.c ****     {
+ 137:../utilities/fsl_io.c ****         rx = true;
+ 138:../utilities/fsl_io.c ****         size = handle->txDataSizeAll;
+ 139:../utilities/fsl_io.c ****     }
+ 140:../utilities/fsl_io.c **** 
+ 141:../utilities/fsl_io.c ****     if (status == kStatus_UART_TxIdle)
+ 142:../utilities/fsl_io.c ****     {
+ 143:../utilities/fsl_io.c ****         tx = true;
+ 144:../utilities/fsl_io.c ****         size = handle->txDataSizeAll;
+ 145:../utilities/fsl_io.c ****     }
+ 146:../utilities/fsl_io.c **** 
+ 147:../utilities/fsl_io.c ****     /* inform the buffer layer that transfer is complete */
+ 148:../utilities/fsl_io.c ****     if (s_debugConsoleIO.callBack != NULL)
+ 149:../utilities/fsl_io.c ****     {
+ 150:../utilities/fsl_io.c ****         /* call buffer callback function */
+ 151:../utilities/fsl_io.c ****         s_debugConsoleIO.callBack(&size, rx, tx);
+ 152:../utilities/fsl_io.c ****     }
+ 153:../utilities/fsl_io.c **** }
+ 154:../utilities/fsl_io.c **** #endif /* defined DEBUG_CONSOLE_IO_UART) || (defined DEBUG_CONSOLE_IO_IUART */
+ 155:../utilities/fsl_io.c **** 
+ 156:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPSCI
+ 157:../utilities/fsl_io.c **** static void LPSCI_Callback(UART0_Type *base, lpsci_handle_t *handle, status_t status, void *userDat
+ 158:../utilities/fsl_io.c **** {
+ 159:../utilities/fsl_io.c ****     bool tx = false, rx = false;
+ 160:../utilities/fsl_io.c ****     size_t size = 0U;
+ 161:../utilities/fsl_io.c **** 
+ 162:../utilities/fsl_io.c ****     if (status == kStatus_LPSCI_RxIdle)
+ 163:../utilities/fsl_io.c ****     {
+ 164:../utilities/fsl_io.c ****         rx = true;
+ 165:../utilities/fsl_io.c ****         size = handle->txDataSizeAll;
+ 166:../utilities/fsl_io.c ****     }
+ 167:../utilities/fsl_io.c **** 
+ 168:../utilities/fsl_io.c ****     if (status == kStatus_LPSCI_TxIdle)
+ 169:../utilities/fsl_io.c ****     {
+ 170:../utilities/fsl_io.c ****         tx = true;
+ 171:../utilities/fsl_io.c ****         size = handle->txDataSizeAll;
+ 172:../utilities/fsl_io.c ****     }
+ 173:../utilities/fsl_io.c **** 
+ 174:../utilities/fsl_io.c ****     /* inform the buffer layer that transfer is complete */
+ 175:../utilities/fsl_io.c ****     if (s_debugConsoleIO.callBack != NULL)
+ 176:../utilities/fsl_io.c ****     {
+ 177:../utilities/fsl_io.c ****         /* call buffer callback function */
+ 178:../utilities/fsl_io.c ****         s_debugConsoleIO.callBack(&size, rx, tx);
+ 179:../utilities/fsl_io.c ****     }
+ 180:../utilities/fsl_io.c **** }
+ 181:../utilities/fsl_io.c **** #endif /* DEBUG_CONSOLE_IO_LPSCI */
+ 182:../utilities/fsl_io.c **** 
+ 183:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPUART
+ 184:../utilities/fsl_io.c **** static void LPUART_Callback(LPUART_Type *base, lpuart_handle_t *handle, status_t status, void *user
+ 185:../utilities/fsl_io.c **** {
+ 186:../utilities/fsl_io.c ****     bool tx = false, rx = false;
+ 187:../utilities/fsl_io.c ****     size_t size = 0U;
+ 188:../utilities/fsl_io.c **** 
+ 189:../utilities/fsl_io.c ****     if (status == kStatus_LPUART_RxIdle)
+ 190:../utilities/fsl_io.c ****     {
+ 191:../utilities/fsl_io.c ****         rx = true;
+ 192:../utilities/fsl_io.c ****         size = handle->txDataSizeAll;
+ 193:../utilities/fsl_io.c ****     }
+ 194:../utilities/fsl_io.c **** 
+ 195:../utilities/fsl_io.c ****     if (status == kStatus_LPUART_TxIdle)
+ 196:../utilities/fsl_io.c ****     {
+ 197:../utilities/fsl_io.c ****         tx = true;
+ 198:../utilities/fsl_io.c ****         size = handle->txDataSizeAll;
+ 199:../utilities/fsl_io.c ****     }
+ 200:../utilities/fsl_io.c **** 
+ 201:../utilities/fsl_io.c ****     /* inform the buffer layer that transfer is complete */
+ 202:../utilities/fsl_io.c ****     if (s_debugConsoleIO.callBack != NULL)
+ 203:../utilities/fsl_io.c ****     {
+ 204:../utilities/fsl_io.c ****         /* call buffer callback function */
+ 205:../utilities/fsl_io.c ****         s_debugConsoleIO.callBack(&size, rx, tx);
+ 206:../utilities/fsl_io.c ****     }
+ 207:../utilities/fsl_io.c **** }
+ 208:../utilities/fsl_io.c **** #endif /* DEBUG_CONSOLE_IO_LPUART */
+ 209:../utilities/fsl_io.c **** 
+ 210:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_FLEXCOMM) || (defined DEBUG_CONSOLE_IO_VUSART)
+ 211:../utilities/fsl_io.c **** static void USART_Callback(USART_Type *base, usart_handle_t *handle, status_t status, void *userDat
+ 212:../utilities/fsl_io.c **** {
+ 213:../utilities/fsl_io.c ****     bool tx = false, rx = false;
+ 214:../utilities/fsl_io.c ****     size_t size = 0U;
+ 215:../utilities/fsl_io.c **** 
+ 216:../utilities/fsl_io.c ****     if (status == kStatus_USART_RxIdle)
+ 217:../utilities/fsl_io.c ****     {
+ 218:../utilities/fsl_io.c ****         rx = true;
+ 219:../utilities/fsl_io.c ****         size = handle->txDataSizeAll;
+ 220:../utilities/fsl_io.c ****     }
+ 221:../utilities/fsl_io.c **** 
+ 222:../utilities/fsl_io.c ****     if (status == kStatus_USART_TxIdle)
+ 223:../utilities/fsl_io.c ****     {
+ 224:../utilities/fsl_io.c ****         tx = true;
+ 225:../utilities/fsl_io.c ****         size = handle->txDataSizeAll;
+ 226:../utilities/fsl_io.c ****     }
+ 227:../utilities/fsl_io.c **** 
+ 228:../utilities/fsl_io.c ****     /* inform the buffer layer that transfer is complete */
+ 229:../utilities/fsl_io.c ****     if (s_debugConsoleIO.callBack != NULL)
+ 230:../utilities/fsl_io.c ****     {
+ 231:../utilities/fsl_io.c ****         /* call buffer callback function */
+ 232:../utilities/fsl_io.c ****         s_debugConsoleIO.callBack(&size, rx, tx);
+ 233:../utilities/fsl_io.c ****     }
+ 234:../utilities/fsl_io.c **** }
+ 235:../utilities/fsl_io.c **** #endif /* defined DEBUG_CONSOLE_IO_FLEXCOMM) || (defined DEBUG_CONSOLE_IO_VUSART */
+ 236:../utilities/fsl_io.c **** #endif /* DEBUG_CONSOLE_TRANSFER_NON_BLOCKING */
+ 237:../utilities/fsl_io.c **** 
+ 238:../utilities/fsl_io.c **** void IO_Init(io_state_t *io, uint32_t baudRate, uint32_t clkSrcFreq, uint8_t *ringBuffer)
+ 239:../utilities/fsl_io.c **** {
+  28              		.loc 1 239 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 16
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  34              		.cfi_def_cfa_offset 20
+  35              		.cfi_offset 4, -20
+  36              		.cfi_offset 5, -16
+  37              		.cfi_offset 6, -12
+  38              		.cfi_offset 7, -8
+  39              		.cfi_offset 14, -4
+ 240:../utilities/fsl_io.c ****     assert(NULL != io);
+ 241:../utilities/fsl_io.c **** 
+ 242:../utilities/fsl_io.c ****     /* record device type/base */
+ 243:../utilities/fsl_io.c ****     s_debugConsoleIO.ioType = io->ioType;
+  40              		.loc 1 243 0
+  41 0002 0579     		ldrb	r5, [r0, #4]	@ zero_extendqisi2
+  42 0004 0F4C     		ldr	r4, .L10
+ 239:../utilities/fsl_io.c ****     assert(NULL != io);
+  43              		.loc 1 239 0
+  44 0006 1646     		mov	r6, r2
+ 244:../utilities/fsl_io.c ****     s_debugConsoleIO.ioBase = (void *)(io->ioBase);
+ 245:../utilities/fsl_io.c **** 
+ 246:../utilities/fsl_io.c ****     switch (s_debugConsoleIO.ioType)
+  45              		.loc 1 246 0
+  46 0008 012D     		cmp	r5, #1
+ 244:../utilities/fsl_io.c ****     s_debugConsoleIO.ioBase = (void *)(io->ioBase);
+  47              		.loc 1 244 0
+  48 000a 0268     		ldr	r2, [r0]
+  49              	.LVL1:
+ 243:../utilities/fsl_io.c ****     s_debugConsoleIO.ioBase = (void *)(io->ioBase);
+  50              		.loc 1 243 0
+  51 000c 2571     		strb	r5, [r4, #4]
+ 239:../utilities/fsl_io.c ****     assert(NULL != io);
+  52              		.loc 1 239 0
+  53 000e 85B0     		sub	sp, sp, #20
+  54              		.cfi_def_cfa_offset 40
+ 239:../utilities/fsl_io.c ****     assert(NULL != io);
+  55              		.loc 1 239 0
+  56 0010 0F46     		mov	r7, r1
+ 244:../utilities/fsl_io.c ****     s_debugConsoleIO.ioBase = (void *)(io->ioBase);
+  57              		.loc 1 244 0
+  58 0012 2260     		str	r2, [r4]
+  59              		.loc 1 246 0
+  60 0014 01D0     		beq	.L3
+  61 0016 062D     		cmp	r5, #6
+  62 0018 11D1     		bne	.L1
+  63              	.L3:
+  64              	.LBB7:
+ 247:../utilities/fsl_io.c ****     {
+ 248:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_UART) || (defined DEBUG_CONSOLE_IO_IUART)
+ 249:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_UART:
+ 250:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_IUART:
+ 251:../utilities/fsl_io.c ****         {
+ 252:../utilities/fsl_io.c ****             uart_config_t uart_config;
+ 253:../utilities/fsl_io.c ****             UART_GetDefaultConfig(&uart_config);
+  65              		.loc 1 253 0
+  66 001a 6846     		mov	r0, sp
+  67              	.LVL2:
+  68 001c FFF7FEFF 		bl	UART_GetDefaultConfig
+  69              	.LVL3:
+ 254:../utilities/fsl_io.c ****             uart_config.baudRate_Bps = baudRate;
+ 255:../utilities/fsl_io.c ****             /* Enable clock and initial UART module follow user configure structure. */
+ 256:../utilities/fsl_io.c ****             UART_Init((UART_Type *)s_debugConsoleIO.ioBase, &uart_config, clkSrcFreq);
+  70              		.loc 1 256 0
+  71 0020 3246     		mov	r2, r6
+  72 0022 6946     		mov	r1, sp
+  73 0024 2068     		ldr	r0, [r4]
+ 254:../utilities/fsl_io.c ****             uart_config.baudRate_Bps = baudRate;
+  74              		.loc 1 254 0
+  75 0026 0097     		str	r7, [sp]
+  76              		.loc 1 256 0
+  77 0028 FFF7FEFF 		bl	UART_Init
+  78              	.LVL4:
+ 257:../utilities/fsl_io.c ****             UART_EnableTx(s_debugConsoleIO.ioBase, true);
+  79              		.loc 1 257 0
+  80 002c 2368     		ldr	r3, [r4]
+  81              	.LVL5:
+  82              	.LBB8:
+  83              	.LBB9:
+  84              		.file 2 "../drivers/fsl_uart.h"
+   1:../drivers/fsl_uart.h **** /*
+   2:../drivers/fsl_uart.h ****  * The Clear BSD License
+   3:../drivers/fsl_uart.h ****  * Copyright (c) 2015-2016, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_uart.h ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_uart.h ****  * All rights reserved.
+   6:../drivers/fsl_uart.h ****  *
+   7:../drivers/fsl_uart.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_uart.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_uart.h ****  * that the following conditions are met:
+  10:../drivers/fsl_uart.h ****  *
+  11:../drivers/fsl_uart.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_uart.h ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_uart.h ****  *
+  14:../drivers/fsl_uart.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_uart.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_uart.h ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_uart.h ****  *
+  18:../drivers/fsl_uart.h ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_uart.h ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_uart.h ****  *   software without specific prior written permission.
+  21:../drivers/fsl_uart.h ****  *
+  22:../drivers/fsl_uart.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_uart.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_uart.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_uart.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_uart.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_uart.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_uart.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_uart.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_uart.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_uart.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_uart.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_uart.h ****  */
+  34:../drivers/fsl_uart.h **** #ifndef _FSL_UART_H_
+  35:../drivers/fsl_uart.h **** #define _FSL_UART_H_
+  36:../drivers/fsl_uart.h **** 
+  37:../drivers/fsl_uart.h **** #include "fsl_common.h"
+  38:../drivers/fsl_uart.h **** 
+  39:../drivers/fsl_uart.h **** /*!
+  40:../drivers/fsl_uart.h ****  * @addtogroup uart_driver
+  41:../drivers/fsl_uart.h ****  * @{
+  42:../drivers/fsl_uart.h ****  */
+  43:../drivers/fsl_uart.h **** 
+  44:../drivers/fsl_uart.h **** /*******************************************************************************
+  45:../drivers/fsl_uart.h ****  * Definitions
+  46:../drivers/fsl_uart.h ****  ******************************************************************************/
+  47:../drivers/fsl_uart.h **** 
+  48:../drivers/fsl_uart.h **** /*! @name Driver version */
+  49:../drivers/fsl_uart.h **** /*@{*/
+  50:../drivers/fsl_uart.h **** /*! @brief UART driver version 2.1.5. */
+  51:../drivers/fsl_uart.h **** #define FSL_UART_DRIVER_VERSION (MAKE_VERSION(2, 1, 5))
+  52:../drivers/fsl_uart.h **** /*@}*/
+  53:../drivers/fsl_uart.h **** 
+  54:../drivers/fsl_uart.h **** /*! @brief Error codes for the UART driver. */
+  55:../drivers/fsl_uart.h **** enum _uart_status
+  56:../drivers/fsl_uart.h **** {
+  57:../drivers/fsl_uart.h ****     kStatus_UART_TxBusy = MAKE_STATUS(kStatusGroup_UART, 0),              /*!< Transmitter is busy.
+  58:../drivers/fsl_uart.h ****     kStatus_UART_RxBusy = MAKE_STATUS(kStatusGroup_UART, 1),              /*!< Receiver is busy. */
+  59:../drivers/fsl_uart.h ****     kStatus_UART_TxIdle = MAKE_STATUS(kStatusGroup_UART, 2),              /*!< UART transmitter is 
+  60:../drivers/fsl_uart.h ****     kStatus_UART_RxIdle = MAKE_STATUS(kStatusGroup_UART, 3),              /*!< UART receiver is idl
+  61:../drivers/fsl_uart.h ****     kStatus_UART_TxWatermarkTooLarge = MAKE_STATUS(kStatusGroup_UART, 4), /*!< TX FIFO watermark to
+  62:../drivers/fsl_uart.h ****     kStatus_UART_RxWatermarkTooLarge = MAKE_STATUS(kStatusGroup_UART, 5), /*!< RX FIFO watermark to
+  63:../drivers/fsl_uart.h ****     kStatus_UART_FlagCannotClearManually =
+  64:../drivers/fsl_uart.h ****         MAKE_STATUS(kStatusGroup_UART, 6),                                /*!< UART flag can't be m
+  65:../drivers/fsl_uart.h ****     kStatus_UART_Error = MAKE_STATUS(kStatusGroup_UART, 7),               /*!< Error happens on UAR
+  66:../drivers/fsl_uart.h ****     kStatus_UART_RxRingBufferOverrun = MAKE_STATUS(kStatusGroup_UART, 8), /*!< UART RX software rin
+  67:../drivers/fsl_uart.h ****     kStatus_UART_RxHardwareOverrun = MAKE_STATUS(kStatusGroup_UART, 9),   /*!< UART RX receiver ove
+  68:../drivers/fsl_uart.h ****     kStatus_UART_NoiseError = MAKE_STATUS(kStatusGroup_UART, 10),         /*!< UART noise error. */
+  69:../drivers/fsl_uart.h ****     kStatus_UART_FramingError = MAKE_STATUS(kStatusGroup_UART, 11),       /*!< UART framing error. 
+  70:../drivers/fsl_uart.h ****     kStatus_UART_ParityError = MAKE_STATUS(kStatusGroup_UART, 12),        /*!< UART parity error. *
+  71:../drivers/fsl_uart.h ****     kStatus_UART_BaudrateNotSupport =
+  72:../drivers/fsl_uart.h ****         MAKE_STATUS(kStatusGroup_UART, 13), /*!< Baudrate is not support in current clock source */
+  73:../drivers/fsl_uart.h ****     kStatus_UART_IdleLineDetected = MAKE_STATUS(kStatusGroup_UART, 14), /*!< UART IDLE line detecte
+  74:../drivers/fsl_uart.h **** };
+  75:../drivers/fsl_uart.h **** 
+  76:../drivers/fsl_uart.h **** /*! @brief UART parity mode. */
+  77:../drivers/fsl_uart.h **** typedef enum _uart_parity_mode
+  78:../drivers/fsl_uart.h **** {
+  79:../drivers/fsl_uart.h ****     kUART_ParityDisabled = 0x0U, /*!< Parity disabled */
+  80:../drivers/fsl_uart.h ****     kUART_ParityEven = 0x2U,     /*!< Parity enabled, type even, bit setting: PE|PT = 10 */
+  81:../drivers/fsl_uart.h ****     kUART_ParityOdd = 0x3U,      /*!< Parity enabled, type odd,  bit setting: PE|PT = 11 */
+  82:../drivers/fsl_uart.h **** } uart_parity_mode_t;
+  83:../drivers/fsl_uart.h **** 
+  84:../drivers/fsl_uart.h **** /*! @brief UART stop bit count. */
+  85:../drivers/fsl_uart.h **** typedef enum _uart_stop_bit_count
+  86:../drivers/fsl_uart.h **** {
+  87:../drivers/fsl_uart.h ****     kUART_OneStopBit = 0U, /*!< One stop bit */
+  88:../drivers/fsl_uart.h ****     kUART_TwoStopBit = 1U, /*!< Two stop bits */
+  89:../drivers/fsl_uart.h **** } uart_stop_bit_count_t;
+  90:../drivers/fsl_uart.h **** 
+  91:../drivers/fsl_uart.h **** /*! @brief UART idle type select. */
+  92:../drivers/fsl_uart.h **** typedef enum _uart_idle_type_select
+  93:../drivers/fsl_uart.h **** {
+  94:../drivers/fsl_uart.h ****     kUART_IdleTypeStartBit = 0U, /*!< Start counting after a valid start bit. */
+  95:../drivers/fsl_uart.h ****     kUART_IdleTypeStopBit = 1U,  /*!< Start conuting after a stop bit. */
+  96:../drivers/fsl_uart.h **** } uart_idle_type_select_t;
+  97:../drivers/fsl_uart.h **** 
+  98:../drivers/fsl_uart.h **** /*!
+  99:../drivers/fsl_uart.h ****  * @brief UART interrupt configuration structure, default settings all disabled.
+ 100:../drivers/fsl_uart.h ****  *
+ 101:../drivers/fsl_uart.h ****  * This structure contains the settings for all of the UART interrupt configurations.
+ 102:../drivers/fsl_uart.h ****  */
+ 103:../drivers/fsl_uart.h **** enum _uart_interrupt_enable
+ 104:../drivers/fsl_uart.h **** {
+ 105:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT) && FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT
+ 106:../drivers/fsl_uart.h ****     kUART_LinBreakInterruptEnable = (UART_BDH_LBKDIE_MASK), /*!< LIN break detect interrupt. */
+ 107:../drivers/fsl_uart.h **** #endif
+ 108:../drivers/fsl_uart.h ****     kUART_RxActiveEdgeInterruptEnable = (UART_BDH_RXEDGIE_MASK),   /*!< RX active edge interrupt. *
+ 109:../drivers/fsl_uart.h ****     kUART_TxDataRegEmptyInterruptEnable = (UART_C2_TIE_MASK << 8), /*!< Transmit data register empt
+ 110:../drivers/fsl_uart.h ****     kUART_TransmissionCompleteInterruptEnable = (UART_C2_TCIE_MASK << 8), /*!< Transmission complet
+ 111:../drivers/fsl_uart.h ****     kUART_RxDataRegFullInterruptEnable = (UART_C2_RIE_MASK << 8),         /*!< Receiver data regist
+ 112:../drivers/fsl_uart.h ****     kUART_IdleLineInterruptEnable = (UART_C2_ILIE_MASK << 8),             /*!< Idle line interrupt.
+ 113:../drivers/fsl_uart.h ****     kUART_RxOverrunInterruptEnable = (UART_C3_ORIE_MASK << 16),           /*!< Receiver overrun int
+ 114:../drivers/fsl_uart.h ****     kUART_NoiseErrorInterruptEnable = (UART_C3_NEIE_MASK << 16),          /*!< Noise error flag int
+ 115:../drivers/fsl_uart.h ****     kUART_FramingErrorInterruptEnable = (UART_C3_FEIE_MASK << 16),        /*!< Framing error flag i
+ 116:../drivers/fsl_uart.h ****     kUART_ParityErrorInterruptEnable = (UART_C3_PEIE_MASK << 16),         /*!< Parity error flag in
+ 117:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_FIFO) && FSL_FEATURE_UART_HAS_FIFO
+ 118:../drivers/fsl_uart.h ****     kUART_RxFifoOverflowInterruptEnable = (UART_CFIFO_RXOFE_MASK << 24),  /*!< RX FIFO overflow int
+ 119:../drivers/fsl_uart.h ****     kUART_TxFifoOverflowInterruptEnable = (UART_CFIFO_TXOFE_MASK << 24),  /*!< TX FIFO overflow int
+ 120:../drivers/fsl_uart.h ****     kUART_RxFifoUnderflowInterruptEnable = (UART_CFIFO_RXUFE_MASK << 24), /*!< RX FIFO underflow in
+ 121:../drivers/fsl_uart.h **** #endif
+ 122:../drivers/fsl_uart.h ****     kUART_AllInterruptsEnable =
+ 123:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT) && FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT
+ 124:../drivers/fsl_uart.h ****         kUART_LinBreakInterruptEnable |
+ 125:../drivers/fsl_uart.h **** #endif
+ 126:../drivers/fsl_uart.h ****         kUART_RxActiveEdgeInterruptEnable | kUART_TxDataRegEmptyInterruptEnable |
+ 127:../drivers/fsl_uart.h ****         kUART_TransmissionCompleteInterruptEnable | kUART_RxDataRegFullInterruptEnable | kUART_Idle
+ 128:../drivers/fsl_uart.h ****         kUART_RxOverrunInterruptEnable | kUART_NoiseErrorInterruptEnable | kUART_FramingErrorInterr
+ 129:../drivers/fsl_uart.h ****         kUART_ParityErrorInterruptEnable
+ 130:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_FIFO) && FSL_FEATURE_UART_HAS_FIFO
+ 131:../drivers/fsl_uart.h ****         |
+ 132:../drivers/fsl_uart.h ****         kUART_RxFifoOverflowInterruptEnable | kUART_TxFifoOverflowInterruptEnable | kUART_RxFifoUnd
+ 133:../drivers/fsl_uart.h **** #endif
+ 134:../drivers/fsl_uart.h ****     ,
+ 135:../drivers/fsl_uart.h **** };
+ 136:../drivers/fsl_uart.h **** 
+ 137:../drivers/fsl_uart.h **** /*!
+ 138:../drivers/fsl_uart.h ****  * @brief UART status flags.
+ 139:../drivers/fsl_uart.h ****  *
+ 140:../drivers/fsl_uart.h ****  * This provides constants for the UART status flags for use in the UART functions.
+ 141:../drivers/fsl_uart.h ****  */
+ 142:../drivers/fsl_uart.h **** enum _uart_flags
+ 143:../drivers/fsl_uart.h **** {
+ 144:../drivers/fsl_uart.h ****     kUART_TxDataRegEmptyFlag = (UART_S1_TDRE_MASK),     /*!< TX data register empty flag. */
+ 145:../drivers/fsl_uart.h ****     kUART_TransmissionCompleteFlag = (UART_S1_TC_MASK), /*!< Transmission complete flag. */
+ 146:../drivers/fsl_uart.h ****     kUART_RxDataRegFullFlag = (UART_S1_RDRF_MASK),      /*!< RX data register full flag. */
+ 147:../drivers/fsl_uart.h ****     kUART_IdleLineFlag = (UART_S1_IDLE_MASK),           /*!< Idle line detect flag. */
+ 148:../drivers/fsl_uart.h ****     kUART_RxOverrunFlag = (UART_S1_OR_MASK),            /*!< RX overrun flag. */
+ 149:../drivers/fsl_uart.h ****     kUART_NoiseErrorFlag = (UART_S1_NF_MASK),           /*!< RX takes 3 samples of each received bi
+ 150:../drivers/fsl_uart.h ****                                                              If any of these samples differ, noise 
+ 151:../drivers/fsl_uart.h ****     kUART_FramingErrorFlag = (UART_S1_FE_MASK),         /*!< Frame error flag, sets if logic 0 was 
+ 152:../drivers/fsl_uart.h ****                                                              where stop bit expected */
+ 153:../drivers/fsl_uart.h ****     kUART_ParityErrorFlag = (UART_S1_PF_MASK),          /*!< If parity enabled, sets upon parity er
+ 154:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT) && FSL_FEATURE_UART_HAS_LIN_BREAK_DETECT
+ 155:../drivers/fsl_uart.h ****     kUART_LinBreakFlag =
+ 156:../drivers/fsl_uart.h ****         (UART_S2_LBKDIF_MASK
+ 157:../drivers/fsl_uart.h ****          << 8), /*!< LIN break detect interrupt flag, sets when LIN break char detected and LIN cir
+ 158:../drivers/fsl_uart.h **** #endif
+ 159:../drivers/fsl_uart.h ****     kUART_RxActiveEdgeFlag =
+ 160:../drivers/fsl_uart.h ****         (UART_S2_RXEDGIF_MASK << 8), /*!< RX pin active edge interrupt flag,sets when active edge d
+ 161:../drivers/fsl_uart.h ****     kUART_RxActiveFlag =
+ 162:../drivers/fsl_uart.h ****         (UART_S2_RAF_MASK << 8), /*!< Receiver Active Flag (RAF), sets at beginning of valid start 
+ 163:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_EXTENDED_DATA_REGISTER_FLAGS) && FSL_FEATURE_UART_HAS_EXTENDED_DAT
+ 164:../drivers/fsl_uart.h ****     kUART_NoiseErrorInRxDataRegFlag = (UART_ED_NOISY_MASK << 16),    /*!< Noisy bit, sets if noise 
+ 165:../drivers/fsl_uart.h ****     kUART_ParityErrorInRxDataRegFlag = (UART_ED_PARITYE_MASK << 16), /*!< Paritye bit, sets if pari
+ 166:../drivers/fsl_uart.h **** #endif
+ 167:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_FIFO) && FSL_FEATURE_UART_HAS_FIFO
+ 168:../drivers/fsl_uart.h ****     kUART_TxFifoEmptyFlag = (UART_SFIFO_TXEMPT_MASK << 24),   /*!< TXEMPT bit, sets if TX buffer is
+ 169:../drivers/fsl_uart.h ****     kUART_RxFifoEmptyFlag = (UART_SFIFO_RXEMPT_MASK << 24),   /*!< RXEMPT bit, sets if RX buffer is
+ 170:../drivers/fsl_uart.h ****     kUART_TxFifoOverflowFlag = (UART_SFIFO_TXOF_MASK << 24),  /*!< TXOF bit, sets if TX buffer over
+ 171:../drivers/fsl_uart.h ****     kUART_RxFifoOverflowFlag = (UART_SFIFO_RXOF_MASK << 24),  /*!< RXOF bit, sets if receive buffer
+ 172:../drivers/fsl_uart.h ****     kUART_RxFifoUnderflowFlag = (UART_SFIFO_RXUF_MASK << 24), /*!< RXUF bit, sets if receive buffer
+ 173:../drivers/fsl_uart.h **** #endif
+ 174:../drivers/fsl_uart.h **** };
+ 175:../drivers/fsl_uart.h **** 
+ 176:../drivers/fsl_uart.h **** /*! @brief UART configuration structure. */
+ 177:../drivers/fsl_uart.h **** typedef struct _uart_config
+ 178:../drivers/fsl_uart.h **** {
+ 179:../drivers/fsl_uart.h ****     uint32_t baudRate_Bps;         /*!< UART baud rate  */
+ 180:../drivers/fsl_uart.h ****     uart_parity_mode_t parityMode; /*!< Parity mode, disabled (default), even, odd */
+ 181:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_STOP_BIT_CONFIG_SUPPORT) && FSL_FEATURE_UART_HAS_STOP_BIT_CONFIG_S
+ 182:../drivers/fsl_uart.h ****     uart_stop_bit_count_t stopBitCount; /*!< Number of stop bits, 1 stop bit (default) or 2 stop bi
+ 183:../drivers/fsl_uart.h **** #endif
+ 184:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_FIFO) && FSL_FEATURE_UART_HAS_FIFO
+ 185:../drivers/fsl_uart.h ****     uint8_t txFifoWatermark; /*!< TX FIFO watermark */
+ 186:../drivers/fsl_uart.h ****     uint8_t rxFifoWatermark; /*!< RX FIFO watermark */
+ 187:../drivers/fsl_uart.h **** #endif
+ 188:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_MODEM_SUPPORT) && FSL_FEATURE_UART_HAS_MODEM_SUPPORT
+ 189:../drivers/fsl_uart.h ****     bool enableRxRTS; /*!< RX RTS enable */
+ 190:../drivers/fsl_uart.h ****     bool enableTxCTS; /*!< TX CTS enable */
+ 191:../drivers/fsl_uart.h **** #endif
+ 192:../drivers/fsl_uart.h ****     uart_idle_type_select_t idleType; /*!< IDLE type select. */
+ 193:../drivers/fsl_uart.h ****     bool enableTx;                    /*!< Enable TX */
+ 194:../drivers/fsl_uart.h ****     bool enableRx;                    /*!< Enable RX */
+ 195:../drivers/fsl_uart.h **** } uart_config_t;
+ 196:../drivers/fsl_uart.h **** 
+ 197:../drivers/fsl_uart.h **** /*! @brief UART transfer structure. */
+ 198:../drivers/fsl_uart.h **** typedef struct _uart_transfer
+ 199:../drivers/fsl_uart.h **** {
+ 200:../drivers/fsl_uart.h ****     uint8_t *data;   /*!< The buffer of data to be transfer.*/
+ 201:../drivers/fsl_uart.h ****     size_t dataSize; /*!< The byte count to be transfer. */
+ 202:../drivers/fsl_uart.h **** } uart_transfer_t;
+ 203:../drivers/fsl_uart.h **** 
+ 204:../drivers/fsl_uart.h **** /* Forward declaration of the handle typedef. */
+ 205:../drivers/fsl_uart.h **** typedef struct _uart_handle uart_handle_t;
+ 206:../drivers/fsl_uart.h **** 
+ 207:../drivers/fsl_uart.h **** /*! @brief UART transfer callback function. */
+ 208:../drivers/fsl_uart.h **** typedef void (*uart_transfer_callback_t)(UART_Type *base, uart_handle_t *handle, status_t status, v
+ 209:../drivers/fsl_uart.h **** 
+ 210:../drivers/fsl_uart.h **** /*! @brief UART handle structure. */
+ 211:../drivers/fsl_uart.h **** struct _uart_handle
+ 212:../drivers/fsl_uart.h **** {
+ 213:../drivers/fsl_uart.h ****     uint8_t *volatile txData;   /*!< Address of remaining data to send. */
+ 214:../drivers/fsl_uart.h ****     volatile size_t txDataSize; /*!< Size of the remaining data to send. */
+ 215:../drivers/fsl_uart.h ****     size_t txDataSizeAll;       /*!< Size of the data to send out. */
+ 216:../drivers/fsl_uart.h ****     uint8_t *volatile rxData;   /*!< Address of remaining data to receive. */
+ 217:../drivers/fsl_uart.h ****     volatile size_t rxDataSize; /*!< Size of the remaining data to receive. */
+ 218:../drivers/fsl_uart.h ****     size_t rxDataSizeAll;       /*!< Size of the data to receive. */
+ 219:../drivers/fsl_uart.h **** 
+ 220:../drivers/fsl_uart.h ****     uint8_t *rxRingBuffer;              /*!< Start address of the receiver ring buffer. */
+ 221:../drivers/fsl_uart.h ****     size_t rxRingBufferSize;            /*!< Size of the ring buffer. */
+ 222:../drivers/fsl_uart.h ****     volatile uint16_t rxRingBufferHead; /*!< Index for the driver to store received data into ring 
+ 223:../drivers/fsl_uart.h ****     volatile uint16_t rxRingBufferTail; /*!< Index for the user to get data from the ring buffer. *
+ 224:../drivers/fsl_uart.h **** 
+ 225:../drivers/fsl_uart.h ****     uart_transfer_callback_t callback; /*!< Callback function. */
+ 226:../drivers/fsl_uart.h ****     void *userData;                    /*!< UART callback function parameter.*/
+ 227:../drivers/fsl_uart.h **** 
+ 228:../drivers/fsl_uart.h ****     volatile uint8_t txState; /*!< TX transfer state. */
+ 229:../drivers/fsl_uart.h ****     volatile uint8_t rxState; /*!< RX transfer state */
+ 230:../drivers/fsl_uart.h **** };
+ 231:../drivers/fsl_uart.h **** 
+ 232:../drivers/fsl_uart.h **** /*******************************************************************************
+ 233:../drivers/fsl_uart.h ****  * API
+ 234:../drivers/fsl_uart.h ****  ******************************************************************************/
+ 235:../drivers/fsl_uart.h **** 
+ 236:../drivers/fsl_uart.h **** #if defined(__cplusplus)
+ 237:../drivers/fsl_uart.h **** extern "C" {
+ 238:../drivers/fsl_uart.h **** #endif /* _cplusplus */
+ 239:../drivers/fsl_uart.h **** 
+ 240:../drivers/fsl_uart.h **** /*!
+ 241:../drivers/fsl_uart.h ****  * @name Initialization and deinitialization
+ 242:../drivers/fsl_uart.h ****  * @{
+ 243:../drivers/fsl_uart.h ****  */
+ 244:../drivers/fsl_uart.h **** 
+ 245:../drivers/fsl_uart.h **** /*!
+ 246:../drivers/fsl_uart.h ****  * @brief Initializes a UART instance with a user configuration structure and peripheral clock.
+ 247:../drivers/fsl_uart.h ****  *
+ 248:../drivers/fsl_uart.h ****  * This function configures the UART module with the user-defined settings. The user can configure 
+ 249:../drivers/fsl_uart.h ****  * structure and also get the default configuration by using the UART_GetDefaultConfig() function.
+ 250:../drivers/fsl_uart.h ****  * The example below shows how to use this API to configure UART.
+ 251:../drivers/fsl_uart.h ****  * @code
+ 252:../drivers/fsl_uart.h ****  *  uart_config_t uartConfig;
+ 253:../drivers/fsl_uart.h ****  *  uartConfig.baudRate_Bps = 115200U;
+ 254:../drivers/fsl_uart.h ****  *  uartConfig.parityMode = kUART_ParityDisabled;
+ 255:../drivers/fsl_uart.h ****  *  uartConfig.stopBitCount = kUART_OneStopBit;
+ 256:../drivers/fsl_uart.h ****  *  uartConfig.txFifoWatermark = 0;
+ 257:../drivers/fsl_uart.h ****  *  uartConfig.rxFifoWatermark = 1;
+ 258:../drivers/fsl_uart.h ****  *  UART_Init(UART1, &uartConfig, 20000000U);
+ 259:../drivers/fsl_uart.h ****  * @endcode
+ 260:../drivers/fsl_uart.h ****  *
+ 261:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 262:../drivers/fsl_uart.h ****  * @param config Pointer to the user-defined configuration structure.
+ 263:../drivers/fsl_uart.h ****  * @param srcClock_Hz UART clock source frequency in HZ.
+ 264:../drivers/fsl_uart.h ****  * @retval kStatus_UART_BaudrateNotSupport Baudrate is not support in current clock source.
+ 265:../drivers/fsl_uart.h ****  * @retval kStatus_Success Status UART initialize succeed
+ 266:../drivers/fsl_uart.h ****  */
+ 267:../drivers/fsl_uart.h **** status_t UART_Init(UART_Type *base, const uart_config_t *config, uint32_t srcClock_Hz);
+ 268:../drivers/fsl_uart.h **** 
+ 269:../drivers/fsl_uart.h **** /*!
+ 270:../drivers/fsl_uart.h ****  * @brief Deinitializes a UART instance.
+ 271:../drivers/fsl_uart.h ****  *
+ 272:../drivers/fsl_uart.h ****  * This function waits for TX complete, disables TX and RX, and disables the UART clock.
+ 273:../drivers/fsl_uart.h ****  *
+ 274:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 275:../drivers/fsl_uart.h ****  */
+ 276:../drivers/fsl_uart.h **** void UART_Deinit(UART_Type *base);
+ 277:../drivers/fsl_uart.h **** 
+ 278:../drivers/fsl_uart.h **** /*!
+ 279:../drivers/fsl_uart.h ****  * @brief Gets the default configuration structure.
+ 280:../drivers/fsl_uart.h ****  *
+ 281:../drivers/fsl_uart.h ****  * This function initializes the UART configuration structure to a default value. The default
+ 282:../drivers/fsl_uart.h ****  * values are as follows.
+ 283:../drivers/fsl_uart.h ****  *   uartConfig->baudRate_Bps = 115200U;
+ 284:../drivers/fsl_uart.h ****  *   uartConfig->bitCountPerChar = kUART_8BitsPerChar;
+ 285:../drivers/fsl_uart.h ****  *   uartConfig->parityMode = kUART_ParityDisabled;
+ 286:../drivers/fsl_uart.h ****  *   uartConfig->stopBitCount = kUART_OneStopBit;
+ 287:../drivers/fsl_uart.h ****  *   uartConfig->txFifoWatermark = 0;
+ 288:../drivers/fsl_uart.h ****  *   uartConfig->rxFifoWatermark = 1;
+ 289:../drivers/fsl_uart.h ****  *   uartConfig->idleType = kUART_IdleTypeStartBit;
+ 290:../drivers/fsl_uart.h ****  *   uartConfig->enableTx = false;
+ 291:../drivers/fsl_uart.h ****  *   uartConfig->enableRx = false;
+ 292:../drivers/fsl_uart.h ****  *
+ 293:../drivers/fsl_uart.h ****  * @param config Pointer to configuration structure.
+ 294:../drivers/fsl_uart.h ****  */
+ 295:../drivers/fsl_uart.h **** void UART_GetDefaultConfig(uart_config_t *config);
+ 296:../drivers/fsl_uart.h **** 
+ 297:../drivers/fsl_uart.h **** /*!
+ 298:../drivers/fsl_uart.h ****  * @brief Sets the UART instance baud rate.
+ 299:../drivers/fsl_uart.h ****  *
+ 300:../drivers/fsl_uart.h ****  * This function configures the UART module baud rate. This function is used to update
+ 301:../drivers/fsl_uart.h ****  * the UART module baud rate after the UART module is initialized by the UART_Init.
+ 302:../drivers/fsl_uart.h ****  * @code
+ 303:../drivers/fsl_uart.h ****  *  UART_SetBaudRate(UART1, 115200U, 20000000U);
+ 304:../drivers/fsl_uart.h ****  * @endcode
+ 305:../drivers/fsl_uart.h ****  *
+ 306:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 307:../drivers/fsl_uart.h ****  * @param baudRate_Bps UART baudrate to be set.
+ 308:../drivers/fsl_uart.h ****  * @param srcClock_Hz UART clock source freqency in Hz.
+ 309:../drivers/fsl_uart.h ****  * @retval kStatus_UART_BaudrateNotSupport Baudrate is not support in the current clock source.
+ 310:../drivers/fsl_uart.h ****  * @retval kStatus_Success Set baudrate succeeded.
+ 311:../drivers/fsl_uart.h ****  */
+ 312:../drivers/fsl_uart.h **** status_t UART_SetBaudRate(UART_Type *base, uint32_t baudRate_Bps, uint32_t srcClock_Hz);
+ 313:../drivers/fsl_uart.h **** 
+ 314:../drivers/fsl_uart.h **** /* @} */
+ 315:../drivers/fsl_uart.h **** 
+ 316:../drivers/fsl_uart.h **** /*!
+ 317:../drivers/fsl_uart.h ****  * @name Status
+ 318:../drivers/fsl_uart.h ****  * @{
+ 319:../drivers/fsl_uart.h ****  */
+ 320:../drivers/fsl_uart.h **** 
+ 321:../drivers/fsl_uart.h **** /*!
+ 322:../drivers/fsl_uart.h ****  * @brief Gets UART status flags.
+ 323:../drivers/fsl_uart.h ****  *
+ 324:../drivers/fsl_uart.h ****  * This function gets all UART status flags. The flags are returned as the logical
+ 325:../drivers/fsl_uart.h ****  * OR value of the enumerators @ref _uart_flags. To check a specific status,
+ 326:../drivers/fsl_uart.h ****  * compare the return value with enumerators in @ref _uart_flags.
+ 327:../drivers/fsl_uart.h ****  * For example, to check whether the TX is empty, do the following.
+ 328:../drivers/fsl_uart.h ****  * @code
+ 329:../drivers/fsl_uart.h ****  *     if (kUART_TxDataRegEmptyFlag & UART_GetStatusFlags(UART1))
+ 330:../drivers/fsl_uart.h ****  *     {
+ 331:../drivers/fsl_uart.h ****  *         ...
+ 332:../drivers/fsl_uart.h ****  *     }
+ 333:../drivers/fsl_uart.h ****  * @endcode
+ 334:../drivers/fsl_uart.h ****  *
+ 335:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 336:../drivers/fsl_uart.h ****  * @return UART status flags which are ORed by the enumerators in the _uart_flags.
+ 337:../drivers/fsl_uart.h ****  */
+ 338:../drivers/fsl_uart.h **** uint32_t UART_GetStatusFlags(UART_Type *base);
+ 339:../drivers/fsl_uart.h **** 
+ 340:../drivers/fsl_uart.h **** /*!
+ 341:../drivers/fsl_uart.h ****  * @brief Clears status flags with the provided mask.
+ 342:../drivers/fsl_uart.h ****  *
+ 343:../drivers/fsl_uart.h ****  * This function clears UART status flags with a provided mask. An automatically cleared flag
+ 344:../drivers/fsl_uart.h ****  * can't be cleared by this function.
+ 345:../drivers/fsl_uart.h ****  * These flags can only be cleared or set by hardware.
+ 346:../drivers/fsl_uart.h ****  *    kUART_TxDataRegEmptyFlag, kUART_TransmissionCompleteFlag, kUART_RxDataRegFullFlag,
+ 347:../drivers/fsl_uart.h ****  *    kUART_RxActiveFlag, kUART_NoiseErrorInRxDataRegFlag, kUART_ParityErrorInRxDataRegFlag,
+ 348:../drivers/fsl_uart.h ****  *    kUART_TxFifoEmptyFlag,kUART_RxFifoEmptyFlag
+ 349:../drivers/fsl_uart.h ****  * Note that this API should be called when the Tx/Rx is idle. Otherwise it has no effect.
+ 350:../drivers/fsl_uart.h ****  *
+ 351:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 352:../drivers/fsl_uart.h ****  * @param mask The status flags to be cleared; it is logical OR value of @ref _uart_flags.
+ 353:../drivers/fsl_uart.h ****  * @retval kStatus_UART_FlagCannotClearManually The flag can't be cleared by this function but
+ 354:../drivers/fsl_uart.h ****  *         it is cleared automatically by hardware.
+ 355:../drivers/fsl_uart.h ****  * @retval kStatus_Success Status in the mask is cleared.
+ 356:../drivers/fsl_uart.h ****  */
+ 357:../drivers/fsl_uart.h **** status_t UART_ClearStatusFlags(UART_Type *base, uint32_t mask);
+ 358:../drivers/fsl_uart.h **** 
+ 359:../drivers/fsl_uart.h **** /* @} */
+ 360:../drivers/fsl_uart.h **** 
+ 361:../drivers/fsl_uart.h **** /*!
+ 362:../drivers/fsl_uart.h ****  * @name Interrupts
+ 363:../drivers/fsl_uart.h ****  * @{
+ 364:../drivers/fsl_uart.h ****  */
+ 365:../drivers/fsl_uart.h **** 
+ 366:../drivers/fsl_uart.h **** /*!
+ 367:../drivers/fsl_uart.h ****  * @brief Enables UART interrupts according to the provided mask.
+ 368:../drivers/fsl_uart.h ****  *
+ 369:../drivers/fsl_uart.h ****  * This function enables the UART interrupts according to the provided mask. The mask
+ 370:../drivers/fsl_uart.h ****  * is a logical OR of enumeration members. See @ref _uart_interrupt_enable.
+ 371:../drivers/fsl_uart.h ****  * For example, to enable TX empty interrupt and RX full interrupt, do the following.
+ 372:../drivers/fsl_uart.h ****  * @code
+ 373:../drivers/fsl_uart.h ****  *     UART_EnableInterrupts(UART1,kUART_TxDataRegEmptyInterruptEnable | kUART_RxDataRegFullInterru
+ 374:../drivers/fsl_uart.h ****  * @endcode
+ 375:../drivers/fsl_uart.h ****  *
+ 376:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 377:../drivers/fsl_uart.h ****  * @param mask The interrupts to enable. Logical OR of @ref _uart_interrupt_enable.
+ 378:../drivers/fsl_uart.h ****  */
+ 379:../drivers/fsl_uart.h **** void UART_EnableInterrupts(UART_Type *base, uint32_t mask);
+ 380:../drivers/fsl_uart.h **** 
+ 381:../drivers/fsl_uart.h **** /*!
+ 382:../drivers/fsl_uart.h ****  * @brief Disables the UART interrupts according to the provided mask.
+ 383:../drivers/fsl_uart.h ****  *
+ 384:../drivers/fsl_uart.h ****  * This function disables the UART interrupts according to the provided mask. The mask
+ 385:../drivers/fsl_uart.h ****  * is a logical OR of enumeration members. See @ref _uart_interrupt_enable.
+ 386:../drivers/fsl_uart.h ****  * For example, to disable TX empty interrupt and RX full interrupt do the following.
+ 387:../drivers/fsl_uart.h ****  * @code
+ 388:../drivers/fsl_uart.h ****  *     UART_DisableInterrupts(UART1,kUART_TxDataRegEmptyInterruptEnable | kUART_RxDataRegFullInterr
+ 389:../drivers/fsl_uart.h ****  * @endcode
+ 390:../drivers/fsl_uart.h ****  *
+ 391:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 392:../drivers/fsl_uart.h ****  * @param mask The interrupts to disable. Logical OR of @ref _uart_interrupt_enable.
+ 393:../drivers/fsl_uart.h ****  */
+ 394:../drivers/fsl_uart.h **** void UART_DisableInterrupts(UART_Type *base, uint32_t mask);
+ 395:../drivers/fsl_uart.h **** 
+ 396:../drivers/fsl_uart.h **** /*!
+ 397:../drivers/fsl_uart.h ****  * @brief Gets the enabled UART interrupts.
+ 398:../drivers/fsl_uart.h ****  *
+ 399:../drivers/fsl_uart.h ****  * This function gets the enabled UART interrupts. The enabled interrupts are returned
+ 400:../drivers/fsl_uart.h ****  * as the logical OR value of the enumerators @ref _uart_interrupt_enable. To check
+ 401:../drivers/fsl_uart.h ****  * a specific interrupts enable status, compare the return value with enumerators
+ 402:../drivers/fsl_uart.h ****  * in @ref _uart_interrupt_enable.
+ 403:../drivers/fsl_uart.h ****  * For example, to check whether TX empty interrupt is enabled, do the following.
+ 404:../drivers/fsl_uart.h ****  * @code
+ 405:../drivers/fsl_uart.h ****  *     uint32_t enabledInterrupts = UART_GetEnabledInterrupts(UART1);
+ 406:../drivers/fsl_uart.h ****  *
+ 407:../drivers/fsl_uart.h ****  *     if (kUART_TxDataRegEmptyInterruptEnable & enabledInterrupts)
+ 408:../drivers/fsl_uart.h ****  *     {
+ 409:../drivers/fsl_uart.h ****  *         ...
+ 410:../drivers/fsl_uart.h ****  *     }
+ 411:../drivers/fsl_uart.h ****  * @endcode
+ 412:../drivers/fsl_uart.h ****  *
+ 413:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 414:../drivers/fsl_uart.h ****  * @return UART interrupt flags which are logical OR of the enumerators in @ref _uart_interrupt_ena
+ 415:../drivers/fsl_uart.h ****  */
+ 416:../drivers/fsl_uart.h **** uint32_t UART_GetEnabledInterrupts(UART_Type *base);
+ 417:../drivers/fsl_uart.h **** 
+ 418:../drivers/fsl_uart.h **** /* @} */
+ 419:../drivers/fsl_uart.h **** 
+ 420:../drivers/fsl_uart.h **** #if defined(FSL_FEATURE_UART_HAS_DMA_SELECT) && FSL_FEATURE_UART_HAS_DMA_SELECT
+ 421:../drivers/fsl_uart.h **** /*!
+ 422:../drivers/fsl_uart.h ****  * @name DMA Control
+ 423:../drivers/fsl_uart.h ****  * @{
+ 424:../drivers/fsl_uart.h ****  */
+ 425:../drivers/fsl_uart.h **** 
+ 426:../drivers/fsl_uart.h **** /*!
+ 427:../drivers/fsl_uart.h ****  * @brief Gets the UART data register address.
+ 428:../drivers/fsl_uart.h ****  *
+ 429:../drivers/fsl_uart.h ****  * This function returns the UART data register address, which is mainly used by DMA/eDMA.
+ 430:../drivers/fsl_uart.h ****  *
+ 431:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 432:../drivers/fsl_uart.h ****  * @return UART data register addresses which are used both by the transmitter and the receiver.
+ 433:../drivers/fsl_uart.h ****  */
+ 434:../drivers/fsl_uart.h **** static inline uint32_t UART_GetDataRegisterAddress(UART_Type *base)
+ 435:../drivers/fsl_uart.h **** {
+ 436:../drivers/fsl_uart.h ****     return (uint32_t) & (base->D);
+ 437:../drivers/fsl_uart.h **** }
+ 438:../drivers/fsl_uart.h **** 
+ 439:../drivers/fsl_uart.h **** /*!
+ 440:../drivers/fsl_uart.h ****  * @brief Enables or disables the UART transmitter DMA request.
+ 441:../drivers/fsl_uart.h ****  *
+ 442:../drivers/fsl_uart.h ****  * This function enables or disables the transmit data register empty flag, S1[TDRE], to generate t
+ 443:../drivers/fsl_uart.h ****  *
+ 444:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 445:../drivers/fsl_uart.h ****  * @param enable True to enable, false to disable.
+ 446:../drivers/fsl_uart.h ****  */
+ 447:../drivers/fsl_uart.h **** static inline void UART_EnableTxDMA(UART_Type *base, bool enable)
+ 448:../drivers/fsl_uart.h **** {
+ 449:../drivers/fsl_uart.h ****     if (enable)
+ 450:../drivers/fsl_uart.h ****     {
+ 451:../drivers/fsl_uart.h **** #if (defined(FSL_FEATURE_UART_IS_SCI) && FSL_FEATURE_UART_IS_SCI)
+ 452:../drivers/fsl_uart.h ****         base->C4 |= UART_C4_TDMAS_MASK;
+ 453:../drivers/fsl_uart.h **** #else
+ 454:../drivers/fsl_uart.h ****         base->C5 |= UART_C5_TDMAS_MASK;
+ 455:../drivers/fsl_uart.h **** #endif
+ 456:../drivers/fsl_uart.h ****         base->C2 |= UART_C2_TIE_MASK;
+ 457:../drivers/fsl_uart.h ****     }
+ 458:../drivers/fsl_uart.h ****     else
+ 459:../drivers/fsl_uart.h ****     {
+ 460:../drivers/fsl_uart.h **** #if (defined(FSL_FEATURE_UART_IS_SCI) && FSL_FEATURE_UART_IS_SCI)
+ 461:../drivers/fsl_uart.h ****         base->C4 &= ~UART_C4_TDMAS_MASK;
+ 462:../drivers/fsl_uart.h **** #else
+ 463:../drivers/fsl_uart.h ****         base->C5 &= ~UART_C5_TDMAS_MASK;
+ 464:../drivers/fsl_uart.h **** #endif
+ 465:../drivers/fsl_uart.h ****         base->C2 &= ~UART_C2_TIE_MASK;
+ 466:../drivers/fsl_uart.h ****     }
+ 467:../drivers/fsl_uart.h **** }
+ 468:../drivers/fsl_uart.h **** 
+ 469:../drivers/fsl_uart.h **** /*!
+ 470:../drivers/fsl_uart.h ****  * @brief Enables or disables the UART receiver DMA.
+ 471:../drivers/fsl_uart.h ****  *
+ 472:../drivers/fsl_uart.h ****  * This function enables or disables the receiver data register full flag, S1[RDRF], to generate DM
+ 473:../drivers/fsl_uart.h ****  *
+ 474:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 475:../drivers/fsl_uart.h ****  * @param enable True to enable, false to disable.
+ 476:../drivers/fsl_uart.h ****  */
+ 477:../drivers/fsl_uart.h **** static inline void UART_EnableRxDMA(UART_Type *base, bool enable)
+ 478:../drivers/fsl_uart.h **** {
+ 479:../drivers/fsl_uart.h ****     if (enable)
+ 480:../drivers/fsl_uart.h ****     {
+ 481:../drivers/fsl_uart.h **** #if (defined(FSL_FEATURE_UART_IS_SCI) && FSL_FEATURE_UART_IS_SCI)
+ 482:../drivers/fsl_uart.h ****         base->C4 |= UART_C4_RDMAS_MASK;
+ 483:../drivers/fsl_uart.h **** #else
+ 484:../drivers/fsl_uart.h ****         base->C5 |= UART_C5_RDMAS_MASK;
+ 485:../drivers/fsl_uart.h **** #endif
+ 486:../drivers/fsl_uart.h ****         base->C2 |= UART_C2_RIE_MASK;
+ 487:../drivers/fsl_uart.h ****     }
+ 488:../drivers/fsl_uart.h ****     else
+ 489:../drivers/fsl_uart.h ****     {
+ 490:../drivers/fsl_uart.h **** #if (defined(FSL_FEATURE_UART_IS_SCI) && FSL_FEATURE_UART_IS_SCI)
+ 491:../drivers/fsl_uart.h ****         base->C4 &= ~UART_C4_RDMAS_MASK;
+ 492:../drivers/fsl_uart.h **** #else
+ 493:../drivers/fsl_uart.h ****         base->C5 &= ~UART_C5_RDMAS_MASK;
+ 494:../drivers/fsl_uart.h **** #endif
+ 495:../drivers/fsl_uart.h ****         base->C2 &= ~UART_C2_RIE_MASK;
+ 496:../drivers/fsl_uart.h ****     }
+ 497:../drivers/fsl_uart.h **** }
+ 498:../drivers/fsl_uart.h **** 
+ 499:../drivers/fsl_uart.h **** /* @} */
+ 500:../drivers/fsl_uart.h **** #endif /* FSL_FEATURE_UART_HAS_DMA_SELECT */
+ 501:../drivers/fsl_uart.h **** 
+ 502:../drivers/fsl_uart.h **** /*!
+ 503:../drivers/fsl_uart.h ****  * @name Bus Operations
+ 504:../drivers/fsl_uart.h ****  * @{
+ 505:../drivers/fsl_uart.h ****  */
+ 506:../drivers/fsl_uart.h **** 
+ 507:../drivers/fsl_uart.h **** /*!
+ 508:../drivers/fsl_uart.h ****  * @brief Enables or disables the UART transmitter.
+ 509:../drivers/fsl_uart.h ****  *
+ 510:../drivers/fsl_uart.h ****  * This function enables or disables the UART transmitter.
+ 511:../drivers/fsl_uart.h ****  *
+ 512:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 513:../drivers/fsl_uart.h ****  * @param enable True to enable, false to disable.
+ 514:../drivers/fsl_uart.h ****  */
+ 515:../drivers/fsl_uart.h **** static inline void UART_EnableTx(UART_Type *base, bool enable)
+ 516:../drivers/fsl_uart.h **** {
+ 517:../drivers/fsl_uart.h ****     if (enable)
+ 518:../drivers/fsl_uart.h ****     {
+ 519:../drivers/fsl_uart.h ****         base->C2 |= UART_C2_TE_MASK;
+  85              		.loc 2 519 0
+  86 002e DA78     		ldrb	r2, [r3, #3]	@ zero_extendqisi2
+  87 0030 42F00802 		orr	r2, r2, #8
+  88 0034 DA70     		strb	r2, [r3, #3]
+  89              	.LVL6:
+  90              	.LBE9:
+  91              	.LBE8:
+  92              	.LBB10:
+  93              	.LBB11:
+ 520:../drivers/fsl_uart.h ****     }
+ 521:../drivers/fsl_uart.h ****     else
+ 522:../drivers/fsl_uart.h ****     {
+ 523:../drivers/fsl_uart.h ****         base->C2 &= ~UART_C2_TE_MASK;
+ 524:../drivers/fsl_uart.h ****     }
+ 525:../drivers/fsl_uart.h **** }
+ 526:../drivers/fsl_uart.h **** 
+ 527:../drivers/fsl_uart.h **** /*!
+ 528:../drivers/fsl_uart.h ****  * @brief Enables or disables the UART receiver.
+ 529:../drivers/fsl_uart.h ****  *
+ 530:../drivers/fsl_uart.h ****  * This function enables or disables the UART receiver.
+ 531:../drivers/fsl_uart.h ****  *
+ 532:../drivers/fsl_uart.h ****  * @param base UART peripheral base address.
+ 533:../drivers/fsl_uart.h ****  * @param enable True to enable, false to disable.
+ 534:../drivers/fsl_uart.h ****  */
+ 535:../drivers/fsl_uart.h **** static inline void UART_EnableRx(UART_Type *base, bool enable)
+ 536:../drivers/fsl_uart.h **** {
+ 537:../drivers/fsl_uart.h ****     if (enable)
+ 538:../drivers/fsl_uart.h ****     {
+ 539:../drivers/fsl_uart.h ****         base->C2 |= UART_C2_RE_MASK;
+  94              		.loc 2 539 0
+  95 0036 DA78     		ldrb	r2, [r3, #3]	@ zero_extendqisi2
+  96 0038 42F00402 		orr	r2, r2, #4
+  97 003c DA70     		strb	r2, [r3, #3]
+  98              	.LVL7:
+  99              	.L1:
+ 100              	.LBE11:
+ 101              	.LBE10:
+ 102              	.LBE7:
+ 258:../utilities/fsl_io.c ****             UART_EnableRx(s_debugConsoleIO.ioBase, true);
+ 259:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 260:../utilities/fsl_io.c ****             s_debugConsoleIO.callBack = io->callBack;
+ 261:../utilities/fsl_io.c ****             /* create handler for interrupt transfer */
+ 262:../utilities/fsl_io.c ****             UART_TransferCreateHandle(s_debugConsoleIO.ioBase, &s_ioUartHandler, UART_Callback, NUL
+ 263:../utilities/fsl_io.c ****             /* start ring buffer */
+ 264:../utilities/fsl_io.c ****             UART_TransferStartRingBuffer(s_debugConsoleIO.ioBase, &s_ioUartHandler, ringBuffer,
+ 265:../utilities/fsl_io.c ****                                          DEBUG_CONSOLE_RECEIVE_BUFFER_LEN);
+ 266:../utilities/fsl_io.c **** #endif
+ 267:../utilities/fsl_io.c ****         }
+ 268:../utilities/fsl_io.c ****         break;
+ 269:../utilities/fsl_io.c **** #endif
+ 270:../utilities/fsl_io.c **** 
+ 271:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPUART
+ 272:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPUART:
+ 273:../utilities/fsl_io.c ****         {
+ 274:../utilities/fsl_io.c ****             lpuart_config_t lpuart_config;
+ 275:../utilities/fsl_io.c ****             LPUART_GetDefaultConfig(&lpuart_config);
+ 276:../utilities/fsl_io.c ****             lpuart_config.baudRate_Bps = baudRate;
+ 277:../utilities/fsl_io.c ****             /* Enable clock and initial UART module follow user configure structure. */
+ 278:../utilities/fsl_io.c ****             LPUART_Init((LPUART_Type *)s_debugConsoleIO.ioBase, &lpuart_config, clkSrcFreq);
+ 279:../utilities/fsl_io.c ****             LPUART_EnableTx(s_debugConsoleIO.ioBase, true);
+ 280:../utilities/fsl_io.c ****             LPUART_EnableRx(s_debugConsoleIO.ioBase, true);
+ 281:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 282:../utilities/fsl_io.c ****             s_debugConsoleIO.callBack = io->callBack;
+ 283:../utilities/fsl_io.c ****             /* create handler for interrupt transfer */
+ 284:../utilities/fsl_io.c ****             LPUART_TransferCreateHandle(s_debugConsoleIO.ioBase, &s_ioLpuartHandler, LPUART_Callbac
+ 285:../utilities/fsl_io.c ****             /* start ring buffer */
+ 286:../utilities/fsl_io.c ****             LPUART_TransferStartRingBuffer(s_debugConsoleIO.ioBase, &s_ioLpuartHandler, ringBuffer,
+ 287:../utilities/fsl_io.c ****                                            DEBUG_CONSOLE_RECEIVE_BUFFER_LEN);
+ 288:../utilities/fsl_io.c **** #endif
+ 289:../utilities/fsl_io.c ****         }
+ 290:../utilities/fsl_io.c ****         break;
+ 291:../utilities/fsl_io.c **** #endif
+ 292:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPSCI
+ 293:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPSCI:
+ 294:../utilities/fsl_io.c ****         {
+ 295:../utilities/fsl_io.c ****             lpsci_config_t lpsci_config;
+ 296:../utilities/fsl_io.c ****             LPSCI_GetDefaultConfig(&lpsci_config);
+ 297:../utilities/fsl_io.c ****             lpsci_config.baudRate_Bps = baudRate;
+ 298:../utilities/fsl_io.c ****             /* Enable clock and initial UART module follow user configure structure. */
+ 299:../utilities/fsl_io.c ****             LPSCI_Init((UART0_Type *)s_debugConsoleIO.ioBase, &lpsci_config, clkSrcFreq);
+ 300:../utilities/fsl_io.c ****             LPSCI_EnableTx(s_debugConsoleIO.ioBase, true);
+ 301:../utilities/fsl_io.c ****             LPSCI_EnableRx(s_debugConsoleIO.ioBase, true);
+ 302:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 303:../utilities/fsl_io.c ****             s_debugConsoleIO.callBack = io->callBack;
+ 304:../utilities/fsl_io.c ****             /* create handler for interrupt transfer */
+ 305:../utilities/fsl_io.c ****             LPSCI_TransferCreateHandle(s_debugConsoleIO.ioBase, &s_ioLpsciHandler, LPSCI_Callback, 
+ 306:../utilities/fsl_io.c ****             /* start ring buffer */
+ 307:../utilities/fsl_io.c ****             LPSCI_TransferStartRingBuffer(s_debugConsoleIO.ioBase, &s_ioLpsciHandler, ringBuffer,
+ 308:../utilities/fsl_io.c ****                                           DEBUG_CONSOLE_RECEIVE_BUFFER_LEN);
+ 309:../utilities/fsl_io.c **** #endif
+ 310:../utilities/fsl_io.c ****         }
+ 311:../utilities/fsl_io.c ****         break;
+ 312:../utilities/fsl_io.c **** #endif
+ 313:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_USBCDC
+ 314:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_USBCDC:
+ 315:../utilities/fsl_io.c ****         {
+ 316:../utilities/fsl_io.c ****             s_debugConsoleIO.ioBase = USB_VcomInit();
+ 317:../utilities/fsl_io.c ****         }
+ 318:../utilities/fsl_io.c ****         break;
+ 319:../utilities/fsl_io.c **** #endif
+ 320:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_FLEXCOMM
+ 321:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_FLEXCOMM:
+ 322:../utilities/fsl_io.c ****         {
+ 323:../utilities/fsl_io.c ****             usart_config_t usart_config;
+ 324:../utilities/fsl_io.c ****             USART_GetDefaultConfig(&usart_config);
+ 325:../utilities/fsl_io.c ****             usart_config.baudRate_Bps = baudRate;
+ 326:../utilities/fsl_io.c ****             /* Enable clock and initial UART module follow user configure structure. */
+ 327:../utilities/fsl_io.c ****             USART_Init((USART_Type *)s_debugConsoleIO.ioBase, &usart_config, clkSrcFreq);
+ 328:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 329:../utilities/fsl_io.c ****             s_debugConsoleIO.callBack = io->callBack;
+ 330:../utilities/fsl_io.c ****             /* create handler for interrupt transfer */
+ 331:../utilities/fsl_io.c ****             USART_TransferCreateHandle(s_debugConsoleIO.ioBase, &s_ioUsartHandler, USART_Callback, 
+ 332:../utilities/fsl_io.c ****             /* start ring buffer */
+ 333:../utilities/fsl_io.c ****             USART_TransferStartRingBuffer(s_debugConsoleIO.ioBase, &s_ioUsartHandler, ringBuffer,
+ 334:../utilities/fsl_io.c ****                                           DEBUG_CONSOLE_RECEIVE_BUFFER_LEN);
+ 335:../utilities/fsl_io.c **** #endif
+ 336:../utilities/fsl_io.c ****         }
+ 337:../utilities/fsl_io.c ****         break;
+ 338:../utilities/fsl_io.c **** #endif
+ 339:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_VUSART
+ 340:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_VUSART:
+ 341:../utilities/fsl_io.c ****         {
+ 342:../utilities/fsl_io.c ****             usart_config_t usart_config;
+ 343:../utilities/fsl_io.c ****             USART_GetDefaultConfig(&usart_config);
+ 344:../utilities/fsl_io.c ****             usart_config.baudRate_Bps = baudRate;
+ 345:../utilities/fsl_io.c ****             usart_config.enableRx = true;
+ 346:../utilities/fsl_io.c ****             usart_config.enableTx = true;
+ 347:../utilities/fsl_io.c ****             /* Enable rx fifo for user's continously input */
+ 348:../utilities/fsl_io.c ****             usart_config.fifoConfig.enableRxFifo = true;
+ 349:../utilities/fsl_io.c ****             usart_config.fifoConfig.rxFifoSize = 8;
+ 350:../utilities/fsl_io.c ****             /* Enable clock and initial UART module follow user configure structure. */
+ 351:../utilities/fsl_io.c ****             USART_Init((USART_Type *)s_debugConsoleIO.ioBase, &usart_config, clkSrcFreq);
+ 352:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 353:../utilities/fsl_io.c ****             s_debugConsoleIO.callBack = io->callBack;
+ 354:../utilities/fsl_io.c ****             /* create handler for interrupt transfer */
+ 355:../utilities/fsl_io.c ****             USART_TransferCreateHandle(s_debugConsoleIO.ioBase, &s_ioUsartHandler, USART_Callback, 
+ 356:../utilities/fsl_io.c ****             /* start ring buffer */
+ 357:../utilities/fsl_io.c ****             USART_TransferStartRingBuffer(s_debugConsoleIO.ioBase, &s_ioUsartHandler, ringBuffer,
+ 358:../utilities/fsl_io.c ****                                           DEBUG_CONSOLE_RECEIVE_BUFFER_LEN);
+ 359:../utilities/fsl_io.c **** #endif
+ 360:../utilities/fsl_io.c ****         }
+ 361:../utilities/fsl_io.c ****         break;
+ 362:../utilities/fsl_io.c **** #endif
+ 363:../utilities/fsl_io.c ****     }
+ 364:../utilities/fsl_io.c **** }
+ 103              		.loc 1 364 0
+ 104 003e 05B0     		add	sp, sp, #20
+ 105              		.cfi_def_cfa_offset 20
+ 106              		@ sp needed
+ 107 0040 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 108              	.LVL8:
+ 109              	.L11:
+ 110 0042 00BF     		.align	2
+ 111              	.L10:
+ 112 0044 00000000 		.word	.LANCHOR0
+ 113              		.cfi_endproc
+ 114              	.LFE154:
+ 116              		.section	.text.IO_Deinit,"ax",%progbits
+ 117              		.align	1
+ 118              		.global	IO_Deinit
+ 119              		.syntax unified
+ 120              		.thumb
+ 121              		.thumb_func
+ 122              		.fpu fpv4-sp-d16
+ 124              	IO_Deinit:
+ 125              	.LFB155:
+ 365:../utilities/fsl_io.c **** 
+ 366:../utilities/fsl_io.c **** status_t IO_Deinit(void)
+ 367:../utilities/fsl_io.c **** {
+ 126              		.loc 1 367 0
+ 127              		.cfi_startproc
+ 128              		@ args = 0, pretend = 0, frame = 0
+ 129              		@ frame_needed = 0, uses_anonymous_args = 0
+ 130 0000 10B5     		push	{r4, lr}
+ 131              		.cfi_def_cfa_offset 8
+ 132              		.cfi_offset 4, -8
+ 133              		.cfi_offset 14, -4
+ 368:../utilities/fsl_io.c ****     if (s_debugConsoleIO.ioType == DEBUG_CONSOLE_DEVICE_TYPE_NONE)
+ 134              		.loc 1 368 0
+ 135 0002 074C     		ldr	r4, .L25
+ 136 0004 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
+ 137 0006 43B1     		cbz	r3, .L13
+ 369:../utilities/fsl_io.c ****     {
+ 370:../utilities/fsl_io.c ****         return kStatus_Success;
+ 371:../utilities/fsl_io.c ****     }
+ 372:../utilities/fsl_io.c **** 
+ 373:../utilities/fsl_io.c ****     switch (s_debugConsoleIO.ioType)
+ 138              		.loc 1 373 0
+ 139 0008 012B     		cmp	r3, #1
+ 140 000a 01D0     		beq	.L15
+ 141 000c 062B     		cmp	r3, #6
+ 142 000e 02D1     		bne	.L14
+ 143              	.L15:
+ 374:../utilities/fsl_io.c ****     {
+ 375:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_UART) || (defined DEBUG_CONSOLE_IO_IUART)
+ 376:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_UART:
+ 377:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_IUART:
+ 378:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 379:../utilities/fsl_io.c ****             /* stop ring buffer */
+ 380:../utilities/fsl_io.c ****             UART_TransferStopRingBuffer(s_debugConsoleIO.ioBase, &s_ioUartHandler);
+ 381:../utilities/fsl_io.c **** #endif
+ 382:../utilities/fsl_io.c ****             /* Disable UART module. */
+ 383:../utilities/fsl_io.c ****             UART_Deinit((UART_Type *)s_debugConsoleIO.ioBase);
+ 144              		.loc 1 383 0
+ 145 0010 2068     		ldr	r0, [r4]
+ 146 0012 FFF7FEFF 		bl	UART_Deinit
+ 147              	.LVL9:
+ 148              	.L14:
+ 384:../utilities/fsl_io.c **** 
+ 385:../utilities/fsl_io.c ****             break;
+ 386:../utilities/fsl_io.c **** #endif
+ 387:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPSCI
+ 388:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPSCI:
+ 389:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 390:../utilities/fsl_io.c ****             /* stop ring buffer */
+ 391:../utilities/fsl_io.c ****             LPSCI_TransferStopRingBuffer(s_debugConsoleIO.ioBase, &s_ioLpsciHandler);
+ 392:../utilities/fsl_io.c **** #endif
+ 393:../utilities/fsl_io.c ****             /* Disable LPSCI module. */
+ 394:../utilities/fsl_io.c ****             LPSCI_Deinit((UART0_Type *)s_debugConsoleIO.ioBase);
+ 395:../utilities/fsl_io.c **** 
+ 396:../utilities/fsl_io.c ****             break;
+ 397:../utilities/fsl_io.c **** #endif
+ 398:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPUART
+ 399:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPUART:
+ 400:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 401:../utilities/fsl_io.c ****             /* stop ring buffer */
+ 402:../utilities/fsl_io.c ****             LPUART_TransferStopRingBuffer(s_debugConsoleIO.ioBase, &s_ioLpuartHandler);
+ 403:../utilities/fsl_io.c **** #endif
+ 404:../utilities/fsl_io.c ****             /* Disable LPUART module. */
+ 405:../utilities/fsl_io.c ****             LPUART_Deinit((LPUART_Type *)s_debugConsoleIO.ioBase);
+ 406:../utilities/fsl_io.c **** 
+ 407:../utilities/fsl_io.c ****             break;
+ 408:../utilities/fsl_io.c **** #endif
+ 409:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_USBCDC
+ 410:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_USBCDC:
+ 411:../utilities/fsl_io.c ****             /* Disable USBCDC module. */
+ 412:../utilities/fsl_io.c ****             USB_VcomDeinit(s_debugConsoleIO.ioBase);
+ 413:../utilities/fsl_io.c ****             break;
+ 414:../utilities/fsl_io.c **** #endif
+ 415:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_FLEXCOMM) || (defined DEBUG_CONSOLE_IO_VUSART)
+ 416:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_FLEXCOMM:
+ 417:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_VUSART:
+ 418:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 419:../utilities/fsl_io.c ****             /* stop ring buffer */
+ 420:../utilities/fsl_io.c ****             USART_TransferStopRingBuffer(s_debugConsoleIO.ioBase, &s_ioUsartHandler);
+ 421:../utilities/fsl_io.c **** #endif
+ 422:../utilities/fsl_io.c ****             /* deinit IO */
+ 423:../utilities/fsl_io.c ****             USART_Deinit((USART_Type *)s_debugConsoleIO.ioBase);
+ 424:../utilities/fsl_io.c **** 
+ 425:../utilities/fsl_io.c ****             break;
+ 426:../utilities/fsl_io.c **** #endif
+ 427:../utilities/fsl_io.c ****         default:
+ 428:../utilities/fsl_io.c ****             s_debugConsoleIO.ioType = DEBUG_CONSOLE_DEVICE_TYPE_NONE;
+ 429:../utilities/fsl_io.c ****             break;
+ 430:../utilities/fsl_io.c ****     }
+ 431:../utilities/fsl_io.c **** 
+ 432:../utilities/fsl_io.c ****     s_debugConsoleIO.ioType = DEBUG_CONSOLE_DEVICE_TYPE_NONE;
+ 149              		.loc 1 432 0
+ 150 0016 0023     		movs	r3, #0
+ 151 0018 2371     		strb	r3, [r4, #4]
+ 152              	.L13:
+ 433:../utilities/fsl_io.c **** 
+ 434:../utilities/fsl_io.c ****     return kStatus_Success;
+ 435:../utilities/fsl_io.c **** }
+ 153              		.loc 1 435 0
+ 154 001a 0020     		movs	r0, #0
+ 155 001c 10BD     		pop	{r4, pc}
+ 156              	.L26:
+ 157 001e 00BF     		.align	2
+ 158              	.L25:
+ 159 0020 00000000 		.word	.LANCHOR0
+ 160              		.cfi_endproc
+ 161              	.LFE155:
+ 163              		.section	.text.IO_WaitIdle,"ax",%progbits
+ 164              		.align	1
+ 165              		.global	IO_WaitIdle
+ 166              		.syntax unified
+ 167              		.thumb
+ 168              		.thumb_func
+ 169              		.fpu fpv4-sp-d16
+ 171              	IO_WaitIdle:
+ 172              	.LFB156:
+ 436:../utilities/fsl_io.c **** 
+ 437:../utilities/fsl_io.c **** status_t IO_WaitIdle(void)
+ 438:../utilities/fsl_io.c **** {
+ 173              		.loc 1 438 0
+ 174              		.cfi_startproc
+ 175              		@ args = 0, pretend = 0, frame = 0
+ 176              		@ frame_needed = 0, uses_anonymous_args = 0
+ 177 0000 10B5     		push	{r4, lr}
+ 178              		.cfi_def_cfa_offset 8
+ 179              		.cfi_offset 4, -8
+ 180              		.cfi_offset 14, -4
+ 439:../utilities/fsl_io.c ****     switch (s_debugConsoleIO.ioType)
+ 181              		.loc 1 439 0
+ 182 0002 054C     		ldr	r4, .L34
+ 183 0004 2279     		ldrb	r2, [r4, #4]	@ zero_extendqisi2
+ 184 0006 012A     		cmp	r2, #1
+ 185 0008 04D1     		bne	.L28
+ 186              	.L29:
+ 440:../utilities/fsl_io.c ****     {
+ 441:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_UART)
+ 442:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_UART:
+ 443:../utilities/fsl_io.c ****             /* wait transfer complete flag */
+ 444:../utilities/fsl_io.c ****             while (!(UART_GetStatusFlags(s_debugConsoleIO.ioBase) & kUART_TransmissionCompleteFlag)
+ 187              		.loc 1 444 0 discriminator 1
+ 188 000a 2068     		ldr	r0, [r4]
+ 189 000c FFF7FEFF 		bl	UART_GetStatusFlags
+ 190              	.LVL10:
+ 191 0010 4306     		lsls	r3, r0, #25
+ 192 0012 FAD5     		bpl	.L29
+ 193              	.L28:
+ 445:../utilities/fsl_io.c ****                 ;
+ 446:../utilities/fsl_io.c ****             break;
+ 447:../utilities/fsl_io.c **** #endif
+ 448:../utilities/fsl_io.c **** 
+ 449:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_IUART)
+ 450:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_IUART:
+ 451:../utilities/fsl_io.c ****             /* wait transfer complete flag */
+ 452:../utilities/fsl_io.c ****             while (!(UART_GetStatusFlag(s_debugConsoleIO.ioBase, kUART_TxCompleteFlag)))
+ 453:../utilities/fsl_io.c ****                 ;
+ 454:../utilities/fsl_io.c ****             break;
+ 455:../utilities/fsl_io.c **** #endif
+ 456:../utilities/fsl_io.c **** 
+ 457:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPSCI
+ 458:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPSCI:
+ 459:../utilities/fsl_io.c ****             /* wait transfer complete flag */
+ 460:../utilities/fsl_io.c ****             while (!(LPSCI_GetStatusFlags(s_debugConsoleIO.ioBase) & kLPSCI_TransmissionCompleteFla
+ 461:../utilities/fsl_io.c ****                 ;
+ 462:../utilities/fsl_io.c ****             break;
+ 463:../utilities/fsl_io.c **** #endif
+ 464:../utilities/fsl_io.c **** 
+ 465:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPUART
+ 466:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPUART:
+ 467:../utilities/fsl_io.c ****             /* wait transfer complete flag */
+ 468:../utilities/fsl_io.c ****             while (!(LPUART_GetStatusFlags(s_debugConsoleIO.ioBase) & kLPUART_TransmissionCompleteF
+ 469:../utilities/fsl_io.c ****                 ;
+ 470:../utilities/fsl_io.c ****             break;
+ 471:../utilities/fsl_io.c **** #endif
+ 472:../utilities/fsl_io.c **** 
+ 473:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_FLEXCOMM) || (defined DEBUG_CONSOLE_IO_VUSART)
+ 474:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_FLEXCOMM:
+ 475:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_VUSART:
+ 476:../utilities/fsl_io.c ****             /* wait transfer complete flag */
+ 477:../utilities/fsl_io.c ****             while (!(USART_GetStatusFlags(s_debugConsoleIO.ioBase) & kUSART_TxFifoEmptyFlag))
+ 478:../utilities/fsl_io.c ****                 ;
+ 479:../utilities/fsl_io.c ****             break;
+ 480:../utilities/fsl_io.c **** #endif
+ 481:../utilities/fsl_io.c ****         default:
+ 482:../utilities/fsl_io.c ****             break;
+ 483:../utilities/fsl_io.c ****     }
+ 484:../utilities/fsl_io.c **** 
+ 485:../utilities/fsl_io.c ****     return kStatus_Success;
+ 486:../utilities/fsl_io.c **** }
+ 194              		.loc 1 486 0
+ 195 0014 0020     		movs	r0, #0
+ 196 0016 10BD     		pop	{r4, pc}
+ 197              	.L35:
+ 198              		.align	2
+ 199              	.L34:
+ 200 0018 00000000 		.word	.LANCHOR0
+ 201              		.cfi_endproc
+ 202              	.LFE156:
+ 204              		.section	.text.IO_Transfer,"ax",%progbits
+ 205              		.align	1
+ 206              		.global	IO_Transfer
+ 207              		.syntax unified
+ 208              		.thumb
+ 209              		.thumb_func
+ 210              		.fpu fpv4-sp-d16
+ 212              	IO_Transfer:
+ 213              	.LFB157:
+ 487:../utilities/fsl_io.c **** 
+ 488:../utilities/fsl_io.c **** #ifdef DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+ 489:../utilities/fsl_io.c **** 
+ 490:../utilities/fsl_io.c **** status_t IO_Transfer(uint8_t *ch, size_t size, bool tx)
+ 491:../utilities/fsl_io.c **** {
+ 492:../utilities/fsl_io.c ****     status_t status = kStatus_Fail;
+ 493:../utilities/fsl_io.c **** 
+ 494:../utilities/fsl_io.c ****     switch (s_debugConsoleIO.ioType)
+ 495:../utilities/fsl_io.c ****     {
+ 496:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_UART) || (defined DEBUG_CONSOLE_IO_IUART)
+ 497:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_UART:
+ 498:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_IUART:
+ 499:../utilities/fsl_io.c ****         {
+ 500:../utilities/fsl_io.c ****             uart_transfer_t transfer = {0U};
+ 501:../utilities/fsl_io.c ****             transfer.data = ch;
+ 502:../utilities/fsl_io.c ****             transfer.dataSize = size;
+ 503:../utilities/fsl_io.c ****             /* transfer data */
+ 504:../utilities/fsl_io.c ****             if (tx)
+ 505:../utilities/fsl_io.c ****             {
+ 506:../utilities/fsl_io.c ****                 status = UART_TransferSendNonBlocking(s_debugConsoleIO.ioBase, &s_ioUartHandler, &t
+ 507:../utilities/fsl_io.c ****             }
+ 508:../utilities/fsl_io.c ****             else
+ 509:../utilities/fsl_io.c ****             {
+ 510:../utilities/fsl_io.c ****                 status = UART_TransferReceiveNonBlocking(s_debugConsoleIO.ioBase, &s_ioUartHandler,
+ 511:../utilities/fsl_io.c ****             }
+ 512:../utilities/fsl_io.c ****         }
+ 513:../utilities/fsl_io.c ****         break;
+ 514:../utilities/fsl_io.c **** #endif
+ 515:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPSCI
+ 516:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPSCI:
+ 517:../utilities/fsl_io.c ****         {
+ 518:../utilities/fsl_io.c ****             lpsci_transfer_t transfer = {0U};
+ 519:../utilities/fsl_io.c ****             transfer.data = ch;
+ 520:../utilities/fsl_io.c ****             transfer.dataSize = size;
+ 521:../utilities/fsl_io.c ****             /* transfer data */
+ 522:../utilities/fsl_io.c ****             if (tx)
+ 523:../utilities/fsl_io.c ****             {
+ 524:../utilities/fsl_io.c ****                 status = LPSCI_TransferSendNonBlocking(s_debugConsoleIO.ioBase, &s_ioLpsciHandler, 
+ 525:../utilities/fsl_io.c ****             }
+ 526:../utilities/fsl_io.c ****             else
+ 527:../utilities/fsl_io.c ****             {
+ 528:../utilities/fsl_io.c ****                 status = LPSCI_TransferReceiveNonBlocking(s_debugConsoleIO.ioBase, &s_ioLpsciHandle
+ 529:../utilities/fsl_io.c ****             }
+ 530:../utilities/fsl_io.c ****         }
+ 531:../utilities/fsl_io.c ****         break;
+ 532:../utilities/fsl_io.c **** #endif
+ 533:../utilities/fsl_io.c **** 
+ 534:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPUART
+ 535:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPUART:
+ 536:../utilities/fsl_io.c ****         {
+ 537:../utilities/fsl_io.c ****             lpuart_transfer_t transfer = {0U};
+ 538:../utilities/fsl_io.c ****             transfer.data = ch;
+ 539:../utilities/fsl_io.c ****             transfer.dataSize = size;
+ 540:../utilities/fsl_io.c ****             /* transfer data */
+ 541:../utilities/fsl_io.c ****             if (tx)
+ 542:../utilities/fsl_io.c ****             {
+ 543:../utilities/fsl_io.c ****                 status = LPUART_TransferSendNonBlocking(s_debugConsoleIO.ioBase, &s_ioLpuartHandler
+ 544:../utilities/fsl_io.c ****             }
+ 545:../utilities/fsl_io.c ****             else
+ 546:../utilities/fsl_io.c ****             {
+ 547:../utilities/fsl_io.c ****                 status =
+ 548:../utilities/fsl_io.c ****                     LPUART_TransferReceiveNonBlocking(s_debugConsoleIO.ioBase, &s_ioLpuartHandler, 
+ 549:../utilities/fsl_io.c ****             }
+ 550:../utilities/fsl_io.c ****         }
+ 551:../utilities/fsl_io.c ****         break;
+ 552:../utilities/fsl_io.c **** #endif
+ 553:../utilities/fsl_io.c **** 
+ 554:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_USBCDC
+ 555:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_USBCDC:
+ 556:../utilities/fsl_io.c ****         {
+ 557:../utilities/fsl_io.c ****             if (tx)
+ 558:../utilities/fsl_io.c ****             {
+ 559:../utilities/fsl_io.c ****                 USB_VcomWriteBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 560:../utilities/fsl_io.c ****             }
+ 561:../utilities/fsl_io.c ****             else
+ 562:../utilities/fsl_io.c ****             {
+ 563:../utilities/fsl_io.c ****                 USB_VcomReadBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 564:../utilities/fsl_io.c ****             }
+ 565:../utilities/fsl_io.c ****         }
+ 566:../utilities/fsl_io.c ****         break;
+ 567:../utilities/fsl_io.c **** #endif
+ 568:../utilities/fsl_io.c **** 
+ 569:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_FLEXCOMM) || (defined DEBUG_CONSOLE_IO_VUSART)
+ 570:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_FLEXCOMM:
+ 571:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_VUSART:
+ 572:../utilities/fsl_io.c ****         {
+ 573:../utilities/fsl_io.c ****             usart_transfer_t transfer = {0U};
+ 574:../utilities/fsl_io.c ****             transfer.data = ch;
+ 575:../utilities/fsl_io.c ****             transfer.dataSize = size;
+ 576:../utilities/fsl_io.c ****             /* transfer data */
+ 577:../utilities/fsl_io.c ****             if (tx)
+ 578:../utilities/fsl_io.c ****             {
+ 579:../utilities/fsl_io.c ****                 status = USART_TransferSendNonBlocking(s_debugConsoleIO.ioBase, &s_ioUsartHandler, 
+ 580:../utilities/fsl_io.c ****             }
+ 581:../utilities/fsl_io.c ****             else
+ 582:../utilities/fsl_io.c ****             {
+ 583:../utilities/fsl_io.c ****                 status = USART_TransferReceiveNonBlocking(s_debugConsoleIO.ioBase, &s_ioUsartHandle
+ 584:../utilities/fsl_io.c ****             }
+ 585:../utilities/fsl_io.c ****         }
+ 586:../utilities/fsl_io.c ****         break;
+ 587:../utilities/fsl_io.c **** #endif
+ 588:../utilities/fsl_io.c ****         default:
+ 589:../utilities/fsl_io.c ****             break;
+ 590:../utilities/fsl_io.c ****     }
+ 591:../utilities/fsl_io.c **** 
+ 592:../utilities/fsl_io.c ****     return status;
+ 593:../utilities/fsl_io.c **** }
+ 594:../utilities/fsl_io.c **** 
+ 595:../utilities/fsl_io.c **** status_t IO_TryReceiveCharacter(uint8_t *ch)
+ 596:../utilities/fsl_io.c **** {
+ 597:../utilities/fsl_io.c ****     status_t status = kStatus_Fail;
+ 598:../utilities/fsl_io.c ****     uint32_t size = 1U;
+ 599:../utilities/fsl_io.c **** 
+ 600:../utilities/fsl_io.c ****     switch (s_debugConsoleIO.ioType)
+ 601:../utilities/fsl_io.c ****     {
+ 602:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_UART) || (defined DEBUG_CONSOLE_IO_IUART)
+ 603:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_UART:
+ 604:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_IUART:
+ 605:../utilities/fsl_io.c ****         {
+ 606:../utilities/fsl_io.c ****             uart_transfer_t transfer = {0U};
+ 607:../utilities/fsl_io.c ****             transfer.data = ch;
+ 608:../utilities/fsl_io.c ****             transfer.dataSize = size;
+ 609:../utilities/fsl_io.c ****             if (UART_TransferGetRxRingBufferLength(&s_ioUartHandler) >= size)
+ 610:../utilities/fsl_io.c ****             {
+ 611:../utilities/fsl_io.c ****                 /* transfer data */
+ 612:../utilities/fsl_io.c ****                 status = UART_TransferReceiveNonBlocking(s_debugConsoleIO.ioBase, &s_ioUartHandler,
+ 613:../utilities/fsl_io.c ****             }
+ 614:../utilities/fsl_io.c ****         }
+ 615:../utilities/fsl_io.c ****         break;
+ 616:../utilities/fsl_io.c **** #endif
+ 617:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPSCI
+ 618:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPSCI:
+ 619:../utilities/fsl_io.c ****         {
+ 620:../utilities/fsl_io.c ****             lpsci_transfer_t transfer = {0U};
+ 621:../utilities/fsl_io.c ****             transfer.data = ch;
+ 622:../utilities/fsl_io.c ****             transfer.dataSize = size;
+ 623:../utilities/fsl_io.c ****             if (LPSCI_TransferGetRxRingBufferLength(&s_ioLpsciHandler) >= size)
+ 624:../utilities/fsl_io.c ****             {
+ 625:../utilities/fsl_io.c ****                 /* transfer data */
+ 626:../utilities/fsl_io.c ****                 status = LPSCI_TransferReceiveNonBlocking(s_debugConsoleIO.ioBase, &s_ioLpsciHandle
+ 627:../utilities/fsl_io.c ****             }
+ 628:../utilities/fsl_io.c ****         }
+ 629:../utilities/fsl_io.c ****         break;
+ 630:../utilities/fsl_io.c **** #endif
+ 631:../utilities/fsl_io.c **** 
+ 632:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPUART
+ 633:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPUART:
+ 634:../utilities/fsl_io.c ****         {
+ 635:../utilities/fsl_io.c ****             lpuart_transfer_t transfer = {0U};
+ 636:../utilities/fsl_io.c ****             transfer.data = ch;
+ 637:../utilities/fsl_io.c ****             transfer.dataSize = size;
+ 638:../utilities/fsl_io.c ****             if (LPUART_TransferGetRxRingBufferLength(s_debugConsoleIO.ioBase, &s_ioLpuartHandler) >
+ 639:../utilities/fsl_io.c ****             {
+ 640:../utilities/fsl_io.c ****                 /* transfer data */
+ 641:../utilities/fsl_io.c ****                 status =
+ 642:../utilities/fsl_io.c ****                     LPUART_TransferReceiveNonBlocking(s_debugConsoleIO.ioBase, &s_ioLpuartHandler, 
+ 643:../utilities/fsl_io.c ****             }
+ 644:../utilities/fsl_io.c ****         }
+ 645:../utilities/fsl_io.c ****         break;
+ 646:../utilities/fsl_io.c **** #endif
+ 647:../utilities/fsl_io.c **** 
+ 648:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_USBCDC
+ 649:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_USBCDC:
+ 650:../utilities/fsl_io.c ****             break;
+ 651:../utilities/fsl_io.c **** #endif
+ 652:../utilities/fsl_io.c **** 
+ 653:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_FLEXCOMM) || (defined DEBUG_CONSOLE_IO_VUSART)
+ 654:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_FLEXCOMM:
+ 655:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_VUSART:
+ 656:../utilities/fsl_io.c ****         {
+ 657:../utilities/fsl_io.c ****             usart_transfer_t transfer = {0U};
+ 658:../utilities/fsl_io.c ****             transfer.data = ch;
+ 659:../utilities/fsl_io.c ****             transfer.dataSize = size;
+ 660:../utilities/fsl_io.c ****             if (USART_TransferGetRxRingBufferLength(&s_ioUsartHandler) >= size)
+ 661:../utilities/fsl_io.c ****             {
+ 662:../utilities/fsl_io.c ****                 /* transfer data */
+ 663:../utilities/fsl_io.c ****                 status = USART_TransferReceiveNonBlocking(s_debugConsoleIO.ioBase, &s_ioUsartHandle
+ 664:../utilities/fsl_io.c ****             }
+ 665:../utilities/fsl_io.c ****         }
+ 666:../utilities/fsl_io.c ****         break;
+ 667:../utilities/fsl_io.c **** #endif
+ 668:../utilities/fsl_io.c ****         default:
+ 669:../utilities/fsl_io.c ****             break;
+ 670:../utilities/fsl_io.c ****     }
+ 671:../utilities/fsl_io.c **** 
+ 672:../utilities/fsl_io.c ****     return status;
+ 673:../utilities/fsl_io.c **** }
+ 674:../utilities/fsl_io.c **** 
+ 675:../utilities/fsl_io.c **** #else
+ 676:../utilities/fsl_io.c **** 
+ 677:../utilities/fsl_io.c **** status_t IO_Transfer(uint8_t *ch, size_t size, bool tx)
+ 678:../utilities/fsl_io.c **** {
+ 214              		.loc 1 678 0
+ 215              		.cfi_startproc
+ 216              		@ args = 0, pretend = 0, frame = 0
+ 217              		@ frame_needed = 0, uses_anonymous_args = 0
+ 218              	.LVL11:
+ 219 0000 10B5     		push	{r4, lr}
+ 220              		.cfi_def_cfa_offset 8
+ 221              		.cfi_offset 4, -8
+ 222              		.cfi_offset 14, -4
+ 679:../utilities/fsl_io.c ****     status_t status = kStatus_Success;
+ 680:../utilities/fsl_io.c ****     switch (s_debugConsoleIO.ioType)
+ 223              		.loc 1 680 0
+ 224 0002 0B4B     		ldr	r3, .L48
+ 678:../utilities/fsl_io.c ****     status_t status = kStatus_Success;
+ 225              		.loc 1 678 0
+ 226 0004 0446     		mov	r4, r0
+ 227              		.loc 1 680 0
+ 228 0006 1879     		ldrb	r0, [r3, #4]	@ zero_extendqisi2
+ 229              	.LVL12:
+ 230 0008 0128     		cmp	r0, #1
+ 231 000a 01D0     		beq	.L38
+ 232 000c 0628     		cmp	r0, #6
+ 233 000e 0DD1     		bne	.L47
+ 234              	.L38:
+ 235 0010 1868     		ldr	r0, [r3]
+ 681:../utilities/fsl_io.c ****     {
+ 682:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_UART) || (defined DEBUG_CONSOLE_IO_IUART)
+ 683:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_UART:
+ 684:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_IUART:
+ 685:../utilities/fsl_io.c ****         {
+ 686:../utilities/fsl_io.c ****             if (tx)
+ 236              		.loc 1 686 0
+ 237 0012 2AB1     		cbz	r2, .L39
+ 687:../utilities/fsl_io.c ****             {
+ 688:../utilities/fsl_io.c ****                 UART_WriteBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 238              		.loc 1 688 0
+ 239 0014 0A46     		mov	r2, r1
+ 240              	.LVL13:
+ 241 0016 2146     		mov	r1, r4
+ 242              	.LVL14:
+ 243 0018 FFF7FEFF 		bl	UART_WriteBlocking
+ 244              	.LVL15:
+ 679:../utilities/fsl_io.c ****     switch (s_debugConsoleIO.ioType)
+ 245              		.loc 1 679 0
+ 246 001c 0020     		movs	r0, #0
+ 247              	.LVL16:
+ 248              	.L36:
+ 689:../utilities/fsl_io.c ****             }
+ 690:../utilities/fsl_io.c ****             else
+ 691:../utilities/fsl_io.c ****             {
+ 692:../utilities/fsl_io.c ****                 status = UART_ReadBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 693:../utilities/fsl_io.c ****             }
+ 694:../utilities/fsl_io.c ****         }
+ 695:../utilities/fsl_io.c ****         break;
+ 696:../utilities/fsl_io.c **** #endif
+ 697:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPSCI
+ 698:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPSCI:
+ 699:../utilities/fsl_io.c ****         {
+ 700:../utilities/fsl_io.c ****             if (tx)
+ 701:../utilities/fsl_io.c ****             {
+ 702:../utilities/fsl_io.c ****                 LPSCI_WriteBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 703:../utilities/fsl_io.c ****             }
+ 704:../utilities/fsl_io.c ****             else
+ 705:../utilities/fsl_io.c ****             {
+ 706:../utilities/fsl_io.c ****                 status = LPSCI_ReadBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 707:../utilities/fsl_io.c ****             }
+ 708:../utilities/fsl_io.c ****         }
+ 709:../utilities/fsl_io.c ****         break;
+ 710:../utilities/fsl_io.c **** #endif
+ 711:../utilities/fsl_io.c **** 
+ 712:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_LPUART
+ 713:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_LPUART:
+ 714:../utilities/fsl_io.c ****         {
+ 715:../utilities/fsl_io.c ****             if (tx)
+ 716:../utilities/fsl_io.c ****             {
+ 717:../utilities/fsl_io.c ****                 LPUART_WriteBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 718:../utilities/fsl_io.c ****             }
+ 719:../utilities/fsl_io.c ****             else
+ 720:../utilities/fsl_io.c ****             {
+ 721:../utilities/fsl_io.c ****                 status = LPUART_ReadBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 722:../utilities/fsl_io.c ****             }
+ 723:../utilities/fsl_io.c ****         }
+ 724:../utilities/fsl_io.c ****         break;
+ 725:../utilities/fsl_io.c **** #endif
+ 726:../utilities/fsl_io.c **** 
+ 727:../utilities/fsl_io.c **** #if defined DEBUG_CONSOLE_IO_USBCDC
+ 728:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_USBCDC:
+ 729:../utilities/fsl_io.c ****         {
+ 730:../utilities/fsl_io.c ****             if (tx)
+ 731:../utilities/fsl_io.c ****             {
+ 732:../utilities/fsl_io.c ****                 USB_VcomWriteBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 733:../utilities/fsl_io.c ****             }
+ 734:../utilities/fsl_io.c ****             else
+ 735:../utilities/fsl_io.c ****             {
+ 736:../utilities/fsl_io.c ****                 status = USB_VcomReadBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 737:../utilities/fsl_io.c ****             }
+ 738:../utilities/fsl_io.c ****         }
+ 739:../utilities/fsl_io.c ****         break;
+ 740:../utilities/fsl_io.c **** #endif
+ 741:../utilities/fsl_io.c **** 
+ 742:../utilities/fsl_io.c **** #if (defined DEBUG_CONSOLE_IO_FLEXCOMM) || (defined DEBUG_CONSOLE_IO_VUSART)
+ 743:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_FLEXCOMM:
+ 744:../utilities/fsl_io.c ****         case DEBUG_CONSOLE_DEVICE_TYPE_VUSART:
+ 745:../utilities/fsl_io.c ****         {
+ 746:../utilities/fsl_io.c ****             if (tx)
+ 747:../utilities/fsl_io.c ****             {
+ 748:../utilities/fsl_io.c ****                 USART_WriteBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 749:../utilities/fsl_io.c ****             }
+ 750:../utilities/fsl_io.c ****             else
+ 751:../utilities/fsl_io.c ****             {
+ 752:../utilities/fsl_io.c ****                 status = USART_ReadBlocking(s_debugConsoleIO.ioBase, ch, size);
+ 753:../utilities/fsl_io.c ****             }
+ 754:../utilities/fsl_io.c ****         }
+ 755:../utilities/fsl_io.c ****         break;
+ 756:../utilities/fsl_io.c **** #endif
+ 757:../utilities/fsl_io.c ****         default:
+ 758:../utilities/fsl_io.c ****             status = kStatus_Fail;
+ 759:../utilities/fsl_io.c ****             break;
+ 760:../utilities/fsl_io.c ****     }
+ 761:../utilities/fsl_io.c **** 
+ 762:../utilities/fsl_io.c ****     return status;
+ 763:../utilities/fsl_io.c **** }
+ 249              		.loc 1 763 0
+ 250 001e 10BD     		pop	{r4, pc}
+ 251              	.LVL17:
+ 252              	.L39:
+ 692:../utilities/fsl_io.c ****             }
+ 253              		.loc 1 692 0
+ 254 0020 0A46     		mov	r2, r1
+ 255              	.LVL18:
+ 256 0022 2146     		mov	r1, r4
+ 257              	.LVL19:
+ 258              		.loc 1 763 0
+ 259 0024 BDE81040 		pop	{r4, lr}
+ 260              		.cfi_remember_state
+ 261              		.cfi_restore 14
+ 262              		.cfi_restore 4
+ 263              		.cfi_def_cfa_offset 0
+ 264              	.LVL20:
+ 692:../utilities/fsl_io.c ****             }
+ 265              		.loc 1 692 0
+ 266 0028 FFF7FEBF 		b	UART_ReadBlocking
+ 267              	.LVL21:
+ 268              	.L47:
+ 269              		.cfi_restore_state
+ 758:../utilities/fsl_io.c ****             break;
+ 270              		.loc 1 758 0
+ 271 002c 0120     		movs	r0, #1
+ 272              	.LVL22:
+ 762:../utilities/fsl_io.c **** }
+ 273              		.loc 1 762 0
+ 274 002e F6E7     		b	.L36
+ 275              	.L49:
+ 276              		.align	2
+ 277              	.L48:
+ 278 0030 00000000 		.word	.LANCHOR0
+ 279              		.cfi_endproc
+ 280              	.LFE157:
+ 282              		.section	.bss.s_debugConsoleIO,"aw",%nobits
+ 283              		.align	2
+ 284              		.set	.LANCHOR0,. + 0
+ 287              	s_debugConsoleIO:
+ 288 0000 00000000 		.space	8
+ 288      00000000 
+ 289              		.text
+ 290              	.Letext0:
+ 291              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 292              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 293              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 294              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 295              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 296              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 297              		.file 9 "../CMSIS/core_cm4.h"
+ 298              		.file 10 "../CMSIS/system_MK64F12.h"
+ 299              		.file 11 "../CMSIS/MK64F12.h"
+ 300              		.file 12 "../drivers/fsl_common.h"
+ 301              		.file 13 "../drivers/fsl_clock.h"
+ 302              		.file 14 "../utilities/fsl_io.h"
