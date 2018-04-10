@@ -16,34 +16,49 @@
 <ion-content padding>
   <ion-list inset>
     <form class="textForm" #myForm='ngForm'>
-        <div id="image">
+      <p *ngIf="errorMessage" style="color: red">{{errorMessage}}</p>
+        <!--<div id="image">
             <img src="assets/imgs/NoReindeerImage.png">
             <button ion-button class="submit-button">Select image</button>
-          </div>
+          </div>-->
+      <ion-item class="textForm">
+        <ion-label floating>First name</ion-label>
+        <ion-input type="text" ngModel name="firstName" required></ion-input>
+      </ion-item>
+      <ion-item class="textForm">
+        <ion-label floating>Last name</ion-label>
+        <ion-input type="text" ngModel name="lastName" required></ion-input>
+      </ion-item>
         <ion-item class="textForm">
-            <ion-label floating>email</ion-label>
-            <ion-textarea type="text" [(ngModel)]="subject" name="subject"></ion-textarea>
+            <ion-label floating>Email</ion-label>
+            <ion-input type="email" ngModel name="email" required></ion-input>
         </ion-item>
+      <ion-item class="textForm">
+        <ion-label floating>Password</ion-label>
+        <ion-input type="password" ngModel name="password" required></ion-input>
+      </ion-item>
+      <ion-item class="textForm">
+        <ion-label floating>Repaet password</ion-label>
+        <ion-input type="password" ngModel name="passwordrpt" required></ion-input>
+      </ion-item>
+      <ion-item class="textForm" style="padding-left: 0">
+        <ion-label floating>Birthday</ion-label>
+        <ion-datetime ngModel name="birthdate" required></ion-datetime>
+      </ion-item>
         <ion-item class="textForm">
             <ion-label floating>phone number</ion-label>
-            <ion-textarea type="text" [(ngModel)]="subject" name="subject"></ion-textarea>
+            <ion-input type="tel" ngModel name="phoneNumber" required></ion-input>
         </ion-item>
-        <ion-item class="textForm">
-            <ion-label floating>name</ion-label>
-            <ion-textarea type="text" [(ngModel)]="subject" name="subject"></ion-textarea>
-        </ion-item>
-        <ion-item class="textForm">
-            <ion-label floating>birthdate</ion-label>
-            <ion-textarea type="text" [(ngModel)]="message" name="message"></ion-textarea>
-        </ion-item>
-        <ion-item class="textForm">
-          <ion-label floating>gender</ion-label>
-          <ion-textarea type="text" [(ngModel)]="message" name="message"></ion-textarea>
+      <ion-item class="textForm">
+        <ion-label floating>Location</ion-label>
+        <ion-select ngModel name="location" required>
+          <ion-option *ngFor="let location of locationArr" [value]="location">{{location}}</ion-option>
+        </ion-select>
       </ion-item>
     </form>
     <br>
     <br>
     <br>
-    <button ion-button class="submit-button" (click)="submit()">Sign Up</button>
+    <button ion-button class="submit-button" (click)="signUp(myForm)">Sign Up</button>
 </ion-list>
 </ion-content>

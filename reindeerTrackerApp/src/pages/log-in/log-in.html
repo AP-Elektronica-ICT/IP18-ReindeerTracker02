@@ -8,40 +8,42 @@
 
 
 <ion-content>
- 
+
   <div padding [@flyInBottomFast]="cloudState" id="cloud-layer">
- 
+
     <ion-row>
       <ion-col>
         <img [@flyInBottomSlow]="logoState" src="assets/imgs/reindeer.png" />
       </ion-col>
     </ion-row>
- 
+
     <ion-row>
       <ion-col>
         <ion-list inset [@bounceInBottom]="formState">
- 
-          <ion-item>
-            <ion-label>Username</ion-label>
-            <ion-input type="text"></ion-input>
-          </ion-item>
- 
-          <ion-item>
-            <ion-label>Password</ion-label>
-            <ion-input type="password"></ion-input>
-          </ion-item>
- 
+          <form #loginForm="ngForm">
+            <ion-item>
+              <ion-label>Email</ion-label>
+              <ion-input type="email" name="email" ngModel></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>Password</ion-label>
+              <ion-input type="password" name="password" ngModel></ion-input>
+            </ion-item>
+            <p style="color: red" *ngIf="loginError">The username and password are not correct.</p>
+          </form>
         </ion-list>
       </ion-col>
     </ion-row>
- 
+
     <ion-row>
       <ion-col>
-        <button ion-button class="login-button" [@fadeIn]="loginState" (click)="login()">Login</button>
+        <button ion-button class="login-button" [@fadeIn]="loginState" type="button" (click)="login(loginForm)">Login</button>
         <button ion-button class="signup-button" [@fadeIn]="loginState" (click)="signup()">Sign Up</button>
+        <p><a (click)="showForgotPasswordPrompt()">Forgot password?</a></p>
       </ion-col>
     </ion-row>
- 
+
   </div>
- 
+
 </ion-content>

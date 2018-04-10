@@ -25,6 +25,8 @@ import { StorageProvider } from '../providers/storage/storage';
 import { ImageProvider } from '../providers/image/image';
 import { PreloaderProvider } from '../providers/preloader/preloader';
 import {Camera} from "@ionic-native/camera";
+import { AuthProvider } from '../providers/auth/auth';
+import {AngularFireAuthModule} from "angularfire2/auth";
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAud_cLzms8_U55nCkSKNmnRUhXei2pLQs",
@@ -53,7 +55,8 @@ export const firebaseConfig = {
     BrowserAnimationsModule,
     NgxQRCodeModule,
     HttpClientModule,
-    AngularFireModule.initializeApp(firebaseConfig)
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireAuthModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -78,7 +81,8 @@ export const firebaseConfig = {
     StorageProvider,
     ImageProvider,
     PreloaderProvider,
-    Camera
+    Camera,
+    AuthProvider
   ]
 })
 export class AppModule {}
