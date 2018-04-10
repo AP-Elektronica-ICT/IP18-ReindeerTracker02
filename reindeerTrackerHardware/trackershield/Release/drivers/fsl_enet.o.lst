@@ -2857,16 +2857,16 @@
 2702:../drivers/fsl_enet.c ****     /* Check if the error interrupt happen. */
 2703:../drivers/fsl_enet.c ****     if (kENET_WakeupInterrupt & base->EIR)
  151              		.loc 1 2703 0
- 152 0002 4468     		ldr	r4, [r0, #4]
- 153 0004 14F4003F 		tst	r4, #131072
- 154 0008 CC69     		ldr	r4, [r1, #28]
- 155 000a 0DD0     		beq	.L14
+ 152 0002 4568     		ldr	r5, [r0, #4]
+ 153 0004 CC69     		ldr	r4, [r1, #28]
+ 154 0006 AD03     		lsls	r5, r5, #14
+ 155 0008 0DD5     		bpl	.L14
 2704:../drivers/fsl_enet.c ****     {
 2705:../drivers/fsl_enet.c ****         /* Clear the wakeup interrupt. */
 2706:../drivers/fsl_enet.c ****         base->EIR = kENET_WakeupInterrupt;
  156              		.loc 1 2706 0
- 157 000c 4FF40035 		mov	r5, #131072
- 158 0010 4560     		str	r5, [r0, #4]
+ 157 000a 4FF40035 		mov	r5, #131072
+ 158 000e 4560     		str	r5, [r0, #4]
  159              	.LVL9:
  160              	.LBB42:
  161              	.LBB43:
@@ -3883,9 +3883,9 @@
 1010:../drivers/fsl_enet.h ****     { /* MAC exits sleep mode. */
 1011:../drivers/fsl_enet.h ****         base->ECR &= ~(ENET_ECR_SLEEP_MASK | ENET_ECR_MAGICEN_MASK);
  163              		.loc 2 1011 0
- 164 0012 456A     		ldr	r5, [r0, #36]
- 165 0014 25F00C05 		bic	r5, r5, #12
- 166 0018 4562     		str	r5, [r0, #36]
+ 164 0010 456A     		ldr	r5, [r0, #36]
+ 165 0012 25F00C05 		bic	r5, r5, #12
+ 166 0016 4562     		str	r5, [r0, #36]
  167              	.LVL10:
  168              	.LBE43:
  169              	.LBE42:
@@ -3894,15 +3894,15 @@
 2709:../drivers/fsl_enet.c ****         /* Callback function. */
 2710:../drivers/fsl_enet.c ****         if (handle->callback)
  170              		.loc 1 2710 0
- 171 001a 14B1     		cbz	r4, .L16
+ 171 0018 14B1     		cbz	r4, .L16
 2711:../drivers/fsl_enet.c ****         {
 2712:../drivers/fsl_enet.c **** #if FSL_FEATURE_ENET_QUEUE > 1
 2713:../drivers/fsl_enet.c ****             handle->callback(base, handle, 0, kENET_WakeUpEvent, handle->userData);
 2714:../drivers/fsl_enet.c **** #else
 2715:../drivers/fsl_enet.c ****             handle->callback(base, handle, kENET_WakeUpEvent, handle->userData);
  172              		.loc 1 2715 0
- 173 001c 0B6A     		ldr	r3, [r1, #32]
- 174 001e 0322     		movs	r2, #3
+ 173 001a 0B6A     		ldr	r3, [r1, #32]
+ 174 001c 0322     		movs	r2, #3
  175              	.LVL11:
  176              	.L21:
 2716:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_ENET_QUEUE > 1 */
@@ -3921,7 +3921,7 @@
 2729:../drivers/fsl_enet.c **** #else
 2730:../drivers/fsl_enet.c ****             handle->callback(base, handle, kENET_ErrEvent, handle->userData);
  177              		.loc 1 2730 0
- 178 0020 A047     		blx	r4
+ 178 001e A047     		blx	r4
  179              	.LVL12:
  180              	.L16:
  181              	.LBB44:
@@ -4763,81 +4763,92 @@
  184              		.loc 3 833 0
  185              		.syntax unified
  186              	@ 833 "../CMSIS/cmsis_gcc.h" 1
- 187 0022 BFF34F8F 		dsb 0xF
+ 187 0020 BFF34F8F 		dsb 0xF
  188              	@ 0 "" 2
  189              		.thumb
  190              		.syntax unified
- 191 0026 38BD     		pop	{r3, r4, r5, pc}
- 192              	.LVL13:
- 193              	.L14:
- 194              	.LBE45:
- 195              	.LBE44:
+ 191              	.LBE45:
+ 192              	.LBE44:
+2731:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_ENET_QUEUE > 1 */
+2732:../drivers/fsl_enet.c ****         }
+2733:../drivers/fsl_enet.c ****     }
+2734:../drivers/fsl_enet.c ****     /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F Store immediate overlapping
+2735:../drivers/fsl_enet.c ****       exception return operation might vector to incorrect interrupt */
+2736:../drivers/fsl_enet.c **** #if defined __CORTEX_M && (__CORTEX_M == 4U)
+2737:../drivers/fsl_enet.c ****     __DSB();
+2738:../drivers/fsl_enet.c **** #endif
+2739:../drivers/fsl_enet.c **** }
+ 193              		.loc 1 2739 0
+ 194 0024 38BD     		pop	{r3, r4, r5, pc}
+ 195              	.LVL13:
+ 196              	.L14:
 2722:../drivers/fsl_enet.c ****         base->EIR = errMask;
- 196              		.loc 1 2722 0
- 197 0028 4568     		ldr	r5, [r0, #4]
- 198 002a 25F01F45 		bic	r5, r5, #-1627389952
- 199 002e 25F40005 		bic	r5, r5, #8388608
- 200 0032 AD0C     		lsrs	r5, r5, #18
- 201 0034 AD04     		lsls	r5, r5, #18
- 202              	.LVL14:
+ 197              		.loc 1 2722 0
+ 198 0026 4568     		ldr	r5, [r0, #4]
+ 199 0028 25F01F45 		bic	r5, r5, #-1627389952
+ 200 002c 25F40005 		bic	r5, r5, #8388608
+ 201 0030 AD0C     		lsrs	r5, r5, #18
+ 202 0032 AD04     		lsls	r5, r5, #18
+ 203              	.LVL14:
 2723:../drivers/fsl_enet.c ****         /* Callback function. */
- 203              		.loc 1 2723 0
- 204 0036 4560     		str	r5, [r0, #4]
+ 204              		.loc 1 2723 0
+ 205 0034 4560     		str	r5, [r0, #4]
 2725:../drivers/fsl_enet.c ****         {
- 205              		.loc 1 2725 0
- 206 0038 002C     		cmp	r4, #0
- 207 003a F2D0     		beq	.L16
- 208              		.loc 1 2730 0
- 209 003c 0B6A     		ldr	r3, [r1, #32]
- 210 003e 0222     		movs	r2, #2
- 211 0040 EEE7     		b	.L21
- 212              		.cfi_endproc
- 213              	.LFE182:
- 215              		.section	.text.ENET_UpdateReadBuffers.constprop.3,"ax",%progbits
- 216              		.align	1
- 217              		.syntax unified
- 218              		.thumb
- 219              		.thumb_func
- 220              		.fpu fpv4-sp-d16
- 222              	ENET_UpdateReadBuffers.constprop.3:
- 223              	.LFB194:
+ 206              		.loc 1 2725 0
+ 207 0036 002C     		cmp	r4, #0
+ 208 0038 F2D0     		beq	.L16
+2730:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_ENET_QUEUE > 1 */
+ 209              		.loc 1 2730 0
+ 210 003a 0B6A     		ldr	r3, [r1, #32]
+ 211 003c 0222     		movs	r2, #2
+ 212 003e EEE7     		b	.L21
+ 213              		.cfi_endproc
+ 214              	.LFE182:
+ 216              		.section	.text.ENET_UpdateReadBuffers.constprop.3,"ax",%progbits
+ 217              		.align	1
+ 218              		.syntax unified
+ 219              		.thumb
+ 220              		.thumb_func
+ 221              		.fpu fpv4-sp-d16
+ 223              	ENET_UpdateReadBuffers.constprop.3:
+ 224              	.LFB194:
 1285:../drivers/fsl_enet.c **** {
- 224              		.loc 1 1285 0
- 225              		.cfi_startproc
- 226              		@ args = 0, pretend = 0, frame = 0
- 227              		@ frame_needed = 0, uses_anonymous_args = 0
- 228              		@ link register save eliminated.
- 229              	.LVL15:
+ 225              		.loc 1 1285 0
+ 226              		.cfi_startproc
+ 227              		@ args = 0, pretend = 0, frame = 0
+ 228              		@ frame_needed = 0, uses_anonymous_args = 0
+ 229              		@ link register save eliminated.
+ 230              	.LVL15:
 1291:../drivers/fsl_enet.c ****     /* Sets the receive buffer descriptor with the empty flag. */
- 230              		.loc 1 1291 0
- 231 0000 4B68     		ldr	r3, [r1, #4]
- 232 0002 5A88     		ldrh	r2, [r3, #2]
- 233 0004 02F40052 		and	r2, r2, #8192
- 234 0008 5A80     		strh	r2, [r3, #2]	@ movhi
+ 231              		.loc 1 1291 0
+ 232 0000 4B68     		ldr	r3, [r1, #4]
+ 233 0002 5A88     		ldrh	r2, [r3, #2]
+ 234 0004 02F40052 		and	r2, r2, #8192
+ 235 0008 5A80     		strh	r2, [r3, #2]	@ movhi
 1293:../drivers/fsl_enet.c **** 
- 235              		.loc 1 1293 0
- 236 000a 5A88     		ldrh	r2, [r3, #2]
- 237 000c 6FEA4242 		mvn	r2, r2, lsl #17
- 238 0010 6FEA5242 		mvn	r2, r2, lsr #17
- 239 0014 92B2     		uxth	r2, r2
- 240 0016 5A80     		strh	r2, [r3, #2]	@ movhi
+ 236              		.loc 1 1293 0
+ 237 000a 5A88     		ldrh	r2, [r3, #2]
+ 238 000c 42F40042 		orr	r2, r2, #32768
+ 239 0010 5A80     		strh	r2, [r3, #2]	@ movhi
 1296:../drivers/fsl_enet.c ****     {
- 241              		.loc 1 1296 0
- 242 0018 5A88     		ldrh	r2, [r3, #2]
- 243 001a 9204     		lsls	r2, r2, #18
+ 240              		.loc 1 1296 0
+ 241 0012 5A88     		ldrh	r2, [r3, #2]
+ 242 0014 9204     		lsls	r2, r2, #18
 1298:../drivers/fsl_enet.c ****     }
- 244              		.loc 1 1298 0
- 245 001c 4CBF     		ite	mi
- 246 001e 0B68     		ldrmi	r3, [r1]
+ 243              		.loc 1 1298 0
+ 244 0016 4CBF     		ite	mi
+ 245 0018 0B68     		ldrmi	r3, [r1]
 1302:../drivers/fsl_enet.c ****     }
- 247              		.loc 1 1302 0
- 248 0020 0833     		addpl	r3, r3, #8
- 249 0022 4B60     		str	r3, [r1, #4]
+ 246              		.loc 1 1302 0
+ 247 001a 0833     		addpl	r3, r3, #8
+ 248 001c 4B60     		str	r3, [r1, #4]
 1309:../drivers/fsl_enet.c ****             break;
- 250              		.loc 1 1309 0
- 251 0024 4FF08073 		mov	r3, #16777216
- 252 0028 0361     		str	r3, [r0, #16]
- 253 002a 7047     		bx	lr
+ 249              		.loc 1 1309 0
+ 250 001e 4FF08073 		mov	r3, #16777216
+ 251 0022 0361     		str	r3, [r0, #16]
+1323:../drivers/fsl_enet.c **** 
+ 252              		.loc 1 1323 0
+ 253 0024 7047     		bx	lr
  254              		.cfi_endproc
  255              	.LFE194:
  257              		.section	.text.ENET_GetInstance,"ax",%progbits
@@ -4886,39 +4897,40 @@
  300              		@ args = 0, pretend = 0, frame = 0
  301              		@ frame_needed = 0, uses_anonymous_args = 0
  302              	.LVL19:
- 303 0000 10B5     		push	{r4, lr}
- 304              		.cfi_def_cfa_offset 8
- 305              		.cfi_offset 4, -8
- 306              		.cfi_offset 14, -4
  339:../drivers/fsl_enet.c **** 
- 307              		.loc 1 339 0
- 308 0002 1822     		movs	r2, #24
+ 303              		.loc 1 339 0
+ 304 0000 1822     		movs	r2, #24
  334:../drivers/fsl_enet.c ****     /* Checks input parameter. */
- 309              		.loc 1 334 0
- 310 0004 0446     		mov	r4, r0
+ 305              		.loc 1 334 0
+ 306 0002 08B5     		push	{r3, lr}
+ 307              		.cfi_def_cfa_offset 8
+ 308              		.cfi_offset 3, -8
+ 309              		.cfi_offset 14, -4
  339:../drivers/fsl_enet.c **** 
- 311              		.loc 1 339 0
- 312 0006 0021     		movs	r1, #0
- 313 0008 FFF7FEFF 		bl	memset
- 314              	.LVL20:
+ 310              		.loc 1 339 0
+ 311 0004 0021     		movs	r1, #0
+ 312 0006 FFF7FEFF 		bl	memset
+ 313              	.LVL20:
  345:../drivers/fsl_enet.c **** #endif
- 315              		.loc 1 345 0
- 316 000c 0123     		movs	r3, #1
- 317 000e A372     		strb	r3, [r4, #10]
+ 314              		.loc 1 345 0
+ 315 000a 0122     		movs	r2, #1
+ 316 000c 8272     		strb	r2, [r0, #10]
  347:../drivers/fsl_enet.c ****     config->miiDuplex = kENET_MiiFullDuplex;
- 318              		.loc 1 347 0
- 319 0010 E372     		strb	r3, [r4, #11]
+ 317              		.loc 1 347 0
+ 318 000e C272     		strb	r2, [r0, #11]
  348:../drivers/fsl_enet.c **** 
- 320              		.loc 1 348 0
- 321 0012 2373     		strb	r3, [r4, #12]
+ 319              		.loc 1 348 0
+ 320 0010 0273     		strb	r2, [r0, #12]
  350:../drivers/fsl_enet.c **** 
- 322              		.loc 1 350 0
- 323 0014 A375     		strb	r3, [r4, #22]
+ 321              		.loc 1 350 0
+ 322 0012 8275     		strb	r2, [r0, #22]
  353:../drivers/fsl_enet.c **** }
- 324              		.loc 1 353 0
- 325 0016 40F2EE53 		movw	r3, #1518
- 326 001a 2381     		strh	r3, [r4, #8]	@ movhi
- 327 001c 10BD     		pop	{r4, pc}
+ 323              		.loc 1 353 0
+ 324 0014 40F2EE52 		movw	r2, #1518
+ 325 0018 0281     		strh	r2, [r0, #8]	@ movhi
+ 354:../drivers/fsl_enet.c **** 
+ 326              		.loc 1 354 0
+ 327 001a 08BD     		pop	{r3, pc}
  328              		.cfi_endproc
  329              	.LFE158:
  331              		.section	.text.ENET_Deinit,"ax",%progbits
@@ -5669,37 +5681,38 @@
  367 0010 23F00103 		bic	r3, r3, #1
  368 0014 1360     		str	r3, [r2]
  369              	.LVL23:
- 370 0016 7047     		bx	lr
- 371              	.L32:
- 372              		.align	2
- 373              	.L31:
- 374 0018 2C800440 		.word	1074036780
- 375              	.LBE50:
- 376              	.LBE51:
- 377              		.cfi_endproc
- 378              	.LFE160:
- 380              		.section	.text.ENET_SetCallback,"ax",%progbits
- 381              		.align	1
- 382              		.global	ENET_SetCallback
- 383              		.syntax unified
- 384              		.thumb
- 385              		.thumb_func
- 386              		.fpu fpv4-sp-d16
- 388              	ENET_SetCallback:
- 389              	.LFB161:
+ 370              	.LBE50:
+ 371              	.LBE51:
+ 416:../drivers/fsl_enet.c **** 
+ 372              		.loc 1 416 0
+ 373 0016 7047     		bx	lr
+ 374              	.L32:
+ 375              		.align	2
+ 376              	.L31:
+ 377 0018 2C800440 		.word	1074036780
+ 378              		.cfi_endproc
+ 379              	.LFE160:
+ 381              		.section	.text.ENET_SetCallback,"ax",%progbits
+ 382              		.align	1
+ 383              		.global	ENET_SetCallback
+ 384              		.syntax unified
+ 385              		.thumb
+ 386              		.thumb_func
+ 387              		.fpu fpv4-sp-d16
+ 389              	ENET_SetCallback:
+ 390              	.LFB161:
  419:../drivers/fsl_enet.c ****     assert(handle);
- 390              		.loc 1 419 0
- 391              		.cfi_startproc
- 392              		@ args = 0, pretend = 0, frame = 0
- 393              		@ frame_needed = 0, uses_anonymous_args = 0
- 394              		@ link register save eliminated.
- 395              	.LVL24:
- 423:../drivers/fsl_enet.c ****     handle->userData = userData;
- 396              		.loc 1 423 0
- 397 0000 C161     		str	r1, [r0, #28]
+ 391              		.loc 1 419 0
+ 392              		.cfi_startproc
+ 393              		@ args = 0, pretend = 0, frame = 0
+ 394              		@ frame_needed = 0, uses_anonymous_args = 0
+ 395              		@ link register save eliminated.
+ 396              	.LVL24:
  424:../drivers/fsl_enet.c **** }
- 398              		.loc 1 424 0
- 399 0002 0262     		str	r2, [r0, #32]
+ 397              		.loc 1 424 0
+ 398 0000 C0E90712 		strd	r1, r2, [r0, #28]
+ 425:../drivers/fsl_enet.c **** 
+ 399              		.loc 1 425 0
  400 0004 7047     		bx	lr
  401              		.cfi_endproc
  402              	.LFE161:
@@ -5756,592 +5769,580 @@
  908:../drivers/fsl_enet.c **** }
  446              		.loc 1 908 0
  447 001e C0F8C440 		str	r4, [r0, #196]
- 448 0022 10BD     		pop	{r4, pc}
- 449              	.LVL31:
- 450              	.L35:
+ 909:../drivers/fsl_enet.c **** 
+ 448              		.loc 1 909 0
+ 449 0022 10BD     		pop	{r4, pc}
+ 450              	.LVL31:
+ 451              	.L35:
  893:../drivers/fsl_enet.c ****     }
- 451              		.loc 1 893 0
- 452 0024 23F40073 		bic	r3, r3, #512
- 453              	.LVL32:
- 454 0028 F2E7     		b	.L36
- 455              	.L37:
+ 452              		.loc 1 893 0
+ 453 0024 23F40073 		bic	r3, r3, #512
+ 454              	.LVL32:
+ 455 0028 F2E7     		b	.L36
+ 456              	.L37:
  903:../drivers/fsl_enet.c ****         tcr |= ENET_TCR_FDEN_MASK;
- 456              		.loc 1 903 0
- 457 002a 23F00203 		bic	r3, r3, #2
- 458              	.LVL33:
+ 457              		.loc 1 903 0
+ 458 002a 23F00203 		bic	r3, r3, #2
+ 459              	.LVL33:
  904:../drivers/fsl_enet.c ****     }
- 459              		.loc 1 904 0
- 460 002e 44F00404 		orr	r4, r4, #4
- 461              	.LVL34:
- 462 0032 F2E7     		b	.L38
- 463              		.cfi_endproc
- 464              	.LFE167:
- 466              		.section	.text.ENET_SetMacAddr,"ax",%progbits
- 467              		.align	1
- 468              		.global	ENET_SetMacAddr
- 469              		.syntax unified
- 470              		.thumb
- 471              		.thumb_func
- 472              		.fpu fpv4-sp-d16
- 474              	ENET_SetMacAddr:
- 475              	.LFB168:
+ 460              		.loc 1 904 0
+ 461 002e 44F00404 		orr	r4, r4, #4
+ 462              	.LVL34:
+ 463 0032 F2E7     		b	.L38
+ 464              		.cfi_endproc
+ 465              	.LFE167:
+ 467              		.section	.text.ENET_SetMacAddr,"ax",%progbits
+ 468              		.align	1
+ 469              		.global	ENET_SetMacAddr
+ 470              		.syntax unified
+ 471              		.thumb
+ 472              		.thumb_func
+ 473              		.fpu fpv4-sp-d16
+ 475              	ENET_SetMacAddr:
+ 476              	.LFB168:
  912:../drivers/fsl_enet.c ****     uint32_t address;
- 476              		.loc 1 912 0
- 477              		.cfi_startproc
- 478              		@ args = 0, pretend = 0, frame = 0
- 479              		@ frame_needed = 0, uses_anonymous_args = 0
- 480              		@ link register save eliminated.
- 481              	.LVL35:
- 916:../drivers/fsl_enet.c ****                          (uint32_t)macAddr[3]);
- 482              		.loc 1 916 0
- 483 0000 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
- 484 0002 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
- 485 0004 1B04     		lsls	r3, r3, #16
- 486 0006 43EA0263 		orr	r3, r3, r2, lsl #24
- 917:../drivers/fsl_enet.c ****     base->PALR = address;
- 487              		.loc 1 917 0
- 488 000a CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
- 916:../drivers/fsl_enet.c ****                          (uint32_t)macAddr[3]);
- 489              		.loc 1 916 0
- 490 000c 1343     		orrs	r3, r3, r2
- 491 000e 8A78     		ldrb	r2, [r1, #2]	@ zero_extendqisi2
- 492 0010 43EA0223 		orr	r3, r3, r2, lsl #8
- 493              	.LVL36:
+ 477              		.loc 1 912 0
+ 478              		.cfi_startproc
+ 479              		@ args = 0, pretend = 0, frame = 0
+ 480              		@ frame_needed = 0, uses_anonymous_args = 0
+ 481              		@ link register save eliminated.
+ 482              	.LVL35:
+ 483 0000 0B68     		ldr	r3, [r1]	@ unaligned
+ 484 0002 1BBA     		rev	r3, r3
+ 485              	.LVL36:
  918:../drivers/fsl_enet.c ****     /* Set physical address high register. */
- 494              		.loc 1 918 0
- 495 0014 C0F8E430 		str	r3, [r0, #228]
- 496              	.LVL37:
- 920:../drivers/fsl_enet.c ****     base->PAUR = address << ENET_PAUR_PADDR2_SHIFT;
- 497              		.loc 1 920 0
- 498 0018 0A79     		ldrb	r2, [r1, #4]	@ zero_extendqisi2
- 499 001a 4B79     		ldrb	r3, [r1, #5]	@ zero_extendqisi2
- 500 001c 43EA0223 		orr	r3, r3, r2, lsl #8
+ 486              		.loc 1 918 0
+ 487 0004 C0F8E430 		str	r3, [r0, #228]
+ 488              	.LVL37:
  921:../drivers/fsl_enet.c **** }
- 501              		.loc 1 921 0
- 502 0020 1B04     		lsls	r3, r3, #16
- 503 0022 C0F8E830 		str	r3, [r0, #232]
- 504              	.LVL38:
- 505 0026 7047     		bx	lr
- 506              		.cfi_endproc
- 507              	.LFE168:
- 509              		.section	.text.ENET_GetMacAddr,"ax",%progbits
- 510              		.align	1
- 511              		.global	ENET_GetMacAddr
- 512              		.syntax unified
- 513              		.thumb
- 514              		.thumb_func
- 515              		.fpu fpv4-sp-d16
- 517              	ENET_GetMacAddr:
- 518              	.LFB169:
+ 489              		.loc 1 921 0
+ 490 0008 8B88     		ldrh	r3, [r1, #4]	@ unaligned
+ 491 000a 5BBA     		rev16	r3, r3
+ 492 000c 1B04     		lsls	r3, r3, #16
+ 493 000e C0F8E830 		str	r3, [r0, #232]
+ 494              	.LVL38:
+ 922:../drivers/fsl_enet.c **** 
+ 495              		.loc 1 922 0
+ 496 0012 7047     		bx	lr
+ 497              		.cfi_endproc
+ 498              	.LFE168:
+ 500              		.section	.text.ENET_GetMacAddr,"ax",%progbits
+ 501              		.align	1
+ 502              		.global	ENET_GetMacAddr
+ 503              		.syntax unified
+ 504              		.thumb
+ 505              		.thumb_func
+ 506              		.fpu fpv4-sp-d16
+ 508              	ENET_GetMacAddr:
+ 509              	.LFB169:
  925:../drivers/fsl_enet.c ****     assert(macAddr);
- 519              		.loc 1 925 0
- 520              		.cfi_startproc
- 521              		@ args = 0, pretend = 0, frame = 0
- 522              		@ frame_needed = 0, uses_anonymous_args = 0
- 523              		@ link register save eliminated.
- 524              	.LVL39:
+ 510              		.loc 1 925 0
+ 511              		.cfi_startproc
+ 512              		@ args = 0, pretend = 0, frame = 0
+ 513              		@ frame_needed = 0, uses_anonymous_args = 0
+ 514              		@ link register save eliminated.
+ 515              	.LVL39:
  931:../drivers/fsl_enet.c ****     macAddr[0] = 0xFFU & (address >> 24U);
- 525              		.loc 1 931 0
- 526 0000 D0F8E430 		ldr	r3, [r0, #228]
- 527              	.LVL40:
+ 516              		.loc 1 931 0
+ 517 0000 D0F8E430 		ldr	r3, [r0, #228]
+ 518              	.LVL40:
  935:../drivers/fsl_enet.c **** 
- 528              		.loc 1 935 0
- 529 0004 CB70     		strb	r3, [r1, #3]
+ 519              		.loc 1 935 0
+ 520 0004 CB70     		strb	r3, [r1, #3]
  932:../drivers/fsl_enet.c ****     macAddr[1] = 0xFFU & (address >> 16U);
- 530              		.loc 1 932 0
- 531 0006 1A0E     		lsrs	r2, r3, #24
- 532 0008 0A70     		strb	r2, [r1]
+ 521              		.loc 1 932 0
+ 522 0006 1A0E     		lsrs	r2, r3, #24
+ 523 0008 0A70     		strb	r2, [r1]
  933:../drivers/fsl_enet.c ****     macAddr[2] = 0xFFU & (address >> 8U);
- 533              		.loc 1 933 0
- 534 000a 1A0C     		lsrs	r2, r3, #16
- 535 000c 4A70     		strb	r2, [r1, #1]
+ 524              		.loc 1 933 0
+ 525 000a 1A0C     		lsrs	r2, r3, #16
+ 526 000c 4A70     		strb	r2, [r1, #1]
  934:../drivers/fsl_enet.c ****     macAddr[3] = 0xFFU & address;
- 536              		.loc 1 934 0
- 537 000e 1A0A     		lsrs	r2, r3, #8
- 538 0010 8A70     		strb	r2, [r1, #2]
+ 527              		.loc 1 934 0
+ 528 000e 1A0A     		lsrs	r2, r3, #8
+ 529 0010 8A70     		strb	r2, [r1, #2]
  938:../drivers/fsl_enet.c ****     macAddr[4] = 0xFFU & (address >> 8U);
- 539              		.loc 1 938 0
- 540 0012 D0F8E830 		ldr	r3, [r0, #232]
- 541              	.LVL41:
+ 530              		.loc 1 938 0
+ 531 0012 D0F8E830 		ldr	r3, [r0, #232]
+ 532              	.LVL41:
  939:../drivers/fsl_enet.c ****     macAddr[5] = 0xFFU & address;
- 542              		.loc 1 939 0
- 543 0016 1A0E     		lsrs	r2, r3, #24
+ 533              		.loc 1 939 0
+ 534 0016 1A0E     		lsrs	r2, r3, #24
  938:../drivers/fsl_enet.c ****     macAddr[4] = 0xFFU & (address >> 8U);
- 544              		.loc 1 938 0
- 545 0018 1B0C     		lsrs	r3, r3, #16
- 546              	.LVL42:
+ 535              		.loc 1 938 0
+ 536 0018 1B0C     		lsrs	r3, r3, #16
+ 537              	.LVL42:
  939:../drivers/fsl_enet.c ****     macAddr[5] = 0xFFU & address;
- 547              		.loc 1 939 0
- 548 001a 0A71     		strb	r2, [r1, #4]
+ 538              		.loc 1 939 0
+ 539 001a 0A71     		strb	r2, [r1, #4]
  940:../drivers/fsl_enet.c **** }
- 549              		.loc 1 940 0
- 550 001c 4B71     		strb	r3, [r1, #5]
- 551 001e 7047     		bx	lr
- 552              		.cfi_endproc
- 553              	.LFE169:
- 555              		.section	.text.ENET_SetSMI,"ax",%progbits
- 556              		.align	1
- 557              		.global	ENET_SetSMI
- 558              		.syntax unified
- 559              		.thumb
- 560              		.thumb_func
- 561              		.fpu fpv4-sp-d16
- 563              	ENET_SetSMI:
- 564              	.LFB170:
+ 540              		.loc 1 940 0
+ 541 001c 4B71     		strb	r3, [r1, #5]
+ 941:../drivers/fsl_enet.c **** 
+ 542              		.loc 1 941 0
+ 543 001e 7047     		bx	lr
+ 544              		.cfi_endproc
+ 545              	.LFE169:
+ 547              		.section	.text.ENET_SetSMI,"ax",%progbits
+ 548              		.align	1
+ 549              		.global	ENET_SetSMI
+ 550              		.syntax unified
+ 551              		.thumb
+ 552              		.thumb_func
+ 553              		.fpu fpv4-sp-d16
+ 555              	ENET_SetSMI:
+ 556              	.LFB170:
  944:../drivers/fsl_enet.c ****     assert(srcClock_Hz);
- 565              		.loc 1 944 0
- 566              		.cfi_startproc
- 567              		@ args = 0, pretend = 0, frame = 0
- 568              		@ frame_needed = 0, uses_anonymous_args = 0
- 569              	.LVL43:
- 570 0000 10B5     		push	{r4, lr}
- 571              		.cfi_def_cfa_offset 8
- 572              		.cfi_offset 4, -8
- 573              		.cfi_offset 14, -4
+ 557              		.loc 1 944 0
+ 558              		.cfi_startproc
+ 559              		@ args = 0, pretend = 0, frame = 0
+ 560              		@ frame_needed = 0, uses_anonymous_args = 0
+ 561              	.LVL43:
+ 562 0000 10B5     		push	{r4, lr}
+ 563              		.cfi_def_cfa_offset 8
+ 564              		.cfi_offset 4, -8
+ 565              		.cfi_offset 14, -4
  954:../drivers/fsl_enet.c ****     /* Build the configuration for MDC/MDIO control. */
- 574              		.loc 1 954 0
- 575 0002 0D4C     		ldr	r4, .L44
- 576 0004 B4FBF1F4 		udiv	r4, r4, r1
- 577              	.LVL44:
- 578 0008 04F10903 		add	r3, r4, #9
- 579 000c B3FBF4F3 		udiv	r3, r3, r4
- 580 0010 013B     		subs	r3, r3, #1
- 581              	.LVL45:
+ 566              		.loc 1 954 0
+ 567 0002 0D4C     		ldr	r4, .L44
+ 568 0004 B4FBF1F4 		udiv	r4, r4, r1
+ 569              	.LVL44:
+ 570 0008 04F10903 		add	r3, r4, #9
+ 571 000c B3FBF4F3 		udiv	r3, r3, r4
+ 572 0010 013B     		subs	r3, r3, #1
+ 573              	.LVL45:
+ 956:../drivers/fsl_enet.c ****     base->MSCR = mscr;
+ 574              		.loc 1 956 0
+ 575 0012 1B02     		lsls	r3, r3, #8
+ 576              	.LVL46:
+ 952:../drivers/fsl_enet.c ****     /* Calculate the hold time on the MDIO output. */
+ 577              		.loc 1 952 0
+ 578 0014 094C     		ldr	r4, .L44+4
+ 579              	.LVL47:
+ 580 0016 B1FBF4F1 		udiv	r1, r1, r4
+ 581              	.LVL48:
  956:../drivers/fsl_enet.c ****     base->MSCR = mscr;
  582              		.loc 1 956 0
- 583 0012 1B02     		lsls	r3, r3, #8
- 584              	.LVL46:
- 952:../drivers/fsl_enet.c ****     /* Calculate the hold time on the MDIO output. */
- 585              		.loc 1 952 0
- 586 0014 094C     		ldr	r4, .L44+4
- 587              	.LVL47:
- 588 0016 B1FBF4F1 		udiv	r1, r1, r4
- 589              	.LVL48:
- 956:../drivers/fsl_enet.c ****     base->MSCR = mscr;
- 590              		.loc 1 956 0
- 591 001a 4900     		lsls	r1, r1, #1
- 592              	.LVL49:
- 593 001c 002A     		cmp	r2, #0
- 594 001e 03F4E063 		and	r3, r3, #1792
- 595 0022 01F07E01 		and	r1, r1, #126
- 596 0026 43EA0103 		orr	r3, r3, r1
- 597 002a 14BF     		ite	ne
- 598 002c 8022     		movne	r2, #128
- 599              	.LVL50:
- 600 002e 0022     		moveq	r2, #0
- 601 0030 1343     		orrs	r3, r3, r2
- 602              	.LVL51:
+ 583 001a 4900     		lsls	r1, r1, #1
+ 584              	.LVL49:
+ 585 001c 002A     		cmp	r2, #0
+ 586 001e 03F4E063 		and	r3, r3, #1792
+ 587 0022 01F07E01 		and	r1, r1, #126
+ 588 0026 43EA0103 		orr	r3, r3, r1
+ 589 002a 14BF     		ite	ne
+ 590 002c 8022     		movne	r2, #128
+ 591              	.LVL50:
+ 592 002e 0022     		moveq	r2, #0
+ 593 0030 1343     		orrs	r3, r3, r2
+ 594              	.LVL51:
  957:../drivers/fsl_enet.c **** }
- 603              		.loc 1 957 0
- 604 0032 4364     		str	r3, [r0, #68]
- 605 0034 10BD     		pop	{r4, pc}
- 606              	.L45:
- 607 0036 00BF     		.align	2
- 608              	.L44:
- 609 0038 00CA9A3B 		.word	1000000000
- 610 003c 404B4C00 		.word	5000000
- 611              		.cfi_endproc
- 612              	.LFE170:
- 614              		.section	.text.ENET_Init,"ax",%progbits
- 615              		.align	1
- 616              		.global	ENET_Init
- 617              		.syntax unified
- 618              		.thumb
- 619              		.thumb_func
- 620              		.fpu fpv4-sp-d16
- 622              	ENET_Init:
- 623              	.LFB159:
+ 595              		.loc 1 957 0
+ 596 0032 4364     		str	r3, [r0, #68]
+ 958:../drivers/fsl_enet.c **** 
+ 597              		.loc 1 958 0
+ 598 0034 10BD     		pop	{r4, pc}
+ 599              	.L45:
+ 600 0036 00BF     		.align	2
+ 601              	.L44:
+ 602 0038 00CA9A3B 		.word	1000000000
+ 603 003c 404B4C00 		.word	5000000
+ 604              		.cfi_endproc
+ 605              	.LFE170:
+ 607              		.section	.text.ENET_Init,"ax",%progbits
+ 608              		.align	1
+ 609              		.global	ENET_Init
+ 610              		.syntax unified
+ 611              		.thumb
+ 612              		.thumb_func
+ 613              		.fpu fpv4-sp-d16
+ 615              	ENET_Init:
+ 616              	.LFB159:
  362:../drivers/fsl_enet.c ****     /* Checks input parameters. */
- 624              		.loc 1 362 0
- 625              		.cfi_startproc
- 626              		@ args = 8, pretend = 0, frame = 8
- 627              		@ frame_needed = 0, uses_anonymous_args = 0
- 628              	.LVL52:
- 629 0000 2DE9F74F 		push	{r0, r1, r2, r4, r5, r6, r7, r8, r9, r10, fp, lr}
- 630              		.cfi_def_cfa_offset 48
- 631              		.cfi_offset 4, -36
- 632              		.cfi_offset 5, -32
- 633              		.cfi_offset 6, -28
- 634              		.cfi_offset 7, -24
- 635              		.cfi_offset 8, -20
- 636              		.cfi_offset 9, -16
- 637              		.cfi_offset 10, -12
- 638              		.cfi_offset 11, -8
- 639              		.cfi_offset 14, -4
+ 617              		.loc 1 362 0
+ 618              		.cfi_startproc
+ 619              		@ args = 8, pretend = 0, frame = 8
+ 620              		@ frame_needed = 0, uses_anonymous_args = 0
+ 621              	.LVL52:
+ 622 0000 2DE9F74F 		push	{r0, r1, r2, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 623              		.cfi_def_cfa_offset 48
+ 624              		.cfi_offset 4, -36
+ 625              		.cfi_offset 5, -32
+ 626              		.cfi_offset 6, -28
+ 627              		.cfi_offset 7, -24
+ 628              		.cfi_offset 8, -20
+ 629              		.cfi_offset 9, -16
+ 630              		.cfi_offset 10, -12
+ 631              		.cfi_offset 11, -8
+ 632              		.cfi_offset 14, -4
  362:../drivers/fsl_enet.c ****     /* Checks input parameters. */
- 640              		.loc 1 362 0
- 641 0004 1546     		mov	r5, r2
- 642              	.LVL53:
- 643              	.LBB83:
- 644              	.LBB84:
+ 633              		.loc 1 362 0
+ 634 0004 1546     		mov	r5, r2
+ 635              	.LVL53:
+ 636              	.LBB83:
+ 637              	.LBB84:
  695:../drivers/fsl_clock.h **** }
- 645              		.loc 4 695 0
- 646 0006 B04A     		ldr	r2, .L129
- 647              	.LVL54:
- 648              	.LBE84:
- 649              	.LBE83:
+ 638              		.loc 4 695 0
+ 639 0006 AA4A     		ldr	r2, .L117
+ 640              	.LVL54:
+ 641              	.LBE84:
+ 642              	.LBE83:
  362:../drivers/fsl_enet.c ****     /* Checks input parameters. */
- 650              		.loc 1 362 0
- 651 0008 1E46     		mov	r6, r3
- 652              	.LBB86:
- 653              	.LBB85:
+ 643              		.loc 1 362 0
+ 644 0008 1E46     		mov	r6, r3
+ 645              	.LBB86:
+ 646              	.LBB85:
  695:../drivers/fsl_clock.h **** }
- 654              		.loc 4 695 0
- 655 000a 1368     		ldr	r3, [r2]
- 656              	.LVL55:
- 657 000c 43F00103 		orr	r3, r3, #1
- 658 0010 1360     		str	r3, [r2]
- 659              	.LVL56:
- 660              	.LBE85:
- 661              	.LBE86:
- 662              	.LBB87:
- 663              	.LBB88:
+ 647              		.loc 4 695 0
+ 648 000a 1368     		ldr	r3, [r2]
+ 649              	.LVL55:
+ 650 000c 43F00103 		orr	r3, r3, #1
+ 651 0010 1360     		str	r3, [r2]
+ 652              	.LVL56:
+ 653              	.LBE85:
+ 654              	.LBE86:
+ 655              	.LBB87:
+ 656              	.LBB88:
  745:../drivers/fsl_enet.h **** }
- 664              		.loc 2 745 0
- 665 0012 436A     		ldr	r3, [r0, #36]
- 666 0014 43F00103 		orr	r3, r3, #1
- 667 0018 4362     		str	r3, [r0, #36]
- 668              	.LVL57:
- 669 001a AB7D     		ldrb	r3, [r5, #22]	@ zero_extendqisi2
- 670 001c C3EBC303 		rsb	r3, r3, r3, lsl #3
- 671 0020 06EB830A 		add	r10, r6, r3, lsl #2
- 672              	.LBE88:
- 673              	.LBE87:
+ 657              		.loc 2 745 0
+ 658 0012 436A     		ldr	r3, [r0, #36]
+ 659 0014 43F00103 		orr	r3, r3, #1
+ 660 0018 4362     		str	r3, [r0, #36]
+ 661              	.LVL57:
+ 662 001a AB7D     		ldrb	r3, [r5, #22]	@ zero_extendqisi2
+ 663 001c C3EBC303 		rsb	r3, r3, r3, lsl #3
+ 664 0020 06EB830B 		add	fp, r6, r3, lsl #2
+ 665              	.LBE88:
+ 666              	.LBE87:
  362:../drivers/fsl_enet.c ****     /* Checks input parameters. */
- 674              		.loc 1 362 0
- 675 0024 0446     		mov	r4, r0
- 676 0026 8946     		mov	r9, r1
- 677              	.LVL58:
- 678              	.LBB90:
- 679              	.LBB89:
+ 667              		.loc 1 362 0
+ 668 0024 0446     		mov	r4, r0
+ 669 0026 0F46     		mov	r7, r1
+ 670              	.LVL58:
+ 671              	.LBB90:
+ 672              	.LBB89:
  745:../drivers/fsl_enet.h **** }
- 680              		.loc 2 745 0
- 681 0028 3346     		mov	r3, r6
- 682              	.LBE89:
- 683              	.LBE90:
- 684              	.LBB91:
- 685              	.LBB92:
- 686              	.LBB93:
- 743:../drivers/fsl_enet.c ****                 /* Sets the crc. */
- 687              		.loc 1 743 0
- 688 002a 4FF0000B 		mov	fp, #0
+ 673              		.loc 2 745 0
+ 674 0028 3346     		mov	r3, r6
+ 675              	.LBE89:
+ 676              	.LBE90:
+ 677              	.LBB91:
+ 678              	.LBB92:
+ 679              	.LBB93:
  745:../drivers/fsl_enet.c ****                 /* Sets the last buffer descriptor with the wrap flag. */
- 689              		.loc 1 745 0
- 690 002e 4FF48068 		mov	r8, #1024
- 691              	.LVL59:
- 692              	.L47:
- 693              	.LBE93:
+ 680              		.loc 1 745 0
+ 681 002a 4FF48069 		mov	r9, #1024
+ 682              	.LVL59:
+ 683              	.L47:
+ 684              	.LBE93:
  727:../drivers/fsl_enet.c ****     {
- 694              		.loc 1 727 0
- 695 0032 5345     		cmp	r3, r10
- 696 0034 40F01981 		bne	.L53
- 697              	.LVL60:
- 698 0038 A97D     		ldrb	r1, [r5, #22]	@ zero_extendqisi2
- 699 003a 1C22     		movs	r2, #28
- 700 003c 01FB0222 		mla	r2, r1, r2, r2
- 701 0040 B218     		adds	r2, r6, r2
- 702 0042 06F11C03 		add	r3, r6, #28
- 703 0046 0092     		str	r2, [sp]
- 704              	.LBE92:
- 705              	.LBE91:
- 706              	.LBB96:
- 707              	.LBB97:
- 708              	.LBB98:
- 813:../drivers/fsl_enet.c **** 
- 709              		.loc 1 813 0
- 710 0048 4FF0000B 		mov	fp, #0
+ 685              		.loc 1 727 0
+ 686 002e 9B45     		cmp	fp, r3
+ 687 0030 40F0EE80 		bne	.L53
+ 688              	.LVL60:
+ 689 0034 AB7D     		ldrb	r3, [r5, #22]	@ zero_extendqisi2
+ 690 0036 C3EBC303 		rsb	r3, r3, r3, lsl #3
+ 691 003a 06EB830A 		add	r10, r6, r3, lsl #2
+ 692              	.LBE92:
+ 693              	.LBE91:
+ 694              	.LBB97:
+ 695              	.LBB98:
+ 696              	.LBB99:
  816:../drivers/fsl_enet.c ****                 /* Sets the last buffer descriptor with the wrap flag. */
- 711              		.loc 1 816 0
- 712 004c 4FF40048 		mov	r8, #32768
- 713              	.L54:
- 714              	.LVL61:
- 715              	.LBE98:
+ 697              		.loc 1 816 0
+ 698 003e 4FF40049 		mov	r9, #32768
+ 699              	.LBE99:
+ 700              	.LBE98:
+ 701              	.LBE97:
+ 702              	.LBB103:
+ 703              	.LBB95:
+ 727:../drivers/fsl_enet.c ****     {
+ 704              		.loc 1 727 0
+ 705 0042 3346     		mov	r3, r6
+ 706              	.L54:
+ 707              	.LVL61:
+ 708              	.LBE95:
+ 709              	.LBE103:
+ 710              	.LBB104:
+ 711              	.LBB101:
  784:../drivers/fsl_enet.c ****     {
- 716              		.loc 1 784 0
- 717 0050 009A     		ldr	r2, [sp]
- 718 0052 9A42     		cmp	r2, r3
- 719 0054 40F03081 		bne	.L60
- 720              	.LVL62:
- 721              	.LBE97:
- 722              	.LBE96:
- 723              	.LBB101:
- 724              	.LBB102:
+ 712              		.loc 1 784 0
+ 713 0044 5345     		cmp	r3, r10
+ 714 0046 40F00B81 		bne	.L60
+ 715              	.LVL62:
+ 716              	.LBE101:
+ 717              	.LBE104:
+ 718              	.LBB105:
+ 719              	.LBB106:
  492:../drivers/fsl_enet.c ****     uint32_t maxFrameLen = config->rxMaxFrameLen;
- 725              		.loc 1 492 0
- 726 0058 2968     		ldr	r1, [r5]
+ 720              		.loc 1 492 0
+ 721 004a 2A68     		ldr	r2, [r5]
  491:../drivers/fsl_enet.c ****     uint32_t macSpecialConfig = config->macSpecialConfig;
- 727              		.loc 1 491 0
- 728 005a 676A     		ldr	r7, [r4, #36]
- 729              	.LVL63:
+ 722              		.loc 1 491 0
+ 723 004c D4F82480 		ldr	r8, [r4, #36]
+ 724              	.LVL63:
  493:../drivers/fsl_enet.c **** 
- 730              		.loc 1 493 0
- 731 005c 2B89     		ldrh	r3, [r5, #8]
- 732              	.LVL64:
+ 725              		.loc 1 493 0
+ 726 0050 2989     		ldrh	r1, [r5, #8]
+ 727              	.LVL64:
  496:../drivers/fsl_enet.c ****     {
- 733              		.loc 1 496 0
- 734 005e 8805     		lsls	r0, r1, #22
- 735 0060 06D5     		bpl	.L61
+ 728              		.loc 1 496 0
+ 729 0052 9305     		lsls	r3, r2, #22
+ 730 0054 06D5     		bpl	.L61
  498:../drivers/fsl_enet.c **** #if defined(FSL_FEATURE_ENET_HAS_AVB) && FSL_FEATURE_ENET_HAS_AVB
- 736              		.loc 1 498 0
- 737 0062 40F2F252 		movw	r2, #1522
- 738 0066 40F2EE50 		movw	r0, #1518
- 739 006a 8342     		cmp	r3, r0
- 740 006c 98BF     		it	ls
- 741 006e 1346     		movls	r3, r2
- 742              	.LVL65:
- 743              	.L61:
+ 731              		.loc 1 498 0
+ 732 0056 40F2EE50 		movw	r0, #1518
+ 733 005a 40F2F253 		movw	r3, #1522
+ 734 005e 8142     		cmp	r1, r0
+ 735 0060 98BF     		it	ls
+ 736 0062 1946     		movls	r1, r3
+ 737              	.LVL65:
+ 738              	.L61:
+ 511:../drivers/fsl_enet.c ****           ((macSpecialConfig & kENET_ControlFlowControlEnable) ? ENET_RCR_CFEN_MASK : 0) |
+ 739              		.loc 1 511 0
+ 740 0064 5307     		lsls	r3, r2, #29
+ 512:../drivers/fsl_enet.c ****           ((macSpecialConfig & kENET_ControlFlowControlEnable) ? ENET_RCR_FCE_MASK : 0) |
+ 741              		.loc 1 512 0
+ 742 0066 D003     		lsls	r0, r2, #15
+ 743 0068 80B2     		uxth	r0, r0
  511:../drivers/fsl_enet.c ****           ((macSpecialConfig & kENET_ControlFlowControlEnable) ? ENET_RCR_CFEN_MASK : 0) |
  744              		.loc 1 511 0
- 745 0070 11F0020F 		tst	r1, #2
- 746 0074 0CBF     		ite	eq
- 747 0076 4FF0000B 		moveq	fp, #0
- 748 007a 4FF0804B 		movne	fp, #1073741824
- 512:../drivers/fsl_enet.c ****           ((macSpecialConfig & kENET_ControlFlowControlEnable) ? ENET_RCR_FCE_MASK : 0) |
- 749              		.loc 1 512 0
- 750 007e 11F00100 		ands	r0, r1, #1
+ 745 006a 03F08043 		and	r3, r3, #1073741824
+ 746 006e 0343     		orrs	r3, r3, r0
  513:../drivers/fsl_enet.c ****           ((macSpecialConfig & kENET_ControlRxPadRemoveEnable) ? ENET_RCR_PADEN_MASK : 0) |
- 751              		.loc 1 513 0
- 752 0082 15BF     		itete	ne
- 753 0084 4FF0200E 		movne	lr, #32
- 754 0088 8646     		moveq	lr, r0
+ 747              		.loc 1 513 0
+ 748 0070 5001     		lsls	r0, r2, #5
+ 749 0072 00F02000 		and	r0, r0, #32
  512:../drivers/fsl_enet.c ****           ((macSpecialConfig & kENET_ControlFlowControlEnable) ? ENET_RCR_FCE_MASK : 0) |
- 755              		.loc 1 512 0
- 756 008a 4FF4004C 		movne	ip, #32768
- 757 008e 8446     		moveq	ip, r0
+ 750              		.loc 1 512 0
+ 751 0076 0343     		orrs	r3, r3, r0
  514:../drivers/fsl_enet.c ****           ((macSpecialConfig & kENET_ControlRxBroadCastRejectEnable) ? ENET_RCR_BC_REJ_MASK : 0) |
- 758              		.loc 1 514 0
- 759 0090 11F0040F 		tst	r1, #4
- 760 0094 0CBF     		ite	eq
- 761 0096 4FF0000A 		moveq	r10, #0
- 762 009a 4FF4805A 		movne	r10, #4096
+ 752              		.loc 1 514 0
+ 753 0078 9002     		lsls	r0, r2, #10
+ 754 007a 00F48050 		and	r0, r0, #4096
+ 513:../drivers/fsl_enet.c ****           ((macSpecialConfig & kENET_ControlRxPadRemoveEnable) ? ENET_RCR_PADEN_MASK : 0) |
+ 755              		.loc 1 513 0
+ 756 007e 0343     		orrs	r3, r3, r0
  515:../drivers/fsl_enet.c ****           ((macSpecialConfig & kENET_ControlPromiscuousEnable) ? ENET_RCR_PROM_MASK : 0) |
- 763              		.loc 1 515 0
- 764 009e 11F0080F 		tst	r1, #8
- 765 00a2 0CBF     		ite	eq
- 766 00a4 0022     		moveq	r2, #0
- 767 00a6 1022     		movne	r2, #16
- 768 00a8 0092     		str	r2, [sp]
+ 757              		.loc 1 515 0
+ 758 0080 5000     		lsls	r0, r2, #1
+ 759 0082 00F01000 		and	r0, r0, #16
+ 514:../drivers/fsl_enet.c ****           ((macSpecialConfig & kENET_ControlRxBroadCastRejectEnable) ? ENET_RCR_BC_REJ_MASK : 0) |
+ 760              		.loc 1 514 0
+ 761 0086 0343     		orrs	r3, r3, r0
+ 516:../drivers/fsl_enet.c ****           ENET_RCR_MAX_FL(maxFrameLen) | ENET_RCR_CRCFWD_MASK;    
+ 762              		.loc 1 516 0
+ 763 0088 1009     		lsrs	r0, r2, #4
+ 764 008a 00F00800 		and	r0, r0, #8
+ 515:../drivers/fsl_enet.c ****           ((macSpecialConfig & kENET_ControlPromiscuousEnable) ? ENET_RCR_PROM_MASK : 0) |
+ 765              		.loc 1 515 0
+ 766 008e 0343     		orrs	r3, r3, r0
  517:../drivers/fsl_enet.c **** 
- 769              		.loc 1 517 0
- 770 00aa 884A     		ldr	r2, .L129+4
- 771 00ac 02EA0343 		and	r3, r2, r3, lsl #16
- 772              	.LVL66:
+ 767              		.loc 1 517 0
+ 768 0090 8848     		ldr	r0, .L117+4
+ 769 0092 00EA0141 		and	r1, r0, r1, lsl #16
+ 770              	.LVL66:
+ 531:../drivers/fsl_enet.c ****         {
+ 771              		.loc 1 531 0
+ 772 0096 A87A     		ldrb	r0, [r5, #10]	@ zero_extendqisi2
  516:../drivers/fsl_enet.c ****           ENET_RCR_MAX_FL(maxFrameLen) | ENET_RCR_CRCFWD_MASK;    
  773              		.loc 1 516 0
- 774 00b0 43EA0B03 		orr	r3, r3, fp
- 775 00b4 43EA0C03 		orr	r3, r3, ip
- 776 00b8 43EA0E03 		orr	r3, r3, lr
- 777 00bc 009A     		ldr	r2, [sp]
+ 774 0098 0B43     		orrs	r3, r3, r1
+ 775              	.LVL67:
  531:../drivers/fsl_enet.c ****         {
- 778              		.loc 1 531 0
- 779 00be 95F80AE0 		ldrb	lr, [r5, #10]	@ zero_extendqisi2
- 516:../drivers/fsl_enet.c ****           ENET_RCR_MAX_FL(maxFrameLen) | ENET_RCR_CRCFWD_MASK;    
- 780              		.loc 1 516 0
- 781 00c2 11F0800F 		tst	r1, #128
- 782 00c6 43EA0A03 		orr	r3, r3, r10
- 783 00ca 0CBF     		ite	eq
- 784 00cc 4FF00008 		moveq	r8, #0
- 785 00d0 4FF00808 		movne	r8, #8
- 786 00d4 1343     		orrs	r3, r3, r2
- 787 00d6 43EA0803 		orr	r3, r3, r8
- 788              	.LVL67:
- 531:../drivers/fsl_enet.c ****         {
- 789              		.loc 1 531 0
- 790 00da BEF1010F 		cmp	lr, #1
+ 776              		.loc 1 531 0
+ 777 009a 0128     		cmp	r0, #1
  539:../drivers/fsl_enet.c ****     {
- 791              		.loc 1 539 0
- 792 00de EA7A     		ldrb	r2, [r5, #11]	@ zero_extendqisi2
+ 778              		.loc 1 539 0
+ 779 009c E97A     		ldrb	r1, [r5, #11]	@ zero_extendqisi2
  530:../drivers/fsl_enet.c ****         if (config->miiMode == kENET_RmiiMode)
- 793              		.loc 1 530 0
- 794 00e0 14BF     		ite	ne
- 795 00e2 43F48043 		orrne	r3, r3, #16384
- 796              	.LVL68:
+ 780              		.loc 1 530 0
+ 781 009e 14BF     		ite	ne
+ 782 00a0 43F48043 		orrne	r3, r3, #16384
+ 783              	.LVL68:
  533:../drivers/fsl_enet.c ****         }
- 797              		.loc 1 533 0
- 798 00e6 43F48243 		orreq	r3, r3, #16640
- 799 00ea 43F00403 		orr	r3, r3, #4
- 800              	.LVL69:
+ 784              		.loc 1 533 0
+ 785 00a4 43F48243 		orreq	r3, r3, #16640
+ 786 00a8 43F00403 		orr	r3, r3, #4
+ 787              	.LVL69:
  539:../drivers/fsl_enet.c ****     {
- 801              		.loc 1 539 0
- 802 00ee 0AB9     		cbnz	r2, .L69
+ 788              		.loc 1 539 0
+ 789 00ac 09B9     		cbnz	r1, .L64
  541:../drivers/fsl_enet.c ****     }
- 803              		.loc 1 541 0
- 804 00f0 43F40073 		orr	r3, r3, #512
- 805              	.LVL70:
- 806              	.L69:
+ 790              		.loc 1 541 0
+ 791 00ae 43F40073 		orr	r3, r3, #512
+ 792              	.LVL70:
+ 793              	.L64:
  551:../drivers/fsl_enet.c ****     {
- 807              		.loc 1 551 0
- 808 00f4 2A7B     		ldrb	r2, [r5, #12]	@ zero_extendqisi2
- 809 00f6 0AB9     		cbnz	r2, .L70
+ 794              		.loc 1 551 0
+ 795 00b2 297B     		ldrb	r1, [r5, #12]	@ zero_extendqisi2
+ 796 00b4 09B9     		cbnz	r1, .L65
  553:../drivers/fsl_enet.c ****     }
- 810              		.loc 1 553 0
- 811 00f8 43F00203 		orr	r3, r3, #2
- 812              	.LVL71:
- 813              	.L70:
+ 797              		.loc 1 553 0
+ 798 00b6 43F00203 		orr	r3, r3, #2
+ 799              	.LVL71:
+ 800              	.L65:
  556:../drivers/fsl_enet.c ****     {
- 814              		.loc 1 556 0
- 815 00fc 11F4807F 		tst	r1, #256
- 816 0100 06D0     		beq	.L71
- 817 0102 BEF1010F 		cmp	lr, #1
- 818              	.LVL72:
- 819 0106 1CBF     		itt	ne
- 820 0108 23F00203 		bicne	r3, r3, #2
- 821              	.LVL73:
+ 801              		.loc 1 556 0
+ 802 00ba 12F4807F 		tst	r2, #256
+ 803 00be 05D0     		beq	.L66
+ 804 00c0 0128     		cmp	r0, #1
+ 805              	.LVL72:
+ 806 00c2 1CBF     		itt	ne
+ 807 00c4 23F00203 		bicne	r3, r3, #2
+ 808              	.LVL73:
  559:../drivers/fsl_enet.c ****     }
- 822              		.loc 1 559 0
- 823 010c 43F00103 		orrne	r3, r3, #1
- 824              	.LVL74:
- 825              	.L71:
+ 809              		.loc 1 559 0
+ 810 00c8 43F00103 		orrne	r3, r3, #1
+ 811              	.LVL74:
+ 812              	.L66:
  561:../drivers/fsl_enet.c **** 
- 826              		.loc 1 561 0
- 827 0110 C4F88430 		str	r3, [r4, #132]
+ 813              		.loc 1 561 0
+ 814 00cc C4F88430 		str	r3, [r4, #132]
  564:../drivers/fsl_enet.c ****     tcr |= (config->miiDuplex ? ENET_TCR_FDEN_MASK : 0) |
- 828              		.loc 1 564 0
- 829 0114 D4F8C430 		ldr	r3, [r4, #196]
- 830              	.LVL75:
- 565:../drivers/fsl_enet.c ****            ((macSpecialConfig & kENET_ControlMacAddrInsert) ? ENET_TCR_ADDINS_MASK : 0);
- 831              		.loc 1 565 0
- 832 0118 002A     		cmp	r2, #0
- 833 011a 0CBF     		ite	eq
- 834 011c 4FF0000E 		moveq	lr, #0
- 835 0120 4FF0040E 		movne	lr, #4
- 564:../drivers/fsl_enet.c ****     tcr |= (config->miiDuplex ? ENET_TCR_FDEN_MASK : 0) |
- 836              		.loc 1 564 0
- 837 0124 23F48273 		bic	r3, r3, #260
- 838              	.LVL76:
+ 815              		.loc 1 564 0
+ 816 00d0 D4F8C400 		ldr	r0, [r4, #196]
  566:../drivers/fsl_enet.c ****     base->TCR = tcr;
- 839              		.loc 1 566 0
- 840 0128 11F0100F 		tst	r1, #16
- 841 012c 0CBF     		ite	eq
- 842 012e 0022     		moveq	r2, #0
- 843 0130 4FF48072 		movne	r2, #256
- 844 0134 43EA0E03 		orr	r3, r3, lr
- 845              	.LVL77:
+ 817              		.loc 1 566 0
+ 818 00d4 1301     		lsls	r3, r2, #4
+ 819              	.LVL75:
  565:../drivers/fsl_enet.c ****            ((macSpecialConfig & kENET_ControlMacAddrInsert) ? ENET_TCR_ADDINS_MASK : 0);
- 846              		.loc 1 565 0
- 847 0138 1343     		orrs	r3, r3, r2
- 848              	.LVL78:
+ 820              		.loc 1 565 0
+ 821 00d6 0029     		cmp	r1, #0
+ 564:../drivers/fsl_enet.c ****     tcr |= (config->miiDuplex ? ENET_TCR_FDEN_MASK : 0) |
+ 822              		.loc 1 564 0
+ 823 00d8 20F48270 		bic	r0, r0, #260
+ 824              	.LVL76:
+ 566:../drivers/fsl_enet.c ****     base->TCR = tcr;
+ 825              		.loc 1 566 0
+ 826 00dc 03F48073 		and	r3, r3, #256
+ 565:../drivers/fsl_enet.c ****            ((macSpecialConfig & kENET_ControlMacAddrInsert) ? ENET_TCR_ADDINS_MASK : 0);
+ 827              		.loc 1 565 0
+ 828 00e0 0CBF     		ite	eq
+ 829 00e2 0021     		moveq	r1, #0
+ 830 00e4 0421     		movne	r1, #4
+ 831 00e6 0343     		orrs	r3, r3, r0
+ 832 00e8 0B43     		orrs	r3, r3, r1
+ 833              	.LVL77:
  567:../drivers/fsl_enet.c **** 
- 849              		.loc 1 567 0
- 850 013a C4F8C430 		str	r3, [r4, #196]
- 851              	.LVL79:
+ 834              		.loc 1 567 0
+ 835 00ea C4F8C430 		str	r3, [r4, #196]
+ 836              	.LVL78:
  570:../drivers/fsl_enet.c ****     base->RACC = config->rxAccelerConfig;
- 852              		.loc 1 570 0
- 853 013e 95F80EE0 		ldrb	lr, [r5, #14]	@ zero_extendqisi2
- 854 0142 C4F8C0E1 		str	lr, [r4, #448]
+ 837              		.loc 1 570 0
+ 838 00ee A87B     		ldrb	r0, [r5, #14]	@ zero_extendqisi2
+ 839 00f0 C4F8C001 		str	r0, [r4, #448]
  571:../drivers/fsl_enet.c **** 
- 855              		.loc 1 571 0
- 856 0146 6A7B     		ldrb	r2, [r5, #13]	@ zero_extendqisi2
- 857 0148 C4F8C421 		str	r2, [r4, #452]
+ 840              		.loc 1 571 0
+ 841 00f4 697B     		ldrb	r1, [r5, #13]	@ zero_extendqisi2
+ 842 00f6 C4F8C411 		str	r1, [r4, #452]
  574:../drivers/fsl_enet.c ****     {
- 858              		.loc 1 574 0
- 859 014c 50B1     		cbz	r0, .L74
- 860              	.LBB103:
+ 843              		.loc 1 574 0
+ 844 00fa D307     		lsls	r3, r2, #31
+ 845              	.LVL79:
+ 846 00fc 0CD5     		bpl	.L68
+ 847              	.LBB107:
  577:../drivers/fsl_enet.c ****         reemReg = ENET_RSEM_RX_SECTION_EMPTY(config->rxFifoEmptyThreshold);
- 861              		.loc 1 577 0
- 862 014e 2B8A     		ldrh	r3, [r5, #16]
- 863              	.LVL80:
- 864 0150 C4F8EC30 		str	r3, [r4, #236]
+ 848              		.loc 1 577 0
+ 849 00fe 2B8A     		ldrh	r3, [r5, #16]
+ 850 0100 C4F8EC30 		str	r3, [r4, #236]
  580:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_ENET_HAS_RECEIVE_STATUS_THRESHOLD */
- 865              		.loc 1 580 0
- 866 0154 EB7C     		ldrb	r3, [r5, #19]	@ zero_extendqisi2
+ 851              		.loc 1 580 0
+ 852 0104 EB7C     		ldrb	r3, [r5, #19]	@ zero_extendqisi2
  578:../drivers/fsl_enet.c **** #if defined(FSL_FEATURE_ENET_HAS_RECEIVE_STATUS_THRESHOLD) && FSL_FEATURE_ENET_HAS_RECEIVE_STATUS_T
- 867              		.loc 1 578 0
- 868 0156 A87C     		ldrb	r0, [r5, #18]	@ zero_extendqisi2
- 869              	.LVL81:
+ 853              		.loc 1 578 0
+ 854 0106 95F812C0 		ldrb	ip, [r5, #18]	@ zero_extendqisi2
+ 855              	.LVL80:
  580:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_ENET_HAS_RECEIVE_STATUS_THRESHOLD */
- 870              		.loc 1 580 0
- 871 0158 1B04     		lsls	r3, r3, #16
- 872 015a 03F4F813 		and	r3, r3, #2031616
- 873 015e 0343     		orrs	r3, r3, r0
- 874              	.LVL82:
+ 856              		.loc 1 580 0
+ 857 010a 1B04     		lsls	r3, r3, #16
+ 858 010c 03F4F813 		and	r3, r3, #2031616
+ 859 0110 43EA0C03 		orr	r3, r3, ip
+ 860              	.LVL81:
  582:../drivers/fsl_enet.c ****     }
- 875              		.loc 1 582 0
- 876 0160 C4F89431 		str	r3, [r4, #404]
- 877              	.LVL83:
- 878              	.L74:
- 879              	.LBE103:
+ 861              		.loc 1 582 0
+ 862 0114 C4F89431 		str	r3, [r4, #404]
+ 863              	.LVL82:
+ 864              	.L68:
+ 865              	.LBE107:
  586:../drivers/fsl_enet.c ****     {
- 880              		.loc 1 586 0
- 881 0164 11F02001 		ands	r1, r1, #32
- 882              	.LVL84:
+ 866              		.loc 1 586 0
+ 867 0118 12F02002 		ands	r2, r2, #32
+ 868              	.LVL83:
  589:../drivers/fsl_enet.c ****         /* Receive fifo full threshold settings. */
- 883              		.loc 1 589 0
- 884 0168 1FBF     		itttt	ne
- 885 016a 6B7D     		ldrbne	r3, [r5, #21]	@ zero_extendqisi2
- 886 016c 03F03F03 		andne	r3, r3, #63
- 887 0170 C4F84431 		strne	r3, [r4, #324]
+ 869              		.loc 1 589 0
+ 870 011c 1FBF     		itttt	ne
+ 871 011e 6B7D     		ldrbne	r3, [r5, #21]	@ zero_extendqisi2
+ 872 0120 03F03F03 		andne	r3, r3, #63
+ 873 0124 C4F84431 		strne	r3, [r4, #324]
  591:../drivers/fsl_enet.c ****     }
- 888              		.loc 1 591 0
- 889 0174 2B7D     		ldrbne	r3, [r5, #20]	@ zero_extendqisi2
- 890 0176 11BF     		iteee	ne
- 891 0178 C4F89031 		strne	r3, [r4, #400]
+ 874              		.loc 1 591 0
+ 875 0128 2B7D     		ldrbne	r3, [r5, #20]	@ zero_extendqisi2
+ 876 012a 11BF     		iteee	ne
+ 877 012c C4F89031 		strne	r3, [r4, #400]
  596:../drivers/fsl_enet.c ****         base->RSFL = 0;
- 892              		.loc 1 596 0
- 893 017c 4FF48073 		moveq	r3, #256
- 894 0180 C4F84431 		streq	r3, [r4, #324]
+ 878              		.loc 1 596 0
+ 879 0130 4FF48073 		moveq	r3, #256
+ 880 0134 C4F84431 		streq	r3, [r4, #324]
  597:../drivers/fsl_enet.c ****     }
- 895              		.loc 1 597 0
- 896 0184 C4F89011 		streq	r1, [r4, #400]
+ 881              		.loc 1 597 0
+ 882 0138 C4F89021 		streq	r2, [r4, #400]
  601:../drivers/fsl_enet.c ****     {
- 897              		.loc 1 601 0
- 898 0188 1EF0180F 		tst	lr, #24
+ 883              		.loc 1 601 0
+ 884 013c 10F0180F 		tst	r0, #24
  603:../drivers/fsl_enet.c ****     }
- 899              		.loc 1 603 0
- 900 018c 1CBF     		itt	ne
- 901 018e 4FF48073 		movne	r3, #256
- 902 0192 C4F84431 		strne	r3, [r4, #324]
+ 885              		.loc 1 603 0
+ 886 0140 1CBF     		itt	ne
+ 887 0142 4FF48073 		movne	r3, #256
+ 888 0146 C4F84431 		strne	r3, [r4, #324]
  605:../drivers/fsl_enet.c ****     {
- 903              		.loc 1 605 0
- 904 0196 12F0060F 		tst	r2, #6
+ 889              		.loc 1 605 0
+ 890 014a 11F0060F 		tst	r1, #6
  607:../drivers/fsl_enet.c ****     }
- 905              		.loc 1 607 0
- 906 019a 1CBF     		itt	ne
- 907 019c 0023     		movne	r3, #0
- 908 019e C4F89031 		strne	r3, [r4, #400]
+ 891              		.loc 1 607 0
+ 892 014e 1CBF     		itt	ne
+ 893 0150 0023     		movne	r3, #0
+ 894 0152 C4F89031 		strne	r3, [r4, #400]
  615:../drivers/fsl_enet.c ****     base->RDSR = (uint32_t)bufferConfig->rxBdStartAddrAlign;
- 909              		.loc 1 615 0
- 910 01a2 3369     		ldr	r3, [r6, #16]
- 911 01a4 C4F88431 		str	r3, [r4, #388]
+ 895              		.loc 1 615 0
+ 896 0156 3369     		ldr	r3, [r6, #16]
+ 897 0158 C4F88431 		str	r3, [r4, #388]
  616:../drivers/fsl_enet.c **** #endif    
- 912              		.loc 1 616 0
- 913 01a8 F368     		ldr	r3, [r6, #12]
- 914 01aa C4F88031 		str	r3, [r4, #384]
+ 898              		.loc 1 616 0
+ 899 015c F368     		ldr	r3, [r6, #12]
+ 900 015e C4F88031 		str	r3, [r4, #384]
  618:../drivers/fsl_enet.c **** 
- 915              		.loc 1 618 0
- 916 01ae 7368     		ldr	r3, [r6, #4]
- 917 01b0 C4F88831 		str	r3, [r4, #392]
+ 901              		.loc 1 618 0
+ 902 0162 7368     		ldr	r3, [r6, #4]
+ 903 0164 C4F88831 		str	r3, [r4, #392]
  662:../drivers/fsl_enet.c **** 
- 918              		.loc 1 662 0
- 919 01b4 0C99     		ldr	r1, [sp, #48]
- 920 01b6 2046     		mov	r0, r4
- 921 01b8 FFF7FEFF 		bl	ENET_SetMacAddr
- 922              	.LVL85:
- 923              	.LBB104:
- 924              	.LBB105:
+ 904              		.loc 1 662 0
+ 905 0168 0C99     		ldr	r1, [sp, #48]
+ 906 016a 2046     		mov	r0, r4
+ 907 016c FFF7FEFF 		bl	ENET_SetMacAddr
+ 908              	.LVL84:
+ 909              	.LBB108:
+ 910              	.LBB109:
  788:../drivers/fsl_enet.h **** }
- 925              		.loc 2 788 0
- 926 01bc 636C     		ldr	r3, [r4, #68]
- 927              	.LVL86:
- 928              	.LBE105:
- 929              	.LBE104:
+ 911              		.loc 2 788 0
+ 912 0170 636C     		ldr	r3, [r4, #68]
+ 913              	.LVL85:
+ 914              	.LBE109:
+ 915              	.LBE108:
  665:../drivers/fsl_enet.c ****     {
- 930              		.loc 1 665 0
- 931 01be 13F07E0F 		tst	r3, #126
- 932 01c2 06D1     		bne	.L79
- 933              	.LVL87:
+ 916              		.loc 1 665 0
+ 917 0172 13F07E0F 		tst	r3, #126
+ 918 0176 05D1     		bne	.L73
+ 919              	.LVL86:
  667:../drivers/fsl_enet.c ****     }
- 934              		.loc 1 667 0
- 935 01c4 2A68     		ldr	r2, [r5]
- 936 01c6 0D99     		ldr	r1, [sp, #52]
- 937 01c8 C2F38012 		ubfx	r2, r2, #6, #1
- 938 01cc 2046     		mov	r0, r4
- 939              	.LVL88:
- 940 01ce FFF7FEFF 		bl	ENET_SetSMI
- 941              	.LVL89:
- 942              	.L79:
- 943              	.LBB106:
- 944              	.LBB107:
+ 920              		.loc 1 667 0
+ 921 0178 2A68     		ldr	r2, [r5]
+ 922 017a 0D99     		ldr	r1, [sp, #52]
+ 923 017c C2F38012 		ubfx	r2, r2, #6, #1
+ 924 0180 FFF7FEFF 		bl	ENET_SetSMI
+ 925              	.LVL87:
+ 926              	.L73:
+ 927              	.LBB110:
+ 928              	.LBB111:
 1012:../drivers/fsl_enet.h ****     }
 1013:../drivers/fsl_enet.h **** }
 1014:../drivers/fsl_enet.h **** 
@@ -6387,115 +6388,99 @@
 1054:../drivers/fsl_enet.h **** static inline void ENET_EnableInterrupts(ENET_Type *base, uint32_t mask)
 1055:../drivers/fsl_enet.h **** {
 1056:../drivers/fsl_enet.h ****     base->EIMR |= mask;
- 945              		.loc 2 1056 0
- 946 01d2 6A68     		ldr	r2, [r5, #4]
- 947 01d4 A368     		ldr	r3, [r4, #8]
- 948              	.LBE107:
- 949              	.LBE106:
+ 929              		.loc 2 1056 0
+ 930 0184 6A68     		ldr	r2, [r5, #4]
+ 931 0186 A368     		ldr	r3, [r4, #8]
+ 932 0188 1343     		orrs	r3, r3, r2
+ 933 018a A360     		str	r3, [r4, #8]
+ 934              	.LVL88:
+ 935              	.LBE111:
+ 936              	.LBE110:
  710:../drivers/fsl_enet.c ****     base->ECR = ecr;
- 950              		.loc 1 710 0
- 951 01d6 47F48177 		orr	r7, r7, #258
- 952              	.LVL90:
- 953              	.LBB109:
- 954              	.LBB108:
- 955              		.loc 2 1056 0
- 956 01da 1343     		orrs	r3, r3, r2
- 957 01dc A360     		str	r3, [r4, #8]
- 958              	.LVL91:
- 959              	.LBE108:
- 960              	.LBE109:
- 961              	.LBE102:
- 962              	.LBE101:
- 963              	.LBB111:
- 964              	.LBB112:
- 433:../drivers/fsl_enet.c ****     const enet_buffer_config_t *buffCfg = bufferConfig;
- 965              		.loc 1 433 0
- 966 01de 2046     		mov	r0, r4
- 967              	.LVL92:
- 968              	.LBE112:
- 969              	.LBE111:
- 970              	.LBB123:
- 971              	.LBB110:
+ 937              		.loc 1 710 0
+ 938 018c 48F48173 		orr	r3, r8, #258
+ 939              	.LVL89:
  711:../drivers/fsl_enet.c **** }
- 972              		.loc 1 711 0
- 973 01e0 6762     		str	r7, [r4, #36]
- 974              	.LVL93:
- 975              	.LBE110:
- 976              	.LBE123:
- 977              	.LBB124:
- 978              	.LBB122:
+ 940              		.loc 1 711 0
+ 941 0190 6362     		str	r3, [r4, #36]
+ 942              	.LVL90:
+ 943              	.LBE106:
+ 944              	.LBE105:
+ 945              	.LBB112:
+ 946              	.LBB113:
  433:../drivers/fsl_enet.c ****     const enet_buffer_config_t *buffCfg = bufferConfig;
- 979              		.loc 1 433 0
- 980 01e2 FFF7FEFF 		bl	ENET_GetInstance
- 981              	.LVL94:
+ 947              		.loc 1 433 0
+ 948 0192 2046     		mov	r0, r4
+ 949              	.LVL91:
+ 950 0194 FFF7FEFF 		bl	ENET_GetInstance
+ 951              	.LVL92:
  437:../drivers/fsl_enet.c **** 
- 982              		.loc 1 437 0
- 983 01e6 2422     		movs	r2, #36
+ 952              		.loc 1 437 0
+ 953 0198 2422     		movs	r2, #36
  433:../drivers/fsl_enet.c ****     const enet_buffer_config_t *buffCfg = bufferConfig;
- 984              		.loc 1 433 0
- 985 01e8 0446     		mov	r4, r0
- 986              	.LVL95:
+ 954              		.loc 1 433 0
+ 955 019a 0446     		mov	r4, r0
+ 956              	.LVL93:
  437:../drivers/fsl_enet.c **** 
- 987              		.loc 1 437 0
- 988 01ea 0021     		movs	r1, #0
- 989 01ec 4846     		mov	r0, r9
- 990              	.LVL96:
- 991 01ee FFF7FEFF 		bl	memset
- 992              	.LVL97:
+ 957              		.loc 1 437 0
+ 958 019c 0021     		movs	r1, #0
+ 959 019e 3846     		mov	r0, r7
+ 960              	.LVL94:
+ 961 01a0 FFF7FEFF 		bl	memset
+ 962              	.LVL95:
  439:../drivers/fsl_enet.c ****     for (count = 0; count < handle->ringNum; count++)
- 993              		.loc 1 439 0
- 994 01f2 AB7D     		ldrb	r3, [r5, #22]	@ zero_extendqisi2
- 995 01f4 012B     		cmp	r3, #1
- 996 01f6 28BF     		it	cs
- 997 01f8 0123     		movcs	r3, #1
- 998 01fa 89F81830 		strb	r3, [r9, #24]
- 999              	.LVL98:
+ 963              		.loc 1 439 0
+ 964 01a4 AB7D     		ldrb	r3, [r5, #22]	@ zero_extendqisi2
+ 965 01a6 012B     		cmp	r3, #1
+ 966 01a8 1A46     		mov	r2, r3
+ 967 01aa 28BF     		it	cs
+ 968 01ac 0122     		movcs	r2, #1
+ 969 01ae 3A76     		strb	r2, [r7, #24]
+ 970              	.LVL96:
  440:../drivers/fsl_enet.c ****     {
- 1000              		.loc 1 440 0
- 1001 01fe 7BB1     		cbz	r3, .L80
+ 971              		.loc 1 440 0
+ 972 01b0 4BB1     		cbz	r3, .L74
  442:../drivers/fsl_enet.c ****         handle->rxBdCurrent[count] = buffCfg->rxBdStartAddrAlign;
- 1002              		.loc 1 442 0
- 1003 0200 F368     		ldr	r3, [r6, #12]
- 1004 0202 C9F80030 		str	r3, [r9]
+ 973              		.loc 1 442 0
+ 974 01b2 F368     		ldr	r3, [r6, #12]
  443:../drivers/fsl_enet.c ****         handle->rxBuffSizeAlign[count] = buffCfg->rxBuffSizeAlign;
- 1005              		.loc 1 443 0
- 1006 0206 C9F80430 		str	r3, [r9, #4]
+ 975              		.loc 1 443 0
+ 976 01b4 C7E90033 		strd	r3, r3, [r7]
  444:../drivers/fsl_enet.c ****         handle->txBdBase[count] = buffCfg->txBdStartAddrAlign;
- 1007              		.loc 1 444 0
- 1008 020a 7368     		ldr	r3, [r6, #4]
- 1009 020c C9F81030 		str	r3, [r9, #16]
+ 977              		.loc 1 444 0
+ 978 01b8 7368     		ldr	r3, [r6, #4]
+ 979 01ba 3B61     		str	r3, [r7, #16]
  445:../drivers/fsl_enet.c ****         handle->txBdCurrent[count] = buffCfg->txBdStartAddrAlign;
- 1010              		.loc 1 445 0
- 1011 0210 3369     		ldr	r3, [r6, #16]
- 1012 0212 C9F80830 		str	r3, [r9, #8]
+ 980              		.loc 1 445 0
+ 981 01bc 3369     		ldr	r3, [r6, #16]
  446:../drivers/fsl_enet.c ****         handle->txBuffSizeAlign[count] = buffCfg->txBuffSizeAlign;
- 1013              		.loc 1 446 0
- 1014 0216 C9F80C30 		str	r3, [r9, #12]
+ 982              		.loc 1 446 0
+ 983 01be C7E90233 		strd	r3, r3, [r7, #8]
  447:../drivers/fsl_enet.c ****         buffCfg++;
- 1015              		.loc 1 447 0
- 1016 021a B368     		ldr	r3, [r6, #8]
- 1017 021c C9F81430 		str	r3, [r9, #20]
- 1018              	.LVL99:
- 1019              	.L80:
+ 984              		.loc 1 447 0
+ 985 01c2 B368     		ldr	r3, [r6, #8]
+ 986 01c4 7B61     		str	r3, [r7, #20]
+ 987              	.LVL97:
+ 988              	.L74:
  452:../drivers/fsl_enet.c **** 
- 1020              		.loc 1 452 0
- 1021 0220 2B4B     		ldr	r3, .L129+8
- 1022 0222 43F82490 		str	r9, [r3, r4, lsl #2]
+ 989              		.loc 1 452 0
+ 990 01c6 3C4B     		ldr	r3, .L117+8
+ 991 01c8 43F82470 		str	r7, [r3, r4, lsl #2]
  455:../drivers/fsl_enet.c ****     {
- 1023              		.loc 1 455 0
- 1024 0226 6B68     		ldr	r3, [r5, #4]
- 1025 0228 13F0406F 		tst	r3, #201326592
- 1026 022c 06D0     		beq	.L81
+ 992              		.loc 1 455 0
+ 993 01cc 6B68     		ldr	r3, [r5, #4]
+ 994 01ce 13F0406F 		tst	r3, #201326592
+ 995 01d2 06D0     		beq	.L75
  457:../drivers/fsl_enet.c ****         EnableIRQ(s_enetTxIrqId[instance]);
- 1027              		.loc 1 457 0
- 1028 022e 294A     		ldr	r2, .L129+12
- 1029 0230 2949     		ldr	r1, .L129+16
- 1030 0232 1160     		str	r1, [r2]
- 1031              	.LVL100:
- 1032              	.LBB113:
- 1033              	.LBB114:
- 1034              	.LBB115:
- 1035              		.file 5 "../CMSIS/core_cm4.h"
+ 996              		.loc 1 457 0
+ 997 01d4 394A     		ldr	r2, .L117+12
+ 998 01d6 3A49     		ldr	r1, .L117+16
+ 999 01d8 1160     		str	r1, [r2]
+ 1000              	.LVL98:
+ 1001              	.LBB114:
+ 1002              	.LBB115:
+ 1003              	.LBB116:
+ 1004              		.file 5 "../CMSIS/core_cm4.h"
    1:../CMSIS/core_cm4.h **** /**************************************************************************//**
    2:../CMSIS/core_cm4.h ****  * @file     core_cm4.h
    3:../CMSIS/core_cm4.h ****  * @brief    CMSIS Cortex-M4 Core Peripheral Access Layer Header File
@@ -8172,1201 +8157,1210 @@
 1674:../CMSIS/core_cm4.h ****   if ((int32_t)(IRQn) >= 0)
 1675:../CMSIS/core_cm4.h ****   {
 1676:../CMSIS/core_cm4.h ****     NVIC->ISER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) &
- 1036              		.loc 5 1676 0
- 1037 0234 294A     		ldr	r2, .L129+20
- 1038 0236 4FF40021 		mov	r1, #524288
- 1039 023a 9160     		str	r1, [r2, #8]
- 1040              	.LVL101:
- 1041              	.L81:
- 1042              	.LBE115:
- 1043              	.LBE114:
- 1044              	.LBE113:
+ 1005              		.loc 5 1676 0
+ 1006 01da 3A4A     		ldr	r2, .L117+20
+ 1007 01dc 4FF40021 		mov	r1, #524288
+ 1008 01e0 9160     		str	r1, [r2, #8]
+ 1009              	.LVL99:
+ 1010              	.L75:
+ 1011              	.LBE116:
+ 1012              	.LBE115:
+ 1013              	.LBE114:
  460:../drivers/fsl_enet.c ****     {
- 1045              		.loc 1 460 0
- 1046 023c 13F0407F 		tst	r3, #50331648
- 1047 0240 06D0     		beq	.L82
+ 1014              		.loc 1 460 0
+ 1015 01e2 13F0407F 		tst	r3, #50331648
+ 1016 01e6 06D0     		beq	.L76
  462:../drivers/fsl_enet.c ****         EnableIRQ(s_enetRxIrqId[instance]);
- 1048              		.loc 1 462 0
- 1049 0242 274A     		ldr	r2, .L129+24
- 1050 0244 2749     		ldr	r1, .L129+28
- 1051 0246 1160     		str	r1, [r2]
- 1052              	.LVL102:
- 1053              	.LBB116:
- 1054              	.LBB117:
- 1055              	.LBB118:
- 1056              		.loc 5 1676 0
- 1057 0248 244A     		ldr	r2, .L129+20
- 1058 024a 4FF48011 		mov	r1, #1048576
- 1059 024e 9160     		str	r1, [r2, #8]
- 1060              	.LVL103:
- 1061              	.L82:
- 1062              	.LBE118:
- 1063              	.LBE117:
- 1064              	.LBE116:
+ 1017              		.loc 1 462 0
+ 1018 01e8 374A     		ldr	r2, .L117+24
+ 1019 01ea 3849     		ldr	r1, .L117+28
+ 1020 01ec 1160     		str	r1, [r2]
+ 1021              	.LVL100:
+ 1022              	.LBB117:
+ 1023              	.LBB118:
+ 1024              	.LBB119:
+ 1025              		.loc 5 1676 0
+ 1026 01ee 354A     		ldr	r2, .L117+20
+ 1027 01f0 4FF48011 		mov	r1, #1048576
+ 1028 01f4 9160     		str	r1, [r2, #8]
+ 1029              	.LVL101:
+ 1030              	.L76:
+ 1031              	.LBE119:
+ 1032              	.LBE118:
+ 1033              	.LBE117:
  465:../drivers/fsl_enet.c ****     {
- 1065              		.loc 1 465 0
- 1066 0250 254A     		ldr	r2, .L129+32
- 1067 0252 1342     		tst	r3, r2
- 1068 0254 06D0     		beq	.L46
+ 1034              		.loc 1 465 0
+ 1035 01f6 364A     		ldr	r2, .L117+32
+ 1036 01f8 1342     		tst	r3, r2
+ 1037 01fa 06D0     		beq	.L46
  467:../drivers/fsl_enet.c ****         EnableIRQ(s_enetErrIrqId[instance]);
- 1069              		.loc 1 467 0
- 1070 0256 254B     		ldr	r3, .L129+36
- 1071 0258 254A     		ldr	r2, .L129+40
- 1072 025a 1A60     		str	r2, [r3]
- 1073              	.LVL104:
- 1074              	.LBB119:
- 1075              	.LBB120:
- 1076              	.LBB121:
- 1077              		.loc 5 1676 0
- 1078 025c 1F4B     		ldr	r3, .L129+20
- 1079 025e 4FF40012 		mov	r2, #2097152
- 1080 0262 9A60     		str	r2, [r3, #8]
- 1081              	.LVL105:
- 1082              	.L46:
- 1083              	.LBE121:
- 1084              	.LBE120:
- 1085              	.LBE119:
- 1086              	.LBE122:
- 1087              	.LBE124:
+ 1038              		.loc 1 467 0
+ 1039 01fc 354B     		ldr	r3, .L117+36
+ 1040 01fe 364A     		ldr	r2, .L117+40
+ 1041 0200 1A60     		str	r2, [r3]
+ 1042              	.LVL102:
+ 1043              	.LBB120:
+ 1044              	.LBB121:
+ 1045              	.LBB122:
+ 1046              		.loc 5 1676 0
+ 1047 0202 304B     		ldr	r3, .L117+20
+ 1048 0204 4FF40012 		mov	r2, #2097152
+ 1049 0208 9A60     		str	r2, [r3, #8]
+ 1050              	.LVL103:
+ 1051              	.L46:
+ 1052              	.LBE122:
+ 1053              	.LBE121:
+ 1054              	.LBE120:
+ 1055              	.LBE113:
+ 1056              	.LBE112:
  401:../drivers/fsl_enet.c **** 
- 1088              		.loc 1 401 0
- 1089 0264 03B0     		add	sp, sp, #12
- 1090              		.cfi_remember_state
- 1091              		.cfi_def_cfa_offset 36
- 1092              		@ sp needed
- 1093 0266 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
- 1094              	.LVL106:
- 1095              	.L53:
- 1096              		.cfi_restore_state
- 1097              	.LBB125:
- 1098              	.LBB95:
+ 1057              		.loc 1 401 0
+ 1058 020a 03B0     		add	sp, sp, #12
+ 1059              		.cfi_remember_state
+ 1060              		.cfi_def_cfa_offset 36
+ 1061              		@ sp needed
+ 1062 020c BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1063              	.LVL104:
+ 1064              	.L53:
+ 1065              		.cfi_restore_state
+ 1066              	.LBB123:
+ 1067              	.LBB96:
  729:../drivers/fsl_enet.c ****         {
- 1099              		.loc 1 729 0
- 1100 026a D3F810E0 		ldr	lr, [r3, #16]
- 1101 026e BEF1000F 		cmp	lr, #0
- 1102 0272 01D1     		bne	.L48
- 1103              	.L49:
+ 1068              		.loc 1 729 0
+ 1069 0210 D3F810C0 		ldr	ip, [r3, #16]
+ 1070 0214 BCF1000F 		cmp	ip, #0
+ 1071 0218 01D1     		bne	.L48
+ 1072              	.L49:
  764:../drivers/fsl_enet.c ****     }
- 1104              		.loc 1 764 0
- 1105 0274 1C33     		adds	r3, r3, #28
- 1106              	.LVL107:
- 1107 0276 DCE6     		b	.L47
- 1108              	.L48:
+ 1073              		.loc 1 764 0
+ 1074 021a 1C33     		adds	r3, r3, #28
+ 1075              	.LVL105:
+ 1076 021c 07E7     		b	.L47
+ 1077              	.L48:
  729:../drivers/fsl_enet.c ****         {
- 1109              		.loc 1 729 0
- 1110 0278 9969     		ldr	r1, [r3, #24]
- 1111 027a 0029     		cmp	r1, #0
- 1112 027c FAD0     		beq	.L49
- 1113              	.LVL108:
- 1114              	.LBB94:
+ 1078              		.loc 1 729 0
+ 1079 021e 9969     		ldr	r1, [r3, #24]
+ 1080 0220 0029     		cmp	r1, #0
+ 1081 0222 FAD0     		beq	.L49
+ 1082              	.LVL106:
+ 1083              	.LBB94:
  738:../drivers/fsl_enet.c ****             {
- 1115              		.loc 1 738 0
- 1116 027e B3F802C0 		ldrh	ip, [r3, #2]
+ 1084              		.loc 1 738 0
+ 1085 0224 B3F80280 		ldrh	r8, [r3, #2]
  732:../drivers/fsl_enet.c **** #if defined(FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET) && FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET
- 1117              		.loc 1 732 0
- 1118 0282 9A68     		ldr	r2, [r3, #8]
- 1119 0284 0192     		str	r2, [sp, #4]
- 1120              	.LVL109:
+ 1086              		.loc 1 732 0
+ 1087 0228 9A68     		ldr	r2, [r3, #8]
+ 1088 022a 0192     		str	r2, [sp, #4]
+ 1089              	.LVL107:
  747:../drivers/fsl_enet.c ****                 {
- 1121              		.loc 1 747 0
- 1122 0286 0CF1FF32 		add	r2, ip, #-1
- 1123              	.LVL110:
- 1124 028a 0092     		str	r2, [sp]
+ 1090              		.loc 1 747 0
+ 1091 022c 08F1FF3A 		add	r10, r8, #-1
  738:../drivers/fsl_enet.c ****             {
- 1125              		.loc 1 738 0
- 1126 028c 0022     		movs	r2, #0
- 1127              	.LVL111:
- 1128              	.L50:
- 1129 028e 6245     		cmp	r2, ip
- 1130 0290 0EEBC207 		add	r7, lr, r2, lsl #3
- 1131              	.LVL112:
- 1132 0294 EED2     		bcs	.L49
- 747:../drivers/fsl_enet.c ****                 {
- 1133              		.loc 1 747 0
- 1134 0296 0098     		ldr	r0, [sp]
- 741:../drivers/fsl_enet.c ****                 /* Initializes data length. */
- 1135              		.loc 1 741 0
- 1136 0298 7960     		str	r1, [r7, #4]
+ 1092              		.loc 1 738 0
+ 1093 0230 0022     		movs	r2, #0
+ 1094              	.LVL108:
+ 1095              	.L50:
+ 1096 0232 4245     		cmp	r2, r8
+ 1097 0234 0CEBC200 		add	r0, ip, r2, lsl #3
+ 1098              	.LVL109:
+ 1099 0238 EFD2     		bcs	.L49
  743:../drivers/fsl_enet.c ****                 /* Sets the crc. */
- 1137              		.loc 1 743 0
- 1138 029a 2EF832B0 		strh	fp, [lr, r2, lsl #3]	@ movhi
+ 1100              		.loc 1 743 0
+ 1101 023a 4FF0000E 		mov	lr, #0	@ movhi
+ 741:../drivers/fsl_enet.c ****                 /* Initializes data length. */
+ 1102              		.loc 1 741 0
+ 1103 023e 4160     		str	r1, [r0, #4]
+ 743:../drivers/fsl_enet.c ****                 /* Sets the crc. */
+ 1104              		.loc 1 743 0
+ 1105 0240 2CF832E0 		strh	lr, [ip, r2, lsl #3]	@ movhi
  747:../drivers/fsl_enet.c ****                 {
- 1139              		.loc 1 747 0
- 1140 029e 9042     		cmp	r0, r2
+ 1106              		.loc 1 747 0
+ 1107 0244 9245     		cmp	r10, r2
  745:../drivers/fsl_enet.c ****                 /* Sets the last buffer descriptor with the wrap flag. */
- 1141              		.loc 1 745 0
- 1142 02a0 A7F80280 		strh	r8, [r7, #2]	@ movhi
+ 1108              		.loc 1 745 0
+ 1109 0246 A0F80290 		strh	r9, [r0, #2]	@ movhi
  749:../drivers/fsl_enet.c ****                 }
- 1143              		.loc 1 749 0
- 1144 02a4 01BF     		itttt	eq
- 1145 02a6 7888     		ldrheq	r0, [r7, #2]
- 1146 02a8 80B2     		uxtheq	r0, r0
- 1147 02aa 40F40050 		orreq	r0, r0, #8192
- 1148 02ae 7880     		strheq	r0, [r7, #2]	@ movhi
- 1149              	.LVL113:
- 1150 02b0 0198     		ldr	r0, [sp, #4]
+ 1110              		.loc 1 749 0
+ 1111 024a 02BF     		ittt	eq
+ 1112 024c B0F802E0 		ldrheq	lr, [r0, #2]
+ 1113 0250 4EF4005E 		orreq	lr, lr, #8192
+ 1114 0254 A0F802E0 		strheq	lr, [r0, #2]	@ movhi
+ 1115              	.LVL110:
+ 1116 0258 0198     		ldr	r0, [sp, #4]
  738:../drivers/fsl_enet.c ****             {
- 1151              		.loc 1 738 0
- 1152 02b2 0132     		adds	r2, r2, #1
- 1153              	.LVL114:
- 1154 02b4 0144     		add	r1, r1, r0
- 1155 02b6 EAE7     		b	.L50
- 1156              	.LVL115:
- 1157              	.L60:
- 1158              	.LBE94:
- 1159              	.LBE95:
- 1160              	.LBE125:
- 1161              	.LBB126:
- 1162              	.LBB100:
+ 1117              		.loc 1 738 0
+ 1118 025a 0132     		adds	r2, r2, #1
+ 1119              	.LVL111:
+ 1120 025c 0144     		add	r1, r1, r0
+ 1121 025e E8E7     		b	.L50
+ 1122              	.LVL112:
+ 1123              	.L60:
+ 1124              	.LBE94:
+ 1125              	.LBE96:
+ 1126              	.LBE123:
+ 1127              	.LBB124:
+ 1128              	.LBB102:
  800:../drivers/fsl_enet.c ****         {
- 1163              		.loc 1 800 0
- 1164 02b8 53F810EC 		ldr	lr, [r3, #-16]
- 1165 02bc BEF1000F 		cmp	lr, #0
- 1166 02c0 18D1     		bne	.L55
- 1167              	.L56:
- 1168              	.LVL116:
- 1169 02c2 1C33     		adds	r3, r3, #28
- 1170              	.LVL117:
- 1171 02c4 C4E6     		b	.L54
- 1172              	.L130:
- 1173 02c6 00BF     		.align	2
- 1174              	.L129:
- 1175 02c8 2C800440 		.word	1074036780
- 1176 02cc 0000FF3F 		.word	1073676288
- 1177 02d0 00000000 		.word	.LANCHOR0
- 1178 02d4 00000000 		.word	.LANCHOR1
- 1179 02d8 00000000 		.word	ENET_TransmitIRQHandler
- 1180 02dc 00E100E0 		.word	-536813312
- 1181 02e0 00000000 		.word	.LANCHOR2
- 1182 02e4 00000000 		.word	ENET_ReceiveIRQHandler
- 1183 02e8 00007C60 		.word	1618739200
- 1184 02ec 00000000 		.word	.LANCHOR3
- 1185 02f0 00000000 		.word	ENET_ErrorIRQHandler
- 1186              	.L55:
- 1187 02f4 53F8081C 		ldr	r1, [r3, #-8]
- 1188 02f8 0029     		cmp	r1, #0
- 1189 02fa E2D0     		beq	.L56
- 1190              	.LVL118:
- 1191              	.LBB99:
+ 1129              		.loc 1 800 0
+ 1130 0260 D3F80CC0 		ldr	ip, [r3, #12]
+ 1131 0264 BCF1000F 		cmp	ip, #0
+ 1132 0268 01D1     		bne	.L55
+ 1133              	.L56:
+ 838:../drivers/fsl_enet.c ****     }
+ 1134              		.loc 1 838 0
+ 1135 026a 1C33     		adds	r3, r3, #28
+ 1136              	.LVL113:
+ 1137 026c EAE6     		b	.L54
+ 1138              	.L55:
+ 800:../drivers/fsl_enet.c ****         {
+ 1139              		.loc 1 800 0
+ 1140 026e 5969     		ldr	r1, [r3, #20]
+ 1141 0270 0029     		cmp	r1, #0
+ 1142 0272 FAD0     		beq	.L56
+ 1143              	.LVL114:
+ 1144              	.LBB100:
  809:../drivers/fsl_enet.c ****             {
- 1192              		.loc 1 809 0
- 1193 02fc 33F81CCC 		ldrh	ip, [r3, #-28]
+ 1145              		.loc 1 809 0
+ 1146 0274 B3F80080 		ldrh	r8, [r3]
  803:../drivers/fsl_enet.c **** #if defined(FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET) && FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET
- 1194              		.loc 1 803 0
- 1195 0300 53F8182C 		ldr	r2, [r3, #-24]
- 1196 0304 0192     		str	r2, [sp, #4]
- 1197              	.LVL119:
+ 1147              		.loc 1 803 0
+ 1148 0278 5A68     		ldr	r2, [r3, #4]
+ 1149 027a 0192     		str	r2, [sp, #4]
+ 1150              	.LVL115:
  818:../drivers/fsl_enet.c ****                 {
- 1198              		.loc 1 818 0
- 1199 0306 0CF1FF3A 		add	r10, ip, #-1
+ 1151              		.loc 1 818 0
+ 1152 027c 08F1FF3B 		add	fp, r8, #-1
  809:../drivers/fsl_enet.c ****             {
- 1200              		.loc 1 809 0
- 1201 030a 0022     		movs	r2, #0
- 1202              	.LVL120:
- 1203              	.L57:
- 1204 030c 6245     		cmp	r2, ip
- 1205 030e 0EEBC207 		add	r7, lr, r2, lsl #3
- 1206              	.LVL121:
- 1207 0312 D6D2     		bcs	.L56
- 812:../drivers/fsl_enet.c ****                 curBuffDescrip->length = 0;
- 1208              		.loc 1 812 0
- 1209 0314 7960     		str	r1, [r7, #4]
+ 1153              		.loc 1 809 0
+ 1154 0280 0022     		movs	r2, #0
+ 1155              	.LVL116:
+ 1156              	.L57:
+ 1157 0282 4245     		cmp	r2, r8
+ 1158 0284 0CEBC200 		add	r0, ip, r2, lsl #3
+ 1159              	.LVL117:
+ 1160 0288 EFD2     		bcs	.L56
  813:../drivers/fsl_enet.c **** 
- 1210              		.loc 1 813 0
- 1211 0316 2EF832B0 		strh	fp, [lr, r2, lsl #3]	@ movhi
+ 1161              		.loc 1 813 0
+ 1162 028a 4FF0000E 		mov	lr, #0	@ movhi
+ 812:../drivers/fsl_enet.c ****                 curBuffDescrip->length = 0;
+ 1163              		.loc 1 812 0
+ 1164 028e 4160     		str	r1, [r0, #4]
+ 813:../drivers/fsl_enet.c **** 
+ 1165              		.loc 1 813 0
+ 1166 0290 2CF832E0 		strh	lr, [ip, r2, lsl #3]	@ movhi
  818:../drivers/fsl_enet.c ****                 {
- 1212              		.loc 1 818 0
- 1213 031a 5245     		cmp	r2, r10
+ 1167              		.loc 1 818 0
+ 1168 0294 5A45     		cmp	r2, fp
  816:../drivers/fsl_enet.c ****                 /* Sets the last buffer descriptor with the wrap flag. */
- 1214              		.loc 1 816 0
- 1215 031c A7F80280 		strh	r8, [r7, #2]	@ movhi
+ 1169              		.loc 1 816 0
+ 1170 0296 A0F80290 		strh	r9, [r0, #2]	@ movhi
  820:../drivers/fsl_enet.c ****                 }
- 1216              		.loc 1 820 0
- 1217 0320 01BF     		itttt	eq
- 1218 0322 7888     		ldrheq	r0, [r7, #2]
- 1219 0324 80B2     		uxtheq	r0, r0
- 1220 0326 40F40050 		orreq	r0, r0, #8192
- 1221 032a 7880     		strheq	r0, [r7, #2]	@ movhi
- 1222              	.LVL122:
- 1223 032c 0198     		ldr	r0, [sp, #4]
+ 1171              		.loc 1 820 0
+ 1172 029a 02BF     		ittt	eq
+ 1173 029c B0F802E0 		ldrheq	lr, [r0, #2]
+ 1174 02a0 4EF4005E 		orreq	lr, lr, #8192
+ 1175 02a4 A0F802E0 		strheq	lr, [r0, #2]	@ movhi
+ 1176              	.LVL118:
+ 1177 02a8 0198     		ldr	r0, [sp, #4]
  809:../drivers/fsl_enet.c ****             {
- 1224              		.loc 1 809 0
- 1225 032e 0132     		adds	r2, r2, #1
- 1226              	.LVL123:
- 1227 0330 0144     		add	r1, r1, r0
- 1228 0332 EBE7     		b	.L57
- 1229              	.LBE99:
- 1230              	.LBE100:
- 1231              	.LBE126:
- 1232              		.cfi_endproc
- 1233              	.LFE159:
- 1235              		.section	.text.ENET_StartSMIWrite,"ax",%progbits
- 1236              		.align	1
- 1237              		.global	ENET_StartSMIWrite
- 1238              		.syntax unified
- 1239              		.thumb
- 1240              		.thumb_func
- 1241              		.fpu fpv4-sp-d16
- 1243              	ENET_StartSMIWrite:
- 1244              	.LFB171:
+ 1178              		.loc 1 809 0
+ 1179 02aa 0132     		adds	r2, r2, #1
+ 1180              	.LVL119:
+ 1181 02ac 0144     		add	r1, r1, r0
+ 1182 02ae E8E7     		b	.L57
+ 1183              	.L118:
+ 1184              		.align	2
+ 1185              	.L117:
+ 1186 02b0 2C800440 		.word	1074036780
+ 1187 02b4 0000FF3F 		.word	1073676288
+ 1188 02b8 00000000 		.word	.LANCHOR0
+ 1189 02bc 00000000 		.word	.LANCHOR1
+ 1190 02c0 00000000 		.word	ENET_TransmitIRQHandler
+ 1191 02c4 00E100E0 		.word	-536813312
+ 1192 02c8 00000000 		.word	.LANCHOR2
+ 1193 02cc 00000000 		.word	ENET_ReceiveIRQHandler
+ 1194 02d0 00007C60 		.word	1618739200
+ 1195 02d4 00000000 		.word	.LANCHOR3
+ 1196 02d8 00000000 		.word	ENET_ErrorIRQHandler
+ 1197              	.LBE100:
+ 1198              	.LBE102:
+ 1199              	.LBE124:
+ 1200              		.cfi_endproc
+ 1201              	.LFE159:
+ 1203              		.section	.text.ENET_StartSMIWrite,"ax",%progbits
+ 1204              		.align	1
+ 1205              		.global	ENET_StartSMIWrite
+ 1206              		.syntax unified
+ 1207              		.thumb
+ 1208              		.thumb_func
+ 1209              		.fpu fpv4-sp-d16
+ 1211              	ENET_StartSMIWrite:
+ 1212              	.LFB171:
  961:../drivers/fsl_enet.c ****     uint32_t mmfr = 0;
- 1245              		.loc 1 961 0
- 1246              		.cfi_startproc
- 1247              		@ args = 4, pretend = 0, frame = 0
- 1248              		@ frame_needed = 0, uses_anonymous_args = 0
- 1249              	.LVL124:
- 1250 0000 10B5     		push	{r4, lr}
- 1251              		.cfi_def_cfa_offset 8
- 1252              		.cfi_offset 4, -8
- 1253              		.cfi_offset 14, -4
+ 1213              		.loc 1 961 0
+ 1214              		.cfi_startproc
+ 1215              		@ args = 4, pretend = 0, frame = 0
+ 1216              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1217              	.LVL120:
+ 1218 0000 10B5     		push	{r4, lr}
+ 1219              		.cfi_def_cfa_offset 8
+ 1220              		.cfi_offset 4, -8
+ 1221              		.cfi_offset 14, -4
  966:../drivers/fsl_enet.c ****     base->MMFR = mmfr;
- 1254              		.loc 1 966 0
- 1255 0002 BDF80840 		ldrh	r4, [sp, #8]
+ 1222              		.loc 1 966 0
+ 1223 0002 BDF80840 		ldrh	r4, [sp, #8]
  965:../drivers/fsl_enet.c ****            (data & 0xFFFF);
- 1256              		.loc 1 965 0
- 1257 0006 9204     		lsls	r2, r2, #18
- 1258              	.LVL125:
- 1259 0008 44F08044 		orr	r4, r4, #1073741824
- 1260 000c 02F4F802 		and	r2, r2, #8126464
- 1261 0010 44F40034 		orr	r4, r4, #131072
- 1262 0014 C905     		lsls	r1, r1, #23
- 1263              	.LVL126:
- 1264 0016 2243     		orrs	r2, r2, r4
- 1265 0018 01F07861 		and	r1, r1, #260046848
- 1266 001c 1B07     		lsls	r3, r3, #28
- 1267              	.LVL127:
- 1268 001e 0A43     		orrs	r2, r2, r1
- 1269 0020 03F04053 		and	r3, r3, #805306368
- 1270 0024 1A43     		orrs	r2, r2, r3
- 1271              	.LVL128:
+ 1224              		.loc 1 965 0
+ 1225 0006 9204     		lsls	r2, r2, #18
+ 1226              	.LVL121:
+ 1227 0008 44F08044 		orr	r4, r4, #1073741824
+ 1228 000c 02F4F802 		and	r2, r2, #8126464
+ 1229 0010 44F40034 		orr	r4, r4, #131072
+ 1230 0014 C905     		lsls	r1, r1, #23
+ 1231              	.LVL122:
+ 1232 0016 2243     		orrs	r2, r2, r4
+ 1233 0018 01F07861 		and	r1, r1, #260046848
+ 1234 001c 1B07     		lsls	r3, r3, #28
+ 1235              	.LVL123:
+ 1236 001e 0A43     		orrs	r2, r2, r1
+ 1237 0020 03F04053 		and	r3, r3, #805306368
+ 1238 0024 1A43     		orrs	r2, r2, r3
+ 1239              	.LVL124:
  967:../drivers/fsl_enet.c **** }
- 1272              		.loc 1 967 0
- 1273 0026 0264     		str	r2, [r0, #64]
- 1274 0028 10BD     		pop	{r4, pc}
- 1275              		.cfi_endproc
- 1276              	.LFE171:
- 1278              		.section	.text.ENET_StartSMIRead,"ax",%progbits
- 1279              		.align	1
- 1280              		.global	ENET_StartSMIRead
- 1281              		.syntax unified
- 1282              		.thumb
- 1283              		.thumb_func
- 1284              		.fpu fpv4-sp-d16
- 1286              	ENET_StartSMIRead:
- 1287              	.LFB172:
+ 1240              		.loc 1 967 0
+ 1241 0026 0264     		str	r2, [r0, #64]
+ 968:../drivers/fsl_enet.c **** 
+ 1242              		.loc 1 968 0
+ 1243 0028 10BD     		pop	{r4, pc}
+ 1244              		.cfi_endproc
+ 1245              	.LFE171:
+ 1247              		.section	.text.ENET_StartSMIRead,"ax",%progbits
+ 1248              		.align	1
+ 1249              		.global	ENET_StartSMIRead
+ 1250              		.syntax unified
+ 1251              		.thumb
+ 1252              		.thumb_func
+ 1253              		.fpu fpv4-sp-d16
+ 1255              	ENET_StartSMIRead:
+ 1256              	.LFB172:
  971:../drivers/fsl_enet.c ****     uint32_t mmfr = 0;
- 1288              		.loc 1 971 0
- 1289              		.cfi_startproc
- 1290              		@ args = 0, pretend = 0, frame = 0
- 1291              		@ frame_needed = 0, uses_anonymous_args = 0
- 1292              		@ link register save eliminated.
- 1293              	.LVL129:
+ 1257              		.loc 1 971 0
+ 1258              		.cfi_startproc
+ 1259              		@ args = 0, pretend = 0, frame = 0
+ 1260              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1261              		@ link register save eliminated.
+ 1262              	.LVL125:
  975:../drivers/fsl_enet.c ****     base->MMFR = mmfr;
- 1294              		.loc 1 975 0
- 1295 0000 9204     		lsls	r2, r2, #18
- 1296              	.LVL130:
- 1297 0002 02F4F802 		and	r2, r2, #8126464
- 1298 0006 42F08042 		orr	r2, r2, #1073741824
- 1299 000a C905     		lsls	r1, r1, #23
- 1300              	.LVL131:
- 1301 000c 42F40032 		orr	r2, r2, #131072
- 1302 0010 01F07861 		and	r1, r1, #260046848
- 1303 0014 1B07     		lsls	r3, r3, #28
- 1304              	.LVL132:
- 1305 0016 0A43     		orrs	r2, r2, r1
- 1306 0018 03F04053 		and	r3, r3, #805306368
- 1307 001c 1A43     		orrs	r2, r2, r3
- 1308              	.LVL133:
+ 1263              		.loc 1 975 0
+ 1264 0000 9204     		lsls	r2, r2, #18
+ 1265              	.LVL126:
+ 1266 0002 02F4F802 		and	r2, r2, #8126464
+ 1267 0006 42F08042 		orr	r2, r2, #1073741824
+ 1268 000a C905     		lsls	r1, r1, #23
+ 1269              	.LVL127:
+ 1270 000c 42F40032 		orr	r2, r2, #131072
+ 1271 0010 01F07861 		and	r1, r1, #260046848
+ 1272 0014 1B07     		lsls	r3, r3, #28
+ 1273              	.LVL128:
+ 1274 0016 0A43     		orrs	r2, r2, r1
+ 1275 0018 03F04053 		and	r3, r3, #805306368
+ 1276 001c 1A43     		orrs	r2, r2, r3
+ 1277              	.LVL129:
  976:../drivers/fsl_enet.c **** }
- 1309              		.loc 1 976 0
- 1310 001e 0264     		str	r2, [r0, #64]
- 1311 0020 7047     		bx	lr
- 1312              		.cfi_endproc
- 1313              	.LFE172:
- 1315              		.section	.text.ENET_GetRxErrBeforeReadFrame,"ax",%progbits
- 1316              		.align	1
- 1317              		.global	ENET_GetRxErrBeforeReadFrame
- 1318              		.syntax unified
- 1319              		.thumb
- 1320              		.thumb_func
- 1321              		.fpu fpv4-sp-d16
- 1323              	ENET_GetRxErrBeforeReadFrame:
- 1324              	.LFB173:
+ 1278              		.loc 1 976 0
+ 1279 001e 0264     		str	r2, [r0, #64]
+ 977:../drivers/fsl_enet.c **** 
+ 1280              		.loc 1 977 0
+ 1281 0020 7047     		bx	lr
+ 1282              		.cfi_endproc
+ 1283              	.LFE172:
+ 1285              		.section	.text.ENET_GetRxErrBeforeReadFrame,"ax",%progbits
+ 1286              		.align	1
+ 1287              		.global	ENET_GetRxErrBeforeReadFrame
+ 1288              		.syntax unified
+ 1289              		.thumb
+ 1290              		.thumb_func
+ 1291              		.fpu fpv4-sp-d16
+ 1293              	ENET_GetRxErrBeforeReadFrame:
+ 1294              	.LFB173:
 1020:../drivers/fsl_enet.c ****     assert(handle);
- 1325              		.loc 1 1020 0
- 1326              		.cfi_startproc
- 1327              		@ args = 0, pretend = 0, frame = 0
- 1328              		@ frame_needed = 0, uses_anonymous_args = 0
- 1329              	.LVL134:
- 1330 0000 10B5     		push	{r4, lr}
- 1331              		.cfi_def_cfa_offset 8
- 1332              		.cfi_offset 4, -8
- 1333              		.cfi_offset 14, -4
+ 1295              		.loc 1 1020 0
+ 1296              		.cfi_startproc
+ 1297              		@ args = 0, pretend = 0, frame = 0
+ 1298              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1299              	.LVL130:
+ 1300 0000 10B5     		push	{r4, lr}
+ 1301              		.cfi_def_cfa_offset 8
+ 1302              		.cfi_offset 4, -8
+ 1303              		.cfi_offset 14, -4
 1026:../drivers/fsl_enet.c **** 
- 1334              		.loc 1 1026 0
- 1335 0002 4268     		ldr	r2, [r0, #4]
- 1336              	.LVL135:
- 1337 0004 1346     		mov	r3, r2
- 1338              	.LVL136:
- 1339              	.L143:
+ 1304              		.loc 1 1026 0
+ 1305 0002 4268     		ldr	r2, [r0, #4]
+ 1306              	.LVL131:
+ 1307 0004 1346     		mov	r3, r2
+ 1308              	.LVL132:
+ 1309              	.L131:
 1031:../drivers/fsl_enet.c ****         {
- 1340              		.loc 1 1031 0
- 1341 0006 5C88     		ldrh	r4, [r3, #2]
- 1342 0008 2405     		lsls	r4, r4, #20
- 1343 000a 1BD5     		bpl	.L134
+ 1310              		.loc 1 1031 0
+ 1311 0006 5C88     		ldrh	r4, [r3, #2]
+ 1312 0008 2405     		lsls	r4, r4, #20
+ 1313 000a 1BD5     		bpl	.L122
 1033:../drivers/fsl_enet.c ****             if (control & ENET_BUFFDESCRIPTOR_RX_TRUNC_MASK)
- 1344              		.loc 1 1033 0
- 1345 000c 5B88     		ldrh	r3, [r3, #2]
- 1346              	.LVL137:
- 1347 000e 9BB2     		uxth	r3, r3
- 1348              	.LVL138:
+ 1314              		.loc 1 1033 0
+ 1315 000c 5B88     		ldrh	r3, [r3, #2]
+ 1316              	.LVL133:
+ 1317 000e 9BB2     		uxth	r3, r3
+ 1318              	.LVL134:
 1034:../drivers/fsl_enet.c ****             {
- 1349              		.loc 1 1034 0
- 1350 0010 DA07     		lsls	r2, r3, #31
+ 1319              		.loc 1 1034 0
+ 1320 0010 DA07     		lsls	r2, r3, #31
 1037:../drivers/fsl_enet.c ****             }
- 1351              		.loc 1 1037 0
- 1352 0012 42BF     		ittt	mi
- 1353 0014 0A69     		ldrmi	r2, [r1, #16]
- 1354 0016 0132     		addmi	r2, r2, #1
- 1355 0018 0A61     		strmi	r2, [r1, #16]
+ 1321              		.loc 1 1037 0
+ 1322 0012 42BF     		ittt	mi
+ 1323 0014 0A69     		ldrmi	r2, [r1, #16]
+ 1324 0016 0132     		addmi	r2, r2, #1
+ 1325 0018 0A61     		strmi	r2, [r1, #16]
 1039:../drivers/fsl_enet.c ****             {
- 1356              		.loc 1 1039 0
- 1357 001a 9C07     		lsls	r4, r3, #30
+ 1326              		.loc 1 1039 0
+ 1327 001a 9C07     		lsls	r4, r3, #30
 1042:../drivers/fsl_enet.c ****             }
- 1358              		.loc 1 1042 0
- 1359 001c 42BF     		ittt	mi
- 1360 001e CA68     		ldrmi	r2, [r1, #12]
- 1361 0020 0132     		addmi	r2, r2, #1
- 1362 0022 CA60     		strmi	r2, [r1, #12]
+ 1328              		.loc 1 1042 0
+ 1329 001c 42BF     		ittt	mi
+ 1330 001e CA68     		ldrmi	r2, [r1, #12]
+ 1331 0020 0132     		addmi	r2, r2, #1
+ 1332 0022 CA60     		strmi	r2, [r1, #12]
 1044:../drivers/fsl_enet.c ****             {
- 1363              		.loc 1 1044 0
- 1364 0024 9806     		lsls	r0, r3, #26
- 1365              	.LVL139:
+ 1333              		.loc 1 1044 0
+ 1334 0024 9806     		lsls	r0, r3, #26
+ 1335              	.LVL135:
 1047:../drivers/fsl_enet.c ****             }
- 1366              		.loc 1 1047 0
- 1367 0026 42BF     		ittt	mi
- 1368 0028 0A68     		ldrmi	r2, [r1]
- 1369 002a 0132     		addmi	r2, r2, #1
- 1370 002c 0A60     		strmi	r2, [r1]
+ 1336              		.loc 1 1047 0
+ 1337 0026 42BF     		ittt	mi
+ 1338 0028 0A68     		ldrmi	r2, [r1]
+ 1339 002a 0132     		addmi	r2, r2, #1
+ 1340 002c 0A60     		strmi	r2, [r1]
 1049:../drivers/fsl_enet.c ****             {
- 1371              		.loc 1 1049 0
- 1372 002e DA06     		lsls	r2, r3, #27
+ 1341              		.loc 1 1049 0
+ 1342 002e DA06     		lsls	r2, r3, #27
 1052:../drivers/fsl_enet.c ****             }
- 1373              		.loc 1 1052 0
- 1374 0030 42BF     		ittt	mi
- 1375 0032 4A68     		ldrmi	r2, [r1, #4]
- 1376 0034 0132     		addmi	r2, r2, #1
- 1377 0036 4A60     		strmi	r2, [r1, #4]
+ 1343              		.loc 1 1052 0
+ 1344 0030 42BF     		ittt	mi
+ 1345 0032 4A68     		ldrmi	r2, [r1, #4]
+ 1346 0034 0132     		addmi	r2, r2, #1
+ 1347 0036 4A60     		strmi	r2, [r1, #4]
 1054:../drivers/fsl_enet.c ****             {
- 1378              		.loc 1 1054 0
- 1379 0038 5B07     		lsls	r3, r3, #29
- 1380              	.LVL140:
- 1381 003a 0AD5     		bpl	.L133
+ 1348              		.loc 1 1054 0
+ 1349 0038 5B07     		lsls	r3, r3, #29
+ 1350              	.LVL136:
+ 1351 003a 02D5     		bpl	.L121
 1057:../drivers/fsl_enet.c ****             }
- 1382              		.loc 1 1057 0
- 1383 003c 8B68     		ldr	r3, [r1, #8]
- 1384 003e 0133     		adds	r3, r3, #1
- 1385 0040 8B60     		str	r3, [r1, #8]
- 1386 0042 10BD     		pop	{r4, pc}
- 1387              	.LVL141:
- 1388              	.L134:
+ 1352              		.loc 1 1057 0
+ 1353 003c 8B68     		ldr	r3, [r1, #8]
+ 1354 003e 0133     		adds	r3, r3, #1
+ 1355 0040 8B60     		str	r3, [r1, #8]
+ 1356              	.L121:
+1092:../drivers/fsl_enet.c **** 
+ 1357              		.loc 1 1092 0
+ 1358 0042 10BD     		pop	{r4, pc}
+ 1359              	.LVL137:
+ 1360              	.L122:
 1082:../drivers/fsl_enet.c ****         {
- 1389              		.loc 1 1082 0
- 1390 0044 5C88     		ldrh	r4, [r3, #2]
- 1391 0046 A404     		lsls	r4, r4, #18
+ 1361              		.loc 1 1082 0
+ 1362 0044 5C88     		ldrh	r4, [r3, #2]
+ 1363 0046 A404     		lsls	r4, r4, #18
 1084:../drivers/fsl_enet.c ****         }
- 1392              		.loc 1 1084 0
- 1393 0048 4CBF     		ite	mi
- 1394 004a 0368     		ldrmi	r3, [r0]
- 1395              	.LVL142:
+ 1364              		.loc 1 1084 0
+ 1365 0048 4CBF     		ite	mi
+ 1366 004a 0368     		ldrmi	r3, [r0]
+ 1367              	.LVL138:
 1088:../drivers/fsl_enet.c ****         }
- 1396              		.loc 1 1088 0
- 1397 004c 0833     		addpl	r3, r3, #8
- 1398              	.LVL143:
+ 1368              		.loc 1 1088 0
+ 1369 004c 0833     		addpl	r3, r3, #8
+ 1370              	.LVL139:
 1091:../drivers/fsl_enet.c **** }
- 1399              		.loc 1 1091 0
- 1400 004e 9342     		cmp	r3, r2
- 1401 0050 D9D1     		bne	.L143
- 1402              	.LVL144:
- 1403              	.L133:
- 1404 0052 10BD     		pop	{r4, pc}
- 1405              		.cfi_endproc
- 1406              	.LFE173:
- 1408              		.section	.text.ENET_GetRxFrameSize,"ax",%progbits
- 1409              		.align	1
- 1410              		.global	ENET_GetRxFrameSize
- 1411              		.syntax unified
- 1412              		.thumb
- 1413              		.thumb_func
- 1414              		.fpu fpv4-sp-d16
- 1416              	ENET_GetRxFrameSize:
- 1417              	.LFB174:
+ 1371              		.loc 1 1091 0
+ 1372 004e 9342     		cmp	r3, r2
+ 1373 0050 D9D1     		bne	.L131
+ 1374 0052 F6E7     		b	.L121
+ 1375              		.cfi_endproc
+ 1376              	.LFE173:
+ 1378              		.section	.text.ENET_GetRxFrameSize,"ax",%progbits
+ 1379              		.align	1
+ 1380              		.global	ENET_GetRxFrameSize
+ 1381              		.syntax unified
+ 1382              		.thumb
+ 1383              		.thumb_func
+ 1384              		.fpu fpv4-sp-d16
+ 1386              	ENET_GetRxFrameSize:
+ 1387              	.LFB174:
 1095:../drivers/fsl_enet.c ****     assert(handle);
- 1418              		.loc 1 1095 0
- 1419              		.cfi_startproc
- 1420              		@ args = 0, pretend = 0, frame = 0
- 1421              		@ frame_needed = 0, uses_anonymous_args = 0
- 1422              	.LVL145:
- 1423 0000 30B5     		push	{r4, r5, lr}
- 1424              		.cfi_def_cfa_offset 12
- 1425              		.cfi_offset 4, -12
- 1426              		.cfi_offset 5, -8
- 1427              		.cfi_offset 14, -4
+ 1388              		.loc 1 1095 0
+ 1389              		.cfi_startproc
+ 1390              		@ args = 0, pretend = 0, frame = 0
+ 1391              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1392              	.LVL140:
 1104:../drivers/fsl_enet.c **** 
- 1428              		.loc 1 1104 0
- 1429 0002 4468     		ldr	r4, [r0, #4]
+ 1393              		.loc 1 1104 0
+ 1394 0000 4268     		ldr	r2, [r0, #4]
 1101:../drivers/fsl_enet.c **** 
- 1430              		.loc 1 1101 0
- 1431 0004 0023     		movs	r3, #0
- 1432 0006 0B60     		str	r3, [r1]
- 1433              	.LVL146:
+ 1395              		.loc 1 1101 0
+ 1396 0002 0023     		movs	r3, #0
+ 1397 0004 0B60     		str	r3, [r1]
+ 1398              	.LVL141:
 1107:../drivers/fsl_enet.c ****     {
- 1434              		.loc 1 1107 0
- 1435 0008 6388     		ldrh	r3, [r4, #2]
- 1436 000a 1D04     		lsls	r5, r3, #16
- 1437 000c 1CD4     		bmi	.L165
+ 1399              		.loc 1 1107 0
+ 1400 0006 5388     		ldrh	r3, [r2, #2]
+1095:../drivers/fsl_enet.c ****     assert(handle);
+ 1401              		.loc 1 1095 0
+ 1402 0008 30B5     		push	{r4, r5, lr}
+ 1403              		.cfi_def_cfa_offset 12
+ 1404              		.cfi_offset 4, -12
+ 1405              		.cfi_offset 5, -8
+ 1406              		.cfi_offset 14, -4
+1107:../drivers/fsl_enet.c ****     {
+ 1407              		.loc 1 1107 0
+ 1408 000a 1D04     		lsls	r5, r3, #16
+ 1409 000c 1AD4     		bmi	.L155
 1121:../drivers/fsl_enet.c ****         {
- 1438              		.loc 1 1121 0
- 1439 000e 114D     		ldr	r5, .L169
- 1440 0010 2346     		mov	r3, r4
- 1441              	.LVL147:
- 1442              	.L164:
+ 1410              		.loc 1 1121 0
+ 1411 000e 104D     		ldr	r5, .L159
+ 1412 0010 1346     		mov	r3, r2
+ 1413              	.LVL142:
+ 1414              	.L154:
 1115:../drivers/fsl_enet.c ****         {
- 1443              		.loc 1 1115 0
- 1444 0012 5A88     		ldrh	r2, [r3, #2]
- 1445 0014 1204     		lsls	r2, r2, #16
- 1446 0016 02D4     		bmi	.L160
+ 1415              		.loc 1 1115 0
+ 1416 0012 5C88     		ldrh	r4, [r3, #2]
+ 1417 0014 2404     		lsls	r4, r4, #16
+ 1418 0016 02D4     		bmi	.L150
 1115:../drivers/fsl_enet.c ****         {
- 1447              		.loc 1 1115 0 is_stmt 0 discriminator 1
- 1448 0018 1A88     		ldrh	r2, [r3]
- 1449 001a 92B2     		uxth	r2, r2
- 1450 001c BAB1     		cbz	r2, .L167
- 1451              	.L160:
+ 1419              		.loc 1 1115 0 is_stmt 0 discriminator 1
+ 1420 0018 1C88     		ldrh	r4, [r3]
+ 1421 001a A4B2     		uxth	r4, r4
+ 1422 001c ACB1     		cbz	r4, .L157
+ 1423              	.L150:
 1121:../drivers/fsl_enet.c ****         {
- 1452              		.loc 1 1121 0 is_stmt 1
- 1453 001e 5A88     		ldrh	r2, [r3, #2]
- 1454 0020 92B2     		uxth	r2, r2
- 1455 0022 2A40     		ands	r2, r2, r5
- 1456 0024 B2F5006F 		cmp	r2, #2048
- 1457 0028 07D1     		bne	.L161
+ 1424              		.loc 1 1121 0 is_stmt 1
+ 1425 001e 5C88     		ldrh	r4, [r3, #2]
+ 1426 0020 2C40     		ands	r4, r4, r5
+ 1427 0022 B4F5006F 		cmp	r4, #2048
+ 1428 0026 06D1     		bne	.L151
 1124:../drivers/fsl_enet.c **** #ifdef ENET_ENHANCEDBUFFERDESCRIPTOR_MODE
- 1458              		.loc 1 1124 0
- 1459 002a 5888     		ldrh	r0, [r3, #2]
- 1460              	.LVL148:
- 1461 002c 10F03700 		ands	r0, r0, #55
- 1462 0030 0DD1     		bne	.L167
+ 1429              		.loc 1 1124 0
+ 1430 0028 5888     		ldrh	r0, [r3, #2]
+ 1431              	.LVL143:
+ 1432 002a 10F03700 		ands	r0, r0, #55
+ 1433 002e 0CD1     		bne	.L157
 1133:../drivers/fsl_enet.c ****             return kStatus_Success;
- 1463              		.loc 1 1133 0
- 1464 0032 1B88     		ldrh	r3, [r3]
- 1465              	.LVL149:
- 1466 0034 9BB2     		uxth	r3, r3
- 1467 0036 0B60     		str	r3, [r1]
-1134:../drivers/fsl_enet.c ****         }
- 1468              		.loc 1 1134 0
- 1469 0038 30BD     		pop	{r4, r5, pc}
- 1470              	.LVL150:
- 1471              	.L161:
-1137:../drivers/fsl_enet.c ****         {
- 1472              		.loc 1 1137 0
- 1473 003a 5A88     		ldrh	r2, [r3, #2]
- 1474 003c 9204     		lsls	r2, r2, #18
-1139:../drivers/fsl_enet.c ****         }
- 1475              		.loc 1 1139 0
- 1476 003e 4CBF     		ite	mi
- 1477 0040 0368     		ldrmi	r3, [r0]
- 1478              	.LVL151:
-1143:../drivers/fsl_enet.c ****         }
- 1479              		.loc 1 1143 0
- 1480 0042 0833     		addpl	r3, r3, #8
- 1481              	.LVL152:
-1146:../drivers/fsl_enet.c **** 
- 1482              		.loc 1 1146 0
- 1483 0044 A342     		cmp	r3, r4
- 1484 0046 E4D1     		bne	.L164
- 1485              	.LVL153:
- 1486              	.L165:
-1109:../drivers/fsl_enet.c ****     }
- 1487              		.loc 1 1109 0
- 1488 0048 40F6A270 		movw	r0, #4002
- 1489              	.LVL154:
- 1490 004c 30BD     		pop	{r4, r5, pc}
- 1491              	.LVL155:
- 1492              	.L167:
-1117:../drivers/fsl_enet.c ****         }
- 1493              		.loc 1 1117 0
- 1494 004e 4FF47A60 		mov	r0, #4000
+ 1434              		.loc 1 1133 0
+ 1435 0030 1B88     		ldrh	r3, [r3]
+ 1436              	.LVL144:
+ 1437 0032 0B60     		str	r3, [r1]
+ 1438              	.L148:
 1150:../drivers/fsl_enet.c **** 
- 1495              		.loc 1 1150 0
- 1496 0052 30BD     		pop	{r4, r5, pc}
- 1497              	.L170:
- 1498              		.align	2
- 1499              	.L169:
- 1500 0054 0088FFFF 		.word	-30720
- 1501              		.cfi_endproc
- 1502              	.LFE174:
- 1504              		.section	.text.ENET_ReadFrame,"ax",%progbits
- 1505              		.align	1
- 1506              		.global	ENET_ReadFrame
- 1507              		.syntax unified
- 1508              		.thumb
- 1509              		.thumb_func
- 1510              		.fpu fpv4-sp-d16
- 1512              	ENET_ReadFrame:
- 1513              	.LFB175:
+ 1439              		.loc 1 1150 0
+ 1440 0034 30BD     		pop	{r4, r5, pc}
+ 1441              	.LVL145:
+ 1442              	.L151:
+1137:../drivers/fsl_enet.c ****         {
+ 1443              		.loc 1 1137 0
+ 1444 0036 5C88     		ldrh	r4, [r3, #2]
+ 1445 0038 A404     		lsls	r4, r4, #18
+1139:../drivers/fsl_enet.c ****         }
+ 1446              		.loc 1 1139 0
+ 1447 003a 4CBF     		ite	mi
+ 1448 003c 0368     		ldrmi	r3, [r0]
+ 1449              	.LVL146:
+1143:../drivers/fsl_enet.c ****         }
+ 1450              		.loc 1 1143 0
+ 1451 003e 0833     		addpl	r3, r3, #8
+ 1452              	.LVL147:
+1146:../drivers/fsl_enet.c **** 
+ 1453              		.loc 1 1146 0
+ 1454 0040 9342     		cmp	r3, r2
+ 1455 0042 E6D1     		bne	.L154
+ 1456              	.LVL148:
+ 1457              	.L155:
+1109:../drivers/fsl_enet.c ****     }
+ 1458              		.loc 1 1109 0
+ 1459 0044 40F6A270 		movw	r0, #4002
+ 1460              	.LVL149:
+ 1461 0048 F4E7     		b	.L148
+ 1462              	.LVL150:
+ 1463              	.L157:
+1117:../drivers/fsl_enet.c ****         }
+ 1464              		.loc 1 1117 0
+ 1465 004a 4FF47A60 		mov	r0, #4000
+ 1466 004e F1E7     		b	.L148
+ 1467              	.L160:
+ 1468              		.align	2
+ 1469              	.L159:
+ 1470 0050 0088FFFF 		.word	-30720
+ 1471              		.cfi_endproc
+ 1472              	.LFE174:
+ 1474              		.section	.text.ENET_ReadFrame,"ax",%progbits
+ 1475              		.align	1
+ 1476              		.global	ENET_ReadFrame
+ 1477              		.syntax unified
+ 1478              		.thumb
+ 1479              		.thumb_func
+ 1480              		.fpu fpv4-sp-d16
+ 1482              	ENET_ReadFrame:
+ 1483              	.LFB175:
 1153:../drivers/fsl_enet.c ****     assert(handle);
- 1514              		.loc 1 1153 0
- 1515              		.cfi_startproc
- 1516              		@ args = 0, pretend = 0, frame = 0
- 1517              		@ frame_needed = 0, uses_anonymous_args = 0
- 1518              	.LVL156:
- 1519 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
- 1520              		.cfi_def_cfa_offset 32
- 1521              		.cfi_offset 4, -32
- 1522              		.cfi_offset 5, -28
- 1523              		.cfi_offset 6, -24
- 1524              		.cfi_offset 7, -20
- 1525              		.cfi_offset 8, -16
- 1526              		.cfi_offset 9, -12
- 1527              		.cfi_offset 10, -8
- 1528              		.cfi_offset 14, -4
+ 1484              		.loc 1 1153 0
+ 1485              		.cfi_startproc
+ 1486              		@ args = 0, pretend = 0, frame = 0
+ 1487              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1488              	.LVL151:
+ 1489 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 1490              		.cfi_def_cfa_offset 32
+ 1491              		.cfi_offset 4, -32
+ 1492              		.cfi_offset 5, -28
+ 1493              		.cfi_offset 6, -24
+ 1494              		.cfi_offset 7, -20
+ 1495              		.cfi_offset 8, -16
+ 1496              		.cfi_offset 9, -12
+ 1497              		.cfi_offset 10, -8
+ 1498              		.cfi_offset 14, -4
 1153:../drivers/fsl_enet.c ****     assert(handle);
- 1529              		.loc 1 1153 0
- 1530 0004 0646     		mov	r6, r0
- 1531 0006 0D46     		mov	r5, r1
- 1532 0008 9946     		mov	r9, r3
+ 1499              		.loc 1 1153 0
+ 1500 0004 0646     		mov	r6, r0
+ 1501 0006 0D46     		mov	r5, r1
+ 1502 0008 9946     		mov	r9, r3
 1161:../drivers/fsl_enet.c ****     status_t result = kStatus_Success;
- 1533              		.loc 1 1161 0
- 1534 000a 4F68     		ldr	r7, [r1, #4]
- 1535              	.LVL157:
+ 1503              		.loc 1 1161 0
+ 1504 000a 4F68     		ldr	r7, [r1, #4]
+ 1505              	.LVL152:
 1166:../drivers/fsl_enet.c ****     {
- 1536              		.loc 1 1166 0
- 1537 000c 9246     		mov	r10, r2
- 1538 000e 72B9     		cbnz	r2, .L172
- 1539              	.LVL158:
- 1540              	.L174:
+ 1506              		.loc 1 1166 0
+ 1507 000c 9246     		mov	r10, r2
+ 1508 000e 72B9     		cbnz	r2, .L170
+ 1509              	.LVL153:
+ 1510              	.L164:
 1171:../drivers/fsl_enet.c ****             /* Updates the receive buffer descriptors. */
- 1541              		.loc 1 1171 0
- 1542 0010 6B68     		ldr	r3, [r5, #4]
- 1543 0012 5C88     		ldrh	r4, [r3, #2]
+ 1511              		.loc 1 1171 0
+ 1512 0010 6B68     		ldr	r3, [r5, #4]
+ 1513 0012 5C88     		ldrh	r4, [r3, #2]
 1173:../drivers/fsl_enet.c **** 
- 1544              		.loc 1 1173 0
- 1545 0014 3046     		mov	r0, r6
+ 1514              		.loc 1 1173 0
+ 1515 0014 3046     		mov	r0, r6
 1171:../drivers/fsl_enet.c ****             /* Updates the receive buffer descriptors. */
- 1546              		.loc 1 1171 0
- 1547 0016 A4B2     		uxth	r4, r4
- 1548              	.LVL159:
+ 1516              		.loc 1 1171 0
+ 1517 0016 A4B2     		uxth	r4, r4
+ 1518              	.LVL154:
 1173:../drivers/fsl_enet.c **** 
- 1549              		.loc 1 1173 0
- 1550 0018 2946     		mov	r1, r5
- 1551              	.LVL160:
- 1552 001a FFF7FEFF 		bl	ENET_UpdateReadBuffers.constprop.3
- 1553              	.LVL161:
+ 1519              		.loc 1 1173 0
+ 1520 0018 2946     		mov	r1, r5
+ 1521              	.LVL155:
+ 1522 001a FFF7FEFF 		bl	ENET_UpdateReadBuffers.constprop.3
+ 1523              	.LVL156:
 1176:../drivers/fsl_enet.c ****             {
- 1554              		.loc 1 1176 0
- 1555 001e 14F40060 		ands	r0, r4, #2048
- 1556 0022 1BD1     		bne	.L181
- 1557              	.LVL162:
+ 1524              		.loc 1 1176 0
+ 1525 001e 14F40060 		ands	r0, r4, #2048
+ 1526 0022 19D1     		bne	.L171
+ 1527              	.LVL157:
 1181:../drivers/fsl_enet.c **** 
- 1558              		.loc 1 1181 0
- 1559 0024 6B68     		ldr	r3, [r5, #4]
- 1560 0026 9F42     		cmp	r7, r3
- 1561 0028 F2D1     		bne	.L174
- 1562 002a BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
- 1563              	.LVL163:
- 1564              	.L172:
- 1565 002e 4FF00008 		mov	r8, #0
- 1566              	.LVL164:
- 1567              	.L180:
-1213:../drivers/fsl_enet.c ****             {
- 1568              		.loc 1 1213 0
- 1569 0032 7B88     		ldrh	r3, [r7, #2]
- 1570 0034 13F40064 		ands	r4, r3, #2048
- 1571 0038 1CD0     		beq	.L175
- 1572              	.LVL165:
-1217:../drivers/fsl_enet.c ****                 {
- 1573              		.loc 1 1217 0
- 1574 003a 3B88     		ldrh	r3, [r7]
- 1575 003c 9BB2     		uxth	r3, r3
- 1576 003e 9945     		cmp	r9, r3
- 1577 0040 0FD1     		bne	.L176
-1220:../drivers/fsl_enet.c **** #if defined(FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET) && FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET
- 1578              		.loc 1 1220 0
- 1579 0042 3A88     		ldrh	r2, [r7]
-1224:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET */
- 1580              		.loc 1 1224 0
- 1581 0044 7968     		ldr	r1, [r7, #4]
- 1582              	.LVL166:
-1220:../drivers/fsl_enet.c **** #if defined(FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET) && FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET
- 1583              		.loc 1 1220 0
- 1584 0046 92B2     		uxth	r2, r2
- 1585              	.LVL167:
-1226:../drivers/fsl_enet.c **** #ifdef ENET_ENHANCEDBUFFERDESCRIPTOR_MODE
- 1586              		.loc 1 1226 0
- 1587 0048 A2EB0802 		sub	r2, r2, r8
- 1588              	.LVL168:
- 1589 004c 0AEB0800 		add	r0, r10, r8
- 1590 0050 FFF7FEFF 		bl	memcpy
- 1591              	.LVL169:
-1238:../drivers/fsl_enet.c ****                     return result;
- 1592              		.loc 1 1238 0
- 1593 0054 2946     		mov	r1, r5
- 1594 0056 3046     		mov	r0, r6
- 1595 0058 FFF7FEFF 		bl	ENET_UpdateReadBuffers.constprop.3
- 1596              	.LVL170:
- 1597              	.L181:
-1183:../drivers/fsl_enet.c ****     }
- 1598              		.loc 1 1183 0
- 1599 005c 0020     		movs	r0, #0
+ 1528              		.loc 1 1181 0
+ 1529 0024 6B68     		ldr	r3, [r5, #4]
+ 1530 0026 BB42     		cmp	r3, r7
+ 1531 0028 F2D1     		bne	.L164
+ 1532              	.LVL158:
+ 1533              	.L161:
 1283:../drivers/fsl_enet.c **** 
- 1600              		.loc 1 1283 0
- 1601 005e BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
- 1602              	.LVL171:
- 1603              	.L176:
+ 1534              		.loc 1 1283 0
+ 1535 002a BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 1536              	.LVL159:
+ 1537              	.L170:
+1158:../drivers/fsl_enet.c ****     uint16_t control;
+ 1538              		.loc 1 1158 0
+ 1539 002e 4FF00008 		mov	r8, #0
+ 1540              	.LVL160:
+ 1541              	.L162:
+1213:../drivers/fsl_enet.c ****             {
+ 1542              		.loc 1 1213 0
+ 1543 0032 7B88     		ldrh	r3, [r7, #2]
+ 1544 0034 13F40064 		ands	r4, r3, #2048
+ 1545 0038 19D0     		beq	.L165
+ 1546              	.LVL161:
+1217:../drivers/fsl_enet.c ****                 {
+ 1547              		.loc 1 1217 0
+ 1548 003a 3B88     		ldrh	r3, [r7]
+ 1549 003c 9945     		cmp	r9, r3
+ 1550 003e 0DD1     		bne	.L166
+1220:../drivers/fsl_enet.c **** #if defined(FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET) && FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET
+ 1551              		.loc 1 1220 0
+ 1552 0040 3A88     		ldrh	r2, [r7]
+ 1553              	.LVL162:
+1224:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET */
+ 1554              		.loc 1 1224 0
+ 1555 0042 7968     		ldr	r1, [r7, #4]
+ 1556              	.LVL163:
+1226:../drivers/fsl_enet.c **** #ifdef ENET_ENHANCEDBUFFERDESCRIPTOR_MODE
+ 1557              		.loc 1 1226 0
+ 1558 0044 A2EB0802 		sub	r2, r2, r8
+ 1559              	.LVL164:
+ 1560 0048 0AEB0800 		add	r0, r10, r8
+ 1561 004c FFF7FEFF 		bl	memcpy
+ 1562              	.LVL165:
+1238:../drivers/fsl_enet.c ****                     return result;
+ 1563              		.loc 1 1238 0
+ 1564 0050 2946     		mov	r1, r5
+ 1565 0052 3046     		mov	r0, r6
+ 1566 0054 FFF7FEFF 		bl	ENET_UpdateReadBuffers.constprop.3
+ 1567              	.LVL166:
+ 1568              	.L171:
+1183:../drivers/fsl_enet.c ****     }
+ 1569              		.loc 1 1183 0
+ 1570 0058 0020     		movs	r0, #0
+ 1571 005a E6E7     		b	.L161
+ 1572              	.LVL167:
+ 1573              	.L166:
 1244:../drivers/fsl_enet.c ****                 }
- 1604              		.loc 1 1244 0
- 1605 0062 2946     		mov	r1, r5
- 1606              	.LVL172:
- 1607 0064 3046     		mov	r0, r6
- 1608              	.LVL173:
- 1609 0066 FFF7FEFF 		bl	ENET_UpdateReadBuffers.constprop.3
- 1610              	.LVL174:
+ 1574              		.loc 1 1244 0
+ 1575 005c 2946     		mov	r1, r5
+ 1576 005e 3046     		mov	r0, r6
+ 1577              	.LVL168:
+ 1578 0060 FFF7FEFF 		bl	ENET_UpdateReadBuffers.constprop.3
+ 1579              	.LVL169:
 1216:../drivers/fsl_enet.c ****                 if (length == curBuffDescrip->length)
- 1611              		.loc 1 1216 0
- 1612 006a 0124     		movs	r4, #1
- 1613              	.LVL175:
- 1614              	.L177:
+ 1580              		.loc 1 1216 0
+ 1581 0064 0124     		movs	r4, #1
+ 1582              	.LVL170:
+ 1583              	.L167:
 1269:../drivers/fsl_enet.c **** #if defined(FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL) && FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL
- 1615              		.loc 1 1269 0
- 1616 006c 6F68     		ldr	r7, [r5, #4]
- 1617              	.LVL176:
+ 1584              		.loc 1 1269 0
+ 1585 0066 6F68     		ldr	r7, [r5, #4]
+ 1586              	.LVL171:
 1210:../drivers/fsl_enet.c ****         {
- 1618              		.loc 1 1210 0
- 1619 006e 002C     		cmp	r4, #0
- 1620 0070 DFD0     		beq	.L180
- 1621 0072 01E0     		b	.L179
- 1622              	.LVL177:
- 1623              	.L175:
+ 1587              		.loc 1 1210 0
+ 1588 0068 002C     		cmp	r4, #0
+ 1589 006a E2D0     		beq	.L162
+ 1590 006c 01E0     		b	.L169
+ 1591              	.LVL172:
+ 1592              	.L165:
 1252:../drivers/fsl_enet.c ****                 {
- 1624              		.loc 1 1252 0
- 1625 0074 C145     		cmp	r9, r8
- 1626 0076 03D8     		bhi	.L178
- 1627              	.LVL178:
- 1628              	.L179:
+ 1593              		.loc 1 1252 0
+ 1594 006e C145     		cmp	r9, r8
+ 1595 0070 02D8     		bhi	.L168
+ 1596              	.LVL173:
+ 1597              	.L169:
 1282:../drivers/fsl_enet.c **** }
- 1629              		.loc 1 1282 0
- 1630 0078 40F6A170 		movw	r0, #4001
- 1631              	.LVL179:
- 1632 007c BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
- 1633              	.LVL180:
- 1634              	.L178:
+ 1598              		.loc 1 1282 0
+ 1599 0072 40F6A170 		movw	r0, #4001
+ 1600              	.LVL174:
+ 1601 0076 D8E7     		b	.L161
+ 1602              	.LVL175:
+ 1603              	.L168:
 1259:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET */
- 1635              		.loc 1 1259 0
- 1636 0080 7968     		ldr	r1, [r7, #4]
- 1637              	.LVL181:
+ 1604              		.loc 1 1259 0
+ 1605 0078 7968     		ldr	r1, [r7, #4]
+ 1606              	.LVL176:
 1261:../drivers/fsl_enet.c ****                 offset += handle->rxBuffSizeAlign[0];
- 1638              		.loc 1 1261 0
- 1639 0082 2A69     		ldr	r2, [r5, #16]
- 1640 0084 0AEB0800 		add	r0, r10, r8
- 1641              	.LVL182:
- 1642 0088 FFF7FEFF 		bl	memcpy
- 1643              	.LVL183:
+ 1607              		.loc 1 1261 0
+ 1608 007a 2A69     		ldr	r2, [r5, #16]
+ 1609 007c 0AEB0800 		add	r0, r10, r8
+ 1610              	.LVL177:
+ 1611 0080 FFF7FEFF 		bl	memcpy
+ 1612              	.LVL178:
 1262:../drivers/fsl_enet.c **** 
- 1644              		.loc 1 1262 0
- 1645 008c 2B69     		ldr	r3, [r5, #16]
+ 1613              		.loc 1 1262 0
+ 1614 0084 2B69     		ldr	r3, [r5, #16]
 1265:../drivers/fsl_enet.c ****             }
- 1646              		.loc 1 1265 0
- 1647 008e 2946     		mov	r1, r5
- 1648 0090 3046     		mov	r0, r6
+ 1615              		.loc 1 1265 0
+ 1616 0086 2946     		mov	r1, r5
+ 1617 0088 3046     		mov	r0, r6
 1262:../drivers/fsl_enet.c **** 
- 1649              		.loc 1 1262 0
- 1650 0092 9844     		add	r8, r8, r3
- 1651              	.LVL184:
+ 1618              		.loc 1 1262 0
+ 1619 008a 9844     		add	r8, r8, r3
+ 1620              	.LVL179:
 1265:../drivers/fsl_enet.c ****             }
- 1652              		.loc 1 1265 0
- 1653 0094 FFF7FEFF 		bl	ENET_UpdateReadBuffers.constprop.3
- 1654              	.LVL185:
- 1655 0098 E8E7     		b	.L177
- 1656              		.cfi_endproc
- 1657              	.LFE175:
- 1659              		.section	.text.ENET_SendFrame,"ax",%progbits
- 1660              		.align	1
- 1661              		.global	ENET_SendFrame
- 1662              		.syntax unified
- 1663              		.thumb
- 1664              		.thumb_func
- 1665              		.fpu fpv4-sp-d16
- 1667              	ENET_SendFrame:
- 1668              	.LFB177:
+ 1621              		.loc 1 1265 0
+ 1622 008c FFF7FEFF 		bl	ENET_UpdateReadBuffers.constprop.3
+ 1623              	.LVL180:
+ 1624 0090 E9E7     		b	.L167
+ 1625              		.cfi_endproc
+ 1626              	.LFE175:
+ 1628              		.section	.text.ENET_SendFrame,"ax",%progbits
+ 1629              		.align	1
+ 1630              		.global	ENET_SendFrame
+ 1631              		.syntax unified
+ 1632              		.thumb
+ 1633              		.thumb_func
+ 1634              		.fpu fpv4-sp-d16
+ 1636              	ENET_SendFrame:
+ 1637              	.LFB177:
 1326:../drivers/fsl_enet.c ****     assert(handle);
- 1669              		.loc 1 1326 0
- 1670              		.cfi_startproc
- 1671              		@ args = 0, pretend = 0, frame = 0
- 1672              		@ frame_needed = 0, uses_anonymous_args = 0
- 1673              	.LVL186:
- 1674 0000 2DE9F84F 		push	{r3, r4, r5, r6, r7, r8, r9, r10, fp, lr}
- 1675              		.cfi_def_cfa_offset 40
- 1676              		.cfi_offset 3, -40
- 1677              		.cfi_offset 4, -36
- 1678              		.cfi_offset 5, -32
- 1679              		.cfi_offset 6, -28
- 1680              		.cfi_offset 7, -24
- 1681              		.cfi_offset 8, -20
- 1682              		.cfi_offset 9, -16
- 1683              		.cfi_offset 10, -12
- 1684              		.cfi_offset 11, -8
- 1685              		.cfi_offset 14, -4
+ 1638              		.loc 1 1326 0
+ 1639              		.cfi_startproc
+ 1640              		@ args = 0, pretend = 0, frame = 0
+ 1641              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1642              	.LVL181:
+ 1643 0000 2DE9F84F 		push	{r3, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1644              		.cfi_def_cfa_offset 40
+ 1645              		.cfi_offset 3, -40
+ 1646              		.cfi_offset 4, -36
+ 1647              		.cfi_offset 5, -32
+ 1648              		.cfi_offset 6, -28
+ 1649              		.cfi_offset 7, -24
+ 1650              		.cfi_offset 8, -20
+ 1651              		.cfi_offset 9, -16
+ 1652              		.cfi_offset 10, -12
+ 1653              		.cfi_offset 11, -8
+ 1654              		.cfi_offset 14, -4
 1326:../drivers/fsl_enet.c ****     assert(handle);
- 1686              		.loc 1 1326 0
- 1687 0004 1E46     		mov	r6, r3
+ 1655              		.loc 1 1326 0
+ 1656 0004 1E46     		mov	r6, r3
 1336:../drivers/fsl_enet.c ****     {
- 1688              		.loc 1 1336 0
- 1689 0006 40F2EE53 		movw	r3, #1518
- 1690              	.LVL187:
- 1691 000a 9E42     		cmp	r6, r3
+ 1657              		.loc 1 1336 0
+ 1658 0006 40F2EE53 		movw	r3, #1518
+ 1659              	.LVL182:
+ 1660 000a 9E42     		cmp	r6, r3
 1326:../drivers/fsl_enet.c ****     assert(handle);
- 1692              		.loc 1 1326 0
- 1693 000c 0746     		mov	r7, r0
- 1694 000e 0D46     		mov	r5, r1
- 1695 0010 9146     		mov	r9, r2
+ 1661              		.loc 1 1326 0
+ 1662 000c 8046     		mov	r8, r0
+ 1663 000e 0D46     		mov	r5, r1
+ 1664 0010 9146     		mov	r9, r2
 1336:../drivers/fsl_enet.c ****     {
- 1696              		.loc 1 1336 0
- 1697 0012 5DD8     		bhi	.L194
+ 1665              		.loc 1 1336 0
+ 1666 0012 5BD8     		bhi	.L183
 1342:../drivers/fsl_enet.c ****     if (curBuffDescrip->control & ENET_BUFFDESCRIPTOR_TX_READY_MASK)
- 1698              		.loc 1 1342 0
- 1699 0014 CC68     		ldr	r4, [r1, #12]
- 1700              	.LVL188:
+ 1667              		.loc 1 1342 0
+ 1668 0014 CC68     		ldr	r4, [r1, #12]
+ 1669              	.LVL183:
 1343:../drivers/fsl_enet.c ****     {
- 1701              		.loc 1 1343 0
- 1702 0016 6388     		ldrh	r3, [r4, #2]
- 1703 0018 1804     		lsls	r0, r3, #16
- 1704              	.LVL189:
- 1705 001a 03D5     		bpl	.L185
- 1706              	.LVL190:
- 1707              	.L193:
+ 1670              		.loc 1 1343 0
+ 1671 0016 6388     		ldrh	r3, [r4, #2]
+ 1672 0018 1804     		lsls	r0, r3, #16
+ 1673              	.LVL184:
+ 1674 001a 03D5     		bpl	.L175
+ 1675              	.LVL185:
+ 1676              	.L182:
 1345:../drivers/fsl_enet.c ****     }
- 1708              		.loc 1 1345 0
- 1709 001c 40F6A470 		movw	r0, #4004
- 1710 0020 BDE8F88F 		pop	{r3, r4, r5, r6, r7, r8, r9, r10, fp, pc}
- 1711              	.LVL191:
- 1712              	.L185:
-1353:../drivers/fsl_enet.c ****     {
- 1713              		.loc 1 1353 0
- 1714 0024 4B69     		ldr	r3, [r1, #20]
- 1715 0026 9E42     		cmp	r6, r3
- 1716 0028 18D8     		bhi	.L186
-1361:../drivers/fsl_enet.c ****         /* Set data length. */
- 1717              		.loc 1 1361 0
- 1718 002a 3246     		mov	r2, r6
- 1719              	.LVL192:
- 1720 002c 4946     		mov	r1, r9
- 1721              	.LVL193:
-1359:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET */
- 1722              		.loc 1 1359 0
- 1723 002e 6068     		ldr	r0, [r4, #4]
- 1724              	.LVL194:
-1363:../drivers/fsl_enet.c **** #ifdef ENET_ENHANCEDBUFFERDESCRIPTOR_MODE
- 1725              		.loc 1 1363 0
- 1726 0030 B6B2     		uxth	r6, r6
- 1727              	.LVL195:
-1361:../drivers/fsl_enet.c ****         /* Set data length. */
- 1728              		.loc 1 1361 0
- 1729 0032 FFF7FEFF 		bl	memcpy
- 1730              	.LVL196:
-1363:../drivers/fsl_enet.c **** #ifdef ENET_ENHANCEDBUFFERDESCRIPTOR_MODE
- 1731              		.loc 1 1363 0
- 1732 0036 2680     		strh	r6, [r4]	@ movhi
-1376:../drivers/fsl_enet.c **** 
- 1733              		.loc 1 1376 0
- 1734 0038 6388     		ldrh	r3, [r4, #2]
- 1735 003a 9BB2     		uxth	r3, r3
- 1736 003c 43F40843 		orr	r3, r3, #34816
- 1737 0040 6380     		strh	r3, [r4, #2]	@ movhi
-1379:../drivers/fsl_enet.c ****         {
- 1738              		.loc 1 1379 0
- 1739 0042 6388     		ldrh	r3, [r4, #2]
- 1740 0044 9904     		lsls	r1, r3, #18
-1385:../drivers/fsl_enet.c ****         }
- 1741              		.loc 1 1385 0
- 1742 0046 56BF     		itet	pl
- 1743 0048 EB68     		ldrpl	r3, [r5, #12]
-1381:../drivers/fsl_enet.c ****         }
- 1744              		.loc 1 1381 0
- 1745 004a AB68     		ldrmi	r3, [r5, #8]
-1385:../drivers/fsl_enet.c ****         }
- 1746              		.loc 1 1385 0
- 1747 004c 0833     		addpl	r3, r3, #8
- 1748 004e EB60     		str	r3, [r5, #12]
- 1749              	.LVL197:
- 1750              	.L198:
- 1751              	.LBB127:
- 1752              	.LBB128:
- 849:../drivers/fsl_enet.c ****             break;
- 1753              		.loc 1 849 0
- 1754 0050 4FF08073 		mov	r3, #16777216
- 1755 0054 7B61     		str	r3, [r7, #20]
- 1756              	.LVL198:
- 1757              	.LBE128:
- 1758              	.LBE127:
-1470:../drivers/fsl_enet.c ****             }
- 1759              		.loc 1 1470 0
- 1760 0056 0020     		movs	r0, #0
- 1761 0058 BDE8F88F 		pop	{r3, r4, r5, r6, r7, r8, r9, r10, fp, pc}
- 1762              	.LVL199:
- 1763              	.L186:
- 1764 005c 4FF00008 		mov	r8, #0
- 1765              	.LBB129:
- 1766              	.LBB130:
- 849:../drivers/fsl_enet.c ****             break;
- 1767              		.loc 1 849 0
- 1768 0060 4FF0807A 		mov	r10, #16777216
- 1769              	.LVL200:
- 1770              	.L192:
- 1771              	.LBE130:
- 1772              	.LBE129:
-1419:../drivers/fsl_enet.c ****             {
- 1773              		.loc 1 1419 0
- 1774 0064 6388     		ldrh	r3, [r4, #2]
-1435:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET */
- 1775              		.loc 1 1435 0
- 1776 0066 6068     		ldr	r0, [r4, #4]
-1419:../drivers/fsl_enet.c ****             {
- 1777              		.loc 1 1419 0
- 1778 0068 9A04     		lsls	r2, r3, #18
-1425:../drivers/fsl_enet.c ****             }
- 1779              		.loc 1 1425 0
- 1780 006a 58BF     		it	pl
- 1781 006c EB68     		ldrpl	r3, [r5, #12]
-1429:../drivers/fsl_enet.c ****             {
- 1782              		.loc 1 1429 0
- 1783 006e 6A69     		ldr	r2, [r5, #20]
-1421:../drivers/fsl_enet.c ****             }
- 1784              		.loc 1 1421 0
- 1785 0070 48BF     		it	mi
- 1786 0072 AB68     		ldrmi	r3, [r5, #8]
-1428:../drivers/fsl_enet.c ****             if (sizeleft > handle->txBuffSizeAlign[0])
- 1787              		.loc 1 1428 0
- 1788 0074 A6EB080B 		sub	fp, r6, r8
- 1789              	.LVL201:
-1425:../drivers/fsl_enet.c ****             }
- 1790              		.loc 1 1425 0
- 1791 0078 58BF     		it	pl
- 1792 007a 0833     		addpl	r3, r3, #8
-1429:../drivers/fsl_enet.c ****             {
- 1793              		.loc 1 1429 0
- 1794 007c 9345     		cmp	fp, r2
-1425:../drivers/fsl_enet.c ****             }
- 1795              		.loc 1 1425 0
- 1796 007e EB60     		str	r3, [r5, #12]
- 1797 0080 09EB0801 		add	r1, r9, r8
-1429:../drivers/fsl_enet.c ****             {
- 1798              		.loc 1 1429 0
- 1799 0084 17D9     		bls	.L191
- 1800              	.LVL202:
-1437:../drivers/fsl_enet.c ****                 /* Data length update. */
- 1801              		.loc 1 1437 0
- 1802 0086 FFF7FEFF 		bl	memcpy
- 1803              	.LVL203:
-1439:../drivers/fsl_enet.c ****                 len += handle->txBuffSizeAlign[0];
- 1804              		.loc 1 1439 0
- 1805 008a 6B69     		ldr	r3, [r5, #20]
- 1806 008c 9AB2     		uxth	r2, r3
- 1807 008e 2280     		strh	r2, [r4]	@ movhi
-1442:../drivers/fsl_enet.c ****                 curBuffDescrip->control |= ENET_BUFFDESCRIPTOR_TX_READY_MASK;
- 1808              		.loc 1 1442 0
- 1809 0090 6288     		ldrh	r2, [r4, #2]
- 1810 0092 22F40062 		bic	r2, r2, #2048
- 1811 0096 1204     		lsls	r2, r2, #16
- 1812 0098 120C     		lsrs	r2, r2, #16
- 1813 009a 6280     		strh	r2, [r4, #2]	@ movhi
-1440:../drivers/fsl_enet.c ****                 /* Sets the control flag. */
- 1814              		.loc 1 1440 0
- 1815 009c 9844     		add	r8, r8, r3
- 1816              	.LVL204:
-1443:../drivers/fsl_enet.c ****                 /* Active the transmit buffer descriptor*/
- 1817              		.loc 1 1443 0
- 1818 009e 6388     		ldrh	r3, [r4, #2]
- 1819 00a0 9BB2     		uxth	r3, r3
- 1820 00a2 43F40043 		orr	r3, r3, #32768
- 1821 00a6 6380     		strh	r3, [r4, #2]	@ movhi
- 1822              	.LVL205:
-1474:../drivers/fsl_enet.c **** 
- 1823              		.loc 1 1474 0
- 1824 00a8 EC68     		ldr	r4, [r5, #12]
- 1825              	.LVL206:
- 1826              	.LBB132:
- 1827              	.LBB131:
- 849:../drivers/fsl_enet.c ****             break;
- 1828              		.loc 1 849 0
- 1829 00aa C7F814A0 		str	r10, [r7, #20]
- 1830              	.LVL207:
- 1831              	.LBE131:
- 1832              	.LBE132:
-1476:../drivers/fsl_enet.c **** 
- 1833              		.loc 1 1476 0
- 1834 00ae 6388     		ldrh	r3, [r4, #2]
- 1835 00b0 1B04     		lsls	r3, r3, #16
- 1836 00b2 D7D5     		bpl	.L192
- 1837 00b4 B2E7     		b	.L193
- 1838              	.L191:
- 1839              	.LVL208:
-1454:../drivers/fsl_enet.c ****                 curBuffDescrip->length = sizeleft;
- 1840              		.loc 1 1454 0
- 1841 00b6 5A46     		mov	r2, fp
-1455:../drivers/fsl_enet.c ****                 /* Set Last buffer wrap flag. */
- 1842              		.loc 1 1455 0
- 1843 00b8 1FFA8BFB 		uxth	fp, fp
- 1844              	.LVL209:
-1454:../drivers/fsl_enet.c ****                 curBuffDescrip->length = sizeleft;
- 1845              		.loc 1 1454 0
- 1846 00bc FFF7FEFF 		bl	memcpy
- 1847              	.LVL210:
-1455:../drivers/fsl_enet.c ****                 /* Set Last buffer wrap flag. */
- 1848              		.loc 1 1455 0
- 1849 00c0 A4F800B0 		strh	fp, [r4]	@ movhi
-1457:../drivers/fsl_enet.c **** #if defined(FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL) && FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL
- 1850              		.loc 1 1457 0
- 1851 00c4 6388     		ldrh	r3, [r4, #2]
- 1852 00c6 9BB2     		uxth	r3, r3
- 1853 00c8 43F40843 		orr	r3, r3, #34816
- 1854 00cc 6380     		strh	r3, [r4, #2]	@ movhi
- 1855 00ce BFE7     		b	.L198
- 1856              	.LVL211:
- 1857              	.L194:
-1338:../drivers/fsl_enet.c ****     }
- 1858              		.loc 1 1338 0
- 1859 00d0 40F6A370 		movw	r0, #4003
- 1860              	.LVL212:
+ 1677              		.loc 1 1345 0
+ 1678 001c 40F6A470 		movw	r0, #4004
+ 1679              	.LVL186:
+ 1680              	.L173:
 1480:../drivers/fsl_enet.c **** 
- 1861              		.loc 1 1480 0
- 1862 00d4 BDE8F88F 		pop	{r3, r4, r5, r6, r7, r8, r9, r10, fp, pc}
- 1863              		.cfi_endproc
- 1864              	.LFE177:
- 1866              		.section	.text.ENET_AddMulticastGroup,"ax",%progbits
- 1867              		.align	1
- 1868              		.global	ENET_AddMulticastGroup
- 1869              		.syntax unified
- 1870              		.thumb
- 1871              		.thumb_func
- 1872              		.fpu fpv4-sp-d16
- 1874              	ENET_AddMulticastGroup:
- 1875              	.LFB178:
+ 1681              		.loc 1 1480 0
+ 1682 0020 BDE8F88F 		pop	{r3, r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1683              	.LVL187:
+ 1684              	.L175:
+1353:../drivers/fsl_enet.c ****     {
+ 1685              		.loc 1 1353 0
+ 1686 0024 4B69     		ldr	r3, [r1, #20]
+ 1687 0026 B342     		cmp	r3, r6
+ 1688 0028 17D3     		bcc	.L184
+1361:../drivers/fsl_enet.c ****         /* Set data length. */
+ 1689              		.loc 1 1361 0
+ 1690 002a 3246     		mov	r2, r6
+ 1691              	.LVL188:
+ 1692 002c 4946     		mov	r1, r9
+ 1693              	.LVL189:
+1359:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET */
+ 1694              		.loc 1 1359 0
+ 1695 002e 6068     		ldr	r0, [r4, #4]
+ 1696              	.LVL190:
+1363:../drivers/fsl_enet.c **** #ifdef ENET_ENHANCEDBUFFERDESCRIPTOR_MODE
+ 1697              		.loc 1 1363 0
+ 1698 0030 B6B2     		uxth	r6, r6
+ 1699              	.LVL191:
+1361:../drivers/fsl_enet.c ****         /* Set data length. */
+ 1700              		.loc 1 1361 0
+ 1701 0032 FFF7FEFF 		bl	memcpy
+ 1702              	.LVL192:
+1363:../drivers/fsl_enet.c **** #ifdef ENET_ENHANCEDBUFFERDESCRIPTOR_MODE
+ 1703              		.loc 1 1363 0
+ 1704 0036 2680     		strh	r6, [r4]	@ movhi
+1376:../drivers/fsl_enet.c **** 
+ 1705              		.loc 1 1376 0
+ 1706 0038 6388     		ldrh	r3, [r4, #2]
+ 1707 003a 43F40843 		orr	r3, r3, #34816
+ 1708 003e 6380     		strh	r3, [r4, #2]	@ movhi
+1379:../drivers/fsl_enet.c ****         {
+ 1709              		.loc 1 1379 0
+ 1710 0040 6388     		ldrh	r3, [r4, #2]
+ 1711 0042 9904     		lsls	r1, r3, #18
+1385:../drivers/fsl_enet.c ****         }
+ 1712              		.loc 1 1385 0
+ 1713 0044 56BF     		itet	pl
+ 1714 0046 EB68     		ldrpl	r3, [r5, #12]
+1381:../drivers/fsl_enet.c ****         }
+ 1715              		.loc 1 1381 0
+ 1716 0048 AB68     		ldrmi	r3, [r5, #8]
+1385:../drivers/fsl_enet.c ****         }
+ 1717              		.loc 1 1385 0
+ 1718 004a 0833     		addpl	r3, r3, #8
+ 1719 004c EB60     		str	r3, [r5, #12]
+ 1720              	.LVL193:
+ 1721              	.L188:
+ 1722              	.LBB125:
+ 1723              	.LBB126:
+ 849:../drivers/fsl_enet.c ****             break;
+ 1724              		.loc 1 849 0
+ 1725 004e 4FF08073 		mov	r3, #16777216
+ 1726 0052 C8F81430 		str	r3, [r8, #20]
+ 1727              	.LVL194:
+ 1728              	.LBE126:
+ 1729              	.LBE125:
+1470:../drivers/fsl_enet.c ****             }
+ 1730              		.loc 1 1470 0
+ 1731 0056 0020     		movs	r0, #0
+ 1732 0058 E2E7     		b	.L173
+ 1733              	.LVL195:
+ 1734              	.L184:
+1443:../drivers/fsl_enet.c ****                 /* Active the transmit buffer descriptor*/
+ 1735              		.loc 1 1443 0
+ 1736 005a DFF878B0 		ldr	fp, .L189
+1331:../drivers/fsl_enet.c ****     uint32_t sizeleft = 0;
+ 1737              		.loc 1 1331 0
+ 1738 005e 0027     		movs	r7, #0
+ 1739              	.LVL196:
+ 1740              	.L176:
+1419:../drivers/fsl_enet.c ****             {
+ 1741              		.loc 1 1419 0
+ 1742 0060 6388     		ldrh	r3, [r4, #2]
+1435:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_MEMORY_HAS_ADDRESS_OFFSET */
+ 1743              		.loc 1 1435 0
+ 1744 0062 6068     		ldr	r0, [r4, #4]
+1419:../drivers/fsl_enet.c ****             {
+ 1745              		.loc 1 1419 0
+ 1746 0064 9A04     		lsls	r2, r3, #18
+1425:../drivers/fsl_enet.c ****             }
+ 1747              		.loc 1 1425 0
+ 1748 0066 58BF     		it	pl
+ 1749 0068 EB68     		ldrpl	r3, [r5, #12]
+1429:../drivers/fsl_enet.c ****             {
+ 1750              		.loc 1 1429 0
+ 1751 006a 6A69     		ldr	r2, [r5, #20]
+1421:../drivers/fsl_enet.c ****             }
+ 1752              		.loc 1 1421 0
+ 1753 006c 48BF     		it	mi
+ 1754 006e AB68     		ldrmi	r3, [r5, #8]
+1428:../drivers/fsl_enet.c ****             if (sizeleft > handle->txBuffSizeAlign[0])
+ 1755              		.loc 1 1428 0
+ 1756 0070 A6EB070A 		sub	r10, r6, r7
+ 1757              	.LVL197:
+1425:../drivers/fsl_enet.c ****             }
+ 1758              		.loc 1 1425 0
+ 1759 0074 58BF     		it	pl
+ 1760 0076 0833     		addpl	r3, r3, #8
+1429:../drivers/fsl_enet.c ****             {
+ 1761              		.loc 1 1429 0
+ 1762 0078 5245     		cmp	r2, r10
+1425:../drivers/fsl_enet.c ****             }
+ 1763              		.loc 1 1425 0
+ 1764 007a EB60     		str	r3, [r5, #12]
+ 1765 007c 09EB0701 		add	r1, r9, r7
+1429:../drivers/fsl_enet.c ****             {
+ 1766              		.loc 1 1429 0
+ 1767 0080 19D2     		bcs	.L181
+ 1768              	.LVL198:
+1437:../drivers/fsl_enet.c ****                 /* Data length update. */
+ 1769              		.loc 1 1437 0
+ 1770 0082 FFF7FEFF 		bl	memcpy
+ 1771              	.LVL199:
+1439:../drivers/fsl_enet.c ****                 len += handle->txBuffSizeAlign[0];
+ 1772              		.loc 1 1439 0
+ 1773 0086 6B69     		ldr	r3, [r5, #20]
+ 1774 0088 9AB2     		uxth	r2, r3
+ 1775 008a 2280     		strh	r2, [r4]	@ movhi
+1442:../drivers/fsl_enet.c ****                 curBuffDescrip->control |= ENET_BUFFDESCRIPTOR_TX_READY_MASK;
+ 1776              		.loc 1 1442 0
+ 1777 008c 6288     		ldrh	r2, [r4, #2]
+ 1778 008e 22F40062 		bic	r2, r2, #2048
+ 1779 0092 1204     		lsls	r2, r2, #16
+ 1780 0094 120C     		lsrs	r2, r2, #16
+ 1781 0096 6280     		strh	r2, [r4, #2]	@ movhi
+1440:../drivers/fsl_enet.c ****                 /* Sets the control flag. */
+ 1782              		.loc 1 1440 0
+ 1783 0098 1F44     		add	r7, r7, r3
+ 1784              	.LVL200:
+1443:../drivers/fsl_enet.c ****                 /* Active the transmit buffer descriptor*/
+ 1785              		.loc 1 1443 0
+ 1786 009a 6388     		ldrh	r3, [r4, #2]
+ 1787 009c 4BEA0303 		orr	r3, fp, r3
+ 1788 00a0 9BB2     		uxth	r3, r3
+ 1789 00a2 6380     		strh	r3, [r4, #2]	@ movhi
+ 1790              	.LVL201:
+ 1791              	.LBB127:
+ 1792              	.LBB128:
+ 849:../drivers/fsl_enet.c ****             break;
+ 1793              		.loc 1 849 0
+ 1794 00a4 4FF08073 		mov	r3, #16777216
+ 1795              	.LBE128:
+ 1796              	.LBE127:
+1474:../drivers/fsl_enet.c **** 
+ 1797              		.loc 1 1474 0
+ 1798 00a8 EC68     		ldr	r4, [r5, #12]
+ 1799              	.LVL202:
+ 1800              	.LBB130:
+ 1801              	.LBB129:
+ 849:../drivers/fsl_enet.c ****             break;
+ 1802              		.loc 1 849 0
+ 1803 00aa C8F81430 		str	r3, [r8, #20]
+ 1804              	.LVL203:
+ 1805              	.LBE129:
+ 1806              	.LBE130:
+1476:../drivers/fsl_enet.c **** 
+ 1807              		.loc 1 1476 0
+ 1808 00ae 6388     		ldrh	r3, [r4, #2]
+ 1809 00b0 1B04     		lsls	r3, r3, #16
+ 1810 00b2 D5D5     		bpl	.L176
+ 1811 00b4 B2E7     		b	.L182
+ 1812              	.L181:
+ 1813              	.LVL204:
+1454:../drivers/fsl_enet.c ****                 curBuffDescrip->length = sizeleft;
+ 1814              		.loc 1 1454 0
+ 1815 00b6 5246     		mov	r2, r10
+ 1816 00b8 FFF7FEFF 		bl	memcpy
+ 1817              	.LVL205:
+1455:../drivers/fsl_enet.c ****                 /* Set Last buffer wrap flag. */
+ 1818              		.loc 1 1455 0
+ 1819 00bc 1FFA8AF3 		uxth	r3, r10
+ 1820 00c0 2380     		strh	r3, [r4]	@ movhi
+1457:../drivers/fsl_enet.c **** #if defined(FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL) && FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL
+ 1821              		.loc 1 1457 0
+ 1822 00c2 6388     		ldrh	r3, [r4, #2]
+ 1823 00c4 43F40843 		orr	r3, r3, #34816
+ 1824 00c8 6380     		strh	r3, [r4, #2]	@ movhi
+ 1825 00ca C0E7     		b	.L188
+ 1826              	.LVL206:
+ 1827              	.L183:
+1338:../drivers/fsl_enet.c ****     }
+ 1828              		.loc 1 1338 0
+ 1829 00cc 40F6A370 		movw	r0, #4003
+ 1830              	.LVL207:
+ 1831 00d0 A6E7     		b	.L173
+ 1832              	.L190:
+ 1833 00d2 00BF     		.align	2
+ 1834              	.L189:
+ 1835 00d4 0080FFFF 		.word	-32768
+ 1836              		.cfi_endproc
+ 1837              	.LFE177:
+ 1839              		.section	.text.ENET_AddMulticastGroup,"ax",%progbits
+ 1840              		.align	1
+ 1841              		.global	ENET_AddMulticastGroup
+ 1842              		.syntax unified
+ 1843              		.thumb
+ 1844              		.thumb_func
+ 1845              		.fpu fpv4-sp-d16
+ 1847              	ENET_AddMulticastGroup:
+ 1848              	.LFB178:
 1926:../drivers/fsl_enet.c ****     assert(address);
- 1876              		.loc 1 1926 0
- 1877              		.cfi_startproc
- 1878              		@ args = 0, pretend = 0, frame = 0
- 1879              		@ frame_needed = 0, uses_anonymous_args = 0
- 1880              	.LVL213:
- 1881 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 1882              		.cfi_def_cfa_offset 20
- 1883              		.cfi_offset 4, -20
- 1884              		.cfi_offset 5, -16
- 1885              		.cfi_offset 6, -12
- 1886              		.cfi_offset 7, -8
- 1887              		.cfi_offset 14, -4
- 1888              	.LBB133:
+ 1849              		.loc 1 1926 0
+ 1850              		.cfi_startproc
+ 1851              		@ args = 0, pretend = 0, frame = 0
+ 1852              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1853              	.LVL208:
+ 1854 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1855              		.cfi_def_cfa_offset 20
+ 1856              		.cfi_offset 4, -20
+ 1857              		.cfi_offset 5, -16
+ 1858              		.cfi_offset 6, -12
+ 1859              		.cfi_offset 7, -8
+ 1860              		.cfi_offset 14, -4
+ 1861              	.LBB131:
 1943:../drivers/fsl_enet.c ****             }
- 1889              		.loc 1 1943 0
- 1890 0002 174E     		ldr	r6, .L208
- 1891 0004 4C1E     		subs	r4, r1, #1
- 1892              	.LBE133:
+ 1862              		.loc 1 1943 0
+ 1863 0002 164F     		ldr	r7, .L202
+ 1864 0004 4B1E     		subs	r3, r1, #1
+ 1865              	.LBE131:
 1929:../drivers/fsl_enet.c ****     uint32_t count1 = 0;
- 1893              		.loc 1 1929 0
- 1894 0006 4FF0FF33 		mov	r3, #-1
- 1895 000a 0531     		adds	r1, r1, #5
- 1896              	.LVL214:
- 1897              	.L203:
- 1898              	.LBB134:
+ 1866              		.loc 1 1929 0
+ 1867 0006 4FF0FF32 		mov	r2, #-1
+ 1868 000a 0531     		adds	r1, r1, #5
+ 1869              	.LVL209:
+ 1870              	.L194:
+ 1871              	.LBB132:
 1936:../drivers/fsl_enet.c ****         for (count2 = 0; count2 < 0x08U; count2++)
- 1899              		.loc 1 1936 0
- 1900 000c 14F8012F 		ldrb	r2, [r4, #1]!	@ zero_extendqisi2
- 1901              	.LVL215:
- 1902 0010 0825     		movs	r5, #8
- 1903              	.LVL216:
- 1904              	.L202:
+ 1872              		.loc 1 1936 0
+ 1873 000c 13F8015F 		ldrb	r5, [r3, #1]!	@ zero_extendqisi2
+ 1874              	.LVL210:
+ 1875 0010 0824     		movs	r4, #8
+ 1876              	.LVL211:
+ 1877              	.L193:
 1939:../drivers/fsl_enet.c ****             {
- 1905              		.loc 1 1939 0
- 1906 0012 82EA0307 		eor	r7, r2, r3
- 1907 0016 17F0010F 		tst	r7, #1
- 1908 001a 4FEA5303 		lsr	r3, r3, #1
- 1909              	.LVL217:
- 1910 001e 4FEA5202 		lsr	r2, r2, #1
- 1911              	.LVL218:
+ 1878              		.loc 1 1939 0
+ 1879 0012 85EA0206 		eor	r6, r5, r2
+ 1880 0016 16F0010F 		tst	r6, #1
+ 1881 001a 4FEA5202 		lsr	r2, r2, #1
+ 1882              	.LVL212:
 1943:../drivers/fsl_enet.c ****             }
- 1912              		.loc 1 1943 0
- 1913 0022 18BF     		it	ne
- 1914 0024 7340     		eorne	r3, r3, r6
+ 1883              		.loc 1 1943 0
+ 1884 001e 18BF     		it	ne
+ 1885 0020 7A40     		eorne	r2, r2, r7
+ 1886              	.LVL213:
 1937:../drivers/fsl_enet.c ****         {
- 1915              		.loc 1 1937 0
- 1916 0026 013D     		subs	r5, r5, #1
- 1917              	.LVL219:
-1942:../drivers/fsl_enet.c ****                 crc ^= 0xEDB88320U;
- 1918              		.loc 1 1942 0
- 1919 0028 D2B2     		uxtb	r2, r2
- 1920              	.LVL220:
+ 1887              		.loc 1 1937 0
+ 1888 0022 013C     		subs	r4, r4, #1
+ 1889              	.LVL214:
+1939:../drivers/fsl_enet.c ****             {
+ 1890              		.loc 1 1939 0
+ 1891 0024 4FEA5505 		lsr	r5, r5, #1
+ 1892              	.LVL215:
 1937:../drivers/fsl_enet.c ****         {
- 1921              		.loc 1 1937 0
- 1922 002a F2D1     		bne	.L202
- 1923              	.LVL221:
- 1924              	.LBE134:
+ 1893              		.loc 1 1937 0
+ 1894 0028 F3D1     		bne	.L193
+ 1895              	.LVL216:
+ 1896              	.LBE132:
 1934:../drivers/fsl_enet.c ****     {
- 1925              		.loc 1 1934 0 discriminator 2
- 1926 002c 8C42     		cmp	r4, r1
- 1927 002e EDD1     		bne	.L203
+ 1897              		.loc 1 1934 0 discriminator 2
+ 1898 002a 8B42     		cmp	r3, r1
+ 1899 002c EED1     		bne	.L194
 1954:../drivers/fsl_enet.c ****     {
- 1928              		.loc 1 1954 0
- 1929 0030 002B     		cmp	r3, #0
- 1930 0032 4FF00102 		mov	r2, #1
- 1931              	.LVL222:
- 1932 0036 4FEA9363 		lsr	r3, r3, #26
- 1933              	.LVL223:
- 1934 003a 07DB     		blt	.L204
+ 1900              		.loc 1 1954 0
+ 1901 002e 002A     		cmp	r2, #0
+ 1902 0030 4FEA9261 		lsr	r1, r2, #26
+ 1903              	.LVL217:
+ 1904 0034 4FF00103 		mov	r3, #1
+ 1905              	.LVL218:
+ 1906 0038 06DB     		blt	.L195
 1956:../drivers/fsl_enet.c ****     }
- 1935              		.loc 1 1956 0
- 1936 003c D0F82411 		ldr	r1, [r0, #292]
- 1937              	.LVL224:
- 1938 0040 02FA03F3 		lsl	r3, r2, r3
- 1939 0044 0B43     		orrs	r3, r3, r1
- 1940 0046 C0F82431 		str	r3, [r0, #292]
- 1941 004a F0BD     		pop	{r4, r5, r6, r7, pc}
- 1942              	.LVL225:
- 1943              	.L204:
+ 1907              		.loc 1 1956 0
+ 1908 003a D0F82421 		ldr	r2, [r0, #292]
+ 1909              	.LVL219:
+ 1910 003e 8B40     		lsls	r3, r3, r1
+ 1911 0040 1343     		orrs	r3, r3, r2
+ 1912 0042 C0F82431 		str	r3, [r0, #292]
+ 1913              	.L191:
+1962:../drivers/fsl_enet.c **** 
+ 1914              		.loc 1 1962 0
+ 1915 0046 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1916              	.LVL220:
+ 1917              	.L195:
 1960:../drivers/fsl_enet.c ****     }
- 1944              		.loc 1 1960 0
- 1945 004c D0F82011 		ldr	r1, [r0, #288]
- 1946 0050 03F01F03 		and	r3, r3, #31
- 1947 0054 02FA03F3 		lsl	r3, r2, r3
- 1948 0058 0B43     		orrs	r3, r3, r1
- 1949 005a C0F82031 		str	r3, [r0, #288]
- 1950 005e F0BD     		pop	{r4, r5, r6, r7, pc}
- 1951              	.LVL226:
- 1952              	.L209:
- 1953              		.align	2
- 1954              	.L208:
- 1955 0060 2083B8ED 		.word	-306674912
- 1956              		.cfi_endproc
- 1957              	.LFE178:
- 1959              		.section	.text.ENET_LeaveMulticastGroup,"ax",%progbits
- 1960              		.align	1
- 1961              		.global	ENET_LeaveMulticastGroup
- 1962              		.syntax unified
- 1963              		.thumb
- 1964              		.thumb_func
- 1965              		.fpu fpv4-sp-d16
- 1967              	ENET_LeaveMulticastGroup:
- 1968              	.LFB179:
+ 1918              		.loc 1 1960 0
+ 1919 0048 D0F82021 		ldr	r2, [r0, #288]
+ 1920              	.LVL221:
+ 1921 004c 01F01F01 		and	r1, r1, #31
+ 1922 0050 8B40     		lsls	r3, r3, r1
+ 1923 0052 1343     		orrs	r3, r3, r2
+ 1924 0054 C0F82031 		str	r3, [r0, #288]
+1962:../drivers/fsl_enet.c **** 
+ 1925              		.loc 1 1962 0
+ 1926 0058 F5E7     		b	.L191
+ 1927              	.L203:
+ 1928 005a 00BF     		.align	2
+ 1929              	.L202:
+ 1930 005c 2083B8ED 		.word	-306674912
+ 1931              		.cfi_endproc
+ 1932              	.LFE178:
+ 1934              		.section	.text.ENET_LeaveMulticastGroup,"ax",%progbits
+ 1935              		.align	1
+ 1936              		.global	ENET_LeaveMulticastGroup
+ 1937              		.syntax unified
+ 1938              		.thumb
+ 1939              		.thumb_func
+ 1940              		.fpu fpv4-sp-d16
+ 1942              	ENET_LeaveMulticastGroup:
+ 1943              	.LFB179:
 1965:../drivers/fsl_enet.c ****     assert(address);
- 1969              		.loc 1 1965 0
- 1970              		.cfi_startproc
- 1971              		@ args = 0, pretend = 0, frame = 0
- 1972              		@ frame_needed = 0, uses_anonymous_args = 0
- 1973              	.LVL227:
- 1974 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 1975              		.cfi_def_cfa_offset 20
- 1976              		.cfi_offset 4, -20
- 1977              		.cfi_offset 5, -16
- 1978              		.cfi_offset 6, -12
- 1979              		.cfi_offset 7, -8
- 1980              		.cfi_offset 14, -4
- 1981              	.LBB135:
+ 1944              		.loc 1 1965 0
+ 1945              		.cfi_startproc
+ 1946              		@ args = 0, pretend = 0, frame = 0
+ 1947              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1948              	.LVL222:
+ 1949 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1950              		.cfi_def_cfa_offset 20
+ 1951              		.cfi_offset 4, -20
+ 1952              		.cfi_offset 5, -16
+ 1953              		.cfi_offset 6, -12
+ 1954              		.cfi_offset 7, -8
+ 1955              		.cfi_offset 14, -4
+ 1956              	.LBB133:
 1982:../drivers/fsl_enet.c ****             }
- 1982              		.loc 1 1982 0
- 1983 0002 184E     		ldr	r6, .L219
- 1984 0004 4C1E     		subs	r4, r1, #1
- 1985              	.LBE135:
+ 1957              		.loc 1 1982 0
+ 1958 0002 174F     		ldr	r7, .L215
+ 1959 0004 4A1E     		subs	r2, r1, #1
+ 1960              	.LBE133:
 1968:../drivers/fsl_enet.c ****     uint32_t count1 = 0;
- 1986              		.loc 1 1968 0
- 1987 0006 4FF0FF33 		mov	r3, #-1
- 1988 000a 0531     		adds	r1, r1, #5
- 1989              	.LVL228:
- 1990              	.L214:
- 1991              	.LBB136:
+ 1961              		.loc 1 1968 0
+ 1962 0006 4FF0FF33 		mov	r3, #-1
+ 1963 000a 0531     		adds	r1, r1, #5
+ 1964              	.LVL223:
+ 1965              	.L207:
+ 1966              	.LBB134:
 1975:../drivers/fsl_enet.c ****         for (count2 = 0; count2 < 0x08U; count2++)
- 1992              		.loc 1 1975 0
- 1993 000c 14F8012F 		ldrb	r2, [r4, #1]!	@ zero_extendqisi2
- 1994              	.LVL229:
- 1995 0010 0825     		movs	r5, #8
- 1996              	.LVL230:
- 1997              	.L213:
+ 1967              		.loc 1 1975 0
+ 1968 000c 12F8015F 		ldrb	r5, [r2, #1]!	@ zero_extendqisi2
+ 1969              	.LVL224:
+ 1970 0010 0824     		movs	r4, #8
+ 1971              	.LVL225:
+ 1972              	.L206:
 1978:../drivers/fsl_enet.c ****             {
- 1998              		.loc 1 1978 0
- 1999 0012 82EA0307 		eor	r7, r2, r3
- 2000 0016 17F0010F 		tst	r7, #1
- 2001 001a 4FEA5303 		lsr	r3, r3, #1
- 2002              	.LVL231:
- 2003 001e 4FEA5202 		lsr	r2, r2, #1
- 2004              	.LVL232:
+ 1973              		.loc 1 1978 0
+ 1974 0012 85EA0306 		eor	r6, r5, r3
+ 1975 0016 16F0010F 		tst	r6, #1
+ 1976 001a 4FEA5303 		lsr	r3, r3, #1
+ 1977              	.LVL226:
 1982:../drivers/fsl_enet.c ****             }
- 2005              		.loc 1 1982 0
- 2006 0022 18BF     		it	ne
- 2007 0024 7340     		eorne	r3, r3, r6
+ 1978              		.loc 1 1982 0
+ 1979 001e 18BF     		it	ne
+ 1980 0020 7B40     		eorne	r3, r3, r7
+ 1981              	.LVL227:
 1976:../drivers/fsl_enet.c ****         {
- 2008              		.loc 1 1976 0
- 2009 0026 013D     		subs	r5, r5, #1
- 2010              	.LVL233:
-1981:../drivers/fsl_enet.c ****                 crc ^= 0xEDB88320U;
- 2011              		.loc 1 1981 0
- 2012 0028 D2B2     		uxtb	r2, r2
- 2013              	.LVL234:
+ 1982              		.loc 1 1976 0
+ 1983 0022 013C     		subs	r4, r4, #1
+ 1984              	.LVL228:
+1978:../drivers/fsl_enet.c ****             {
+ 1985              		.loc 1 1978 0
+ 1986 0024 4FEA5505 		lsr	r5, r5, #1
+ 1987              	.LVL229:
 1976:../drivers/fsl_enet.c ****         {
- 2014              		.loc 1 1976 0
- 2015 002a F2D1     		bne	.L213
- 2016              	.LVL235:
- 2017              	.LBE136:
+ 1988              		.loc 1 1976 0
+ 1989 0028 F3D1     		bne	.L206
+ 1990              	.LVL230:
+ 1991              	.LBE134:
 1973:../drivers/fsl_enet.c ****     {
- 2018              		.loc 1 1973 0 discriminator 2
- 2019 002c 8C42     		cmp	r4, r1
- 2020 002e EDD1     		bne	.L214
+ 1992              		.loc 1 1973 0 discriminator 2
+ 1993 002a 8A42     		cmp	r2, r1
+ 1994 002c EED1     		bne	.L207
 1993:../drivers/fsl_enet.c ****     {
- 2021              		.loc 1 1993 0
- 2022 0030 002B     		cmp	r3, #0
- 2023 0032 4FF00102 		mov	r2, #1
- 2024              	.LVL236:
- 2025 0036 4FEA9363 		lsr	r3, r3, #26
- 2026              	.LVL237:
- 2027 003a 08DB     		blt	.L215
+ 1995              		.loc 1 1993 0
+ 1996 002e 002B     		cmp	r3, #0
+ 1997 0030 4FEA9362 		lsr	r2, r3, #26
+ 1998              	.LVL231:
+ 1999 0034 4FF00103 		mov	r3, #1
+ 2000              	.LVL232:
+ 2001 0038 07DB     		blt	.L208
 1995:../drivers/fsl_enet.c ****     }
- 2028              		.loc 1 1995 0
- 2029 003c D0F82411 		ldr	r1, [r0, #292]
- 2030              	.LVL238:
- 2031 0040 02FA03F3 		lsl	r3, r2, r3
- 2032 0044 21EA0303 		bic	r3, r1, r3
- 2033 0048 C0F82431 		str	r3, [r0, #292]
- 2034 004c F0BD     		pop	{r4, r5, r6, r7, pc}
- 2035              	.LVL239:
- 2036              	.L215:
+ 2002              		.loc 1 1995 0
+ 2003 003a D0F82411 		ldr	r1, [r0, #292]
+ 2004              	.LVL233:
+ 2005 003e 9340     		lsls	r3, r3, r2
+ 2006 0040 21EA0303 		bic	r3, r1, r3
+ 2007 0044 C0F82431 		str	r3, [r0, #292]
+ 2008              	.L204:
+2001:../drivers/fsl_enet.c **** 
+ 2009              		.loc 1 2001 0
+ 2010 0048 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 2011              	.LVL234:
+ 2012              	.L208:
 1999:../drivers/fsl_enet.c ****     }
- 2037              		.loc 1 1999 0
- 2038 004e D0F82011 		ldr	r1, [r0, #288]
- 2039 0052 03F01F03 		and	r3, r3, #31
- 2040 0056 02FA03F3 		lsl	r3, r2, r3
- 2041 005a 21EA0303 		bic	r3, r1, r3
- 2042 005e C0F82031 		str	r3, [r0, #288]
- 2043 0062 F0BD     		pop	{r4, r5, r6, r7, pc}
- 2044              	.LVL240:
- 2045              	.L220:
- 2046              		.align	2
- 2047              	.L219:
- 2048 0064 2083B8ED 		.word	-306674912
- 2049              		.cfi_endproc
- 2050              	.LFE179:
- 2052              		.section	.text.ENET_CommonFrame0IRQHandler,"ax",%progbits
- 2053              		.align	1
- 2054              		.global	ENET_CommonFrame0IRQHandler
- 2055              		.syntax unified
- 2056              		.thumb
- 2057              		.thumb_func
- 2058              		.fpu fpv4-sp-d16
- 2060              	ENET_CommonFrame0IRQHandler:
- 2061              	.LFB183:
-2731:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_ENET_QUEUE > 1 */
-2732:../drivers/fsl_enet.c ****         }
-2733:../drivers/fsl_enet.c ****     }
-2734:../drivers/fsl_enet.c ****     /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F Store immediate overlapping
-2735:../drivers/fsl_enet.c ****       exception return operation might vector to incorrect interrupt */
-2736:../drivers/fsl_enet.c **** #if defined __CORTEX_M && (__CORTEX_M == 4U)
-2737:../drivers/fsl_enet.c ****     __DSB();
-2738:../drivers/fsl_enet.c **** #endif
-2739:../drivers/fsl_enet.c **** }
+ 2013              		.loc 1 1999 0
+ 2014 004a D0F82011 		ldr	r1, [r0, #288]
+ 2015 004e 02F01F02 		and	r2, r2, #31
+ 2016 0052 9340     		lsls	r3, r3, r2
+ 2017 0054 21EA0303 		bic	r3, r1, r3
+ 2018 0058 C0F82031 		str	r3, [r0, #288]
+2001:../drivers/fsl_enet.c **** 
+ 2019              		.loc 1 2001 0
+ 2020 005c F4E7     		b	.L204
+ 2021              	.L216:
+ 2022 005e 00BF     		.align	2
+ 2023              	.L215:
+ 2024 0060 2083B8ED 		.word	-306674912
+ 2025              		.cfi_endproc
+ 2026              	.LFE179:
+ 2028              		.section	.text.ENET_CommonFrame0IRQHandler,"ax",%progbits
+ 2029              		.align	1
+ 2030              		.global	ENET_CommonFrame0IRQHandler
+ 2031              		.syntax unified
+ 2032              		.thumb
+ 2033              		.thumb_func
+ 2034              		.fpu fpv4-sp-d16
+ 2036              	ENET_CommonFrame0IRQHandler:
+ 2037              	.LFB183:
 2740:../drivers/fsl_enet.c **** 
 2741:../drivers/fsl_enet.c **** #ifdef ENET_ENHANCEDBUFFERDESCRIPTOR_MODE
 2742:../drivers/fsl_enet.c **** void ENET_Ptp1588TimerIRQHandler(ENET_Type *base, enet_handle_t *handle)
@@ -9416,140 +9410,119 @@
 2786:../drivers/fsl_enet.c **** 
 2787:../drivers/fsl_enet.c **** void ENET_CommonFrame0IRQHandler(ENET_Type *base)
 2788:../drivers/fsl_enet.c **** {
- 2062              		.loc 1 2788 0
- 2063              		.cfi_startproc
- 2064              		@ args = 0, pretend = 0, frame = 0
- 2065              		@ frame_needed = 0, uses_anonymous_args = 0
- 2066              	.LVL241:
- 2067 0000 70B5     		push	{r4, r5, r6, lr}
- 2068              		.cfi_def_cfa_offset 16
- 2069              		.cfi_offset 4, -16
- 2070              		.cfi_offset 5, -12
- 2071              		.cfi_offset 6, -8
- 2072              		.cfi_offset 14, -4
+ 2038              		.loc 1 2788 0
+ 2039              		.cfi_startproc
+ 2040              		@ args = 0, pretend = 0, frame = 0
+ 2041              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2042              	.LVL235:
+ 2043 0000 70B5     		push	{r4, r5, r6, lr}
+ 2044              		.cfi_def_cfa_offset 16
+ 2045              		.cfi_offset 4, -16
+ 2046              		.cfi_offset 5, -12
+ 2047              		.cfi_offset 6, -8
+ 2048              		.cfi_offset 14, -4
 2789:../drivers/fsl_enet.c ****     uint32_t event = base->EIR;
- 2073              		.loc 1 2789 0
- 2074 0002 4668     		ldr	r6, [r0, #4]
- 2075              	.LVL242:
+ 2049              		.loc 1 2789 0
+ 2050 0002 4668     		ldr	r6, [r0, #4]
+ 2051              	.LVL236:
 2788:../drivers/fsl_enet.c ****     uint32_t event = base->EIR;
- 2076              		.loc 1 2788 0
- 2077 0004 0446     		mov	r4, r0
+ 2052              		.loc 1 2788 0
+ 2053 0004 0446     		mov	r4, r0
 2790:../drivers/fsl_enet.c ****     uint32_t instance = ENET_GetInstance(base);
- 2078              		.loc 1 2790 0
- 2079 0006 FFF7FEFF 		bl	ENET_GetInstance
- 2080              	.LVL243:
+ 2054              		.loc 1 2790 0
+ 2055 0006 FFF7FEFF 		bl	ENET_GetInstance
+ 2056              	.LVL237:
 2791:../drivers/fsl_enet.c **** 
 2792:../drivers/fsl_enet.c ****     if (event & (kENET_TxBufferInterrupt | kENET_TxFrameInterrupt))
- 2081              		.loc 1 2792 0
- 2082 000a 16F0406F 		tst	r6, #201326592
+ 2057              		.loc 1 2792 0
+ 2058 000a 16F0406F 		tst	r6, #201326592
 2790:../drivers/fsl_enet.c ****     uint32_t instance = ENET_GetInstance(base);
- 2083              		.loc 1 2790 0
- 2084 000e 0546     		mov	r5, r0
- 2085              	.LVL244:
- 2086              		.loc 1 2792 0
- 2087 0010 06D0     		beq	.L222
+ 2059              		.loc 1 2790 0
+ 2060 000e 0546     		mov	r5, r0
+ 2061              	.LVL238:
+ 2062              		.loc 1 2792 0
+ 2063 0010 06D0     		beq	.L218
 2793:../drivers/fsl_enet.c ****     {
 2794:../drivers/fsl_enet.c **** #if FSL_FEATURE_ENET_QUEUE > 1
 2795:../drivers/fsl_enet.c ****         s_enetTxIsr(base, s_ENETHandle[instance], 0);
 2796:../drivers/fsl_enet.c **** #else
 2797:../drivers/fsl_enet.c ****         s_enetTxIsr(base, s_ENETHandle[instance]);
- 2088              		.loc 1 2797 0
- 2089 0012 134B     		ldr	r3, .L238
- 2090 0014 134A     		ldr	r2, .L238+4
- 2091 0016 1B68     		ldr	r3, [r3]
- 2092 0018 52F82010 		ldr	r1, [r2, r0, lsl #2]
- 2093 001c 2046     		mov	r0, r4
- 2094              	.LVL245:
- 2095 001e 9847     		blx	r3
- 2096              	.LVL246:
- 2097              	.L222:
+ 2064              		.loc 1 2797 0
+ 2065 0012 134B     		ldr	r3, .L234
+ 2066 0014 134A     		ldr	r2, .L234+4
+ 2067 0016 1B68     		ldr	r3, [r3]
+ 2068 0018 52F82010 		ldr	r1, [r2, r0, lsl #2]
+ 2069 001c 2046     		mov	r0, r4
+ 2070              	.LVL239:
+ 2071 001e 9847     		blx	r3
+ 2072              	.LVL240:
+ 2073              	.L218:
 2798:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_ENET_QUEUE > 1 */
 2799:../drivers/fsl_enet.c ****     }
 2800:../drivers/fsl_enet.c **** 
 2801:../drivers/fsl_enet.c ****     if (event & (kENET_RxBufferInterrupt | kENET_RxFrameInterrupt))
- 2098              		.loc 1 2801 0
- 2099 0020 16F0407F 		tst	r6, #50331648
- 2100 0024 06D0     		beq	.L223
+ 2074              		.loc 1 2801 0
+ 2075 0020 16F0407F 		tst	r6, #50331648
+ 2076 0024 06D0     		beq	.L219
 2802:../drivers/fsl_enet.c ****     {
 2803:../drivers/fsl_enet.c **** #if FSL_FEATURE_ENET_QUEUE > 1
 2804:../drivers/fsl_enet.c ****         s_enetRxIsr(base, s_ENETHandle[instance], 0);
 2805:../drivers/fsl_enet.c **** #else
 2806:../drivers/fsl_enet.c ****         s_enetRxIsr(base, s_ENETHandle[instance]);
- 2101              		.loc 1 2806 0
- 2102 0026 104B     		ldr	r3, .L238+8
- 2103 0028 0E4A     		ldr	r2, .L238+4
- 2104 002a 1B68     		ldr	r3, [r3]
- 2105 002c 52F82510 		ldr	r1, [r2, r5, lsl #2]
- 2106 0030 2046     		mov	r0, r4
- 2107 0032 9847     		blx	r3
- 2108              	.LVL247:
- 2109              	.L223:
+ 2077              		.loc 1 2806 0
+ 2078 0026 104B     		ldr	r3, .L234+8
+ 2079 0028 0E4A     		ldr	r2, .L234+4
+ 2080 002a 1B68     		ldr	r3, [r3]
+ 2081 002c 52F82510 		ldr	r1, [r2, r5, lsl #2]
+ 2082 0030 2046     		mov	r0, r4
+ 2083 0032 9847     		blx	r3
+ 2084              	.LVL241:
+ 2085              	.L219:
 2807:../drivers/fsl_enet.c **** #endif /* FSL_FEATURE_ENET_QUEUE > 1 */
 2808:../drivers/fsl_enet.c ****     }
 2809:../drivers/fsl_enet.c **** 
 2810:../drivers/fsl_enet.c ****     if (event & ENET_TS_INTERRUPT)
- 2110              		.loc 1 2810 0
- 2111 0034 16F4C03F 		tst	r6, #98304
- 2112 0038 05D0     		beq	.L224
+ 2086              		.loc 1 2810 0
+ 2087 0034 16F4C03F 		tst	r6, #98304
+ 2088 0038 05D0     		beq	.L220
 2811:../drivers/fsl_enet.c ****     {
 2812:../drivers/fsl_enet.c ****         s_enetTsIsr(base, s_ENETHandle[instance]);
- 2113              		.loc 1 2812 0
- 2114 003a 0A4B     		ldr	r3, .L238+4
- 2115 003c 2046     		mov	r0, r4
- 2116 003e 53F82510 		ldr	r1, [r3, r5, lsl #2]
- 2117 0042 0023     		movs	r3, #0
- 2118 0044 9847     		blx	r3
- 2119              	.LVL248:
- 2120              	.L224:
+ 2089              		.loc 1 2812 0
+ 2090 003a 0A4B     		ldr	r3, .L234+4
+ 2091 003c 2046     		mov	r0, r4
+ 2092 003e 53F82510 		ldr	r1, [r3, r5, lsl #2]
+ 2093 0042 0023     		movs	r3, #0
+ 2094 0044 9847     		blx	r3
+ 2095              	.LVL242:
+ 2096              	.L220:
 2813:../drivers/fsl_enet.c ****     }
 2814:../drivers/fsl_enet.c ****     if (event & ENET_ERR_INTERRUPT)
- 2121              		.loc 1 2814 0
- 2122 0046 094B     		ldr	r3, .L238+12
- 2123 0048 1E42     		tst	r6, r3
- 2124 004a 06D0     		beq	.L225
+ 2097              		.loc 1 2814 0
+ 2098 0046 094B     		ldr	r3, .L234+12
+ 2099 0048 1E42     		tst	r6, r3
+ 2100 004a 06D0     		beq	.L221
 2815:../drivers/fsl_enet.c ****     {
 2816:../drivers/fsl_enet.c ****         s_enetErrIsr(base, s_ENETHandle[instance]);
- 2125              		.loc 1 2816 0
- 2126 004c 084B     		ldr	r3, .L238+16
- 2127 004e 054A     		ldr	r2, .L238+4
- 2128 0050 1B68     		ldr	r3, [r3]
- 2129 0052 52F82510 		ldr	r1, [r2, r5, lsl #2]
- 2130 0056 2046     		mov	r0, r4
- 2131 0058 9847     		blx	r3
- 2132              	.LVL249:
- 2133              	.L225:
- 2134              	.LBB137:
- 2135              	.LBB138:
- 2136              		.loc 3 833 0
- 2137              		.syntax unified
- 2138              	@ 833 "../CMSIS/cmsis_gcc.h" 1
- 2139 005a BFF34F8F 		dsb 0xF
- 2140              	@ 0 "" 2
- 2141              		.thumb
- 2142              		.syntax unified
- 2143 005e 70BD     		pop	{r4, r5, r6, pc}
- 2144              	.LVL250:
- 2145              	.L239:
- 2146              		.align	2
- 2147              	.L238:
- 2148 0060 00000000 		.word	.LANCHOR1
- 2149 0064 00000000 		.word	.LANCHOR0
- 2150 0068 00000000 		.word	.LANCHOR2
- 2151 006c 00007C60 		.word	1618739200
- 2152 0070 00000000 		.word	.LANCHOR3
- 2153              	.LBE138:
- 2154              	.LBE137:
- 2155              		.cfi_endproc
- 2156              	.LFE183:
- 2158              		.section	.text.ENET_Transmit_IRQHandler,"ax",%progbits
- 2159              		.align	1
- 2160              		.global	ENET_Transmit_IRQHandler
- 2161              		.syntax unified
- 2162              		.thumb
- 2163              		.thumb_func
- 2164              		.fpu fpv4-sp-d16
- 2166              	ENET_Transmit_IRQHandler:
- 2167              	.LFB184:
+ 2101              		.loc 1 2816 0
+ 2102 004c 084B     		ldr	r3, .L234+16
+ 2103 004e 054A     		ldr	r2, .L234+4
+ 2104 0050 1B68     		ldr	r3, [r3]
+ 2105 0052 52F82510 		ldr	r1, [r2, r5, lsl #2]
+ 2106 0056 2046     		mov	r0, r4
+ 2107 0058 9847     		blx	r3
+ 2108              	.LVL243:
+ 2109              	.L221:
+ 2110              	.LBB135:
+ 2111              	.LBB136:
+ 2112              		.loc 3 833 0
+ 2113              		.syntax unified
+ 2114              	@ 833 "../CMSIS/cmsis_gcc.h" 1
+ 2115 005a BFF34F8F 		dsb 0xF
+ 2116              	@ 0 "" 2
+ 2117              		.thumb
+ 2118              		.syntax unified
+ 2119              	.LBE136:
+ 2120              	.LBE135:
 2817:../drivers/fsl_enet.c ****     }
 2818:../drivers/fsl_enet.c ****     /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F Store immediate overlapping
 2819:../drivers/fsl_enet.c ****       exception return operation might vector to incorrect interrupt */
@@ -9557,6 +9530,28 @@
 2821:../drivers/fsl_enet.c ****     __DSB();
 2822:../drivers/fsl_enet.c **** #endif
 2823:../drivers/fsl_enet.c **** }
+ 2121              		.loc 1 2823 0
+ 2122 005e 70BD     		pop	{r4, r5, r6, pc}
+ 2123              	.LVL244:
+ 2124              	.L235:
+ 2125              		.align	2
+ 2126              	.L234:
+ 2127 0060 00000000 		.word	.LANCHOR1
+ 2128 0064 00000000 		.word	.LANCHOR0
+ 2129 0068 00000000 		.word	.LANCHOR2
+ 2130 006c 00007C60 		.word	1618739200
+ 2131 0070 00000000 		.word	.LANCHOR3
+ 2132              		.cfi_endproc
+ 2133              	.LFE183:
+ 2135              		.section	.text.ENET_Transmit_IRQHandler,"ax",%progbits
+ 2136              		.align	1
+ 2137              		.global	ENET_Transmit_IRQHandler
+ 2138              		.syntax unified
+ 2139              		.thumb
+ 2140              		.thumb_func
+ 2141              		.fpu fpv4-sp-d16
+ 2143              	ENET_Transmit_IRQHandler:
+ 2144              	.LFB184:
 2824:../drivers/fsl_enet.c **** 
 2825:../drivers/fsl_enet.c **** #if FSL_FEATURE_ENET_QUEUE > 1
 2826:../drivers/fsl_enet.c **** void ENET_CommonFrame1IRQHandler(ENET_Type *base)
@@ -9605,298 +9600,315 @@
 2869:../drivers/fsl_enet.c **** #if defined(ENET)
 2870:../drivers/fsl_enet.c **** void ENET_Transmit_IRQHandler(void)
 2871:../drivers/fsl_enet.c **** {
- 2168              		.loc 1 2871 0
- 2169              		.cfi_startproc
- 2170              		@ args = 0, pretend = 0, frame = 0
- 2171              		@ frame_needed = 0, uses_anonymous_args = 0
- 2172 0000 08B5     		push	{r3, lr}
- 2173              		.cfi_def_cfa_offset 8
- 2174              		.cfi_offset 3, -8
- 2175              		.cfi_offset 14, -4
+ 2145              		.loc 1 2871 0
+ 2146              		.cfi_startproc
+ 2147              		@ args = 0, pretend = 0, frame = 0
+ 2148              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2149 0000 08B5     		push	{r3, lr}
+ 2150              		.cfi_def_cfa_offset 8
+ 2151              		.cfi_offset 3, -8
+ 2152              		.cfi_offset 14, -4
 2872:../drivers/fsl_enet.c ****     s_enetTxIsr(ENET, s_ENETHandle[0]);
- 2176              		.loc 1 2872 0
- 2177 0002 044A     		ldr	r2, .L241
- 2178 0004 044B     		ldr	r3, .L241+4
- 2179 0006 1168     		ldr	r1, [r2]
- 2180 0008 1B68     		ldr	r3, [r3]
- 2181 000a 0448     		ldr	r0, .L241+8
- 2182 000c 9847     		blx	r3
- 2183              	.LVL251:
- 2184              	.LBB139:
- 2185              	.LBB140:
- 2186              		.loc 3 833 0
- 2187              		.syntax unified
- 2188              	@ 833 "../CMSIS/cmsis_gcc.h" 1
- 2189 000e BFF34F8F 		dsb 0xF
- 2190              	@ 0 "" 2
- 2191              		.thumb
- 2192              		.syntax unified
- 2193 0012 08BD     		pop	{r3, pc}
- 2194              	.L242:
- 2195              		.align	2
- 2196              	.L241:
- 2197 0014 00000000 		.word	.LANCHOR0
- 2198 0018 00000000 		.word	.LANCHOR1
- 2199 001c 00000C40 		.word	1074528256
- 2200              	.LBE140:
- 2201              	.LBE139:
- 2202              		.cfi_endproc
- 2203              	.LFE184:
- 2205              		.section	.text.ENET_Receive_IRQHandler,"ax",%progbits
- 2206              		.align	1
- 2207              		.global	ENET_Receive_IRQHandler
- 2208              		.syntax unified
- 2209              		.thumb
- 2210              		.thumb_func
- 2211              		.fpu fpv4-sp-d16
- 2213              	ENET_Receive_IRQHandler:
- 2214              	.LFB185:
+ 2153              		.loc 1 2872 0
+ 2154 0002 044A     		ldr	r2, .L237
+ 2155 0004 044B     		ldr	r3, .L237+4
+ 2156 0006 1168     		ldr	r1, [r2]
+ 2157 0008 1B68     		ldr	r3, [r3]
+ 2158 000a 0448     		ldr	r0, .L237+8
+ 2159 000c 9847     		blx	r3
+ 2160              	.LVL245:
+ 2161              	.LBB137:
+ 2162              	.LBB138:
+ 2163              		.loc 3 833 0
+ 2164              		.syntax unified
+ 2165              	@ 833 "../CMSIS/cmsis_gcc.h" 1
+ 2166 000e BFF34F8F 		dsb 0xF
+ 2167              	@ 0 "" 2
+ 2168              		.thumb
+ 2169              		.syntax unified
+ 2170              	.LBE138:
+ 2171              	.LBE137:
 2873:../drivers/fsl_enet.c ****     /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F Store immediate overlapping
 2874:../drivers/fsl_enet.c ****       exception return operation might vector to incorrect interrupt */
 2875:../drivers/fsl_enet.c **** #if defined __CORTEX_M && (__CORTEX_M == 4U)
 2876:../drivers/fsl_enet.c ****     __DSB();
 2877:../drivers/fsl_enet.c **** #endif
 2878:../drivers/fsl_enet.c **** }
+ 2172              		.loc 1 2878 0
+ 2173 0012 08BD     		pop	{r3, pc}
+ 2174              	.L238:
+ 2175              		.align	2
+ 2176              	.L237:
+ 2177 0014 00000000 		.word	.LANCHOR0
+ 2178 0018 00000000 		.word	.LANCHOR1
+ 2179 001c 00000C40 		.word	1074528256
+ 2180              		.cfi_endproc
+ 2181              	.LFE184:
+ 2183              		.section	.text.ENET_Receive_IRQHandler,"ax",%progbits
+ 2184              		.align	1
+ 2185              		.global	ENET_Receive_IRQHandler
+ 2186              		.syntax unified
+ 2187              		.thumb
+ 2188              		.thumb_func
+ 2189              		.fpu fpv4-sp-d16
+ 2191              	ENET_Receive_IRQHandler:
+ 2192              	.LFB185:
 2879:../drivers/fsl_enet.c **** 
 2880:../drivers/fsl_enet.c **** void ENET_Receive_IRQHandler(void)
 2881:../drivers/fsl_enet.c **** {
- 2215              		.loc 1 2881 0
- 2216              		.cfi_startproc
- 2217              		@ args = 0, pretend = 0, frame = 0
- 2218              		@ frame_needed = 0, uses_anonymous_args = 0
- 2219 0000 08B5     		push	{r3, lr}
- 2220              		.cfi_def_cfa_offset 8
- 2221              		.cfi_offset 3, -8
- 2222              		.cfi_offset 14, -4
+ 2193              		.loc 1 2881 0
+ 2194              		.cfi_startproc
+ 2195              		@ args = 0, pretend = 0, frame = 0
+ 2196              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2197 0000 08B5     		push	{r3, lr}
+ 2198              		.cfi_def_cfa_offset 8
+ 2199              		.cfi_offset 3, -8
+ 2200              		.cfi_offset 14, -4
 2882:../drivers/fsl_enet.c ****     s_enetRxIsr(ENET, s_ENETHandle[0]);
- 2223              		.loc 1 2882 0
- 2224 0002 044A     		ldr	r2, .L244
- 2225 0004 044B     		ldr	r3, .L244+4
- 2226 0006 1168     		ldr	r1, [r2]
- 2227 0008 1B68     		ldr	r3, [r3]
- 2228 000a 0448     		ldr	r0, .L244+8
- 2229 000c 9847     		blx	r3
- 2230              	.LVL252:
- 2231              	.LBB141:
- 2232              	.LBB142:
- 2233              		.loc 3 833 0
- 2234              		.syntax unified
- 2235              	@ 833 "../CMSIS/cmsis_gcc.h" 1
- 2236 000e BFF34F8F 		dsb 0xF
- 2237              	@ 0 "" 2
- 2238              		.thumb
- 2239              		.syntax unified
- 2240 0012 08BD     		pop	{r3, pc}
- 2241              	.L245:
- 2242              		.align	2
- 2243              	.L244:
- 2244 0014 00000000 		.word	.LANCHOR0
- 2245 0018 00000000 		.word	.LANCHOR2
- 2246 001c 00000C40 		.word	1074528256
- 2247              	.LBE142:
- 2248              	.LBE141:
- 2249              		.cfi_endproc
- 2250              	.LFE185:
- 2252              		.section	.text.ENET_Error_IRQHandler,"ax",%progbits
- 2253              		.align	1
- 2254              		.global	ENET_Error_IRQHandler
- 2255              		.syntax unified
- 2256              		.thumb
- 2257              		.thumb_func
- 2258              		.fpu fpv4-sp-d16
- 2260              	ENET_Error_IRQHandler:
- 2261              	.LFB186:
+ 2201              		.loc 1 2882 0
+ 2202 0002 044A     		ldr	r2, .L240
+ 2203 0004 044B     		ldr	r3, .L240+4
+ 2204 0006 1168     		ldr	r1, [r2]
+ 2205 0008 1B68     		ldr	r3, [r3]
+ 2206 000a 0448     		ldr	r0, .L240+8
+ 2207 000c 9847     		blx	r3
+ 2208              	.LVL246:
+ 2209              	.LBB139:
+ 2210              	.LBB140:
+ 2211              		.loc 3 833 0
+ 2212              		.syntax unified
+ 2213              	@ 833 "../CMSIS/cmsis_gcc.h" 1
+ 2214 000e BFF34F8F 		dsb 0xF
+ 2215              	@ 0 "" 2
+ 2216              		.thumb
+ 2217              		.syntax unified
+ 2218              	.LBE140:
+ 2219              	.LBE139:
 2883:../drivers/fsl_enet.c ****     /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F Store immediate overlapping
 2884:../drivers/fsl_enet.c ****       exception return operation might vector to incorrect interrupt */
 2885:../drivers/fsl_enet.c **** #if defined __CORTEX_M && (__CORTEX_M == 4U)
 2886:../drivers/fsl_enet.c ****     __DSB();
 2887:../drivers/fsl_enet.c **** #endif
 2888:../drivers/fsl_enet.c **** }
+ 2220              		.loc 1 2888 0
+ 2221 0012 08BD     		pop	{r3, pc}
+ 2222              	.L241:
+ 2223              		.align	2
+ 2224              	.L240:
+ 2225 0014 00000000 		.word	.LANCHOR0
+ 2226 0018 00000000 		.word	.LANCHOR2
+ 2227 001c 00000C40 		.word	1074528256
+ 2228              		.cfi_endproc
+ 2229              	.LFE185:
+ 2231              		.section	.text.ENET_Error_IRQHandler,"ax",%progbits
+ 2232              		.align	1
+ 2233              		.global	ENET_Error_IRQHandler
+ 2234              		.syntax unified
+ 2235              		.thumb
+ 2236              		.thumb_func
+ 2237              		.fpu fpv4-sp-d16
+ 2239              	ENET_Error_IRQHandler:
+ 2240              	.LFB186:
 2889:../drivers/fsl_enet.c **** 
 2890:../drivers/fsl_enet.c **** void ENET_Error_IRQHandler(void)
 2891:../drivers/fsl_enet.c **** {
- 2262              		.loc 1 2891 0
- 2263              		.cfi_startproc
- 2264              		@ args = 0, pretend = 0, frame = 0
- 2265              		@ frame_needed = 0, uses_anonymous_args = 0
- 2266 0000 08B5     		push	{r3, lr}
- 2267              		.cfi_def_cfa_offset 8
- 2268              		.cfi_offset 3, -8
- 2269              		.cfi_offset 14, -4
+ 2241              		.loc 1 2891 0
+ 2242              		.cfi_startproc
+ 2243              		@ args = 0, pretend = 0, frame = 0
+ 2244              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2245 0000 08B5     		push	{r3, lr}
+ 2246              		.cfi_def_cfa_offset 8
+ 2247              		.cfi_offset 3, -8
+ 2248              		.cfi_offset 14, -4
 2892:../drivers/fsl_enet.c ****     s_enetErrIsr(ENET, s_ENETHandle[0]);
- 2270              		.loc 1 2892 0
- 2271 0002 044A     		ldr	r2, .L247
- 2272 0004 044B     		ldr	r3, .L247+4
- 2273 0006 1168     		ldr	r1, [r2]
- 2274 0008 1B68     		ldr	r3, [r3]
- 2275 000a 0448     		ldr	r0, .L247+8
- 2276 000c 9847     		blx	r3
- 2277              	.LVL253:
- 2278              	.LBB143:
- 2279              	.LBB144:
- 2280              		.loc 3 833 0
- 2281              		.syntax unified
- 2282              	@ 833 "../CMSIS/cmsis_gcc.h" 1
- 2283 000e BFF34F8F 		dsb 0xF
- 2284              	@ 0 "" 2
- 2285              		.thumb
- 2286              		.syntax unified
- 2287 0012 08BD     		pop	{r3, pc}
- 2288              	.L248:
- 2289              		.align	2
- 2290              	.L247:
- 2291 0014 00000000 		.word	.LANCHOR0
- 2292 0018 00000000 		.word	.LANCHOR3
- 2293 001c 00000C40 		.word	1074528256
- 2294              	.LBE144:
- 2295              	.LBE143:
- 2296              		.cfi_endproc
- 2297              	.LFE186:
- 2299              		.section	.text.ENET_1588_Timer_IRQHandler,"ax",%progbits
- 2300              		.align	1
- 2301              		.global	ENET_1588_Timer_IRQHandler
- 2302              		.syntax unified
- 2303              		.thumb
- 2304              		.thumb_func
- 2305              		.fpu fpv4-sp-d16
- 2307              	ENET_1588_Timer_IRQHandler:
- 2308              	.LFB187:
+ 2249              		.loc 1 2892 0
+ 2250 0002 044A     		ldr	r2, .L243
+ 2251 0004 044B     		ldr	r3, .L243+4
+ 2252 0006 1168     		ldr	r1, [r2]
+ 2253 0008 1B68     		ldr	r3, [r3]
+ 2254 000a 0448     		ldr	r0, .L243+8
+ 2255 000c 9847     		blx	r3
+ 2256              	.LVL247:
+ 2257              	.LBB141:
+ 2258              	.LBB142:
+ 2259              		.loc 3 833 0
+ 2260              		.syntax unified
+ 2261              	@ 833 "../CMSIS/cmsis_gcc.h" 1
+ 2262 000e BFF34F8F 		dsb 0xF
+ 2263              	@ 0 "" 2
+ 2264              		.thumb
+ 2265              		.syntax unified
+ 2266              	.LBE142:
+ 2267              	.LBE141:
 2893:../drivers/fsl_enet.c ****     /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F Store immediate overlapping
 2894:../drivers/fsl_enet.c ****       exception return operation might vector to incorrect interrupt */
 2895:../drivers/fsl_enet.c **** #if defined __CORTEX_M && (__CORTEX_M == 4U)
 2896:../drivers/fsl_enet.c ****     __DSB();
 2897:../drivers/fsl_enet.c **** #endif
 2898:../drivers/fsl_enet.c **** }
+ 2268              		.loc 1 2898 0
+ 2269 0012 08BD     		pop	{r3, pc}
+ 2270              	.L244:
+ 2271              		.align	2
+ 2272              	.L243:
+ 2273 0014 00000000 		.word	.LANCHOR0
+ 2274 0018 00000000 		.word	.LANCHOR3
+ 2275 001c 00000C40 		.word	1074528256
+ 2276              		.cfi_endproc
+ 2277              	.LFE186:
+ 2279              		.section	.text.ENET_1588_Timer_IRQHandler,"ax",%progbits
+ 2280              		.align	1
+ 2281              		.global	ENET_1588_Timer_IRQHandler
+ 2282              		.syntax unified
+ 2283              		.thumb
+ 2284              		.thumb_func
+ 2285              		.fpu fpv4-sp-d16
+ 2287              	ENET_1588_Timer_IRQHandler:
+ 2288              	.LFB187:
 2899:../drivers/fsl_enet.c **** 
 2900:../drivers/fsl_enet.c **** void ENET_1588_Timer_IRQHandler(void)
 2901:../drivers/fsl_enet.c **** {
- 2309              		.loc 1 2901 0
- 2310              		.cfi_startproc
- 2311              		@ args = 0, pretend = 0, frame = 0
- 2312              		@ frame_needed = 0, uses_anonymous_args = 0
- 2313 0000 08B5     		push	{r3, lr}
- 2314              		.cfi_def_cfa_offset 8
- 2315              		.cfi_offset 3, -8
- 2316              		.cfi_offset 14, -4
+ 2289              		.loc 1 2901 0
+ 2290              		.cfi_startproc
+ 2291              		@ args = 0, pretend = 0, frame = 0
+ 2292              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2293 0000 08B5     		push	{r3, lr}
+ 2294              		.cfi_def_cfa_offset 8
+ 2295              		.cfi_offset 3, -8
+ 2296              		.cfi_offset 14, -4
 2902:../drivers/fsl_enet.c ****     s_enetTsIsr(ENET, s_ENETHandle[0]);
- 2317              		.loc 1 2902 0
- 2318 0002 044B     		ldr	r3, .L250
- 2319 0004 0448     		ldr	r0, .L250+4
- 2320 0006 1968     		ldr	r1, [r3]
- 2321 0008 0023     		movs	r3, #0
- 2322 000a 9847     		blx	r3
- 2323              	.LVL254:
- 2324              	.LBB145:
- 2325              	.LBB146:
- 2326              		.loc 3 833 0
- 2327              		.syntax unified
- 2328              	@ 833 "../CMSIS/cmsis_gcc.h" 1
- 2329 000c BFF34F8F 		dsb 0xF
- 2330              	@ 0 "" 2
- 2331              		.thumb
- 2332              		.syntax unified
- 2333 0010 08BD     		pop	{r3, pc}
- 2334              	.L251:
- 2335 0012 00BF     		.align	2
- 2336              	.L250:
- 2337 0014 00000000 		.word	.LANCHOR0
- 2338 0018 00000C40 		.word	1074528256
- 2339              	.LBE146:
- 2340              	.LBE145:
- 2341              		.cfi_endproc
- 2342              	.LFE187:
- 2344              		.section	.text.ENET_DriverIRQHandler,"ax",%progbits
- 2345              		.align	1
- 2346              		.global	ENET_DriverIRQHandler
- 2347              		.syntax unified
- 2348              		.thumb
- 2349              		.thumb_func
- 2350              		.fpu fpv4-sp-d16
- 2352              	ENET_DriverIRQHandler:
- 2353              	.LFB188:
+ 2297              		.loc 1 2902 0
+ 2298 0002 044B     		ldr	r3, .L246
+ 2299 0004 0448     		ldr	r0, .L246+4
+ 2300 0006 1968     		ldr	r1, [r3]
+ 2301 0008 0023     		movs	r3, #0
+ 2302 000a 9847     		blx	r3
+ 2303              	.LVL248:
+ 2304              	.LBB143:
+ 2305              	.LBB144:
+ 2306              		.loc 3 833 0
+ 2307              		.syntax unified
+ 2308              	@ 833 "../CMSIS/cmsis_gcc.h" 1
+ 2309 000c BFF34F8F 		dsb 0xF
+ 2310              	@ 0 "" 2
+ 2311              		.thumb
+ 2312              		.syntax unified
+ 2313              	.LBE144:
+ 2314              	.LBE143:
 2903:../drivers/fsl_enet.c ****     /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F Store immediate overlapping
 2904:../drivers/fsl_enet.c ****       exception return operation might vector to incorrect interrupt */
 2905:../drivers/fsl_enet.c **** #if defined __CORTEX_M && (__CORTEX_M == 4U)
 2906:../drivers/fsl_enet.c ****     __DSB();
 2907:../drivers/fsl_enet.c **** #endif
 2908:../drivers/fsl_enet.c **** }
+ 2315              		.loc 1 2908 0
+ 2316 0010 08BD     		pop	{r3, pc}
+ 2317              	.L247:
+ 2318 0012 00BF     		.align	2
+ 2319              	.L246:
+ 2320 0014 00000000 		.word	.LANCHOR0
+ 2321 0018 00000C40 		.word	1074528256
+ 2322              		.cfi_endproc
+ 2323              	.LFE187:
+ 2325              		.section	.text.ENET_DriverIRQHandler,"ax",%progbits
+ 2326              		.align	1
+ 2327              		.global	ENET_DriverIRQHandler
+ 2328              		.syntax unified
+ 2329              		.thumb
+ 2330              		.thumb_func
+ 2331              		.fpu fpv4-sp-d16
+ 2333              	ENET_DriverIRQHandler:
+ 2334              	.LFB188:
 2909:../drivers/fsl_enet.c **** 
 2910:../drivers/fsl_enet.c **** void ENET_DriverIRQHandler(void)
 2911:../drivers/fsl_enet.c **** {
- 2354              		.loc 1 2911 0
- 2355              		.cfi_startproc
- 2356              		@ args = 0, pretend = 0, frame = 0
- 2357              		@ frame_needed = 0, uses_anonymous_args = 0
- 2358 0000 08B5     		push	{r3, lr}
- 2359              		.cfi_def_cfa_offset 8
- 2360              		.cfi_offset 3, -8
- 2361              		.cfi_offset 14, -4
+ 2335              		.loc 1 2911 0
+ 2336              		.cfi_startproc
+ 2337              		@ args = 0, pretend = 0, frame = 0
+ 2338              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2339 0000 08B5     		push	{r3, lr}
+ 2340              		.cfi_def_cfa_offset 8
+ 2341              		.cfi_offset 3, -8
+ 2342              		.cfi_offset 14, -4
 2912:../drivers/fsl_enet.c ****     ENET_CommonFrame0IRQHandler(ENET);
- 2362              		.loc 1 2912 0
- 2363 0002 0448     		ldr	r0, .L253
- 2364 0004 FFF7FEFF 		bl	ENET_CommonFrame0IRQHandler
- 2365              	.LVL255:
- 2366              	.LBB147:
- 2367              	.LBB148:
- 2368              		.loc 3 833 0
- 2369              		.syntax unified
- 2370              	@ 833 "../CMSIS/cmsis_gcc.h" 1
- 2371 0008 BFF34F8F 		dsb 0xF
- 2372              	@ 0 "" 2
- 2373              		.thumb
- 2374              		.syntax unified
- 2375              	.LBE148:
- 2376              	.LBE147:
- 2377              	.LBB149:
- 2378              	.LBB150:
- 2379              		.syntax unified
- 2380              	@ 833 "../CMSIS/cmsis_gcc.h" 1
- 2381 000c BFF34F8F 		dsb 0xF
- 2382              	@ 0 "" 2
- 2383              		.thumb
- 2384              		.syntax unified
- 2385 0010 08BD     		pop	{r3, pc}
- 2386              	.L254:
- 2387 0012 00BF     		.align	2
- 2388              	.L253:
- 2389 0014 00000C40 		.word	1074528256
- 2390              	.LBE150:
- 2391              	.LBE149:
- 2392              		.cfi_endproc
- 2393              	.LFE188:
- 2395              		.global	s_enetClock
- 2396              		.section	.bss.s_ENETHandle,"aw",%nobits
- 2397              		.align	2
- 2398              		.set	.LANCHOR0,. + 0
- 2401              	s_ENETHandle:
- 2402 0000 00000000 		.space	4
- 2403              		.section	.bss.s_enetErrIsr,"aw",%nobits
- 2404              		.align	2
- 2405              		.set	.LANCHOR3,. + 0
- 2408              	s_enetErrIsr:
- 2409 0000 00000000 		.space	4
- 2410              		.section	.bss.s_enetRxIsr,"aw",%nobits
- 2411              		.align	2
- 2412              		.set	.LANCHOR2,. + 0
- 2415              	s_enetRxIsr:
- 2416 0000 00000000 		.space	4
- 2417              		.section	.bss.s_enetTxIsr,"aw",%nobits
- 2418              		.align	2
- 2419              		.set	.LANCHOR1,. + 0
- 2422              	s_enetTxIsr:
- 2423 0000 00000000 		.space	4
- 2424              		.section	.rodata.s_enetClock,"a",%progbits
- 2425              		.align	2
- 2428              	s_enetClock:
- 2429 0000 00002C10 		.word	271319040
- 2430              		.text
- 2431              	.Letext0:
- 2432              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 2433              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 2434              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 2435              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 2436              		.file 10 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef
- 2437              		.file 11 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 2438              		.file 12 "../CMSIS/MK64F12.h"
- 2439              		.file 13 "../CMSIS/system_MK64F12.h"
- 2440              		.file 14 "../drivers/fsl_common.h"
+ 2343              		.loc 1 2912 0
+ 2344 0002 0448     		ldr	r0, .L249
+ 2345 0004 FFF7FEFF 		bl	ENET_CommonFrame0IRQHandler
+ 2346              	.LVL249:
+ 2347              	.LBB145:
+ 2348              	.LBB146:
+ 2349              		.loc 3 833 0
+ 2350              		.syntax unified
+ 2351              	@ 833 "../CMSIS/cmsis_gcc.h" 1
+ 2352 0008 BFF34F8F 		dsb 0xF
+ 2353              	@ 0 "" 2
+ 2354              		.thumb
+ 2355              		.syntax unified
+ 2356              	.LBE146:
+ 2357              	.LBE145:
+ 2358              	.LBB147:
+ 2359              	.LBB148:
+ 2360              		.syntax unified
+ 2361              	@ 833 "../CMSIS/cmsis_gcc.h" 1
+ 2362 000c BFF34F8F 		dsb 0xF
+ 2363              	@ 0 "" 2
+ 2364              		.thumb
+ 2365              		.syntax unified
+ 2366              	.LBE148:
+ 2367              	.LBE147:
+2913:../drivers/fsl_enet.c **** /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F Store immediate overlapping
+2914:../drivers/fsl_enet.c ****   exception return operation might vector to incorrect interrupt */
+2915:../drivers/fsl_enet.c **** #if defined __CORTEX_M && (__CORTEX_M == 4U)
+2916:../drivers/fsl_enet.c ****     __DSB();
+2917:../drivers/fsl_enet.c **** #endif    
+2918:../drivers/fsl_enet.c ****     /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F Store immediate overlapping
+2919:../drivers/fsl_enet.c ****       exception return operation might vector to incorrect interrupt */
+2920:../drivers/fsl_enet.c **** #if defined __CORTEX_M && (__CORTEX_M == 4U)
+2921:../drivers/fsl_enet.c ****     __DSB();
+2922:../drivers/fsl_enet.c **** #endif
+2923:../drivers/fsl_enet.c **** }
+ 2368              		.loc 1 2923 0
+ 2369 0010 08BD     		pop	{r3, pc}
+ 2370              	.L250:
+ 2371 0012 00BF     		.align	2
+ 2372              	.L249:
+ 2373 0014 00000C40 		.word	1074528256
+ 2374              		.cfi_endproc
+ 2375              	.LFE188:
+ 2377              		.global	s_enetClock
+ 2378              		.section	.bss.s_ENETHandle,"aw",%nobits
+ 2379              		.align	2
+ 2380              		.set	.LANCHOR0,. + 0
+ 2383              	s_ENETHandle:
+ 2384 0000 00000000 		.space	4
+ 2385              		.section	.bss.s_enetErrIsr,"aw",%nobits
+ 2386              		.align	2
+ 2387              		.set	.LANCHOR3,. + 0
+ 2390              	s_enetErrIsr:
+ 2391 0000 00000000 		.space	4
+ 2392              		.section	.bss.s_enetRxIsr,"aw",%nobits
+ 2393              		.align	2
+ 2394              		.set	.LANCHOR2,. + 0
+ 2397              	s_enetRxIsr:
+ 2398 0000 00000000 		.space	4
+ 2399              		.section	.bss.s_enetTxIsr,"aw",%nobits
+ 2400              		.align	2
+ 2401              		.set	.LANCHOR1,. + 0
+ 2404              	s_enetTxIsr:
+ 2405 0000 00000000 		.space	4
+ 2406              		.section	.rodata.s_enetClock,"a",%progbits
+ 2407              		.align	2
+ 2410              	s_enetClock:
+ 2411 0000 00002C10 		.word	271319040
+ 2412              		.text
+ 2413              	.Letext0:
+ 2414              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 2415              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 2416              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 2417              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 2418              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 2419              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 2420              		.file 12 "../CMSIS/MK64F12.h"
+ 2421              		.file 13 "../CMSIS/system_MK64F12.h"
+ 2422              		.file 14 "../drivers/fsl_common.h"
+ 2423              		.file 15 "<built-in>"

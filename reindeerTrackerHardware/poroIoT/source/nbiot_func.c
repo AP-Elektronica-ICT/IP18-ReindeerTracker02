@@ -221,7 +221,8 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 
 	//NB_reboot();
 
-	AT_send("CFUN=1","","OK");
+	//AT_send("CFUN=1","","OK");
+
 	NB_setPin();
 
 	delay_ms(200);  //viivettä pitää olla
@@ -350,7 +351,7 @@ void NB_network_status()
 void NB_define_pdp()
 {
 	res = AT_send(AT_CGDCONT, "", "OK");
-	delay_ms(1000);
+	delay_ms(500);
 	if (res == 0)
 	{
 		PCprint("PDP context 1 defined\r\n");

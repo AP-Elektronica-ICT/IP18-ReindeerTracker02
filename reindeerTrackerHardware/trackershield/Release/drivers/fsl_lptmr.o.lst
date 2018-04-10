@@ -823,7 +823,7 @@
  694:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
  695:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
   37              		.loc 2 695 0
-  38 0000 134A     		ldr	r2, .L2
+  38 0000 114A     		ldr	r2, .L2
   39 0002 1368     		ldr	r3, [r2]
   40 0004 43F00103 		orr	r3, r3, #1
   41 0008 1360     		str	r3, [r2]
@@ -850,52 +850,55 @@
  112:../drivers/fsl_lptmr.c ****     base->CSR = (LPTMR_CSR_TMS(config->timerMode) | LPTMR_CSR_TFC(config->enableFreeRunning) |
   45              		.loc 1 112 0
   46 000a 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
-  47 000c CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
-  48 000e 5B00     		lsls	r3, r3, #1
-  49 0010 9200     		lsls	r2, r2, #2
-  50 0012 02F00402 		and	r2, r2, #4
-  51 0016 03F00203 		and	r3, r3, #2
-  52 001a 1343     		orrs	r3, r3, r2
  113:../drivers/fsl_lptmr.c ****                  LPTMR_CSR_TPP(config->pinPolarity) | LPTMR_CSR_TPS(config->pinSelect));
-  53              		.loc 1 113 0
-  54 001c 8A78     		ldrb	r2, [r1, #2]	@ zero_extendqisi2
-  55 001e D200     		lsls	r2, r2, #3
-  56 0020 02F00802 		and	r2, r2, #8
+  47              		.loc 1 113 0
+  48 000c 8A78     		ldrb	r2, [r1, #2]	@ zero_extendqisi2
  112:../drivers/fsl_lptmr.c ****                  LPTMR_CSR_TPP(config->pinPolarity) | LPTMR_CSR_TPS(config->pinSelect));
-  57              		.loc 1 112 0
-  58 0024 1343     		orrs	r3, r3, r2
+  49              		.loc 1 112 0
+  50 000e 5B00     		lsls	r3, r3, #1
+  51              		.loc 1 113 0
+  52 0010 D200     		lsls	r2, r2, #3
+  53 0012 02F00802 		and	r2, r2, #8
+ 112:../drivers/fsl_lptmr.c ****                  LPTMR_CSR_TPP(config->pinPolarity) | LPTMR_CSR_TPS(config->pinSelect));
+  54              		.loc 1 112 0
+  55 0016 03F00203 		and	r3, r3, #2
+  56 001a 1343     		orrs	r3, r3, r2
+  57 001c CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
+  58 001e 43EA8203 		orr	r3, r3, r2, lsl #2
   59              		.loc 1 113 0
-  60 0026 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
-  61 0028 1201     		lsls	r2, r2, #4
-  62 002a 02F03002 		and	r2, r2, #48
-  63 002e 1343     		orrs	r3, r3, r2
+  60 0022 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+  61 0024 1201     		lsls	r2, r2, #4
+  62 0026 02F03002 		and	r2, r2, #48
+  63 002a 1343     		orrs	r3, r3, r2
  112:../drivers/fsl_lptmr.c ****                  LPTMR_CSR_TPP(config->pinPolarity) | LPTMR_CSR_TPS(config->pinSelect));
   64              		.loc 1 112 0
-  65 0030 0360     		str	r3, [r0]
+  65 002c 0360     		str	r3, [r0]
  114:../drivers/fsl_lptmr.c **** 
  115:../drivers/fsl_lptmr.c ****     /* Configure the prescale value and clock source */
  116:../drivers/fsl_lptmr.c ****     base->PSR = (LPTMR_PSR_PRESCALE(config->value) | LPTMR_PSR_PBYP(config->bypassPrescaler) |
-  66              		.loc 1 116 0
-  67 0032 0A79     		ldrb	r2, [r1, #4]	@ zero_extendqisi2
-  68 0034 8B79     		ldrb	r3, [r1, #6]	@ zero_extendqisi2
-  69 0036 9200     		lsls	r2, r2, #2
-  70 0038 DB00     		lsls	r3, r3, #3
-  71 003a 02F00402 		and	r2, r2, #4
-  72 003e 03F07803 		and	r3, r3, #120
-  73 0042 1343     		orrs	r3, r3, r2
  117:../drivers/fsl_lptmr.c ****                  LPTMR_PSR_PCS(config->prescalerClockSource));
-  74              		.loc 1 117 0
-  75 0044 4A79     		ldrb	r2, [r1, #5]	@ zero_extendqisi2
-  76 0046 02F00302 		and	r2, r2, #3
+  66              		.loc 1 117 0
+  67 002e 4B79     		ldrb	r3, [r1, #5]	@ zero_extendqisi2
  116:../drivers/fsl_lptmr.c ****                  LPTMR_PSR_PCS(config->prescalerClockSource));
-  77              		.loc 1 116 0
-  78 004a 1343     		orrs	r3, r3, r2
-  79 004c 4360     		str	r3, [r0, #4]
-  80 004e 7047     		bx	lr
+  68              		.loc 1 116 0
+  69 0030 0A79     		ldrb	r2, [r1, #4]	@ zero_extendqisi2
+  70              		.loc 1 117 0
+  71 0032 03F00303 		and	r3, r3, #3
+ 116:../drivers/fsl_lptmr.c ****                  LPTMR_PSR_PCS(config->prescalerClockSource));
+  72              		.loc 1 116 0
+  73 0036 43EA8203 		orr	r3, r3, r2, lsl #2
+  74 003a 8A79     		ldrb	r2, [r1, #6]	@ zero_extendqisi2
+  75 003c D200     		lsls	r2, r2, #3
+  76 003e 02F07802 		and	r2, r2, #120
+  77 0042 1343     		orrs	r3, r3, r2
+  78 0044 4360     		str	r3, [r0, #4]
+ 118:../drivers/fsl_lptmr.c **** }
+  79              		.loc 1 118 0
+  80 0046 7047     		bx	lr
   81              	.L3:
   82              		.align	2
   83              	.L2:
-  84 0050 38800440 		.word	1074036792
+  84 0048 38800440 		.word	1074036792
   85              		.cfi_endproc
   86              	.LFE157:
   88              		.section	.text.LPTMR_Deinit,"ax",%progbits
@@ -907,7 +910,6 @@
   94              		.fpu fpv4-sp-d16
   96              	LPTMR_Deinit:
   97              	.LFB158:
- 118:../drivers/fsl_lptmr.c **** }
  119:../drivers/fsl_lptmr.c **** 
  120:../drivers/fsl_lptmr.c **** void LPTMR_Deinit(LPTMR_Type *base)
  121:../drivers/fsl_lptmr.c **** {
@@ -949,24 +951,8 @@
  120 000c 23F00103 		bic	r3, r3, #1
  121 0010 1360     		str	r3, [r2]
  122              	.LVL4:
- 123 0012 7047     		bx	lr
- 124              	.L6:
- 125              		.align	2
- 126              	.L5:
- 127 0014 38800440 		.word	1074036792
- 128              	.LBE14:
- 129              	.LBE15:
- 130              		.cfi_endproc
- 131              	.LFE158:
- 133              		.section	.text.LPTMR_GetDefaultConfig,"ax",%progbits
- 134              		.align	1
- 135              		.global	LPTMR_GetDefaultConfig
- 136              		.syntax unified
- 137              		.thumb
- 138              		.thumb_func
- 139              		.fpu fpv4-sp-d16
- 141              	LPTMR_GetDefaultConfig:
- 142              	.LFB159:
+ 123              	.LBE14:
+ 124              	.LBE15:
  124:../drivers/fsl_lptmr.c **** 
  125:../drivers/fsl_lptmr.c **** #if defined(LPTMR_CLOCKS)
  126:../drivers/fsl_lptmr.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
@@ -982,21 +968,38 @@
  136:../drivers/fsl_lptmr.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
  137:../drivers/fsl_lptmr.c **** #endif /* LPTMR_CLOCKS */
  138:../drivers/fsl_lptmr.c **** }
+ 125              		.loc 1 138 0
+ 126 0012 7047     		bx	lr
+ 127              	.L6:
+ 128              		.align	2
+ 129              	.L5:
+ 130 0014 38800440 		.word	1074036792
+ 131              		.cfi_endproc
+ 132              	.LFE158:
+ 134              		.section	.text.LPTMR_GetDefaultConfig,"ax",%progbits
+ 135              		.align	1
+ 136              		.global	LPTMR_GetDefaultConfig
+ 137              		.syntax unified
+ 138              		.thumb
+ 139              		.thumb_func
+ 140              		.fpu fpv4-sp-d16
+ 142              	LPTMR_GetDefaultConfig:
+ 143              	.LFB159:
  139:../drivers/fsl_lptmr.c **** 
  140:../drivers/fsl_lptmr.c **** void LPTMR_GetDefaultConfig(lptmr_config_t *config)
  141:../drivers/fsl_lptmr.c **** {
- 143              		.loc 1 141 0
- 144              		.cfi_startproc
- 145              		@ args = 0, pretend = 0, frame = 0
- 146              		@ frame_needed = 0, uses_anonymous_args = 0
- 147              		@ link register save eliminated.
- 148              	.LVL5:
+ 144              		.loc 1 141 0
+ 145              		.cfi_startproc
+ 146              		@ args = 0, pretend = 0, frame = 0
+ 147              		@ frame_needed = 0, uses_anonymous_args = 0
+ 148              		@ link register save eliminated.
+ 149              	.LVL5:
  142:../drivers/fsl_lptmr.c ****     assert(config);
  143:../drivers/fsl_lptmr.c **** 
  144:../drivers/fsl_lptmr.c ****     /* Use time counter mode */
  145:../drivers/fsl_lptmr.c ****     config->timerMode = kLPTMR_TimerModeTimeCounter;
- 149              		.loc 1 145 0
- 150 0000 0023     		movs	r3, #0
+ 150              		.loc 1 145 0
+ 151 0000 0023     		movs	r3, #0
  146:../drivers/fsl_lptmr.c ****     /* Use input 0 as source in pulse counter mode */
  147:../drivers/fsl_lptmr.c ****     config->pinSelect = kLPTMR_PinSelectInput_0;
  148:../drivers/fsl_lptmr.c ****     /* Pulse input pin polarity is active-high */
@@ -1005,42 +1008,44 @@
  151:../drivers/fsl_lptmr.c ****     config->enableFreeRunning = false;
  152:../drivers/fsl_lptmr.c ****     /* Bypass the prescaler */
  153:../drivers/fsl_lptmr.c ****     config->bypassPrescaler = true;
- 151              		.loc 1 153 0
- 152 0002 0122     		movs	r2, #1
+ 152              		.loc 1 153 0
+ 153 0002 0122     		movs	r2, #1
  145:../drivers/fsl_lptmr.c ****     /* Use input 0 as source in pulse counter mode */
- 153              		.loc 1 145 0
- 154 0004 0370     		strb	r3, [r0]
+ 154              		.loc 1 145 0
+ 155 0004 0370     		strb	r3, [r0]
  147:../drivers/fsl_lptmr.c ****     /* Pulse input pin polarity is active-high */
- 155              		.loc 1 147 0
- 156 0006 4370     		strb	r3, [r0, #1]
+ 156              		.loc 1 147 0
+ 157 0006 4370     		strb	r3, [r0, #1]
  149:../drivers/fsl_lptmr.c ****     /* Counter resets whenever TCF flag is set */
- 157              		.loc 1 149 0
- 158 0008 8370     		strb	r3, [r0, #2]
+ 158              		.loc 1 149 0
+ 159 0008 8370     		strb	r3, [r0, #2]
  151:../drivers/fsl_lptmr.c ****     /* Bypass the prescaler */
- 159              		.loc 1 151 0
- 160 000a C370     		strb	r3, [r0, #3]
- 161              		.loc 1 153 0
- 162 000c 0271     		strb	r2, [r0, #4]
+ 160              		.loc 1 151 0
+ 161 000a C370     		strb	r3, [r0, #3]
+ 162              		.loc 1 153 0
+ 163 000c 0271     		strb	r2, [r0, #4]
  154:../drivers/fsl_lptmr.c ****     /* LPTMR clock source */
  155:../drivers/fsl_lptmr.c ****     config->prescalerClockSource = kLPTMR_PrescalerClock_1;
- 163              		.loc 1 155 0
- 164 000e 4271     		strb	r2, [r0, #5]
+ 164              		.loc 1 155 0
+ 165 000e 4271     		strb	r2, [r0, #5]
  156:../drivers/fsl_lptmr.c ****     /* Divide the prescaler clock by 2 */
  157:../drivers/fsl_lptmr.c ****     config->value = kLPTMR_Prescale_Glitch_0;
- 165              		.loc 1 157 0
- 166 0010 8371     		strb	r3, [r0, #6]
- 167 0012 7047     		bx	lr
- 168              		.cfi_endproc
- 169              	.LFE159:
- 171              		.text
- 172              	.Letext0:
- 173              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 174              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 175              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 176              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 177              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 178              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 179              		.file 9 "../CMSIS/core_cm4.h"
- 180              		.file 10 "../CMSIS/system_MK64F12.h"
- 181              		.file 11 "../CMSIS/MK64F12.h"
- 182              		.file 12 "../drivers/fsl_lptmr.h"
+ 166              		.loc 1 157 0
+ 167 0010 8371     		strb	r3, [r0, #6]
+ 158:../drivers/fsl_lptmr.c **** }
+ 168              		.loc 1 158 0
+ 169 0012 7047     		bx	lr
+ 170              		.cfi_endproc
+ 171              	.LFE159:
+ 173              		.text
+ 174              	.Letext0:
+ 175              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 176              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 177              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 178              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 179              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 180              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 181              		.file 9 "../CMSIS/core_cm4.h"
+ 182              		.file 10 "../CMSIS/system_MK64F12.h"
+ 183              		.file 11 "../CMSIS/MK64F12.h"
+ 184              		.file 12 "../drivers/fsl_lptmr.h"

@@ -928,153 +928,125 @@
  694:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
  695:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
   36              		.loc 2 695 0
-  37 0000 184A     		ldr	r2, .L11
+  37 0000 164A     		ldr	r2, .L11
   38 0002 1368     		ldr	r3, [r2]
-  39              	.LBE25:
-  40              	.LBE24:
-  41              		.loc 1 200 0
-  42 0004 70B5     		push	{r4, r5, r6, lr}
-  43              		.cfi_def_cfa_offset 16
-  44              		.cfi_offset 4, -16
-  45              		.cfi_offset 5, -12
-  46              		.cfi_offset 6, -8
-  47              		.cfi_offset 14, -4
-  48              	.LBB28:
-  49              	.LBB26:
-  50              		.loc 2 695 0
-  51 0006 43F48023 		orr	r3, r3, #262144
-  52              	.LBE26:
-  53              	.LBE28:
+  39 0004 43F48023 		orr	r3, r3, #262144
+  40              	.LBE25:
+  41              	.LBE24:
+  42              		.loc 1 200 0
+  43 0008 F0B5     		push	{r4, r5, r6, r7, lr}
+  44              		.cfi_def_cfa_offset 20
+  45              		.cfi_offset 4, -20
+  46              		.cfi_offset 5, -16
+  47              		.cfi_offset 6, -12
+  48              		.cfi_offset 7, -8
+  49              		.cfi_offset 14, -4
+  50              	.LBB27:
+  51              	.LBB26:
+  52              		.loc 2 695 0
+  53 000a 1360     		str	r3, [r2]
+  54              	.LVL1:
+  55              	.LBE26:
+  56              	.LBE27:
  201:../drivers/fsl_crc.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
  202:../drivers/fsl_crc.c ****     /* ungate clock */
  203:../drivers/fsl_crc.c ****     CLOCK_EnableClock(kCLOCK_Crc0);
  204:../drivers/fsl_crc.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
  205:../drivers/fsl_crc.c ****     /* configure CRC module and write the seed */
  206:../drivers/fsl_crc.c ****     if (config->crcResult == kCrcFinalChecksum)
-  54              		.loc 1 206 0
-  55 000a 0E7B     		ldrb	r6, [r1, #12]	@ zero_extendqisi2
-  56              	.LBB29:
-  57              	.LBB27:
-  58              		.loc 2 695 0
-  59 000c 1360     		str	r3, [r2]
-  60              	.LVL1:
-  61 000e 0D68     		ldr	r5, [r1]
-  62 0010 4C68     		ldr	r4, [r1, #4]
-  63 0012 0A7A     		ldrb	r2, [r1, #8]	@ zero_extendqisi2
-  64 0014 CB7A     		ldrb	r3, [r1, #11]	@ zero_extendqisi2
-  65              	.LBE27:
-  66              	.LBE29:
-  67              		.loc 1 206 0
-  68 0016 06BB     		cbnz	r6, .L2
-  69              	.LVL2:
-  70              	.LBB30:
-  71              	.LBB31:
-  72              	.LBB32:
-  73              	.LBB33:
+  57              		.loc 1 206 0
+  58 000c 0B7B     		ldrb	r3, [r1, #12]	@ zero_extendqisi2
+  59 000e 0E7A     		ldrb	r6, [r1, #8]	@ zero_extendqisi2
+  60 0010 CA7A     		ldrb	r2, [r1, #11]	@ zero_extendqisi2
+  61 0012 D1E90054 		ldrd	r5, r4, [r1]
+  62 0016 E3B9     		cbnz	r3, .L2
+  63              	.LVL2:
+  64              	.LBB28:
+  65              	.LBB29:
+  66              	.LBB30:
+  67              	.LBB31:
  113:../drivers/fsl_crc.c **** }
-  74              		.loc 1 113 0
-  75 0018 4E7A     		ldrb	r6, [r1, #9]	@ zero_extendqisi2
-  76 001a 002E     		cmp	r6, #0
-  77 001c 14BF     		ite	ne
-  78 001e 0226     		movne	r6, #2
-  79 0020 0026     		moveq	r6, #0
-  80              	.LVL3:
-  81              	.LBE33:
-  82              	.LBE32:
-  83              	.LBB34:
-  84              	.LBB35:
- 101:../drivers/fsl_crc.c **** }
-  85              		.loc 1 101 0
-  86 0022 002A     		cmp	r2, #0
-  87              	.LBE35:
-  88              	.LBE34:
-  89              	.LBB36:
-  90              	.LBB37:
+  68              		.loc 1 113 0
+  69 0018 4B7A     		ldrb	r3, [r1, #9]	@ zero_extendqisi2
+  70 001a 002B     		cmp	r3, #0
+  71              	.LBE31:
+  72              	.LBE30:
+  73              	.LBB33:
+  74              	.LBB34:
  131:../drivers/fsl_crc.c **** 
-  91              		.loc 1 131 0
-  92 0024 8A7A     		ldrb	r2, [r1, #10]	@ zero_extendqisi2
-  93 0026 4FEA0363 		lsl	r3, r3, #24
-  94 002a 4FEA8262 		lsl	r2, r2, #26
-  95 002e 02F08062 		and	r2, r2, #67108864
-  96 0032 03F08073 		and	r3, r3, #16777216
+  75              		.loc 1 131 0
+  76 001c 4FEA0263 		lsl	r3, r2, #24
+  77 0020 8A7A     		ldrb	r2, [r1, #10]	@ zero_extendqisi2
+  78 0022 03F08073 		and	r3, r3, #16777216
+  79              	.LBE34:
+  80              	.LBE33:
+  81              	.LBB37:
+  82              	.LBB32:
+ 113:../drivers/fsl_crc.c **** }
+  83              		.loc 1 113 0
+  84 0026 0CBF     		ite	eq
+  85 0028 0027     		moveq	r7, #0
+  86 002a 0227     		movne	r7, #2
+  87              	.LVL3:
+  88              	.LBE32:
+  89              	.LBE37:
+  90              	.LBB38:
+  91              	.LBB35:
  130:../drivers/fsl_crc.c ****                  CRC_CTRL_FXOR(config->complementChecksum) | CRC_CTRL_TCRC(config->crcBits);
-  97              		.loc 1 130 0
-  98 0036 43EA0203 		orr	r3, r3, r2
-  99 003a 43EA0673 		orr	r3, r3, r6, lsl #28
- 100              	.LVL4:
- 101              	.L10:
- 102              	.LBE37:
- 103              	.LBE36:
- 104              	.LBE31:
- 105              	.LBE30:
- 106              	.LBB38:
- 107              	.LBB39:
- 108              	.LBB40:
- 109              	.LBB41:
- 110 003e 14BF     		ite	ne
- 111 0040 4FF00042 		movne	r2, #-2147483648
- 112 0044 4FF04042 		moveq	r2, #-1073741824
- 113 0048 1343     		orrs	r3, r3, r2
- 114              	.LVL5:
- 140:../drivers/fsl_crc.c **** 
- 115              		.loc 1 140 0
- 116 004a 43F00072 		orr	r2, r3, #33554432
- 134:../drivers/fsl_crc.c **** 
- 117              		.loc 1 134 0
- 118 004e 8360     		str	r3, [r0, #8]
- 137:../drivers/fsl_crc.c **** 
- 119              		.loc 1 137 0
- 120 0050 4560     		str	r5, [r0, #4]
+  92              		.loc 1 130 0
+  93 002c 43EA8263 		orr	r3, r3, r2, lsl #26
+  94              	.LBE35:
+  95              	.LBE38:
+  96              	.LBB39:
+  97              	.LBB40:
+ 101:../drivers/fsl_crc.c **** }
+  98              		.loc 1 101 0
+  99 0030 002E     		cmp	r6, #0
+ 100              	.LBE40:
+ 101              	.LBE39:
+ 102              	.LBB41:
+ 103              	.LBB36:
+ 130:../drivers/fsl_crc.c ****                  CRC_CTRL_FXOR(config->complementChecksum) | CRC_CTRL_TCRC(config->crcBits);
+ 104              		.loc 1 130 0
+ 105 0032 43EA0773 		orr	r3, r3, r7, lsl #28
+ 106              	.LVL4:
+ 107              	.L10:
+ 108              	.LBE36:
+ 109              	.LBE41:
+ 110              	.LBE29:
+ 111              	.LBE28:
+ 112              	.LBB42:
+ 113              	.LBB43:
+ 114              	.LBB44:
+ 115              	.LBB45:
+ 116 0036 14BF     		ite	ne
+ 117 0038 4FF00042 		movne	r2, #-2147483648
+ 118 003c 4FF04042 		moveq	r2, #-1073741824
+ 119 0040 1343     		orrs	r3, r3, r2
+ 120              	.LVL5:
  140:../drivers/fsl_crc.c **** 
  121              		.loc 1 140 0
- 122 0052 8260     		str	r2, [r0, #8]
+ 122 0042 43F00072 		orr	r2, r3, #33554432
+ 134:../drivers/fsl_crc.c **** 
+ 123              		.loc 1 134 0
+ 124 0046 8360     		str	r3, [r0, #8]
+ 137:../drivers/fsl_crc.c **** 
+ 125              		.loc 1 137 0
+ 126 0048 4560     		str	r5, [r0, #4]
+ 140:../drivers/fsl_crc.c **** 
+ 127              		.loc 1 140 0
+ 128 004a 8260     		str	r2, [r0, #8]
  143:../drivers/fsl_crc.c **** 
- 123              		.loc 1 143 0
- 124 0054 0460     		str	r4, [r0]
+ 129              		.loc 1 143 0
+ 130 004c 0460     		str	r4, [r0]
  146:../drivers/fsl_crc.c **** }
- 125              		.loc 1 146 0
- 126 0056 8360     		str	r3, [r0, #8]
- 127              	.LVL6:
- 128 0058 70BD     		pop	{r4, r5, r6, pc}
- 129              	.L2:
- 130              	.LVL7:
- 131:../drivers/fsl_crc.c **** 
- 131              		.loc 1 131 0
- 132 005a 1B06     		lsls	r3, r3, #24
- 133              	.LBE41:
- 134              	.LBE40:
- 135              	.LBB43:
- 136              	.LBB44:
- 101:../drivers/fsl_crc.c **** }
- 137              		.loc 1 101 0
- 138 005c 002A     		cmp	r2, #0
- 139              	.LBE44:
- 140              	.LBE43:
- 141              	.LBB45:
- 142              	.LBB42:
- 131:../drivers/fsl_crc.c **** 
- 143              		.loc 1 131 0
- 144 005e 03F08073 		and	r3, r3, #16777216
- 145 0062 ECE7     		b	.L10
- 146              	.L12:
- 147              		.align	2
- 148              	.L11:
- 149 0064 3C800440 		.word	1074036796
- 150              	.LBE42:
- 151              	.LBE45:
- 152              	.LBE39:
- 153              	.LBE38:
- 154              		.cfi_endproc
- 155              	.LFE153:
- 157              		.section	.text.CRC_GetDefaultConfig,"ax",%progbits
- 158              		.align	1
- 159              		.global	CRC_GetDefaultConfig
- 160              		.syntax unified
- 161              		.thumb
- 162              		.thumb_func
- 163              		.fpu fpv4-sp-d16
- 165              	CRC_GetDefaultConfig:
- 166              	.LFB154:
+ 131              		.loc 1 146 0
+ 132 004e 8360     		str	r3, [r0, #8]
+ 133              	.LVL6:
+ 134              	.LBE45:
+ 135              	.LBE44:
+ 136              	.LBE43:
+ 137              	.LBE42:
  207:../drivers/fsl_crc.c ****     {
  208:../drivers/fsl_crc.c ****         CRC_SetProtocolConfig(base, config);
  209:../drivers/fsl_crc.c ****     }
@@ -1083,14 +1055,59 @@
  212:../drivers/fsl_crc.c ****         CRC_SetRawProtocolConfig(base, config);
  213:../drivers/fsl_crc.c ****     }
  214:../drivers/fsl_crc.c **** }
+ 138              		.loc 1 214 0
+ 139 0050 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 140              	.L2:
+ 141              	.LVL7:
+ 142              	.LBB53:
+ 143              	.LBB52:
+ 144              	.LBB48:
+ 145              	.LBB46:
+ 131:../drivers/fsl_crc.c **** 
+ 146              		.loc 1 131 0
+ 147 0052 1306     		lsls	r3, r2, #24
+ 148              	.LBE46:
+ 149              	.LBE48:
+ 150              	.LBB49:
+ 151              	.LBB50:
+ 101:../drivers/fsl_crc.c **** }
+ 152              		.loc 1 101 0
+ 153 0054 002E     		cmp	r6, #0
+ 154              	.LBE50:
+ 155              	.LBE49:
+ 156              	.LBB51:
+ 157              	.LBB47:
+ 131:../drivers/fsl_crc.c **** 
+ 158              		.loc 1 131 0
+ 159 0056 03F08073 		and	r3, r3, #16777216
+ 160 005a ECE7     		b	.L10
+ 161              	.L12:
+ 162              		.align	2
+ 163              	.L11:
+ 164 005c 3C800440 		.word	1074036796
+ 165              	.LBE47:
+ 166              	.LBE51:
+ 167              	.LBE52:
+ 168              	.LBE53:
+ 169              		.cfi_endproc
+ 170              	.LFE153:
+ 172              		.section	.text.CRC_GetDefaultConfig,"ax",%progbits
+ 173              		.align	1
+ 174              		.global	CRC_GetDefaultConfig
+ 175              		.syntax unified
+ 176              		.thumb
+ 177              		.thumb_func
+ 178              		.fpu fpv4-sp-d16
+ 180              	CRC_GetDefaultConfig:
+ 181              	.LFB154:
  215:../drivers/fsl_crc.c **** 
  216:../drivers/fsl_crc.c **** void CRC_GetDefaultConfig(crc_config_t *config)
  217:../drivers/fsl_crc.c **** {
- 167              		.loc 1 217 0
- 168              		.cfi_startproc
- 169              		@ args = 0, pretend = 0, frame = 0
- 170              		@ frame_needed = 0, uses_anonymous_args = 0
- 171              	.LVL8:
+ 182              		.loc 1 217 0
+ 183              		.cfi_startproc
+ 184              		@ args = 0, pretend = 0, frame = 0
+ 185              		@ frame_needed = 0, uses_anonymous_args = 0
+ 186              	.LVL8:
  218:../drivers/fsl_crc.c ****     static const crc_config_t crc16ccit = {
  219:../drivers/fsl_crc.c ****         CRC_DRIVER_DEFAULT_POLYNOMIAL,          CRC_DRIVER_DEFAULT_SEED,
  220:../drivers/fsl_crc.c ****         CRC_DRIVER_DEFAULT_REFLECT_IN,          CRC_DRIVER_DEFAULT_REFLECT_OUT,
@@ -1099,66 +1116,67 @@
  223:../drivers/fsl_crc.c ****     };
  224:../drivers/fsl_crc.c **** 
  225:../drivers/fsl_crc.c ****     *config = crc16ccit;
- 172              		.loc 1 225 0
- 173 0000 034B     		ldr	r3, .L14
+ 187              		.loc 1 225 0
+ 188 0000 034B     		ldr	r3, .L14
  217:../drivers/fsl_crc.c ****     static const crc_config_t crc16ccit = {
- 174              		.loc 1 217 0
- 175 0002 10B5     		push	{r4, lr}
- 176              		.cfi_def_cfa_offset 8
- 177              		.cfi_offset 4, -8
- 178              		.cfi_offset 14, -4
+ 189              		.loc 1 217 0
+ 190 0002 10B5     		push	{r4, lr}
+ 191              		.cfi_def_cfa_offset 8
+ 192              		.cfi_offset 4, -8
+ 193              		.cfi_offset 14, -4
  217:../drivers/fsl_crc.c ****     static const crc_config_t crc16ccit = {
- 179              		.loc 1 217 0
- 180 0004 0446     		mov	r4, r0
- 181              		.loc 1 225 0
- 182 0006 0FCB     		ldm	r3, {r0, r1, r2, r3}
- 183              	.LVL9:
- 184 0008 84E80F00 		stm	r4, {r0, r1, r2, r3}
- 185 000c 10BD     		pop	{r4, pc}
- 186              	.LVL10:
- 187              	.L15:
- 188 000e 00BF     		.align	2
- 189              	.L14:
- 190 0010 00000000 		.word	.LANCHOR0
- 191              		.cfi_endproc
- 192              	.LFE154:
- 194              		.section	.text.CRC_WriteData,"ax",%progbits
- 195              		.align	1
- 196              		.global	CRC_WriteData
- 197              		.syntax unified
- 198              		.thumb
- 199              		.thumb_func
- 200              		.fpu fpv4-sp-d16
- 202              	CRC_WriteData:
- 203              	.LFB155:
+ 194              		.loc 1 217 0
+ 195 0004 0446     		mov	r4, r0
+ 196              		.loc 1 225 0
+ 197 0006 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 198              	.LVL9:
+ 199 0008 84E80F00 		stm	r4, {r0, r1, r2, r3}
  226:../drivers/fsl_crc.c **** }
+ 200              		.loc 1 226 0
+ 201 000c 10BD     		pop	{r4, pc}
+ 202              	.LVL10:
+ 203              	.L15:
+ 204 000e 00BF     		.align	2
+ 205              	.L14:
+ 206 0010 00000000 		.word	.LANCHOR0
+ 207              		.cfi_endproc
+ 208              	.LFE154:
+ 210              		.section	.text.CRC_WriteData,"ax",%progbits
+ 211              		.align	1
+ 212              		.global	CRC_WriteData
+ 213              		.syntax unified
+ 214              		.thumb
+ 215              		.thumb_func
+ 216              		.fpu fpv4-sp-d16
+ 218              	CRC_WriteData:
+ 219              	.LFB155:
  227:../drivers/fsl_crc.c **** 
  228:../drivers/fsl_crc.c **** void CRC_WriteData(CRC_Type *base, const uint8_t *data, size_t dataSize)
  229:../drivers/fsl_crc.c **** {
- 204              		.loc 1 229 0
- 205              		.cfi_startproc
- 206              		@ args = 0, pretend = 0, frame = 0
- 207              		@ frame_needed = 0, uses_anonymous_args = 0
- 208              	.LVL11:
- 209 0000 10B5     		push	{r4, lr}
- 210              		.cfi_def_cfa_offset 8
- 211              		.cfi_offset 4, -8
- 212              		.cfi_offset 14, -4
- 213              	.L17:
+ 220              		.loc 1 229 0
+ 221              		.cfi_startproc
+ 222              		@ args = 0, pretend = 0, frame = 0
+ 223              		@ frame_needed = 0, uses_anonymous_args = 0
+ 224              	.LVL11:
+ 225 0000 30B5     		push	{r4, r5, lr}
+ 226              		.cfi_def_cfa_offset 12
+ 227              		.cfi_offset 4, -12
+ 228              		.cfi_offset 5, -8
+ 229              		.cfi_offset 14, -4
+ 230              	.L17:
  230:../drivers/fsl_crc.c ****     const uint32_t *data32;
  231:../drivers/fsl_crc.c **** 
  232:../drivers/fsl_crc.c ****     /* 8-bit reads and writes till source address is aligned 4 bytes */
  233:../drivers/fsl_crc.c ****     while ((dataSize) && ((uint32_t)data & 3U))
- 214              		.loc 1 233 0
- 215 0002 72B1     		cbz	r2, .L16
- 216              		.loc 1 233 0 is_stmt 0 discriminator 1
- 217 0004 8B07     		lsls	r3, r1, #30
- 218 0006 0DD1     		bne	.L19
- 219 0008 0C46     		mov	r4, r1
- 220              	.LVL12:
- 221              	.L20:
- 222 000a 131B     		subs	r3, r2, r4
- 223 000c 0B44     		add	r3, r3, r1
+ 231              		.loc 1 233 0
+ 232 0002 62B1     		cbz	r2, .L16
+ 233              		.loc 1 233 0 is_stmt 0 discriminator 1
+ 234 0004 8B07     		lsls	r3, r1, #30
+ 235 0006 0BD1     		bne	.L19
+ 236 0008 0B46     		mov	r3, r1
+ 237 000a 8D18     		adds	r5, r1, r2
+ 238              	.LVL12:
+ 239              	.L20:
  234:../drivers/fsl_crc.c ****     {
  235:../drivers/fsl_crc.c ****         base->ACCESS8BIT.DATALL = *data;
  236:../drivers/fsl_crc.c ****         data++;
@@ -1168,16 +1186,16 @@
  240:../drivers/fsl_crc.c ****     /* use 32-bit reads and writes as long as possible */
  241:../drivers/fsl_crc.c ****     data32 = (const uint32_t *)data;
  242:../drivers/fsl_crc.c ****     while (dataSize >= sizeof(uint32_t))
- 224              		.loc 1 242 0 is_stmt 1
- 225 000e 032B     		cmp	r3, #3
- 226 0010 0DD8     		bhi	.L21
- 227 0012 22F00303 		bic	r3, r2, #3
- 228 0016 1944     		add	r1, r1, r3
- 229              	.LVL13:
- 230 0018 02F00302 		and	r2, r2, #3
- 231 001c 0A44     		add	r2, r2, r1
- 232              	.L22:
- 233              	.LVL14:
+ 240              		.loc 1 242 0 is_stmt 1
+ 241 000c EC1A     		subs	r4, r5, r3
+ 242 000e 032C     		cmp	r4, #3
+ 243 0010 0BD8     		bhi	.L21
+ 244 0012 9308     		lsrs	r3, r2, #2
+ 245              	.LVL13:
+ 246 0014 01EB8303 		add	r3, r1, r3, lsl #2
+ 247 0018 1144     		add	r1, r1, r2
+ 248              	.LVL14:
+ 249              	.L22:
  243:../drivers/fsl_crc.c ****     {
  244:../drivers/fsl_crc.c ****         base->DATA = *data32;
  245:../drivers/fsl_crc.c ****         data32++;
@@ -1188,116 +1206,119 @@
  250:../drivers/fsl_crc.c **** 
  251:../drivers/fsl_crc.c ****     /* 8-bit reads and writes till end of data buffer */
  252:../drivers/fsl_crc.c ****     while (dataSize)
- 234              		.loc 1 252 0
- 235 001e 9142     		cmp	r1, r2
- 236 0020 09D1     		bne	.L23
- 237              	.LVL15:
- 238              	.L16:
- 239 0022 10BD     		pop	{r4, pc}
- 240              	.LVL16:
- 241              	.L19:
- 235:../drivers/fsl_crc.c ****         data++;
- 242              		.loc 1 235 0
- 243 0024 11F8013B 		ldrb	r3, [r1], #1	@ zero_extendqisi2
- 244              	.LVL17:
- 245 0028 0370     		strb	r3, [r0]
- 246              	.LVL18:
- 237:../drivers/fsl_crc.c ****     }
- 247              		.loc 1 237 0
- 248 002a 013A     		subs	r2, r2, #1
- 249              	.LVL19:
- 250 002c E9E7     		b	.L17
- 251              	.LVL20:
- 252              	.L21:
- 244:../drivers/fsl_crc.c ****         data32++;
- 253              		.loc 1 244 0
- 254 002e 54F8043B 		ldr	r3, [r4], #4
- 255              	.LVL21:
- 256 0032 0360     		str	r3, [r0]
- 257              	.LVL22:
- 258 0034 E9E7     		b	.L20
- 259              	.L23:
+ 250              		.loc 1 252 0
+ 251 001a 8B42     		cmp	r3, r1
+ 252 001c 09D1     		bne	.L23
+ 253              	.LVL15:
+ 254              	.L16:
  253:../drivers/fsl_crc.c ****     {
  254:../drivers/fsl_crc.c ****         base->ACCESS8BIT.DATALL = *data;
- 260              		.loc 1 254 0
- 261 0036 11F8013B 		ldrb	r3, [r1], #1	@ zero_extendqisi2
- 262              	.LVL23:
- 263 003a 0370     		strb	r3, [r0]
- 264              	.LVL24:
- 265 003c EFE7     		b	.L22
- 266              		.cfi_endproc
- 267              	.LFE155:
- 269              		.section	.text.CRC_Get32bitResult,"ax",%progbits
- 270              		.align	1
- 271              		.global	CRC_Get32bitResult
- 272              		.syntax unified
- 273              		.thumb
- 274              		.thumb_func
- 275              		.fpu fpv4-sp-d16
- 277              	CRC_Get32bitResult:
- 278              	.LFB156:
  255:../drivers/fsl_crc.c ****         data++;
  256:../drivers/fsl_crc.c ****         dataSize--;
  257:../drivers/fsl_crc.c ****     }
  258:../drivers/fsl_crc.c **** }
+ 255              		.loc 1 258 0
+ 256 001e 30BD     		pop	{r4, r5, pc}
+ 257              	.LVL16:
+ 258              	.L19:
+ 235:../drivers/fsl_crc.c ****         data++;
+ 259              		.loc 1 235 0
+ 260 0020 11F8013B 		ldrb	r3, [r1], #1	@ zero_extendqisi2
+ 261              	.LVL17:
+ 262 0024 0370     		strb	r3, [r0]
+ 263              	.LVL18:
+ 237:../drivers/fsl_crc.c ****     }
+ 264              		.loc 1 237 0
+ 265 0026 013A     		subs	r2, r2, #1
+ 266              	.LVL19:
+ 267 0028 EBE7     		b	.L17
+ 268              	.LVL20:
+ 269              	.L21:
+ 244:../drivers/fsl_crc.c ****         data32++;
+ 270              		.loc 1 244 0
+ 271 002a 53F8044B 		ldr	r4, [r3], #4
+ 272              	.LVL21:
+ 273 002e 0460     		str	r4, [r0]
+ 274              	.LVL22:
+ 275 0030 ECE7     		b	.L20
+ 276              	.LVL23:
+ 277              	.L23:
+ 254:../drivers/fsl_crc.c ****         data++;
+ 278              		.loc 1 254 0
+ 279 0032 13F8012B 		ldrb	r2, [r3], #1	@ zero_extendqisi2
+ 280              	.LVL24:
+ 281 0036 0270     		strb	r2, [r0]
+ 282              	.LVL25:
+ 283 0038 EFE7     		b	.L22
+ 284              		.cfi_endproc
+ 285              	.LFE155:
+ 287              		.section	.text.CRC_Get32bitResult,"ax",%progbits
+ 288              		.align	1
+ 289              		.global	CRC_Get32bitResult
+ 290              		.syntax unified
+ 291              		.thumb
+ 292              		.thumb_func
+ 293              		.fpu fpv4-sp-d16
+ 295              	CRC_Get32bitResult:
+ 296              	.LFB156:
  259:../drivers/fsl_crc.c **** 
  260:../drivers/fsl_crc.c **** uint32_t CRC_Get32bitResult(CRC_Type *base)
  261:../drivers/fsl_crc.c **** {
- 279              		.loc 1 261 0
- 280              		.cfi_startproc
- 281              		@ args = 0, pretend = 0, frame = 0
- 282              		@ frame_needed = 0, uses_anonymous_args = 0
- 283              		@ link register save eliminated.
- 284              	.LVL25:
+ 297              		.loc 1 261 0
+ 298              		.cfi_startproc
+ 299              		@ args = 0, pretend = 0, frame = 0
+ 300              		@ frame_needed = 0, uses_anonymous_args = 0
+ 301              		@ link register save eliminated.
+ 302              	.LVL26:
  262:../drivers/fsl_crc.c ****     return base->DATA;
- 285              		.loc 1 262 0
- 286 0000 0068     		ldr	r0, [r0]
- 287              	.LVL26:
+ 303              		.loc 1 262 0
+ 304 0000 0068     		ldr	r0, [r0]
+ 305              	.LVL27:
  263:../drivers/fsl_crc.c **** }
- 288              		.loc 1 263 0
- 289 0002 7047     		bx	lr
- 290              		.cfi_endproc
- 291              	.LFE156:
- 293              		.section	.text.CRC_Get16bitResult,"ax",%progbits
- 294              		.align	1
- 295              		.global	CRC_Get16bitResult
- 296              		.syntax unified
- 297              		.thumb
- 298              		.thumb_func
- 299              		.fpu fpv4-sp-d16
- 301              	CRC_Get16bitResult:
- 302              	.LFB157:
+ 306              		.loc 1 263 0
+ 307 0002 7047     		bx	lr
+ 308              		.cfi_endproc
+ 309              	.LFE156:
+ 311              		.section	.text.CRC_Get16bitResult,"ax",%progbits
+ 312              		.align	1
+ 313              		.global	CRC_Get16bitResult
+ 314              		.syntax unified
+ 315              		.thumb
+ 316              		.thumb_func
+ 317              		.fpu fpv4-sp-d16
+ 319              	CRC_Get16bitResult:
+ 320              	.LFB157:
  264:../drivers/fsl_crc.c **** 
  265:../drivers/fsl_crc.c **** uint16_t CRC_Get16bitResult(CRC_Type *base)
  266:../drivers/fsl_crc.c **** {
- 303              		.loc 1 266 0
- 304              		.cfi_startproc
- 305              		@ args = 0, pretend = 0, frame = 0
- 306              		@ frame_needed = 0, uses_anonymous_args = 0
- 307              		@ link register save eliminated.
- 308              	.LVL27:
+ 321              		.loc 1 266 0
+ 322              		.cfi_startproc
+ 323              		@ args = 0, pretend = 0, frame = 0
+ 324              		@ frame_needed = 0, uses_anonymous_args = 0
+ 325              		@ link register save eliminated.
+ 326              	.LVL28:
  267:../drivers/fsl_crc.c ****     uint32_t retval;
  268:../drivers/fsl_crc.c ****     uint32_t totr; /* type of transpose read bitfield */
  269:../drivers/fsl_crc.c **** 
  270:../drivers/fsl_crc.c ****     retval = base->DATA;
- 309              		.loc 1 270 0
- 310 0000 0368     		ldr	r3, [r0]
- 311              	.LVL28:
+ 327              		.loc 1 270 0
+ 328 0000 0368     		ldr	r3, [r0]
+ 329              	.LVL29:
  271:../drivers/fsl_crc.c ****     totr = (base->CTRL & CRC_CTRL_TOTR_MASK) >> CRC_CTRL_TOTR_SHIFT;
- 312              		.loc 1 271 0
- 313 0002 8268     		ldr	r2, [r0, #8]
- 314              	.LVL29:
- 315 0004 C2F30172 		ubfx	r2, r2, #28, #2
- 316              	.LVL30:
+ 330              		.loc 1 271 0
+ 331 0002 8268     		ldr	r2, [r0, #8]
+ 332              	.LVL30:
+ 333 0004 C2F30172 		ubfx	r2, r2, #28, #2
+ 334              	.LVL31:
  272:../drivers/fsl_crc.c **** 
  273:../drivers/fsl_crc.c ****     /* check transpose type to get 16-bit out of 32-bit register */
  274:../drivers/fsl_crc.c ****     if (totr >= 2U)
- 317              		.loc 1 274 0
- 318 0008 012A     		cmp	r2, #1
- 319              	.LVL31:
- 320 000a 8CBF     		ite	hi
- 321 000c 180C     		lsrhi	r0, r3, #16
- 322              	.LVL32:
+ 335              		.loc 1 274 0
+ 336 0008 012A     		cmp	r2, #1
+ 337              	.LVL32:
+ 338 000a 8CBF     		ite	hi
+ 339 000c 180C     		lsrhi	r0, r3, #16
+ 340              	.LVL33:
  275:../drivers/fsl_crc.c ****     {
  276:../drivers/fsl_crc.c ****         /* transpose of bytes for read is set, the result CRC is in CRC_DATA[HU:HL] */
  277:../drivers/fsl_crc.c ****         retval &= 0xFFFF0000U;
@@ -1307,37 +1328,37 @@
  281:../drivers/fsl_crc.c ****     {
  282:../drivers/fsl_crc.c ****         /* no transpose of bytes for read, the result CRC is in CRC_DATA[LU:LL] */
  283:../drivers/fsl_crc.c ****         retval &= 0x0000FFFFU;
- 323              		.loc 1 283 0
- 324 000e 98B2     		uxthls	r0, r3
- 325              	.LVL33:
+ 341              		.loc 1 283 0
+ 342 000e 98B2     		uxthls	r0, r3
+ 343              	.LVL34:
  284:../drivers/fsl_crc.c ****     }
  285:../drivers/fsl_crc.c ****     return (uint16_t)retval;
  286:../drivers/fsl_crc.c **** }
- 326              		.loc 1 286 0
- 327 0010 7047     		bx	lr
- 328              		.cfi_endproc
- 329              	.LFE157:
- 331              		.section	.rodata.crc16ccit.8067,"a",%progbits
- 332              		.align	2
- 333              		.set	.LANCHOR0,. + 0
- 336              	crc16ccit.8067:
- 337 0000 21100000 		.word	4129
- 338 0004 FFFF0000 		.word	65535
- 339 0008 00       		.byte	0
- 340 0009 00       		.byte	0
- 341 000a 00       		.byte	0
- 342 000b 00       		.byte	0
- 343 000c 00       		.byte	0
- 344 000d 000000   		.space	3
- 345              		.text
- 346              	.Letext0:
- 347              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 348              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 349              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 350              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 351              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 352              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 353              		.file 9 "../CMSIS/core_cm4.h"
- 354              		.file 10 "../CMSIS/system_MK64F12.h"
- 355              		.file 11 "../CMSIS/MK64F12.h"
- 356              		.file 12 "../drivers/fsl_crc.h"
+ 344              		.loc 1 286 0
+ 345 0010 7047     		bx	lr
+ 346              		.cfi_endproc
+ 347              	.LFE157:
+ 349              		.section	.rodata.crc16ccit.8227,"a",%progbits
+ 350              		.align	2
+ 351              		.set	.LANCHOR0,. + 0
+ 354              	crc16ccit.8227:
+ 355 0000 21100000 		.word	4129
+ 356 0004 FFFF0000 		.word	65535
+ 357 0008 00       		.byte	0
+ 358 0009 00       		.byte	0
+ 359 000a 00       		.byte	0
+ 360 000b 00       		.byte	0
+ 361 000c 00       		.byte	0
+ 362 000d 000000   		.space	3
+ 363              		.text
+ 364              	.Letext0:
+ 365              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 366              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 367              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 368              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 369              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 370              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 371              		.file 9 "../CMSIS/core_cm4.h"
+ 372              		.file 10 "../CMSIS/system_MK64F12.h"
+ 373              		.file 11 "../CMSIS/MK64F12.h"
+ 374              		.file 12 "../drivers/fsl_crc.h"

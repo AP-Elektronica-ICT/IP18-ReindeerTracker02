@@ -276,23 +276,23 @@
   46              		.cfi_offset 11, -8
   47              		.cfi_offset 14, -4
   48              		.loc 1 230 0
-  49 000a 00F00E81 		beq	.L25
+  49 000a 00F00A81 		beq	.L25
   50              	.LVL1:
   51              	.LBB10:
   52              	.LBB11:
   95:../drivers/fsl_ftm.c ****         {
   53              		.loc 1 95 0
-  54 000e 884B     		ldr	r3, .L58
+  54 000e 864B     		ldr	r3, .L58
   55 0010 9842     		cmp	r0, r3
-  56 0012 00F0CD80 		beq	.L26
+  56 0012 00F0CB80 		beq	.L26
   57              	.LVL2:
   58 0016 03F58053 		add	r3, r3, #4096
   59 001a 9842     		cmp	r0, r3
-  60 001c 00F0CA80 		beq	.L27
+  60 001c 00F0C880 		beq	.L27
   61              	.LVL3:
   62 0020 03F58053 		add	r3, r3, #4096
   63 0024 9842     		cmp	r0, r3
-  64 0026 00F0C780 		beq	.L28
+  64 0026 00F0C580 		beq	.L28
   65              	.LVL4:
   93:../drivers/fsl_ftm.c ****     {
   66              		.loc 1 93 0
@@ -315,12 +315,12 @@
  238:../drivers/fsl_ftm.c ****     /* Ungate the FTM clock*/
  239:../drivers/fsl_ftm.c ****     CLOCK_EnableClock(s_ftmClocks[FTM_GetInstance(base)]);
   76              		.loc 1 239 0
-  77 0036 7F4A     		ldr	r2, .L58+4
+  77 0036 7D4A     		ldr	r2, .L58+4
   78              	.LBB13:
   79              	.LBB14:
  116:../drivers/fsl_ftm.c ****     {
   80              		.loc 1 116 0
-  81 0038 DFF8F481 		ldr	r8, .L58
+  81 0038 DFF8ECE1 		ldr	lr, .L58
   82              	.LBE14:
   83              	.LBE13:
   84              		.loc 1 239 0
@@ -330,9 +330,9 @@
   88              	.LBB15:
  116:../drivers/fsl_ftm.c ****     {
   89              		.loc 1 116 0
-  90 0040 DFF8F491 		ldr	r9, .L58+8
-  91 0044 DFF8F4A1 		ldr	r10, .L58+12
-  92 0048 DFF8F4B1 		ldr	fp, .L58+16
+  90 0040 DFF8EC81 		ldr	r8, .L58+8
+  91 0044 DFF8ECA1 		ldr	r10, .L58+12
+  92 0048 DFF8ECB1 		ldr	fp, .L58+16
   93              	.LBE15:
   94              	.LBE18:
   95              	.LBB19:
@@ -1038,10 +1038,10 @@
  101 0052 02F58E22 		add	r2, r2, #290816
  695:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
  102              		.loc 2 695 0
- 103 0056 9BB2     		uxth	r3, r3
- 104              	.LVL7:
- 105 0058 1468     		ldr	r4, [r2]
- 106 005a 0126     		movs	r6, #1
+ 103 0056 0126     		movs	r6, #1
+ 104 0058 1468     		ldr	r4, [r2]
+ 105 005a 9BB2     		uxth	r3, r3
+ 106              	.LVL7:
  107 005c 06FA03F3 		lsl	r3, r6, r3
  108 0060 2343     		orrs	r3, r3, r4
  109 0062 1360     		str	r3, [r2]
@@ -1069,7 +1069,7 @@
  123              	.LBB16:
  111:../drivers/fsl_ftm.c ****     /* Enable PWM synchronization of output mask register */
  124              		.loc 1 111 0
- 125 0074 D0F858E0 		ldr	lr, [r0, #88]
+ 125 0074 D0F858C0 		ldr	ip, [r0, #88]
  126              	.LVL9:
  115:../drivers/fsl_ftm.c ****     for (chnlNumber = 0; chnlNumber < (FSL_FEATURE_FTM_CHANNEL_COUNTn(base) / 2); chnlNumber++)
  127              		.loc 1 115 0
@@ -1077,246 +1077,246 @@
  129              	.LVL10:
  113:../drivers/fsl_ftm.c **** 
  130              		.loc 1 113 0
- 131 007a 4EF00802 		orr	r2, lr, #8
+ 131 007a 4CF00802 		orr	r2, ip, #8
  132              	.LVL11:
  115:../drivers/fsl_ftm.c ****     for (chnlNumber = 0; chnlNumber < (FSL_FEATURE_FTM_CHANNEL_COUNTn(base) / 2); chnlNumber++)
  133              		.loc 1 115 0
- 134 007e 0023     		movs	r3, #0
- 135              	.LVL12:
- 136              	.L4:
+ 134 007e 0025     		movs	r5, #0
  116:../drivers/fsl_ftm.c ****     {
- 137              		.loc 1 116 0
- 138 0080 4045     		cmp	r0, r8
- 139 0082 00F0A980 		beq	.L33
- 140 0086 4845     		cmp	r0, r9
- 141 0088 00F09880 		beq	.L32
- 142 008c 5045     		cmp	r0, r10
- 143 008e 00F09580 		beq	.L32
- 144 0092 5845     		cmp	r0, fp
- 145 0094 00F0A080 		beq	.L33
- 146              	.LVL13:
- 147              	.L9:
+ 135              		.loc 1 116 0
+ 136 0080 B146     		mov	r9, r6
+ 137              	.LVL12:
+ 138              	.L4:
+ 139 0082 7045     		cmp	r0, lr
+ 140 0084 EBB2     		uxtb	r3, r5
+ 141 0086 00F0A380 		beq	.L33
+ 142 008a 4045     		cmp	r0, r8
+ 143 008c 00F09480 		beq	.L32
+ 144 0090 5045     		cmp	r0, r10
+ 145 0092 00F09180 		beq	.L32
+ 146 0096 5845     		cmp	r0, fp
+ 147 0098 00F09A80 		beq	.L33
+ 148              	.LVL13:
+ 149              	.L9:
  121:../drivers/fsl_ftm.c **** 
- 148              		.loc 1 121 0
- 149 0098 4766     		str	r7, [r0, #100]
+ 150              		.loc 1 121 0
+ 151 009c 4766     		str	r7, [r0, #100]
  128:../drivers/fsl_ftm.c ****     {
- 150              		.loc 1 128 0
- 151 009a 2506     		lsls	r5, r4, #24
+ 152              		.loc 1 128 0
+ 153 009e 2506     		lsls	r5, r4, #24
  123:../drivers/fsl_ftm.c **** 
- 152              		.loc 1 123 0
- 153 009c D0F88C30 		ldr	r3, [r0, #140]
- 154              	.LVL14:
+ 154              		.loc 1 123 0
+ 155 00a0 D0F88C30 		ldr	r3, [r0, #140]
+ 156              	.LVL14:
  128:../drivers/fsl_ftm.c ****     {
- 155              		.loc 1 128 0
- 156 00a0 00F19C80 		bmi	.L6
+ 157              		.loc 1 128 0
+ 158 00a4 00F19680 		bmi	.L6
  126:../drivers/fsl_ftm.c **** 
- 157              		.loc 1 126 0
- 158 00a4 43F0B403 		orr	r3, r3, #180
- 159              	.LVL15:
- 160              	.L10:
+ 159              		.loc 1 126 0
+ 160 00a8 43F0B403 		orr	r3, r3, #180
+ 161              	.LVL15:
+ 162              	.L10:
  135:../drivers/fsl_ftm.c ****     {
- 161              		.loc 1 135 0
- 162 00a8 14F0700F 		tst	r4, #112
- 163 00ac 0DD0     		beq	.L11
+ 163              		.loc 1 135 0
+ 164 00ac 14F0700F 		tst	r4, #112
+ 165 00b0 0DD0     		beq	.L11
  142:../drivers/fsl_ftm.c ****         {
- 164              		.loc 1 142 0
- 165 00ae E706     		lsls	r7, r4, #27
+ 166              		.loc 1 142 0
+ 167 00b2 E706     		lsls	r7, r4, #27
  144:../drivers/fsl_ftm.c ****         }
- 166              		.loc 1 144 0
- 167 00b0 48BF     		it	mi
- 168 00b2 4EF01802 		orrmi	r2, lr, #24
- 169              	.LVL16:
+ 168              		.loc 1 144 0
+ 169 00b4 48BF     		it	mi
+ 170 00b6 4CF01802 		orrmi	r2, ip, #24
+ 171              	.LVL16:
  146:../drivers/fsl_ftm.c ****         {
- 170              		.loc 1 146 0
- 171 00b6 A606     		lsls	r6, r4, #26
+ 172              		.loc 1 146 0
+ 173 00ba A606     		lsls	r6, r4, #26
  148:../drivers/fsl_ftm.c ****         }
- 172              		.loc 1 148 0
- 173 00b8 48BF     		it	mi
- 174 00ba 42F02002 		orrmi	r2, r2, #32
+ 174              		.loc 1 148 0
+ 175 00bc 48BF     		it	mi
+ 176 00be 42F02002 		orrmi	r2, r2, #32
  150:../drivers/fsl_ftm.c ****         {
- 175              		.loc 1 150 0
- 176 00be 6506     		lsls	r5, r4, #25
+ 177              		.loc 1 150 0
+ 178 00c2 6506     		lsls	r5, r4, #25
  138:../drivers/fsl_ftm.c ****                 FTM_SYNCONF_HWSOC_MASK | FTM_SYNCONF_HWOM_MASK);
- 177              		.loc 1 138 0
- 178 00c0 43F4F813 		orr	r3, r3, #2031616
- 179              	.LVL17:
+ 179              		.loc 1 138 0
+ 180 00c4 43F4F813 		orr	r3, r3, #2031616
+ 181              	.LVL17:
  152:../drivers/fsl_ftm.c ****         }
- 180              		.loc 1 152 0
- 181 00c4 48BF     		it	mi
- 182 00c6 42F04002 		orrmi	r2, r2, #64
- 183              	.LVL18:
- 184              	.L11:
+ 182              		.loc 1 152 0
+ 183 00c8 48BF     		it	mi
+ 184 00ca 42F04002 		orrmi	r2, r2, #64
+ 185              	.LVL18:
+ 186              	.L11:
  157:../drivers/fsl_ftm.c **** 
- 185              		.loc 1 157 0
- 186 00ca 8265     		str	r2, [r0, #88]
+ 187              		.loc 1 157 0
+ 188 00ce 8265     		str	r2, [r0, #88]
  160:../drivers/fsl_ftm.c **** }
- 187              		.loc 1 160 0
- 188 00cc C0F88C30 		str	r3, [r0, #140]
- 189              	.LVL19:
- 190              	.LBE16:
- 191              	.LBE21:
- 192              	.LBB22:
- 193              	.LBB23:
+ 189              		.loc 1 160 0
+ 190 00d0 C0F88C30 		str	r3, [r0, #140]
+ 191              	.LVL19:
+ 192              	.LBE16:
+ 193              	.LBE21:
+ 194              	.LBB22:
+ 195              	.LBB23:
  169:../drivers/fsl_ftm.c **** 
- 194              		.loc 1 169 0
- 195 00d0 D0F88C30 		ldr	r3, [r0, #140]
- 196              	.LBE23:
- 197              	.LBE22:
+ 196              		.loc 1 169 0
+ 197 00d4 D0F88C30 		ldr	r3, [r0, #140]
+ 198              	.LBE23:
+ 199              	.LBE22:
  247:../drivers/fsl_ftm.c **** 
  248:../drivers/fsl_ftm.c ****     /* Setup intermediate register reload points */
  249:../drivers/fsl_ftm.c ****     FTM_SetReloadPoints(base, config->reloadPoints);
- 198              		.loc 1 249 0
- 199 00d4 8A68     		ldr	r2, [r1, #8]
- 200              	.LVL20:
- 201              	.LBB26:
- 202              	.LBB24:
+ 200              		.loc 1 249 0
+ 201 00d8 8A68     		ldr	r2, [r1, #8]
+ 202              	.LVL20:
+ 203              	.LBB26:
+ 204              	.LBB24:
  172:../drivers/fsl_ftm.c ****     {
- 203              		.loc 1 172 0
- 204 00d6 564E     		ldr	r6, .L58
- 205 00d8 574F     		ldr	r7, .L58+8
- 206 00da DFF860C1 		ldr	ip, .L58+12
- 207 00de DFF86081 		ldr	r8, .L58+16
+ 205              		.loc 1 172 0
+ 206 00da 534E     		ldr	r6, .L58
+ 207 00dc 544F     		ldr	r7, .L58+8
+ 208 00de DFF854E1 		ldr	lr, .L58+12
+ 209 00e2 DFF85481 		ldr	r8, .L58+16
  169:../drivers/fsl_ftm.c **** 
- 208              		.loc 1 169 0
- 209 00e2 43F00403 		orr	r3, r3, #4
- 210 00e6 C0F88C30 		str	r3, [r0, #140]
+ 210              		.loc 1 169 0
+ 211 00e6 43F00403 		orr	r3, r3, #4
+ 212 00ea C0F88C30 		str	r3, [r0, #140]
  171:../drivers/fsl_ftm.c ****     for (chnlNumber = 0; chnlNumber < (FSL_FEATURE_FTM_CHANNEL_COUNTn(base) / 2); chnlNumber++)
- 211              		.loc 1 171 0
- 212 00ea 456E     		ldr	r5, [r0, #100]
- 213              	.LVL21:
+ 213              		.loc 1 171 0
+ 214 00ee 456E     		ldr	r5, [r0, #100]
+ 215              	.LVL21:
  172:../drivers/fsl_ftm.c ****     {
- 214              		.loc 1 172 0
- 215 00ec 0024     		movs	r4, #0
- 216 00ee 4FF0010E 		mov	lr, #1
- 217              	.LVL22:
- 218              	.L14:
- 219 00f2 B042     		cmp	r0, r6
- 220 00f4 00F08180 		beq	.L37
- 221 00f8 B842     		cmp	r0, r7
- 222 00fa 74D0     		beq	.L36
- 223 00fc 6045     		cmp	r0, ip
- 224 00fe 72D0     		beq	.L36
- 225 0100 4045     		cmp	r0, r8
- 226 0102 7AD0     		beq	.L37
- 227              	.L19:
+ 216              		.loc 1 172 0
+ 217 00f0 0024     		movs	r4, #0
+ 218 00f2 4FF0010C 		mov	ip, #1
+ 219              	.LVL22:
+ 220              	.L14:
+ 221 00f6 B042     		cmp	r0, r6
+ 222 00f8 7BD0     		beq	.L37
+ 223 00fa B842     		cmp	r0, r7
+ 224 00fc 6FD0     		beq	.L36
+ 225 00fe 7045     		cmp	r0, lr
+ 226 0100 6DD0     		beq	.L36
+ 227 0102 4045     		cmp	r0, r8
+ 228 0104 75D0     		beq	.L37
+ 229              	.L19:
  183:../drivers/fsl_ftm.c ****     reg |= (reloadPoints & ((1U << FSL_FEATURE_FTM_CHANNEL_COUNTn(base)) - 1));
- 228              		.loc 1 183 0
- 229 0104 4A4B     		ldr	r3, .L58
+ 230              		.loc 1 183 0
+ 231 0106 484B     		ldr	r3, .L58
  177:../drivers/fsl_ftm.c **** 
- 230              		.loc 1 177 0
- 231 0106 4566     		str	r5, [r0, #100]
+ 232              		.loc 1 177 0
+ 233 0108 4566     		str	r5, [r0, #100]
  183:../drivers/fsl_ftm.c ****     reg |= (reloadPoints & ((1U << FSL_FEATURE_FTM_CHANNEL_COUNTn(base)) - 1));
- 232              		.loc 1 183 0
- 233 0108 9842     		cmp	r0, r3
+ 234              		.loc 1 183 0
+ 235 010a 9842     		cmp	r0, r3
  180:../drivers/fsl_ftm.c **** 
- 234              		.loc 1 180 0
- 235 010a D0F89840 		ldr	r4, [r0, #152]
- 236              	.LVL23:
+ 236              		.loc 1 180 0
+ 237 010c D0F89840 		ldr	r4, [r0, #152]
+ 238              	.LVL23:
  183:../drivers/fsl_ftm.c ****     reg |= (reloadPoints & ((1U << FSL_FEATURE_FTM_CHANNEL_COUNTn(base)) - 1));
- 237              		.loc 1 183 0
- 238 010e 76D1     		bne	.L16
- 239 0110 6FF0FF03 		mvn	r3, #255
- 240              	.L17:
- 241 0114 1C40     		ands	r4, r4, r3
- 242              	.LVL24:
+ 239              		.loc 1 183 0
+ 240 0110 71D1     		bne	.L16
+ 241 0112 6FF0FF03 		mvn	r3, #255
+ 242              	.L17:
+ 243 0116 1C40     		ands	r4, r4, r3
+ 244              	.LVL24:
  184:../drivers/fsl_ftm.c **** 
- 243              		.loc 1 184 0
- 244 0116 464B     		ldr	r3, .L58
- 245 0118 9842     		cmp	r0, r3
- 246 011a 00F08280 		beq	.L41
- 247 011e 03F58053 		add	r3, r3, #4096
- 248 0122 9842     		cmp	r0, r3
- 249 0124 7FD0     		beq	.L43
- 250 0126 03F58053 		add	r3, r3, #4096
- 251 012a 9842     		cmp	r0, r3
- 252 012c 7BD0     		beq	.L43
- 253 012e 03F5FE23 		add	r3, r3, #520192
- 254 0132 9842     		cmp	r0, r3
- 255 0134 14BF     		ite	ne
- 256 0136 4FF0FF33 		movne	r3, #-1
- 257 013a FF23     		moveq	r3, #255
- 258              	.L20:
- 259 013c 1340     		ands	r3, r3, r2
- 260 013e 2343     		orrs	r3, r3, r4
- 261              	.LVL25:
+ 245              		.loc 1 184 0
+ 246 0118 434B     		ldr	r3, .L58
+ 247 011a 9842     		cmp	r0, r3
+ 248 011c 7DD0     		beq	.L41
+ 249 011e 03F58053 		add	r3, r3, #4096
+ 250 0122 9842     		cmp	r0, r3
+ 251 0124 7BD0     		beq	.L43
+ 252 0126 03F58053 		add	r3, r3, #4096
+ 253 012a 9842     		cmp	r0, r3
+ 254 012c 77D0     		beq	.L43
+ 255 012e 03F5FE23 		add	r3, r3, #520192
+ 256 0132 9842     		cmp	r0, r3
+ 257 0134 14BF     		ite	ne
+ 258 0136 4FF0FF33 		movne	r3, #-1
+ 259 013a FF23     		moveq	r3, #255
+ 260              	.L20:
+ 261 013c 1340     		ands	r3, r3, r2
+ 262 013e 2343     		orrs	r3, r3, r4
+ 263              	.LVL25:
  198:../drivers/fsl_ftm.c **** 
- 262              		.loc 1 198 0
- 263 0140 C0F89830 		str	r3, [r0, #152]
+ 264              		.loc 1 198 0
+ 265 0140 C0F89830 		str	r3, [r0, #152]
  201:../drivers/fsl_ftm.c ****     if (reloadPoints & kFTM_CntMax)
- 264              		.loc 1 201 0
- 265 0144 836D     		ldr	r3, [r0, #88]
- 266              	.LVL26:
+ 266              		.loc 1 201 0
+ 267 0144 836D     		ldr	r3, [r0, #88]
+ 268              	.LVL26:
  202:../drivers/fsl_ftm.c ****     {
- 267              		.loc 1 202 0
- 268 0146 D405     		lsls	r4, r2, #23
+ 269              		.loc 1 202 0
+ 270 0146 D405     		lsls	r4, r2, #23
  205:../drivers/fsl_ftm.c ****     }
- 269              		.loc 1 205 0
- 270 0148 4CBF     		ite	mi
- 271 014a 43F00203 		orrmi	r3, r3, #2
- 272              	.LVL27:
+ 271              		.loc 1 205 0
+ 272 0148 4CBF     		ite	mi
+ 273 014a 43F00203 		orrmi	r3, r3, #2
+ 274              	.LVL27:
  209:../drivers/fsl_ftm.c ****     }
- 273              		.loc 1 209 0
- 274 014e 23F00203 		bicpl	r3, r3, #2
- 275              	.LVL28:
+ 275              		.loc 1 209 0
+ 276 014e 23F00203 		bicpl	r3, r3, #2
+ 277              	.LVL28:
  212:../drivers/fsl_ftm.c ****     {
- 276              		.loc 1 212 0
- 277 0152 9205     		lsls	r2, r2, #22
- 278              	.LVL29:
+ 278              		.loc 1 212 0
+ 279 0152 9205     		lsls	r2, r2, #22
+ 280              	.LVL29:
  215:../drivers/fsl_ftm.c ****     }
- 279              		.loc 1 215 0
- 280 0154 4CBF     		ite	mi
- 281 0156 43F00103 		orrmi	r3, r3, #1
- 282              	.LVL30:
+ 281              		.loc 1 215 0
+ 282 0154 4CBF     		ite	mi
+ 283 0156 43F00103 		orrmi	r3, r3, #1
+ 284              	.LVL30:
  219:../drivers/fsl_ftm.c ****     }
- 283              		.loc 1 219 0
- 284 015a 23F00103 		bicpl	r3, r3, #1
- 285              	.LVL31:
+ 285              		.loc 1 219 0
+ 286 015a 23F00103 		bicpl	r3, r3, #1
+ 287              	.LVL31:
  221:../drivers/fsl_ftm.c **** }
- 286              		.loc 1 221 0
- 287 015e 8365     		str	r3, [r0, #88]
- 288              	.LVL32:
- 289              	.LBE24:
- 290              	.LBE26:
+ 288              		.loc 1 221 0
+ 289 015e 8365     		str	r3, [r0, #88]
+ 290              	.LVL32:
+ 291              	.LBE24:
+ 292              	.LBE26:
  250:../drivers/fsl_ftm.c **** 
  251:../drivers/fsl_ftm.c ****     /* Set the clock prescale factor */
  252:../drivers/fsl_ftm.c ****     base->SC = FTM_SC_PS(config->prescale);
- 291              		.loc 1 252 0
- 292 0160 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 293              		.loc 1 252 0
+ 294 0160 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
  253:../drivers/fsl_ftm.c **** 
  254:../drivers/fsl_ftm.c ****     /* Setup the counter operation */
  255:../drivers/fsl_ftm.c ****     base->CONF = (FTM_CONF_BDMMODE(config->bdmMode) | FTM_CONF_GTBEEN(config->useGlobalTimeBase));
- 293              		.loc 1 255 0
- 294 0162 8A7E     		ldrb	r2, [r1, #26]	@ zero_extendqisi2
+ 295              		.loc 1 255 0
+ 296 0162 8A7E     		ldrb	r2, [r1, #26]	@ zero_extendqisi2
  252:../drivers/fsl_ftm.c **** 
- 295              		.loc 1 252 0
- 296 0164 03F00703 		and	r3, r3, #7
- 297 0168 0360     		str	r3, [r0]
- 298              		.loc 1 255 0
- 299 016a 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
- 300 016c 5202     		lsls	r2, r2, #9
- 301 016e 9B01     		lsls	r3, r3, #6
- 302 0170 02F40072 		and	r2, r2, #512
- 303 0174 DBB2     		uxtb	r3, r3
- 304 0176 1343     		orrs	r3, r3, r2
- 305 0178 C0F88430 		str	r3, [r0, #132]
+ 297              		.loc 1 252 0
+ 298 0164 03F00703 		and	r3, r3, #7
+ 299 0168 0360     		str	r3, [r0]
+ 300              		.loc 1 255 0
+ 301 016a 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
+ 302 016c 9B01     		lsls	r3, r3, #6
+ 303 016e DBB2     		uxtb	r3, r3
+ 304 0170 43EA4223 		orr	r3, r3, r2, lsl #9
+ 305 0174 C0F88430 		str	r3, [r0, #132]
  256:../drivers/fsl_ftm.c **** 
  257:../drivers/fsl_ftm.c ****     /* Initial state of channel output */
  258:../drivers/fsl_ftm.c ****     base->OUTINIT = config->chnlInitState;
  306              		.loc 1 258 0
- 307 017c 0B7E     		ldrb	r3, [r1, #24]	@ zero_extendqisi2
- 308 017e C365     		str	r3, [r0, #92]
+ 307 0178 0B7E     		ldrb	r3, [r1, #24]	@ zero_extendqisi2
+ 308 017a C365     		str	r3, [r0, #92]
  259:../drivers/fsl_ftm.c **** 
  260:../drivers/fsl_ftm.c ****     /* Channel polarity */
  261:../drivers/fsl_ftm.c ****     base->POL = config->chnlPolarity;
  309              		.loc 1 261 0
- 310 0180 4B7E     		ldrb	r3, [r1, #25]	@ zero_extendqisi2
- 311 0182 0367     		str	r3, [r0, #112]
+ 310 017c 4B7E     		ldrb	r3, [r1, #25]	@ zero_extendqisi2
+ 311 017e 0367     		str	r3, [r0, #112]
  262:../drivers/fsl_ftm.c **** 
  263:../drivers/fsl_ftm.c ****     /* Set the external trigger sources */
  264:../drivers/fsl_ftm.c ****     base->EXTTRIG = config->extTriggers;
  312              		.loc 1 264 0
- 313 0184 4B69     		ldr	r3, [r1, #20]
- 314 0186 C366     		str	r3, [r0, #108]
+ 313 0180 4B69     		ldr	r3, [r1, #20]
+ 314 0182 C366     		str	r3, [r0, #108]
  265:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_RELOAD_INITIALIZATION_TRIGGER) && (FSL_FEATURE_FTM_HAS_RELOAD_INITI
  266:../drivers/fsl_ftm.c ****     if (config->extTriggers & kFTM_ReloadInitTrigger)
  267:../drivers/fsl_ftm.c ****     {
@@ -1336,248 +1336,245 @@
  281:../drivers/fsl_ftm.c **** #endif /* FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_VALUE */
  282:../drivers/fsl_ftm.c ****                         FTM_DEADTIME_DTPS(config->deadTimePrescale) | 
  315              		.loc 1 282 0
- 316 0188 8B7B     		ldrb	r3, [r1, #14]	@ zero_extendqisi2
+ 316 0184 8B7B     		ldrb	r3, [r1, #14]	@ zero_extendqisi2
  283:../drivers/fsl_ftm.c ****                         FTM_DEADTIME_DTVAL(config->deadTimeValue));
  317              		.loc 1 283 0
- 318 018a 0A69     		ldr	r2, [r1, #16]
+ 318 0186 0A69     		ldr	r2, [r1, #16]
  282:../drivers/fsl_ftm.c ****                         FTM_DEADTIME_DTVAL(config->deadTimeValue));
  319              		.loc 1 282 0
- 320 018c 9B01     		lsls	r3, r3, #6
+ 320 0188 9B01     		lsls	r3, r3, #6
  321              		.loc 1 283 0
- 322 018e 02F03F02 		and	r2, r2, #63
+ 322 018a 02F03F02 		and	r2, r2, #63
  277:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_VALUE) && (FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_
  323              		.loc 1 277 0
- 324 0192 DBB2     		uxtb	r3, r3
+ 324 018e DBB2     		uxtb	r3, r3
  282:../drivers/fsl_ftm.c ****                         FTM_DEADTIME_DTVAL(config->deadTimeValue));
  325              		.loc 1 282 0
- 326 0194 1343     		orrs	r3, r3, r2
+ 326 0190 1343     		orrs	r3, r3, r2
  277:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_VALUE) && (FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_
  327              		.loc 1 277 0
- 328 0196 8366     		str	r3, [r0, #104]
+ 328 0192 8366     		str	r3, [r0, #104]
  284:../drivers/fsl_ftm.c **** 
  285:../drivers/fsl_ftm.c ****     /* FTM fault filter value */
  286:../drivers/fsl_ftm.c ****     reg = base->FLTCTRL;
  287:../drivers/fsl_ftm.c ****     reg &= ~FTM_FLTCTRL_FFVAL_MASK;
  288:../drivers/fsl_ftm.c ****     reg |= FTM_FLTCTRL_FFVAL(config->faultFilterValue);
  329              		.loc 1 288 0
- 330 0198 4B7B     		ldrb	r3, [r1, #13]	@ zero_extendqisi2
+ 330 0194 4B7B     		ldrb	r3, [r1, #13]	@ zero_extendqisi2
  286:../drivers/fsl_ftm.c ****     reg &= ~FTM_FLTCTRL_FFVAL_MASK;
  331              		.loc 1 286 0
- 332 019a C26F     		ldr	r2, [r0, #124]
+ 332 0196 C26F     		ldr	r2, [r0, #124]
  333              	.LVL33:
  334              		.loc 1 288 0
- 335 019c 1B02     		lsls	r3, r3, #8
+ 335 0198 1B02     		lsls	r3, r3, #8
  287:../drivers/fsl_ftm.c ****     reg |= FTM_FLTCTRL_FFVAL(config->faultFilterValue);
  336              		.loc 1 287 0
- 337 019e 22F47062 		bic	r2, r2, #3840
+ 337 019a 22F47062 		bic	r2, r2, #3840
  338              	.LVL34:
  339              		.loc 1 288 0
- 340 01a2 03F47063 		and	r3, r3, #3840
- 341 01a6 1343     		orrs	r3, r3, r2
+ 340 019e 03F47063 		and	r3, r3, #3840
+ 341 01a2 1343     		orrs	r3, r3, r2
  342              	.LVL35:
  289:../drivers/fsl_ftm.c ****     base->FLTCTRL = reg;
  343              		.loc 1 289 0
- 344 01a8 C367     		str	r3, [r0, #124]
+ 344 01a4 C367     		str	r3, [r0, #124]
  290:../drivers/fsl_ftm.c **** 
  291:../drivers/fsl_ftm.c ****     return kStatus_Success;
  345              		.loc 1 291 0
- 346 01aa 0020     		movs	r0, #0
+ 346 01a6 0020     		movs	r0, #0
  347              	.LVL36:
- 348 01ac BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
- 349              	.LVL37:
- 350              	.L26:
- 351              	.LBB27:
- 352              	.LBB12:
-  95:../drivers/fsl_ftm.c ****         {
- 353              		.loc 1 95 0
- 354 01b0 0023     		movs	r3, #0
- 355 01b2 40E7     		b	.L3
- 356              	.LVL38:
- 357              	.L27:
-  93:../drivers/fsl_ftm.c ****     {
- 358              		.loc 1 93 0
- 359 01b4 0123     		movs	r3, #1
- 360 01b6 3EE7     		b	.L3
- 361              	.LVL39:
- 362              	.L28:
- 363 01b8 0223     		movs	r3, #2
- 364 01ba 3CE7     		b	.L3
- 365              	.LVL40:
- 366              	.L32:
- 367              	.LBE12:
- 368              	.LBE27:
- 369              	.LBB28:
- 370              	.LBB17:
- 116:../drivers/fsl_ftm.c ****     {
- 371              		.loc 1 116 0
- 372 01bc 0125     		movs	r5, #1
- 373              	.L5:
- 374 01be 03F1010C 		add	ip, r3, #1
- 375 01c2 DBB2     		uxtb	r3, r3
- 376 01c4 AB42     		cmp	r3, r5
- 377 01c6 BFF667AF 		bge	.L9
- 119:../drivers/fsl_ftm.c ****     }
- 378              		.loc 1 119 0
- 379 01ca DB00     		lsls	r3, r3, #3
- 380              	.LVL41:
- 381 01cc 0533     		adds	r3, r3, #5
- 382 01ce 06FA03F3 		lsl	r3, r6, r3
- 383 01d2 1F43     		orrs	r7, r7, r3
- 384              	.LVL42:
- 385 01d4 6346     		mov	r3, ip
- 386 01d6 53E7     		b	.L4
- 387              	.LVL43:
- 388              	.L33:
- 116:../drivers/fsl_ftm.c ****     {
- 389              		.loc 1 116 0
- 390 01d8 0425     		movs	r5, #4
- 391 01da F0E7     		b	.L5
- 392              	.LVL44:
- 393              	.L6:
- 131:../drivers/fsl_ftm.c ****                 FTM_SYNCONF_SWSOC_MASK | FTM_SYNCONF_SWOM_MASK);
- 394              		.loc 1 131 0
- 395 01dc 43F4FD53 		orr	r3, r3, #8096
- 396              	.LVL45:
- 397 01e0 43F01403 		orr	r3, r3, #20
- 398              	.LVL46:
- 399 01e4 60E7     		b	.L10
- 400              	.LVL47:
- 401              	.L36:
- 402              	.LBE17:
- 403              	.LBE28:
- 404              	.LBB29:
- 405              	.LBB25:
- 172:../drivers/fsl_ftm.c ****     {
- 406              		.loc 1 172 0
- 407 01e6 0123     		movs	r3, #1
- 408              	.L15:
- 409 01e8 9C42     		cmp	r4, r3
- 410 01ea 8BD2     		bcs	.L19
- 175:../drivers/fsl_ftm.c ****     }
- 411              		.loc 1 175 0
- 412 01ec E300     		lsls	r3, r4, #3
- 413 01ee 0533     		adds	r3, r3, #5
- 414 01f0 0EFA03F3 		lsl	r3, lr, r3
- 415 01f4 1D43     		orrs	r5, r5, r3
- 416              	.LVL48:
- 172:../drivers/fsl_ftm.c ****     {
- 417              		.loc 1 172 0
- 418 01f6 0134     		adds	r4, r4, #1
- 419              	.LVL49:
- 420 01f8 7BE7     		b	.L14
- 421              	.L37:
- 422 01fa 0423     		movs	r3, #4
- 423 01fc F4E7     		b	.L15
- 424              	.LVL50:
- 425              	.L16:
- 183:../drivers/fsl_ftm.c ****     reg |= (reloadPoints & ((1U << FSL_FEATURE_FTM_CHANNEL_COUNTn(base)) - 1));
- 426              		.loc 1 183 0
- 427 01fe 0E4B     		ldr	r3, .L58+8
- 428 0200 9842     		cmp	r0, r3
- 429 0202 0BD0     		beq	.L39
- 430 0204 03F58053 		add	r3, r3, #4096
- 431 0208 9842     		cmp	r0, r3
- 432 020a 07D0     		beq	.L39
- 433 020c 03F5FE23 		add	r3, r3, #520192
- 434 0210 9842     		cmp	r0, r3
- 435 0212 14BF     		ite	ne
- 436 0214 0023     		movne	r3, #0
- 437 0216 6FF0FF03 		mvneq	r3, #255
- 438 021a 7BE7     		b	.L17
- 439              	.L39:
- 440 021c 6FF00303 		mvn	r3, #3
- 441 0220 78E7     		b	.L17
- 442              	.L41:
- 184:../drivers/fsl_ftm.c **** 
- 443              		.loc 1 184 0
- 444 0222 FF23     		movs	r3, #255
- 445 0224 8AE7     		b	.L20
- 446              	.L43:
- 447 0226 0323     		movs	r3, #3
- 448 0228 88E7     		b	.L20
- 449              	.LVL51:
- 450              	.L25:
- 451              	.LBE25:
- 452              	.LBE29:
- 234:../drivers/fsl_ftm.c ****     }
- 453              		.loc 1 234 0
- 454 022a 0120     		movs	r0, #1
- 455              	.LVL52:
+ 348              	.L1:
  292:../drivers/fsl_ftm.c **** }
- 456              		.loc 1 292 0
- 457 022c BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
- 458              	.L59:
- 459              		.align	2
- 460              	.L58:
- 461 0230 00800340 		.word	1073971200
- 462 0234 00000000 		.word	.LANCHOR0
- 463 0238 00900340 		.word	1073975296
- 464 023c 00A00340 		.word	1073979392
- 465 0240 00900B40 		.word	1074499584
- 466              		.cfi_endproc
- 467              	.LFE168:
- 469              		.section	.text.FTM_Deinit,"ax",%progbits
- 470              		.align	1
- 471              		.global	FTM_Deinit
- 472              		.syntax unified
- 473              		.thumb
- 474              		.thumb_func
- 475              		.fpu fpv4-sp-d16
- 477              	FTM_Deinit:
- 478              	.LFB169:
+ 349              		.loc 1 292 0
+ 350 01a8 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 351              	.LVL37:
+ 352              	.L26:
+ 353              	.LBB27:
+ 354              	.LBB12:
+  93:../drivers/fsl_ftm.c ****     {
+ 355              		.loc 1 93 0
+ 356 01ac 0023     		movs	r3, #0
+ 357 01ae 42E7     		b	.L3
+ 358              	.LVL38:
+ 359              	.L27:
+ 360 01b0 0123     		movs	r3, #1
+ 361 01b2 40E7     		b	.L3
+ 362              	.LVL39:
+ 363              	.L28:
+ 364 01b4 0223     		movs	r3, #2
+ 365 01b6 3EE7     		b	.L3
+ 366              	.LVL40:
+ 367              	.L32:
+ 368              	.LBE12:
+ 369              	.LBE27:
+ 370              	.LBB28:
+ 371              	.LBB17:
+ 116:../drivers/fsl_ftm.c ****     {
+ 372              		.loc 1 116 0
+ 373 01b8 0126     		movs	r6, #1
+ 374              	.L5:
+ 375 01ba B342     		cmp	r3, r6
+ 376 01bc 05F10105 		add	r5, r5, #1
+ 377              	.LVL41:
+ 378 01c0 BFF66CAF 		bge	.L9
+ 119:../drivers/fsl_ftm.c ****     }
+ 379              		.loc 1 119 0
+ 380 01c4 DB00     		lsls	r3, r3, #3
+ 381              	.LVL42:
+ 382 01c6 0533     		adds	r3, r3, #5
+ 383 01c8 09FA03F3 		lsl	r3, r9, r3
+ 384 01cc 1F43     		orrs	r7, r7, r3
+ 385              	.LVL43:
+ 386 01ce 58E7     		b	.L4
+ 387              	.L33:
+ 116:../drivers/fsl_ftm.c ****     {
+ 388              		.loc 1 116 0
+ 389 01d0 0426     		movs	r6, #4
+ 390 01d2 F2E7     		b	.L5
+ 391              	.LVL44:
+ 392              	.L6:
+ 131:../drivers/fsl_ftm.c ****                 FTM_SYNCONF_SWSOC_MASK | FTM_SYNCONF_SWOM_MASK);
+ 393              		.loc 1 131 0
+ 394 01d4 43F4FD53 		orr	r3, r3, #8096
+ 395              	.LVL45:
+ 396 01d8 43F01403 		orr	r3, r3, #20
+ 397              	.LVL46:
+ 398 01dc 66E7     		b	.L10
+ 399              	.LVL47:
+ 400              	.L36:
+ 401              	.LBE17:
+ 402              	.LBE28:
+ 403              	.LBB29:
+ 404              	.LBB25:
+ 172:../drivers/fsl_ftm.c ****     {
+ 405              		.loc 1 172 0
+ 406 01de 0123     		movs	r3, #1
+ 407              	.L15:
+ 408 01e0 9C42     		cmp	r4, r3
+ 409 01e2 90D2     		bcs	.L19
+ 175:../drivers/fsl_ftm.c ****     }
+ 410              		.loc 1 175 0
+ 411 01e4 E300     		lsls	r3, r4, #3
+ 412 01e6 0533     		adds	r3, r3, #5
+ 413 01e8 0CFA03F3 		lsl	r3, ip, r3
+ 414 01ec 1D43     		orrs	r5, r5, r3
+ 415              	.LVL48:
+ 172:../drivers/fsl_ftm.c ****     {
+ 416              		.loc 1 172 0
+ 417 01ee 0134     		adds	r4, r4, #1
+ 418              	.LVL49:
+ 419 01f0 81E7     		b	.L14
+ 420              	.L37:
+ 421 01f2 0423     		movs	r3, #4
+ 422 01f4 F4E7     		b	.L15
+ 423              	.LVL50:
+ 424              	.L16:
+ 183:../drivers/fsl_ftm.c ****     reg |= (reloadPoints & ((1U << FSL_FEATURE_FTM_CHANNEL_COUNTn(base)) - 1));
+ 425              		.loc 1 183 0
+ 426 01f6 0E4B     		ldr	r3, .L58+8
+ 427 01f8 9842     		cmp	r0, r3
+ 428 01fa 0BD0     		beq	.L39
+ 429 01fc 03F58053 		add	r3, r3, #4096
+ 430 0200 9842     		cmp	r0, r3
+ 431 0202 07D0     		beq	.L39
+ 432 0204 03F5FE23 		add	r3, r3, #520192
+ 433 0208 9842     		cmp	r0, r3
+ 434 020a 14BF     		ite	ne
+ 435 020c 0023     		movne	r3, #0
+ 436 020e 6FF0FF03 		mvneq	r3, #255
+ 437 0212 80E7     		b	.L17
+ 438              	.L39:
+ 439 0214 6FF00303 		mvn	r3, #3
+ 440 0218 7DE7     		b	.L17
+ 441              	.L41:
+ 184:../drivers/fsl_ftm.c **** 
+ 442              		.loc 1 184 0
+ 443 021a FF23     		movs	r3, #255
+ 444 021c 8EE7     		b	.L20
+ 445              	.L43:
+ 446 021e 0323     		movs	r3, #3
+ 447 0220 8CE7     		b	.L20
+ 448              	.LVL51:
+ 449              	.L25:
+ 450              	.LBE25:
+ 451              	.LBE29:
+ 234:../drivers/fsl_ftm.c ****     }
+ 452              		.loc 1 234 0
+ 453 0222 0120     		movs	r0, #1
+ 454              	.LVL52:
+ 455 0224 C0E7     		b	.L1
+ 456              	.L59:
+ 457 0226 00BF     		.align	2
+ 458              	.L58:
+ 459 0228 00800340 		.word	1073971200
+ 460 022c 00000000 		.word	.LANCHOR0
+ 461 0230 00900340 		.word	1073975296
+ 462 0234 00A00340 		.word	1073979392
+ 463 0238 00900B40 		.word	1074499584
+ 464              		.cfi_endproc
+ 465              	.LFE168:
+ 467              		.section	.text.FTM_Deinit,"ax",%progbits
+ 468              		.align	1
+ 469              		.global	FTM_Deinit
+ 470              		.syntax unified
+ 471              		.thumb
+ 472              		.thumb_func
+ 473              		.fpu fpv4-sp-d16
+ 475              	FTM_Deinit:
+ 476              	.LFB169:
  293:../drivers/fsl_ftm.c **** 
  294:../drivers/fsl_ftm.c **** void FTM_Deinit(FTM_Type *base)
  295:../drivers/fsl_ftm.c **** {
- 479              		.loc 1 295 0
- 480              		.cfi_startproc
- 481              		@ args = 0, pretend = 0, frame = 0
- 482              		@ frame_needed = 0, uses_anonymous_args = 0
- 483              		@ link register save eliminated.
- 484              	.LVL53:
+ 477              		.loc 1 295 0
+ 478              		.cfi_startproc
+ 479              		@ args = 0, pretend = 0, frame = 0
+ 480              		@ frame_needed = 0, uses_anonymous_args = 0
+ 481              		@ link register save eliminated.
+ 482              	.LVL53:
  296:../drivers/fsl_ftm.c ****     /* Set clock source to none to disable counter */
  297:../drivers/fsl_ftm.c ****     base->SC &= ~(FTM_SC_CLKS_MASK);
- 485              		.loc 1 297 0
- 486 0000 0368     		ldr	r3, [r0]
- 487 0002 23F01803 		bic	r3, r3, #24
- 488 0006 0360     		str	r3, [r0]
- 489              	.LVL54:
- 490              	.LBB34:
- 491              	.LBB35:
+ 483              		.loc 1 297 0
+ 484 0000 0368     		ldr	r3, [r0]
+ 485 0002 23F01803 		bic	r3, r3, #24
+ 486 0006 0360     		str	r3, [r0]
+ 487              	.LVL54:
+ 488              	.LBB34:
+ 489              	.LBB35:
   95:../drivers/fsl_ftm.c ****         {
- 492              		.loc 1 95 0
- 493 0008 134B     		ldr	r3, .L66
- 494 000a 9842     		cmp	r0, r3
- 495 000c 1ED0     		beq	.L62
- 496              	.LVL55:
- 497 000e 03F58053 		add	r3, r3, #4096
- 498 0012 9842     		cmp	r0, r3
- 499 0014 1CD0     		beq	.L63
- 500              	.LVL56:
- 501 0016 03F58053 		add	r3, r3, #4096
- 502 001a 9842     		cmp	r0, r3
- 503 001c 1AD0     		beq	.L64
- 504              	.LVL57:
+ 490              		.loc 1 95 0
+ 491 0008 134B     		ldr	r3, .L66
+ 492 000a 9842     		cmp	r0, r3
+ 493 000c 1ED0     		beq	.L62
+ 494              	.LVL55:
+ 495 000e 03F58053 		add	r3, r3, #4096
+ 496 0012 9842     		cmp	r0, r3
+ 497 0014 1CD0     		beq	.L63
+ 498              	.LVL56:
+ 499 0016 03F58053 		add	r3, r3, #4096
+ 500 001a 9842     		cmp	r0, r3
+ 501 001c 1AD0     		beq	.L64
+ 502              	.LVL57:
   93:../drivers/fsl_ftm.c ****     {
- 505              		.loc 1 93 0
- 506 001e 03F5FE23 		add	r3, r3, #520192
- 507 0022 9842     		cmp	r0, r3
- 508 0024 0CBF     		ite	eq
- 509 0026 0320     		moveq	r0, #3
- 510 0028 0420     		movne	r0, #4
- 511              	.LVL58:
- 512              	.L61:
- 513              	.LBE35:
- 514              	.LBE34:
+ 503              		.loc 1 93 0
+ 504 001e 03F5FE23 		add	r3, r3, #520192
+ 505 0022 9842     		cmp	r0, r3
+ 506 0024 0CBF     		ite	eq
+ 507 0026 0320     		moveq	r0, #3
+ 508 0028 0420     		movne	r0, #4
+ 509              	.LVL58:
+ 510              	.L61:
+ 511              	.LBE35:
+ 512              	.LBE34:
  298:../drivers/fsl_ftm.c **** 
  299:../drivers/fsl_ftm.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
  300:../drivers/fsl_ftm.c ****     /* Gate the FTM clock */
  301:../drivers/fsl_ftm.c ****     CLOCK_DisableClock(s_ftmClocks[FTM_GetInstance(base)]);
- 515              		.loc 1 301 0
- 516 002a 0C4B     		ldr	r3, .L66+4
- 517 002c 53F82020 		ldr	r2, [r3, r0, lsl #2]
- 518              	.LVL59:
- 519              	.LBB37:
- 520              	.LBB38:
+ 513              		.loc 1 301 0
+ 514 002a 0C4B     		ldr	r3, .L66+4
+ 515 002c 53F82020 		ldr	r2, [r3, r0, lsl #2]
+ 516              	.LVL59:
+ 517              	.LBB37:
+ 518              	.LBB38:
  696:../drivers/fsl_clock.h **** }
  697:../drivers/fsl_clock.h **** 
  698:../drivers/fsl_clock.h **** /*!
@@ -1588,146 +1585,140 @@
  703:../drivers/fsl_clock.h **** static inline void CLOCK_DisableClock(clock_ip_name_t name)
  704:../drivers/fsl_clock.h **** {
  705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
- 521              		.loc 2 705 0
- 522 0030 130C     		lsrs	r3, r2, #16
- 523 0032 03F18043 		add	r3, r3, #1073741824
- 524 0036 03F58E23 		add	r3, r3, #290816
+ 519              		.loc 2 705 0
+ 520 0030 130C     		lsrs	r3, r2, #16
+ 521 0032 03F18043 		add	r3, r3, #1073741824
+ 522 0036 03F58E23 		add	r3, r3, #290816
  706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
- 525              		.loc 2 706 0
- 526 003a 92B2     		uxth	r2, r2
- 527              	.LVL60:
- 528 003c 1968     		ldr	r1, [r3]
- 529 003e 0120     		movs	r0, #1
- 530              	.LVL61:
- 531 0040 00FA02F2 		lsl	r2, r0, r2
- 532 0044 21EA0202 		bic	r2, r1, r2
- 533 0048 1A60     		str	r2, [r3]
- 534 004a 7047     		bx	lr
- 535              	.LVL62:
- 536              	.L62:
- 537              	.LBE38:
- 538              	.LBE37:
- 539              	.LBB39:
- 540              	.LBB36:
-  93:../drivers/fsl_ftm.c ****     {
- 541              		.loc 1 93 0
- 542 004c 0020     		movs	r0, #0
- 543              	.LVL63:
- 544 004e ECE7     		b	.L61
- 545              	.LVL64:
- 546              	.L63:
- 547 0050 0120     		movs	r0, #1
- 548              	.LVL65:
- 549 0052 EAE7     		b	.L61
- 550              	.LVL66:
- 551              	.L64:
- 552 0054 0220     		movs	r0, #2
- 553              	.LVL67:
- 554 0056 E8E7     		b	.L61
- 555              	.L67:
- 556              		.align	2
- 557              	.L66:
- 558 0058 00800340 		.word	1073971200
- 559 005c 00000000 		.word	.LANCHOR0
- 560              	.LBE36:
- 561              	.LBE39:
- 562              		.cfi_endproc
- 563              	.LFE169:
- 565              		.section	.text.FTM_GetDefaultConfig,"ax",%progbits
- 566              		.align	1
- 567              		.global	FTM_GetDefaultConfig
- 568              		.syntax unified
- 569              		.thumb
- 570              		.thumb_func
- 571              		.fpu fpv4-sp-d16
- 573              	FTM_GetDefaultConfig:
- 574              	.LFB170:
+ 523              		.loc 2 706 0
+ 524 003a 92B2     		uxth	r2, r2
+ 525              	.LVL60:
+ 526 003c 1968     		ldr	r1, [r3]
+ 527 003e 0120     		movs	r0, #1
+ 528              	.LVL61:
+ 529 0040 00FA02F2 		lsl	r2, r0, r2
+ 530 0044 21EA0202 		bic	r2, r1, r2
+ 531 0048 1A60     		str	r2, [r3]
+ 532              	.LBE38:
+ 533              	.LBE37:
  302:../drivers/fsl_ftm.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
  303:../drivers/fsl_ftm.c **** }
+ 534              		.loc 1 303 0
+ 535 004a 7047     		bx	lr
+ 536              	.LVL62:
+ 537              	.L62:
+ 538              	.LBB39:
+ 539              	.LBB36:
+  93:../drivers/fsl_ftm.c ****     {
+ 540              		.loc 1 93 0
+ 541 004c 0020     		movs	r0, #0
+ 542              	.LVL63:
+ 543 004e ECE7     		b	.L61
+ 544              	.LVL64:
+ 545              	.L63:
+ 546 0050 0120     		movs	r0, #1
+ 547              	.LVL65:
+ 548 0052 EAE7     		b	.L61
+ 549              	.LVL66:
+ 550              	.L64:
+ 551 0054 0220     		movs	r0, #2
+ 552              	.LVL67:
+ 553 0056 E8E7     		b	.L61
+ 554              	.L67:
+ 555              		.align	2
+ 556              	.L66:
+ 557 0058 00800340 		.word	1073971200
+ 558 005c 00000000 		.word	.LANCHOR0
+ 559              	.LBE36:
+ 560              	.LBE39:
+ 561              		.cfi_endproc
+ 562              	.LFE169:
+ 564              		.section	.text.FTM_GetDefaultConfig,"ax",%progbits
+ 565              		.align	1
+ 566              		.global	FTM_GetDefaultConfig
+ 567              		.syntax unified
+ 568              		.thumb
+ 569              		.thumb_func
+ 570              		.fpu fpv4-sp-d16
+ 572              	FTM_GetDefaultConfig:
+ 573              	.LFB170:
  304:../drivers/fsl_ftm.c **** 
  305:../drivers/fsl_ftm.c **** void FTM_GetDefaultConfig(ftm_config_t *config)
  306:../drivers/fsl_ftm.c **** {
- 575              		.loc 1 306 0
- 576              		.cfi_startproc
- 577              		@ args = 0, pretend = 0, frame = 0
- 578              		@ frame_needed = 0, uses_anonymous_args = 0
- 579              		@ link register save eliminated.
- 580              	.LVL68:
+ 574              		.loc 1 306 0
+ 575              		.cfi_startproc
+ 576              		@ args = 0, pretend = 0, frame = 0
+ 577              		@ frame_needed = 0, uses_anonymous_args = 0
+ 578              		@ link register save eliminated.
+ 579              	.LVL68:
  307:../drivers/fsl_ftm.c ****     assert(config);
  308:../drivers/fsl_ftm.c **** 
  309:../drivers/fsl_ftm.c ****     /* Divide FTM clock by 1 */
  310:../drivers/fsl_ftm.c ****     config->prescale = kFTM_Prescale_Divide_1;
+ 580              		.loc 1 310 0
+ 581 0000 0023     		movs	r3, #0
  311:../drivers/fsl_ftm.c ****     /* FTM behavior in BDM mode */
  312:../drivers/fsl_ftm.c ****     config->bdmMode = kFTM_BdmMode_0;
  313:../drivers/fsl_ftm.c ****     /* Software trigger will be used to update registers */
  314:../drivers/fsl_ftm.c ****     config->pwmSyncMode = kFTM_SoftwareTrigger;
- 581              		.loc 1 314 0
- 582 0000 8022     		movs	r2, #128
- 310:../drivers/fsl_ftm.c ****     /* FTM behavior in BDM mode */
- 583              		.loc 1 310 0
- 584 0002 0023     		movs	r3, #0
- 585              		.loc 1 314 0
- 586 0004 4260     		str	r2, [r0, #4]
+ 582              		.loc 1 314 0
+ 583 0002 8022     		movs	r2, #128
  315:../drivers/fsl_ftm.c ****     /* No intermediate register load */
  316:../drivers/fsl_ftm.c ****     config->reloadPoints = 0;
+ 584              		.loc 1 316 0
+ 585 0004 C0E90123 		strd	r2, r3, [r0, #4]
  317:../drivers/fsl_ftm.c ****     /* Fault control disabled for all channels */
  318:../drivers/fsl_ftm.c ****     config->faultMode = kFTM_Fault_Disable;
  319:../drivers/fsl_ftm.c ****     /* Disable the fault filter */
  320:../drivers/fsl_ftm.c ****     config->faultFilterValue = 0;
  321:../drivers/fsl_ftm.c ****     /* Divide the system clock by 1 */
  322:../drivers/fsl_ftm.c ****     config->deadTimePrescale = kFTM_Deadtime_Prescale_1;
- 587              		.loc 1 322 0
- 588 0006 0122     		movs	r2, #1
+ 586              		.loc 1 322 0
+ 587 0008 0122     		movs	r2, #1
  310:../drivers/fsl_ftm.c ****     /* FTM behavior in BDM mode */
- 589              		.loc 1 310 0
- 590 0008 0370     		strb	r3, [r0]
+ 588              		.loc 1 310 0
+ 589 000a 0370     		strb	r3, [r0]
  312:../drivers/fsl_ftm.c ****     /* Software trigger will be used to update registers */
- 591              		.loc 1 312 0
- 592 000a 4370     		strb	r3, [r0, #1]
- 316:../drivers/fsl_ftm.c ****     /* Fault control disabled for all channels */
- 593              		.loc 1 316 0
- 594 000c 8360     		str	r3, [r0, #8]
+ 590              		.loc 1 312 0
+ 591 000c 4370     		strb	r3, [r0, #1]
  318:../drivers/fsl_ftm.c ****     /* Disable the fault filter */
- 595              		.loc 1 318 0
- 596 000e 0373     		strb	r3, [r0, #12]
+ 592              		.loc 1 318 0
+ 593 000e 0373     		strb	r3, [r0, #12]
  320:../drivers/fsl_ftm.c ****     /* Divide the system clock by 1 */
- 597              		.loc 1 320 0
- 598 0010 4373     		strb	r3, [r0, #13]
- 599              		.loc 1 322 0
- 600 0012 8273     		strb	r2, [r0, #14]
+ 594              		.loc 1 320 0
+ 595 0010 4373     		strb	r3, [r0, #13]
+ 596              		.loc 1 322 0
+ 597 0012 8273     		strb	r2, [r0, #14]
  323:../drivers/fsl_ftm.c ****     /* No counts are inserted */
  324:../drivers/fsl_ftm.c ****     config->deadTimeValue = 0;
- 601              		.loc 1 324 0
- 602 0014 0361     		str	r3, [r0, #16]
+ 598              		.loc 1 324 0
+ 599 0014 C0E90433 		strd	r3, r3, [r0, #16]
  325:../drivers/fsl_ftm.c ****     /* No external trigger */
  326:../drivers/fsl_ftm.c ****     config->extTriggers = 0;
- 603              		.loc 1 326 0
- 604 0016 4361     		str	r3, [r0, #20]
+ 600              		.loc 1 326 0
+ 601 0018 0383     		strh	r3, [r0, #24]	@ movhi
  327:../drivers/fsl_ftm.c ****     /* Initialization value is 0 for all channels */
  328:../drivers/fsl_ftm.c ****     config->chnlInitState = 0;
- 605              		.loc 1 328 0
- 606 0018 0376     		strb	r3, [r0, #24]
  329:../drivers/fsl_ftm.c ****     /* Active high polarity for all channels */
  330:../drivers/fsl_ftm.c ****     config->chnlPolarity = 0;
- 607              		.loc 1 330 0
- 608 001a 4376     		strb	r3, [r0, #25]
  331:../drivers/fsl_ftm.c ****     /* Use internal FTM counter as timebase */
  332:../drivers/fsl_ftm.c ****     config->useGlobalTimeBase = false;
- 609              		.loc 1 332 0
- 610 001c 8376     		strb	r3, [r0, #26]
- 611 001e 7047     		bx	lr
- 612              		.cfi_endproc
- 613              	.LFE170:
- 615              		.section	.text.FTM_SetupPwm,"ax",%progbits
- 616              		.align	1
- 617              		.global	FTM_SetupPwm
- 618              		.syntax unified
- 619              		.thumb
- 620              		.thumb_func
- 621              		.fpu fpv4-sp-d16
- 623              	FTM_SetupPwm:
- 624              	.LFB171:
+ 602              		.loc 1 332 0
+ 603 001a 8376     		strb	r3, [r0, #26]
  333:../drivers/fsl_ftm.c **** }
+ 604              		.loc 1 333 0
+ 605 001c 7047     		bx	lr
+ 606              		.cfi_endproc
+ 607              	.LFE170:
+ 609              		.section	.text.FTM_SetupPwm,"ax",%progbits
+ 610              		.align	1
+ 611              		.global	FTM_SetupPwm
+ 612              		.syntax unified
+ 613              		.thumb
+ 614              		.thumb_func
+ 615              		.fpu fpv4-sp-d16
+ 617              	FTM_SetupPwm:
+ 618              	.LFB171:
  334:../drivers/fsl_ftm.c **** 
  335:../drivers/fsl_ftm.c **** status_t FTM_SetupPwm(FTM_Type *base,
  336:../drivers/fsl_ftm.c ****                       const ftm_chnl_pwm_signal_param_t *chnlParams,
@@ -1736,22 +1727,22 @@
  339:../drivers/fsl_ftm.c ****                       uint32_t pwmFreq_Hz,
  340:../drivers/fsl_ftm.c ****                       uint32_t srcClock_Hz)
  341:../drivers/fsl_ftm.c **** {
- 625              		.loc 1 341 0
- 626              		.cfi_startproc
- 627              		@ args = 8, pretend = 0, frame = 0
- 628              		@ frame_needed = 0, uses_anonymous_args = 0
- 629              	.LVL69:
- 630 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
- 631              		.cfi_def_cfa_offset 36
- 632              		.cfi_offset 4, -36
- 633              		.cfi_offset 5, -32
- 634              		.cfi_offset 6, -28
- 635              		.cfi_offset 7, -24
- 636              		.cfi_offset 8, -20
- 637              		.cfi_offset 9, -16
- 638              		.cfi_offset 10, -12
- 639              		.cfi_offset 11, -8
- 640              		.cfi_offset 14, -4
+ 619              		.loc 1 341 0
+ 620              		.cfi_startproc
+ 621              		@ args = 8, pretend = 0, frame = 0
+ 622              		@ frame_needed = 0, uses_anonymous_args = 0
+ 623              	.LVL69:
+ 624 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 625              		.cfi_def_cfa_offset 36
+ 626              		.cfi_offset 4, -36
+ 627              		.cfi_offset 5, -32
+ 628              		.cfi_offset 6, -28
+ 629              		.cfi_offset 7, -24
+ 630              		.cfi_offset 8, -20
+ 631              		.cfi_offset 9, -16
+ 632              		.cfi_offset 10, -12
+ 633              		.cfi_offset 11, -8
+ 634              		.cfi_offset 14, -4
  342:../drivers/fsl_ftm.c ****     assert(chnlParams);
  343:../drivers/fsl_ftm.c ****     assert(srcClock_Hz);
  344:../drivers/fsl_ftm.c ****     assert(pwmFreq_Hz);
@@ -1759,48 +1750,48 @@
  346:../drivers/fsl_ftm.c **** 
  347:../drivers/fsl_ftm.c ****     uint32_t mod, reg;
  348:../drivers/fsl_ftm.c ****     uint32_t ftmClock = (srcClock_Hz / (1U << (base->SC & FTM_SC_PS_MASK)));
- 641              		.loc 1 348 0
- 642 0004 0668     		ldr	r6, [r0]
- 643 0006 0A9D     		ldr	r5, [sp, #40]
+ 635              		.loc 1 348 0
+ 636 0004 0668     		ldr	r6, [r0]
+ 637 0006 0A9C     		ldr	r4, [sp, #40]
  341:../drivers/fsl_ftm.c ****     assert(chnlParams);
- 644              		.loc 1 341 0
- 645 0008 099C     		ldr	r4, [sp, #36]
- 646              		.loc 1 348 0
- 647 000a 06F00706 		and	r6, r6, #7
+ 638              		.loc 1 341 0
+ 639 0008 099D     		ldr	r5, [sp, #36]
+ 640              		.loc 1 348 0
+ 641 000a 06F00706 		and	r6, r6, #7
  349:../drivers/fsl_ftm.c ****     uint16_t cnv, cnvFirstEdge;
  350:../drivers/fsl_ftm.c ****     uint8_t i;
  351:../drivers/fsl_ftm.c **** 
  352:../drivers/fsl_ftm.c ****     switch (mode)
- 648              		.loc 1 352 0
- 649 000e 012B     		cmp	r3, #1
+ 642              		.loc 1 352 0
+ 643 000e 012B     		cmp	r3, #1
  348:../drivers/fsl_ftm.c ****     uint16_t cnv, cnvFirstEdge;
- 650              		.loc 1 348 0
- 651 0010 25FA06F5 		lsr	r5, r5, r6
- 652              	.LVL70:
- 653              		.loc 1 352 0
- 654 0014 0FD0     		beq	.L71
- 655 0016 01D3     		bcc	.L72
- 656 0018 022B     		cmp	r3, #2
- 657 001a 09D1     		bne	.L96
- 658              	.L72:
+ 644              		.loc 1 348 0
+ 645 0010 24FA06F4 		lsr	r4, r4, r6
+ 646              	.LVL70:
+ 647              		.loc 1 352 0
+ 648 0014 0ED0     		beq	.L71
+ 649 0016 01D3     		bcc	.L72
+ 650 0018 022B     		cmp	r3, #2
+ 651 001a 09D1     		bne	.L96
+ 652              	.L72:
  353:../drivers/fsl_ftm.c ****     {
  354:../drivers/fsl_ftm.c ****         case kFTM_EdgeAlignedPwm:
  355:../drivers/fsl_ftm.c ****         case kFTM_CombinedPwm:
  356:../drivers/fsl_ftm.c ****             base->SC &= ~FTM_SC_CPWMS_MASK;
  357:../drivers/fsl_ftm.c ****             mod = (ftmClock / pwmFreq_Hz) - 1;
- 659              		.loc 1 357 0
- 660 001c B5FBF4F5 		udiv	r5, r5, r4
- 661              	.LVL71:
+ 653              		.loc 1 357 0
+ 654 001c B4FBF5F4 		udiv	r4, r4, r5
+ 655              	.LVL71:
  356:../drivers/fsl_ftm.c ****             mod = (ftmClock / pwmFreq_Hz) - 1;
- 662              		.loc 1 356 0
- 663 0020 0668     		ldr	r6, [r0]
- 664              	.LVL72:
- 665 0022 26F02006 		bic	r6, r6, #32
- 666 0026 0660     		str	r6, [r0]
- 667              		.loc 1 357 0
- 668 0028 013D     		subs	r5, r5, #1
- 669              	.LVL73:
- 670              	.L73:
+ 656              		.loc 1 356 0
+ 657 0020 0668     		ldr	r6, [r0]
+ 658              	.LVL72:
+ 659 0022 26F02006 		bic	r6, r6, #32
+ 660 0026 0660     		str	r6, [r0]
+ 661              		.loc 1 357 0
+ 662 0028 013C     		subs	r4, r4, #1
+ 663              	.LVL73:
+ 664              	.L73:
  358:../drivers/fsl_ftm.c ****             break;
  359:../drivers/fsl_ftm.c ****         case kFTM_CenterAlignedPwm:
  360:../drivers/fsl_ftm.c ****             base->SC |= FTM_SC_CPWMS_MASK;
@@ -1813,15 +1804,36 @@
  367:../drivers/fsl_ftm.c ****     /* Return an error in case we overflow the registers, probably would require changing
  368:../drivers/fsl_ftm.c ****      * clock source to get the desired frequency */
  369:../drivers/fsl_ftm.c ****     if (mod > 65535U)
- 671              		.loc 1 369 0
- 672 002a B5F5803F 		cmp	r5, #65536
- 673 002e 0AD3     		bcc	.L74
- 674              	.LVL74:
- 675              	.L96:
+ 665              		.loc 1 369 0
+ 666 002a B4F5803F 		cmp	r4, #65536
+ 667 002e 09D3     		bcc	.L74
+ 668              	.LVL74:
+ 669              	.L96:
  364:../drivers/fsl_ftm.c ****     }
- 676              		.loc 1 364 0
- 677 0030 0120     		movs	r0, #1
- 678              	.LVL75:
+ 670              		.loc 1 364 0
+ 671 0030 0120     		movs	r0, #1
+ 672              	.LVL75:
+ 673 0032 18E0     		b	.L69
+ 674              	.LVL76:
+ 675              	.L71:
+ 360:../drivers/fsl_ftm.c ****             mod = ftmClock / (pwmFreq_Hz * 2);
+ 676              		.loc 1 360 0
+ 677 0034 0668     		ldr	r6, [r0]
+ 678 0036 46F02006 		orr	r6, r6, #32
+ 361:../drivers/fsl_ftm.c ****             break;
+ 679              		.loc 1 361 0
+ 680 003a 6D00     		lsls	r5, r5, #1
+ 360:../drivers/fsl_ftm.c ****             mod = ftmClock / (pwmFreq_Hz * 2);
+ 681              		.loc 1 360 0
+ 682 003c 0660     		str	r6, [r0]
+ 361:../drivers/fsl_ftm.c ****             break;
+ 683              		.loc 1 361 0
+ 684 003e B4FBF5F4 		udiv	r4, r4, r5
+ 685              	.LVL77:
+ 362:../drivers/fsl_ftm.c ****         default:
+ 686              		.loc 1 362 0
+ 687 0042 F2E7     		b	.L73
+ 688              	.L74:
  370:../drivers/fsl_ftm.c ****     {
  371:../drivers/fsl_ftm.c ****         return kStatus_Fail;
  372:../drivers/fsl_ftm.c ****     }
@@ -1938,6 +1950,31 @@
  483:../drivers/fsl_ftm.c ****             /* Set the combine bit for the channel pair */
  484:../drivers/fsl_ftm.c ****             base->COMBINE |=
  485:../drivers/fsl_ftm.c ****                 (1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlParams->chnl
+ 689              		.loc 1 485 0
+ 690 0044 4FF0010A 		mov	r10, #1
+ 691 0048 0E1D     		adds	r6, r1, #4
+ 459:../drivers/fsl_ftm.c ****                 }
+ 692              		.loc 1 459 0
+ 693 004a 04EB0A0E 		add	lr, r4, r10
+ 694 004e 01EB8201 		add	r1, r1, r2, lsl #2
+ 695              	.LVL78:
+ 424:../drivers/fsl_ftm.c ****             {
+ 696              		.loc 1 424 0
+ 697 0052 DFF8F0B0 		ldr	fp, .L97+4
+ 374:../drivers/fsl_ftm.c **** 
+ 698              		.loc 1 374 0
+ 699 0056 8460     		str	r4, [r0, #8]
+ 700              	.LVL79:
+ 701 0058 01F10409 		add	r9, r1, #4
+ 459:../drivers/fsl_ftm.c ****                 }
+ 702              		.loc 1 459 0
+ 703 005c 1FFA8EFE 		uxth	lr, lr
+ 704              	.LVL80:
+ 705              	.L75:
+ 377:../drivers/fsl_ftm.c ****     {
+ 706              		.loc 1 377 0 discriminator 1
+ 707 0060 B145     		cmp	r9, r6
+ 708 0062 02D1     		bne	.L85
  486:../drivers/fsl_ftm.c **** 
  487:../drivers/fsl_ftm.c ****             /* Set the channel pair values */
  488:../drivers/fsl_ftm.c ****             base->CONTROLS[chnlParams->chnlNumber * 2].CnV = cnvFirstEdge;
@@ -1953,848 +1990,801 @@
  498:../drivers/fsl_ftm.c ****     }
  499:../drivers/fsl_ftm.c **** 
  500:../drivers/fsl_ftm.c ****     return kStatus_Success;
+ 709              		.loc 1 500 0
+ 710 0064 0020     		movs	r0, #0
+ 711              	.LVL81:
+ 712              	.L69:
  501:../drivers/fsl_ftm.c **** }
- 679              		.loc 1 501 0
- 680 0032 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
- 681              	.LVL76:
- 682              	.L71:
- 360:../drivers/fsl_ftm.c ****             mod = ftmClock / (pwmFreq_Hz * 2);
- 683              		.loc 1 360 0
- 684 0036 0668     		ldr	r6, [r0]
- 685 0038 46F02006 		orr	r6, r6, #32
- 361:../drivers/fsl_ftm.c ****             break;
- 686              		.loc 1 361 0
- 687 003c 6400     		lsls	r4, r4, #1
- 360:../drivers/fsl_ftm.c ****             mod = ftmClock / (pwmFreq_Hz * 2);
- 688              		.loc 1 360 0
- 689 003e 0660     		str	r6, [r0]
- 361:../drivers/fsl_ftm.c ****             break;
- 690              		.loc 1 361 0
- 691 0040 B5FBF4F5 		udiv	r5, r5, r4
- 692              	.LVL77:
- 362:../drivers/fsl_ftm.c ****         default:
- 693              		.loc 1 362 0
- 694 0044 F1E7     		b	.L73
- 695              	.L74:
- 485:../drivers/fsl_ftm.c **** 
- 696              		.loc 1 485 0
- 697 0046 4FF0010B 		mov	fp, #1
- 459:../drivers/fsl_ftm.c ****                 }
- 698              		.loc 1 459 0
- 699 004a 05EB0B08 		add	r8, r5, fp
- 374:../drivers/fsl_ftm.c **** 
- 700              		.loc 1 374 0
- 701 004e 8560     		str	r5, [r0, #8]
- 702              	.LVL78:
- 703 0050 0431     		adds	r1, r1, #4
- 704              	.LVL79:
- 377:../drivers/fsl_ftm.c ****     {
- 705              		.loc 1 377 0
- 706 0052 4FF00009 		mov	r9, #0
- 459:../drivers/fsl_ftm.c ****                 }
- 707              		.loc 1 459 0
- 708 0056 1FFA88F8 		uxth	r8, r8
- 709              	.LVL80:
- 710              	.L75:
- 377:../drivers/fsl_ftm.c ****     {
- 711              		.loc 1 377 0 discriminator 1
- 712 005a 5FFA89F4 		uxtb	r4, r9
- 713 005e A242     		cmp	r2, r4
- 714 0060 02D8     		bhi	.L85
- 500:../drivers/fsl_ftm.c **** }
- 715              		.loc 1 500 0
- 716 0062 0020     		movs	r0, #0
- 717              	.LVL81:
- 718 0064 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
- 719              	.LVL82:
- 720              	.L85:
+ 713              		.loc 1 501 0
+ 714 0066 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 715              	.LVL82:
+ 716              	.L85:
  380:../drivers/fsl_ftm.c ****         {
- 721              		.loc 1 380 0
- 722 0068 11F8024C 		ldrb	r4, [r1, #-2]	@ zero_extendqisi2
- 723 006c 642C     		cmp	r4, #100
- 724 006e DFD8     		bhi	.L96
+ 717              		.loc 1 380 0
+ 718 006a 16F8027C 		ldrb	r7, [r6, #-2]	@ zero_extendqisi2
+ 719 006e 642F     		cmp	r7, #100
+ 720 0070 DED8     		bhi	.L96
  385:../drivers/fsl_ftm.c ****         {
- 725              		.loc 1 385 0
- 726 0070 012B     		cmp	r3, #1
- 727 0072 1BD8     		bhi	.L77
- 728 0074 11F8047C 		ldrb	r7, [r1, #-4]	@ zero_extendqisi2
+ 721              		.loc 1 385 0
+ 722 0072 012B     		cmp	r3, #1
+ 723 0074 16F8045C 		ldrb	r5, [r6, #-4]	@ zero_extendqisi2
+ 724 0078 17D8     		bhi	.L77
+ 725 007a 00EBC505 		add	r5, r0, r5, lsl #3
  392:../drivers/fsl_ftm.c **** 
- 729              		.loc 1 392 0
- 730 0078 11F803EC 		ldrb	lr, [r1, #-3]	@ zero_extendqisi2
- 731 007c 00EBC707 		add	r7, r0, r7, lsl #3
+ 726              		.loc 1 392 0
+ 727 007e 16F8031C 		ldrb	r1, [r6, #-3]	@ zero_extendqisi2
  388:../drivers/fsl_ftm.c ****             reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MAS
- 732              		.loc 1 388 0
- 733 0080 FE68     		ldr	r6, [r7, #12]
- 734              	.LVL83:
+ 728              		.loc 1 388 0
+ 729 0082 EA68     		ldr	r2, [r5, #12]
+ 730              	.LVL83:
  389:../drivers/fsl_ftm.c **** 
- 735              		.loc 1 389 0
- 736 0082 26F03C06 		bic	r6, r6, #60
- 737              	.LVL84:
+ 731              		.loc 1 389 0
+ 732 0084 22F03C02 		bic	r2, r2, #60
+ 733              	.LVL84:
  392:../drivers/fsl_ftm.c **** 
- 738              		.loc 1 392 0
- 739 0086 46EA8E06 		orr	r6, r6, lr, lsl #2
- 740              	.LVL85:
+ 734              		.loc 1 392 0
+ 735 0088 42EA8102 		orr	r2, r2, r1, lsl #2
+ 736              	.LVL85:
  395:../drivers/fsl_ftm.c **** 
- 741              		.loc 1 395 0
- 742 008a 46F02006 		orr	r6, r6, #32
- 743              	.LVL86:
+ 737              		.loc 1 395 0
+ 738 008c 42F02002 		orr	r2, r2, #32
+ 739              	.LVL86:
  398:../drivers/fsl_ftm.c **** 
- 744              		.loc 1 398 0
- 745 008e FE60     		str	r6, [r7, #12]
+ 740              		.loc 1 398 0
+ 741 0090 EA60     		str	r2, [r5, #12]
  400:../drivers/fsl_ftm.c ****             {
- 746              		.loc 1 400 0
- 747 0090 3CB1     		cbz	r4, .L78
+ 742              		.loc 1 400 0
+ 743 0092 3FB1     		cbz	r7, .L78
  407:../drivers/fsl_ftm.c ****                 /* For 100% duty cycle */
- 748              		.loc 1 407 0
- 749 0092 6C43     		muls	r4, r5, r4
- 750 0094 6426     		movs	r6, #100
- 751              	.LVL87:
- 752 0096 B4FBF6F4 		udiv	r4, r4, r6
- 753              	.LVL88:
+ 744              		.loc 1 407 0
+ 745 0094 6743     		muls	r7, r4, r7
+ 746 0096 6422     		movs	r2, #100
+ 747              	.LVL87:
+ 748 0098 B7FBF2F7 		udiv	r7, r7, r2
+ 749              	.LVL88:
  409:../drivers/fsl_ftm.c ****                 {
- 754              		.loc 1 409 0
- 755 009a A542     		cmp	r5, r4
+ 750              		.loc 1 409 0
+ 751 009c A742     		cmp	r7, r4
  407:../drivers/fsl_ftm.c ****                 /* For 100% duty cycle */
- 756              		.loc 1 407 0
- 757 009c 8CBF     		ite	hi
- 758 009e A4B2     		uxthhi	r4, r4
- 759              	.LVL89:
+ 752              		.loc 1 407 0
+ 753 009e 34BF     		ite	cc
+ 754 00a0 BFB2     		uxthcc	r7, r7
+ 755              	.LVL89:
  411:../drivers/fsl_ftm.c ****                 }
- 760              		.loc 1 411 0
- 761 00a0 4446     		movls	r4, r8
- 762              	.LVL90:
- 763              	.L78:
+ 756              		.loc 1 411 0
+ 757 00a2 7746     		movcs	r7, lr
+ 758              	.LVL90:
+ 759              	.L78:
  415:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT) && (FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT)
- 764              		.loc 1 415 0
- 765 00a2 3C61     		str	r4, [r7, #16]
- 766              	.LVL91:
- 767              	.L80:
- 768 00a4 09F10109 		add	r9, r9, #1
- 769              	.LVL92:
- 770 00a8 0431     		adds	r1, r1, #4
- 771              	.LVL93:
- 772 00aa D6E7     		b	.L75
- 773              	.LVL94:
- 774              	.L77:
+ 760              		.loc 1 415 0
+ 761 00a4 2F61     		str	r7, [r5, #16]
+ 762              	.LVL91:
+ 763              	.L80:
+ 764 00a6 0436     		adds	r6, r6, #4
+ 765              	.LVL92:
+ 766 00a8 DAE7     		b	.L75
+ 767              	.L77:
  424:../drivers/fsl_ftm.c ****             {
- 775              		.loc 1 424 0
- 776 00ac 284E     		ldr	r6, .L97
- 777 00ae B042     		cmp	r0, r6
- 778 00b0 0BD0     		beq	.L88
+ 768              		.loc 1 424 0
+ 769 00aa 254A     		ldr	r2, .L97
+ 770 00ac 9042     		cmp	r0, r2
+ 771 00ae 09D0     		beq	.L88
  424:../drivers/fsl_ftm.c ****             {
- 779              		.loc 1 424 0 is_stmt 0 discriminator 1
- 780 00b2 06F58056 		add	r6, r6, #4096
- 781 00b6 B042     		cmp	r0, r6
- 782 00b8 45D0     		beq	.L90
+ 772              		.loc 1 424 0 is_stmt 0 discriminator 1
+ 773 00b0 02F58052 		add	r2, r2, #4096
+ 774 00b4 9042     		cmp	r0, r2
+ 775 00b6 3DD0     		beq	.L90
  424:../drivers/fsl_ftm.c ****             {
- 783              		.loc 1 424 0 discriminator 3
- 784 00ba 06F58056 		add	r6, r6, #4096
- 785 00be B042     		cmp	r0, r6
- 786 00c0 41D0     		beq	.L90
+ 776              		.loc 1 424 0 discriminator 3
+ 777 00b8 02F58052 		add	r2, r2, #4096
+ 778 00bc 9042     		cmp	r0, r2
+ 779 00be 39D0     		beq	.L90
  424:../drivers/fsl_ftm.c ****             {
- 787              		.loc 1 424 0 discriminator 5
- 788 00c2 06F5FE26 		add	r6, r6, #520192
- 789 00c6 B042     		cmp	r0, r6
- 790 00c8 B2D1     		bne	.L96
- 791              	.L88:
+ 780              		.loc 1 424 0 discriminator 5
+ 781 00c0 5845     		cmp	r0, fp
+ 782 00c2 B5D1     		bne	.L96
+ 783              	.L88:
  424:../drivers/fsl_ftm.c ****             {
- 792              		.loc 1 424 0
- 793 00ca 0426     		movs	r6, #4
- 794              	.L81:
+ 784              		.loc 1 424 0
+ 785 00c4 0422     		movs	r2, #4
+ 786              	.L81:
  424:../drivers/fsl_ftm.c ****             {
- 795              		.loc 1 424 0 discriminator 16
- 796 00cc 11F8047C 		ldrb	r7, [r1, #-4]	@ zero_extendqisi2
- 797 00d0 BE42     		cmp	r6, r7
- 798 00d2 ADDD     		ble	.L96
+ 787              		.loc 1 424 0 discriminator 16
+ 788 00c6 AA42     		cmp	r2, r5
+ 789 00c8 B2DD     		ble	.L96
  430:../drivers/fsl_ftm.c ****             {
- 799              		.loc 1 430 0 is_stmt 1
- 800 00d4 11F8016C 		ldrb	r6, [r1, #-1]	@ zero_extendqisi2
- 801 00d8 642E     		cmp	r6, #100
- 802 00da A9D8     		bhi	.L96
+ 790              		.loc 1 430 0 is_stmt 1
+ 791 00ca 16F8011C 		ldrb	r1, [r6, #-1]	@ zero_extendqisi2
+ 792 00ce 6429     		cmp	r1, #100
+ 793 00d0 AED8     		bhi	.L96
  436:../drivers/fsl_ftm.c ****             {
- 803              		.loc 1 436 0
- 804 00dc 26B1     		cbz	r6, .L82
+ 794              		.loc 1 436 0
+ 795 00d2 21B1     		cbz	r1, .L82
  443:../drivers/fsl_ftm.c ****             }
- 805              		.loc 1 443 0
- 806 00de 6E43     		muls	r6, r5, r6
- 807 00e0 4FF0640E 		mov	lr, #100
- 808 00e4 B6FBFEF6 		udiv	r6, r6, lr
- 809              	.LVL95:
- 810              	.L82:
- 811 00e8 B6B2     		uxth	r6, r6
- 812              	.LVL96:
+ 796              		.loc 1 443 0
+ 797 00d4 6143     		muls	r1, r4, r1
+ 798 00d6 6422     		movs	r2, #100
+ 799 00d8 B1FBF2F1 		udiv	r1, r1, r2
+ 800 00dc 89B2     		uxth	r1, r1
+ 801              	.LVL93:
+ 802              	.L82:
  447:../drivers/fsl_ftm.c ****             {
- 813              		.loc 1 447 0
- 814 00ea 74B3     		cbz	r4, .L92
+ 803              		.loc 1 447 0
+ 804 00de 5FB3     		cbz	r7, .L92
  455:../drivers/fsl_ftm.c ****                 /* For 100% duty cycle */
- 815              		.loc 1 455 0
- 816 00ec 6C43     		muls	r4, r5, r4
- 817 00ee 4FF0640E 		mov	lr, #100
- 818 00f2 B4FBFEF4 		udiv	r4, r4, lr
- 819              	.LVL97:
+ 805              		.loc 1 455 0
+ 806 00e0 6422     		movs	r2, #100
+ 807 00e2 6743     		muls	r7, r4, r7
+ 808 00e4 B7FBF2F7 		udiv	r7, r7, r2
+ 809              	.LVL94:
  457:../drivers/fsl_ftm.c ****                 {
- 820              		.loc 1 457 0
- 821 00f6 A542     		cmp	r5, r4
+ 810              		.loc 1 457 0
+ 811 00e8 A742     		cmp	r7, r4
  455:../drivers/fsl_ftm.c ****                 /* For 100% duty cycle */
- 822              		.loc 1 455 0
- 823 00f8 8CBF     		ite	hi
- 824 00fa A4B2     		uxthhi	r4, r4
- 825              	.LVL98:
+ 812              		.loc 1 455 0
+ 813 00ea 34BF     		ite	cc
+ 814 00ec BAB2     		uxthcc	r2, r7
  459:../drivers/fsl_ftm.c ****                 }
- 826              		.loc 1 459 0
- 827 00fc 4446     		movls	r4, r8
- 828              	.LVL99:
- 829              	.L83:
- 830 00fe 00EB071E 		add	lr, r0, r7, lsl #4
+ 815              		.loc 1 459 0
+ 816 00ee 7246     		movcs	r2, lr
+ 817              	.LVL95:
+ 818              	.L83:
+ 819 00f0 00EB0517 		add	r7, r0, r5, lsl #4
  468:../drivers/fsl_ftm.c **** 
- 831              		.loc 1 468 0
- 832 0102 11F803CC 		ldrb	ip, [r1, #-3]	@ zero_extendqisi2
+ 820              		.loc 1 468 0
+ 821 00f4 16F803CC 		ldrb	ip, [r6, #-3]	@ zero_extendqisi2
  464:../drivers/fsl_ftm.c ****             reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MAS
- 833              		.loc 1 464 0
- 834 0106 DEF80CA0 		ldr	r10, [lr, #12]
- 835              	.LVL100:
+ 822              		.loc 1 464 0
+ 823 00f8 D7F80C80 		ldr	r8, [r7, #12]
+ 824              	.LVL96:
  468:../drivers/fsl_ftm.c **** 
- 836              		.loc 1 468 0
- 837 010a 4FEA8C0C 		lsl	ip, ip, #2
+ 825              		.loc 1 468 0
+ 826 00fc 4FEA8C0C 		lsl	ip, ip, #2
  465:../drivers/fsl_ftm.c **** 
- 838              		.loc 1 465 0
- 839 010e 2AF03C0A 		bic	r10, r10, #60
- 840              	.LVL101:
+ 827              		.loc 1 465 0
+ 828 0100 28F03C08 		bic	r8, r8, #60
+ 829              	.LVL97:
  468:../drivers/fsl_ftm.c **** 
- 841              		.loc 1 468 0
- 842 0112 4AEA0C0A 		orr	r10, r10, ip
- 843              	.LVL102:
+ 830              		.loc 1 468 0
+ 831 0104 4CEA0808 		orr	r8, ip, r8
+ 832              	.LVL98:
  471:../drivers/fsl_ftm.c **** 
- 844              		.loc 1 471 0
- 845 0116 CEF80CA0 		str	r10, [lr, #12]
+ 833              		.loc 1 471 0
+ 834 0108 C7F80C80 		str	r8, [r7, #12]
  474:../drivers/fsl_ftm.c ****             reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MAS
- 846              		.loc 1 474 0
- 847 011a DEF814A0 		ldr	r10, [lr, #20]
- 848              	.LVL103:
+ 835              		.loc 1 474 0
+ 836 010c D7F81480 		ldr	r8, [r7, #20]
+ 837              	.LVL99:
  475:../drivers/fsl_ftm.c **** 
- 849              		.loc 1 475 0
- 850 011e 2AF03C0A 		bic	r10, r10, #60
- 851              	.LVL104:
+ 838              		.loc 1 475 0
+ 839 0110 28F03C08 		bic	r8, r8, #60
+ 840              	.LVL100:
  478:../drivers/fsl_ftm.c **** 
- 852              		.loc 1 478 0
- 853 0122 4CEA0A0C 		orr	ip, ip, r10
- 854              	.LVL105:
+ 841              		.loc 1 478 0
+ 842 0114 4CEA080C 		orr	ip, ip, r8
+ 843              	.LVL101:
  481:../drivers/fsl_ftm.c **** 
- 855              		.loc 1 481 0
- 856 0126 CEF814C0 		str	ip, [lr, #20]
+ 844              		.loc 1 481 0
+ 845 0118 C7F814C0 		str	ip, [r7, #20]
+ 484:../drivers/fsl_ftm.c ****                 (1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlParams->chnl
+ 846              		.loc 1 484 0
+ 847 011c D0F864C0 		ldr	ip, [r0, #100]
+ 848              	.LVL102:
+ 485:../drivers/fsl_ftm.c **** 
+ 849              		.loc 1 485 0
+ 850 0120 ED00     		lsls	r5, r5, #3
+ 851 0122 0AFA05F5 		lsl	r5, r10, r5
+ 484:../drivers/fsl_ftm.c ****                 (1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlParams->chnl
+ 852              		.loc 1 484 0
+ 853 0126 45EA0C05 		orr	r5, r5, ip
+ 489:../drivers/fsl_ftm.c **** 
+ 854              		.loc 1 489 0
+ 855 012a 0A44     		add	r2, r2, r1
+ 856              	.LVL103:
  484:../drivers/fsl_ftm.c ****                 (1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlParams->chnl
  857              		.loc 1 484 0
- 858 012a D0F864C0 		ldr	ip, [r0, #100]
- 859              	.LVL106:
- 485:../drivers/fsl_ftm.c **** 
- 860              		.loc 1 485 0
- 861 012e FF00     		lsls	r7, r7, #3
- 862 0130 0BFA07F7 		lsl	r7, fp, r7
- 484:../drivers/fsl_ftm.c ****                 (1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlParams->chnl
- 863              		.loc 1 484 0
- 864 0134 47EA0C07 		orr	r7, r7, ip
- 489:../drivers/fsl_ftm.c **** 
- 865              		.loc 1 489 0
- 866 0138 3444     		add	r4, r4, r6
- 867              	.LVL107:
- 484:../drivers/fsl_ftm.c ****                 (1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlParams->chnl
- 868              		.loc 1 484 0
- 869 013a 4766     		str	r7, [r0, #100]
- 870              	.LVL108:
+ 858 012c 4566     		str	r5, [r0, #100]
+ 859              	.LVL104:
  488:../drivers/fsl_ftm.c ****             base->CONTROLS[(chnlParams->chnlNumber * 2) + 1].CnV = cnvFirstEdge + cnv;
- 871              		.loc 1 488 0
- 872 013c CEF81060 		str	r6, [lr, #16]
+ 860              		.loc 1 488 0
+ 861 012e 3961     		str	r1, [r7, #16]
  489:../drivers/fsl_ftm.c **** 
- 873              		.loc 1 489 0
- 874 0140 CEF81840 		str	r4, [lr, #24]
- 875 0144 AEE7     		b	.L80
- 876              	.LVL109:
- 877              	.L90:
+ 862              		.loc 1 489 0
+ 863 0130 BA61     		str	r2, [r7, #24]
+ 864 0132 B8E7     		b	.L80
+ 865              	.LVL105:
+ 866              	.L90:
  424:../drivers/fsl_ftm.c ****             {
- 878              		.loc 1 424 0
- 879 0146 0126     		movs	r6, #1
- 880 0148 C0E7     		b	.L81
- 881              	.LVL110:
- 882              	.L92:
+ 867              		.loc 1 424 0
+ 868 0134 0122     		movs	r2, #1
+ 869 0136 C6E7     		b	.L81
+ 870              	.LVL106:
+ 871              	.L92:
  451:../drivers/fsl_ftm.c ****             }
- 883              		.loc 1 451 0
- 884 014a 2646     		mov	r6, r4
- 885              	.LVL111:
- 886 014c D7E7     		b	.L83
- 887              	.L98:
- 888 014e 00BF     		.align	2
- 889              	.L97:
- 890 0150 00800340 		.word	1073971200
- 891              		.cfi_endproc
- 892              	.LFE171:
- 894              		.section	.text.FTM_UpdatePwmDutycycle,"ax",%progbits
- 895              		.align	1
- 896              		.global	FTM_UpdatePwmDutycycle
- 897              		.syntax unified
- 898              		.thumb
- 899              		.thumb_func
- 900              		.fpu fpv4-sp-d16
- 902              	FTM_UpdatePwmDutycycle:
- 903              	.LFB172:
+ 872              		.loc 1 451 0
+ 873 0138 3946     		mov	r1, r7
+ 874              	.LVL107:
+ 450:../drivers/fsl_ftm.c ****                 cnvFirstEdge = 0;
+ 875              		.loc 1 450 0
+ 876 013a 3A46     		mov	r2, r7
+ 877 013c D8E7     		b	.L83
+ 878              	.L98:
+ 879 013e 00BF     		.align	2
+ 880              	.L97:
+ 881 0140 00800340 		.word	1073971200
+ 882 0144 00900B40 		.word	1074499584
+ 883              		.cfi_endproc
+ 884              	.LFE171:
+ 886              		.section	.text.FTM_UpdatePwmDutycycle,"ax",%progbits
+ 887              		.align	1
+ 888              		.global	FTM_UpdatePwmDutycycle
+ 889              		.syntax unified
+ 890              		.thumb
+ 891              		.thumb_func
+ 892              		.fpu fpv4-sp-d16
+ 894              	FTM_UpdatePwmDutycycle:
+ 895              	.LFB172:
  502:../drivers/fsl_ftm.c **** 
  503:../drivers/fsl_ftm.c **** void FTM_UpdatePwmDutycycle(FTM_Type *base,
  504:../drivers/fsl_ftm.c ****                             ftm_chnl_t chnlNumber,
  505:../drivers/fsl_ftm.c ****                             ftm_pwm_mode_t currentPwmMode,
  506:../drivers/fsl_ftm.c ****                             uint8_t dutyCyclePercent)
  507:../drivers/fsl_ftm.c **** {
- 904              		.loc 1 507 0
- 905              		.cfi_startproc
- 906              		@ args = 0, pretend = 0, frame = 0
- 907              		@ frame_needed = 0, uses_anonymous_args = 0
- 908              	.LVL112:
- 909 0000 30B5     		push	{r4, r5, lr}
- 910              		.cfi_def_cfa_offset 12
- 911              		.cfi_offset 4, -12
- 912              		.cfi_offset 5, -8
- 913              		.cfi_offset 14, -4
+ 896              		.loc 1 507 0
+ 897              		.cfi_startproc
+ 898              		@ args = 0, pretend = 0, frame = 0
+ 899              		@ frame_needed = 0, uses_anonymous_args = 0
+ 900              	.LVL108:
+ 901 0000 30B5     		push	{r4, r5, lr}
+ 902              		.cfi_def_cfa_offset 12
+ 903              		.cfi_offset 4, -12
+ 904              		.cfi_offset 5, -8
+ 905              		.cfi_offset 14, -4
  508:../drivers/fsl_ftm.c ****     uint16_t cnv, cnvFirstEdge = 0, mod;
  509:../drivers/fsl_ftm.c **** 
  510:../drivers/fsl_ftm.c ****     mod = base->MOD;
- 914              		.loc 1 510 0
- 915 0002 8468     		ldr	r4, [r0, #8]
+ 906              		.loc 1 510 0
+ 907 0002 8468     		ldr	r4, [r0, #8]
  511:../drivers/fsl_ftm.c ****     if ((currentPwmMode == kFTM_EdgeAlignedPwm) || (currentPwmMode == kFTM_CenterAlignedPwm))
- 916              		.loc 1 511 0
- 917 0004 012A     		cmp	r2, #1
+ 908              		.loc 1 511 0
+ 909 0004 012A     		cmp	r2, #1
  510:../drivers/fsl_ftm.c ****     if ((currentPwmMode == kFTM_EdgeAlignedPwm) || (currentPwmMode == kFTM_CenterAlignedPwm))
- 918              		.loc 1 510 0
- 919 0006 A5B2     		uxth	r5, r4
- 920              	.LVL113:
- 921              		.loc 1 511 0
- 922 0008 10D8     		bhi	.L100
+ 910              		.loc 1 510 0
+ 911 0006 A5B2     		uxth	r5, r4
+ 912              	.LVL109:
+ 913              		.loc 1 511 0
+ 914 0008 10D8     		bhi	.L100
  512:../drivers/fsl_ftm.c ****     {
  513:../drivers/fsl_ftm.c ****         cnv = (mod * dutyCyclePercent) / 100;
- 923              		.loc 1 513 0
- 924 000a 2A46     		mov	r2, r5
- 925              	.LVL114:
- 926 000c 5A43     		muls	r2, r3, r2
- 927 000e 6423     		movs	r3, #100
- 928              	.LVL115:
- 929 0010 92FBF3F2 		sdiv	r2, r2, r3
- 930 0014 92B2     		uxth	r2, r2
- 931              	.LVL116:
+ 915              		.loc 1 513 0
+ 916 000a 2A46     		mov	r2, r5
+ 917              	.LVL110:
+ 918 000c 5A43     		muls	r2, r3, r2
+ 919 000e 6423     		movs	r3, #100
+ 920              	.LVL111:
+ 921 0010 92FBF3F2 		sdiv	r2, r2, r3
+ 922 0014 92B2     		uxth	r2, r2
+ 923              	.LVL112:
  514:../drivers/fsl_ftm.c ****         /* For 100% duty cycle */
  515:../drivers/fsl_ftm.c ****         if (cnv >= mod)
- 932              		.loc 1 515 0
- 933 0016 9542     		cmp	r5, r2
+ 924              		.loc 1 515 0
+ 925 0016 9542     		cmp	r5, r2
  516:../drivers/fsl_ftm.c ****         {
  517:../drivers/fsl_ftm.c ****             cnv = mod + 1;
  518:../drivers/fsl_ftm.c ****         }
  519:../drivers/fsl_ftm.c ****         base->CONTROLS[chnlNumber].CnV = cnv;
- 934              		.loc 1 519 0
- 935 0018 01F10101 		add	r1, r1, #1
- 936              	.LVL117:
+ 926              		.loc 1 519 0
+ 927 0018 01F10101 		add	r1, r1, #1
+ 928              	.LVL113:
  517:../drivers/fsl_ftm.c ****         }
- 937              		.loc 1 517 0
- 938 001c 98BF     		it	ls
- 939 001e 6A1C     		addls	r2, r5, #1
- 940              	.LVL118:
- 941              		.loc 1 519 0
- 942 0020 00EBC100 		add	r0, r0, r1, lsl #3
- 943              	.LVL119:
+ 929              		.loc 1 517 0
+ 930 001c 98BF     		it	ls
+ 931 001e 6A1C     		addls	r2, r5, #1
+ 932              	.LVL114:
+ 933              		.loc 1 519 0
+ 934 0020 00EBC100 		add	r0, r0, r1, lsl #3
+ 935              	.LVL115:
  517:../drivers/fsl_ftm.c ****         }
- 944              		.loc 1 517 0
- 945 0024 98BF     		it	ls
- 946 0026 92B2     		uxthls	r2, r2
- 947              	.LVL120:
- 948              		.loc 1 519 0
- 949 0028 8260     		str	r2, [r0, #8]
- 950 002a 30BD     		pop	{r4, r5, pc}
- 951              	.LVL121:
- 952              	.L100:
+ 936              		.loc 1 517 0
+ 937 0024 98BF     		it	ls
+ 938 0026 92B2     		uxthls	r2, r2
+ 939              	.LVL116:
+ 940              		.loc 1 519 0
+ 941 0028 8260     		str	r2, [r0, #8]
+ 942              	.LVL117:
+ 943              	.L99:
  520:../drivers/fsl_ftm.c ****     }
  521:../drivers/fsl_ftm.c ****     else
  522:../drivers/fsl_ftm.c ****     {
  523:../drivers/fsl_ftm.c ****         /* This check is added for combined mode as the channel number should be the pair number */
  524:../drivers/fsl_ftm.c ****         if (chnlNumber >= (FSL_FEATURE_FTM_CHANNEL_COUNTn(base) / 2))
- 953              		.loc 1 524 0
- 954 002c 124A     		ldr	r2, .L108
- 955              	.LVL122:
- 956 002e 9042     		cmp	r0, r2
- 957 0030 0BD0     		beq	.L105
- 958              		.loc 1 524 0 is_stmt 0 discriminator 1
- 959 0032 02F58052 		add	r2, r2, #4096
- 960 0036 9042     		cmp	r0, r2
- 961 0038 1BD0     		beq	.L107
- 962              		.loc 1 524 0 discriminator 3
- 963 003a 02F58052 		add	r2, r2, #4096
- 964 003e 9042     		cmp	r0, r2
- 965 0040 17D0     		beq	.L107
- 966              		.loc 1 524 0 discriminator 5
- 967 0042 02F5FE22 		add	r2, r2, #520192
- 968 0046 9042     		cmp	r0, r2
- 969 0048 12D1     		bne	.L99
- 970              	.L105:
- 971              		.loc 1 524 0
- 972 004a 0422     		movs	r2, #4
- 973              	.L103:
- 974              		.loc 1 524 0 discriminator 16
- 975 004c 8A42     		cmp	r2, r1
- 976 004e 0FDD     		ble	.L99
  525:../drivers/fsl_ftm.c ****         {
  526:../drivers/fsl_ftm.c ****             return;
  527:../drivers/fsl_ftm.c ****         }
  528:../drivers/fsl_ftm.c **** 
  529:../drivers/fsl_ftm.c ****         cnv = (mod * dutyCyclePercent) / 100;
- 977              		.loc 1 529 0 is_stmt 1
- 978 0050 A4B2     		uxth	r4, r4
- 979 0052 6422     		movs	r2, #100
- 980 0054 00EB0110 		add	r0, r0, r1, lsl #4
- 981              	.LVL123:
- 982 0058 6343     		muls	r3, r4, r3
- 983              	.LVL124:
- 984 005a 93FBF2F3 		sdiv	r3, r3, r2
- 985 005e 9BB2     		uxth	r3, r3
- 986              	.LVL125:
  530:../drivers/fsl_ftm.c ****         cnvFirstEdge = base->CONTROLS[chnlNumber * 2].CnV;
  531:../drivers/fsl_ftm.c ****         /* For 100% duty cycle */
  532:../drivers/fsl_ftm.c ****         if (cnv >= mod)
- 987              		.loc 1 532 0
- 988 0060 9D42     		cmp	r5, r3
- 530:../drivers/fsl_ftm.c ****         cnvFirstEdge = base->CONTROLS[chnlNumber * 2].CnV;
- 989              		.loc 1 530 0
- 990 0062 0169     		ldr	r1, [r0, #16]
- 991              	.LVL126:
  533:../drivers/fsl_ftm.c ****         {
  534:../drivers/fsl_ftm.c ****             cnv = mod + 1;
- 992              		.loc 1 534 0
- 993 0064 9CBF     		itt	ls
- 994 0066 6A1C     		addls	r2, r5, #1
- 995 0068 93B2     		uxthls	r3, r2
- 996              	.LVL127:
  535:../drivers/fsl_ftm.c ****         }
  536:../drivers/fsl_ftm.c ****         base->CONTROLS[(chnlNumber * 2) + 1].CnV = cnvFirstEdge + cnv;
- 997              		.loc 1 536 0
- 998 006a 13FA81F3 		uxtah	r3, r3, r1
- 999              	.LVL128:
- 1000 006e 8361     		str	r3, [r0, #24]
- 1001              	.LVL129:
- 1002              	.L99:
- 1003 0070 30BD     		pop	{r4, r5, pc}
- 1004              	.LVL130:
- 1005              	.L107:
- 524:../drivers/fsl_ftm.c ****         {
- 1006              		.loc 1 524 0
- 1007 0072 0122     		movs	r2, #1
- 1008 0074 EAE7     		b	.L103
- 1009              	.L109:
- 1010 0076 00BF     		.align	2
- 1011              	.L108:
- 1012 0078 00800340 		.word	1073971200
- 1013              		.cfi_endproc
- 1014              	.LFE172:
- 1016              		.section	.text.FTM_UpdateChnlEdgeLevelSelect,"ax",%progbits
- 1017              		.align	1
- 1018              		.global	FTM_UpdateChnlEdgeLevelSelect
- 1019              		.syntax unified
- 1020              		.thumb
- 1021              		.thumb_func
- 1022              		.fpu fpv4-sp-d16
- 1024              	FTM_UpdateChnlEdgeLevelSelect:
- 1025              	.LFB173:
  537:../drivers/fsl_ftm.c ****     }
  538:../drivers/fsl_ftm.c **** }
+ 944              		.loc 1 538 0
+ 945 002a 30BD     		pop	{r4, r5, pc}
+ 946              	.LVL118:
+ 947              	.L100:
+ 524:../drivers/fsl_ftm.c ****         {
+ 948              		.loc 1 524 0
+ 949 002c 124A     		ldr	r2, .L108
+ 950              	.LVL119:
+ 951 002e 9042     		cmp	r0, r2
+ 952 0030 0BD0     		beq	.L105
+ 524:../drivers/fsl_ftm.c ****         {
+ 953              		.loc 1 524 0 is_stmt 0 discriminator 1
+ 954 0032 02F58052 		add	r2, r2, #4096
+ 955 0036 9042     		cmp	r0, r2
+ 956 0038 1BD0     		beq	.L107
+ 524:../drivers/fsl_ftm.c ****         {
+ 957              		.loc 1 524 0 discriminator 3
+ 958 003a 02F58052 		add	r2, r2, #4096
+ 959 003e 9042     		cmp	r0, r2
+ 960 0040 17D0     		beq	.L107
+ 524:../drivers/fsl_ftm.c ****         {
+ 961              		.loc 1 524 0 discriminator 5
+ 962 0042 02F5FE22 		add	r2, r2, #520192
+ 963 0046 9042     		cmp	r0, r2
+ 964 0048 EFD1     		bne	.L99
+ 965              	.L105:
+ 524:../drivers/fsl_ftm.c ****         {
+ 966              		.loc 1 524 0
+ 967 004a 0422     		movs	r2, #4
+ 968              	.L103:
+ 524:../drivers/fsl_ftm.c ****         {
+ 969              		.loc 1 524 0 discriminator 16
+ 970 004c 8A42     		cmp	r2, r1
+ 971 004e ECDD     		ble	.L99
+ 529:../drivers/fsl_ftm.c ****         cnvFirstEdge = base->CONTROLS[chnlNumber * 2].CnV;
+ 972              		.loc 1 529 0 is_stmt 1
+ 973 0050 A4B2     		uxth	r4, r4
+ 974 0052 6422     		movs	r2, #100
+ 975 0054 00EB0110 		add	r0, r0, r1, lsl #4
+ 976              	.LVL120:
+ 977 0058 6343     		muls	r3, r4, r3
+ 978              	.LVL121:
+ 979 005a 93FBF2F3 		sdiv	r3, r3, r2
+ 980 005e 9BB2     		uxth	r3, r3
+ 981              	.LVL122:
+ 532:../drivers/fsl_ftm.c ****         {
+ 982              		.loc 1 532 0
+ 983 0060 9D42     		cmp	r5, r3
+ 530:../drivers/fsl_ftm.c ****         /* For 100% duty cycle */
+ 984              		.loc 1 530 0
+ 985 0062 0169     		ldr	r1, [r0, #16]
+ 986              	.LVL123:
+ 534:../drivers/fsl_ftm.c ****         }
+ 987              		.loc 1 534 0
+ 988 0064 9CBF     		itt	ls
+ 989 0066 6A1C     		addls	r2, r5, #1
+ 990 0068 93B2     		uxthls	r3, r2
+ 991              	.LVL124:
+ 536:../drivers/fsl_ftm.c ****     }
+ 992              		.loc 1 536 0
+ 993 006a 13FA81F3 		uxtah	r3, r3, r1
+ 994              	.LVL125:
+ 995 006e 8361     		str	r3, [r0, #24]
+ 996 0070 DBE7     		b	.L99
+ 997              	.LVL126:
+ 998              	.L107:
+ 524:../drivers/fsl_ftm.c ****         {
+ 999              		.loc 1 524 0
+ 1000 0072 0122     		movs	r2, #1
+ 1001 0074 EAE7     		b	.L103
+ 1002              	.L109:
+ 1003 0076 00BF     		.align	2
+ 1004              	.L108:
+ 1005 0078 00800340 		.word	1073971200
+ 1006              		.cfi_endproc
+ 1007              	.LFE172:
+ 1009              		.section	.text.FTM_UpdateChnlEdgeLevelSelect,"ax",%progbits
+ 1010              		.align	1
+ 1011              		.global	FTM_UpdateChnlEdgeLevelSelect
+ 1012              		.syntax unified
+ 1013              		.thumb
+ 1014              		.thumb_func
+ 1015              		.fpu fpv4-sp-d16
+ 1017              	FTM_UpdateChnlEdgeLevelSelect:
+ 1018              	.LFB173:
  539:../drivers/fsl_ftm.c **** 
  540:../drivers/fsl_ftm.c **** void FTM_UpdateChnlEdgeLevelSelect(FTM_Type *base, ftm_chnl_t chnlNumber, uint8_t level)
  541:../drivers/fsl_ftm.c **** {
- 1026              		.loc 1 541 0
- 1027              		.cfi_startproc
- 1028              		@ args = 0, pretend = 0, frame = 0
- 1029              		@ frame_needed = 0, uses_anonymous_args = 0
- 1030              		@ link register save eliminated.
- 1031              	.LVL131:
- 1032 0000 00EBC101 		add	r1, r0, r1, lsl #3
- 1033              	.LVL132:
+ 1019              		.loc 1 541 0
+ 1020              		.cfi_startproc
+ 1021              		@ args = 0, pretend = 0, frame = 0
+ 1022              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1023              		@ link register save eliminated.
+ 1024              	.LVL127:
+ 1025 0000 00EBC101 		add	r1, r0, r1, lsl #3
+ 1026              	.LVL128:
  542:../drivers/fsl_ftm.c ****     uint32_t reg = base->CONTROLS[chnlNumber].CnSC;
  543:../drivers/fsl_ftm.c **** 
  544:../drivers/fsl_ftm.c ****     /* Clear the field and write the new level value */
  545:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
  546:../drivers/fsl_ftm.c ****     reg |= ((uint32_t)level << FTM_CnSC_ELSA_SHIFT) & (FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
- 1034              		.loc 1 546 0
- 1035 0004 9200     		lsls	r2, r2, #2
- 1036              	.LVL133:
+ 1027              		.loc 1 546 0
+ 1028 0004 9200     		lsls	r2, r2, #2
+ 1029              	.LVL129:
  542:../drivers/fsl_ftm.c ****     uint32_t reg = base->CONTROLS[chnlNumber].CnSC;
- 1037              		.loc 1 542 0
- 1038 0006 CB68     		ldr	r3, [r1, #12]
- 1039              	.LVL134:
- 1040              		.loc 1 546 0
- 1041 0008 02F00C02 		and	r2, r2, #12
+ 1030              		.loc 1 542 0
+ 1031 0006 CB68     		ldr	r3, [r1, #12]
+ 1032              	.LVL130:
+ 1033              		.loc 1 546 0
+ 1034 0008 02F00C02 		and	r2, r2, #12
  545:../drivers/fsl_ftm.c ****     reg |= ((uint32_t)level << FTM_CnSC_ELSA_SHIFT) & (FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
- 1042              		.loc 1 545 0
- 1043 000c 23F00C03 		bic	r3, r3, #12
- 1044              	.LVL135:
- 1045              		.loc 1 546 0
- 1046 0010 1A43     		orrs	r2, r2, r3
- 1047              	.LVL136:
+ 1035              		.loc 1 545 0
+ 1036 000c 23F00C03 		bic	r3, r3, #12
+ 1037              	.LVL131:
+ 1038              		.loc 1 546 0
+ 1039 0010 1A43     		orrs	r2, r2, r3
+ 1040              	.LVL132:
  547:../drivers/fsl_ftm.c **** 
  548:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlNumber].CnSC = reg;
- 1048              		.loc 1 548 0
- 1049 0012 CA60     		str	r2, [r1, #12]
- 1050 0014 7047     		bx	lr
- 1051              		.cfi_endproc
- 1052              	.LFE173:
- 1054              		.section	.text.FTM_SetupInputCapture,"ax",%progbits
- 1055              		.align	1
- 1056              		.global	FTM_SetupInputCapture
- 1057              		.syntax unified
- 1058              		.thumb
- 1059              		.thumb_func
- 1060              		.fpu fpv4-sp-d16
- 1062              	FTM_SetupInputCapture:
- 1063              	.LFB174:
+ 1041              		.loc 1 548 0
+ 1042 0012 CA60     		str	r2, [r1, #12]
  549:../drivers/fsl_ftm.c **** }
+ 1043              		.loc 1 549 0
+ 1044 0014 7047     		bx	lr
+ 1045              		.cfi_endproc
+ 1046              	.LFE173:
+ 1048              		.section	.text.FTM_SetupInputCapture,"ax",%progbits
+ 1049              		.align	1
+ 1050              		.global	FTM_SetupInputCapture
+ 1051              		.syntax unified
+ 1052              		.thumb
+ 1053              		.thumb_func
+ 1054              		.fpu fpv4-sp-d16
+ 1056              	FTM_SetupInputCapture:
+ 1057              	.LFB174:
  550:../drivers/fsl_ftm.c **** 
  551:../drivers/fsl_ftm.c **** void FTM_SetupInputCapture(FTM_Type *base,
  552:../drivers/fsl_ftm.c ****                            ftm_chnl_t chnlNumber,
  553:../drivers/fsl_ftm.c ****                            ftm_input_capture_edge_t captureMode,
  554:../drivers/fsl_ftm.c ****                            uint32_t filterValue)
  555:../drivers/fsl_ftm.c **** {
- 1064              		.loc 1 555 0
- 1065              		.cfi_startproc
- 1066              		@ args = 0, pretend = 0, frame = 0
- 1067              		@ frame_needed = 0, uses_anonymous_args = 0
- 1068              	.LVL137:
- 1069 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 1070              		.cfi_def_cfa_offset 20
- 1071              		.cfi_offset 4, -20
- 1072              		.cfi_offset 5, -16
- 1073              		.cfi_offset 6, -12
- 1074              		.cfi_offset 7, -8
- 1075              		.cfi_offset 14, -4
+ 1058              		.loc 1 555 0
+ 1059              		.cfi_startproc
+ 1060              		@ args = 0, pretend = 0, frame = 0
+ 1061              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1062              	.LVL133:
+ 1063 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1064              		.cfi_def_cfa_offset 20
+ 1065              		.cfi_offset 4, -20
+ 1066              		.cfi_offset 5, -16
+ 1067              		.cfi_offset 6, -12
+ 1068              		.cfi_offset 7, -8
+ 1069              		.cfi_offset 14, -4
  556:../drivers/fsl_ftm.c ****     uint32_t reg;
  557:../drivers/fsl_ftm.c **** 
  558:../drivers/fsl_ftm.c ****     /* Clear the combine bit for the channel pair */
  559:../drivers/fsl_ftm.c ****     base->COMBINE &= ~(1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * (chnlNumbe
- 1076              		.loc 1 559 0
- 1077 0002 4C08     		lsrs	r4, r1, #1
- 1078 0004 466E     		ldr	r6, [r0, #100]
- 1079 0006 0125     		movs	r5, #1
- 1080 0008 E400     		lsls	r4, r4, #3
- 1081 000a 05FA04F7 		lsl	r7, r5, r4
- 1082 000e 26EA0706 		bic	r6, r6, r7
- 1083 0012 4666     		str	r6, [r0, #100]
+ 1070              		.loc 1 559 0
+ 1071 0002 4C08     		lsrs	r4, r1, #1
+ 1072 0004 466E     		ldr	r6, [r0, #100]
+ 1073 0006 0125     		movs	r5, #1
+ 1074 0008 E400     		lsls	r4, r4, #3
+ 1075 000a 05FA04F7 		lsl	r7, r5, r4
+ 1076 000e 26EA0706 		bic	r6, r6, r7
+ 1077 0012 4666     		str	r6, [r0, #100]
  560:../drivers/fsl_ftm.c ****     /* Clear the dual edge capture mode because it's it's higher priority */
  561:../drivers/fsl_ftm.c ****     base->COMBINE &= ~(1U << (FTM_COMBINE_DECAPEN0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * (chnlNumbe
- 1084              		.loc 1 561 0
- 1085 0014 466E     		ldr	r6, [r0, #100]
- 1086 0016 0234     		adds	r4, r4, #2
- 1087 0018 05FA04F4 		lsl	r4, r5, r4
- 1088 001c 26EA0404 		bic	r4, r6, r4
- 1089 0020 4466     		str	r4, [r0, #100]
+ 1078              		.loc 1 561 0
+ 1079 0014 466E     		ldr	r6, [r0, #100]
+ 1080 0016 0234     		adds	r4, r4, #2
+ 1081 0018 05FA04F4 		lsl	r4, r5, r4
+ 1082 001c 26EA0404 		bic	r4, r6, r4
+ 1083 0020 4466     		str	r4, [r0, #100]
  562:../drivers/fsl_ftm.c **** #if !(defined(FSL_FEATURE_FTM_HAS_NO_QDCTRL) && FSL_FEATURE_FTM_HAS_NO_QDCTRL)
  563:../drivers/fsl_ftm.c ****     /* Clear the quadrature decoder mode beacause it's higher priority */
  564:../drivers/fsl_ftm.c ****     base->QDCTRL &= ~FTM_QDCTRL_QUADEN_MASK;
- 1090              		.loc 1 564 0
- 1091 0022 D0F88040 		ldr	r4, [r0, #128]
- 1092 0026 00EBC105 		add	r5, r0, r1, lsl #3
- 1093 002a 24F00104 		bic	r4, r4, #1
- 1094 002e C0F88040 		str	r4, [r0, #128]
+ 1084              		.loc 1 564 0
+ 1085 0022 D0F88040 		ldr	r4, [r0, #128]
+ 1086 0026 00EBC105 		add	r5, r0, r1, lsl #3
+ 1087 002a 24F00104 		bic	r4, r4, #1
+ 1088 002e C0F88040 		str	r4, [r0, #128]
  565:../drivers/fsl_ftm.c **** #endif
  566:../drivers/fsl_ftm.c **** 
  567:../drivers/fsl_ftm.c ****     reg = base->CONTROLS[chnlNumber].CnSC;
- 1095              		.loc 1 567 0
- 1096 0032 EC68     		ldr	r4, [r5, #12]
- 1097              	.LVL138:
+ 1089              		.loc 1 567 0
+ 1090 0032 EC68     		ldr	r4, [r5, #12]
+ 1091              	.LVL134:
  568:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
- 1098              		.loc 1 568 0
- 1099 0034 24F03C04 		bic	r4, r4, #60
- 1100              	.LVL139:
+ 1092              		.loc 1 568 0
+ 1093 0034 24F03C04 		bic	r4, r4, #60
+ 1094              	.LVL135:
  569:../drivers/fsl_ftm.c ****     reg |= captureMode;
- 1101              		.loc 1 569 0
- 1102 0038 2243     		orrs	r2, r2, r4
- 1103              	.LVL140:
+ 1095              		.loc 1 569 0
+ 1096 0038 2243     		orrs	r2, r2, r4
+ 1097              	.LVL136:
  570:../drivers/fsl_ftm.c **** 
  571:../drivers/fsl_ftm.c ****     /* Set the requested input capture mode */
  572:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlNumber].CnSC = reg;
  573:../drivers/fsl_ftm.c ****     /* Input filter available only for channels 0, 1, 2, 3 */
  574:../drivers/fsl_ftm.c ****     if (chnlNumber < kFTM_Chnl_4)
- 1104              		.loc 1 574 0
- 1105 003a 0329     		cmp	r1, #3
+ 1098              		.loc 1 574 0
+ 1099 003a 0329     		cmp	r1, #3
  572:../drivers/fsl_ftm.c ****     /* Input filter available only for channels 0, 1, 2, 3 */
- 1106              		.loc 1 572 0
- 1107 003c EA60     		str	r2, [r5, #12]
- 1108              		.loc 1 574 0
- 1109 003e 09D8     		bhi	.L111
+ 1100              		.loc 1 572 0
+ 1101 003c EA60     		str	r2, [r5, #12]
+ 1102              		.loc 1 574 0
+ 1103 003e 09D8     		bhi	.L111
  575:../drivers/fsl_ftm.c ****     {
  576:../drivers/fsl_ftm.c ****         reg = base->FILTER;
- 1110              		.loc 1 576 0
- 1111 0040 826F     		ldr	r2, [r0, #120]
- 1112              	.LVL141:
+ 1104              		.loc 1 576 0
+ 1105 0040 826F     		ldr	r2, [r0, #120]
+ 1106              	.LVL137:
  577:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH0FVAL_MASK << (FTM_FILTER_CH1FVAL_SHIFT * chnlNumber));
- 1113              		.loc 1 577 0
- 1114 0042 8900     		lsls	r1, r1, #2
- 1115              	.LVL142:
- 1116 0044 0F24     		movs	r4, #15
- 1117 0046 8C40     		lsls	r4, r4, r1
- 1118 0048 22EA0402 		bic	r2, r2, r4
- 1119              	.LVL143:
+ 1107              		.loc 1 577 0
+ 1108 0042 8900     		lsls	r1, r1, #2
+ 1109              	.LVL138:
+ 1110 0044 0F24     		movs	r4, #15
+ 1111 0046 8C40     		lsls	r4, r4, r1
+ 1112 0048 22EA0402 		bic	r2, r2, r4
+ 1113              	.LVL139:
  578:../drivers/fsl_ftm.c ****         reg |= (filterValue << (FTM_FILTER_CH1FVAL_SHIFT * chnlNumber));
- 1120              		.loc 1 578 0
- 1121 004c 03FA01F1 		lsl	r1, r3, r1
- 1122 0050 1143     		orrs	r1, r1, r2
- 1123              	.LVL144:
+ 1114              		.loc 1 578 0
+ 1115 004c 03FA01F1 		lsl	r1, r3, r1
+ 1116 0050 1143     		orrs	r1, r1, r2
+ 1117              	.LVL140:
  579:../drivers/fsl_ftm.c ****         base->FILTER = reg;
- 1124              		.loc 1 579 0
- 1125 0052 8167     		str	r1, [r0, #120]
- 1126              	.LVL145:
- 1127              	.L111:
- 1128 0054 F0BD     		pop	{r4, r5, r6, r7, pc}
- 1129              		.cfi_endproc
- 1130              	.LFE174:
- 1132              		.section	.text.FTM_SetupOutputCompare,"ax",%progbits
- 1133              		.align	1
- 1134              		.global	FTM_SetupOutputCompare
- 1135              		.syntax unified
- 1136              		.thumb
- 1137              		.thumb_func
- 1138              		.fpu fpv4-sp-d16
- 1140              	FTM_SetupOutputCompare:
- 1141              	.LFB175:
+ 1118              		.loc 1 579 0
+ 1119 0052 8167     		str	r1, [r0, #120]
+ 1120              	.LVL141:
+ 1121              	.L111:
  580:../drivers/fsl_ftm.c ****     }
  581:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT) && (FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT)
  582:../drivers/fsl_ftm.c ****     /* Set to input mode */
  583:../drivers/fsl_ftm.c ****     FTM_SetPwmOutputEnable(base, chnlNumber, false);
  584:../drivers/fsl_ftm.c **** #endif
  585:../drivers/fsl_ftm.c **** }
+ 1122              		.loc 1 585 0
+ 1123 0054 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1124              		.cfi_endproc
+ 1125              	.LFE174:
+ 1127              		.section	.text.FTM_SetupOutputCompare,"ax",%progbits
+ 1128              		.align	1
+ 1129              		.global	FTM_SetupOutputCompare
+ 1130              		.syntax unified
+ 1131              		.thumb
+ 1132              		.thumb_func
+ 1133              		.fpu fpv4-sp-d16
+ 1135              	FTM_SetupOutputCompare:
+ 1136              	.LFB175:
  586:../drivers/fsl_ftm.c **** 
  587:../drivers/fsl_ftm.c **** void FTM_SetupOutputCompare(FTM_Type *base,
  588:../drivers/fsl_ftm.c ****                             ftm_chnl_t chnlNumber,
  589:../drivers/fsl_ftm.c ****                             ftm_output_compare_mode_t compareMode,
  590:../drivers/fsl_ftm.c ****                             uint32_t compareValue)
  591:../drivers/fsl_ftm.c **** {
- 1142              		.loc 1 591 0
- 1143              		.cfi_startproc
- 1144              		@ args = 0, pretend = 0, frame = 0
- 1145              		@ frame_needed = 0, uses_anonymous_args = 0
- 1146              	.LVL146:
- 1147 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 1148              		.cfi_def_cfa_offset 20
- 1149              		.cfi_offset 4, -20
- 1150              		.cfi_offset 5, -16
- 1151              		.cfi_offset 6, -12
- 1152              		.cfi_offset 7, -8
- 1153              		.cfi_offset 14, -4
+ 1137              		.loc 1 591 0
+ 1138              		.cfi_startproc
+ 1139              		@ args = 0, pretend = 0, frame = 0
+ 1140              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1141              	.LVL142:
+ 1142 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1143              		.cfi_def_cfa_offset 20
+ 1144              		.cfi_offset 4, -20
+ 1145              		.cfi_offset 5, -16
+ 1146              		.cfi_offset 6, -12
+ 1147              		.cfi_offset 7, -8
+ 1148              		.cfi_offset 14, -4
  592:../drivers/fsl_ftm.c ****     uint32_t reg;
  593:../drivers/fsl_ftm.c **** 
  594:../drivers/fsl_ftm.c ****     /* Clear the combine bit for the channel pair */
  595:../drivers/fsl_ftm.c ****     base->COMBINE &= ~(1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * (chnlNumbe
- 1154              		.loc 1 595 0
- 1155 0002 4C08     		lsrs	r4, r1, #1
- 1156 0004 466E     		ldr	r6, [r0, #100]
- 1157 0006 E400     		lsls	r4, r4, #3
- 1158 0008 0125     		movs	r5, #1
- 1159 000a 05FA04F7 		lsl	r7, r5, r4
- 1160 000e 26EA0706 		bic	r6, r6, r7
- 1161 0012 4666     		str	r6, [r0, #100]
+ 1149              		.loc 1 595 0
+ 1150 0002 4C08     		lsrs	r4, r1, #1
+ 1151 0004 466E     		ldr	r6, [r0, #100]
+ 1152 0006 E400     		lsls	r4, r4, #3
+ 1153 0008 0125     		movs	r5, #1
+ 1154 000a 05FA04F7 		lsl	r7, r5, r4
+ 1155 000e 26EA0706 		bic	r6, r6, r7
+ 1156 0012 4666     		str	r6, [r0, #100]
  596:../drivers/fsl_ftm.c ****     /* Clear the dual edge capture mode because it's it's higher priority */
  597:../drivers/fsl_ftm.c ****     base->COMBINE &= ~(1U << (FTM_COMBINE_DECAPEN0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * (chnlNumbe
- 1162              		.loc 1 597 0
- 1163 0014 466E     		ldr	r6, [r0, #100]
- 1164 0016 0234     		adds	r4, r4, #2
- 1165 0018 05FA04F4 		lsl	r4, r5, r4
- 1166 001c 26EA0404 		bic	r4, r6, r4
- 1167 0020 4466     		str	r4, [r0, #100]
+ 1157              		.loc 1 597 0
+ 1158 0014 466E     		ldr	r6, [r0, #100]
+ 1159 0016 0234     		adds	r4, r4, #2
+ 1160 0018 05FA04F4 		lsl	r4, r5, r4
+ 1161 001c 26EA0404 		bic	r4, r6, r4
+ 1162 0020 4466     		str	r4, [r0, #100]
  598:../drivers/fsl_ftm.c **** #if !(defined(FSL_FEATURE_FTM_HAS_NO_QDCTRL) && FSL_FEATURE_FTM_HAS_NO_QDCTRL)
  599:../drivers/fsl_ftm.c ****     /* Clear the quadrature decoder mode beacause it's higher priority */
  600:../drivers/fsl_ftm.c ****     base->QDCTRL &= ~FTM_QDCTRL_QUADEN_MASK;
- 1168              		.loc 1 600 0
- 1169 0022 D0F88040 		ldr	r4, [r0, #128]
- 1170 0026 24F00104 		bic	r4, r4, #1
- 1171 002a C0F88040 		str	r4, [r0, #128]
- 1172 002e 00EBC100 		add	r0, r0, r1, lsl #3
- 1173              	.LVL147:
+ 1163              		.loc 1 600 0
+ 1164 0022 D0F88040 		ldr	r4, [r0, #128]
+ 1165 0026 24F00104 		bic	r4, r4, #1
+ 1166 002a C0F88040 		str	r4, [r0, #128]
+ 1167 002e 00EBC100 		add	r0, r0, r1, lsl #3
+ 1168              	.LVL143:
  601:../drivers/fsl_ftm.c **** #endif    
  602:../drivers/fsl_ftm.c ****     
  603:../drivers/fsl_ftm.c ****     reg = base->CONTROLS[chnlNumber].CnSC;
- 1174              		.loc 1 603 0
- 1175 0032 C168     		ldr	r1, [r0, #12]
- 1176              	.LVL148:
+ 1169              		.loc 1 603 0
+ 1170 0032 C168     		ldr	r1, [r0, #12]
+ 1171              	.LVL144:
  604:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
- 1177              		.loc 1 604 0
- 1178 0034 21F03C01 		bic	r1, r1, #60
- 1179              	.LVL149:
+ 1172              		.loc 1 604 0
+ 1173 0034 21F03C01 		bic	r1, r1, #60
+ 1174              	.LVL145:
  605:../drivers/fsl_ftm.c ****     reg |= compareMode;
- 1180              		.loc 1 605 0
- 1181 0038 0A43     		orrs	r2, r2, r1
- 1182              	.LVL150:
+ 1175              		.loc 1 605 0
+ 1176 0038 0A43     		orrs	r2, r2, r1
+ 1177              	.LVL146:
  606:../drivers/fsl_ftm.c ****     /* Setup the channel output behaviour when a match occurs with the compare value */
  607:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlNumber].CnSC = reg;
- 1183              		.loc 1 607 0
- 1184 003a C260     		str	r2, [r0, #12]
+ 1178              		.loc 1 607 0
+ 1179 003a C260     		str	r2, [r0, #12]
  608:../drivers/fsl_ftm.c **** 
  609:../drivers/fsl_ftm.c ****     /* Set output on match to the requested level */
  610:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlNumber].CnV = compareValue;
- 1185              		.loc 1 610 0
- 1186 003c 0361     		str	r3, [r0, #16]
- 1187 003e F0BD     		pop	{r4, r5, r6, r7, pc}
- 1188              		.cfi_endproc
- 1189              	.LFE175:
- 1191              		.section	.text.FTM_SetupDualEdgeCapture,"ax",%progbits
- 1192              		.align	1
- 1193              		.global	FTM_SetupDualEdgeCapture
- 1194              		.syntax unified
- 1195              		.thumb
- 1196              		.thumb_func
- 1197              		.fpu fpv4-sp-d16
- 1199              	FTM_SetupDualEdgeCapture:
- 1200              	.LFB176:
+ 1180              		.loc 1 610 0
+ 1181 003c 0361     		str	r3, [r0, #16]
  611:../drivers/fsl_ftm.c **** 
  612:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT) && (FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT)
  613:../drivers/fsl_ftm.c ****     /* Set to output mode */
  614:../drivers/fsl_ftm.c ****     FTM_SetPwmOutputEnable(base, chnlNumber, true);
  615:../drivers/fsl_ftm.c **** #endif
  616:../drivers/fsl_ftm.c **** }
+ 1182              		.loc 1 616 0
+ 1183 003e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1184              		.cfi_endproc
+ 1185              	.LFE175:
+ 1187              		.section	.text.FTM_SetupDualEdgeCapture,"ax",%progbits
+ 1188              		.align	1
+ 1189              		.global	FTM_SetupDualEdgeCapture
+ 1190              		.syntax unified
+ 1191              		.thumb
+ 1192              		.thumb_func
+ 1193              		.fpu fpv4-sp-d16
+ 1195              	FTM_SetupDualEdgeCapture:
+ 1196              	.LFB176:
  617:../drivers/fsl_ftm.c **** 
  618:../drivers/fsl_ftm.c **** void FTM_SetupDualEdgeCapture(FTM_Type *base,
  619:../drivers/fsl_ftm.c ****                               ftm_chnl_t chnlPairNumber,
  620:../drivers/fsl_ftm.c ****                               const ftm_dual_edge_capture_param_t *edgeParam,
  621:../drivers/fsl_ftm.c ****                               uint32_t filterValue)
  622:../drivers/fsl_ftm.c **** {
- 1201              		.loc 1 622 0
- 1202              		.cfi_startproc
- 1203              		@ args = 0, pretend = 0, frame = 0
- 1204              		@ frame_needed = 0, uses_anonymous_args = 0
- 1205              	.LVL151:
- 1206 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 1207              		.cfi_def_cfa_offset 20
- 1208              		.cfi_offset 4, -20
- 1209              		.cfi_offset 5, -16
- 1210              		.cfi_offset 6, -12
- 1211              		.cfi_offset 7, -8
- 1212              		.cfi_offset 14, -4
+ 1197              		.loc 1 622 0
+ 1198              		.cfi_startproc
+ 1199              		@ args = 0, pretend = 0, frame = 0
+ 1200              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1201              	.LVL147:
+ 1202 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1203              		.cfi_def_cfa_offset 20
+ 1204              		.cfi_offset 4, -20
+ 1205              		.cfi_offset 5, -16
+ 1206              		.cfi_offset 6, -12
+ 1207              		.cfi_offset 7, -8
+ 1208              		.cfi_offset 14, -4
  623:../drivers/fsl_ftm.c ****     assert(edgeParam);
  624:../drivers/fsl_ftm.c **** 
  625:../drivers/fsl_ftm.c ****     uint32_t reg;
  626:../drivers/fsl_ftm.c **** 
  627:../drivers/fsl_ftm.c ****     reg = base->COMBINE;
- 1213              		.loc 1 627 0
- 1214 0002 446E     		ldr	r4, [r0, #100]
- 1215              	.LVL152:
+ 1209              		.loc 1 627 0
+ 1210 0002 446E     		ldr	r4, [r0, #100]
+ 1211              	.LVL148:
  628:../drivers/fsl_ftm.c ****     /* Clear the combine bit for the channel pair */
  629:../drivers/fsl_ftm.c ****     reg &= ~(1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlPairNumber)));
- 1216              		.loc 1 629 0
- 1217 0004 CE00     		lsls	r6, r1, #3
- 1218 0006 0125     		movs	r5, #1
- 1219 0008 05FA06F7 		lsl	r7, r5, r6
- 1220 000c 24EA0707 		bic	r7, r4, r7
- 1221              	.LVL153:
+ 1212              		.loc 1 629 0
+ 1213 0004 CE00     		lsls	r6, r1, #3
+ 1214 0006 0125     		movs	r5, #1
+ 1215 0008 05FA06F7 		lsl	r7, r5, r6
+ 1216 000c 24EA0707 		bic	r7, r4, r7
+ 1217              	.LVL149:
  630:../drivers/fsl_ftm.c ****     /* Enable the DECAPEN bit */
  631:../drivers/fsl_ftm.c ****     reg |= (1U << (FTM_COMBINE_DECAPEN0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlPairNumber)));
- 1222              		.loc 1 631 0
- 1223 0010 B41C     		adds	r4, r6, #2
+ 1218              		.loc 1 631 0
+ 1219 0010 B41C     		adds	r4, r6, #2
  632:../drivers/fsl_ftm.c ****     reg |= (1U << (FTM_COMBINE_DECAP0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlPairNumber)));
- 1224              		.loc 1 632 0
- 1225 0012 0336     		adds	r6, r6, #3
- 1226              	.LVL154:
+ 1220              		.loc 1 632 0
+ 1221 0012 0336     		adds	r6, r6, #3
+ 1222              	.LVL150:
  631:../drivers/fsl_ftm.c ****     reg |= (1U << (FTM_COMBINE_DECAP0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlPairNumber)));
- 1227              		.loc 1 631 0
- 1228 0014 05FA04F4 		lsl	r4, r5, r4
- 1229              		.loc 1 632 0
- 1230 0018 B540     		lsls	r5, r5, r6
- 1231 001a 2C43     		orrs	r4, r4, r5
- 1232 001c 00EB0116 		add	r6, r0, r1, lsl #4
- 1233              	.LVL155:
- 1234 0020 3C43     		orrs	r4, r4, r7
- 1235              	.LVL156:
+ 1223              		.loc 1 631 0
+ 1224 0014 05FA04F4 		lsl	r4, r5, r4
+ 1225              		.loc 1 632 0
+ 1226 0018 B540     		lsls	r5, r5, r6
+ 1227 001a 2C43     		orrs	r4, r4, r5
+ 1228 001c 00EB0116 		add	r6, r0, r1, lsl #4
+ 1229              	.LVL151:
+ 1230 0020 3C43     		orrs	r4, r4, r7
+ 1231              	.LVL152:
  633:../drivers/fsl_ftm.c ****     base->COMBINE = reg;
- 1236              		.loc 1 633 0
- 1237 0022 4466     		str	r4, [r0, #100]
+ 1232              		.loc 1 633 0
+ 1233 0022 4466     		str	r4, [r0, #100]
  634:../drivers/fsl_ftm.c **** 
  635:../drivers/fsl_ftm.c ****     /* Setup the edge detection from channel n and n + 1 */
  636:../drivers/fsl_ftm.c ****     reg = base->CONTROLS[chnlPairNumber * 2].CnSC;
- 1238              		.loc 1 636 0
- 1239 0024 F768     		ldr	r7, [r6, #12]
- 1240              	.LVL157:
+ 1234              		.loc 1 636 0
+ 1235 0024 F768     		ldr	r7, [r6, #12]
+ 1236              	.LVL153:
  637:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
  638:../drivers/fsl_ftm.c ****     reg |= ((uint32_t)edgeParam->mode | (uint32_t)edgeParam->currChanEdgeMode);
- 1241              		.loc 1 638 0
- 1242 0026 1478     		ldrb	r4, [r2]	@ zero_extendqisi2
- 1243 0028 5578     		ldrb	r5, [r2, #1]	@ zero_extendqisi2
+ 1237              		.loc 1 638 0
+ 1238 0026 1478     		ldrb	r4, [r2]	@ zero_extendqisi2
+ 1239 0028 5578     		ldrb	r5, [r2, #1]	@ zero_extendqisi2
  639:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlPairNumber * 2].CnSC = reg;
  640:../drivers/fsl_ftm.c **** 
  641:../drivers/fsl_ftm.c ****     reg = base->CONTROLS[(chnlPairNumber * 2) + 1].CnSC;
  642:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
  643:../drivers/fsl_ftm.c ****     reg |= ((uint32_t)edgeParam->mode | (uint32_t)edgeParam->nextChanEdgeMode);
- 1244              		.loc 1 643 0
- 1245 002a 9278     		ldrb	r2, [r2, #2]	@ zero_extendqisi2
- 1246              	.LVL158:
+ 1240              		.loc 1 643 0
+ 1241 002a 9278     		ldrb	r2, [r2, #2]	@ zero_extendqisi2
+ 1242              	.LVL154:
  638:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlPairNumber * 2].CnSC = reg;
- 1247              		.loc 1 638 0
- 1248 002c 2543     		orrs	r5, r5, r4
+ 1243              		.loc 1 638 0
+ 1244 002c 2543     		orrs	r5, r5, r4
  637:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
- 1249              		.loc 1 637 0
- 1250 002e 27F03C07 		bic	r7, r7, #60
- 1251              	.LVL159:
+ 1245              		.loc 1 637 0
+ 1246 002e 27F03C07 		bic	r7, r7, #60
+ 1247              	.LVL155:
  638:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlPairNumber * 2].CnSC = reg;
- 1252              		.loc 1 638 0
- 1253 0032 3D43     		orrs	r5, r5, r7
- 1254              	.LVL160:
+ 1248              		.loc 1 638 0
+ 1249 0032 3D43     		orrs	r5, r5, r7
+ 1250              	.LVL156:
  639:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlPairNumber * 2].CnSC = reg;
- 1255              		.loc 1 639 0
- 1256 0034 F560     		str	r5, [r6, #12]
+ 1251              		.loc 1 639 0
+ 1252 0034 F560     		str	r5, [r6, #12]
  641:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
- 1257              		.loc 1 641 0
- 1258 0036 7569     		ldr	r5, [r6, #20]
- 1259              	.LVL161:
- 1260              		.loc 1 643 0
- 1261 0038 1443     		orrs	r4, r4, r2
+ 1253              		.loc 1 641 0
+ 1254 0036 7569     		ldr	r5, [r6, #20]
+ 1255              	.LVL157:
+ 1256              		.loc 1 643 0
+ 1257 0038 1443     		orrs	r4, r4, r2
  642:../drivers/fsl_ftm.c ****     reg |= ((uint32_t)edgeParam->mode | (uint32_t)edgeParam->nextChanEdgeMode);
- 1262              		.loc 1 642 0
- 1263 003a 25F03C05 		bic	r5, r5, #60
- 1264              	.LVL162:
- 1265              		.loc 1 643 0
- 1266 003e 2C43     		orrs	r4, r4, r5
- 1267              	.LVL163:
+ 1258              		.loc 1 642 0
+ 1259 003a 25F03C05 		bic	r5, r5, #60
+ 1260              	.LVL158:
+ 1261              		.loc 1 643 0
+ 1262 003e 2C43     		orrs	r4, r4, r5
+ 1263              	.LVL159:
  644:../drivers/fsl_ftm.c ****     base->CONTROLS[(chnlPairNumber * 2) + 1].CnSC = reg;
  645:../drivers/fsl_ftm.c **** 
  646:../drivers/fsl_ftm.c ****     /* Input filter available only for channels 0, 1, 2, 3 */
  647:../drivers/fsl_ftm.c ****     if (chnlPairNumber < kFTM_Chnl_4)
- 1268              		.loc 1 647 0
- 1269 0040 0329     		cmp	r1, #3
+ 1264              		.loc 1 647 0
+ 1265 0040 0329     		cmp	r1, #3
  644:../drivers/fsl_ftm.c ****     base->CONTROLS[(chnlPairNumber * 2) + 1].CnSC = reg;
- 1270              		.loc 1 644 0
- 1271 0042 7461     		str	r4, [r6, #20]
- 1272              		.loc 1 647 0
- 1273 0044 09D8     		bhi	.L114
+ 1266              		.loc 1 644 0
+ 1267 0042 7461     		str	r4, [r6, #20]
+ 1268              		.loc 1 647 0
+ 1269 0044 09D8     		bhi	.L114
  648:../drivers/fsl_ftm.c ****     {
  649:../drivers/fsl_ftm.c ****         reg = base->FILTER;
- 1274              		.loc 1 649 0
- 1275 0046 826F     		ldr	r2, [r0, #120]
- 1276              	.LVL164:
+ 1270              		.loc 1 649 0
+ 1271 0046 826F     		ldr	r2, [r0, #120]
+ 1272              	.LVL160:
  650:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH0FVAL_MASK << (FTM_FILTER_CH1FVAL_SHIFT * chnlPairNumber));
- 1277              		.loc 1 650 0
- 1278 0048 8900     		lsls	r1, r1, #2
- 1279              	.LVL165:
- 1280 004a 0F24     		movs	r4, #15
- 1281 004c 8C40     		lsls	r4, r4, r1
- 1282 004e 22EA0402 		bic	r2, r2, r4
- 1283              	.LVL166:
+ 1273              		.loc 1 650 0
+ 1274 0048 8900     		lsls	r1, r1, #2
+ 1275              	.LVL161:
+ 1276 004a 0F24     		movs	r4, #15
+ 1277 004c 8C40     		lsls	r4, r4, r1
+ 1278 004e 22EA0402 		bic	r2, r2, r4
+ 1279              	.LVL162:
  651:../drivers/fsl_ftm.c ****         reg |= (filterValue << (FTM_FILTER_CH1FVAL_SHIFT * chnlPairNumber));
- 1284              		.loc 1 651 0
- 1285 0052 03FA01F1 		lsl	r1, r3, r1
- 1286 0056 1143     		orrs	r1, r1, r2
- 1287              	.LVL167:
+ 1280              		.loc 1 651 0
+ 1281 0052 03FA01F1 		lsl	r1, r3, r1
+ 1282 0056 1143     		orrs	r1, r1, r2
+ 1283              	.LVL163:
  652:../drivers/fsl_ftm.c ****         base->FILTER = reg;
- 1288              		.loc 1 652 0
- 1289 0058 8167     		str	r1, [r0, #120]
- 1290              	.LVL168:
- 1291              	.L114:
- 1292 005a F0BD     		pop	{r4, r5, r6, r7, pc}
- 1293              		.cfi_endproc
- 1294              	.LFE176:
- 1296              		.section	.text.FTM_SetupQuadDecode,"ax",%progbits
- 1297              		.align	1
- 1298              		.global	FTM_SetupQuadDecode
- 1299              		.syntax unified
- 1300              		.thumb
- 1301              		.thumb_func
- 1302              		.fpu fpv4-sp-d16
- 1304              	FTM_SetupQuadDecode:
- 1305              	.LFB177:
+ 1284              		.loc 1 652 0
+ 1285 0058 8167     		str	r1, [r0, #120]
+ 1286              	.LVL164:
+ 1287              	.L114:
  653:../drivers/fsl_ftm.c ****     }
  654:../drivers/fsl_ftm.c **** 
  655:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT) && (FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT)
@@ -2802,24 +2792,37 @@
  657:../drivers/fsl_ftm.c ****     FTM_SetPwmOutputEnable(base, chnlPairNumber, false);
  658:../drivers/fsl_ftm.c **** #endif
  659:../drivers/fsl_ftm.c **** }
+ 1288              		.loc 1 659 0
+ 1289 005a F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1290              		.cfi_endproc
+ 1291              	.LFE176:
+ 1293              		.section	.text.FTM_SetupQuadDecode,"ax",%progbits
+ 1294              		.align	1
+ 1295              		.global	FTM_SetupQuadDecode
+ 1296              		.syntax unified
+ 1297              		.thumb
+ 1298              		.thumb_func
+ 1299              		.fpu fpv4-sp-d16
+ 1301              	FTM_SetupQuadDecode:
+ 1302              	.LFB177:
  660:../drivers/fsl_ftm.c **** 
  661:../drivers/fsl_ftm.c **** void FTM_SetupQuadDecode(FTM_Type *base,
  662:../drivers/fsl_ftm.c ****                          const ftm_phase_params_t *phaseAParams,
  663:../drivers/fsl_ftm.c ****                          const ftm_phase_params_t *phaseBParams,
  664:../drivers/fsl_ftm.c ****                          ftm_quad_decode_mode_t quadMode)
  665:../drivers/fsl_ftm.c **** {
- 1306              		.loc 1 665 0
- 1307              		.cfi_startproc
- 1308              		@ args = 0, pretend = 0, frame = 0
- 1309              		@ frame_needed = 0, uses_anonymous_args = 0
- 1310              	.LVL169:
- 1311 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 1312              		.cfi_def_cfa_offset 20
- 1313              		.cfi_offset 4, -20
- 1314              		.cfi_offset 5, -16
- 1315              		.cfi_offset 6, -12
- 1316              		.cfi_offset 7, -8
- 1317              		.cfi_offset 14, -4
+ 1303              		.loc 1 665 0
+ 1304              		.cfi_startproc
+ 1305              		@ args = 0, pretend = 0, frame = 0
+ 1306              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1307              	.LVL165:
+ 1308 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1309              		.cfi_def_cfa_offset 20
+ 1310              		.cfi_offset 4, -20
+ 1311              		.cfi_offset 5, -16
+ 1312              		.cfi_offset 6, -12
+ 1313              		.cfi_offset 7, -8
+ 1314              		.cfi_offset 14, -4
  666:../drivers/fsl_ftm.c ****     assert(phaseAParams);
  667:../drivers/fsl_ftm.c ****     assert(phaseBParams);
  668:../drivers/fsl_ftm.c **** 
@@ -2827,171 +2830,171 @@
  670:../drivers/fsl_ftm.c **** 
  671:../drivers/fsl_ftm.c ****     /* Set Phase A filter value if phase filter is enabled */
  672:../drivers/fsl_ftm.c ****     if (phaseAParams->enablePhaseFilter)
- 1318              		.loc 1 672 0
- 1319 0002 0D78     		ldrb	r5, [r1]	@ zero_extendqisi2
- 1320 0004 3DB1     		cbz	r5, .L117
+ 1315              		.loc 1 672 0
+ 1316 0002 0E78     		ldrb	r6, [r1]	@ zero_extendqisi2
+ 1317 0004 3EB1     		cbz	r6, .L117
  673:../drivers/fsl_ftm.c ****     {
  674:../drivers/fsl_ftm.c ****         reg = base->FILTER;
- 1321              		.loc 1 674 0
- 1322 0006 866F     		ldr	r6, [r0, #120]
- 1323              	.LVL170:
+ 1318              		.loc 1 674 0
+ 1319 0006 856F     		ldr	r5, [r0, #120]
+ 1320              	.LVL166:
  675:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH0FVAL_MASK);
  676:../drivers/fsl_ftm.c ****         reg |= FTM_FILTER_CH0FVAL(phaseAParams->phaseFilterVal);
- 1324              		.loc 1 676 0
- 1325 0008 4C68     		ldr	r4, [r1, #4]
+ 1321              		.loc 1 676 0
+ 1322 0008 4C68     		ldr	r4, [r1, #4]
  675:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH0FVAL_MASK);
- 1326              		.loc 1 675 0
- 1327 000a 26F00F06 		bic	r6, r6, #15
- 1328              	.LVL171:
- 1329              		.loc 1 676 0
- 1330 000e 04F00F04 		and	r4, r4, #15
- 1331 0012 3443     		orrs	r4, r4, r6
- 1332              	.LVL172:
+ 1323              		.loc 1 675 0
+ 1324 000a 25F00F05 		bic	r5, r5, #15
+ 1325              	.LVL167:
+ 1326              		.loc 1 676 0
+ 1327 000e 04F00F04 		and	r4, r4, #15
+ 1328 0012 2C43     		orrs	r4, r4, r5
+ 1329              	.LVL168:
  677:../drivers/fsl_ftm.c ****         base->FILTER = reg;
- 1333              		.loc 1 677 0
- 1334 0014 8467     		str	r4, [r0, #120]
- 1335              	.LVL173:
- 1336              	.L117:
+ 1330              		.loc 1 677 0
+ 1331 0014 8467     		str	r4, [r0, #120]
+ 1332              	.LVL169:
+ 1333              	.L117:
  678:../drivers/fsl_ftm.c ****     }
  679:../drivers/fsl_ftm.c **** 
  680:../drivers/fsl_ftm.c ****     /* Set Phase B filter value if phase filter is enabled */
  681:../drivers/fsl_ftm.c ****     if (phaseBParams->enablePhaseFilter)
- 1337              		.loc 1 681 0
- 1338 0016 1678     		ldrb	r6, [r2]	@ zero_extendqisi2
- 1339 0018 3EB1     		cbz	r6, .L118
+ 1334              		.loc 1 681 0
+ 1335 0016 92F800C0 		ldrb	ip, [r2]	@ zero_extendqisi2
+ 1336 001a BCF1000F 		cmp	ip, #0
+ 1337 001e 07D0     		beq	.L118
  682:../drivers/fsl_ftm.c ****     {
  683:../drivers/fsl_ftm.c ****         reg = base->FILTER;
  684:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH1FVAL_MASK);
  685:../drivers/fsl_ftm.c ****         reg |= FTM_FILTER_CH1FVAL(phaseBParams->phaseFilterVal);
- 1340              		.loc 1 685 0
- 1341 001a 5468     		ldr	r4, [r2, #4]
+ 1338              		.loc 1 685 0
+ 1339 0020 5568     		ldr	r5, [r2, #4]
  683:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH1FVAL_MASK);
- 1342              		.loc 1 683 0
- 1343 001c 876F     		ldr	r7, [r0, #120]
- 1344              	.LVL174:
- 1345              		.loc 1 685 0
- 1346 001e 2401     		lsls	r4, r4, #4
+ 1340              		.loc 1 683 0
+ 1341 0022 876F     		ldr	r7, [r0, #120]
+ 1342              	.LVL170:
+ 1343              		.loc 1 685 0
+ 1344 0024 2D01     		lsls	r5, r5, #4
  684:../drivers/fsl_ftm.c ****         reg |= FTM_FILTER_CH1FVAL(phaseBParams->phaseFilterVal);
- 1347              		.loc 1 684 0
- 1348 0020 27F0F007 		bic	r7, r7, #240
- 1349              	.LVL175:
- 1350              		.loc 1 685 0
- 1351 0024 E4B2     		uxtb	r4, r4
- 1352 0026 3C43     		orrs	r4, r4, r7
- 1353              	.LVL176:
+ 1345              		.loc 1 684 0
+ 1346 0026 27F0F007 		bic	r7, r7, #240
+ 1347              	.LVL171:
+ 1348              		.loc 1 685 0
+ 1349 002a EDB2     		uxtb	r5, r5
+ 1350 002c 3D43     		orrs	r5, r5, r7
+ 1351              	.LVL172:
  686:../drivers/fsl_ftm.c ****         base->FILTER = reg;
- 1354              		.loc 1 686 0
- 1355 0028 8467     		str	r4, [r0, #120]
- 1356              	.LVL177:
- 1357              	.L118:
+ 1352              		.loc 1 686 0
+ 1353 002e 8567     		str	r5, [r0, #120]
+ 1354              	.LVL173:
+ 1355              	.L118:
  687:../drivers/fsl_ftm.c ****     }
  688:../drivers/fsl_ftm.c **** #if !(defined(FSL_FEATURE_FTM_HAS_NO_QDCTRL) && FSL_FEATURE_FTM_HAS_NO_QDCTRL)
  689:../drivers/fsl_ftm.c ****     /* Set Quadrature decode properties */
  690:../drivers/fsl_ftm.c ****     reg = base->QDCTRL;
- 1358              		.loc 1 690 0
- 1359 002a D0F88040 		ldr	r4, [r0, #128]
- 1360              	.LVL178:
+ 1356              		.loc 1 690 0
+ 1357 0030 D0F88040 		ldr	r4, [r0, #128]
+ 1358              	.LVL174:
  691:../drivers/fsl_ftm.c ****     reg &= ~(FTM_QDCTRL_QUADMODE_MASK | FTM_QDCTRL_PHAFLTREN_MASK | FTM_QDCTRL_PHBFLTREN_MASK | FTM
  692:../drivers/fsl_ftm.c ****              FTM_QDCTRL_PHBPOL_MASK);
  693:../drivers/fsl_ftm.c ****     reg |= (FTM_QDCTRL_QUADMODE(quadMode) | FTM_QDCTRL_PHAFLTREN(phaseAParams->enablePhaseFilter) |
  694:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBFLTREN(phaseBParams->enablePhaseFilter) | FTM_QDCTRL_PHAPOL(phaseAParams-
  695:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBPOL(phaseBParams->phasePolarity));
- 1361              		.loc 1 695 0
- 1362 002e 127A     		ldrb	r2, [r2, #8]	@ zero_extendqisi2
- 1363              	.LVL179:
- 693:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBFLTREN(phaseBParams->enablePhaseFilter) | FTM_QDCTRL_PHAPOL(phaseAParams-
- 1364              		.loc 1 693 0
- 1365 0030 DB00     		lsls	r3, r3, #3
- 1366              	.LVL180:
- 1367 0032 03F00803 		and	r3, r3, #8
+ 1359              		.loc 1 695 0
+ 1360 0034 127A     		ldrb	r2, [r2, #8]	@ zero_extendqisi2
+ 1361              	.LVL175:
  691:../drivers/fsl_ftm.c ****     reg &= ~(FTM_QDCTRL_QUADMODE_MASK | FTM_QDCTRL_PHAFLTREN_MASK | FTM_QDCTRL_PHBFLTREN_MASK | FTM
- 1368              		.loc 1 691 0
- 1369 0036 24F0F804 		bic	r4, r4, #248
- 1370              	.LVL181:
- 694:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBPOL(phaseBParams->phasePolarity));
- 1371              		.loc 1 694 0
- 1372 003a B601     		lsls	r6, r6, #6
- 1373 003c 2343     		orrs	r3, r3, r4
- 1374 003e 06F04006 		and	r6, r6, #64
- 1375              		.loc 1 695 0
- 1376 0042 1201     		lsls	r2, r2, #4
- 1377 0044 02F01002 		and	r2, r2, #16
- 1378 0048 3343     		orrs	r3, r3, r6
- 1379 004a 1343     		orrs	r3, r3, r2
- 694:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBPOL(phaseBParams->phasePolarity));
- 1380              		.loc 1 694 0
- 1381 004c 0A7A     		ldrb	r2, [r1, #8]	@ zero_extendqisi2
- 1382 004e 5201     		lsls	r2, r2, #5
- 1383 0050 43EAC513 		orr	r3, r3, r5, lsl #7
- 1384 0054 02F02002 		and	r2, r2, #32
+ 1362              		.loc 1 691 0
+ 1363 0036 24F0F804 		bic	r4, r4, #248
+ 1364              	.LVL176:
  693:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBFLTREN(phaseBParams->enablePhaseFilter) | FTM_QDCTRL_PHAPOL(phaseAParams-
- 1385              		.loc 1 693 0
- 1386 0058 1343     		orrs	r3, r3, r2
- 1387              	.LVL182:
+ 1365              		.loc 1 693 0
+ 1366 003a DB00     		lsls	r3, r3, #3
+ 1367              	.LVL177:
+ 1368 003c 44EA8C14 		orr	r4, r4, ip, lsl #6
+ 1369              	.LVL178:
+ 1370 0040 03F00803 		and	r3, r3, #8
+ 1371              		.loc 1 695 0
+ 1372 0044 1201     		lsls	r2, r2, #4
+ 1373 0046 02F01002 		and	r2, r2, #16
+ 1374 004a 2343     		orrs	r3, r3, r4
+ 1375 004c 1343     		orrs	r3, r3, r2
+ 694:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBPOL(phaseBParams->phasePolarity));
+ 1376              		.loc 1 694 0
+ 1377 004e 0A7A     		ldrb	r2, [r1, #8]	@ zero_extendqisi2
+ 1378 0050 5201     		lsls	r2, r2, #5
+ 1379 0052 43EAC613 		orr	r3, r3, r6, lsl #7
+ 1380 0056 02F02002 		and	r2, r2, #32
+ 693:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBFLTREN(phaseBParams->enablePhaseFilter) | FTM_QDCTRL_PHAPOL(phaseAParams-
+ 1381              		.loc 1 693 0
+ 1382 005a 1343     		orrs	r3, r3, r2
+ 1383              	.LVL179:
  696:../drivers/fsl_ftm.c ****     base->QDCTRL = reg;
- 1388              		.loc 1 696 0
- 1389 005a C0F88030 		str	r3, [r0, #128]
+ 1384              		.loc 1 696 0
+ 1385 005c C0F88030 		str	r3, [r0, #128]
  697:../drivers/fsl_ftm.c ****     /* Enable Quad decode */
  698:../drivers/fsl_ftm.c ****     base->QDCTRL |= FTM_QDCTRL_QUADEN_MASK;
- 1390              		.loc 1 698 0
- 1391 005e D0F88030 		ldr	r3, [r0, #128]
- 1392              	.LVL183:
- 1393 0062 43F00103 		orr	r3, r3, #1
- 1394 0066 C0F88030 		str	r3, [r0, #128]
- 1395              	.LVL184:
- 1396 006a F0BD     		pop	{r4, r5, r6, r7, pc}
- 1397              		.cfi_endproc
- 1398              	.LFE177:
- 1400              		.section	.text.FTM_SetupFault,"ax",%progbits
- 1401              		.align	1
- 1402              		.global	FTM_SetupFault
- 1403              		.syntax unified
- 1404              		.thumb
- 1405              		.thumb_func
- 1406              		.fpu fpv4-sp-d16
- 1408              	FTM_SetupFault:
- 1409              	.LFB178:
+ 1386              		.loc 1 698 0
+ 1387 0060 D0F88030 		ldr	r3, [r0, #128]
+ 1388              	.LVL180:
+ 1389 0064 43F00103 		orr	r3, r3, #1
+ 1390 0068 C0F88030 		str	r3, [r0, #128]
+ 1391              	.LVL181:
  699:../drivers/fsl_ftm.c **** #endif
  700:../drivers/fsl_ftm.c **** }
+ 1392              		.loc 1 700 0
+ 1393 006c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1394              		.cfi_endproc
+ 1395              	.LFE177:
+ 1397              		.section	.text.FTM_SetupFault,"ax",%progbits
+ 1398              		.align	1
+ 1399              		.global	FTM_SetupFault
+ 1400              		.syntax unified
+ 1401              		.thumb
+ 1402              		.thumb_func
+ 1403              		.fpu fpv4-sp-d16
+ 1405              	FTM_SetupFault:
+ 1406              	.LFB178:
  701:../drivers/fsl_ftm.c **** 
  702:../drivers/fsl_ftm.c **** void FTM_SetupFault(FTM_Type *base, ftm_fault_input_t faultNumber, const ftm_fault_param_t *faultPa
  703:../drivers/fsl_ftm.c **** {
- 1410              		.loc 1 703 0
- 1411              		.cfi_startproc
- 1412              		@ args = 0, pretend = 0, frame = 0
- 1413              		@ frame_needed = 0, uses_anonymous_args = 0
- 1414              	.LVL185:
- 1415 0000 70B5     		push	{r4, r5, r6, lr}
- 1416              		.cfi_def_cfa_offset 16
- 1417              		.cfi_offset 4, -16
- 1418              		.cfi_offset 5, -12
- 1419              		.cfi_offset 6, -8
- 1420              		.cfi_offset 14, -4
+ 1407              		.loc 1 703 0
+ 1408              		.cfi_startproc
+ 1409              		@ args = 0, pretend = 0, frame = 0
+ 1410              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1411              	.LVL182:
+ 1412 0000 30B5     		push	{r4, r5, lr}
+ 1413              		.cfi_def_cfa_offset 12
+ 1414              		.cfi_offset 4, -12
+ 1415              		.cfi_offset 5, -8
+ 1416              		.cfi_offset 14, -4
  704:../drivers/fsl_ftm.c ****     assert(faultParams);
  705:../drivers/fsl_ftm.c **** 
  706:../drivers/fsl_ftm.c ****     uint32_t reg;
  707:../drivers/fsl_ftm.c **** 
  708:../drivers/fsl_ftm.c ****     reg = base->FLTCTRL;
  709:../drivers/fsl_ftm.c ****     if (faultParams->enableFaultInput)
- 1421              		.loc 1 709 0
- 1422 0002 1578     		ldrb	r5, [r2]	@ zero_extendqisi2
+ 1417              		.loc 1 709 0
+ 1418 0002 1578     		ldrb	r5, [r2]	@ zero_extendqisi2
  708:../drivers/fsl_ftm.c ****     if (faultParams->enableFaultInput)
- 1423              		.loc 1 708 0
- 1424 0004 C36F     		ldr	r3, [r0, #124]
- 1425              	.LVL186:
- 1426 0006 0124     		movs	r4, #1
+ 1419              		.loc 1 708 0
+ 1420 0004 C36F     		ldr	r3, [r0, #124]
+ 1421              	.LVL183:
+ 1422 0006 0124     		movs	r4, #1
+ 1423 0008 8C40     		lsls	r4, r4, r1
+ 1424              		.loc 1 709 0
+ 1425 000a 7DB1     		cbz	r5, .L126
  710:../drivers/fsl_ftm.c ****     {
  711:../drivers/fsl_ftm.c ****         /* Enable the fault input */
  712:../drivers/fsl_ftm.c ****         reg |= (FTM_FLTCTRL_FAULT0EN_MASK << faultNumber);
- 1427              		.loc 1 712 0
- 1428 0008 8C40     		lsls	r4, r4, r1
- 709:../drivers/fsl_ftm.c ****     {
- 1429              		.loc 1 709 0
- 1430 000a 8DB1     		cbz	r5, .L126
- 1431              		.loc 1 712 0
- 1432 000c 2343     		orrs	r3, r3, r4
- 1433              	.LVL187:
- 1434              	.L127:
+ 1426              		.loc 1 712 0
+ 1427 000c 2343     		orrs	r3, r3, r4
+ 1428              	.LVL184:
+ 1429              	.L127:
+ 1430 000e 0D1D     		adds	r5, r1, #4
+ 1431 0010 1021     		movs	r1, #16
+ 1432              	.LVL185:
+ 1433 0012 A940     		lsls	r1, r1, r5
  713:../drivers/fsl_ftm.c ****     }
  714:../drivers/fsl_ftm.c ****     else
  715:../drivers/fsl_ftm.c ****     {
@@ -3000,22 +3003,16 @@
  718:../drivers/fsl_ftm.c ****     }
  719:../drivers/fsl_ftm.c **** 
  720:../drivers/fsl_ftm.c ****     if (faultParams->useFaultFilter)
- 1435              		.loc 1 720 0
- 1436 000e 9678     		ldrb	r6, [r2, #2]	@ zero_extendqisi2
- 1437 0010 0D1D     		adds	r5, r1, #4
- 1438 0012 1024     		movs	r4, #16
+ 1434              		.loc 1 720 0
+ 1435 0014 9578     		ldrb	r5, [r2, #2]	@ zero_extendqisi2
+ 1436 0016 65B1     		cbz	r5, .L128
  721:../drivers/fsl_ftm.c ****     {
  722:../drivers/fsl_ftm.c ****         /* Enable the fault filter */
  723:../drivers/fsl_ftm.c ****         reg |= (FTM_FLTCTRL_FFLTR0EN_MASK << (FTM_FLTCTRL_FFLTR0EN_SHIFT + faultNumber));
- 1439              		.loc 1 723 0
- 1440 0014 AC40     		lsls	r4, r4, r5
- 720:../drivers/fsl_ftm.c ****     {
- 1441              		.loc 1 720 0
- 1442 0016 76B1     		cbz	r6, .L128
- 1443              		.loc 1 723 0
- 1444 0018 2343     		orrs	r3, r3, r4
- 1445              	.LVL188:
- 1446              	.L129:
+ 1437              		.loc 1 723 0
+ 1438 0018 0B43     		orrs	r3, r3, r1
+ 1439              	.LVL186:
+ 1440              	.L129:
  724:../drivers/fsl_ftm.c ****     }
  725:../drivers/fsl_ftm.c ****     else
  726:../drivers/fsl_ftm.c ****     {
@@ -3023,117 +3020,114 @@
  728:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FLTCTRL_FFLTR0EN_MASK << (FTM_FLTCTRL_FFLTR0EN_SHIFT + faultNumber));
  729:../drivers/fsl_ftm.c ****     }
  730:../drivers/fsl_ftm.c ****     base->FLTCTRL = reg;
+ 1441              		.loc 1 730 0
+ 1442 001a C367     		str	r3, [r0, #124]
  731:../drivers/fsl_ftm.c **** 
  732:../drivers/fsl_ftm.c ****     if (faultParams->faultLevel)
- 1447              		.loc 1 732 0
- 1448 001a 5278     		ldrb	r2, [r2, #1]	@ zero_extendqisi2
- 1449              	.LVL189:
- 730:../drivers/fsl_ftm.c **** 
- 1450              		.loc 1 730 0
- 1451 001c C367     		str	r3, [r0, #124]
- 1452 001e 0123     		movs	r3, #1
- 1453              	.LVL190:
- 1454              		.loc 1 732 0
- 1455 0020 62B1     		cbz	r2, .L130
+ 1443              		.loc 1 732 0
+ 1444 001c 5378     		ldrb	r3, [r2, #1]	@ zero_extendqisi2
+ 1445              	.LVL187:
+ 1446 001e 5BB1     		cbz	r3, .L130
  733:../drivers/fsl_ftm.c ****     {
  734:../drivers/fsl_ftm.c ****         /* Active low polarity for the fault input pin */
  735:../drivers/fsl_ftm.c ****         base->FLTPOL |= (1U << faultNumber);
- 1456              		.loc 1 735 0
- 1457 0022 D0F88820 		ldr	r2, [r0, #136]
- 1458 0026 8B40     		lsls	r3, r3, r1
- 1459 0028 1343     		orrs	r3, r3, r2
- 1460              	.L132:
+ 1447              		.loc 1 735 0
+ 1448 0020 D0F88830 		ldr	r3, [r0, #136]
+ 1449 0024 1C43     		orrs	r4, r4, r3
+ 1450              	.L132:
  736:../drivers/fsl_ftm.c ****     }
  737:../drivers/fsl_ftm.c ****     else
  738:../drivers/fsl_ftm.c ****     {
  739:../drivers/fsl_ftm.c ****         /* Active high polarity for the fault input pin */
  740:../drivers/fsl_ftm.c ****         base->FLTPOL &= ~(1U << faultNumber);
- 1461              		.loc 1 740 0
- 1462 002a C0F88830 		str	r3, [r0, #136]
- 1463              	.LVL191:
- 1464 002e 70BD     		pop	{r4, r5, r6, pc}
- 1465              	.LVL192:
- 1466              	.L126:
- 717:../drivers/fsl_ftm.c ****     }
- 1467              		.loc 1 717 0
- 1468 0030 23EA0403 		bic	r3, r3, r4
- 1469              	.LVL193:
- 1470 0034 EBE7     		b	.L127
- 1471              	.L128:
- 728:../drivers/fsl_ftm.c ****     }
- 1472              		.loc 1 728 0
- 1473 0036 23EA0403 		bic	r3, r3, r4
- 1474              	.LVL194:
- 1475 003a EEE7     		b	.L129
- 1476              	.LVL195:
- 1477              	.L130:
- 1478              		.loc 1 740 0
- 1479 003c D0F88820 		ldr	r2, [r0, #136]
- 1480 0040 8B40     		lsls	r3, r3, r1
- 1481 0042 22EA0303 		bic	r3, r2, r3
- 1482 0046 F0E7     		b	.L132
- 1483              		.cfi_endproc
- 1484              	.LFE178:
- 1486              		.section	.text.FTM_EnableInterrupts,"ax",%progbits
- 1487              		.align	1
- 1488              		.global	FTM_EnableInterrupts
- 1489              		.syntax unified
- 1490              		.thumb
- 1491              		.thumb_func
- 1492              		.fpu fpv4-sp-d16
- 1494              	FTM_EnableInterrupts:
- 1495              	.LFB179:
+ 1451              		.loc 1 740 0
+ 1452 0026 C0F88840 		str	r4, [r0, #136]
+ 1453              	.LVL188:
  741:../drivers/fsl_ftm.c ****     }
  742:../drivers/fsl_ftm.c **** }
+ 1454              		.loc 1 742 0
+ 1455 002a 30BD     		pop	{r4, r5, pc}
+ 1456              	.LVL189:
+ 1457              	.L126:
+ 717:../drivers/fsl_ftm.c ****     }
+ 1458              		.loc 1 717 0
+ 1459 002c 23EA0403 		bic	r3, r3, r4
+ 1460              	.LVL190:
+ 1461 0030 EDE7     		b	.L127
+ 1462              	.LVL191:
+ 1463              	.L128:
+ 728:../drivers/fsl_ftm.c ****     }
+ 1464              		.loc 1 728 0
+ 1465 0032 23EA0103 		bic	r3, r3, r1
+ 1466              	.LVL192:
+ 1467 0036 F0E7     		b	.L129
+ 1468              	.LVL193:
+ 1469              	.L130:
+ 740:../drivers/fsl_ftm.c ****     }
+ 1470              		.loc 1 740 0
+ 1471 0038 D0F88830 		ldr	r3, [r0, #136]
+ 1472 003c 23EA0404 		bic	r4, r3, r4
+ 1473 0040 F1E7     		b	.L132
+ 1474              		.cfi_endproc
+ 1475              	.LFE178:
+ 1477              		.section	.text.FTM_EnableInterrupts,"ax",%progbits
+ 1478              		.align	1
+ 1479              		.global	FTM_EnableInterrupts
+ 1480              		.syntax unified
+ 1481              		.thumb
+ 1482              		.thumb_func
+ 1483              		.fpu fpv4-sp-d16
+ 1485              	FTM_EnableInterrupts:
+ 1486              	.LFB179:
  743:../drivers/fsl_ftm.c **** 
  744:../drivers/fsl_ftm.c **** void FTM_EnableInterrupts(FTM_Type *base, uint32_t mask)
  745:../drivers/fsl_ftm.c **** {
- 1496              		.loc 1 745 0
- 1497              		.cfi_startproc
- 1498              		@ args = 0, pretend = 0, frame = 0
- 1499              		@ frame_needed = 0, uses_anonymous_args = 0
- 1500              	.LVL196:
- 1501 0000 10B5     		push	{r4, lr}
- 1502              		.cfi_def_cfa_offset 8
- 1503              		.cfi_offset 4, -8
- 1504              		.cfi_offset 14, -4
+ 1487              		.loc 1 745 0
+ 1488              		.cfi_startproc
+ 1489              		@ args = 0, pretend = 0, frame = 0
+ 1490              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1491              	.LVL194:
+ 1492 0000 10B5     		push	{r4, lr}
+ 1493              		.cfi_def_cfa_offset 8
+ 1494              		.cfi_offset 4, -8
+ 1495              		.cfi_offset 14, -4
  746:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFFU);
  747:../drivers/fsl_ftm.c ****     uint8_t chnlNumber = 0;
  748:../drivers/fsl_ftm.c **** 
  749:../drivers/fsl_ftm.c ****     /* Enable the timer overflow interrupt */
  750:../drivers/fsl_ftm.c ****     if (mask & kFTM_TimeOverflowInterruptEnable)
- 1505              		.loc 1 750 0
- 1506 0002 8C05     		lsls	r4, r1, #22
+ 1496              		.loc 1 750 0
+ 1497 0002 8C05     		lsls	r4, r1, #22
  751:../drivers/fsl_ftm.c ****     {
  752:../drivers/fsl_ftm.c ****         base->SC |= FTM_SC_TOIE_MASK;
- 1507              		.loc 1 752 0
- 1508 0004 42BF     		ittt	mi
- 1509 0006 0268     		ldrmi	r2, [r0]
- 1510 0008 42F04002 		orrmi	r2, r2, #64
- 1511 000c 0260     		strmi	r2, [r0]
+ 1498              		.loc 1 752 0
+ 1499 0004 42BF     		ittt	mi
+ 1500 0006 0268     		ldrmi	r2, [r0]
+ 1501 0008 42F04002 		orrmi	r2, r2, #64
+ 1502 000c 0260     		strmi	r2, [r0]
  746:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFFU);
- 1512              		.loc 1 746 0
- 1513 000e CBB2     		uxtb	r3, r1
- 1514              	.LVL197:
+ 1503              		.loc 1 746 0
+ 1504 000e CBB2     		uxtb	r3, r1
+ 1505              	.LVL195:
  753:../drivers/fsl_ftm.c ****     }
  754:../drivers/fsl_ftm.c **** 
  755:../drivers/fsl_ftm.c ****     /* Enable the fault interrupt */
  756:../drivers/fsl_ftm.c ****     if (mask & kFTM_FaultInterruptEnable)
- 1515              		.loc 1 756 0
- 1516 0010 C905     		lsls	r1, r1, #23
- 1517              	.LVL198:
+ 1506              		.loc 1 756 0
+ 1507 0010 C905     		lsls	r1, r1, #23
+ 1508              	.LVL196:
  757:../drivers/fsl_ftm.c ****     {
  758:../drivers/fsl_ftm.c ****         base->MODE |= FTM_MODE_FAULTIE_MASK;
- 1518              		.loc 1 758 0
- 1519 0012 42BF     		ittt	mi
- 1520 0014 426D     		ldrmi	r2, [r0, #84]
- 1521 0016 42F08002 		orrmi	r2, r2, #128
- 1522 001a 4265     		strmi	r2, [r0, #84]
+ 1509              		.loc 1 758 0
+ 1510 0012 42BF     		ittt	mi
+ 1511 0014 426D     		ldrmi	r2, [r0, #84]
+ 1512 0016 42F08002 		orrmi	r2, r2, #128
+ 1513 001a 4265     		strmi	r2, [r0, #84]
  745:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFFU);
- 1523              		.loc 1 745 0
- 1524 001c 0021     		movs	r1, #0
- 1525              	.LVL199:
- 1526              	.L136:
+ 1514              		.loc 1 745 0
+ 1515 001c 0021     		movs	r1, #0
+ 1516              	.LVL197:
+ 1517              	.L136:
  759:../drivers/fsl_ftm.c ****     }
  760:../drivers/fsl_ftm.c **** 
  761:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT) && (FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT)
@@ -3146,8 +3140,8 @@
  768:../drivers/fsl_ftm.c **** 
  769:../drivers/fsl_ftm.c ****     /* Enable the channel interrupts */
  770:../drivers/fsl_ftm.c ****     while (chnlInts)
- 1527              		.loc 1 770 0
- 1528 001e 03B9     		cbnz	r3, .L138
+ 1518              		.loc 1 770 0
+ 1519 001e 03B9     		cbnz	r3, .L138
  771:../drivers/fsl_ftm.c ****     {
  772:../drivers/fsl_ftm.c ****         if (chnlInts & 0x1)
  773:../drivers/fsl_ftm.c ****         {
@@ -3157,88 +3151,88 @@
  777:../drivers/fsl_ftm.c ****         chnlInts = chnlInts >> 1U;
  778:../drivers/fsl_ftm.c ****     }
  779:../drivers/fsl_ftm.c **** }
- 1529              		.loc 1 779 0
- 1530 0020 10BD     		pop	{r4, pc}
- 1531              	.L138:
+ 1520              		.loc 1 779 0
+ 1521 0020 10BD     		pop	{r4, pc}
+ 1522              	.L138:
  772:../drivers/fsl_ftm.c ****         {
- 1532              		.loc 1 772 0
- 1533 0022 DA07     		lsls	r2, r3, #31
- 1534 0024 06D5     		bpl	.L137
- 1535 0026 CAB2     		uxtb	r2, r1
- 1536 0028 00EBC202 		add	r2, r0, r2, lsl #3
+ 1523              		.loc 1 772 0
+ 1524 0022 DA07     		lsls	r2, r3, #31
+ 1525 0024 06D5     		bpl	.L137
+ 1526 0026 CAB2     		uxtb	r2, r1
+ 1527 0028 00EBC202 		add	r2, r0, r2, lsl #3
  774:../drivers/fsl_ftm.c ****         }
- 1537              		.loc 1 774 0
- 1538 002c D468     		ldr	r4, [r2, #12]
- 1539 002e 44F04004 		orr	r4, r4, #64
- 1540 0032 D460     		str	r4, [r2, #12]
- 1541              	.L137:
- 1542              	.LVL200:
+ 1528              		.loc 1 774 0
+ 1529 002c D468     		ldr	r4, [r2, #12]
+ 1530 002e 44F04004 		orr	r4, r4, #64
+ 1531 0032 D460     		str	r4, [r2, #12]
+ 1532              	.L137:
+ 1533              	.LVL198:
  777:../drivers/fsl_ftm.c ****     }
- 1543              		.loc 1 777 0
- 1544 0034 5B08     		lsrs	r3, r3, #1
- 1545              	.LVL201:
- 1546 0036 0131     		adds	r1, r1, #1
- 1547              	.LVL202:
- 1548 0038 F1E7     		b	.L136
- 1549              		.cfi_endproc
- 1550              	.LFE179:
- 1552              		.section	.text.FTM_DisableInterrupts,"ax",%progbits
- 1553              		.align	1
- 1554              		.global	FTM_DisableInterrupts
- 1555              		.syntax unified
- 1556              		.thumb
- 1557              		.thumb_func
- 1558              		.fpu fpv4-sp-d16
- 1560              	FTM_DisableInterrupts:
- 1561              	.LFB180:
+ 1534              		.loc 1 777 0
+ 1535 0034 5B08     		lsrs	r3, r3, #1
+ 1536              	.LVL199:
+ 1537 0036 0131     		adds	r1, r1, #1
+ 1538              	.LVL200:
+ 1539 0038 F1E7     		b	.L136
+ 1540              		.cfi_endproc
+ 1541              	.LFE179:
+ 1543              		.section	.text.FTM_DisableInterrupts,"ax",%progbits
+ 1544              		.align	1
+ 1545              		.global	FTM_DisableInterrupts
+ 1546              		.syntax unified
+ 1547              		.thumb
+ 1548              		.thumb_func
+ 1549              		.fpu fpv4-sp-d16
+ 1551              	FTM_DisableInterrupts:
+ 1552              	.LFB180:
  780:../drivers/fsl_ftm.c **** 
  781:../drivers/fsl_ftm.c **** void FTM_DisableInterrupts(FTM_Type *base, uint32_t mask)
  782:../drivers/fsl_ftm.c **** {
- 1562              		.loc 1 782 0
- 1563              		.cfi_startproc
- 1564              		@ args = 0, pretend = 0, frame = 0
- 1565              		@ frame_needed = 0, uses_anonymous_args = 0
- 1566              	.LVL203:
- 1567 0000 10B5     		push	{r4, lr}
- 1568              		.cfi_def_cfa_offset 8
- 1569              		.cfi_offset 4, -8
- 1570              		.cfi_offset 14, -4
+ 1553              		.loc 1 782 0
+ 1554              		.cfi_startproc
+ 1555              		@ args = 0, pretend = 0, frame = 0
+ 1556              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1557              	.LVL201:
+ 1558 0000 10B5     		push	{r4, lr}
+ 1559              		.cfi_def_cfa_offset 8
+ 1560              		.cfi_offset 4, -8
+ 1561              		.cfi_offset 14, -4
  783:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFF);
  784:../drivers/fsl_ftm.c ****     uint8_t chnlNumber = 0;
  785:../drivers/fsl_ftm.c **** 
  786:../drivers/fsl_ftm.c ****     /* Disable the timer overflow interrupt */
  787:../drivers/fsl_ftm.c ****     if (mask & kFTM_TimeOverflowInterruptEnable)
- 1571              		.loc 1 787 0
- 1572 0002 8C05     		lsls	r4, r1, #22
+ 1562              		.loc 1 787 0
+ 1563 0002 8C05     		lsls	r4, r1, #22
  788:../drivers/fsl_ftm.c ****     {
  789:../drivers/fsl_ftm.c ****         base->SC &= ~FTM_SC_TOIE_MASK;
- 1573              		.loc 1 789 0
- 1574 0004 42BF     		ittt	mi
- 1575 0006 0268     		ldrmi	r2, [r0]
- 1576 0008 22F04002 		bicmi	r2, r2, #64
- 1577 000c 0260     		strmi	r2, [r0]
+ 1564              		.loc 1 789 0
+ 1565 0004 42BF     		ittt	mi
+ 1566 0006 0268     		ldrmi	r2, [r0]
+ 1567 0008 22F04002 		bicmi	r2, r2, #64
+ 1568 000c 0260     		strmi	r2, [r0]
  783:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFF);
- 1578              		.loc 1 783 0
- 1579 000e CBB2     		uxtb	r3, r1
- 1580              	.LVL204:
+ 1569              		.loc 1 783 0
+ 1570 000e CBB2     		uxtb	r3, r1
+ 1571              	.LVL202:
  790:../drivers/fsl_ftm.c ****     }
  791:../drivers/fsl_ftm.c ****     /* Disable the fault interrupt */
  792:../drivers/fsl_ftm.c ****     if (mask & kFTM_FaultInterruptEnable)
- 1581              		.loc 1 792 0
- 1582 0010 C905     		lsls	r1, r1, #23
- 1583              	.LVL205:
+ 1572              		.loc 1 792 0
+ 1573 0010 C905     		lsls	r1, r1, #23
+ 1574              	.LVL203:
  793:../drivers/fsl_ftm.c ****     {
  794:../drivers/fsl_ftm.c ****         base->MODE &= ~FTM_MODE_FAULTIE_MASK;
- 1584              		.loc 1 794 0
- 1585 0012 42BF     		ittt	mi
- 1586 0014 426D     		ldrmi	r2, [r0, #84]
- 1587 0016 22F08002 		bicmi	r2, r2, #128
- 1588 001a 4265     		strmi	r2, [r0, #84]
+ 1575              		.loc 1 794 0
+ 1576 0012 42BF     		ittt	mi
+ 1577 0014 426D     		ldrmi	r2, [r0, #84]
+ 1578 0016 22F08002 		bicmi	r2, r2, #128
+ 1579 001a 4265     		strmi	r2, [r0, #84]
  782:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFF);
- 1589              		.loc 1 782 0
- 1590 001c 0021     		movs	r1, #0
- 1591              	.LVL206:
- 1592              	.L151:
+ 1580              		.loc 1 782 0
+ 1581 001c 0021     		movs	r1, #0
+ 1582              	.LVL204:
+ 1583              	.L151:
  795:../drivers/fsl_ftm.c ****     }
  796:../drivers/fsl_ftm.c **** 
  797:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT) && (FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT)
@@ -3251,8 +3245,8 @@
  804:../drivers/fsl_ftm.c **** 
  805:../drivers/fsl_ftm.c ****     /* Disable the channel interrupts */
  806:../drivers/fsl_ftm.c ****     while (chnlInts)
- 1593              		.loc 1 806 0
- 1594 001e 03B9     		cbnz	r3, .L153
+ 1584              		.loc 1 806 0
+ 1585 001e 03B9     		cbnz	r3, .L153
  807:../drivers/fsl_ftm.c ****     {
  808:../drivers/fsl_ftm.c ****         if (chnlInts & 0x1)
  809:../drivers/fsl_ftm.c ****         {
@@ -3262,113 +3256,113 @@
  813:../drivers/fsl_ftm.c ****         chnlInts = chnlInts >> 1U;
  814:../drivers/fsl_ftm.c ****     }
  815:../drivers/fsl_ftm.c **** }
- 1595              		.loc 1 815 0
- 1596 0020 10BD     		pop	{r4, pc}
- 1597              	.L153:
+ 1586              		.loc 1 815 0
+ 1587 0020 10BD     		pop	{r4, pc}
+ 1588              	.L153:
  808:../drivers/fsl_ftm.c ****         {
- 1598              		.loc 1 808 0
- 1599 0022 DA07     		lsls	r2, r3, #31
- 1600 0024 06D5     		bpl	.L152
- 1601 0026 CAB2     		uxtb	r2, r1
- 1602 0028 00EBC202 		add	r2, r0, r2, lsl #3
+ 1589              		.loc 1 808 0
+ 1590 0022 DA07     		lsls	r2, r3, #31
+ 1591 0024 06D5     		bpl	.L152
+ 1592 0026 CAB2     		uxtb	r2, r1
+ 1593 0028 00EBC202 		add	r2, r0, r2, lsl #3
  810:../drivers/fsl_ftm.c ****         }
- 1603              		.loc 1 810 0
- 1604 002c D468     		ldr	r4, [r2, #12]
- 1605 002e 24F04004 		bic	r4, r4, #64
- 1606 0032 D460     		str	r4, [r2, #12]
- 1607              	.L152:
- 1608              	.LVL207:
+ 1594              		.loc 1 810 0
+ 1595 002c D468     		ldr	r4, [r2, #12]
+ 1596 002e 24F04004 		bic	r4, r4, #64
+ 1597 0032 D460     		str	r4, [r2, #12]
+ 1598              	.L152:
+ 1599              	.LVL205:
  813:../drivers/fsl_ftm.c ****     }
- 1609              		.loc 1 813 0
- 1610 0034 5B08     		lsrs	r3, r3, #1
- 1611              	.LVL208:
- 1612 0036 0131     		adds	r1, r1, #1
- 1613              	.LVL209:
- 1614 0038 F1E7     		b	.L151
- 1615              		.cfi_endproc
- 1616              	.LFE180:
- 1618              		.section	.text.FTM_GetEnabledInterrupts,"ax",%progbits
- 1619              		.align	1
- 1620              		.global	FTM_GetEnabledInterrupts
- 1621              		.syntax unified
- 1622              		.thumb
- 1623              		.thumb_func
- 1624              		.fpu fpv4-sp-d16
- 1626              	FTM_GetEnabledInterrupts:
- 1627              	.LFB181:
+ 1600              		.loc 1 813 0
+ 1601 0034 5B08     		lsrs	r3, r3, #1
+ 1602              	.LVL206:
+ 1603 0036 0131     		adds	r1, r1, #1
+ 1604              	.LVL207:
+ 1605 0038 F1E7     		b	.L151
+ 1606              		.cfi_endproc
+ 1607              	.LFE180:
+ 1609              		.section	.text.FTM_GetEnabledInterrupts,"ax",%progbits
+ 1610              		.align	1
+ 1611              		.global	FTM_GetEnabledInterrupts
+ 1612              		.syntax unified
+ 1613              		.thumb
+ 1614              		.thumb_func
+ 1615              		.fpu fpv4-sp-d16
+ 1617              	FTM_GetEnabledInterrupts:
+ 1618              	.LFB181:
  816:../drivers/fsl_ftm.c **** 
  817:../drivers/fsl_ftm.c **** uint32_t FTM_GetEnabledInterrupts(FTM_Type *base)
  818:../drivers/fsl_ftm.c **** {
- 1628              		.loc 1 818 0
- 1629              		.cfi_startproc
- 1630              		@ args = 0, pretend = 0, frame = 0
- 1631              		@ frame_needed = 0, uses_anonymous_args = 0
- 1632              	.LVL210:
+ 1619              		.loc 1 818 0
+ 1620              		.cfi_startproc
+ 1621              		@ args = 0, pretend = 0, frame = 0
+ 1622              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1623              	.LVL208:
  819:../drivers/fsl_ftm.c ****     uint32_t enabledInterrupts = 0;
  820:../drivers/fsl_ftm.c ****     int8_t chnlCount = FSL_FEATURE_FTM_CHANNEL_COUNTn(base);
- 1633              		.loc 1 820 0
- 1634 0000 1A4B     		ldr	r3, .L181
- 1635 0002 9842     		cmp	r0, r3
+ 1624              		.loc 1 820 0
+ 1625 0000 1A4B     		ldr	r3, .L181
+ 1626 0002 9842     		cmp	r0, r3
  818:../drivers/fsl_ftm.c ****     uint32_t enabledInterrupts = 0;
- 1636              		.loc 1 818 0
- 1637 0004 30B5     		push	{r4, r5, lr}
- 1638              		.cfi_def_cfa_offset 12
- 1639              		.cfi_offset 4, -12
- 1640              		.cfi_offset 5, -8
- 1641              		.cfi_offset 14, -4
+ 1627              		.loc 1 818 0
+ 1628 0004 30B5     		push	{r4, r5, lr}
+ 1629              		.cfi_def_cfa_offset 12
+ 1630              		.cfi_offset 4, -12
+ 1631              		.cfi_offset 5, -8
+ 1632              		.cfi_offset 14, -4
  818:../drivers/fsl_ftm.c ****     uint32_t enabledInterrupts = 0;
- 1642              		.loc 1 818 0
- 1643 0006 0246     		mov	r2, r0
- 1644              		.loc 1 820 0
- 1645 0008 1ED0     		beq	.L170
- 1646              		.loc 1 820 0 is_stmt 0 discriminator 1
- 1647 000a 03F58053 		add	r3, r3, #4096
- 1648 000e 9842     		cmp	r0, r3
- 1649 0010 1CD0     		beq	.L172
- 1650              		.loc 1 820 0 discriminator 3
- 1651 0012 03F58053 		add	r3, r3, #4096
- 1652 0016 9842     		cmp	r0, r3
- 1653 0018 18D0     		beq	.L172
- 1654              		.loc 1 820 0 discriminator 5
- 1655 001a 03F5FE23 		add	r3, r3, #520192
- 1656 001e 9842     		cmp	r0, r3
- 1657 0020 14BF     		ite	ne
- 1658 0022 4FF0FF33 		movne	r3, #-1
- 1659 0026 0823     		moveq	r3, #8
- 1660              	.L164:
- 1661              	.LVL211:
+ 1633              		.loc 1 818 0
+ 1634 0006 0246     		mov	r2, r0
+ 1635              		.loc 1 820 0
+ 1636 0008 1ED0     		beq	.L170
+ 1637              		.loc 1 820 0 is_stmt 0 discriminator 1
+ 1638 000a 03F58053 		add	r3, r3, #4096
+ 1639 000e 9842     		cmp	r0, r3
+ 1640 0010 1CD0     		beq	.L172
+ 1641              		.loc 1 820 0 discriminator 3
+ 1642 0012 03F58053 		add	r3, r3, #4096
+ 1643 0016 9842     		cmp	r0, r3
+ 1644 0018 18D0     		beq	.L172
+ 1645              		.loc 1 820 0 discriminator 5
+ 1646 001a 03F5FE23 		add	r3, r3, #520192
+ 1647 001e 9842     		cmp	r0, r3
+ 1648 0020 14BF     		ite	ne
+ 1649 0022 4FF0FF33 		movne	r3, #-1
+ 1650 0026 0823     		moveq	r3, #8
+ 1651              	.L164:
+ 1652              	.LVL209:
  821:../drivers/fsl_ftm.c **** 
  822:../drivers/fsl_ftm.c ****     /* The CHANNEL_COUNT macro returns -1 if it cannot match the FTM instance */
  823:../drivers/fsl_ftm.c ****     assert(chnlCount != -1);
  824:../drivers/fsl_ftm.c **** 
  825:../drivers/fsl_ftm.c ****     /* Check if timer overflow interrupt is enabled */
  826:../drivers/fsl_ftm.c ****     if (base->SC & FTM_SC_TOIE_MASK)
- 1662              		.loc 1 826 0 is_stmt 1 discriminator 16
- 1663 0028 1168     		ldr	r1, [r2]
+ 1653              		.loc 1 826 0 is_stmt 1 discriminator 16
+ 1654 0028 1168     		ldr	r1, [r2]
  827:../drivers/fsl_ftm.c ****     {
  828:../drivers/fsl_ftm.c ****         enabledInterrupts |= kFTM_TimeOverflowInterruptEnable;
- 1664              		.loc 1 828 0 discriminator 16
- 1665 002a 11F0400F 		tst	r1, #64
+ 1655              		.loc 1 828 0 discriminator 16
+ 1656 002a 11F0400F 		tst	r1, #64
  829:../drivers/fsl_ftm.c ****     }
  830:../drivers/fsl_ftm.c ****     /* Check if fault interrupt is enabled */
  831:../drivers/fsl_ftm.c ****     if (base->MODE & FTM_MODE_FAULTIE_MASK)
- 1666              		.loc 1 831 0 discriminator 16
- 1667 002e 516D     		ldr	r1, [r2, #84]
+ 1657              		.loc 1 831 0 discriminator 16
+ 1658 002e 516D     		ldr	r1, [r2, #84]
  828:../drivers/fsl_ftm.c ****     }
- 1668              		.loc 1 828 0 discriminator 16
- 1669 0030 0CBF     		ite	eq
- 1670 0032 0020     		moveq	r0, #0
- 1671              	.LVL212:
- 1672 0034 4FF40070 		movne	r0, #512
- 1673              	.LVL213:
- 1674              		.loc 1 831 0 discriminator 16
- 1675 0038 0D06     		lsls	r5, r1, #24
+ 1659              		.loc 1 828 0 discriminator 16
+ 1660 0030 0CBF     		ite	eq
+ 1661 0032 0020     		moveq	r0, #0
+ 1662              	.LVL210:
+ 1663 0034 4FF40070 		movne	r0, #512
+ 1664              	.LVL211:
+ 1665              		.loc 1 831 0 discriminator 16
+ 1666 0038 0D06     		lsls	r5, r1, #24
  832:../drivers/fsl_ftm.c ****     {
  833:../drivers/fsl_ftm.c ****         enabledInterrupts |= kFTM_FaultInterruptEnable;
- 1676              		.loc 1 833 0 discriminator 16
- 1677 003a 48BF     		it	mi
- 1678 003c 40F48070 		orrmi	r0, r0, #256
- 1679              	.LVL214:
+ 1667              		.loc 1 833 0 discriminator 16
+ 1668 003a 48BF     		it	mi
+ 1669 003c 40F48070 		orrmi	r0, r0, #256
+ 1670              	.LVL212:
  834:../drivers/fsl_ftm.c ****     }
  835:../drivers/fsl_ftm.c **** 
  836:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT) && (FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT)
@@ -3386,102 +3380,102 @@
  848:../drivers/fsl_ftm.c ****         if (base->CONTROLS[chnlCount].CnSC & FTM_CnSC_CHIE_MASK)
  849:../drivers/fsl_ftm.c ****         {
  850:../drivers/fsl_ftm.c ****             enabledInterrupts |= (1U << chnlCount);
- 1680              		.loc 1 850 0 discriminator 16
- 1681 0040 0125     		movs	r5, #1
- 1682              	.L167:
+ 1671              		.loc 1 850 0 discriminator 16
+ 1672 0040 0125     		movs	r5, #1
+ 1673              	.L167:
  845:../drivers/fsl_ftm.c ****     {
- 1683              		.loc 1 845 0
- 1684 0042 002B     		cmp	r3, #0
- 1685 0044 04DC     		bgt	.L169
+ 1674              		.loc 1 845 0
+ 1675 0042 002B     		cmp	r3, #0
+ 1676 0044 04DC     		bgt	.L169
  851:../drivers/fsl_ftm.c ****         }
  852:../drivers/fsl_ftm.c ****     }
  853:../drivers/fsl_ftm.c **** 
  854:../drivers/fsl_ftm.c ****     return enabledInterrupts;
  855:../drivers/fsl_ftm.c **** }
- 1686              		.loc 1 855 0
- 1687 0046 30BD     		pop	{r4, r5, pc}
- 1688              	.LVL215:
- 1689              	.L170:
+ 1677              		.loc 1 855 0
+ 1678 0046 30BD     		pop	{r4, r5, pc}
+ 1679              	.LVL213:
+ 1680              	.L170:
  820:../drivers/fsl_ftm.c **** 
- 1690              		.loc 1 820 0
- 1691 0048 0823     		movs	r3, #8
- 1692 004a EDE7     		b	.L164
- 1693              	.L172:
- 1694 004c 0223     		movs	r3, #2
- 1695 004e EBE7     		b	.L164
- 1696              	.LVL216:
- 1697              	.L169:
- 1698 0050 013B     		subs	r3, r3, #1
- 1699              	.LVL217:
- 1700 0052 D9B2     		uxtb	r1, r3
+ 1681              		.loc 1 820 0
+ 1682 0048 0823     		movs	r3, #8
+ 1683 004a EDE7     		b	.L164
+ 1684              	.L172:
+ 1685 004c 0223     		movs	r3, #2
+ 1686 004e EBE7     		b	.L164
+ 1687              	.LVL214:
+ 1688              	.L169:
+ 1689 0050 013B     		subs	r3, r3, #1
+ 1690              	.LVL215:
+ 1691 0052 D9B2     		uxtb	r1, r3
  848:../drivers/fsl_ftm.c ****         {
- 1701              		.loc 1 848 0
- 1702 0054 4C1C     		adds	r4, r1, #1
- 1703 0056 02EBC404 		add	r4, r2, r4, lsl #3
- 1704 005a 4BB2     		sxtb	r3, r1
- 1705              	.LVL218:
- 1706 005c 6468     		ldr	r4, [r4, #4]
- 1707 005e 6406     		lsls	r4, r4, #25
+ 1692              		.loc 1 848 0
+ 1693 0054 4C1C     		adds	r4, r1, #1
+ 1694 0056 02EBC404 		add	r4, r2, r4, lsl #3
+ 1695 005a 4BB2     		sxtb	r3, r1
+ 1696              	.LVL216:
+ 1697 005c 6468     		ldr	r4, [r4, #4]
+ 1698 005e 6406     		lsls	r4, r4, #25
  850:../drivers/fsl_ftm.c ****         }
- 1708              		.loc 1 850 0
- 1709 0060 44BF     		itt	mi
- 1710 0062 05FA01F1 		lslmi	r1, r5, r1
- 1711 0066 0843     		orrmi	r0, r0, r1
- 1712              	.LVL219:
- 1713 0068 EBE7     		b	.L167
- 1714              	.L182:
- 1715 006a 00BF     		.align	2
- 1716              	.L181:
- 1717 006c 00800340 		.word	1073971200
- 1718              		.cfi_endproc
- 1719              	.LFE181:
- 1721              		.section	.text.FTM_GetStatusFlags,"ax",%progbits
- 1722              		.align	1
- 1723              		.global	FTM_GetStatusFlags
- 1724              		.syntax unified
- 1725              		.thumb
- 1726              		.thumb_func
- 1727              		.fpu fpv4-sp-d16
- 1729              	FTM_GetStatusFlags:
- 1730              	.LFB182:
+ 1699              		.loc 1 850 0
+ 1700 0060 44BF     		itt	mi
+ 1701 0062 05FA01F1 		lslmi	r1, r5, r1
+ 1702 0066 0843     		orrmi	r0, r0, r1
+ 1703              	.LVL217:
+ 1704 0068 EBE7     		b	.L167
+ 1705              	.L182:
+ 1706 006a 00BF     		.align	2
+ 1707              	.L181:
+ 1708 006c 00800340 		.word	1073971200
+ 1709              		.cfi_endproc
+ 1710              	.LFE181:
+ 1712              		.section	.text.FTM_GetStatusFlags,"ax",%progbits
+ 1713              		.align	1
+ 1714              		.global	FTM_GetStatusFlags
+ 1715              		.syntax unified
+ 1716              		.thumb
+ 1717              		.thumb_func
+ 1718              		.fpu fpv4-sp-d16
+ 1720              	FTM_GetStatusFlags:
+ 1721              	.LFB182:
  856:../drivers/fsl_ftm.c **** 
  857:../drivers/fsl_ftm.c **** uint32_t FTM_GetStatusFlags(FTM_Type *base)
  858:../drivers/fsl_ftm.c **** {
- 1731              		.loc 1 858 0
- 1732              		.cfi_startproc
- 1733              		@ args = 0, pretend = 0, frame = 0
- 1734              		@ frame_needed = 0, uses_anonymous_args = 0
- 1735              		@ link register save eliminated.
- 1736              	.LVL220:
+ 1722              		.loc 1 858 0
+ 1723              		.cfi_startproc
+ 1724              		@ args = 0, pretend = 0, frame = 0
+ 1725              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1726              		@ link register save eliminated.
+ 1727              	.LVL218:
  859:../drivers/fsl_ftm.c ****     uint32_t statusFlags = 0;
  860:../drivers/fsl_ftm.c **** 
  861:../drivers/fsl_ftm.c ****     /* Check the timer flag */
  862:../drivers/fsl_ftm.c ****     if (base->SC & FTM_SC_TOF_MASK)
- 1737              		.loc 1 862 0
- 1738 0000 0368     		ldr	r3, [r0]
+ 1728              		.loc 1 862 0
+ 1729 0000 0368     		ldr	r3, [r0]
  863:../drivers/fsl_ftm.c ****     {
  864:../drivers/fsl_ftm.c ****         statusFlags |= kFTM_TimeOverflowFlag;
  865:../drivers/fsl_ftm.c ****     }
  866:../drivers/fsl_ftm.c ****     /* Check fault flag */
  867:../drivers/fsl_ftm.c ****     if (base->FMS & FTM_FMS_FAULTF_MASK)
- 1739              		.loc 1 867 0
- 1740 0002 426F     		ldr	r2, [r0, #116]
+ 1730              		.loc 1 867 0
+ 1731 0002 426F     		ldr	r2, [r0, #116]
  864:../drivers/fsl_ftm.c ****     }
- 1741              		.loc 1 864 0
- 1742 0004 13F0800F 		tst	r3, #128
- 1743 0008 0CBF     		ite	eq
- 1744 000a 0023     		moveq	r3, #0
- 1745 000c 4FF40073 		movne	r3, #512
- 1746              	.LVL221:
- 1747              		.loc 1 867 0
- 1748 0010 1106     		lsls	r1, r2, #24
+ 1732              		.loc 1 864 0
+ 1733 0004 13F0800F 		tst	r3, #128
+ 1734 0008 0CBF     		ite	eq
+ 1735 000a 0023     		moveq	r3, #0
+ 1736 000c 4FF40073 		movne	r3, #512
+ 1737              	.LVL219:
+ 1738              		.loc 1 867 0
+ 1739 0010 1106     		lsls	r1, r2, #24
  868:../drivers/fsl_ftm.c ****     {
  869:../drivers/fsl_ftm.c ****         statusFlags |= kFTM_FaultFlag;
  870:../drivers/fsl_ftm.c ****     }
  871:../drivers/fsl_ftm.c ****     /* Check channel trigger flag */
  872:../drivers/fsl_ftm.c ****     if (base->EXTTRIG & FTM_EXTTRIG_TRIGF_MASK)
- 1749              		.loc 1 872 0
- 1750 0012 C26E     		ldr	r2, [r0, #108]
+ 1740              		.loc 1 872 0
+ 1741 0012 C26E     		ldr	r2, [r0, #108]
  873:../drivers/fsl_ftm.c ****     {
  874:../drivers/fsl_ftm.c ****         statusFlags |= kFTM_ChnlTriggerFlag;
  875:../drivers/fsl_ftm.c ****     }
@@ -3495,86 +3489,86 @@
  883:../drivers/fsl_ftm.c **** 
  884:../drivers/fsl_ftm.c ****     /* Lower 8 bits contain the channel status flags */
  885:../drivers/fsl_ftm.c ****     statusFlags |= (base->STATUS & 0xFFU);
- 1751              		.loc 1 885 0
- 1752 0014 006D     		ldr	r0, [r0, #80]
- 1753              	.LVL222:
+ 1742              		.loc 1 885 0
+ 1743 0014 006D     		ldr	r0, [r0, #80]
+ 1744              	.LVL220:
  869:../drivers/fsl_ftm.c ****     }
- 1754              		.loc 1 869 0
- 1755 0016 48BF     		it	mi
- 1756 0018 43F48073 		orrmi	r3, r3, #256
- 1757              	.LVL223:
+ 1745              		.loc 1 869 0
+ 1746 0016 48BF     		it	mi
+ 1747 0018 43F48073 		orrmi	r3, r3, #256
+ 1748              	.LVL221:
  872:../drivers/fsl_ftm.c ****     {
- 1758              		.loc 1 872 0
- 1759 001c 1206     		lsls	r2, r2, #24
+ 1749              		.loc 1 872 0
+ 1750 001c 1206     		lsls	r2, r2, #24
  874:../drivers/fsl_ftm.c ****     }
- 1760              		.loc 1 874 0
- 1761 001e 48BF     		it	mi
- 1762 0020 43F48063 		orrmi	r3, r3, #1024
- 1763              	.LVL224:
- 1764              		.loc 1 885 0
- 1765 0024 C0B2     		uxtb	r0, r0
- 1766              	.LVL225:
+ 1751              		.loc 1 874 0
+ 1752 001e 48BF     		it	mi
+ 1753 0020 43F48063 		orrmi	r3, r3, #1024
+ 1754              	.LVL222:
+ 1755              		.loc 1 885 0
+ 1756 0024 C0B2     		uxtb	r0, r0
+ 1757              	.LVL223:
  886:../drivers/fsl_ftm.c **** 
  887:../drivers/fsl_ftm.c ****     return statusFlags;
  888:../drivers/fsl_ftm.c **** }
- 1767              		.loc 1 888 0
- 1768 0026 1843     		orrs	r0, r0, r3
- 1769 0028 7047     		bx	lr
- 1770              		.cfi_endproc
- 1771              	.LFE182:
- 1773              		.section	.text.FTM_ClearStatusFlags,"ax",%progbits
- 1774              		.align	1
- 1775              		.global	FTM_ClearStatusFlags
- 1776              		.syntax unified
- 1777              		.thumb
- 1778              		.thumb_func
- 1779              		.fpu fpv4-sp-d16
- 1781              	FTM_ClearStatusFlags:
- 1782              	.LFB183:
+ 1758              		.loc 1 888 0
+ 1759 0026 1843     		orrs	r0, r0, r3
+ 1760 0028 7047     		bx	lr
+ 1761              		.cfi_endproc
+ 1762              	.LFE182:
+ 1764              		.section	.text.FTM_ClearStatusFlags,"ax",%progbits
+ 1765              		.align	1
+ 1766              		.global	FTM_ClearStatusFlags
+ 1767              		.syntax unified
+ 1768              		.thumb
+ 1769              		.thumb_func
+ 1770              		.fpu fpv4-sp-d16
+ 1772              	FTM_ClearStatusFlags:
+ 1773              	.LFB183:
  889:../drivers/fsl_ftm.c **** 
  890:../drivers/fsl_ftm.c **** void FTM_ClearStatusFlags(FTM_Type *base, uint32_t mask)
  891:../drivers/fsl_ftm.c **** {
- 1783              		.loc 1 891 0
- 1784              		.cfi_startproc
- 1785              		@ args = 0, pretend = 0, frame = 0
- 1786              		@ frame_needed = 0, uses_anonymous_args = 0
- 1787              		@ link register save eliminated.
- 1788              	.LVL226:
+ 1774              		.loc 1 891 0
+ 1775              		.cfi_startproc
+ 1776              		@ args = 0, pretend = 0, frame = 0
+ 1777              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1778              		@ link register save eliminated.
+ 1779              	.LVL224:
  892:../drivers/fsl_ftm.c ****     /* Clear the timer overflow flag by writing a 0 to the bit while it is set */
  893:../drivers/fsl_ftm.c ****     if (mask & kFTM_TimeOverflowFlag)
- 1789              		.loc 1 893 0
- 1790 0000 8B05     		lsls	r3, r1, #22
+ 1780              		.loc 1 893 0
+ 1781 0000 8B05     		lsls	r3, r1, #22
  894:../drivers/fsl_ftm.c ****     {
  895:../drivers/fsl_ftm.c ****         base->SC &= ~FTM_SC_TOF_MASK;
- 1791              		.loc 1 895 0
- 1792 0002 42BF     		ittt	mi
- 1793 0004 0368     		ldrmi	r3, [r0]
- 1794 0006 23F08003 		bicmi	r3, r3, #128
- 1795 000a 0360     		strmi	r3, [r0]
+ 1782              		.loc 1 895 0
+ 1783 0002 42BF     		ittt	mi
+ 1784 0004 0368     		ldrmi	r3, [r0]
+ 1785 0006 23F08003 		bicmi	r3, r3, #128
+ 1786 000a 0360     		strmi	r3, [r0]
  896:../drivers/fsl_ftm.c ****     }
  897:../drivers/fsl_ftm.c ****     /* Clear fault flag by writing a 0 to the bit while it is set */
  898:../drivers/fsl_ftm.c ****     if (mask & kFTM_FaultFlag)
- 1796              		.loc 1 898 0
- 1797 000c CA05     		lsls	r2, r1, #23
+ 1787              		.loc 1 898 0
+ 1788 000c CA05     		lsls	r2, r1, #23
  899:../drivers/fsl_ftm.c ****     {
  900:../drivers/fsl_ftm.c ****         base->FMS &= ~FTM_FMS_FAULTF_MASK;
- 1798              		.loc 1 900 0
- 1799 000e 42BF     		ittt	mi
- 1800 0010 436F     		ldrmi	r3, [r0, #116]
- 1801 0012 23F08003 		bicmi	r3, r3, #128
- 1802 0016 4367     		strmi	r3, [r0, #116]
+ 1789              		.loc 1 900 0
+ 1790 000e 42BF     		ittt	mi
+ 1791 0010 436F     		ldrmi	r3, [r0, #116]
+ 1792 0012 23F08003 		bicmi	r3, r3, #128
+ 1793 0016 4367     		strmi	r3, [r0, #116]
  901:../drivers/fsl_ftm.c ****     }
  902:../drivers/fsl_ftm.c ****     /* Clear channel trigger flag */
  903:../drivers/fsl_ftm.c ****     if (mask & kFTM_ChnlTriggerFlag)
- 1803              		.loc 1 903 0
- 1804 0018 4B05     		lsls	r3, r1, #21
+ 1794              		.loc 1 903 0
+ 1795 0018 4B05     		lsls	r3, r1, #21
  904:../drivers/fsl_ftm.c ****     {
  905:../drivers/fsl_ftm.c ****         base->EXTTRIG &= ~FTM_EXTTRIG_TRIGF_MASK;
- 1805              		.loc 1 905 0
- 1806 001a 42BF     		ittt	mi
- 1807 001c C36E     		ldrmi	r3, [r0, #108]
- 1808 001e 23F08003 		bicmi	r3, r3, #128
- 1809 0022 C366     		strmi	r3, [r0, #108]
+ 1796              		.loc 1 905 0
+ 1797 001a 42BF     		ittt	mi
+ 1798 001c C36E     		ldrmi	r3, [r0, #108]
+ 1799 001e 23F08003 		bicmi	r3, r3, #128
+ 1800 0022 C366     		strmi	r3, [r0, #108]
  906:../drivers/fsl_ftm.c ****     }
  907:../drivers/fsl_ftm.c **** 
  908:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT) && (FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT)
@@ -3586,33 +3580,35 @@
  914:../drivers/fsl_ftm.c **** #endif
  915:../drivers/fsl_ftm.c ****     /* Clear the channel status flags by writing a 0 to the bit */
  916:../drivers/fsl_ftm.c ****     base->STATUS &= ~(mask & 0xFFU);
- 1810              		.loc 1 916 0
- 1811 0024 036D     		ldr	r3, [r0, #80]
- 1812 0026 C9B2     		uxtb	r1, r1
- 1813              	.LVL227:
- 1814 0028 23EA0101 		bic	r1, r3, r1
- 1815 002c 0165     		str	r1, [r0, #80]
- 1816 002e 7047     		bx	lr
- 1817              		.cfi_endproc
- 1818              	.LFE183:
- 1820              		.section	.rodata.s_ftmClocks,"a",%progbits
- 1821              		.align	2
- 1822              		.set	.LANCHOR0,. + 0
- 1825              	s_ftmClocks:
- 1826 0000 18003C10 		.word	272367640
- 1827 0004 19003C10 		.word	272367641
- 1828 0008 1A003C10 		.word	272367642
- 1829 000c 19003010 		.word	271581209
- 1830              		.text
- 1831              	.Letext0:
- 1832              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 1833              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 1834              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 1835              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 1836              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 1837              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 1838              		.file 9 "../CMSIS/core_cm4.h"
- 1839              		.file 10 "../CMSIS/system_MK64F12.h"
- 1840              		.file 11 "../CMSIS/MK64F12.h"
- 1841              		.file 12 "../drivers/fsl_common.h"
- 1842              		.file 13 "../drivers/fsl_ftm.h"
+ 1801              		.loc 1 916 0
+ 1802 0024 036D     		ldr	r3, [r0, #80]
+ 1803 0026 C9B2     		uxtb	r1, r1
+ 1804              	.LVL225:
+ 1805 0028 23EA0101 		bic	r1, r3, r1
+ 1806 002c 0165     		str	r1, [r0, #80]
+ 917:../drivers/fsl_ftm.c **** }
+ 1807              		.loc 1 917 0
+ 1808 002e 7047     		bx	lr
+ 1809              		.cfi_endproc
+ 1810              	.LFE183:
+ 1812              		.section	.rodata.s_ftmClocks,"a",%progbits
+ 1813              		.align	2
+ 1814              		.set	.LANCHOR0,. + 0
+ 1817              	s_ftmClocks:
+ 1818 0000 18003C10 		.word	272367640
+ 1819 0004 19003C10 		.word	272367641
+ 1820 0008 1A003C10 		.word	272367642
+ 1821 000c 19003010 		.word	271581209
+ 1822              		.text
+ 1823              	.Letext0:
+ 1824              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1825              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1826              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1827              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1828              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1829              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1830              		.file 9 "../CMSIS/core_cm4.h"
+ 1831              		.file 10 "../CMSIS/system_MK64F12.h"
+ 1832              		.file 11 "../CMSIS/MK64F12.h"
+ 1833              		.file 12 "../drivers/fsl_common.h"
+ 1834              		.file 13 "../drivers/fsl_ftm.h"

@@ -1147,24 +1147,8 @@
   60 000c 23F00403 		bic	r3, r3, #4
   61 0010 1360     		str	r3, [r2]
   62              	.LVL2:
-  63 0012 7047     		bx	lr
-  64              	.L3:
-  65              		.align	2
-  66              	.L2:
-  67 0014 40800440 		.word	1074036800
-  68              	.LBE15:
-  69              	.LBE17:
-  70              		.cfi_endproc
-  71              	.LFE150:
-  73              		.section	.text.SYSMPU_GetHardwareInfo,"ax",%progbits
-  74              		.align	1
-  75              		.global	SYSMPU_GetHardwareInfo
-  76              		.syntax unified
-  77              		.thumb
-  78              		.thumb_func
-  79              		.fpu fpv4-sp-d16
-  81              	SYSMPU_GetHardwareInfo:
-  82              	.LFB151:
+  63              	.LBE15:
+  64              	.LBE17:
   81:../drivers/fsl_sysmpu.c ****     /* Disable SYSMPU. */
   82:../drivers/fsl_sysmpu.c ****     SYSMPU_Enable(base, false);
   83:../drivers/fsl_sysmpu.c **** 
@@ -1173,67 +1157,85 @@
   86:../drivers/fsl_sysmpu.c ****     CLOCK_DisableClock(g_sysmpuClock[0]);
   87:../drivers/fsl_sysmpu.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
   88:../drivers/fsl_sysmpu.c **** }
+  65              		.loc 1 88 0
+  66 0012 7047     		bx	lr
+  67              	.L3:
+  68              		.align	2
+  69              	.L2:
+  70 0014 40800440 		.word	1074036800
+  71              		.cfi_endproc
+  72              	.LFE150:
+  74              		.section	.text.SYSMPU_GetHardwareInfo,"ax",%progbits
+  75              		.align	1
+  76              		.global	SYSMPU_GetHardwareInfo
+  77              		.syntax unified
+  78              		.thumb
+  79              		.thumb_func
+  80              		.fpu fpv4-sp-d16
+  82              	SYSMPU_GetHardwareInfo:
+  83              	.LFB151:
   89:../drivers/fsl_sysmpu.c **** 
   90:../drivers/fsl_sysmpu.c **** void SYSMPU_GetHardwareInfo(SYSMPU_Type *base, sysmpu_hardware_info_t *hardwareInform)
   91:../drivers/fsl_sysmpu.c **** {
-  83              		.loc 1 91 0
-  84              		.cfi_startproc
-  85              		@ args = 0, pretend = 0, frame = 0
-  86              		@ frame_needed = 0, uses_anonymous_args = 0
-  87              		@ link register save eliminated.
-  88              	.LVL3:
+  84              		.loc 1 91 0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              		@ link register save eliminated.
+  89              	.LVL3:
   92:../drivers/fsl_sysmpu.c ****     assert(hardwareInform);
   93:../drivers/fsl_sysmpu.c **** 
   94:../drivers/fsl_sysmpu.c ****     uint32_t cesReg = base->CESR;
-  89              		.loc 1 94 0
-  90 0000 0368     		ldr	r3, [r0]
-  91              	.LVL4:
+  90              		.loc 1 94 0
+  91 0000 0368     		ldr	r3, [r0]
+  92              	.LVL4:
   95:../drivers/fsl_sysmpu.c **** 
   96:../drivers/fsl_sysmpu.c ****     hardwareInform->hardwareRevisionLevel = (cesReg & SYSMPU_CESR_HRL_MASK) >> SYSMPU_CESR_HRL_SHIF
-  92              		.loc 1 96 0
-  93 0002 C3F30342 		ubfx	r2, r3, #16, #4
-  94 0006 0A70     		strb	r2, [r1]
+  93              		.loc 1 96 0
+  94 0002 C3F30342 		ubfx	r2, r3, #16, #4
+  95 0006 0A70     		strb	r2, [r1]
   97:../drivers/fsl_sysmpu.c ****     hardwareInform->slavePortsNumbers = (cesReg & SYSMPU_CESR_NSP_MASK) >> SYSMPU_CESR_NSP_SHIFT;
-  95              		.loc 1 97 0
-  96 0008 C3F30332 		ubfx	r2, r3, #12, #4
+  96              		.loc 1 97 0
+  97 0008 C3F30332 		ubfx	r2, r3, #12, #4
   98:../drivers/fsl_sysmpu.c ****     hardwareInform->regionsNumbers = (sysmpu_region_total_num_t)((cesReg & SYSMPU_CESR_NRGD_MASK) >
-  97              		.loc 1 98 0
-  98 000c C3F30323 		ubfx	r3, r3, #8, #4
-  99              	.LVL5:
+  98              		.loc 1 98 0
+  99 000c C3F30323 		ubfx	r3, r3, #8, #4
+ 100              	.LVL5:
   97:../drivers/fsl_sysmpu.c ****     hardwareInform->slavePortsNumbers = (cesReg & SYSMPU_CESR_NSP_MASK) >> SYSMPU_CESR_NSP_SHIFT;
- 100              		.loc 1 97 0
- 101 0010 4A70     		strb	r2, [r1, #1]
- 102              		.loc 1 98 0
- 103 0012 8B70     		strb	r3, [r1, #2]
- 104 0014 7047     		bx	lr
- 105              		.cfi_endproc
- 106              	.LFE151:
- 108              		.section	.text.SYSMPU_SetRegionConfig,"ax",%progbits
- 109              		.align	1
- 110              		.global	SYSMPU_SetRegionConfig
- 111              		.syntax unified
- 112              		.thumb
- 113              		.thumb_func
- 114              		.fpu fpv4-sp-d16
- 116              	SYSMPU_SetRegionConfig:
- 117              	.LFB152:
+ 101              		.loc 1 97 0
+ 102 0010 4A70     		strb	r2, [r1, #1]
+ 103              		.loc 1 98 0
+ 104 0012 8B70     		strb	r3, [r1, #2]
   99:../drivers/fsl_sysmpu.c **** }
+ 105              		.loc 1 99 0
+ 106 0014 7047     		bx	lr
+ 107              		.cfi_endproc
+ 108              	.LFE151:
+ 110              		.section	.text.SYSMPU_SetRegionConfig,"ax",%progbits
+ 111              		.align	1
+ 112              		.global	SYSMPU_SetRegionConfig
+ 113              		.syntax unified
+ 114              		.thumb
+ 115              		.thumb_func
+ 116              		.fpu fpv4-sp-d16
+ 118              	SYSMPU_SetRegionConfig:
+ 119              	.LFB152:
  100:../drivers/fsl_sysmpu.c **** 
  101:../drivers/fsl_sysmpu.c **** void SYSMPU_SetRegionConfig(SYSMPU_Type *base, const sysmpu_region_config_t *regionConfig)
  102:../drivers/fsl_sysmpu.c **** {
- 118              		.loc 1 102 0
- 119              		.cfi_startproc
- 120              		@ args = 0, pretend = 0, frame = 0
- 121              		@ frame_needed = 0, uses_anonymous_args = 0
- 122              	.LVL6:
- 123 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
- 124              		.cfi_def_cfa_offset 24
- 125              		.cfi_offset 4, -24
- 126              		.cfi_offset 5, -20
- 127              		.cfi_offset 6, -16
- 128              		.cfi_offset 7, -12
- 129              		.cfi_offset 8, -8
- 130              		.cfi_offset 14, -4
+ 120              		.loc 1 102 0
+ 121              		.cfi_startproc
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 124              	.LVL6:
+ 125 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 126              		.cfi_def_cfa_offset 24
+ 127              		.cfi_offset 4, -24
+ 128              		.cfi_offset 5, -20
+ 129              		.cfi_offset 6, -16
+ 130              		.cfi_offset 7, -12
+ 131              		.cfi_offset 8, -8
+ 132              		.cfi_offset 14, -4
  103:../drivers/fsl_sysmpu.c ****     assert(regionConfig);
  104:../drivers/fsl_sysmpu.c ****     assert(regionConfig->regionNum < FSL_FEATURE_SYSMPU_DESCRIPTOR_COUNT);
  105:../drivers/fsl_sysmpu.c **** 
@@ -1243,75 +1245,75 @@
  109:../drivers/fsl_sysmpu.c **** 
  110:../drivers/fsl_sysmpu.c ****     /* The start and end address of the region descriptor. */
  111:../drivers/fsl_sysmpu.c ****     base->WORD[regNumber][0] = regionConfig->startAddress;
- 131              		.loc 1 111 0
- 132 0004 0C78     		ldrb	r4, [r1]	@ zero_extendqisi2
- 133 0006 4A68     		ldr	r2, [r1, #4]
- 134 0008 04F14003 		add	r3, r4, #64
- 135 000c 1B01     		lsls	r3, r3, #4
+ 133              		.loc 1 111 0
+ 134 0004 0C78     		ldrb	r4, [r1]	@ zero_extendqisi2
+ 135 0006 4A68     		ldr	r2, [r1, #4]
+ 136 0008 04F14003 		add	r3, r4, #64
+ 137 000c 1B01     		lsls	r3, r3, #4
  112:../drivers/fsl_sysmpu.c ****     base->WORD[regNumber][1] = regionConfig->endAddress;
- 136              		.loc 1 112 0
- 137 000e 2401     		lsls	r4, r4, #4
+ 138              		.loc 1 112 0
+ 139 000e 2401     		lsls	r4, r4, #4
  111:../drivers/fsl_sysmpu.c ****     base->WORD[regNumber][1] = regionConfig->endAddress;
- 138              		.loc 1 111 0
- 139 0010 C250     		str	r2, [r0, r3]
- 140              		.loc 1 112 0
- 141 0012 0319     		adds	r3, r0, r4
- 142 0014 8A68     		ldr	r2, [r1, #8]
- 143 0016 C3F80424 		str	r2, [r3, #1028]
- 144              	.LVL7:
- 145 001a 0E46     		mov	r6, r1
- 146 001c 0523     		movs	r3, #5
+ 140              		.loc 1 111 0
+ 141 0010 C250     		str	r2, [r0, r3]
+ 142              		.loc 1 112 0
+ 143 0012 0319     		adds	r3, r0, r4
+ 144 0014 8A68     		ldr	r2, [r1, #8]
+ 145 0016 C3F80424 		str	r2, [r3, #1028]
+ 146              	.LVL7:
+ 147 001a 0525     		movs	r5, #5
+ 148 001c 0B46     		mov	r3, r1
  106:../drivers/fsl_sysmpu.c ****     uint8_t msPortNum;
- 147              		.loc 1 106 0
- 148 001e 0025     		movs	r5, #0
+ 149              		.loc 1 106 0
+ 150 001e 0026     		movs	r6, #0
  113:../drivers/fsl_sysmpu.c **** 
  114:../drivers/fsl_sysmpu.c ****     /* Set the privilege rights for master 0 ~ master 3. */
  115:../drivers/fsl_sysmpu.c ****     for (msPortNum = 0; msPortNum < SYSMPU_MASTER_RWATTRIBUTE_START_PORT; msPortNum++)
  116:../drivers/fsl_sysmpu.c ****     {
  117:../drivers/fsl_sysmpu.c ****         wordReg |= SYSMPU_REGION_RWXRIGHTS_MASTER(
- 149              		.loc 1 117 0
- 150 0020 4FF01F0C 		mov	ip, #31
+ 151              		.loc 1 117 0
+ 152 0020 4FF01F0E 		mov	lr, #31
  118:../drivers/fsl_sysmpu.c ****             msPortNum, (((uint32_t)regionConfig->accessRights1[msPortNum].superAccessRights << 3U) 
  119:../drivers/fsl_sysmpu.c ****                         (uint32_t)regionConfig->accessRights1[msPortNum].userAccessRights));
  120:../drivers/fsl_sysmpu.c **** 
  121:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
  122:../drivers/fsl_sysmpu.c ****         wordReg |=
  123:../drivers/fsl_sysmpu.c ****             SYSMPU_REGION_RWXRIGHTS_MASTER_PE(msPortNum, regionConfig->accessRights1[msPortNum].pro
- 151              		.loc 1 123 0
- 152 0024 4FF0010E 		mov	lr, #1
- 153              	.LVL8:
- 154              	.L6:
+ 153              		.loc 1 123 0
+ 154 0024 4FF0010C 		mov	ip, #1
+ 155              	.LVL8:
+ 156              	.L6:
  117:../drivers/fsl_sysmpu.c ****             msPortNum, (((uint32_t)regionConfig->accessRights1[msPortNum].superAccessRights << 3U) 
- 155              		.loc 1 117 0 discriminator 3
- 156 0028 96F80C80 		ldrb	r8, [r6, #12]	@ zero_extendqisi2
- 157 002c 727B     		ldrb	r2, [r6, #13]	@ zero_extendqisi2
- 158 002e 42EAC802 		orr	r2, r2, r8, lsl #3
- 159 0032 5F1F     		subs	r7, r3, #5
- 160              	.LVL9:
- 161 0034 0CEA0202 		and	r2, ip, r2
- 162 0038 BA40     		lsls	r2, r2, r7
- 163              		.loc 1 123 0 discriminator 3
- 164 003a B77B     		ldrb	r7, [r6, #14]	@ zero_extendqisi2
- 165              	.LVL10:
- 166 003c 0EEA0707 		and	r7, lr, r7
- 167 0040 9F40     		lsls	r7, r7, r3
- 168 0042 0633     		adds	r3, r3, #6
- 169              	.LVL11:
+ 157              		.loc 1 117 0 discriminator 3
+ 158 0028 93F80C80 		ldrb	r8, [r3, #12]	@ zero_extendqisi2
+ 159 002c 5A7B     		ldrb	r2, [r3, #13]	@ zero_extendqisi2
+ 160 002e 42EAC802 		orr	r2, r2, r8, lsl #3
+ 161 0032 6F1F     		subs	r7, r5, #5
+ 162              	.LVL9:
+ 163 0034 0EEA0202 		and	r2, lr, r2
+ 164 0038 BA40     		lsls	r2, r2, r7
+ 165              		.loc 1 123 0 discriminator 3
+ 166 003a 9F7B     		ldrb	r7, [r3, #14]	@ zero_extendqisi2
+ 167              	.LVL10:
+ 168 003c 0CEA0707 		and	r7, ip, r7
+ 169 0040 AF40     		lsls	r7, r7, r5
+ 170 0042 0635     		adds	r5, r5, #6
+ 171              	.LVL11:
  122:../drivers/fsl_sysmpu.c ****             SYSMPU_REGION_RWXRIGHTS_MASTER_PE(msPortNum, regionConfig->accessRights1[msPortNum].pro
- 170              		.loc 1 122 0 discriminator 3
- 171 0044 3A43     		orrs	r2, r2, r7
+ 172              		.loc 1 122 0 discriminator 3
+ 173 0044 3A43     		orrs	r2, r2, r7
  115:../drivers/fsl_sysmpu.c ****     {
- 172              		.loc 1 115 0 discriminator 3
- 173 0046 1D2B     		cmp	r3, #29
+ 174              		.loc 1 115 0 discriminator 3
+ 175 0046 1D2D     		cmp	r5, #29
  122:../drivers/fsl_sysmpu.c ****             SYSMPU_REGION_RWXRIGHTS_MASTER_PE(msPortNum, regionConfig->accessRights1[msPortNum].pro
- 174              		.loc 1 122 0 discriminator 3
- 175 0048 45EA0205 		orr	r5, r5, r2
- 176              	.LVL12:
- 177 004c 06F10306 		add	r6, r6, #3
+ 176              		.loc 1 122 0 discriminator 3
+ 177 0048 46EA0206 		orr	r6, r6, r2
+ 178              	.LVL12:
+ 179 004c 03F10303 		add	r3, r3, #3
  115:../drivers/fsl_sysmpu.c ****     {
- 178              		.loc 1 115 0 discriminator 3
- 179 0050 EAD1     		bne	.L6
- 180              	.LVL13:
+ 180              		.loc 1 115 0 discriminator 3
+ 181 0050 EAD1     		bne	.L6
+ 182              	.LVL13:
  124:../drivers/fsl_sysmpu.c **** #endif /* FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER */
  125:../drivers/fsl_sysmpu.c ****     }
  126:../drivers/fsl_sysmpu.c **** 
@@ -1321,20 +1323,17 @@
  130:../drivers/fsl_sysmpu.c ****          msPortNum++)
  131:../drivers/fsl_sysmpu.c ****     {
  132:../drivers/fsl_sysmpu.c ****         wordReg |= SYSMPU_REGION_RWRIGHTS_MASTER(msPortNum,
- 181              		.loc 1 132 0 discriminator 1
- 182 0052 4A7E     		ldrb	r2, [r1, #25]	@ zero_extendqisi2
- 183 0054 0B7E     		ldrb	r3, [r1, #24]	@ zero_extendqisi2
- 184              	.LVL14:
- 185 0056 CE7E     		ldrb	r6, [r1, #27]	@ zero_extendqisi2
- 186 0058 43EA4203 		orr	r3, r3, r2, lsl #1
- 187              	.LVL15:
- 188 005c 8A7E     		ldrb	r2, [r1, #26]	@ zero_extendqisi2
- 189 005e 42EA4602 		orr	r2, r2, r6, lsl #1
- 190 0062 1B06     		lsls	r3, r3, #24
- 191 0064 9206     		lsls	r2, r2, #26
- 192 0066 02F04062 		and	r2, r2, #201326592
- 193 006a 03F04073 		and	r3, r3, #50331648
- 194 006e 1343     		orrs	r3, r3, r2
+ 183              		.loc 1 132 0
+ 184 0052 0B7E     		ldrb	r3, [r1, #24]	@ zero_extendqisi2
+ 185 0054 4A7E     		ldrb	r2, [r1, #25]	@ zero_extendqisi2
+ 186              	.LVL14:
+ 187 0056 CD7E     		ldrb	r5, [r1, #27]	@ zero_extendqisi2
+ 188 0058 43EA4202 		orr	r2, r3, r2, lsl #1
+ 189              	.LVL15:
+ 190 005c 8B7E     		ldrb	r3, [r1, #26]	@ zero_extendqisi2
+ 191 005e 43EA4503 		orr	r3, r3, r5, lsl #1
+ 192 0062 9B06     		lsls	r3, r3, #26
+ 193 0064 43EA0263 		orr	r3, r3, r2, lsl #24
  133:../drivers/fsl_sysmpu.c ****             ((uint32_t)regionConfig->accessRights2[msPortNum - SYSMPU_MASTER_RWATTRIBUTE_START_PORT
  134:../drivers/fsl_sysmpu.c ****             (uint32_t)regionConfig->accessRights2[msPortNum - SYSMPU_MASTER_RWATTRIBUTE_START_PORT]
  135:../drivers/fsl_sysmpu.c ****     }
@@ -1342,33 +1341,35 @@
  137:../drivers/fsl_sysmpu.c **** 
  138:../drivers/fsl_sysmpu.c ****     /* Set region descriptor access rights. */
  139:../drivers/fsl_sysmpu.c ****     base->WORD[regNumber][2] = wordReg;
- 195              		.loc 1 139 0 discriminator 1
- 196 0070 2044     		add	r0, r0, r4
- 197              	.LVL16:
+ 194              		.loc 1 139 0
+ 195 0068 2044     		add	r0, r0, r4
+ 196              	.LVL16:
  132:../drivers/fsl_sysmpu.c ****             ((uint32_t)regionConfig->accessRights2[msPortNum - SYSMPU_MASTER_RWATTRIBUTE_START_PORT
- 198              		.loc 1 132 0 discriminator 1
- 199 0072 2B43     		orrs	r3, r3, r5
- 200              	.LVL17:
- 201              		.loc 1 139 0 discriminator 1
- 202 0074 C0F80834 		str	r3, [r0, #1032]
- 203              	.LVL18:
+ 197              		.loc 1 132 0
+ 198 006a 3343     		orrs	r3, r3, r6
+ 199              	.LVL17:
+ 200              		.loc 1 139 0
+ 201 006c C0F80834 		str	r3, [r0, #1032]
+ 202              	.LVL18:
  140:../drivers/fsl_sysmpu.c **** 
  141:../drivers/fsl_sysmpu.c ****     wordReg = SYSMPU_WORD_VLD(1);
  142:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
  143:../drivers/fsl_sysmpu.c ****     wordReg |= SYSMPU_WORD_PID(regionConfig->processIdentifier) | SYSMPU_WORD_PIDMASK(regionConfig-
- 204              		.loc 1 143 0 discriminator 1
- 205 0078 91F82030 		ldrb	r3, [r1, #32]	@ zero_extendqisi2
- 206 007c 91F82120 		ldrb	r2, [r1, #33]	@ zero_extendqisi2
- 207 0080 1B06     		lsls	r3, r3, #24
- 208 0082 43F00103 		orr	r3, r3, #1
- 209 0086 43EA0243 		orr	r3, r3, r2, lsl #16
- 210              	.LVL19:
+ 203              		.loc 1 143 0
+ 204 0070 91F82130 		ldrb	r3, [r1, #33]	@ zero_extendqisi2
+ 205 0074 91F82020 		ldrb	r2, [r1, #32]	@ zero_extendqisi2
+ 206 0078 1B04     		lsls	r3, r3, #16
+ 207 007a 43EA0263 		orr	r3, r3, r2, lsl #24
+ 208 007e 43F00103 		orr	r3, r3, #1
+ 209              	.LVL19:
  144:../drivers/fsl_sysmpu.c **** #endif /* FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER */
  145:../drivers/fsl_sysmpu.c **** 
  146:../drivers/fsl_sysmpu.c ****     base->WORD[regNumber][3] = wordReg;
- 211              		.loc 1 146 0 discriminator 1
- 212 008a C0F80C34 		str	r3, [r0, #1036]
- 213 008e BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 210              		.loc 1 146 0
+ 211 0082 C0F80C34 		str	r3, [r0, #1036]
+ 147:../drivers/fsl_sysmpu.c **** }
+ 212              		.loc 1 147 0
+ 213 0086 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
  214              		.cfi_endproc
  215              	.LFE152:
  217              		.section	.text.SYSMPU_Init,"ax",%progbits
@@ -1475,181 +1476,184 @@
  299 003e 43F00103 		orr	r3, r3, #1
  300 0042 2360     		str	r3, [r4]
  301              	.LVL25:
- 302 0044 38BD     		pop	{r3, r4, r5, pc}
- 303              	.LVL26:
- 304              	.L11:
- 305              	.LBE29:
- 306              	.LBE28:
+ 302              	.LBE29:
+ 303              	.LBE28:
+  77:../drivers/fsl_sysmpu.c **** 
+ 304              		.loc 1 77 0
+ 305 0044 38BD     		pop	{r3, r4, r5, pc}
+ 306              	.LVL26:
+ 307              	.L11:
   72:../drivers/fsl_sysmpu.c ****         config = config->next;
- 307              		.loc 1 72 0
- 308 0046 2946     		mov	r1, r5
- 309 0048 2046     		mov	r0, r4
- 310 004a FFF7FEFF 		bl	SYSMPU_SetRegionConfig
- 311              	.LVL27:
+ 308              		.loc 1 72 0
+ 309 0046 2946     		mov	r1, r5
+ 310 0048 2046     		mov	r0, r4
+ 311 004a FFF7FEFF 		bl	SYSMPU_SetRegionConfig
+ 312              	.LVL27:
   73:../drivers/fsl_sysmpu.c ****     }
- 312              		.loc 1 73 0
- 313 004e 6D6A     		ldr	r5, [r5, #36]
- 314              	.LVL28:
- 315 0050 F3E7     		b	.L10
- 316              	.L14:
- 317 0052 00BF     		.align	2
- 318              	.L13:
- 319 0054 40800440 		.word	1074036800
- 320              		.cfi_endproc
- 321              	.LFE149:
- 323              		.section	.text.SYSMPU_SetRegionAddr,"ax",%progbits
- 324              		.align	1
- 325              		.global	SYSMPU_SetRegionAddr
- 326              		.syntax unified
- 327              		.thumb
- 328              		.thumb_func
- 329              		.fpu fpv4-sp-d16
- 331              	SYSMPU_SetRegionAddr:
- 332              	.LFB153:
- 147:../drivers/fsl_sysmpu.c **** }
+ 313              		.loc 1 73 0
+ 314 004e 6D6A     		ldr	r5, [r5, #36]
+ 315              	.LVL28:
+ 316 0050 F3E7     		b	.L10
+ 317              	.L14:
+ 318 0052 00BF     		.align	2
+ 319              	.L13:
+ 320 0054 40800440 		.word	1074036800
+ 321              		.cfi_endproc
+ 322              	.LFE149:
+ 324              		.section	.text.SYSMPU_SetRegionAddr,"ax",%progbits
+ 325              		.align	1
+ 326              		.global	SYSMPU_SetRegionAddr
+ 327              		.syntax unified
+ 328              		.thumb
+ 329              		.thumb_func
+ 330              		.fpu fpv4-sp-d16
+ 332              	SYSMPU_SetRegionAddr:
+ 333              	.LFB153:
  148:../drivers/fsl_sysmpu.c **** 
  149:../drivers/fsl_sysmpu.c **** void SYSMPU_SetRegionAddr(SYSMPU_Type *base, uint32_t regionNum, uint32_t startAddr, uint32_t endAd
  150:../drivers/fsl_sysmpu.c **** {
- 333              		.loc 1 150 0
- 334              		.cfi_startproc
- 335              		@ args = 0, pretend = 0, frame = 0
- 336              		@ frame_needed = 0, uses_anonymous_args = 0
- 337              	.LVL29:
- 338 0000 10B5     		push	{r4, lr}
- 339              		.cfi_def_cfa_offset 8
- 340              		.cfi_offset 4, -8
- 341              		.cfi_offset 14, -4
+ 334              		.loc 1 150 0
+ 335              		.cfi_startproc
+ 336              		@ args = 0, pretend = 0, frame = 0
+ 337              		@ frame_needed = 0, uses_anonymous_args = 0
+ 338              	.LVL29:
+ 339 0000 10B5     		push	{r4, lr}
+ 340              		.cfi_def_cfa_offset 8
+ 341              		.cfi_offset 4, -8
+ 342              		.cfi_offset 14, -4
  151:../drivers/fsl_sysmpu.c ****     assert(regionNum < FSL_FEATURE_SYSMPU_DESCRIPTOR_COUNT);
  152:../drivers/fsl_sysmpu.c **** 
  153:../drivers/fsl_sysmpu.c ****     base->WORD[regionNum][0] = startAddr;
- 342              		.loc 1 153 0
- 343 0002 01F14004 		add	r4, r1, #64
- 344 0006 2401     		lsls	r4, r4, #4
- 345 0008 0251     		str	r2, [r0, r4]
+ 343              		.loc 1 153 0
+ 344 0002 01F14004 		add	r4, r1, #64
+ 345 0006 2401     		lsls	r4, r4, #4
+ 346 0008 0251     		str	r2, [r0, r4]
  154:../drivers/fsl_sysmpu.c ****     base->WORD[regionNum][1] = endAddr;
- 346              		.loc 1 154 0
- 347 000a 00EB0110 		add	r0, r0, r1, lsl #4
- 348              	.LVL30:
- 349 000e C0F80434 		str	r3, [r0, #1028]
- 350 0012 10BD     		pop	{r4, pc}
- 351              		.cfi_endproc
- 352              	.LFE153:
- 354              		.section	.text.SYSMPU_SetRegionRwxMasterAccessRights,"ax",%progbits
- 355              		.align	1
- 356              		.global	SYSMPU_SetRegionRwxMasterAccessRights
- 357              		.syntax unified
- 358              		.thumb
- 359              		.thumb_func
- 360              		.fpu fpv4-sp-d16
- 362              	SYSMPU_SetRegionRwxMasterAccessRights:
- 363              	.LFB154:
+ 347              		.loc 1 154 0
+ 348 000a 00EB0110 		add	r0, r0, r1, lsl #4
+ 349              	.LVL30:
+ 350 000e C0F80434 		str	r3, [r0, #1028]
  155:../drivers/fsl_sysmpu.c **** }
+ 351              		.loc 1 155 0
+ 352 0012 10BD     		pop	{r4, pc}
+ 353              		.cfi_endproc
+ 354              	.LFE153:
+ 356              		.section	.text.SYSMPU_SetRegionRwxMasterAccessRights,"ax",%progbits
+ 357              		.align	1
+ 358              		.global	SYSMPU_SetRegionRwxMasterAccessRights
+ 359              		.syntax unified
+ 360              		.thumb
+ 361              		.thumb_func
+ 362              		.fpu fpv4-sp-d16
+ 364              	SYSMPU_SetRegionRwxMasterAccessRights:
+ 365              	.LFB154:
  156:../drivers/fsl_sysmpu.c **** 
  157:../drivers/fsl_sysmpu.c **** void SYSMPU_SetRegionRwxMasterAccessRights(SYSMPU_Type *base,
  158:../drivers/fsl_sysmpu.c ****                                         uint32_t regionNum,
  159:../drivers/fsl_sysmpu.c ****                                         uint32_t masterNum,
  160:../drivers/fsl_sysmpu.c ****                                         const sysmpu_rwxrights_master_access_control_t *accessRight
  161:../drivers/fsl_sysmpu.c **** {
- 364              		.loc 1 161 0
- 365              		.cfi_startproc
- 366              		@ args = 0, pretend = 0, frame = 0
- 367              		@ frame_needed = 0, uses_anonymous_args = 0
- 368              	.LVL31:
- 369 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 370              		.cfi_def_cfa_offset 20
- 371              		.cfi_offset 4, -20
- 372              		.cfi_offset 5, -16
- 373              		.cfi_offset 6, -12
- 374              		.cfi_offset 7, -8
- 375              		.cfi_offset 14, -4
+ 366              		.loc 1 161 0
+ 367              		.cfi_startproc
+ 368              		@ args = 0, pretend = 0, frame = 0
+ 369              		@ frame_needed = 0, uses_anonymous_args = 0
+ 370              	.LVL31:
+ 371 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 372              		.cfi_def_cfa_offset 20
+ 373              		.cfi_offset 4, -20
+ 374              		.cfi_offset 5, -16
+ 375              		.cfi_offset 6, -12
+ 376              		.cfi_offset 7, -8
+ 377              		.cfi_offset 14, -4
  162:../drivers/fsl_sysmpu.c ****     assert(accessRights);
  163:../drivers/fsl_sysmpu.c ****     assert(regionNum < FSL_FEATURE_SYSMPU_DESCRIPTOR_COUNT);
  164:../drivers/fsl_sysmpu.c ****     assert(masterNum < SYSMPU_MASTER_RWATTRIBUTE_START_PORT);
  165:../drivers/fsl_sysmpu.c **** 
  166:../drivers/fsl_sysmpu.c ****     uint32_t mask = SYSMPU_REGION_RWXRIGHTS_MASTER_MASK(masterNum);
- 376              		.loc 1 166 0
- 377 0002 0624     		movs	r4, #6
- 378 0004 5443     		muls	r4, r2, r4
- 379 0006 00EB8101 		add	r1, r0, r1, lsl #2
- 380              	.LVL32:
- 381 000a 1F22     		movs	r2, #31
- 382              	.LVL33:
+ 378              		.loc 1 166 0
+ 379 0002 0624     		movs	r4, #6
+ 380 0004 5443     		muls	r4, r2, r4
+ 381 0006 00EB8101 		add	r1, r0, r1, lsl #2
+ 382              	.LVL32:
+ 383 000a 1F22     		movs	r2, #31
+ 384              	.LVL33:
  167:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
  168:../drivers/fsl_sysmpu.c **** 
  169:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
  170:../drivers/fsl_sysmpu.c ****     mask |= SYSMPU_REGION_RWXRIGHTS_MASTER_PE_MASK(masterNum);
- 383              		.loc 1 170 0
- 384 000c 601D     		adds	r0, r4, #5
- 385              	.LVL34:
- 386 000e 0125     		movs	r5, #1
+ 385              		.loc 1 170 0
+ 386 000c 601D     		adds	r0, r4, #5
+ 387              	.LVL34:
+ 388 000e 0125     		movs	r5, #1
  166:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
- 387              		.loc 1 166 0
- 388 0010 02FA04F6 		lsl	r6, r2, r4
- 389              	.LVL35:
+ 389              		.loc 1 166 0
+ 390 0010 02FA04F6 		lsl	r6, r2, r4
+ 391              	.LVL35:
  167:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
- 390              		.loc 1 167 0
- 391 0014 D1F80078 		ldr	r7, [r1, #2048]
- 392              	.LVL36:
+ 392              		.loc 1 167 0
+ 393 0014 D1F80078 		ldr	r7, [r1, #2048]
+ 394              	.LVL36:
  171:../drivers/fsl_sysmpu.c **** #endif
  172:../drivers/fsl_sysmpu.c **** 
  173:../drivers/fsl_sysmpu.c ****     /* Build rights control value. */
  174:../drivers/fsl_sysmpu.c ****     right &= ~mask;
  175:../drivers/fsl_sysmpu.c ****     right |= SYSMPU_REGION_RWXRIGHTS_MASTER(
- 393              		.loc 1 175 0
- 394 0018 93F800E0 		ldrb	lr, [r3]	@ zero_extendqisi2
+ 395              		.loc 1 175 0
+ 396 0018 93F800C0 		ldrb	ip, [r3]	@ zero_extendqisi2
  170:../drivers/fsl_sysmpu.c **** #endif
- 395              		.loc 1 170 0
- 396 001c 8540     		lsls	r5, r5, r0
- 397              	.LVL37:
- 398 001e 46EA0502 		orr	r2, r6, r5
- 399              	.LVL38:
+ 397              		.loc 1 170 0
+ 398 001c 8540     		lsls	r5, r5, r0
+ 399              	.LVL37:
+ 400 001e 45EA0602 		orr	r2, r5, r6
+ 401              	.LVL38:
  174:../drivers/fsl_sysmpu.c ****     right |= SYSMPU_REGION_RWXRIGHTS_MASTER(
- 400              		.loc 1 174 0
- 401 0022 27EA0207 		bic	r7, r7, r2
- 402              	.LVL39:
- 403              		.loc 1 175 0
- 404 0026 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
- 405              	.LVL40:
+ 402              		.loc 1 174 0
+ 403 0022 27EA0207 		bic	r7, r7, r2
+ 404              	.LVL39:
+ 405              		.loc 1 175 0
+ 406 0026 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 407              	.LVL40:
  176:../drivers/fsl_sysmpu.c ****         masterNum, ((uint32_t)(accessRights->superAccessRights << 3U) | accessRights->userAccessRig
  177:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
  178:../drivers/fsl_sysmpu.c ****     right |= SYSMPU_REGION_RWXRIGHTS_MASTER_PE(masterNum, accessRights->processIdentifierEnable);
- 406              		.loc 1 178 0
- 407 0028 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
- 408              	.LVL41:
+ 408              		.loc 1 178 0
+ 409 0028 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 410              	.LVL41:
  175:../drivers/fsl_sysmpu.c ****         masterNum, ((uint32_t)(accessRights->superAccessRights << 3U) | accessRights->userAccessRig
- 409              		.loc 1 175 0
- 410 002a 42EACE02 		orr	r2, r2, lr, lsl #3
- 411              	.LVL42:
- 412 002e A240     		lsls	r2, r2, r4
- 413              		.loc 1 178 0
- 414 0030 8340     		lsls	r3, r3, r0
+ 411              		.loc 1 175 0
+ 412 002a 42EACC02 		orr	r2, r2, ip, lsl #3
+ 413              	.LVL42:
+ 414 002e A240     		lsls	r2, r2, r4
+ 415              		.loc 1 178 0
+ 416 0030 8340     		lsls	r3, r3, r0
  175:../drivers/fsl_sysmpu.c ****         masterNum, ((uint32_t)(accessRights->superAccessRights << 3U) | accessRights->userAccessRig
- 415              		.loc 1 175 0
- 416 0032 3240     		ands	r2, r2, r6
- 417              		.loc 1 178 0
- 418 0034 2B40     		ands	r3, r3, r5
- 419 0036 1343     		orrs	r3, r3, r2
- 420 0038 3B43     		orrs	r3, r3, r7
- 421              	.LVL43:
+ 417              		.loc 1 175 0
+ 418 0032 3240     		ands	r2, r2, r6
+ 419              		.loc 1 178 0
+ 420 0034 2B40     		ands	r3, r3, r5
+ 421 0036 1343     		orrs	r3, r3, r2
+ 422 0038 3B43     		orrs	r3, r3, r7
+ 423              	.LVL43:
  179:../drivers/fsl_sysmpu.c **** #endif /* FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER */
  180:../drivers/fsl_sysmpu.c **** 
  181:../drivers/fsl_sysmpu.c ****     /* Set low master region access rights. */
  182:../drivers/fsl_sysmpu.c ****     base->RGDAAC[regionNum] = right;
- 422              		.loc 1 182 0
- 423 003a C1F80038 		str	r3, [r1, #2048]
- 424 003e F0BD     		pop	{r4, r5, r6, r7, pc}
- 425              		.cfi_endproc
- 426              	.LFE154:
- 428              		.section	.text.SYSMPU_SetRegionRwMasterAccessRights,"ax",%progbits
- 429              		.align	1
- 430              		.global	SYSMPU_SetRegionRwMasterAccessRights
- 431              		.syntax unified
- 432              		.thumb
- 433              		.thumb_func
- 434              		.fpu fpv4-sp-d16
- 436              	SYSMPU_SetRegionRwMasterAccessRights:
- 437              	.LFB155:
+ 424              		.loc 1 182 0
+ 425 003a C1F80038 		str	r3, [r1, #2048]
  183:../drivers/fsl_sysmpu.c **** }
+ 426              		.loc 1 183 0
+ 427 003e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 428              		.cfi_endproc
+ 429              	.LFE154:
+ 431              		.section	.text.SYSMPU_SetRegionRwMasterAccessRights,"ax",%progbits
+ 432              		.align	1
+ 433              		.global	SYSMPU_SetRegionRwMasterAccessRights
+ 434              		.syntax unified
+ 435              		.thumb
+ 436              		.thumb_func
+ 437              		.fpu fpv4-sp-d16
+ 439              	SYSMPU_SetRegionRwMasterAccessRights:
+ 440              	.LFB155:
  184:../drivers/fsl_sysmpu.c **** 
  185:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_MASTER_COUNT > 4
  186:../drivers/fsl_sysmpu.c **** void SYSMPU_SetRegionRwMasterAccessRights(SYSMPU_Type *base,
@@ -1657,135 +1661,136 @@
  188:../drivers/fsl_sysmpu.c ****                                        uint32_t masterNum,
  189:../drivers/fsl_sysmpu.c ****                                        const sysmpu_rwrights_master_access_control_t *accessRights)
  190:../drivers/fsl_sysmpu.c **** {
- 438              		.loc 1 190 0
- 439              		.cfi_startproc
- 440              		@ args = 0, pretend = 0, frame = 0
- 441              		@ frame_needed = 0, uses_anonymous_args = 0
- 442              	.LVL44:
+ 441              		.loc 1 190 0
+ 442              		.cfi_startproc
+ 443              		@ args = 0, pretend = 0, frame = 0
+ 444              		@ frame_needed = 0, uses_anonymous_args = 0
+ 445              	.LVL44:
  191:../drivers/fsl_sysmpu.c ****     assert(accessRights);
  192:../drivers/fsl_sysmpu.c ****     assert(regionNum < FSL_FEATURE_SYSMPU_DESCRIPTOR_COUNT);
  193:../drivers/fsl_sysmpu.c ****     assert(masterNum >= SYSMPU_MASTER_RWATTRIBUTE_START_PORT);
  194:../drivers/fsl_sysmpu.c ****     assert(masterNum <= (FSL_FEATURE_SYSMPU_MASTER_COUNT - 1));
  195:../drivers/fsl_sysmpu.c **** 
  196:../drivers/fsl_sysmpu.c ****     uint32_t mask = SYSMPU_REGION_RWRIGHTS_MASTER_MASK(masterNum);
- 443              		.loc 1 196 0
- 444 0000 0832     		adds	r2, r2, #8
- 445              	.LVL45:
+ 446              		.loc 1 196 0
+ 447 0000 0832     		adds	r2, r2, #8
+ 448              	.LVL45:
  190:../drivers/fsl_sysmpu.c ****     assert(accessRights);
- 446              		.loc 1 190 0
- 447 0002 30B5     		push	{r4, r5, lr}
- 448              		.cfi_def_cfa_offset 12
- 449              		.cfi_offset 4, -12
- 450              		.cfi_offset 5, -8
- 451              		.cfi_offset 14, -4
- 452 0004 00EB8101 		add	r1, r0, r1, lsl #2
- 453              	.LVL46:
- 454              		.loc 1 196 0
- 455 0008 5500     		lsls	r5, r2, #1
- 456              	.LVL47:
+ 449              		.loc 1 190 0
+ 450 0002 30B5     		push	{r4, r5, lr}
+ 451              		.cfi_def_cfa_offset 12
+ 452              		.cfi_offset 4, -12
+ 453              		.cfi_offset 5, -8
+ 454              		.cfi_offset 14, -4
+ 455 0004 00EB8101 		add	r1, r0, r1, lsl #2
+ 456              	.LVL46:
+ 457              		.loc 1 196 0
+ 458 0008 5500     		lsls	r5, r2, #1
+ 459              	.LVL47:
  197:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
  198:../drivers/fsl_sysmpu.c **** 
  199:../drivers/fsl_sysmpu.c ****     /* Build rights control value. */
  200:../drivers/fsl_sysmpu.c ****     right &= ~mask;
  201:../drivers/fsl_sysmpu.c ****     right |=
  202:../drivers/fsl_sysmpu.c ****         SYSMPU_REGION_RWRIGHTS_MASTER(masterNum, (((uint32_t)accessRights->readEnable << 1U) | acce
- 457              		.loc 1 202 0
- 458 000a 5878     		ldrb	r0, [r3, #1]	@ zero_extendqisi2
- 459              	.LVL48:
- 460 000c 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
- 461              	.LVL49:
+ 460              		.loc 1 202 0
+ 461 000a 5878     		ldrb	r0, [r3, #1]	@ zero_extendqisi2
+ 462              	.LVL48:
+ 463 000c 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 464              	.LVL49:
  197:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
- 462              		.loc 1 197 0
- 463 000e D1F80048 		ldr	r4, [r1, #2048]
- 464              	.LVL50:
- 465              		.loc 1 202 0
- 466 0012 42EA4002 		orr	r2, r2, r0, lsl #1
- 467 0016 AA40     		lsls	r2, r2, r5
+ 465              		.loc 1 197 0
+ 466 000e D1F80048 		ldr	r4, [r1, #2048]
+ 467              	.LVL50:
+ 468              		.loc 1 202 0
+ 469 0012 42EA4002 		orr	r2, r2, r0, lsl #1
+ 470 0016 AA40     		lsls	r2, r2, r5
  196:../drivers/fsl_sysmpu.c ****     uint32_t right = base->RGDAAC[regionNum];
- 468              		.loc 1 196 0
- 469 0018 0323     		movs	r3, #3
- 470              	.LVL51:
- 471 001a 6240     		eors	r2, r2, r4
- 472 001c 03FA05F5 		lsl	r5, r3, r5
- 473              	.LVL52:
- 474 0020 2A40     		ands	r2, r2, r5
+ 471              		.loc 1 196 0
+ 472 0018 0323     		movs	r3, #3
+ 473              	.LVL51:
+ 474 001a 6240     		eors	r2, r2, r4
+ 475 001c 03FA05F5 		lsl	r5, r3, r5
+ 476              	.LVL52:
+ 477 0020 2A40     		ands	r2, r2, r5
  201:../drivers/fsl_sysmpu.c ****         SYSMPU_REGION_RWRIGHTS_MASTER(masterNum, (((uint32_t)accessRights->readEnable << 1U) | acce
- 475              		.loc 1 201 0
- 476 0022 6240     		eors	r2, r2, r4
- 477              	.LVL53:
+ 478              		.loc 1 201 0
+ 479 0022 6240     		eors	r2, r2, r4
+ 480              	.LVL53:
  203:../drivers/fsl_sysmpu.c ****     /* Set low master region access rights. */
  204:../drivers/fsl_sysmpu.c ****     base->RGDAAC[regionNum] = right;
- 478              		.loc 1 204 0
- 479 0024 C1F80028 		str	r2, [r1, #2048]
- 480 0028 30BD     		pop	{r4, r5, pc}
- 481              		.cfi_endproc
- 482              	.LFE155:
- 484              		.section	.text.SYSMPU_GetSlavePortErrorStatus,"ax",%progbits
- 485              		.align	1
- 486              		.global	SYSMPU_GetSlavePortErrorStatus
- 487              		.syntax unified
- 488              		.thumb
- 489              		.thumb_func
- 490              		.fpu fpv4-sp-d16
- 492              	SYSMPU_GetSlavePortErrorStatus:
- 493              	.LFB156:
+ 481              		.loc 1 204 0
+ 482 0024 C1F80028 		str	r2, [r1, #2048]
  205:../drivers/fsl_sysmpu.c **** }
+ 483              		.loc 1 205 0
+ 484 0028 30BD     		pop	{r4, r5, pc}
+ 485              		.cfi_endproc
+ 486              	.LFE155:
+ 488              		.section	.text.SYSMPU_GetSlavePortErrorStatus,"ax",%progbits
+ 489              		.align	1
+ 490              		.global	SYSMPU_GetSlavePortErrorStatus
+ 491              		.syntax unified
+ 492              		.thumb
+ 493              		.thumb_func
+ 494              		.fpu fpv4-sp-d16
+ 496              	SYSMPU_GetSlavePortErrorStatus:
+ 497              	.LFB156:
  206:../drivers/fsl_sysmpu.c **** #endif /* FSL_FEATURE_SYSMPU_MASTER_COUNT > 4 */
  207:../drivers/fsl_sysmpu.c **** 
  208:../drivers/fsl_sysmpu.c **** bool SYSMPU_GetSlavePortErrorStatus(SYSMPU_Type *base, sysmpu_slave_t slaveNum)
  209:../drivers/fsl_sysmpu.c **** {
- 494              		.loc 1 209 0
- 495              		.cfi_startproc
- 496              		@ args = 0, pretend = 0, frame = 0
- 497              		@ frame_needed = 0, uses_anonymous_args = 0
- 498              		@ link register save eliminated.
- 499              	.LVL54:
+ 498              		.loc 1 209 0
+ 499              		.cfi_startproc
+ 500              		@ args = 0, pretend = 0, frame = 0
+ 501              		@ frame_needed = 0, uses_anonymous_args = 0
+ 502              		@ link register save eliminated.
+ 503              	.LVL54:
  210:../drivers/fsl_sysmpu.c ****     uint8_t sperr;
  211:../drivers/fsl_sysmpu.c **** 
  212:../drivers/fsl_sysmpu.c ****     sperr = ((base->CESR & SYSMPU_CESR_SPERR_MASK) >> SYSMPU_CESR_SPERR_SHIFT) & (0x1U << (FSL_FEAT
- 500              		.loc 1 212 0
- 501 0000 0268     		ldr	r2, [r0]
- 502              	.LVL55:
- 503 0002 0123     		movs	r3, #1
- 504 0004 C1F10401 		rsb	r1, r1, #4
- 505              	.LVL56:
- 506 0008 03FA01F1 		lsl	r1, r3, r1
+ 504              		.loc 1 212 0
+ 505 0000 0268     		ldr	r2, [r0]
+ 506              	.LVL55:
+ 507 0002 0123     		movs	r3, #1
+ 508 0004 C1F10401 		rsb	r1, r1, #4
+ 509              	.LVL56:
+ 510 0008 03FA01F1 		lsl	r1, r3, r1
  213:../drivers/fsl_sysmpu.c **** 
  214:../drivers/fsl_sysmpu.c ****     return (sperr != 0) ? true : false;
- 507              		.loc 1 214 0
- 508 000c 11EAD263 		ands	r3, r1, r2, lsr #27
+ 511              		.loc 1 214 0
+ 512 000c 11EAD263 		ands	r3, r1, r2, lsr #27
  215:../drivers/fsl_sysmpu.c **** }
- 509              		.loc 1 215 0
- 510 0010 14BF     		ite	ne
- 511 0012 0120     		movne	r0, #1
- 512              	.LVL57:
- 513 0014 0020     		moveq	r0, #0
- 514 0016 7047     		bx	lr
- 515              		.cfi_endproc
- 516              	.LFE156:
- 518              		.section	.text.SYSMPU_GetDetailErrorAccessInfo,"ax",%progbits
- 519              		.align	1
- 520              		.global	SYSMPU_GetDetailErrorAccessInfo
- 521              		.syntax unified
- 522              		.thumb
- 523              		.thumb_func
- 524              		.fpu fpv4-sp-d16
- 526              	SYSMPU_GetDetailErrorAccessInfo:
- 527              	.LFB157:
+ 513              		.loc 1 215 0
+ 514 0010 14BF     		ite	ne
+ 515 0012 0120     		movne	r0, #1
+ 516              	.LVL57:
+ 517 0014 0020     		moveq	r0, #0
+ 518 0016 7047     		bx	lr
+ 519              		.cfi_endproc
+ 520              	.LFE156:
+ 522              		.section	.text.SYSMPU_GetDetailErrorAccessInfo,"ax",%progbits
+ 523              		.align	1
+ 524              		.global	SYSMPU_GetDetailErrorAccessInfo
+ 525              		.syntax unified
+ 526              		.thumb
+ 527              		.thumb_func
+ 528              		.fpu fpv4-sp-d16
+ 530              	SYSMPU_GetDetailErrorAccessInfo:
+ 531              	.LFB157:
  216:../drivers/fsl_sysmpu.c **** 
  217:../drivers/fsl_sysmpu.c **** void SYSMPU_GetDetailErrorAccessInfo(SYSMPU_Type *base, sysmpu_slave_t slaveNum, sysmpu_access_err_
  218:../drivers/fsl_sysmpu.c **** {
- 528              		.loc 1 218 0
- 529              		.cfi_startproc
- 530              		@ args = 0, pretend = 0, frame = 0
- 531              		@ frame_needed = 0, uses_anonymous_args = 0
- 532              	.LVL58:
- 533 0000 30B5     		push	{r4, r5, lr}
- 534              		.cfi_def_cfa_offset 12
- 535              		.cfi_offset 4, -12
- 536              		.cfi_offset 5, -8
- 537              		.cfi_offset 14, -4
- 538 0002 00EBC104 		add	r4, r0, r1, lsl #3
+ 532              		.loc 1 218 0
+ 533              		.cfi_startproc
+ 534              		@ args = 0, pretend = 0, frame = 0
+ 535              		@ frame_needed = 0, uses_anonymous_args = 0
+ 536              	.LVL58:
+ 537 0000 30B5     		push	{r4, r5, lr}
+ 538              		.cfi_def_cfa_offset 12
+ 539              		.cfi_offset 4, -12
+ 540              		.cfi_offset 5, -8
+ 541              		.cfi_offset 14, -4
+ 542 0002 00EBC104 		add	r4, r0, r1, lsl #3
  219:../drivers/fsl_sysmpu.c ****     assert(errInform);
  220:../drivers/fsl_sysmpu.c **** 
  221:../drivers/fsl_sysmpu.c ****     uint16_t value;
@@ -1793,21 +1798,21 @@
  223:../drivers/fsl_sysmpu.c **** 
  224:../drivers/fsl_sysmpu.c ****     /* Error address. */
  225:../drivers/fsl_sysmpu.c ****     errInform->address = base->SP[slaveNum].EAR;
- 539              		.loc 1 225 0
- 540 0006 2369     		ldr	r3, [r4, #16]
- 541 0008 9360     		str	r3, [r2, #8]
+ 543              		.loc 1 225 0
+ 544 0006 2369     		ldr	r3, [r4, #16]
+ 545 0008 9360     		str	r3, [r2, #8]
  226:../drivers/fsl_sysmpu.c **** 
  227:../drivers/fsl_sysmpu.c ****     /* Error detail information. */
  228:../drivers/fsl_sysmpu.c ****     value = (base->SP[slaveNum].EDR & SYSMPU_EDR_EACD_MASK) >> SYSMPU_EDR_EACD_SHIFT;
- 542              		.loc 1 228 0
- 543 000a 6369     		ldr	r3, [r4, #20]
- 544              	.LVL59:
+ 546              		.loc 1 228 0
+ 547 000a 6369     		ldr	r3, [r4, #20]
+ 548              	.LVL59:
  229:../drivers/fsl_sysmpu.c ****     if (!value)
- 545              		.loc 1 229 0
- 546 000c 1B0C     		lsrs	r3, r3, #16
- 547              	.LVL60:
- 548 000e 18D1     		bne	.L20
- 549              	.L23:
+ 549              		.loc 1 229 0
+ 550 000c 1B0C     		lsrs	r3, r3, #16
+ 551              	.LVL60:
+ 552 000e 18D1     		bne	.L20
+ 553              	.L23:
  230:../drivers/fsl_sysmpu.c ****     {
  231:../drivers/fsl_sysmpu.c ****         errInform->accessControl = kSYSMPU_NoRegionHit;
  232:../drivers/fsl_sysmpu.c ****     }
@@ -1818,82 +1823,84 @@
  237:../drivers/fsl_sysmpu.c ****     else
  238:../drivers/fsl_sysmpu.c ****     {
  239:../drivers/fsl_sysmpu.c ****         errInform->accessControl = kSYSMPU_OverlappRegion;
- 550              		.loc 1 239 0
- 551 0010 9371     		strb	r3, [r2, #6]
+ 554              		.loc 1 239 0
+ 555 0010 9371     		strb	r3, [r2, #6]
  240:../drivers/fsl_sysmpu.c ****     }
  241:../drivers/fsl_sysmpu.c **** 
  242:../drivers/fsl_sysmpu.c ****     value = base->SP[slaveNum].EDR;
- 552              		.loc 1 242 0
- 553 0012 6369     		ldr	r3, [r4, #20]
- 554              	.LVL61:
+ 556              		.loc 1 242 0
+ 557 0012 6369     		ldr	r3, [r4, #20]
+ 558              	.LVL61:
  243:../drivers/fsl_sysmpu.c ****     errInform->master = (uint32_t)((value & SYSMPU_EDR_EMN_MASK) >> SYSMPU_EDR_EMN_SHIFT);
- 555              		.loc 1 243 0
- 556 0014 C3F30314 		ubfx	r4, r3, #4, #4
- 557 0018 1460     		str	r4, [r2]
+ 559              		.loc 1 243 0
+ 560 0014 C3F30314 		ubfx	r4, r3, #4, #4
+ 561 0018 1460     		str	r4, [r2]
  244:../drivers/fsl_sysmpu.c ****     errInform->attributes = (sysmpu_err_attributes_t)((value & SYSMPU_EDR_EATTR_MASK) >> SYSMPU_EDR
- 558              		.loc 1 244 0
- 559 001a C3F34204 		ubfx	r4, r3, #1, #3
- 560 001e 1471     		strb	r4, [r2, #4]
+ 562              		.loc 1 244 0
+ 563 001a C3F34204 		ubfx	r4, r3, #1, #3
+ 564 001e 1471     		strb	r4, [r2, #4]
  245:../drivers/fsl_sysmpu.c ****     errInform->accessType = (sysmpu_err_access_type_t)((value & SYSMPU_EDR_ERW_MASK) >> SYSMPU_EDR_
- 561              		.loc 1 245 0
- 562 0020 03F00104 		and	r4, r3, #1
+ 565              		.loc 1 245 0
+ 566 0020 03F00104 		and	r4, r3, #1
  246:../drivers/fsl_sysmpu.c **** #if FSL_FEATURE_SYSMPU_HAS_PROCESS_IDENTIFIER
  247:../drivers/fsl_sysmpu.c ****     errInform->processorIdentification = (uint8_t)((value & SYSMPU_EDR_EPID_MASK) >> SYSMPU_EDR_EPI
- 563              		.loc 1 247 0
- 564 0024 C3F30723 		ubfx	r3, r3, #8, #8
- 565              	.LVL62:
- 566 0028 1373     		strb	r3, [r2, #12]
+ 567              		.loc 1 247 0
+ 568 0024 C3F30723 		ubfx	r3, r3, #8, #8
+ 569              	.LVL62:
+ 570 0028 1373     		strb	r3, [r2, #12]
  245:../drivers/fsl_sysmpu.c ****     errInform->accessType = (sysmpu_err_access_type_t)((value & SYSMPU_EDR_ERW_MASK) >> SYSMPU_EDR_
- 567              		.loc 1 245 0
- 568 002a 5471     		strb	r4, [r2, #5]
+ 571              		.loc 1 245 0
+ 572 002a 5471     		strb	r4, [r2, #5]
  248:../drivers/fsl_sysmpu.c **** #endif
  249:../drivers/fsl_sysmpu.c **** 
  250:../drivers/fsl_sysmpu.c ****     /* Clears error slave port bit. */
  251:../drivers/fsl_sysmpu.c ****     cesReg = (base->CESR & ~SYSMPU_CESR_SPERR_MASK) | ((0x1U << (FSL_FEATURE_SYSMPU_SLAVE_COUNT - s
- 569              		.loc 1 251 0
- 570 002c 0268     		ldr	r2, [r0]
- 571              	.LVL63:
- 572 002e C1F10403 		rsb	r3, r1, #4
- 573 0032 4FF00061 		mov	r1, #134217728
- 574              	.LVL64:
- 575 0036 9940     		lsls	r1, r1, r3
- 576 0038 22F07843 		bic	r3, r2, #-134217728
- 577 003c 1943     		orrs	r1, r1, r3
- 578              	.LVL65:
+ 573              		.loc 1 251 0
+ 574 002c 0268     		ldr	r2, [r0]
+ 575              	.LVL63:
+ 576 002e C1F10403 		rsb	r3, r1, #4
+ 577 0032 4FF00061 		mov	r1, #134217728
+ 578              	.LVL64:
+ 579 0036 9940     		lsls	r1, r1, r3
+ 580 0038 22F07843 		bic	r3, r2, #-134217728
+ 581 003c 1943     		orrs	r1, r1, r3
+ 582              	.LVL65:
  252:../drivers/fsl_sysmpu.c ****     base->CESR = cesReg;
- 579              		.loc 1 252 0
- 580 003e 0160     		str	r1, [r0]
- 581 0040 30BD     		pop	{r4, r5, pc}
- 582              	.LVL66:
- 583              	.L20:
+ 583              		.loc 1 252 0
+ 584 003e 0160     		str	r1, [r0]
+ 253:../drivers/fsl_sysmpu.c **** }
+ 585              		.loc 1 253 0
+ 586 0040 30BD     		pop	{r4, r5, pc}
+ 587              	.LVL66:
+ 588              	.L20:
  233:../drivers/fsl_sysmpu.c ****     {
- 584              		.loc 1 233 0
- 585 0042 5D1E     		subs	r5, r3, #1
- 586 0044 1D42     		tst	r5, r3
+ 589              		.loc 1 233 0
+ 590 0042 5D1E     		subs	r5, r3, #1
+ 591 0044 1D42     		tst	r5, r3
  235:../drivers/fsl_sysmpu.c ****     }
- 587              		.loc 1 235 0
- 588 0046 0CBF     		ite	eq
- 589 0048 0123     		moveq	r3, #1
+ 592              		.loc 1 235 0
+ 593 0046 0CBF     		ite	eq
+ 594 0048 0123     		moveq	r3, #1
  239:../drivers/fsl_sysmpu.c ****     }
- 590              		.loc 1 239 0
- 591 004a 0223     		movne	r3, #2
- 592 004c E0E7     		b	.L23
- 593              		.cfi_endproc
- 594              	.LFE157:
- 596              		.global	g_sysmpuClock
- 597              		.section	.rodata.g_sysmpuClock,"a",%progbits
- 598              		.align	2
- 601              	g_sysmpuClock:
- 602 0000 02004010 		.word	272629762
- 603              		.text
- 604              	.Letext0:
- 605              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 606              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 607              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 608              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 609              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 610              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 611              		.file 10 "../CMSIS/core_cm4.h"
- 612              		.file 11 "../CMSIS/system_MK64F12.h"
- 613              		.file 12 "../CMSIS/MK64F12.h"
- 614              		.file 13 "../drivers/fsl_common.h"
+ 595              		.loc 1 239 0
+ 596 004a 0223     		movne	r3, #2
+ 597 004c E0E7     		b	.L23
+ 598              		.cfi_endproc
+ 599              	.LFE157:
+ 601              		.global	g_sysmpuClock
+ 602              		.section	.rodata.g_sysmpuClock,"a",%progbits
+ 603              		.align	2
+ 606              	g_sysmpuClock:
+ 607 0000 02004010 		.word	272629762
+ 608              		.text
+ 609              	.Letext0:
+ 610              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 611              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 612              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 613              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 614              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 615              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 616              		.file 10 "../CMSIS/core_cm4.h"
+ 617              		.file 11 "../CMSIS/system_MK64F12.h"
+ 618              		.file 12 "../CMSIS/MK64F12.h"
+ 619              		.file 13 "../drivers/fsl_common.h"

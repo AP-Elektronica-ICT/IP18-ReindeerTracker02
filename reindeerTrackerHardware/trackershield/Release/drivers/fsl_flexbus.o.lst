@@ -1073,36 +1073,37 @@
  193 00b6 4360     		str	r3, [r0, #4]
  194              	.LVL28:
  195              	.L1:
- 196 00b8 F0BD     		pop	{r4, r5, r6, r7, pc}
- 197              	.LVL29:
- 198              	.L9:
- 199 00ba 00BF     		.align	2
- 200              	.L8:
- 201 00bc 40800440 		.word	1074036800
- 202              		.cfi_endproc
- 203              	.LFE148:
- 205              		.section	.text.FLEXBUS_Deinit,"ax",%progbits
- 206              		.align	1
- 207              		.global	FLEXBUS_Deinit
- 208              		.syntax unified
- 209              		.thumb
- 210              		.thumb_func
- 211              		.fpu fpv4-sp-d16
- 213              	FLEXBUS_Deinit:
- 214              	.LFB149:
  179:../drivers/fsl_flexbus.c ****     }
  180:../drivers/fsl_flexbus.c **** }
+ 196              		.loc 1 180 0
+ 197 00b8 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 198              	.LVL29:
+ 199              	.L9:
+ 200 00ba 00BF     		.align	2
+ 201              	.L8:
+ 202 00bc 40800440 		.word	1074036800
+ 203              		.cfi_endproc
+ 204              	.LFE148:
+ 206              		.section	.text.FLEXBUS_Deinit,"ax",%progbits
+ 207              		.align	1
+ 208              		.global	FLEXBUS_Deinit
+ 209              		.syntax unified
+ 210              		.thumb
+ 211              		.thumb_func
+ 212              		.fpu fpv4-sp-d16
+ 214              	FLEXBUS_Deinit:
+ 215              	.LFB149:
  181:../drivers/fsl_flexbus.c **** 
  182:../drivers/fsl_flexbus.c **** void FLEXBUS_Deinit(FB_Type *base)
  183:../drivers/fsl_flexbus.c **** {
- 215              		.loc 1 183 0
- 216              		.cfi_startproc
- 217              		@ args = 0, pretend = 0, frame = 0
- 218              		@ frame_needed = 0, uses_anonymous_args = 0
- 219              		@ link register save eliminated.
- 220              	.LVL30:
- 221              	.LBB14:
- 222              	.LBB15:
+ 216              		.loc 1 183 0
+ 217              		.cfi_startproc
+ 218              		@ args = 0, pretend = 0, frame = 0
+ 219              		@ frame_needed = 0, uses_anonymous_args = 0
+ 220              		@ link register save eliminated.
+ 221              	.LVL30:
+ 222              	.LBB14:
+ 223              	.LBB15:
  696:../drivers/fsl_clock.h **** }
  697:../drivers/fsl_clock.h **** 
  698:../drivers/fsl_clock.h **** /*!
@@ -1114,120 +1115,123 @@
  704:../drivers/fsl_clock.h **** {
  705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
  706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
- 223              		.loc 2 706 0
- 224 0000 024A     		ldr	r2, .L11
- 225 0002 1368     		ldr	r3, [r2]
- 226 0004 23F00103 		bic	r3, r3, #1
- 227 0008 1360     		str	r3, [r2]
- 228              	.LVL31:
- 229 000a 7047     		bx	lr
- 230              	.L12:
- 231              		.align	2
- 232              	.L11:
- 233 000c 40800440 		.word	1074036800
- 234              	.LBE15:
- 235              	.LBE14:
- 236              		.cfi_endproc
- 237              	.LFE149:
- 239              		.section	.text.FLEXBUS_GetDefaultConfig,"ax",%progbits
- 240              		.align	1
- 241              		.global	FLEXBUS_GetDefaultConfig
- 242              		.syntax unified
- 243              		.thumb
- 244              		.thumb_func
- 245              		.fpu fpv4-sp-d16
- 247              	FLEXBUS_GetDefaultConfig:
- 248              	.LFB150:
+ 224              		.loc 2 706 0
+ 225 0000 024A     		ldr	r2, .L11
+ 226 0002 1368     		ldr	r3, [r2]
+ 227 0004 23F00103 		bic	r3, r3, #1
+ 228 0008 1360     		str	r3, [r2]
+ 229              	.LVL31:
+ 230              	.LBE15:
+ 231              	.LBE14:
  184:../drivers/fsl_flexbus.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
  185:../drivers/fsl_flexbus.c ****     /* Gate clock for FLEXBUS */
  186:../drivers/fsl_flexbus.c ****     CLOCK_DisableClock(s_flexbusClocks[FLEXBUS_GetInstance(base)]);
  187:../drivers/fsl_flexbus.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
  188:../drivers/fsl_flexbus.c **** }
+ 232              		.loc 1 188 0
+ 233 000a 7047     		bx	lr
+ 234              	.L12:
+ 235              		.align	2
+ 236              	.L11:
+ 237 000c 40800440 		.word	1074036800
+ 238              		.cfi_endproc
+ 239              	.LFE149:
+ 241              		.section	.text.FLEXBUS_GetDefaultConfig,"ax",%progbits
+ 242              		.align	1
+ 243              		.global	FLEXBUS_GetDefaultConfig
+ 244              		.syntax unified
+ 245              		.thumb
+ 246              		.thumb_func
+ 247              		.fpu fpv4-sp-d16
+ 249              	FLEXBUS_GetDefaultConfig:
+ 250              	.LFB150:
  189:../drivers/fsl_flexbus.c **** 
  190:../drivers/fsl_flexbus.c **** void FLEXBUS_GetDefaultConfig(flexbus_config_t *config)
  191:../drivers/fsl_flexbus.c **** {
- 249              		.loc 1 191 0
- 250              		.cfi_startproc
- 251              		@ args = 0, pretend = 0, frame = 0
- 252              		@ frame_needed = 0, uses_anonymous_args = 0
- 253              		@ link register save eliminated.
- 254              	.LVL32:
+ 251              		.loc 1 191 0
+ 252              		.cfi_startproc
+ 253              		@ args = 0, pretend = 0, frame = 0
+ 254              		@ frame_needed = 0, uses_anonymous_args = 0
+ 255              		@ link register save eliminated.
+ 256              	.LVL32:
  192:../drivers/fsl_flexbus.c ****     config->chip = 0;                                  /* Chip 0 FlexBus for validation */
- 255              		.loc 1 192 0
- 256 0000 0023     		movs	r3, #0
+ 257              		.loc 1 192 0
+ 258 0000 0023     		movs	r3, #0
  193:../drivers/fsl_flexbus.c ****     config->writeProtect = 0;                          /* Write accesses are allowed */
  194:../drivers/fsl_flexbus.c ****     config->burstWrite = 0;                            /* Burst-Write disable */
  195:../drivers/fsl_flexbus.c ****     config->burstRead = 0;                             /* Burst-Read disable */
  196:../drivers/fsl_flexbus.c ****     config->byteEnableMode = 0;                        /* Byte-Enable mode is asserted for data wri
  197:../drivers/fsl_flexbus.c ****     config->autoAcknowledge = true;                    /* Auto-Acknowledge enable */
- 257              		.loc 1 197 0
- 258 0002 0122     		movs	r2, #1
+ 259              		.loc 1 197 0
+ 260 0002 0122     		movs	r2, #1
  192:../drivers/fsl_flexbus.c ****     config->chip = 0;                                  /* Chip 0 FlexBus for validation */
- 259              		.loc 1 192 0
- 260 0004 0370     		strb	r3, [r0]
+ 261              		.loc 1 192 0
+ 262 0004 0370     		strb	r3, [r0]
  193:../drivers/fsl_flexbus.c ****     config->writeProtect = 0;                          /* Write accesses are allowed */
- 261              		.loc 1 193 0
- 262 0006 0373     		strb	r3, [r0, #12]
+ 263              		.loc 1 193 0
+ 264 0006 0373     		strb	r3, [r0, #12]
  194:../drivers/fsl_flexbus.c ****     config->burstRead = 0;                             /* Burst-Read disable */
- 263              		.loc 1 194 0
- 264 0008 4373     		strb	r3, [r0, #13]
+ 265              		.loc 1 194 0
+ 266 0008 4373     		strb	r3, [r0, #13]
  195:../drivers/fsl_flexbus.c ****     config->byteEnableMode = 0;                        /* Byte-Enable mode is asserted for data wri
- 265              		.loc 1 195 0
- 266 000a 8373     		strb	r3, [r0, #14]
+ 267              		.loc 1 195 0
+ 268 000a 8373     		strb	r3, [r0, #14]
  196:../drivers/fsl_flexbus.c ****     config->autoAcknowledge = true;                    /* Auto-Acknowledge enable */
- 267              		.loc 1 196 0
- 268 000c C373     		strb	r3, [r0, #15]
- 269              		.loc 1 197 0
- 270 000e 0274     		strb	r2, [r0, #16]
+ 269              		.loc 1 196 0
+ 270 000c C373     		strb	r3, [r0, #15]
+ 271              		.loc 1 197 0
+ 272 000e 0274     		strb	r2, [r0, #16]
  198:../drivers/fsl_flexbus.c ****     config->extendTransferAddress = 0;                 /* Extend transfer start/extend address latc
- 271              		.loc 1 198 0
- 272 0010 4374     		strb	r3, [r0, #17]
+ 273              		.loc 1 198 0
+ 274 0010 4374     		strb	r3, [r0, #17]
  199:../drivers/fsl_flexbus.c ****     config->secondaryWaitStates = 0;                   /* Secondary wait state disable */
- 273              		.loc 1 199 0
- 274 0012 8374     		strb	r3, [r0, #18]
+ 275              		.loc 1 199 0
+ 276 0012 8374     		strb	r3, [r0, #18]
  200:../drivers/fsl_flexbus.c ****     config->byteLaneShift = kFLEXBUS_NotShifted;       /* Byte-Lane shift disable */
- 275              		.loc 1 200 0
- 276 0014 0375     		strb	r3, [r0, #20]
+ 277              		.loc 1 200 0
+ 278 0014 0375     		strb	r3, [r0, #20]
  201:../drivers/fsl_flexbus.c ****     config->writeAddressHold = kFLEXBUS_Hold1Cycle;    /* Write address hold 1 cycles */
- 277              		.loc 1 201 0
- 278 0016 4375     		strb	r3, [r0, #21]
+ 279              		.loc 1 201 0
+ 280 0016 4375     		strb	r3, [r0, #21]
  202:../drivers/fsl_flexbus.c ****     config->readAddressHold = kFLEXBUS_Hold1Or0Cycles; /* Read address hold 0 cycles */
- 279              		.loc 1 202 0
- 280 0018 8375     		strb	r3, [r0, #22]
+ 281              		.loc 1 202 0
+ 282 0018 8375     		strb	r3, [r0, #22]
  203:../drivers/fsl_flexbus.c ****     config->addressSetup =
- 281              		.loc 1 203 0
- 282 001a C375     		strb	r3, [r0, #23]
+ 283              		.loc 1 203 0
+ 284 001a C375     		strb	r3, [r0, #23]
  204:../drivers/fsl_flexbus.c ****         kFLEXBUS_FirstRisingEdge;      /* Assert ~FB_CSn on the first rising clock edge after the a
  205:../drivers/fsl_flexbus.c ****     config->portSize = kFLEXBUS_1Byte; /* 1 byte port size of transfer */
- 283              		.loc 1 205 0
- 284 001c C274     		strb	r2, [r0, #19]
+ 285              		.loc 1 205 0
+ 286 001c C274     		strb	r2, [r0, #19]
  206:../drivers/fsl_flexbus.c ****     config->group1MultiplexControl = kFLEXBUS_MultiplexGroup1_FB_ALE;  /* FB_ALE */
- 285              		.loc 1 206 0
- 286 001e 0376     		strb	r3, [r0, #24]
+ 287              		.loc 1 206 0
+ 288 001e 0376     		strb	r3, [r0, #24]
  207:../drivers/fsl_flexbus.c ****     config->group2MultiplexControl = kFLEXBUS_MultiplexGroup2_FB_CS4;  /* FB_CS4 */
- 287              		.loc 1 207 0
- 288 0020 4376     		strb	r3, [r0, #25]
+ 289              		.loc 1 207 0
+ 290 0020 4376     		strb	r3, [r0, #25]
  208:../drivers/fsl_flexbus.c ****     config->group3MultiplexControl = kFLEXBUS_MultiplexGroup3_FB_CS5;  /* FB_CS5 */
- 289              		.loc 1 208 0
- 290 0022 8376     		strb	r3, [r0, #26]
+ 291              		.loc 1 208 0
+ 292 0022 8376     		strb	r3, [r0, #26]
  209:../drivers/fsl_flexbus.c ****     config->group4MultiplexControl = kFLEXBUS_MultiplexGroup4_FB_TBST; /* FB_TBST */
- 291              		.loc 1 209 0
- 292 0024 C376     		strb	r3, [r0, #27]
+ 293              		.loc 1 209 0
+ 294 0024 C376     		strb	r3, [r0, #27]
  210:../drivers/fsl_flexbus.c ****     config->group5MultiplexControl = kFLEXBUS_MultiplexGroup5_FB_TA;   /* FB_TA */
- 293              		.loc 1 210 0
- 294 0026 0377     		strb	r3, [r0, #28]
- 295 0028 7047     		bx	lr
- 296              		.cfi_endproc
- 297              	.LFE150:
- 299              		.text
- 300              	.Letext0:
- 301              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 302              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 303              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 304              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 305              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 306              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 307              		.file 9 "../CMSIS/core_cm4.h"
- 308              		.file 10 "../CMSIS/system_MK64F12.h"
- 309              		.file 11 "../CMSIS/MK64F12.h"
- 310              		.file 12 "../drivers/fsl_flexbus.h"
+ 295              		.loc 1 210 0
+ 296 0026 0377     		strb	r3, [r0, #28]
+ 211:../drivers/fsl_flexbus.c **** }
+ 297              		.loc 1 211 0
+ 298 0028 7047     		bx	lr
+ 299              		.cfi_endproc
+ 300              	.LFE150:
+ 302              		.text
+ 303              	.Letext0:
+ 304              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 305              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 306              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 307              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 308              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 309              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 310              		.file 9 "../CMSIS/core_cm4.h"
+ 311              		.file 10 "../CMSIS/system_MK64F12.h"
+ 312              		.file 11 "../CMSIS/MK64F12.h"
+ 313              		.file 12 "../drivers/fsl_flexbus.h"
