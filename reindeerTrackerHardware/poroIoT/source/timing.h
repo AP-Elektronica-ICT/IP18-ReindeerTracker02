@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+#define RTC_REPORT_INTERVAL 20
+
 
 uint32_t millis();
 

@@ -219,29 +219,17 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 
 	uint8_t reSend_msg = 0;
 
-	//NB_reboot();
+	while(NB_setPin() == 1) //if setPin returns error then reboot and try again
+	{
+		NB_reboot();
+	}
 
-	//AT_send("CFUN=1","","OK");
-
-	NB_setPin();
-
-	delay_ms(200);  //viivettä pitää olla
-	/*NB_cops_register();
-	 delay
-	 NB_network_status();
-	 delay_ms(500);*/
-
+	delay_ms(250);  //viivettä pitää olla
 	NB_define_pdp();
-	//delay_ms(100);
 
 	do
 	{
-
-		//NB_cops_deRegister();
-		//delay_ms(500);
-
 		NB_active_pdp();
-		//delay_ms(200);
 		NB_network_status();
 
 		/*if(reSend_msg == 1){
@@ -250,11 +238,7 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 		 }*/
 
 		NB_show_ip();
-		//delay_ms(200);
-
 		NB_create_socket();
-		//delay_ms(200);
-
 		reSend_msg = NB_send_msg(mqttMessage, msgLen);
 
 	} while (reSend_msg == 1);
@@ -279,18 +263,23 @@ void NB_reboot()
 	}
 
 }
-void NB_setPin()
+uint8_t NB_setPin()
 {
+
 
 	res = AT_send(AT_NPIN, "", "+NPIN: \"OK\"");
 	if (res == 0)
 	{
 		PCprint("ack\r\n");
+		return 0;
 	}
 	else if (res == 1)
 	{
 		PCprint("error\r\n");
+		return 1;
 	}
+
+	return 1;
 
 }
 void NB_cops_register()
@@ -401,10 +390,7 @@ void NB_create_socket()
 }
 uint8_t NB_send_msg(char *mqttMessage, uint8_t msgLen)
 {
-
 	char nsost_command[500];
-	uint8_t reSend_msg = 0;
-
 	sprintf(nsost_command, "0,\"167.99.207.133\",1884,%d,\"%s\"", msgLen,
 			mqttMessage);
 
@@ -419,8 +405,7 @@ uint8_t NB_send_msg(char *mqttMessage, uint8_t msgLen)
 	else if (res == 1)
 	{
 		PCprint("error\r\n");
-		reSend_msg = 1;
-		return reSend_msg;
+		return 1;
 	}
 	return 0;
 }

@@ -33,6 +33,8 @@
 
 #define RESPONSE_TIMEOUT_NORMAL_VALUE 2000
 
+#define LPTMR_TIMEOUT 8000
+
 lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
@@ -70,9 +72,28 @@ void initTimer()
 	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_1;
 	LPTMR_Init(LPTMR0, &lptmr_config);
 
-	LPTMR_SetTimerPeriod(LPTMR0, 5000);  // 3000 for 20hz data rat
+	LPTMR_SetTimerPeriod(LPTMR0, LPTMR_TIMEOUT);  //set dead reindeer timeout period
 	EnableIRQ(LPTMR0_IRQn);
 
+}
+
+void disableUartInterrupts()
+{
+	UART_DisableInterrupts(UART2, kUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from GPS
+	LPUART_DisableInterrupts(LPUART1, kLPUART_RxDataRegFullInterruptEnable); //enable UART0 receive interrupt to receive data from PC
+	LPUART_DisableInterrupts(LPUART0, kLPUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from NBiot
+
+}
+
+void configureSleepMode()
+{
+	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
+	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; //!< Stop submode 1, for VLLS1/LLS1.
+
+	LLWU->ME |= 0x21; // enable LLWU wakeup source from LPTMR module and RTC alarm
+	LLWU->PE2 |= 0x04; // enable LLWU wakeup source from accelerometer interrupt pin
+	// 0x20 for stock frdm pin enable,
+	LLWU->FILT1 |= 0x25; // set pin wakeup from rising edge, 0x2A for frdm
 }
 
 /*
@@ -137,9 +158,7 @@ void deInit_Uart()
 
 void NB_send(char *data)
 {
-
 	char c = *data++; //assign c a character from the string and post-increment string pointer
-
 	while (c)
 	{ //loop until c is zero which means string has ended and no more chars has to be sent
 
@@ -153,9 +172,7 @@ void NB_send(char *data)
 
 void GPS_send(char *data, uint8_t len)
 {
-
 	char c = *data++; //assign c a character from the string and post-increment string pointer
-
 	for (; len > 0; len--)
 	{ //loop until c is zero which means string has ended and no more chars has to be sent
 
@@ -173,75 +190,72 @@ uint8_t PCprint(char *data)
 	uint8_t len = 0;
 	while ((c = *data++))
 	{
-
-		while (!(LPUART1->STAT & kLPUART_TxDataRegEmptyFlag))
-		{
-		}
+		while (!(LPUART1->STAT & kLPUART_TxDataRegEmptyFlag));
 
 		LPUART1->DATA = c;
 		len++;
-
 	}
-
 	return len;
+}
+
+void printInterruptFlags()
+{
+	char buf[100];
+	CLOCK_EnableClock(kCLOCK_Lptmr0);
+	CLOCK_EnableClock(kCLOCK_Rtc0);
+	sprintf(buf, "rtc flags: %lx, lptmr flags: %lx, llwu pin flags: %x\r\n",
+	RTC->SR, LPTMR0->CSR, LLWU->F1);
+	PCprint(buf);
+	sprintf(buf, "rtc seconds: %ld\r\n", RTC->TSR);
+	PCprint(buf);
+
+	sprintf(buf, "uart2 flags: %x, lpuart1 flags: %lx, lpuart0 flags: %lx\r\n",
+			UART2 ->S1,LPUART1 ->STAT, LPUART0 ->STAT);
+	PCprint(buf);
 }
 
 int main(void)
 {
 
 	PMC->REGSC |= 0x08;	//acknowledge wake up to voltage regulator module, this is needed with LLWU wake up
-
 	NVIC_EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode, it means that next MCU
 							  //will jump to the LLWU interrupt vector
 
 	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay functions(see timing.h)
-	delay_ms(1000);
+	delay_ms(10);
 
 	BOARD_InitPins();	//init all physical pins
 	BOARD_BootClockVLPR(); //by uncommenting this we can use FRDM 50Mhz external clock, but will not work with modified board
 
 	initUART();
+	EnableIRQ(RTC_IRQn);
 
-	if (wake == 2)
+	configureSleepMode();
+
+	if (wake == 2) //wakeup by accelerometer
 	{
+		disableUartInterrupts();
 
 		PCprint("Woken by ACCEL, reindeer is !!!ALIVE!!!\r\n");
 		initTimer();
-		//rtcInit();
-
-		SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
-		smc_power_mode_vlls_config.subMode = kSMC_StopSub1; //!< Stop submode 1, for VLLS1/LLS1.
-
-		LLWU->ME |= 0x21; // enable LLWU wakeup source from LPTMR module and RTC alarm
-		LLWU->PE2 |= 0x04; // enable LLWU wakeup source from accelerometer interrupt pin
-
-		// 0x20 for stock frdm pin enable,
-		LLWU->FILT1 |= 0x25; // set pin wakeup from rising edge, 0x2A for frdm
-
 		LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable); //Sets Timer Interrupt Enable bit to 1
 		LPTMR_StartTimer(LPTMR0);
 
-		EnableIRQ(RTC_IRQn);
-
-		__disable_irq();
-
 		SMC_PreEnterStopModes();
 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
+		SMC_PostExitStopModes();
 
-		PCprint("stop mode entry was aborted\r\n");
+		printInterruptFlags();
 
-		char buf[100];
+		if (wake == 3)
+		{
+			PCprint(
+					"rtc prevented entry to sleep mode\r\nsending weekly report now\r\n");
+		}
 
-		CLOCK_EnableClock(kCLOCK_Rtc0);
-
-		sprintf(buf, "rtc flags: %lx, lptmr flags: %lx, llwu pin flags: %x\r\n",
-		RTC->SR, LPTMR0->CSR, LLWU->F1);
-		PCprint(buf);
-		sprintf(buf, "rtc seconds: %ld\r\n", RTC->TSR);
-		PCprint(buf);
 	}
 
-	else if (wake == 0) //first startup, init all interrupt sources and go sleep
+	if (wake == 0) //first startup, init all interrupt sources and go sleep
 	{
 
 		initI2C();
@@ -252,40 +266,27 @@ int main(void)
 
 		PCprint("wake was 0 going to sleep\r\n");
 
-		SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
-		smc_power_mode_vlls_config.subMode = kSMC_StopSub1; //!< Stop submode 1, for VLLS1/LLS1.
-
-		LLWU->ME |= 0x21; // enable LLWU wakeup source from LPTMR module and RTC alarm
-		LLWU->PE2 |= 0x04; // enable LLWU wakeup source from accelerometer interrupt pin
-
-		// 0x20 for stock frdm pin enable,
-		LLWU->FILT1 |= 0x25; // set pin wakeup from rising edge, 0x2A for frdm
-
 		LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable); //Sets Timer Interrupt Enable bit to 1
 		LPTMR_StartTimer(LPTMR0);
 
 		SMC_PreEnterStopModes();
 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
 	}
-	else if (wake == 3)
+	if (wake == 3)
 	{
 		PCprint("rtc alarm heratti perkele\r\nsending weekly report\r\n");
-
+		initTimer();
 		/*
 		 * Enable RTC and LPTMR IRQ to flush possible interrupts
 		 */
-
 		EnableIRQ(RTC_IRQn);
-		EnableIRQ(LPTMR0_IRQn);
 
 		rtcInit(); //Init RTC again to have next alarm next week
-
+		initUART();
 		/*
 		 * Disable LPTMR interrupt to not cause confusion during sending
 		 */
 		CLOCK_EnableClock(kCLOCK_Lptmr0);
-		LPTMR_DisableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);
-
 	}
 
 	struct reindeerData_t reindeerData; //create struct for our reindeer data that will be sent
@@ -297,20 +298,7 @@ int main(void)
 	};
 	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//blue led as output
 
-	static char buf[100];
-
-	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
-	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; //!< Stop submode 1, for VLLS1/LLS1.
-
-	LLWU->ME |= 0x21; // enable LLWU wakeup source from LPTMR module and RTC alarm
-	LLWU->PE2 |= 0x04; // enable LLWU wakeup source from accelerometer interrupt pin
-
-	// 0x20 for stock frdm pin enable,
-	LLWU->FILT1 |= 0x25;	// set pin wakeup from rising edge, 0x2A for frdm
-
 	GPIO_PinInit(GPIOA, 19u, &LED_configOutput);
-
-	//GPIO_ClearPinsOutput(GPIOA, 1 << 4u);
 
 	/*
 	 * set boost regulator enable pin as output. This pin will control the power to RF modules
@@ -341,20 +329,13 @@ int main(void)
 	}
 	else if (wake == 1)
 	{
-		LPTMR_DisableInterrupts(LPTMR0, LPTMR_CSR_TIE_MASK);
+		EnableIRQ(LPTMR0_IRQn); //by enabling LPTMR IRQ it will automatically clear the flag
+								//if the timer runs out during sending
 		PCprint("reindeer is dead\r\n");
 		strcpy(reindeerData.dead, "true");
 	}
 
 	reindeerData.batteryLevel = 45;
-
-	CLOCK_EnableClock(kCLOCK_Rtc0);
-	sprintf(buf, "rtc flags: %lx, lptmr flags: %lx, llwu pin flags: %x\r\n",
-	RTC->SR, LPTMR0->CSR, LLWU->F1);
-	PCprint(buf);
-	sprintf(buf, "rtc seconds: %ld\r\n", RTC->TSR);
-	PCprint(buf);
-
 	PCprint("entering while loop\r\n");
 
 	while (1)
@@ -383,9 +364,7 @@ int main(void)
 
 				if (getGPS())
 				{
-
 					parseData(testLat, testLon);
-
 					strcpy(reindeerData.latitude, parsedLat);
 					strcpy(reindeerData.longitude, parsedLon);
 					break;
@@ -447,14 +426,11 @@ int main(void)
 			moduleResponseTimeout = millis() + RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial value
 
 			while (millis() < moduleResponseTimeout)
-
 			{
-
 				if (breakIfAtOk())
 				{
 					break;
 				}
-
 			}
 
 			//now the timeout has expired since last character had arrived, so we can process data
@@ -516,7 +492,7 @@ int main(void)
 	 */
 
 	GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
-	delay_ms(1000);
+	delay_ms(500); //Wait until voltage stabilize
 	NB_reboot();
 	delay_ms(50);
 
@@ -529,35 +505,40 @@ int main(void)
 	NB_create_pdp_send(mqttMessage, msgLen);
 	PCprint("Roger include main.c\r\n");
 
-	AT_send("CFUN=0", "", "OK");
-
 	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power off RF modules
 
-	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
-	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; //!< Stop submode 1, for VLLS1/LLS1.
+	/*
+	 * Message sending is done and rf modules powered off
+	 *
+	 * If we just sent weekly report then we must have lptmr and rtc running
+	 *
+	 * If sent dead reindeer then se on siinä
+	 */
 
-	LLWU->ME |= 0x21; // enable LLWU wakeup source from LPTMR module and RTC alarm
-	LLWU->PE2 |= 0x04; // enable LLWU wakeup source from accelerometer interrupt pin
 
-	// 0x20 for stock frdm pin enable,
-	LLWU->FILT1 |= 0x25; // set pin wakeup from rising edge, 0x2A for frdm
+	/*
+	 * Reset LPTIMER so it starts from zero when device goes to sleep
+	 * this prevents LPTIMER too early interrupt because it was already counting
+	 */
 
-	sprintf(buf, "rtc flags: %lx, lptmr flags: %lx, llwu pin flags: %x\r\n",
-	RTC->SR, LPTMR0->CSR, LLWU->F1);
-	PCprint(buf);
-	sprintf(buf, "rtc seconds: %ld\r\n", RTC->TSR);
-	PCprint(buf);
+	initTimer();
+	LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable); //Sets Timer Interrupt Enable bit to 1
+	LPTMR_StartTimer(LPTMR0);
 
-	__disable_irq();
+	configureSleepMode();
+
+	printInterruptFlags();
+	disableUartInterrupts();
+
 	SMC_PreEnterStopModes();
 	SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
+	SMC_PostExitStopModes();
 
 	while (1)
 	{
 		PCprint("sss\r\n");
 		delay_ms(1000);
 	}
-	//parseData(testLat, testLon);
 }
 
 void LLWU_IRQHandler()
@@ -659,7 +640,7 @@ void LPUART1_IRQHandler()
 
 void LPTMR0_IRQHandler()
 {
-	//wake = 1;
+	wake = 1;
 	CLOCK_EnableClock(kCLOCK_Lptmr0);
 	LPTMR0->CSR |= LPTMR_CSR_TCF_MASK;
 
@@ -670,16 +651,16 @@ void LPTMR0_IRQHandler()
 
 void RTC_IRQHandler()
 {
-
+	wake = 3;
 	CLOCK_EnableClock(kCLOCK_Rtc0);
 
 	RTC->SR &= ~0x10;	//disable counter for resetting TSR
 	RTC->TSR = 0;		//reset TSR
-	RTC->TAR = 0x1f;
+	RTC->TAR = RTC_REPORT_INTERVAL; //clear interrupt flag by writing to TAR
 
 	RTC->SR |= 0x10; //enable counter
 
-	while (RTC->SR & 0x04)
+	while (RTC->SR & 0x04) //wait until interrupt flag is cleared
 	{
 	}
 
