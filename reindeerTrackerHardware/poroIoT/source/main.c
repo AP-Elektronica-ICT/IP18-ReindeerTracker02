@@ -39,7 +39,7 @@ lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
-volatile uint8_t wake = 0;
+volatile uint8_t wake = 5;
 volatile uint8_t NB_strReady = 0;
 volatile uint16_t NB_bufPtr = 0;
 
@@ -221,11 +221,11 @@ int main(void)
 	NVIC_EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode, it means that next MCU
 							  //will jump to the LLWU interrupt vector
 
-	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay functions(see timing.h)
-	delay_ms(10);
-
 	BOARD_InitPins();	//init all physical pins
 	BOARD_BootClockVLPR(); //by uncommenting this we can use FRDM 50Mhz external clock, but will not work with modified board
+
+	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay functions(see timing.h)
+	delay_ms(10);
 
 	initUART();
 	EnableIRQ(RTC_IRQn);
@@ -347,6 +347,7 @@ int main(void)
 
 		while (true)
 		{
+			break;
 			if (!GPS_strReady) //Loop until get GPS coordinates
 			{
 				PCprint(GPS_recBuf);
@@ -364,7 +365,9 @@ int main(void)
 
 				if (getGPS())
 				{
+
 					parseData(testLat, testLon);
+
 					strcpy(reindeerData.latitude, parsedLat);
 					strcpy(reindeerData.longitude, parsedLon);
 					break;
@@ -376,7 +379,7 @@ int main(void)
 
 		}
 
-		break;
+		//break;
 
 		if (PC_strReady)
 		{
@@ -426,11 +429,14 @@ int main(void)
 			moduleResponseTimeout = millis() + RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial value
 
 			while (millis() < moduleResponseTimeout)
+
 			{
+
 				if (breakIfAtOk())
 				{
 					break;
 				}
+
 			}
 
 			//now the timeout has expired since last character had arrived, so we can process data
