@@ -1,6 +1,7 @@
 var express = require('express');
 var ObjectId = require('mongoose').Types.ObjectId;
 var router = express.Router();
+var admin = require("firebase-admin");
 var config = require('../config');
 
 // IMPORTANT: LOGS ARE ADDED AT THE BEGINNING OF THE ARRAY
@@ -96,15 +97,67 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
     log.initialLog = false;
     Device.update(
         {deviceKey: deviceKey},
-        {$push: {logs: { $each: [log], $position: 0}}, isAlive: log.isAlive}
-    )
+        {$push: {logs: { $each: [log], $position: 0}}, isAlive: log.isAlive})
         .then(function (status) {
             res.status(200).json('log added');
+            if (!log.isAlive || log.battery < 20) {
+                Device.findOne({deviceKey: deviceKey})
+                    .then(function (device) {
+                        getDeviceTokens(device.userIDs)
+                            .then(function (deviceTokens) {
+                                if (!log.isAlive) {
+                                    var baseMessage = {
+                                        notification: {
+                                            title: device.name + ' (' + device.deviceKey + ') has died.',
+                                            body: 'Check the app to find the location.'
+                                        }
+                                    };
+                                } else {
+                                    var baseMessage = {
+                                        notification: {
+                                            title: device.name + ' (' + device.deviceKey + ') battery is low.',
+                                            body: 'Battery at ' + log.battery + '%. Please check the device to replace the battery.'
+                                        }
+                                    };
+                                }
+                                for (var i=0; i< deviceTokens.length; i++) {
+                                    var message = baseMessage;
+                                    message.token = deviceTokens[i];
+                                    sendNotification(message);
+                                }
+                            });
+                    })
+            }
         })
         .catch(function (err) {
             res.status(500).send('could not add log to device');
         })
 });
+
+function getDeviceTokens(users) {
+    return new Promise(function (resolve, reject) {
+        User.find({uid: {$in: users}}).select('deviceToken')
+            .then(function (tokens) {
+                var returnArr = [];
+                for (var i=0; i<tokens.length; i++) {
+                    if (tokens[i] !== '' && tokens[i]) {
+                        returnArr.push(tokens[i].deviceToken);
+                    }
+                }
+                resolve(returnArr);
+            })
+    });
+}
+
+function sendNotification(message) {
+    admin.messaging().send(message)
+        .then(function (response) {
+            console.log('notification sent');
+        })
+        .catch(function (reason) {
+            console.log(reason, 'error');
+        })
+}
 
 router.get('/devices/:deviceKey/details', function (req, res) {
     const deviceKey = req.params.deviceKey;
@@ -270,6 +323,29 @@ router.delete('/users/:userID/devices', function (req, res) {
         })
         .catch(function (reason) {
             res.status(500).send('could not delete');
+        })
+});
+
+router.put('/users/:userID/devicetoken', function (req, res) {
+    const userID = req.params.userID;
+    const deviceToken = req.body.deviceToken;
+    User.update( {deviceToken: deviceToken})
+        .then(function (value) {
+            res.status(200).json('Token saved');
+        })
+        .catch(function (reason) {
+            res.status(500).send('could not save token');
+        })
+});
+
+router.get('/users/:userID/devicetoken', function (req, res) {
+    const userID = req.params.userID;
+    User.findOne({uid: userID})
+        .then(function (user) {
+            res.status(200).json(user.deviceToken);
+        })
+        .catch(function (reason) {
+            res.status(500).json('could not find user');
         })
 });
 

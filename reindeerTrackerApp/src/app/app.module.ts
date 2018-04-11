@@ -27,6 +27,8 @@ import { PreloaderProvider } from '../providers/preloader/preloader';
 import {Camera} from "@ionic-native/camera";
 import { AuthProvider } from '../providers/auth/auth';
 import {AngularFireAuthModule} from "angularfire2/auth";
+import {FcmProvider} from "../providers/fcm/fcm";
+import {Firebase} from "@ionic-native/firebase";
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAud_cLzms8_U55nCkSKNmnRUhXei2pLQs",
@@ -82,7 +84,9 @@ export const firebaseConfig = {
     ImageProvider,
     PreloaderProvider,
     Camera,
-    AuthProvider
+    AuthProvider,
+    FcmProvider,
+    Firebase
   ]
 })
 export class AppModule {}

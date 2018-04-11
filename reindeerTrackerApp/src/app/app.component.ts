@@ -8,24 +8,36 @@ import { LogInPage } from '../pages/log-in/log-in';
 import * as firebase from 'firebase';
 import {firebaseConfig} from "./app.module";
 import {AngularFireAuth} from "angularfire2/auth";
+import {FcmProvider} from "../providers/fcm/fcm";
+import {HomePage} from "../pages/home/home";
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   rootPage:any = LogInPage;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private af: AngularFireAuth) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private af: AngularFireAuth, private fcmProvider: FcmProvider) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       //firebase.initializeApp(firebaseConfig);
       af.auth.onAuthStateChanged((auth) => {
         console.log(auth);
+        if (auth) {
+          this.rootPage = HomePage;
+          this.initializeFCM();
+        }
         statusBar.styleDefault();
         splashScreen.hide();
         console.log('hide');
       })
     });
+  }
+
+  private initializeFCM() {
+    this.fcmProvider.getToken();
+    this.fcmProvider.listenToNotifications();
+    //this.fcmProvider.getTokenSync();
   }
 }
 
