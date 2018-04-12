@@ -231,7 +231,6 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 	{
 		NB_active_pdp();
 		NB_network_status();
-
 		/*if(reSend_msg == 1){
 		 NB_network_status();
 		 //delay_ms(1000);
@@ -340,7 +339,7 @@ void NB_network_status()
 void NB_define_pdp()
 {
 	res = AT_send(AT_CGDCONT, "", "OK");
-	delay_ms(500);
+	delay_ms(100);
 	if (res == 0)
 	{
 		PCprint("PDP context 1 defined\r\n");

@@ -39,7 +39,7 @@ lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
-volatile uint8_t wake = 5;
+volatile uint8_t wake = 0;
 volatile uint8_t NB_strReady = 0;
 volatile uint16_t NB_bufPtr = 0;
 
@@ -90,7 +90,7 @@ void configureSleepMode()
 	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
 	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; //!< Stop submode 1, for VLLS1/LLS1.
 
-	LLWU->ME |= 0x21; // enable LLWU wakeup source from LPTMR module and RTC alarm
+	LLWU->ME |= 0x20; // enable LLWU wakeup source from LPTMR module and RTC alarm
 	LLWU->PE2 |= 0x04; // enable LLWU wakeup source from accelerometer interrupt pin
 	// 0x20 for stock frdm pin enable,
 	LLWU->FILT1 |= 0x25; // set pin wakeup from rising edge, 0x2A for frdm
@@ -214,6 +214,14 @@ void printInterruptFlags()
 	PCprint(buf);
 }
 
+void blinkLed(uint16_t time)
+{
+	GPIO_ClearPinsOutput(GPIOA, 1<<4u);
+	delay_ms(time);
+	GPIO_SetPinsOutput(GPIOA, 1<<4u);
+	delay_ms(time);
+}
+
 int main(void)
 {
 
@@ -232,9 +240,17 @@ int main(void)
 
 	configureSleepMode();
 
+	static const gpio_pin_config_t LED_configOutput =
+	{ kGPIO_DigitalOutput, /* use as output pin */
+	1, /* initial value */
+	};
+	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//blue led as output
+
 	if (wake == 2) //wakeup by accelerometer
 	{
 		disableUartInterrupts();
+
+		blinkLed(50);
 
 		PCprint("Woken by ACCEL, reindeer is !!!ALIVE!!!\r\n");
 		initTimer();
@@ -292,11 +308,7 @@ int main(void)
 	struct reindeerData_t reindeerData; //create struct for our reindeer data that will be sent
 	char mqttMessage[450];
 
-	static const gpio_pin_config_t LED_configOutput =
-	{ kGPIO_DigitalOutput, /* use as output pin */
-	1, /* initial value */
-	};
-	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//blue led as output
+
 
 	GPIO_PinInit(GPIOA, 19u, &LED_configOutput);
 
@@ -347,11 +359,11 @@ int main(void)
 
 		while (true)
 		{
-			break;
+			//break;
 			if (!GPS_strReady) //Loop until get GPS coordinates
 			{
-				PCprint(GPS_recBuf);
-				PCprint("\r\n"); //First print out whole buffer
+				//PCprint(GPS_recBuf);
+				//PCprint("\r\n"); //First print out whole buffer
 
 				char testLat[12] = ("6500.02359");
 				char testLon[12] = ("02530.56951");
@@ -379,7 +391,7 @@ int main(void)
 
 		}
 
-		//break;
+		break;
 
 		if (PC_strReady)
 		{
@@ -498,10 +510,8 @@ int main(void)
 	 */
 
 	GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
-	delay_ms(500); //Wait until voltage stabilize
+	delay_ms(100); //Wait until voltage stabilize
 	NB_reboot();
-	delay_ms(50);
-
 	/*
 	 * Assemble data to json format and then to POST message
 	 */
@@ -510,6 +520,8 @@ int main(void)
 
 	NB_create_pdp_send(mqttMessage, msgLen);
 	PCprint("Roger include main.c\r\n");
+
+	AT_send("CFUN=0","","OK");
 
 	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power off RF modules
 
