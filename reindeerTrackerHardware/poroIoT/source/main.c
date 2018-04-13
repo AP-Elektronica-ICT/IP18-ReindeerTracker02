@@ -32,6 +32,8 @@
 #include "timing.h"
 
 #define RESPONSE_TIMEOUT_NORMAL_VALUE 2000
+#define TEMP_CHANNEL 1
+#define VOLTAGE_MEAS_CHANNEL 2
 
 #define LPTMR_TIMEOUT 8000
 
@@ -245,6 +247,22 @@ int main(void)
 	1, /* initial value */
 	};
 	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//blue led as output
+
+	initAdc();
+	while(1){
+		/*
+		int32_t temp = (65535 - ADC_read16b(TEMP_CHANNEL)) / 541 -60;
+		char buf[50];
+		sprintf(buf, "Temperature: %ld\r\n", temp);
+			PCprint(buf);
+			delay_ms(500);
+*/
+		char buf[50];
+				sprintf(buf, "Voltage: %d\r\n", ADC_read16b(VOLTAGE_MEAS_CHANNEL));
+					PCprint(buf);
+					delay_ms(500);
+
+	}
 
 	if (wake == 2) //wakeup by accelerometer
 	{
