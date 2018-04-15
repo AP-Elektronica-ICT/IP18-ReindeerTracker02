@@ -11,6 +11,7 @@
 
 uint8_t getGPS();
 
+void GPS_send(char *data, uint8_t len);
 
 void activateGPS();
 extern char GPS_recBuf[600];

@@ -7,8 +7,11 @@
 
 #include "timing.h"
 #include "fsl_rtc.h"
+#include "fsl_lptmr.h"
 
 volatile uint32_t ticks = 0;
+
+
 
 uint32_t millis()
 {
@@ -45,8 +48,7 @@ void rtcInit() {
 	DisableIRQ(RTC_IRQn);
 
 	CLOCK_EnableClock(kCLOCK_Rtc0);
-	RTC_DisableInterrupts(RTC, kRTC_AlarmInterruptEnable);
-	RTC_ClearStatusFlags(RTC, kRTC_AlarmFlag);
+
 	RTC_Reset(RTC);
 	RTC_Init(RTC, &rtc_config);
 
@@ -55,14 +57,37 @@ void rtcInit() {
 
 	RTC ->TAR = RTC_REPORT_INTERVAL;
 
-	RTC_EnableInterrupts(RTC, kRTC_AlarmInterruptEnable);
-	EnableIRQ(RTC_IRQn);
+	RTC ->TSR = 0;
+
+	RTC ->IER = 0x04;
 
 	RTC_StartTimer(RTC);
 
+	EnableIRQ(RTC_IRQn);
 }
 
 uint32_t rtcGetSeconds() {
 
 	return RTC -> TSR;
+}
+
+void initTimer()
+{
+
+	lptmr_config_t lptmr_config;
+
+	/*
+	 * Init dead reindeer timer. LPTIMER interrupt will wake up MCU after a certain time, IF accelerometer interrupt
+	 * has not waked it earlier (and reset the timer)
+	 */
+	LPTMR_GetDefaultConfig(&lptmr_config);
+	lptmr_config.bypassPrescaler = true;
+	lptmr_config.value = kLPTMR_Prescale_Glitch_0;
+	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_1;
+	LPTMR_Init(LPTMR0, &lptmr_config);
+
+	LPTMR_SetTimerPeriod(LPTMR0, LPTMR_TIMEOUT);  //set dead reindeer timeout period
+	NVIC_SetPriority(LPTMR0_IRQn,1);
+	EnableIRQ(LPTMR0_IRQn);
+
 }

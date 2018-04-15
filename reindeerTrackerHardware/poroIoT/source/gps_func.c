@@ -11,7 +11,23 @@
 
 #include "gps_func.h"
 #include "at_func.h"
+#include "fsl_uart.h"
 extern uint8_t PCprint(char *data);
+
+
+void GPS_send(char *data, uint8_t len)
+{
+	char c = *data++; //assign c a character from the string and post-increment string pointer
+	for (; len > 0; len--)
+	{ //loop until c is zero which means string has ended and no more chars has to be sent
+
+		while (!((UART2->S1) & 0x80))
+		{
+		} //wait until LPUART0 Transmission Complete flag rises, so we can send new char
+		UART2->D = c; //write new character to transmit buffer
+		c = *data++; //assign next character to c and post-increment string pointer
+	}
+}
 
 /*
  *

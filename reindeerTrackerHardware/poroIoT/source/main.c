@@ -30,12 +30,10 @@
 #include "ubx_func.h"
 #include "nbiot_func.h"
 #include "timing.h"
+#include "dbg_util.h"
 
-#define RESPONSE_TIMEOUT_NORMAL_VALUE 2000
+#define DEBUG_MODE 0
 
-#define LPTMR_TIMEOUT 8000
-
-lptmr_config_t lptmr_config;
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
@@ -59,45 +57,15 @@ char parsedLon[15];
 
 volatile uint32_t moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE; //timeout variable for waiting all data from module
 
-void initTimer()
-{
-
-	/*
-	 * Init dead reindeer timer. LPTIMER interrupt will wake up MCU after a certain time, IF accelerometer interrupt
-	 * has not waked it earlier (and reset the timer)
-	 */
-	LPTMR_GetDefaultConfig(&lptmr_config);
-	lptmr_config.bypassPrescaler = true;
-	lptmr_config.value = kLPTMR_Prescale_Glitch_0;
-	lptmr_config.prescalerClockSource = kLPTMR_PrescalerClock_1;
-	LPTMR_Init(LPTMR0, &lptmr_config);
-
-	LPTMR_SetTimerPeriod(LPTMR0, LPTMR_TIMEOUT);  //set dead reindeer timeout period
-	EnableIRQ(LPTMR0_IRQn);
-
-}
-
-void disableUartInterrupts()
-{
-	UART_DisableInterrupts(UART2, kUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from GPS
-	LPUART_DisableInterrupts(LPUART1, kLPUART_RxDataRegFullInterruptEnable); //enable UART0 receive interrupt to receive data from PC
-	LPUART_DisableInterrupts(LPUART0, kLPUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from NBiot
-
-}
-
 void configureSleepMode()
 {
 	SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
 	smc_power_mode_vlls_config.subMode = kSMC_StopSub1; //!< Stop submode 1, for VLLS1/LLS1.
-
 	LLWU->ME |= 0x20; // enable LLWU wakeup source from LPTMR module and RTC alarm
 	LLWU->PE2 |= 0x04; // enable LLWU wakeup source from accelerometer interrupt pin
-	// 0x20 for stock frdm pin enable,
-	LLWU->FILT1 |= 0x25; // set pin wakeup from rising edge, 0x2A for frdm
 }
 
 /*
- *
  * Init all needed UART buses. LPUART0 for NB-IoT, UART0 for PC, UART2 for GPS
  */
 
@@ -124,20 +92,18 @@ void initUART()
 	CLOCK_SetLpuart0Clock(0x3U);
 
 	LPUART_Init(LPUART0, &lpuart_config, lpuartClkSrcFreq); //Init LPUART0 for NBiot
-
+	LPUART_Init(LPUART1, &lpuart_config, lpuartClkSrcFreq); //Init LPUART1 for PCuart
 	UART_Init(UART2, &uart_config, uartClkSrcFreq); //UART2 for GPS with same settings!
 
-	lpuart_config.baudRate_Bps = 9600;
-
-	LPUART_Init(LPUART1, &lpuart_config, lpuartClkSrcFreq); //Init LPUART1 for PCuart
-
+	NVIC_SetPriority(LPUART0_IRQn, 2);
 	LPUART_EnableInterrupts(LPUART0, kLPUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from NBiot
-
 	EnableIRQ(LPUART0_IRQn);
 
+	NVIC_SetPriority(UART2_FLEXIO_IRQn, 3);
 	UART_EnableInterrupts(UART2, kUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from GPS
 	EnableIRQ(UART2_FLEXIO_IRQn);
 
+	NVIC_SetPriority(LPUART1_IRQn, 4);
 	LPUART_EnableInterrupts(LPUART1, kLPUART_RxDataRegFullInterruptEnable); //enable UART0 receive interrupt to receive data from PC
 	EnableIRQ(LPUART1_IRQn);
 
@@ -150,101 +116,39 @@ void deInit_Uart()
 	LPUART_Deinit(LPUART1);
 }
 
-/*
- * Send data to NBiot with LPUART0
- * String to be sent is pointed by *data
- *
- */
-
-void NB_send(char *data)
+void disableUartInterrupts()
 {
-	char c = *data++; //assign c a character from the string and post-increment string pointer
-	while (c)
-	{ //loop until c is zero which means string has ended and no more chars has to be sent
-
-		while (!((LPUART0->STAT) & kLPUART_TxDataRegEmptyFlag))
-		{
-		} //wait until LPUART0 Transmission Complete flag rises, so we can send new char
-		LPUART0->DATA = c; //write new character to transmit buffer
-		c = *data++; //assign next character to c and post-increment string pointer
-	}
-}
-
-void GPS_send(char *data, uint8_t len)
-{
-	char c = *data++; //assign c a character from the string and post-increment string pointer
-	for (; len > 0; len--)
-	{ //loop until c is zero which means string has ended and no more chars has to be sent
-
-		while (!((UART2->S1) & 0x80))
-		{
-		} //wait until LPUART0 Transmission Complete flag rises, so we can send new char
-		UART2->D = c; //write new character to transmit buffer
-		c = *data++; //assign next character to c and post-increment string pointer
-	}
-}
-
-uint8_t PCprint(char *data)
-{
-	char c;
-	uint8_t len = 0;
-	while ((c = *data++))
-	{
-		while (!(LPUART1->STAT & kLPUART_TxDataRegEmptyFlag));
-
-		LPUART1->DATA = c;
-		len++;
-	}
-	return len;
-}
-
-void printInterruptFlags()
-{
-	char buf[100];
-	CLOCK_EnableClock(kCLOCK_Lptmr0);
-	CLOCK_EnableClock(kCLOCK_Rtc0);
-	sprintf(buf, "rtc flags: %lx, lptmr flags: %lx, llwu pin flags: %x\r\n",
-	RTC->SR, LPTMR0->CSR, LLWU->F1);
-	PCprint(buf);
-	sprintf(buf, "rtc seconds: %ld\r\n", RTC->TSR);
-	PCprint(buf);
-
-	sprintf(buf, "uart2 flags: %x, lpuart1 flags: %lx, lpuart0 flags: %lx\r\n",
-			UART2 ->S1,LPUART1 ->STAT, LPUART0 ->STAT);
-	PCprint(buf);
-}
-
-void blinkLed(uint16_t time)
-{
-	GPIO_ClearPinsOutput(GPIOA, 1<<4u);
-	delay_ms(time);
-	GPIO_SetPinsOutput(GPIOA, 1<<4u);
-	delay_ms(time);
+	UART_DisableInterrupts(UART2, kUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from GPS
+	LPUART_DisableInterrupts(LPUART1, kLPUART_RxDataRegFullInterruptEnable); //enable UART0 receive interrupt to receive data from PC
+	LPUART_DisableInterrupts(LPUART0, kLPUART_RxDataRegFullInterruptEnable); //enable LPUART0 receive interrupt to receive data from NBiot
 }
 
 int main(void)
 {
 
+	NVIC_SetPriority(LLWU_IRQn, 0);
+	NVIC_EnableIRQ(LLWU_IRQn); //enable LLWU interrupts. if we wake up from VLLS mode, it means that next MCU
+	//will jump to the LLWU interrupt vector
 	PMC->REGSC |= 0x08;	//acknowledge wake up to voltage regulator module, this is needed with LLWU wake up
-	NVIC_EnableIRQ(LLWU_IRQn);//enable LLWU interrupts. if we wake up from VLLS mode, it means that next MCU
-							  //will jump to the LLWU interrupt vector
 
 	BOARD_InitPins();	//init all physical pins
 	BOARD_BootClockVLPR(); //by uncommenting this we can use FRDM 50Mhz external clock, but will not work with modified board
 
 	SysTick_Config(BOARD_DEBUG_UART_CLK_FREQ / 1000); //setup SysTick timer for 1ms interval for delay functions(see timing.h)
-	delay_ms(10);
-
-	initUART();
-	EnableIRQ(RTC_IRQn);
+	NVIC_SetPriority(SysTick_IRQn, 6);
 
 	configureSleepMode();
+	initUART();
+	NVIC_SetPriority(RTC_IRQn, 5);
+	//EnableIRQ(RTC_IRQn);
 
 	static const gpio_pin_config_t LED_configOutput =
 	{ kGPIO_DigitalOutput, /* use as output pin */
 	1, /* initial value */
 	};
-	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//blue led as output
+	GPIO_PinInit(GPIOA, 4u, &LED_configOutput);	//Indicator led as output
+
+#if DEBUG_MODE == 0
 
 	if (wake == 2) //wakeup by accelerometer
 	{
@@ -254,8 +158,8 @@ int main(void)
 
 		PCprint("Woken by ACCEL, reindeer is !!!ALIVE!!!\r\n");
 		initTimer();
-		LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable); //Sets Timer Interrupt Enable bit to 1
-		LPTMR_StartTimer(LPTMR0);
+		//LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable); //Sets Timer Interrupt Enable bit to 1
+		//LPTMR_StartTimer(LPTMR0);
 
 		SMC_PreEnterStopModes();
 		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
@@ -275,6 +179,7 @@ int main(void)
 	{
 
 		initI2C();
+		delay_ms(10);
 		configure_acc();
 		acc_init();
 		rtcInit();
@@ -282,7 +187,7 @@ int main(void)
 
 		PCprint("wake was 0 going to sleep\r\n");
 
-		LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable); //Sets Timer Interrupt Enable bit to 1
+		//LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable); //Sets Timer Interrupt Enable bit to 1
 		LPTMR_StartTimer(LPTMR0);
 
 		SMC_PreEnterStopModes();
@@ -305,10 +210,10 @@ int main(void)
 		CLOCK_EnableClock(kCLOCK_Lptmr0);
 	}
 
+#endif
+
 	struct reindeerData_t reindeerData; //create struct for our reindeer data that will be sent
 	char mqttMessage[450];
-
-
 
 	GPIO_PinInit(GPIOA, 19u, &LED_configOutput);
 
@@ -319,11 +224,9 @@ int main(void)
 
 	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power off RF modules
 
+	blinkLed(2000);
 	PCprint(
-			"Reindeer IoT has started\r\nCommand \"iot\" to start executing reindeer track cycle\r\n"
-					"Command \"gpsinfo=1\" or \"gpsinfo=0\" to switch GPS data on/off\r\n");
-	PCprint(
-			"Or enter normal AT commands here for SARA-N2\r\nModules powered on and booting now!\r\n");
+			"Reindeer IoT is reset \r\n");
 
 	/*
 	 * Copy all reindeer variables to struct before starting network operations
@@ -347,157 +250,59 @@ int main(void)
 		strcpy(reindeerData.dead, "true");
 	}
 
-	reindeerData.batteryLevel = 45;
+	reindeerData.batteryLevel = 73;
 	PCprint("entering while loop\r\n");
+
+#if DEBUG_MODE == 1
+
+	PCprint(
+			"On debug mode, commands: rfon, rfoff, iot, gpsinfo=1, gpsinfo=0, AT commands\r\n");
 
 	while (1)
 	{
 
-		/*
-		 * Check if a string has arrived from PC (with CR line end)
-		 */
+		//Check if a string has arrived from PC (with CR line end)
 
-		while (true)
+		uint8_t cmd = checkPcInputAndProcess(PC_recBuf);
+		checkNBDataAndPrint(NB_recBuf);
+		checkGPSDataAndPrint(GPS_recBuf);
+
+		if (cmd == 1)
+			{
+				strcpy(reindeerData.dead, "false");
+				break; //if PC commanded "iot" then break and start sending
+			}
+	}
+
+#else
+
+	while (true)
+	{
+
+		if (!GPS_strReady) //Loop until get GPS coordinates
 		{
-			//break;
-			if (!GPS_strReady) //Loop until get GPS coordinates
-			{
-				//PCprint(GPS_recBuf);
-				//PCprint("\r\n"); //First print out whole buffer
+			//PCprint(GPS_recBuf);
+			//PCprint("\r\n"); //First print out whole buffer
 
-				char testLat[12] = ("6500.02359");
-				char testLon[12] = ("02530.56951");
+			char testLat[12] = ("6500.02359");
+			char testLon[12] = ("02530.56951");
 
-				parseData(testLat, testLon);
+			parseData(testLat, testLon);
 
-				strcpy(reindeerData.latitude, testLat);
-				strcpy(reindeerData.longitude, testLon);
+			strcpy(reindeerData.latitude, testLat);
+			strcpy(reindeerData.longitude, testLon);
 
-				break; //For test purpose break away without real GPS coordinates
-
-				if (getGPS())
-				{
-
-					parseData(testLat, testLon);
-
-					strcpy(reindeerData.latitude, parsedLat);
-					strcpy(reindeerData.longitude, parsedLon);
-					break;
-				}
-				memset(GPS_recBuf, 0, 600);
-				GPS_bufPtr = 0;
-				GPS_strReady = 0;
-			}
-
-		}
-
-		break;
-
-		if (PC_strReady)
-		{
-
-			if (strstr(PC_recBuf, "iot") != NULL)
-			{
-				PCprint("Starting Reindeer IoT cycle\r\n");
-				break;
-			}
-			else if (strstr(PC_recBuf, "gpsinfo=1") != NULL)
-			{
-				streamGps = 1;
-				GPIO_ClearPinsOutput(GPIOA, 1 << 19u);
-			}
-			else if (strstr(PC_recBuf, "gpsinfo=0") != NULL)
-			{
-				streamGps = 0;
-				GPIO_SetPinsOutput(GPIOA, 1 << 19u);
-			}
-			else if (strstr(PC_recBuf, "rfoff") != NULL)
-			{
-				GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power off RF modules
-			}
-			else if (strstr(PC_recBuf, "rfon") != NULL)
-			{
-				GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
-			}
-			else if (strstr(PC_recBuf, "\xb5\x62") != NULL) //if input is UBX command!
-			{
-				PCprint("send to gps\r\n");
-				uint8_t ubxMsgLen = calcUbxCrc(PC_recBuf + 2); //Calculate UBX checksum and add it to the message
-				GPS_send(PC_recBuf, ubxMsgLen); //Send UBX message to module
-			}
-			else
-			{
-
-				NB_send(PC_recBuf);
-
-			}
-			memset(PC_recBuf, 0, strlen(PC_recBuf));
-			PC_strReady = 0;
-			PC_bufPtr = 0;
-		}
-
-		if (NB_strReady)
-		{
-			moduleResponseTimeout = millis() + RESPONSE_TIMEOUT_NORMAL_VALUE; //reset timeout to initial value
-
-			while (millis() < moduleResponseTimeout)
-
-			{
-
-				if (breakIfAtOk())
-				{
-					break;
-				}
-
-			}
-
-			//now the timeout has expired since last character had arrived, so we can process data
-
-			PCprint(NB_recBuf);
-			PCprint("\r\n");
-			memset(NB_recBuf, 0, 500);
-			NB_bufPtr = 0;
-			NB_strReady = 0;
-		}
-
-		/*
-		 * If GPS string is ready and GPS data streaming is enabled, enter here to process GPS data buffer
-		 */
-		if (GPS_strReady && streamGps)
-		{
-
-			PCprint(GPS_recBuf);
-			PCprint("\r\n"); //First print out whole buffer
+			break;//For test purpose break away without real GPS coordinates
 
 			if (getGPS())
 			{
-				//char testLat[12] = ("6500.02359");
-				//char testLon[12] = ("02530.56951");
 
-				//parseData(testLat,testLon);
+				parseData(testLat, testLon);
 
 				strcpy(reindeerData.latitude, parsedLat);
 				strcpy(reindeerData.longitude, parsedLon);
 				break;
 			}
-
-			//PCprint("Parsed latitude: %s\r\n", reindeerData.latitude);
-			//PCprint("Parsed longitude: %s\r\n", reindeerData.longitude);
-
-			char* ubxResponseStartPtr = strstr(GPS_recBuf, "\xb5\x62"); //Find pointer to UBX header. If there is no UBX response, pointer
-																		//will be NULL
-
-			if (ubxResponseStartPtr != NULL) //If pointer is not null, it means UBX response header is found
-			{
-				PCprint("Found UBX response\r\n");
-
-				uint8_t responseLength = *(ubxResponseStartPtr + 4); //Find out UBX response length, it is always the 5th byte
-																	 //from beginning of the packet.
-				printUbxResponseHex(ubxResponseStartPtr,
-						responseLength + 6 + 2); //Print UBX response message. Function wants to know
-				//how many chars to print. We must add 6+2 to print header and crc too
-			}
-
 			memset(GPS_recBuf, 0, 600);
 			GPS_bufPtr = 0;
 			GPS_strReady = 0;
@@ -505,36 +310,29 @@ int main(void)
 
 	}
 
-	/*
-	 * Start data sending
-	 */
+#endif
+
+	//Start data sending
 
 	GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
 	delay_ms(100); //Wait until voltage stabilize
-	NB_reboot();
-	/*
-	 * Assemble data to json format and then to POST message
-	 */
+
+	//Assemble data to json format and then to MQTT message
 
 	uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);
 
 	NB_create_pdp_send(mqttMessage, msgLen);
 	PCprint("Roger include main.c\r\n");
 
-	AT_send("CFUN=0","","OK");
-
+	AT_send("CFUN=0", "", "OK");
+	delay_ms(500);
 	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power off RF modules
 
 	/*
 	 * Message sending is done and rf modules powered off
-	 *
 	 * If we just sent weekly report then we must have lptmr and rtc running
-	 *
 	 * If sent dead reindeer then se on siinä
-	 */
 
-
-	/*
 	 * Reset LPTIMER so it starts from zero when device goes to sleep
 	 * this prevents LPTIMER too early interrupt because it was already counting
 	 */
@@ -554,8 +352,11 @@ int main(void)
 
 	while (1)
 	{
-		PCprint("sss\r\n");
+		PCprint("Failed to enter stop mode, retrying\r\n");
 		delay_ms(1000);
+		SMC_PreEnterStopModes();
+		SMC_SetPowerModeVlls(SMC, &smc_power_mode_vlls_config);
+		SMC_PostExitStopModes();
 	}
 }
 
@@ -575,7 +376,7 @@ void LLWU_IRQHandler()
 	{
 		wake = 3;
 		CLOCK_EnableClock(kCLOCK_Rtc0); //enable RTC bus clock so we can write registers
-		RTC->TAR = 0x1f; //write to alarm register to clear interrupt flag
+		RTC->TAR = RTC_REPORT_INTERVAL; //write to alarm register to clear interrupt flag
 	}
 
 	else if ( LLWU->F1 & 0x20)
@@ -583,18 +384,18 @@ void LLWU_IRQHandler()
 
 		wake = 2;
 		LLWU->F1 |= 0x20;
+		LLWU->FILT1 |= 0x80;
+		while (LLWU->F1 & 0x20)
+			;
 	}
 
-	LLWU->F1 = 0x20;
 }
 
 void LPUART0_IRQHandler()
 {
-
 	uint8_t uartData = LPUART0->DATA;
 	if (uartData != 0)
 	{
-
 		NB_recBuf[NB_bufPtr] = uartData;
 		NB_bufPtr++;
 
@@ -603,16 +404,13 @@ void LPUART0_IRQHandler()
 			NB_strReady = 1;
 			//NB_bufPtr = 0;
 		}
-
 	}
-
 }
 
 void UART2_FLEXIO_IRQHandler()
 {
 
 	UART_ClearStatusFlags(UART2, kUART_RxDataRegFullFlag);
-
 	uint8_t uartData = UART2->D;
 
 	/*
@@ -628,7 +426,6 @@ void UART2_FLEXIO_IRQHandler()
 		GPS_recBuf[GPS_bufPtr] = uartData; //put new byte to buffer
 		GPS_bufPtr++;
 	}
-
 	/*
 	 * When buffer is almost full, put strReady high and stop filling it
 	 */
@@ -641,10 +438,7 @@ void UART2_FLEXIO_IRQHandler()
 
 void LPUART1_IRQHandler()
 {
-
 	uint8_t uartData = LPUART1->DATA;
-	//GPIO_PortToggle(GPIOA, 1 << 4u);
-
 	PC_recBuf[PC_bufPtr] = uartData;
 	PC_bufPtr++;
 
@@ -652,7 +446,6 @@ void LPUART1_IRQHandler()
 	{
 		PC_strReady = 1;
 		PC_bufPtr = 0;
-
 	}
 }
 
@@ -669,17 +462,20 @@ void LPTMR0_IRQHandler()
 
 void RTC_IRQHandler()
 {
-	wake = 3;
+
 	CLOCK_EnableClock(kCLOCK_Rtc0);
 
 	RTC->SR &= ~0x10;	//disable counter for resetting TSR
 	RTC->TSR = 0;		//reset TSR
-	RTC->TAR = RTC_REPORT_INTERVAL; //clear interrupt flag by writing to TAR
 
-	RTC->SR |= 0x10; //enable counter
-
-	while (RTC->SR & 0x04) //wait until interrupt flag is cleared
+	if (RTC->SR & 0x04)
 	{
+		wake = 3;
+		RTC->TAR = RTC_REPORT_INTERVAL; //clear interrupt flag by writing to TAR
+		while (RTC->SR & 0x04) //wait until interrupt flag is cleared
+		{
+		}
 	}
 
+	RTC->SR |= 0x10; //enable counter
 }
