@@ -10,7 +10,7 @@
 
 extern uint8_t res;
 
-void NB_setPin();
+uint8_t NB_setPin();
 void NB_reboot();
 void NB_cops_register();
 void NB_cops_deRegister();

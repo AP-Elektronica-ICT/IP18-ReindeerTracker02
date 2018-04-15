@@ -718,63 +718,60 @@
  139:../drivers/fsl_i2c_edma.c ****     if (!(i2cPrivateHandle->handle->transfer.flags & kI2C_TransferNoStopFlag))
   52              		.loc 1 139 0
   53 000c 4B68     		ldr	r3, [r1, #4]
-  54 000e 1A68     		ldr	r2, [r3]
-  55              	.LVL4:
-  56 0010 12F0040F 		tst	r2, #4
  131:../drivers/fsl_i2c_edma.c ****     i2c_master_edma_private_handle_t *i2cPrivateHandle = (i2c_master_edma_private_handle_t *)userDa
-  57              		.loc 1 131 0
-  58 0014 0C46     		mov	r4, r1
-  59 0016 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
-  60              		.loc 1 139 0
-  61 0018 24D1     		bne	.L2
+  54              		.loc 1 131 0
+  55 000e 0C46     		mov	r4, r1
+  56              		.loc 1 139 0
+  57 0010 1968     		ldr	r1, [r3]
+  58              	.LVL4:
+  59 0012 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+  60              	.LVL5:
+  61 0014 4E07     		lsls	r6, r1, #29
+  62 0016 24D4     		bmi	.L2
  140:../drivers/fsl_i2c_edma.c ****     {
  141:../drivers/fsl_i2c_edma.c ****         if (i2cPrivateHandle->handle->transfer.direction == kI2C_Read)
-  62              		.loc 1 141 0
-  63 001a 012A     		cmp	r2, #1
-  64 001c 1CD1     		bne	.L9
+  63              		.loc 1 141 0
+  64 0018 012A     		cmp	r2, #1
+  65 001a 1CD1     		bne	.L3
  142:../drivers/fsl_i2c_edma.c ****         {
  143:../drivers/fsl_i2c_edma.c ****             /* Change to send NAK at the last byte. */
  144:../drivers/fsl_i2c_edma.c ****             i2cPrivateHandle->base->C1 |= I2C_C1_TXAK_MASK;
-  65              		.loc 1 144 0
-  66 001e 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
-  67 0020 43F00803 		orr	r3, r3, #8
-  68 0024 8370     		strb	r3, [r0, #2]
-  69              	.L4:
+  66              		.loc 1 144 0
+  67 001c 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+  68 001e 43F00803 		orr	r3, r3, #8
+  69 0022 8370     		strb	r3, [r0, #2]
+  70              	.L4:
  145:../drivers/fsl_i2c_edma.c **** 
  146:../drivers/fsl_i2c_edma.c ****             /* Wait the last data to be received. */
  147:../drivers/fsl_i2c_edma.c ****             while (!(i2cPrivateHandle->base->S & kI2C_TransferCompleteFlag))
-  70              		.loc 1 147 0 discriminator 1
-  71 0026 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
-  72 0028 1D06     		lsls	r5, r3, #24
-  73 002a FCD5     		bpl	.L4
+  71              		.loc 1 147 0 discriminator 1
+  72 0024 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+  73 0026 1D06     		lsls	r5, r3, #24
+  74 0028 FCD5     		bpl	.L4
  148:../drivers/fsl_i2c_edma.c ****             {
  149:../drivers/fsl_i2c_edma.c ****             }
  150:../drivers/fsl_i2c_edma.c **** 
  151:../drivers/fsl_i2c_edma.c ****             /* Send stop signal. */
  152:../drivers/fsl_i2c_edma.c ****             result = I2C_MasterStop(i2cPrivateHandle->base);
-  74              		.loc 1 152 0
-  75 002c FFF7FEFF 		bl	I2C_MasterStop
-  76              	.LVL5:
+  75              		.loc 1 152 0
+  76 002a FFF7FEFF 		bl	I2C_MasterStop
+  77              	.LVL6:
  153:../drivers/fsl_i2c_edma.c **** 
  154:../drivers/fsl_i2c_edma.c ****             /* Read the last data byte. */
  155:../drivers/fsl_i2c_edma.c ****             *(i2cPrivateHandle->handle->transfer.data + i2cPrivateHandle->handle->transfer.dataSize
-  77              		.loc 1 155 0
-  78 0030 6268     		ldr	r2, [r4, #4]
-  79 0032 1369     		ldr	r3, [r2, #16]
-  80 0034 5169     		ldr	r1, [r2, #20]
+  78              		.loc 1 155 0
+  79 002e D4E90052 		ldrd	r5, r2, [r4]
+  80 0032 1369     		ldr	r3, [r2, #16]
+  81 0034 5169     		ldr	r1, [r2, #20]
  156:../drivers/fsl_i2c_edma.c ****                 i2cPrivateHandle->base->D;
-  81              		.loc 1 156 0
-  82 0036 2268     		ldr	r2, [r4]
+  82              		.loc 1 156 0
+  83 0036 2A79     		ldrb	r2, [r5, #4]	@ zero_extendqisi2
  155:../drivers/fsl_i2c_edma.c ****                 i2cPrivateHandle->base->D;
-  83              		.loc 1 155 0
-  84 0038 0B44     		add	r3, r3, r1
-  85              		.loc 1 156 0
-  86 003a 1279     		ldrb	r2, [r2, #4]	@ zero_extendqisi2
- 155:../drivers/fsl_i2c_edma.c ****                 i2cPrivateHandle->base->D;
-  87              		.loc 1 155 0
-  88 003c 03F8012C 		strb	r2, [r3, #-1]
-  89              	.LVL6:
-  90              	.L5:
+  84              		.loc 1 155 0
+  85 0038 0B44     		add	r3, r3, r1
+  86 003a 03F8012C 		strb	r2, [r3, #-1]
+  87              	.LVL7:
+  88              	.L5:
  157:../drivers/fsl_i2c_edma.c ****         }
  158:../drivers/fsl_i2c_edma.c ****         else
  159:../drivers/fsl_i2c_edma.c ****         {
@@ -809,107 +806,107 @@
  188:../drivers/fsl_i2c_edma.c ****     }
  189:../drivers/fsl_i2c_edma.c **** 
  190:../drivers/fsl_i2c_edma.c ****     i2cPrivateHandle->handle->state = kIdleState;
-  91              		.loc 1 190 0
-  92 0040 6168     		ldr	r1, [r4, #4]
+  89              		.loc 1 190 0
+  90 003e 6168     		ldr	r1, [r4, #4]
  191:../drivers/fsl_i2c_edma.c **** 
  192:../drivers/fsl_i2c_edma.c ****     if (i2cPrivateHandle->handle->completionCallback)
-  93              		.loc 1 192 0
-  94 0042 4D6A     		ldr	r5, [r1, #36]
+  91              		.loc 1 192 0
+  92 0040 4D6A     		ldr	r5, [r1, #36]
  190:../drivers/fsl_i2c_edma.c **** 
-  95              		.loc 1 190 0
-  96 0044 0023     		movs	r3, #0
-  97 0046 4B77     		strb	r3, [r1, #29]
-  98              		.loc 1 192 0
-  99 0048 0DB3     		cbz	r5, .L1
+  93              		.loc 1 190 0
+  94 0042 0023     		movs	r3, #0
+  95 0044 4B77     		strb	r3, [r1, #29]
+  96              		.loc 1 192 0
+  97 0046 0DB3     		cbz	r5, .L1
  193:../drivers/fsl_i2c_edma.c ****     {
  194:../drivers/fsl_i2c_edma.c ****         i2cPrivateHandle->handle->completionCallback(i2cPrivateHandle->base, i2cPrivateHandle->hand
- 100              		.loc 1 194 0
- 101 004a 0246     		mov	r2, r0
- 102 004c AC46     		mov	ip, r5
- 103 004e 2068     		ldr	r0, [r4]
- 104              	.LVL7:
- 105 0050 8B6A     		ldr	r3, [r1, #40]
+  98              		.loc 1 194 0
+  99 0048 0246     		mov	r2, r0
+ 100 004a AC46     		mov	ip, r5
+ 101 004c 2068     		ldr	r0, [r4]
+ 102              	.LVL8:
+ 103 004e 8B6A     		ldr	r3, [r1, #40]
  195:../drivers/fsl_i2c_edma.c ****                                                      i2cPrivateHandle->handle->userData);
  196:../drivers/fsl_i2c_edma.c ****     }
  197:../drivers/fsl_i2c_edma.c **** }
- 106              		.loc 1 197 0
- 107 0052 BDE87040 		pop	{r4, r5, r6, lr}
- 108              		.cfi_remember_state
- 109              		.cfi_restore 14
- 110              		.cfi_restore 6
- 111              		.cfi_restore 5
- 112              		.cfi_restore 4
- 113              		.cfi_def_cfa_offset 0
- 114              	.LVL8:
+ 104              		.loc 1 197 0
+ 105 0050 BDE87040 		pop	{r4, r5, r6, lr}
+ 106              		.cfi_remember_state
+ 107              		.cfi_restore 14
+ 108              		.cfi_restore 6
+ 109              		.cfi_restore 5
+ 110              		.cfi_restore 4
+ 111              		.cfi_def_cfa_offset 0
+ 112              	.LVL9:
  194:../drivers/fsl_i2c_edma.c ****                                                      i2cPrivateHandle->handle->userData);
- 115              		.loc 1 194 0
- 116 0056 6047     		bx	ip	@ indirect register sibling call
- 117              	.LVL9:
- 118              	.L9:
- 119              		.cfi_restore_state
+ 113              		.loc 1 194 0
+ 114 0054 6047     		bx	ip	@ indirect register sibling call
+ 115              	.LVL10:
+ 116              	.L3:
+ 117              		.cfi_restore_state
  161:../drivers/fsl_i2c_edma.c ****             {
- 120              		.loc 1 161 0 discriminator 1
- 121 0058 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
- 122 005a 1906     		lsls	r1, r3, #24
- 123 005c FCD5     		bpl	.L9
+ 118              		.loc 1 161 0 discriminator 1
+ 119 0056 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 120 0058 1906     		lsls	r1, r3, #24
+ 121 005a FCD5     		bpl	.L3
  166:../drivers/fsl_i2c_edma.c ****         }
- 124              		.loc 1 166 0
- 125 005e FFF7FEFF 		bl	I2C_MasterStop
- 126              	.LVL10:
- 127 0062 EDE7     		b	.L5
- 128              	.LVL11:
- 129              	.L2:
+ 122              		.loc 1 166 0
+ 123 005c FFF7FEFF 		bl	I2C_MasterStop
+ 124              	.LVL11:
+ 125 0060 EDE7     		b	.L5
+ 126              	.LVL12:
+ 127              	.L2:
  171:../drivers/fsl_i2c_edma.c ****         {
- 130              		.loc 1 171 0
- 131 0064 012A     		cmp	r2, #1
- 132 0066 10D1     		bne	.L8
+ 128              		.loc 1 171 0
+ 129 0062 012A     		cmp	r2, #1
+ 130 0064 10D1     		bne	.L8
  174:../drivers/fsl_i2c_edma.c **** 
- 133              		.loc 1 174 0
- 134 0068 8278     		ldrb	r2, [r0, #2]	@ zero_extendqisi2
- 135 006a 42F00802 		orr	r2, r2, #8
- 136 006e 8270     		strb	r2, [r0, #2]
- 137              	.L6:
+ 131              		.loc 1 174 0
+ 132 0066 8278     		ldrb	r2, [r0, #2]	@ zero_extendqisi2
+ 133 0068 42F00802 		orr	r2, r2, #8
+ 134 006c 8270     		strb	r2, [r0, #2]
+ 135              	.L6:
  177:../drivers/fsl_i2c_edma.c ****             {
- 138              		.loc 1 177 0 discriminator 1
- 139 0070 C278     		ldrb	r2, [r0, #3]	@ zero_extendqisi2
- 140 0072 1206     		lsls	r2, r2, #24
- 141 0074 FCD5     		bpl	.L6
+ 136              		.loc 1 177 0 discriminator 1
+ 137 006e C278     		ldrb	r2, [r0, #3]	@ zero_extendqisi2
+ 138 0070 1206     		lsls	r2, r2, #24
+ 139 0072 FCD5     		bpl	.L6
  182:../drivers/fsl_i2c_edma.c **** 
- 142              		.loc 1 182 0
- 143 0076 8278     		ldrb	r2, [r0, #2]	@ zero_extendqisi2
- 144 0078 42F01002 		orr	r2, r2, #16
- 145 007c 8270     		strb	r2, [r0, #2]
+ 140              		.loc 1 182 0
+ 141 0074 8278     		ldrb	r2, [r0, #2]	@ zero_extendqisi2
+ 142 0076 42F01002 		orr	r2, r2, #16
+ 143 007a 8270     		strb	r2, [r0, #2]
  185:../drivers/fsl_i2c_edma.c ****                 i2cPrivateHandle->base->D;
- 146              		.loc 1 185 0
- 147 007e 1A69     		ldr	r2, [r3, #16]
- 148 0080 5B69     		ldr	r3, [r3, #20]
+ 144              		.loc 1 185 0
+ 145 007c 1A69     		ldr	r2, [r3, #16]
+ 146 007e 5B69     		ldr	r3, [r3, #20]
  186:../drivers/fsl_i2c_edma.c ****         }
- 149              		.loc 1 186 0
- 150 0082 0179     		ldrb	r1, [r0, #4]	@ zero_extendqisi2
- 151              	.LVL12:
+ 147              		.loc 1 186 0
+ 148 0080 0179     		ldrb	r1, [r0, #4]	@ zero_extendqisi2
  185:../drivers/fsl_i2c_edma.c ****                 i2cPrivateHandle->base->D;
- 152              		.loc 1 185 0
- 153 0084 1344     		add	r3, r3, r2
- 154 0086 03F8011C 		strb	r1, [r3, #-1]
- 155              	.L8:
+ 149              		.loc 1 185 0
+ 150 0082 1344     		add	r3, r3, r2
+ 151 0084 03F8011C 		strb	r1, [r3, #-1]
+ 152              	.L8:
  133:../drivers/fsl_i2c_edma.c **** 
- 156              		.loc 1 133 0
- 157 008a 0020     		movs	r0, #0
- 158 008c D8E7     		b	.L5
- 159              	.LVL13:
- 160              	.L1:
- 161 008e 70BD     		pop	{r4, r5, r6, pc}
- 162              		.cfi_endproc
- 163              	.LFE163:
- 165              		.section	.text.I2C_MasterCreateEDMAHandle,"ax",%progbits
- 166              		.align	1
- 167              		.global	I2C_MasterCreateEDMAHandle
- 168              		.syntax unified
- 169              		.thumb
- 170              		.thumb_func
- 171              		.fpu fpv4-sp-d16
- 173              	I2C_MasterCreateEDMAHandle:
- 174              	.LFB167:
+ 153              		.loc 1 133 0
+ 154 0088 0020     		movs	r0, #0
+ 155 008a D8E7     		b	.L5
+ 156              	.LVL13:
+ 157              	.L1:
+ 158              		.loc 1 197 0
+ 159 008c 70BD     		pop	{r4, r5, r6, pc}
+ 160              		.cfi_endproc
+ 161              	.LFE163:
+ 163              		.section	.text.I2C_MasterCreateEDMAHandle,"ax",%progbits
+ 164              		.align	1
+ 165              		.global	I2C_MasterCreateEDMAHandle
+ 166              		.syntax unified
+ 167              		.thumb
+ 168              		.thumb_func
+ 169              		.fpu fpv4-sp-d16
+ 171              	I2C_MasterCreateEDMAHandle:
+ 172              	.LFB167:
  198:../drivers/fsl_i2c_edma.c **** 
  199:../drivers/fsl_i2c_edma.c **** static status_t I2C_CheckAndClearError(I2C_Type *base, uint32_t status)
  200:../drivers/fsl_i2c_edma.c **** {
@@ -1112,49 +1109,49 @@
  397:../drivers/fsl_i2c_edma.c ****                                 void *userData,
  398:../drivers/fsl_i2c_edma.c ****                                 edma_handle_t *edmaHandle)
  399:../drivers/fsl_i2c_edma.c **** {
- 175              		.loc 1 399 0
- 176              		.cfi_startproc
- 177              		@ args = 4, pretend = 0, frame = 0
- 178              		@ frame_needed = 0, uses_anonymous_args = 0
- 179              	.LVL14:
- 180 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
- 181              		.cfi_def_cfa_offset 32
- 182              		.cfi_offset 3, -32
- 183              		.cfi_offset 4, -28
- 184              		.cfi_offset 5, -24
- 185              		.cfi_offset 6, -20
- 186              		.cfi_offset 7, -16
- 187              		.cfi_offset 8, -12
- 188              		.cfi_offset 9, -8
- 189              		.cfi_offset 14, -4
- 190              		.loc 1 399 0
- 191 0004 089D     		ldr	r5, [sp, #32]
- 192 0006 0C46     		mov	r4, r1
- 193 0008 9146     		mov	r9, r2
- 194 000a 9846     		mov	r8, r3
- 195 000c 0746     		mov	r7, r0
+ 173              		.loc 1 399 0
+ 174              		.cfi_startproc
+ 175              		@ args = 4, pretend = 0, frame = 0
+ 176              		@ frame_needed = 0, uses_anonymous_args = 0
+ 177              	.LVL14:
+ 178 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 179              		.cfi_def_cfa_offset 32
+ 180              		.cfi_offset 3, -32
+ 181              		.cfi_offset 4, -28
+ 182              		.cfi_offset 5, -24
+ 183              		.cfi_offset 6, -20
+ 184              		.cfi_offset 7, -16
+ 185              		.cfi_offset 8, -12
+ 186              		.cfi_offset 9, -8
+ 187              		.cfi_offset 14, -4
+ 188              		.loc 1 399 0
+ 189 0004 089D     		ldr	r5, [sp, #32]
+ 190 0006 0C46     		mov	r4, r1
+ 191 0008 9146     		mov	r9, r2
+ 192 000a 9846     		mov	r8, r3
+ 193 000c 0746     		mov	r7, r0
  400:../drivers/fsl_i2c_edma.c ****     assert(handle);
  401:../drivers/fsl_i2c_edma.c ****     assert(edmaHandle);
  402:../drivers/fsl_i2c_edma.c **** 
  403:../drivers/fsl_i2c_edma.c ****     uint32_t instance = I2C_GetInstance(base);
- 196              		.loc 1 403 0
- 197 000e FFF7FEFF 		bl	I2C_GetInstance
- 198              	.LVL15:
+ 194              		.loc 1 403 0
+ 195 000e FFF7FEFF 		bl	I2C_GetInstance
+ 196              	.LVL15:
  404:../drivers/fsl_i2c_edma.c **** 
  405:../drivers/fsl_i2c_edma.c ****     /* Zero handle. */
  406:../drivers/fsl_i2c_edma.c ****     memset(handle, 0, sizeof(*handle));
- 199              		.loc 1 406 0
- 200 0012 2C22     		movs	r2, #44
+ 197              		.loc 1 406 0
+ 198 0012 2022     		movs	r2, #32
  403:../drivers/fsl_i2c_edma.c **** 
- 201              		.loc 1 403 0
- 202 0014 0646     		mov	r6, r0
- 203              	.LVL16:
- 204              		.loc 1 406 0
- 205 0016 0021     		movs	r1, #0
- 206 0018 2046     		mov	r0, r4
- 207              	.LVL17:
- 208 001a FFF7FEFF 		bl	memset
- 209              	.LVL18:
+ 199              		.loc 1 403 0
+ 200 0014 0646     		mov	r6, r0
+ 201              	.LVL16:
+ 202              		.loc 1 406 0
+ 203 0016 0021     		movs	r1, #0
+ 204 0018 2046     		mov	r0, r4
+ 205              	.LVL17:
+ 206 001a FFF7FEFF 		bl	memset
+ 207              	.LVL18:
  407:../drivers/fsl_i2c_edma.c **** 
  408:../drivers/fsl_i2c_edma.c ****     /* Set the user callback and userData. */
  409:../drivers/fsl_i2c_edma.c ****     handle->completionCallback = callback;
@@ -1167,342 +1164,273 @@
  416:../drivers/fsl_i2c_edma.c ****     handle->dmaHandle = edmaHandle;
  417:../drivers/fsl_i2c_edma.c **** 
  418:../drivers/fsl_i2c_edma.c ****     s_edmaPrivateHandle[instance].base = base;
- 210              		.loc 1 418 0
- 211 001e 084A     		ldr	r2, .L14
- 409:../drivers/fsl_i2c_edma.c ****     handle->userData = userData;
- 212              		.loc 1 409 0
- 213 0020 C4F82490 		str	r9, [r4, #36]
- 214              		.loc 1 418 0
- 215 0024 42F83670 		str	r7, [r2, r6, lsl #3]
- 419:../drivers/fsl_i2c_edma.c ****     s_edmaPrivateHandle[instance].handle = handle;
- 216              		.loc 1 419 0
- 217 0028 02EBC602 		add	r2, r2, r6, lsl #3
- 410:../drivers/fsl_i2c_edma.c **** 
- 218              		.loc 1 410 0
- 219 002c C4F82880 		str	r8, [r4, #40]
+ 208              		.loc 1 418 0
+ 209 001e 074A     		ldr	r2, .L14
  416:../drivers/fsl_i2c_edma.c **** 
- 220              		.loc 1 416 0
- 221 0030 2562     		str	r5, [r4, #32]
- 222              		.loc 1 419 0
- 223 0032 5460     		str	r4, [r2, #4]
+ 210              		.loc 1 416 0
+ 211 0020 2562     		str	r5, [r4, #32]
+ 212              		.loc 1 418 0
+ 213 0022 42F83670 		str	r7, [r2, r6, lsl #3]
+ 419:../drivers/fsl_i2c_edma.c ****     s_edmaPrivateHandle[instance].handle = handle;
+ 214              		.loc 1 419 0
+ 215 0026 02EBC602 		add	r2, r2, r6, lsl #3
+ 410:../drivers/fsl_i2c_edma.c **** 
+ 216              		.loc 1 410 0
+ 217 002a C4E90998 		strd	r9, r8, [r4, #36]
+ 218              		.loc 1 419 0
+ 219 002e 5460     		str	r4, [r2, #4]
  420:../drivers/fsl_i2c_edma.c **** 
  421:../drivers/fsl_i2c_edma.c ****     EDMA_SetCallback(edmaHandle, (edma_callback)I2C_MasterTransferCallbackEDMA, &s_edmaPrivateHandl
- 224              		.loc 1 421 0
- 225 0034 2846     		mov	r0, r5
- 226 0036 0349     		ldr	r1, .L14+4
+ 220              		.loc 1 421 0
+ 221 0030 2846     		mov	r0, r5
+ 222 0032 0349     		ldr	r1, .L14+4
  422:../drivers/fsl_i2c_edma.c **** }
- 227              		.loc 1 422 0
- 228 0038 BDE8F843 		pop	{r3, r4, r5, r6, r7, r8, r9, lr}
- 229              		.cfi_restore 14
- 230              		.cfi_restore 9
- 231              		.cfi_restore 8
- 232              		.cfi_restore 7
- 233              		.cfi_restore 6
- 234              		.cfi_restore 5
- 235              		.cfi_restore 4
- 236              		.cfi_restore 3
- 237              		.cfi_def_cfa_offset 0
- 238              	.LVL19:
+ 223              		.loc 1 422 0
+ 224 0034 BDE8F843 		pop	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 225              		.cfi_restore 14
+ 226              		.cfi_restore 9
+ 227              		.cfi_restore 8
+ 228              		.cfi_restore 7
+ 229              		.cfi_restore 6
+ 230              		.cfi_restore 5
+ 231              		.cfi_restore 4
+ 232              		.cfi_restore 3
+ 233              		.cfi_def_cfa_offset 0
+ 234              	.LVL19:
  421:../drivers/fsl_i2c_edma.c **** }
- 239              		.loc 1 421 0
- 240 003c FFF7FEBF 		b	EDMA_SetCallback
- 241              	.LVL20:
- 242              	.L15:
- 243              		.align	2
- 244              	.L14:
- 245 0040 00000000 		.word	.LANCHOR0
- 246 0044 00000000 		.word	I2C_MasterTransferCallbackEDMA
- 247              		.cfi_endproc
- 248              	.LFE167:
- 250              		.section	.text.I2C_MasterTransferEDMA,"ax",%progbits
- 251              		.align	1
- 252              		.global	I2C_MasterTransferEDMA
- 253              		.syntax unified
- 254              		.thumb
- 255              		.thumb_func
- 256              		.fpu fpv4-sp-d16
- 258              	I2C_MasterTransferEDMA:
- 259              	.LFB168:
+ 235              		.loc 1 421 0
+ 236 0038 FFF7FEBF 		b	EDMA_SetCallback
+ 237              	.LVL20:
+ 238              	.L15:
+ 239              		.align	2
+ 240              	.L14:
+ 241 003c 00000000 		.word	.LANCHOR0
+ 242 0040 00000000 		.word	I2C_MasterTransferCallbackEDMA
+ 243              		.cfi_endproc
+ 244              	.LFE167:
+ 246              		.section	.text.I2C_MasterTransferEDMA,"ax",%progbits
+ 247              		.align	1
+ 248              		.global	I2C_MasterTransferEDMA
+ 249              		.syntax unified
+ 250              		.thumb
+ 251              		.thumb_func
+ 252              		.fpu fpv4-sp-d16
+ 254              	I2C_MasterTransferEDMA:
+ 255              	.LFB168:
  423:../drivers/fsl_i2c_edma.c **** 
  424:../drivers/fsl_i2c_edma.c **** status_t I2C_MasterTransferEDMA(I2C_Type *base, i2c_master_edma_handle_t *handle, i2c_master_transf
  425:../drivers/fsl_i2c_edma.c **** {
- 260              		.loc 1 425 0
- 261              		.cfi_startproc
- 262              		@ args = 0, pretend = 0, frame = 32
- 263              		@ frame_needed = 0, uses_anonymous_args = 0
- 264              	.LVL21:
- 265 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 266              		.cfi_def_cfa_offset 20
- 267              		.cfi_offset 4, -20
- 268              		.cfi_offset 5, -16
- 269              		.cfi_offset 6, -12
- 270              		.cfi_offset 7, -8
- 271              		.cfi_offset 14, -4
- 272 0002 89B0     		sub	sp, sp, #36
- 273              		.cfi_def_cfa_offset 56
+ 256              		.loc 1 425 0
+ 257              		.cfi_startproc
+ 258              		@ args = 0, pretend = 0, frame = 32
+ 259              		@ frame_needed = 0, uses_anonymous_args = 0
+ 260              	.LVL21:
+ 261 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 262              		.cfi_def_cfa_offset 20
+ 263              		.cfi_offset 4, -20
+ 264              		.cfi_offset 5, -16
+ 265              		.cfi_offset 6, -12
+ 266              		.cfi_offset 7, -8
+ 267              		.cfi_offset 14, -4
+ 268 0002 89B0     		sub	sp, sp, #36
+ 269              		.cfi_def_cfa_offset 56
  426:../drivers/fsl_i2c_edma.c ****     assert(handle);
  427:../drivers/fsl_i2c_edma.c ****     assert(xfer);
  428:../drivers/fsl_i2c_edma.c **** 
  429:../drivers/fsl_i2c_edma.c ****     status_t result;
  430:../drivers/fsl_i2c_edma.c ****     uint8_t tmpReg;
  431:../drivers/fsl_i2c_edma.c ****     volatile uint8_t dummy = 0;
- 274              		.loc 1 431 0
- 275 0004 0023     		movs	r3, #0
- 276 0006 8DF80730 		strb	r3, [sp, #7]
+ 270              		.loc 1 431 0
+ 271 0004 0023     		movs	r3, #0
+ 272 0006 8DF80730 		strb	r3, [sp, #7]
  432:../drivers/fsl_i2c_edma.c **** 
  433:../drivers/fsl_i2c_edma.c ****     /* Add this to avoid build warning. */
  434:../drivers/fsl_i2c_edma.c ****     dummy++;
- 277              		.loc 1 434 0
- 278 000a 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
- 279 000e 0133     		adds	r3, r3, #1
- 280 0010 DBB2     		uxtb	r3, r3
- 281 0012 8DF80730 		strb	r3, [sp, #7]
- 282              	.LVL22:
- 283              	.LBB41:
- 284              	.LBB42:
- 285              		.loc 2 529 0
- 286 0016 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
- 287 0018 03F0FE03 		and	r3, r3, #254
- 288 001c 8370     		strb	r3, [r0, #2]
- 289              	.LVL23:
- 290              	.LBE42:
- 291              	.LBE41:
- 292              	.LBB43:
- 293              	.LBB44:
+ 273              		.loc 1 434 0
+ 274 000a 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 275 000e 0133     		adds	r3, r3, #1
+ 276 0010 DBB2     		uxtb	r3, r3
+ 277 0012 8DF80730 		strb	r3, [sp, #7]
+ 278              	.LVL22:
+ 279              	.LBB41:
+ 280              	.LBB42:
+ 281              		.loc 2 529 0
+ 282 0016 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 283 0018 03F0FE03 		and	r3, r3, #254
+ 284 001c 8370     		strb	r3, [r0, #2]
+ 285              	.LVL23:
+ 286              	.LBE42:
+ 287              	.LBE41:
+ 288              	.LBB43:
+ 289              	.LBB44:
  231:../drivers/fsl_i2c_edma.c ****     {
- 294              		.loc 1 231 0
- 295 001e 4B7F     		ldrb	r3, [r1, #29]	@ zero_extendqisi2
- 296              	.LBE44:
- 297              	.LBE43:
+ 290              		.loc 1 231 0
+ 291 001e 4B7F     		ldrb	r3, [r1, #29]	@ zero_extendqisi2
+ 292              	.LBE44:
+ 293              	.LBE43:
  425:../drivers/fsl_i2c_edma.c ****     assert(handle);
- 298              		.loc 1 425 0
- 299 0020 0446     		mov	r4, r0
- 300              	.LVL24:
- 301 0022 0D46     		mov	r5, r1
- 302 0024 9646     		mov	lr, r2
- 303              	.LBB66:
- 304              	.LBB61:
+ 294              		.loc 1 425 0
+ 295 0020 0446     		mov	r4, r0
+ 296              	.LVL24:
+ 297 0022 0D46     		mov	r5, r1
+ 298 0024 9446     		mov	ip, r2
+ 299              	.LBB66:
+ 300              	.LBB61:
  231:../drivers/fsl_i2c_edma.c ****     {
- 305              		.loc 1 231 0
- 306 0026 002B     		cmp	r3, #0
- 307 0028 40F01181 		bne	.L54
- 308              	.LBB45:
+ 301              		.loc 1 231 0
+ 302 0026 002B     		cmp	r3, #0
+ 303 0028 40F0B580 		bne	.L49
+ 304              	.LBB45:
  240:../drivers/fsl_i2c_edma.c **** 
- 309              		.loc 1 240 0
- 310 002c 1746     		mov	r7, r2
+ 305              		.loc 1 240 0
+ 306 002c 1746     		mov	r7, r2
  237:../drivers/fsl_i2c_edma.c **** 
- 311              		.loc 1 237 0
- 312 002e 92F805C0 		ldrb	ip, [r2, #5]	@ zero_extendqisi2
- 313              	.LVL25:
+ 307              		.loc 1 237 0
+ 308 002e 92F805E0 		ldrb	lr, [r2, #5]	@ zero_extendqisi2
+ 309              	.LVL25:
  240:../drivers/fsl_i2c_edma.c **** 
- 314              		.loc 1 240 0
- 315 0032 0E46     		mov	r6, r1
- 316 0034 0FCF     		ldmia	r7!, {r0, r1, r2, r3}
- 317              	.LVL26:
- 318 0036 0FC6     		stmia	r6!, {r0, r1, r2, r3}
- 319 0038 97E80300 		ldm	r7, {r0, r1}
- 320 003c 86E80300 		stm	r6, {r0, r1}
+ 310              		.loc 1 240 0
+ 311 0032 0E46     		mov	r6, r1
+ 312 0034 0FCF     		ldmia	r7!, {r0, r1, r2, r3}
+ 313              	.LVL26:
+ 314 0036 0FC6     		stmia	r6!, {r0, r1, r2, r3}
+ 315 0038 97E80300 		ldm	r7, {r0, r1}
+ 316 003c 86E80300 		stm	r6, {r0, r1}
  243:../drivers/fsl_i2c_edma.c **** 
- 321              		.loc 1 243 0
- 322 0040 DEF81430 		ldr	r3, [lr, #20]
- 323 0044 AB61     		str	r3, [r5, #24]
+ 317              		.loc 1 243 0
+ 318 0040 DCF81430 		ldr	r3, [ip, #20]
+ 319 0044 AB61     		str	r3, [r5, #24]
  245:../drivers/fsl_i2c_edma.c **** 
- 324              		.loc 1 245 0
- 325 0046 0123     		movs	r3, #1
- 326 0048 6B77     		strb	r3, [r5, #29]
- 327              	.LVL27:
- 328              	.LBB46:
- 329              	.LBB47:
+ 320              		.loc 1 245 0
+ 321 0046 0123     		movs	r3, #1
+ 322 0048 6B77     		strb	r3, [r5, #29]
+ 323              	.LVL27:
+ 324              	.LBB46:
+ 325              	.LBB47:
  446:../drivers/fsl_i2c.h ****     }
- 330              		.loc 2 446 0
- 331 004a A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
- 332 004c 43F05003 		orr	r3, r3, #80
- 333 0050 A371     		strb	r3, [r4, #6]
+ 326              		.loc 2 446 0
+ 327 004a A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
+ 328 004c 43F05003 		orr	r3, r3, #80
+ 329 0050 A371     		strb	r3, [r4, #6]
  454:../drivers/fsl_i2c.h ****     }
- 334              		.loc 2 454 0
- 335 0052 A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
- 336 0054 43F05003 		orr	r3, r3, #80
- 337 0058 A371     		strb	r3, [r4, #6]
+ 330              		.loc 2 454 0
+ 331 0052 A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
+ 332 0054 43F05003 		orr	r3, r3, #80
+ 333 0058 A371     		strb	r3, [r4, #6]
  458:../drivers/fsl_i2c.h **** }
- 338              		.loc 2 458 0
- 339 005a 1223     		movs	r3, #18
- 340 005c E370     		strb	r3, [r4, #3]
- 341              	.LVL28:
- 342              	.LBE47:
- 343              	.LBE46:
+ 334              		.loc 2 458 0
+ 335 005a 1223     		movs	r3, #18
+ 336 005c E370     		strb	r3, [r4, #3]
+ 337              	.LVL28:
+ 338              	.LBE47:
+ 339              	.LBE46:
  251:../drivers/fsl_i2c_edma.c ****         {
- 344              		.loc 1 251 0
- 345 005e 9EF80C30 		ldrb	r3, [lr, #12]	@ zero_extendqisi2
- 346 0062 2BB1     		cbz	r3, .L18
- 347 0064 9EF80530 		ldrb	r3, [lr, #5]	@ zero_extendqisi2
+ 340              		.loc 1 251 0
+ 341 005e 9CF80C30 		ldrb	r3, [ip, #12]	@ zero_extendqisi2
+ 342 0062 2BB1     		cbz	r3, .L18
+ 343 0064 9CF80530 		ldrb	r3, [ip, #5]	@ zero_extendqisi2
  253:../drivers/fsl_i2c_edma.c ****         }
- 348              		.loc 1 253 0
- 349 0068 012B     		cmp	r3, #1
- 350 006a 08BF     		it	eq
- 351 006c 4FF0000C 		moveq	ip, #0
- 352              	.LVL29:
- 353              	.L18:
+ 344              		.loc 1 253 0
+ 345 0068 012B     		cmp	r3, #1
+ 346 006a 08BF     		it	eq
+ 347 006c 4FF0000E 		moveq	lr, #0
+ 348              	.LVL29:
+ 349              	.L18:
  257:../drivers/fsl_i2c_edma.c ****         {
- 354              		.loc 1 257 0
- 355 0070 2B68     		ldr	r3, [r5]
- 356 0072 2979     		ldrb	r1, [r5, #4]	@ zero_extendqisi2
- 357 0074 13F0020F 		tst	r3, #2
+ 350              		.loc 1 257 0
+ 351 0070 2B68     		ldr	r3, [r5]
+ 352 0072 2979     		ldrb	r1, [r5, #4]	@ zero_extendqisi2
+ 353 0074 9E07     		lsls	r6, r3, #30
  259:../drivers/fsl_i2c_edma.c ****         }
- 358              		.loc 1 259 0
- 359 0078 6246     		mov	r2, ip
- 360 007a 2046     		mov	r0, r4
+ 354              		.loc 1 259 0
+ 355 0076 7246     		mov	r2, lr
+ 356 0078 2046     		mov	r0, r4
  257:../drivers/fsl_i2c_edma.c ****         {
- 361              		.loc 1 257 0
- 362 007c 11D0     		beq	.L19
- 363              	.LVL30:
+ 357              		.loc 1 257 0
+ 358 007a 11D5     		bpl	.L19
+ 359              	.LVL30:
  259:../drivers/fsl_i2c_edma.c ****         }
- 364              		.loc 1 259 0
- 365 007e FFF7FEFF 		bl	I2C_MasterRepeatedStart
- 366              	.LVL31:
- 367              	.L79:
+ 360              		.loc 1 259 0
+ 361 007c FFF7FEFF 		bl	I2C_MasterRepeatedStart
+ 362              	.LVL31:
+ 363              	.L74:
  263:../drivers/fsl_i2c_edma.c ****         }
- 368              		.loc 1 263 0
- 369 0082 0646     		mov	r6, r0
- 370              	.LVL32:
+ 364              		.loc 1 263 0
+ 365 0080 0646     		mov	r6, r0
+ 366              	.LVL32:
  266:../drivers/fsl_i2c_edma.c ****         {
- 371              		.loc 1 266 0
- 372 0084 0028     		cmp	r0, #0
- 373 0086 40F0C880 		bne	.L21
- 374              	.L22:
+ 367              		.loc 1 266 0
+ 368 0082 0028     		cmp	r0, #0
+ 369 0084 40F0E080 		bne	.L21
+ 370              	.L22:
  271:../drivers/fsl_i2c_edma.c ****         {
- 375              		.loc 1 271 0
- 376 008a E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
- 377 008c 9B07     		lsls	r3, r3, #30
- 378 008e FCD5     		bpl	.L22
+ 371              		.loc 1 271 0
+ 372 0088 E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
+ 373 008a 9B07     		lsls	r3, r3, #30
+ 374 008c FCD5     		bpl	.L22
  276:../drivers/fsl_i2c_edma.c **** 
- 379              		.loc 1 276 0
- 380 0090 E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
- 381 0092 DBB2     		uxtb	r3, r3
- 382              	.LVL33:
- 383              	.LBB48:
- 384              	.LBB49:
+ 375              		.loc 1 276 0
+ 376 008e E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
+ 377 0090 DBB2     		uxtb	r3, r3
+ 378              	.LVL33:
+ 379              	.LBB48:
+ 380              	.LBB49:
  204:../drivers/fsl_i2c_edma.c ****     {
- 385              		.loc 1 204 0
- 386 0094 DF06     		lsls	r7, r3, #27
- 387              	.LVL34:
- 388 0096 07D5     		bpl	.L23
- 389              	.LVL35:
- 390              	.L80:
- 391              	.LBE49:
- 392              	.LBE48:
- 393              	.LBB51:
- 394              	.LBB52:
+ 381              		.loc 1 204 0
+ 382 0092 DF06     		lsls	r7, r3, #27
+ 383              	.LVL34:
+ 384 0094 07D5     		bpl	.L23
+ 385              	.LVL35:
+ 386              	.L75:
+ 387              	.LBE49:
+ 388              	.LBE48:
+ 389              	.LBB51:
+ 390              	.LBB52:
  207:../drivers/fsl_i2c_edma.c ****         result = kStatus_I2C_ArbitrationLost;
- 395              		.loc 1 207 0
- 396 0098 1023     		movs	r3, #16
- 397 009a E370     		strb	r3, [r4, #3]
- 398              	.LVL36:
+ 391              		.loc 1 207 0
+ 392 0096 1023     		movs	r3, #16
+ 393 0098 E370     		strb	r3, [r4, #3]
+ 394              	.LVL36:
  208:../drivers/fsl_i2c_edma.c ****     }
- 399              		.loc 1 208 0
- 400 009c 40F24F46 		movw	r6, #1103
- 401 00a0 D0E0     		b	.L48
- 402              	.LVL37:
- 403              	.L19:
- 404              	.LBE52:
- 405              	.LBE51:
+ 395              		.loc 1 208 0
+ 396 009a 40F24F46 		movw	r6, #1103
+ 397 009e CFE0     		b	.L46
+ 398              	.LVL37:
+ 399              	.L19:
+ 400              	.LBE52:
+ 401              	.LBE51:
  263:../drivers/fsl_i2c_edma.c ****         }
- 406              		.loc 1 263 0
- 407 00a2 FFF7FEFF 		bl	I2C_MasterStart
- 408              	.LVL38:
- 409 00a6 ECE7     		b	.L79
- 410              	.LVL39:
- 411              	.L23:
- 412              	.LBB54:
- 413              	.LBB50:
+ 402              		.loc 1 263 0
+ 403 00a0 FFF7FEFF 		bl	I2C_MasterStart
+ 404              	.LVL38:
+ 405 00a4 ECE7     		b	.L74
+ 406              	.LVL39:
+ 407              	.L23:
+ 408              	.LBB54:
+ 409              	.LBB50:
  211:../drivers/fsl_i2c_edma.c ****     {
- 414              		.loc 1 211 0
- 415 00a8 D807     		lsls	r0, r3, #31
- 416              	.LVL40:
- 417 00aa 00F1BB80 		bmi	.L25
- 418              	.LVL41:
- 419              	.LBE50:
- 420              	.LBE54:
+ 410              		.loc 1 211 0
+ 411 00a6 D807     		lsls	r0, r3, #31
+ 412              	.LVL40:
+ 413 00a8 00F1BA80 		bmi	.L24
+ 414              	.LVL41:
+ 415              	.LBE50:
+ 416              	.LBE54:
  300:../drivers/fsl_i2c_edma.c ****         {
- 421              		.loc 1 300 0
- 422 00ae 2B7B     		ldrb	r3, [r5, #12]	@ zero_extendqisi2
- 423 00b0 FBB1     		cbz	r3, .L38
- 424 00b2 5A1E     		subs	r2, r3, #1
- 425 00b4 D2B2     		uxtb	r2, r2
- 308:../drivers/fsl_i2c_edma.c **** 
- 426              		.loc 1 308 0
- 427 00b6 A868     		ldr	r0, [r5, #8]
- 428 00b8 D200     		lsls	r2, r2, #3
- 305:../drivers/fsl_i2c_edma.c **** 
- 429              		.loc 1 305 0
- 430 00ba 0227     		movs	r7, #2
- 431              	.L50:
- 308:../drivers/fsl_i2c_edma.c **** 
- 432              		.loc 1 308 0
- 433 00bc 20FA02F1 		lsr	r1, r0, r2
- 307:../drivers/fsl_i2c_edma.c ****                 base->D = ((handle->transfer.subaddress) >> (8 * handle->transfer.subaddressSize));
- 434              		.loc 1 307 0
- 435 00c0 013B     		subs	r3, r3, #1
- 308:../drivers/fsl_i2c_edma.c **** 
- 436              		.loc 1 308 0
- 437 00c2 C9B2     		uxtb	r1, r1
- 305:../drivers/fsl_i2c_edma.c **** 
- 438              		.loc 1 305 0
- 439 00c4 E770     		strb	r7, [r4, #3]
- 307:../drivers/fsl_i2c_edma.c ****                 base->D = ((handle->transfer.subaddress) >> (8 * handle->transfer.subaddressSize));
- 440              		.loc 1 307 0
- 441 00c6 DBB2     		uxtb	r3, r3
- 308:../drivers/fsl_i2c_edma.c **** 
- 442              		.loc 1 308 0
- 443 00c8 2171     		strb	r1, [r4, #4]
- 444              	.L28:
- 311:../drivers/fsl_i2c_edma.c ****                 {
- 445              		.loc 1 311 0
- 446 00ca E178     		ldrb	r1, [r4, #3]	@ zero_extendqisi2
- 447 00cc 8907     		lsls	r1, r1, #30
- 448 00ce FCD5     		bpl	.L28
- 316:../drivers/fsl_i2c_edma.c **** 
- 449              		.loc 1 316 0
- 450 00d0 E178     		ldrb	r1, [r4, #3]	@ zero_extendqisi2
- 451 00d2 C9B2     		uxtb	r1, r1
- 452              	.LVL42:
- 453              	.LBB55:
- 454              	.LBB56:
- 204:../drivers/fsl_i2c_edma.c ****     {
- 455              		.loc 1 204 0
- 456 00d4 11F0100F 		tst	r1, #16
- 457 00d8 01D0     		beq	.L29
- 458 00da 2B73     		strb	r3, [r5, #12]
- 459 00dc DCE7     		b	.L80
- 460              	.L29:
- 211:../drivers/fsl_i2c_edma.c ****     {
- 461              		.loc 1 211 0
- 462 00de C907     		lsls	r1, r1, #31
- 463              	.LVL43:
- 464 00e0 00F1B380 		bmi	.L30
- 465              	.LVL44:
- 466 00e4 083A     		subs	r2, r2, #8
- 467              	.LBE56:
- 468              	.LBE55:
- 323:../drivers/fsl_i2c_edma.c **** 
- 469              		.loc 1 323 0
- 470 00e6 002B     		cmp	r3, #0
- 471 00e8 E8D1     		bne	.L50
- 325:../drivers/fsl_i2c_edma.c ****             {
- 472              		.loc 1 325 0
- 473 00ea 6A79     		ldrb	r2, [r5, #5]	@ zero_extendqisi2
- 474 00ec 2B73     		strb	r3, [r5, #12]
- 475 00ee 012A     		cmp	r2, #1
- 476 00f0 25D0     		beq	.L32
- 477              	.L38:
- 478              	.LVL45:
+ 417              		.loc 1 300 0
+ 418 00ac 2B7B     		ldrb	r3, [r5, #12]	@ zero_extendqisi2
+ 419 00ae 002B     		cmp	r3, #0
+ 420 00b0 35D1     		bne	.L25
+ 421              	.L33:
+ 422              	.LVL42:
  354:../drivers/fsl_i2c_edma.c ****     }
- 479              		.loc 1 354 0
- 480 00f2 0223     		movs	r3, #2
- 481 00f4 E370     		strb	r3, [r4, #3]
- 482              	.LVL46:
- 483              	.LBE45:
- 484              	.LBE61:
- 485              	.LBE66:
+ 423              		.loc 1 354 0
+ 424 00b2 0223     		movs	r3, #2
+ 425 00b4 E370     		strb	r3, [r4, #3]
+ 426              	.LVL43:
+ 427              	.LBE45:
+ 428              	.LBE61:
+ 429              	.LBE66:
  435:../drivers/fsl_i2c_edma.c **** 
  436:../drivers/fsl_i2c_edma.c ****     /* Disable dma xfer. */
  437:../drivers/fsl_i2c_edma.c ****     I2C_EnableDMA(base, false);
@@ -1532,20 +1460,103 @@
  461:../drivers/fsl_i2c_edma.c ****     need to send stop before reading the last byte, so the dma transfer size should
  462:../drivers/fsl_i2c_edma.c ****     be (xSize - 1). */
  463:../drivers/fsl_i2c_edma.c ****     if (handle->transfer.dataSize > 1)
- 486              		.loc 1 463 0
- 487 00f6 6B69     		ldr	r3, [r5, #20]
- 488 00f8 012B     		cmp	r3, #1
- 489 00fa 6B79     		ldrb	r3, [r5, #5]	@ zero_extendqisi2
- 490 00fc 3AD8     		bhi	.L33
+ 430              		.loc 1 463 0
+ 431 00b6 6A69     		ldr	r2, [r5, #20]
+ 432 00b8 6B79     		ldrb	r3, [r5, #5]	@ zero_extendqisi2
+ 433 00ba 012A     		cmp	r2, #1
+ 434 00bc 40F28880 		bls	.L72
+ 435              	.LVL44:
+ 436              	.LBB67:
+ 437              	.LBB68:
+ 364:../drivers/fsl_i2c_edma.c ****     {
+ 438              		.loc 1 364 0
+ 439 00c0 012B     		cmp	r3, #1
+ 440 00c2 04F10402 		add	r2, r4, #4
+ 441 00c6 69D1     		bne	.L38
+ 366:../drivers/fsl_i2c_edma.c ****         transfer_config.destAddr = (uint32_t)(handle->transfer.data);
+ 442              		.loc 1 366 0
+ 443 00c8 0292     		str	r2, [sp, #8]
+ 367:../drivers/fsl_i2c_edma.c ****         transfer_config.majorLoopCounts = (handle->transfer.dataSize - 1);
+ 444              		.loc 1 367 0
+ 445 00ca 2A69     		ldr	r2, [r5, #16]
+ 446 00cc 0392     		str	r2, [sp, #12]
+ 368:../drivers/fsl_i2c_edma.c ****         transfer_config.srcTransferSize = kEDMA_TransferSize1Bytes;
+ 447              		.loc 1 368 0
+ 448 00ce 6A69     		ldr	r2, [r5, #20]
+ 372:../drivers/fsl_i2c_edma.c ****         transfer_config.minorLoopBytes = 1;
+ 449              		.loc 1 372 0
+ 450 00d0 ADF81430 		strh	r3, [sp, #20]	@ movhi
+ 368:../drivers/fsl_i2c_edma.c ****         transfer_config.srcTransferSize = kEDMA_TransferSize1Bytes;
+ 451              		.loc 1 368 0
+ 452 00d4 013A     		subs	r2, r2, #1
+ 453 00d6 0792     		str	r2, [sp, #28]
+ 369:../drivers/fsl_i2c_edma.c ****         transfer_config.srcOffset = 0;
+ 454              		.loc 1 369 0
+ 455 00d8 0022     		movs	r2, #0
+ 456 00da 8DF81020 		strb	r2, [sp, #16]
+ 370:../drivers/fsl_i2c_edma.c ****         transfer_config.destTransferSize = kEDMA_TransferSize1Bytes;
+ 457              		.loc 1 370 0
+ 458 00de ADF81220 		strh	r2, [sp, #18]	@ movhi
+ 371:../drivers/fsl_i2c_edma.c ****         transfer_config.destOffset = 1;
+ 459              		.loc 1 371 0
+ 460 00e2 8DF81120 		strb	r2, [sp, #17]
+ 373:../drivers/fsl_i2c_edma.c ****     }
+ 461              		.loc 1 373 0
+ 462 00e6 0693     		str	r3, [sp, #24]
+ 463              	.L39:
+ 388:../drivers/fsl_i2c_edma.c **** 
+ 464              		.loc 1 388 0
+ 465 00e8 0123     		movs	r3, #1
+ 466 00ea 2B77     		strb	r3, [r5, #28]
+ 390:../drivers/fsl_i2c_edma.c ****     EDMA_StartTransfer(handle->dmaHandle);
+ 467              		.loc 1 390 0
+ 468 00ec 02A9     		add	r1, sp, #8
+ 469 00ee 286A     		ldr	r0, [r5, #32]
+ 470 00f0 FFF7FEFF 		bl	EDMA_SubmitTransfer
+ 471              	.LVL45:
+ 391:../drivers/fsl_i2c_edma.c **** }
+ 472              		.loc 1 391 0
+ 473 00f4 286A     		ldr	r0, [r5, #32]
+ 474 00f6 FFF7FEFF 		bl	EDMA_StartTransfer
+ 475              	.LVL46:
+ 476              	.LBE68:
+ 477              	.LBE67:
  464:../drivers/fsl_i2c_edma.c ****     {
  465:../drivers/fsl_i2c_edma.c ****         I2C_MasterTransferEDMAConfig(base, handle);
  466:../drivers/fsl_i2c_edma.c ****         if (handle->transfer.direction == kI2C_Read)
+ 478              		.loc 1 466 0
+ 479 00fa 6B79     		ldrb	r3, [r5, #5]	@ zero_extendqisi2
+ 480 00fc 012B     		cmp	r3, #1
  467:../drivers/fsl_i2c_edma.c ****         {
  468:../drivers/fsl_i2c_edma.c ****             /* Change direction for receive. */
  469:../drivers/fsl_i2c_edma.c ****             base->C1 &= ~(I2C_C1_TX_MASK | I2C_C1_TXAK_MASK);
+ 481              		.loc 1 469 0
+ 482 00fe A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 466:../drivers/fsl_i2c_edma.c ****         {
+ 483              		.loc 1 466 0
+ 484 0100 5FD1     		bne	.L40
+ 485              		.loc 1 469 0
+ 486 0102 03F0E703 		and	r3, r3, #231
+ 487 0106 A370     		strb	r3, [r4, #2]
  470:../drivers/fsl_i2c_edma.c **** 
  471:../drivers/fsl_i2c_edma.c ****             /* Read dummy to release the bus. */
  472:../drivers/fsl_i2c_edma.c ****             dummy = base->D;
+ 488              		.loc 1 472 0
+ 489 0108 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
+ 490 010a DBB2     		uxtb	r3, r3
+ 491 010c 8DF80730 		strb	r3, [sp, #7]
+ 492              	.LVL47:
+ 493              	.LBB70:
+ 494              	.LBB71:
+ 525:../drivers/fsl_i2c.h ****     }
+ 495              		.loc 2 525 0
+ 496 0110 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 497 0112 43F00103 		orr	r3, r3, #1
+ 498 0116 A370     		strb	r3, [r4, #2]
+ 499              	.LVL48:
+ 500              	.L16:
+ 501              	.LBE71:
+ 502              	.LBE70:
  473:../drivers/fsl_i2c_edma.c **** 
  474:../drivers/fsl_i2c_edma.c ****             /* Enabe dma transfer. */
  475:../drivers/fsl_i2c_edma.c ****             I2C_EnableDMA(base, true);
@@ -1562,40 +1573,19 @@
  486:../drivers/fsl_i2c_edma.c ****     else /* If transfer size is 1, use polling method. */
  487:../drivers/fsl_i2c_edma.c ****     {
  488:../drivers/fsl_i2c_edma.c ****         if (handle->transfer.direction == kI2C_Read)
- 491              		.loc 1 488 0
- 492 00fe 012B     		cmp	r3, #1
- 493 0100 40F08180 		bne	.L43
  489:../drivers/fsl_i2c_edma.c ****         {
  490:../drivers/fsl_i2c_edma.c ****             tmpReg = base->C1;
- 494              		.loc 1 490 0
- 495 0104 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
- 496              	.LVL47:
  491:../drivers/fsl_i2c_edma.c **** 
  492:../drivers/fsl_i2c_edma.c ****             /* Change direction to Rx. */
  493:../drivers/fsl_i2c_edma.c ****             tmpReg &= ~I2C_C1_TX_MASK;
- 497              		.loc 1 493 0
- 498 0106 03F0EF03 		and	r3, r3, #239
- 499              	.LVL48:
  494:../drivers/fsl_i2c_edma.c **** 
  495:../drivers/fsl_i2c_edma.c ****             /* Configure send NAK */
  496:../drivers/fsl_i2c_edma.c ****             tmpReg |= I2C_C1_TXAK_MASK;
- 500              		.loc 1 496 0
- 501 010a 43F00803 		orr	r3, r3, #8
- 502              	.LVL49:
  497:../drivers/fsl_i2c_edma.c **** 
  498:../drivers/fsl_i2c_edma.c ****             base->C1 = tmpReg;
- 503              		.loc 1 498 0
- 504 010e A370     		strb	r3, [r4, #2]
  499:../drivers/fsl_i2c_edma.c **** 
  500:../drivers/fsl_i2c_edma.c ****             /* Read dummy to release the bus. */
  501:../drivers/fsl_i2c_edma.c ****             dummy = base->D;
- 505              		.loc 1 501 0
- 506 0110 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
- 507              	.LVL50:
- 508 0112 DBB2     		uxtb	r3, r3
- 509 0114 8DF80730 		strb	r3, [sp, #7]
- 510              	.LVL51:
- 511              	.L44:
  502:../drivers/fsl_i2c_edma.c ****         }
  503:../drivers/fsl_i2c_edma.c ****         else
  504:../drivers/fsl_i2c_edma.c ****         {
@@ -1604,34 +1594,16 @@
  507:../drivers/fsl_i2c_edma.c **** 
  508:../drivers/fsl_i2c_edma.c ****         /* Wait until data transfer complete. */
  509:../drivers/fsl_i2c_edma.c ****         while (!(base->S & kI2C_IntPendingFlag))
- 512              		.loc 1 509 0 discriminator 1
- 513 0118 E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
- 514 011a 9A07     		lsls	r2, r3, #30
- 515 011c FCD5     		bpl	.L44
  510:../drivers/fsl_i2c_edma.c ****         {
  511:../drivers/fsl_i2c_edma.c ****         }
  512:../drivers/fsl_i2c_edma.c **** 
  513:../drivers/fsl_i2c_edma.c ****         /* Clear pending flag. */
  514:../drivers/fsl_i2c_edma.c ****         base->S = kI2C_IntPendingFlag;
- 516              		.loc 1 514 0
- 517 011e 0223     		movs	r3, #2
- 518 0120 E370     		strb	r3, [r4, #3]
  515:../drivers/fsl_i2c_edma.c **** 
  516:../drivers/fsl_i2c_edma.c ****         /* Send stop if kI2C_TransferNoStop flag is not asserted. */
  517:../drivers/fsl_i2c_edma.c ****         if (!(handle->transfer.flags & kI2C_TransferNoStopFlag))
- 519              		.loc 1 517 0
- 520 0122 2B68     		ldr	r3, [r5]
- 521 0124 5B07     		lsls	r3, r3, #29
- 522 0126 72D4     		bmi	.L46
  518:../drivers/fsl_i2c_edma.c ****         {
  519:../drivers/fsl_i2c_edma.c ****             result = I2C_MasterStop(base);
- 523              		.loc 1 519 0
- 524 0128 2046     		mov	r0, r4
- 525 012a FFF7FEFF 		bl	I2C_MasterStop
- 526              	.LVL52:
- 527 012e 0646     		mov	r6, r0
- 528              	.LVL53:
- 529              	.L47:
  520:../drivers/fsl_i2c_edma.c ****         }
  521:../drivers/fsl_i2c_edma.c ****         else
  522:../drivers/fsl_i2c_edma.c ****         {
@@ -1641,163 +1613,8 @@
  526:../drivers/fsl_i2c_edma.c **** 
  527:../drivers/fsl_i2c_edma.c ****         /* Read the last byte of data. */
  528:../drivers/fsl_i2c_edma.c ****         if (handle->transfer.direction == kI2C_Read)
- 530              		.loc 1 528 0
- 531 0130 6B79     		ldrb	r3, [r5, #5]	@ zero_extendqisi2
- 532 0132 012B     		cmp	r3, #1
  529:../drivers/fsl_i2c_edma.c ****         {
  530:../drivers/fsl_i2c_edma.c ****             *handle->transfer.data = base->D;
- 533              		.loc 1 530 0
- 534 0134 02BF     		ittt	eq
- 535 0136 2B69     		ldreq	r3, [r5, #16]
- 536 0138 2279     		ldrbeq	r2, [r4, #4]	@ zero_extendqisi2
- 537 013a 1A70     		strbeq	r2, [r3]
- 538 013c 82E0     		b	.L48
- 539              	.LVL54:
- 540              	.L32:
- 541              	.LBB67:
- 542              	.LBB62:
- 543              	.LBB58:
- 328:../drivers/fsl_i2c_edma.c **** 
- 544              		.loc 1 328 0
- 545 013e 0223     		movs	r3, #2
- 546 0140 E370     		strb	r3, [r4, #3]
- 331:../drivers/fsl_i2c_edma.c **** 
- 547              		.loc 1 331 0
- 548 0142 2979     		ldrb	r1, [r5, #4]	@ zero_extendqisi2
- 549 0144 2046     		mov	r0, r4
- 550 0146 FFF7FEFF 		bl	I2C_MasterRepeatedStart
- 551              	.LVL55:
- 333:../drivers/fsl_i2c_edma.c ****                 {
- 552              		.loc 1 333 0
- 553 014a 0028     		cmp	r0, #0
- 554 014c 64D1     		bne	.L56
- 555              	.L35:
- 339:../drivers/fsl_i2c_edma.c ****                 {
- 556              		.loc 1 339 0
- 557 014e E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
- 558 0150 9F07     		lsls	r7, r3, #30
- 559 0152 FCD5     		bpl	.L35
- 344:../drivers/fsl_i2c_edma.c **** 
- 560              		.loc 1 344 0
- 561 0154 E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
- 562 0156 DBB2     		uxtb	r3, r3
- 563              	.LVL56:
- 564              	.LBB57:
- 565              	.LBB53:
- 204:../drivers/fsl_i2c_edma.c ****     {
- 566              		.loc 1 204 0
- 567 0158 D806     		lsls	r0, r3, #27
- 568              	.LVL57:
- 569 015a 9DD4     		bmi	.L80
- 211:../drivers/fsl_i2c_edma.c ****     {
- 570              		.loc 1 211 0
- 571 015c D907     		lsls	r1, r3, #31
- 572 015e C8D5     		bpl	.L38
- 573              	.LVL58:
- 574              	.L52:
- 575              	.LBE53:
- 576              	.LBE57:
- 577              	.LBE58:
- 578              	.LBE62:
- 579              	.LBE67:
- 447:../drivers/fsl_i2c_edma.c ****             {
- 580              		.loc 1 447 0
- 581 0160 2046     		mov	r0, r4
- 582 0162 FFF7FEFF 		bl	I2C_MasterStop
- 583              	.LVL59:
- 584 0166 0028     		cmp	r0, #0
- 585 0168 40F24E46 		movw	r6, #1102
- 586 016c 18BF     		it	ne
- 587 016e 4FF48A66 		movne	r6, #1104
- 588 0172 67E0     		b	.L48
- 589              	.L33:
- 590              	.LVL60:
- 591              	.LBB68:
- 592              	.LBB69:
- 364:../drivers/fsl_i2c_edma.c ****     {
- 593              		.loc 1 364 0
- 594 0174 012B     		cmp	r3, #1
- 595 0176 04F10402 		add	r2, r4, #4
- 596 017a 2AD1     		bne	.L40
- 366:../drivers/fsl_i2c_edma.c ****         transfer_config.destAddr = (uint32_t)(handle->transfer.data);
- 597              		.loc 1 366 0
- 598 017c 0292     		str	r2, [sp, #8]
- 367:../drivers/fsl_i2c_edma.c ****         transfer_config.majorLoopCounts = (handle->transfer.dataSize - 1);
- 599              		.loc 1 367 0
- 600 017e 2A69     		ldr	r2, [r5, #16]
- 601 0180 0392     		str	r2, [sp, #12]
- 368:../drivers/fsl_i2c_edma.c ****         transfer_config.srcTransferSize = kEDMA_TransferSize1Bytes;
- 602              		.loc 1 368 0
- 603 0182 6A69     		ldr	r2, [r5, #20]
- 372:../drivers/fsl_i2c_edma.c ****         transfer_config.minorLoopBytes = 1;
- 604              		.loc 1 372 0
- 605 0184 ADF81430 		strh	r3, [sp, #20]	@ movhi
- 368:../drivers/fsl_i2c_edma.c ****         transfer_config.srcTransferSize = kEDMA_TransferSize1Bytes;
- 606              		.loc 1 368 0
- 607 0188 013A     		subs	r2, r2, #1
- 608 018a 0792     		str	r2, [sp, #28]
- 369:../drivers/fsl_i2c_edma.c ****         transfer_config.srcOffset = 0;
- 609              		.loc 1 369 0
- 610 018c 0022     		movs	r2, #0
- 611 018e 8DF81020 		strb	r2, [sp, #16]
- 370:../drivers/fsl_i2c_edma.c ****         transfer_config.destTransferSize = kEDMA_TransferSize1Bytes;
- 612              		.loc 1 370 0
- 613 0192 ADF81220 		strh	r2, [sp, #18]	@ movhi
- 371:../drivers/fsl_i2c_edma.c ****         transfer_config.destOffset = 1;
- 614              		.loc 1 371 0
- 615 0196 8DF81120 		strb	r2, [sp, #17]
- 373:../drivers/fsl_i2c_edma.c ****     }
- 616              		.loc 1 373 0
- 617 019a 0693     		str	r3, [sp, #24]
- 618              	.L41:
- 388:../drivers/fsl_i2c_edma.c **** 
- 619              		.loc 1 388 0
- 620 019c 0123     		movs	r3, #1
- 621 019e 2B77     		strb	r3, [r5, #28]
- 390:../drivers/fsl_i2c_edma.c ****     EDMA_StartTransfer(handle->dmaHandle);
- 622              		.loc 1 390 0
- 623 01a0 02A9     		add	r1, sp, #8
- 624 01a2 286A     		ldr	r0, [r5, #32]
- 625 01a4 FFF7FEFF 		bl	EDMA_SubmitTransfer
- 626              	.LVL61:
- 391:../drivers/fsl_i2c_edma.c **** }
- 627              		.loc 1 391 0
- 628 01a8 286A     		ldr	r0, [r5, #32]
- 629 01aa FFF7FEFF 		bl	EDMA_StartTransfer
- 630              	.LVL62:
- 631              	.LBE69:
- 632              	.LBE68:
- 466:../drivers/fsl_i2c_edma.c ****         {
- 633              		.loc 1 466 0
- 634 01ae 6B79     		ldrb	r3, [r5, #5]	@ zero_extendqisi2
- 635 01b0 012B     		cmp	r3, #1
- 469:../drivers/fsl_i2c_edma.c **** 
- 636              		.loc 1 469 0
- 637 01b2 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
- 466:../drivers/fsl_i2c_edma.c ****         {
- 638              		.loc 1 466 0
- 639 01b4 20D1     		bne	.L42
- 469:../drivers/fsl_i2c_edma.c **** 
- 640              		.loc 1 469 0
- 641 01b6 03F0E703 		and	r3, r3, #231
- 642 01ba A370     		strb	r3, [r4, #2]
- 472:../drivers/fsl_i2c_edma.c **** 
- 643              		.loc 1 472 0
- 644 01bc 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
- 645 01be DBB2     		uxtb	r3, r3
- 646 01c0 8DF80730 		strb	r3, [sp, #7]
- 647              	.LVL63:
- 648              	.LBB71:
- 649              	.LBB72:
- 525:../drivers/fsl_i2c.h ****     }
- 650              		.loc 2 525 0
- 651 01c4 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
- 652 01c6 43F00103 		orr	r3, r3, #1
- 653 01ca A370     		strb	r3, [r4, #2]
- 654              	.LVL64:
- 655              	.L16:
- 656              	.LBE72:
- 657              	.LBE71:
  531:../drivers/fsl_i2c_edma.c ****         }
  532:../drivers/fsl_i2c_edma.c **** 
  533:../drivers/fsl_i2c_edma.c ****         /* Reset the state to idle. */
@@ -1806,222 +1623,408 @@
  536:../drivers/fsl_i2c_edma.c **** 
  537:../drivers/fsl_i2c_edma.c ****     return result;
  538:../drivers/fsl_i2c_edma.c **** }
- 658              		.loc 1 538 0
- 659 01cc 3046     		mov	r0, r6
- 660 01ce 09B0     		add	sp, sp, #36
- 661              		.cfi_remember_state
- 662              		.cfi_def_cfa_offset 20
- 663              		@ sp needed
- 664 01d0 F0BD     		pop	{r4, r5, r6, r7, pc}
- 665              	.LVL65:
- 666              	.L40:
- 667              		.cfi_restore_state
- 668              	.LBB73:
- 669              	.LBB70:
- 377:../drivers/fsl_i2c_edma.c ****         transfer_config.destAddr = (uint32_t)I2C_GetDataRegAddr(base);
- 670              		.loc 1 377 0
- 671 01d2 2B69     		ldr	r3, [r5, #16]
- 378:../drivers/fsl_i2c_edma.c ****         transfer_config.majorLoopCounts = (handle->transfer.dataSize - 1);
- 672              		.loc 1 378 0
- 673 01d4 0392     		str	r2, [sp, #12]
- 377:../drivers/fsl_i2c_edma.c ****         transfer_config.destAddr = (uint32_t)I2C_GetDataRegAddr(base);
- 674              		.loc 1 377 0
- 675 01d6 0133     		adds	r3, r3, #1
- 676 01d8 0293     		str	r3, [sp, #8]
- 379:../drivers/fsl_i2c_edma.c ****         transfer_config.srcTransferSize = kEDMA_TransferSize1Bytes;
- 677              		.loc 1 379 0
- 678 01da 6B69     		ldr	r3, [r5, #20]
- 679 01dc 013B     		subs	r3, r3, #1
- 381:../drivers/fsl_i2c_edma.c ****         transfer_config.destTransferSize = kEDMA_TransferSize1Bytes;
- 680              		.loc 1 381 0
- 681 01de 0122     		movs	r2, #1
- 379:../drivers/fsl_i2c_edma.c ****         transfer_config.srcTransferSize = kEDMA_TransferSize1Bytes;
- 682              		.loc 1 379 0
- 683 01e0 0793     		str	r3, [sp, #28]
- 380:../drivers/fsl_i2c_edma.c ****         transfer_config.srcOffset = 1;
- 684              		.loc 1 380 0
- 685 01e2 0023     		movs	r3, #0
- 686 01e4 8DF81030 		strb	r3, [sp, #16]
- 381:../drivers/fsl_i2c_edma.c ****         transfer_config.destTransferSize = kEDMA_TransferSize1Bytes;
- 687              		.loc 1 381 0
- 688 01e8 ADF81220 		strh	r2, [sp, #18]	@ movhi
- 382:../drivers/fsl_i2c_edma.c ****         transfer_config.destOffset = 0;
- 689              		.loc 1 382 0
- 690 01ec 8DF81130 		strb	r3, [sp, #17]
- 383:../drivers/fsl_i2c_edma.c ****         transfer_config.minorLoopBytes = 1;
- 691              		.loc 1 383 0
- 692 01f0 ADF81430 		strh	r3, [sp, #20]	@ movhi
- 384:../drivers/fsl_i2c_edma.c ****     }
- 693              		.loc 1 384 0
- 694 01f4 0692     		str	r2, [sp, #24]
- 695 01f6 D1E7     		b	.L41
- 696              	.LVL66:
- 697              	.L42:
- 698              	.LBE70:
- 699              	.LBE73:
- 700              	.LBB74:
- 701              	.LBB75:
- 525:../drivers/fsl_i2c.h ****     }
- 702              		.loc 2 525 0
- 703 01f8 43F00103 		orr	r3, r3, #1
- 704 01fc A370     		strb	r3, [r4, #2]
- 705              	.LVL67:
- 706              	.LBE75:
- 707              	.LBE74:
- 483:../drivers/fsl_i2c_edma.c ****         }
- 708              		.loc 1 483 0
- 709 01fe 2B69     		ldr	r3, [r5, #16]
- 710 0200 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 711 0202 2371     		strb	r3, [r4, #4]
- 712 0204 E2E7     		b	.L16
- 713              	.L43:
- 505:../drivers/fsl_i2c_edma.c ****         }
- 714              		.loc 1 505 0
- 715 0206 2B69     		ldr	r3, [r5, #16]
- 716 0208 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 717 020a 2371     		strb	r3, [r4, #4]
- 718 020c 84E7     		b	.L44
- 719              	.L46:
- 524:../drivers/fsl_i2c_edma.c ****         }
- 720              		.loc 1 524 0
- 721 020e A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
- 722 0210 43F01003 		orr	r3, r3, #16
- 723 0214 A370     		strb	r3, [r4, #2]
- 724 0216 8BE7     		b	.L47
- 725              	.LVL68:
- 726              	.L56:
- 727              	.LBB76:
- 728              	.LBB63:
- 729              	.LBB59:
+ 503              		.loc 1 538 0
+ 504 0118 3046     		mov	r0, r6
+ 505 011a 09B0     		add	sp, sp, #36
+ 506              		.cfi_remember_state
+ 507              		.cfi_def_cfa_offset 20
+ 508              		@ sp needed
+ 509 011c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 510              	.LVL49:
+ 511              	.L25:
+ 512              		.cfi_restore_state
+ 513 011e 5A1E     		subs	r2, r3, #1
+ 514 0120 D2B2     		uxtb	r2, r2
+ 515              	.LBB72:
+ 516              	.LBB62:
+ 517              	.LBB58:
+ 308:../drivers/fsl_i2c_edma.c **** 
+ 518              		.loc 1 308 0
+ 519 0122 A868     		ldr	r0, [r5, #8]
+ 520 0124 D200     		lsls	r2, r2, #3
+ 305:../drivers/fsl_i2c_edma.c **** 
+ 521              		.loc 1 305 0
+ 522 0126 0227     		movs	r7, #2
+ 523              	.L32:
+ 308:../drivers/fsl_i2c_edma.c **** 
+ 524              		.loc 1 308 0
+ 525 0128 20FA02F1 		lsr	r1, r0, r2
+ 307:../drivers/fsl_i2c_edma.c ****                 base->D = ((handle->transfer.subaddress) >> (8 * handle->transfer.subaddressSize));
+ 526              		.loc 1 307 0
+ 527 012c 013B     		subs	r3, r3, #1
+ 308:../drivers/fsl_i2c_edma.c **** 
+ 528              		.loc 1 308 0
+ 529 012e C9B2     		uxtb	r1, r1
+ 305:../drivers/fsl_i2c_edma.c **** 
+ 530              		.loc 1 305 0
+ 531 0130 E770     		strb	r7, [r4, #3]
+ 307:../drivers/fsl_i2c_edma.c ****                 base->D = ((handle->transfer.subaddress) >> (8 * handle->transfer.subaddressSize));
+ 532              		.loc 1 307 0
+ 533 0132 DBB2     		uxtb	r3, r3
+ 308:../drivers/fsl_i2c_edma.c **** 
+ 534              		.loc 1 308 0
+ 535 0134 2171     		strb	r1, [r4, #4]
+ 536              	.L29:
+ 311:../drivers/fsl_i2c_edma.c ****                 {
+ 537              		.loc 1 311 0
+ 538 0136 E178     		ldrb	r1, [r4, #3]	@ zero_extendqisi2
+ 539 0138 8907     		lsls	r1, r1, #30
+ 540 013a FCD5     		bpl	.L29
+ 316:../drivers/fsl_i2c_edma.c **** 
+ 541              		.loc 1 316 0
+ 542 013c E178     		ldrb	r1, [r4, #3]	@ zero_extendqisi2
+ 543 013e C9B2     		uxtb	r1, r1
+ 544              	.LVL50:
+ 545              	.LBB55:
+ 546              	.LBB53:
+ 204:../drivers/fsl_i2c_edma.c ****     {
+ 547              		.loc 1 204 0
+ 548 0140 11F0100F 		tst	r1, #16
+ 549 0144 01D0     		beq	.L30
+ 550 0146 2B73     		strb	r3, [r5, #12]
+ 551 0148 A5E7     		b	.L75
+ 552              	.L30:
+ 211:../drivers/fsl_i2c_edma.c ****     {
+ 553              		.loc 1 211 0
+ 554 014a C907     		lsls	r1, r1, #31
+ 555              	.LVL51:
+ 556 014c 21D4     		bmi	.L31
+ 557              	.LVL52:
+ 558 014e 083A     		subs	r2, r2, #8
+ 559              	.LBE53:
+ 560              	.LBE55:
+ 323:../drivers/fsl_i2c_edma.c **** 
+ 561              		.loc 1 323 0
+ 562 0150 002B     		cmp	r3, #0
+ 563 0152 E9D1     		bne	.L32
+ 325:../drivers/fsl_i2c_edma.c ****             {
+ 564              		.loc 1 325 0
+ 565 0154 6A79     		ldrb	r2, [r5, #5]	@ zero_extendqisi2
+ 566 0156 2B73     		strb	r3, [r5, #12]
+ 567 0158 012A     		cmp	r2, #1
+ 568 015a AAD1     		bne	.L33
+ 328:../drivers/fsl_i2c_edma.c **** 
+ 569              		.loc 1 328 0
+ 570 015c 0223     		movs	r3, #2
+ 571 015e E370     		strb	r3, [r4, #3]
+ 331:../drivers/fsl_i2c_edma.c **** 
+ 572              		.loc 1 331 0
+ 573 0160 2979     		ldrb	r1, [r5, #4]	@ zero_extendqisi2
+ 574 0162 2046     		mov	r0, r4
+ 575 0164 FFF7FEFF 		bl	I2C_MasterRepeatedStart
+ 576              	.LVL53:
  333:../drivers/fsl_i2c_edma.c ****                 {
- 730              		.loc 1 333 0
- 731 0218 0646     		mov	r6, r0
- 732              	.L21:
- 733              	.LVL69:
- 734              	.LBE59:
- 735              	.LBE63:
- 736              	.LBE76:
- 445:../drivers/fsl_i2c_edma.c ****         {
- 737              		.loc 1 445 0
- 738 021a 40F24E43 		movw	r3, #1102
- 739 021e 9E42     		cmp	r6, r3
- 740 0220 9ED0     		beq	.L52
- 741 0222 0FE0     		b	.L48
- 742              	.LVL70:
- 743              	.L25:
- 744              	.LBB77:
- 745              	.LBB64:
- 746              	.LBB60:
- 285:../drivers/fsl_i2c_edma.c ****                 {
- 747              		.loc 1 285 0
- 748 0224 2046     		mov	r0, r4
- 749 0226 FFF7FEFF 		bl	I2C_MasterStop
- 750              	.LVL71:
- 290:../drivers/fsl_i2c_edma.c ****                 {
- 751              		.loc 1 290 0
- 752 022a 6F6A     		ldr	r7, [r5, #36]
- 283:../drivers/fsl_i2c_edma.c **** 
- 753              		.loc 1 283 0
- 754 022c 0028     		cmp	r0, #0
- 755 022e 40F25146 		movw	r6, #1105
- 756 0232 18BF     		it	ne
- 757 0234 4FF48A66 		movne	r6, #1104
- 758              	.LVL72:
- 290:../drivers/fsl_i2c_edma.c ****                 {
- 759              		.loc 1 290 0
- 760 0238 27B1     		cbz	r7, .L48
- 292:../drivers/fsl_i2c_edma.c ****                 }
- 761              		.loc 1 292 0
- 762 023a AB6A     		ldr	r3, [r5, #40]
- 763 023c 3246     		mov	r2, r6
- 764 023e 2946     		mov	r1, r5
- 765 0240 2046     		mov	r0, r4
- 766 0242 B847     		blx	r7
- 767              	.LVL73:
- 768              	.L48:
- 769              	.LBE60:
- 770              	.LBE64:
- 771              	.LBE77:
- 534:../drivers/fsl_i2c_edma.c ****     }
- 772              		.loc 1 534 0
- 773 0244 0023     		movs	r3, #0
- 774 0246 6B77     		strb	r3, [r5, #29]
- 775 0248 C0E7     		b	.L16
- 776              	.LVL74:
- 777              	.L30:
- 778 024a 2B73     		strb	r3, [r5, #12]
- 779 024c 88E7     		b	.L52
- 780              	.LVL75:
- 781              	.L54:
- 782              	.LBB78:
- 783              	.LBB65:
+ 577              		.loc 1 333 0
+ 578 0168 0028     		cmp	r0, #0
+ 579 016a 6CD1     		bne	.L51
+ 580              	.L34:
+ 339:../drivers/fsl_i2c_edma.c ****                 {
+ 581              		.loc 1 339 0
+ 582 016c E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
+ 583 016e 9F07     		lsls	r7, r3, #30
+ 584 0170 FCD5     		bpl	.L34
+ 344:../drivers/fsl_i2c_edma.c **** 
+ 585              		.loc 1 344 0
+ 586 0172 E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
+ 587 0174 DBB2     		uxtb	r3, r3
+ 588              	.LVL54:
+ 589              	.LBB56:
+ 590              	.LBB57:
+ 204:../drivers/fsl_i2c_edma.c ****     {
+ 591              		.loc 1 204 0
+ 592 0176 D806     		lsls	r0, r3, #27
+ 593              	.LVL55:
+ 594 0178 8DD4     		bmi	.L75
+ 211:../drivers/fsl_i2c_edma.c ****     {
+ 595              		.loc 1 211 0
+ 596 017a D907     		lsls	r1, r3, #31
+ 597 017c 99D5     		bpl	.L33
+ 598              	.LVL56:
+ 599              	.L36:
+ 600              	.LBE57:
+ 601              	.LBE56:
+ 602              	.LBE58:
+ 603              	.LBE62:
+ 604              	.LBE72:
+ 447:../drivers/fsl_i2c_edma.c ****             {
+ 605              		.loc 1 447 0
+ 606 017e 2046     		mov	r0, r4
+ 607 0180 FFF7FEFF 		bl	I2C_MasterStop
+ 608              	.LVL57:
+ 440:../drivers/fsl_i2c_edma.c **** 
+ 609              		.loc 1 440 0
+ 610 0184 0028     		cmp	r0, #0
+ 611 0186 40F24E46 		movw	r6, #1102
+ 612 018a 18BF     		it	ne
+ 613 018c 4FF48A66 		movne	r6, #1104
+ 614 0190 56E0     		b	.L46
+ 615              	.LVL58:
+ 616              	.L31:
+ 617 0192 2B73     		strb	r3, [r5, #12]
+ 618 0194 F3E7     		b	.L36
+ 619              	.LVL59:
+ 620              	.L49:
+ 621              	.LBB73:
+ 622              	.LBB63:
  233:../drivers/fsl_i2c_edma.c ****     }
- 784              		.loc 1 233 0
- 785 024e 40F24C46 		movw	r6, #1100
- 786              	.LVL76:
- 787 0252 F7E7     		b	.L48
- 788              	.LBE65:
- 789              	.LBE78:
- 790              		.cfi_endproc
- 791              	.LFE168:
- 793              		.section	.text.I2C_MasterTransferGetCountEDMA,"ax",%progbits
- 794              		.align	1
- 795              		.global	I2C_MasterTransferGetCountEDMA
- 796              		.syntax unified
- 797              		.thumb
- 798              		.thumb_func
- 799              		.fpu fpv4-sp-d16
- 801              	I2C_MasterTransferGetCountEDMA:
- 802              	.LFB169:
+ 623              		.loc 1 233 0
+ 624 0196 40F24C46 		movw	r6, #1100
+ 625              	.LVL60:
+ 626 019a 51E0     		b	.L46
+ 627              	.LVL61:
+ 628              	.L38:
+ 629              	.LBE63:
+ 630              	.LBE73:
+ 631              	.LBB74:
+ 632              	.LBB69:
+ 377:../drivers/fsl_i2c_edma.c ****         transfer_config.destAddr = (uint32_t)I2C_GetDataRegAddr(base);
+ 633              		.loc 1 377 0
+ 634 019c 2B69     		ldr	r3, [r5, #16]
+ 635 019e 0133     		adds	r3, r3, #1
+ 378:../drivers/fsl_i2c_edma.c ****         transfer_config.majorLoopCounts = (handle->transfer.dataSize - 1);
+ 636              		.loc 1 378 0
+ 637 01a0 CDE90232 		strd	r3, r2, [sp, #8]
+ 379:../drivers/fsl_i2c_edma.c ****         transfer_config.srcTransferSize = kEDMA_TransferSize1Bytes;
+ 638              		.loc 1 379 0
+ 639 01a4 6B69     		ldr	r3, [r5, #20]
+ 640 01a6 013B     		subs	r3, r3, #1
+ 381:../drivers/fsl_i2c_edma.c ****         transfer_config.destTransferSize = kEDMA_TransferSize1Bytes;
+ 641              		.loc 1 381 0
+ 642 01a8 0122     		movs	r2, #1
+ 379:../drivers/fsl_i2c_edma.c ****         transfer_config.srcTransferSize = kEDMA_TransferSize1Bytes;
+ 643              		.loc 1 379 0
+ 644 01aa 0793     		str	r3, [sp, #28]
+ 380:../drivers/fsl_i2c_edma.c ****         transfer_config.srcOffset = 1;
+ 645              		.loc 1 380 0
+ 646 01ac 0023     		movs	r3, #0
+ 647 01ae 8DF81030 		strb	r3, [sp, #16]
+ 381:../drivers/fsl_i2c_edma.c ****         transfer_config.destTransferSize = kEDMA_TransferSize1Bytes;
+ 648              		.loc 1 381 0
+ 649 01b2 ADF81220 		strh	r2, [sp, #18]	@ movhi
+ 382:../drivers/fsl_i2c_edma.c ****         transfer_config.destOffset = 0;
+ 650              		.loc 1 382 0
+ 651 01b6 8DF81130 		strb	r3, [sp, #17]
+ 383:../drivers/fsl_i2c_edma.c ****         transfer_config.minorLoopBytes = 1;
+ 652              		.loc 1 383 0
+ 653 01ba ADF81430 		strh	r3, [sp, #20]	@ movhi
+ 384:../drivers/fsl_i2c_edma.c ****     }
+ 654              		.loc 1 384 0
+ 655 01be 0692     		str	r2, [sp, #24]
+ 656 01c0 92E7     		b	.L39
+ 657              	.LVL62:
+ 658              	.L40:
+ 659              	.LBE69:
+ 660              	.LBE74:
+ 661              	.LBB75:
+ 662              	.LBB76:
+ 525:../drivers/fsl_i2c.h ****     }
+ 663              		.loc 2 525 0
+ 664 01c2 43F00103 		orr	r3, r3, #1
+ 665 01c6 A370     		strb	r3, [r4, #2]
+ 666              	.LVL63:
+ 667              	.LBE76:
+ 668              	.LBE75:
+ 483:../drivers/fsl_i2c_edma.c ****         }
+ 669              		.loc 1 483 0
+ 670 01c8 2B69     		ldr	r3, [r5, #16]
+ 671 01ca 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 672 01cc 2371     		strb	r3, [r4, #4]
+ 673 01ce A3E7     		b	.L16
+ 674              	.L72:
+ 488:../drivers/fsl_i2c_edma.c ****         {
+ 675              		.loc 1 488 0
+ 676 01d0 012B     		cmp	r3, #1
+ 677 01d2 1CD1     		bne	.L41
+ 490:../drivers/fsl_i2c_edma.c **** 
+ 678              		.loc 1 490 0
+ 679 01d4 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 680              	.LVL64:
+ 493:../drivers/fsl_i2c_edma.c **** 
+ 681              		.loc 1 493 0
+ 682 01d6 03F0EF03 		and	r3, r3, #239
+ 683              	.LVL65:
+ 496:../drivers/fsl_i2c_edma.c **** 
+ 684              		.loc 1 496 0
+ 685 01da 43F00803 		orr	r3, r3, #8
+ 686              	.LVL66:
+ 498:../drivers/fsl_i2c_edma.c **** 
+ 687              		.loc 1 498 0
+ 688 01de A370     		strb	r3, [r4, #2]
+ 501:../drivers/fsl_i2c_edma.c ****         }
+ 689              		.loc 1 501 0
+ 690 01e0 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
+ 691              	.LVL67:
+ 692 01e2 DBB2     		uxtb	r3, r3
+ 693 01e4 8DF80730 		strb	r3, [sp, #7]
+ 694              	.LVL68:
+ 695              	.L43:
+ 509:../drivers/fsl_i2c_edma.c ****         {
+ 696              		.loc 1 509 0 discriminator 1
+ 697 01e8 E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
+ 698 01ea 9A07     		lsls	r2, r3, #30
+ 699 01ec FCD5     		bpl	.L43
+ 514:../drivers/fsl_i2c_edma.c **** 
+ 700              		.loc 1 514 0
+ 701 01ee 0223     		movs	r3, #2
+ 702 01f0 E370     		strb	r3, [r4, #3]
+ 517:../drivers/fsl_i2c_edma.c ****         {
+ 703              		.loc 1 517 0
+ 704 01f2 2B68     		ldr	r3, [r5]
+ 705 01f4 5B07     		lsls	r3, r3, #29
+ 706 01f6 0ED4     		bmi	.L44
+ 519:../drivers/fsl_i2c_edma.c ****         }
+ 707              		.loc 1 519 0
+ 708 01f8 2046     		mov	r0, r4
+ 709 01fa FFF7FEFF 		bl	I2C_MasterStop
+ 710              	.LVL69:
+ 711 01fe 0646     		mov	r6, r0
+ 712              	.LVL70:
+ 713              	.L45:
+ 528:../drivers/fsl_i2c_edma.c ****         {
+ 714              		.loc 1 528 0
+ 715 0200 6B79     		ldrb	r3, [r5, #5]	@ zero_extendqisi2
+ 716 0202 012B     		cmp	r3, #1
+ 530:../drivers/fsl_i2c_edma.c ****         }
+ 717              		.loc 1 530 0
+ 718 0204 02BF     		ittt	eq
+ 719 0206 2B69     		ldreq	r3, [r5, #16]
+ 720 0208 2279     		ldrbeq	r2, [r4, #4]	@ zero_extendqisi2
+ 721 020a 1A70     		strbeq	r2, [r3]
+ 722 020c 18E0     		b	.L46
+ 723              	.LVL71:
+ 724              	.L41:
+ 505:../drivers/fsl_i2c_edma.c ****         }
+ 725              		.loc 1 505 0
+ 726 020e 2B69     		ldr	r3, [r5, #16]
+ 727 0210 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 728 0212 2371     		strb	r3, [r4, #4]
+ 729 0214 E8E7     		b	.L43
+ 730              	.L44:
+ 524:../drivers/fsl_i2c_edma.c ****         }
+ 731              		.loc 1 524 0
+ 732 0216 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 733 0218 43F01003 		orr	r3, r3, #16
+ 734 021c A370     		strb	r3, [r4, #2]
+ 735 021e EFE7     		b	.L45
+ 736              	.LVL72:
+ 737              	.L24:
+ 738              	.LBB77:
+ 739              	.LBB64:
+ 740              	.LBB59:
+ 285:../drivers/fsl_i2c_edma.c ****                 {
+ 741              		.loc 1 285 0
+ 742 0220 2046     		mov	r0, r4
+ 743 0222 FFF7FEFF 		bl	I2C_MasterStop
+ 744              	.LVL73:
+ 290:../drivers/fsl_i2c_edma.c ****                 {
+ 745              		.loc 1 290 0
+ 746 0226 6F6A     		ldr	r7, [r5, #36]
+ 283:../drivers/fsl_i2c_edma.c **** 
+ 747              		.loc 1 283 0
+ 748 0228 0028     		cmp	r0, #0
+ 749 022a 40F25146 		movw	r6, #1105
+ 750 022e 18BF     		it	ne
+ 751 0230 4FF48A66 		movne	r6, #1104
+ 752              	.LVL74:
+ 290:../drivers/fsl_i2c_edma.c ****                 {
+ 753              		.loc 1 290 0
+ 754 0234 27B1     		cbz	r7, .L46
+ 292:../drivers/fsl_i2c_edma.c ****                 }
+ 755              		.loc 1 292 0
+ 756 0236 AB6A     		ldr	r3, [r5, #40]
+ 757 0238 3246     		mov	r2, r6
+ 758 023a 2946     		mov	r1, r5
+ 759 023c 2046     		mov	r0, r4
+ 760 023e B847     		blx	r7
+ 761              	.LVL75:
+ 762              	.L46:
+ 763              	.LBE59:
+ 764              	.LBE64:
+ 765              	.LBE77:
+ 534:../drivers/fsl_i2c_edma.c ****     }
+ 766              		.loc 1 534 0
+ 767 0240 0023     		movs	r3, #0
+ 768 0242 6B77     		strb	r3, [r5, #29]
+ 769 0244 68E7     		b	.L16
+ 770              	.LVL76:
+ 771              	.L51:
+ 772              	.LBB78:
+ 773              	.LBB65:
+ 774              	.LBB60:
+ 333:../drivers/fsl_i2c_edma.c ****                 {
+ 775              		.loc 1 333 0
+ 776 0246 0646     		mov	r6, r0
+ 777              	.L21:
+ 778              	.LVL77:
+ 779              	.LBE60:
+ 780              	.LBE65:
+ 781              	.LBE78:
+ 445:../drivers/fsl_i2c_edma.c ****         {
+ 782              		.loc 1 445 0
+ 783 0248 40F24E43 		movw	r3, #1102
+ 784 024c 9E42     		cmp	r6, r3
+ 785 024e 96D0     		beq	.L36
+ 786 0250 F6E7     		b	.L46
+ 787              		.cfi_endproc
+ 788              	.LFE168:
+ 790              		.section	.text.I2C_MasterTransferGetCountEDMA,"ax",%progbits
+ 791              		.align	1
+ 792              		.global	I2C_MasterTransferGetCountEDMA
+ 793              		.syntax unified
+ 794              		.thumb
+ 795              		.thumb_func
+ 796              		.fpu fpv4-sp-d16
+ 798              	I2C_MasterTransferGetCountEDMA:
+ 799              	.LFB169:
  539:../drivers/fsl_i2c_edma.c **** 
  540:../drivers/fsl_i2c_edma.c **** status_t I2C_MasterTransferGetCountEDMA(I2C_Type *base, i2c_master_edma_handle_t *handle, size_t *c
  541:../drivers/fsl_i2c_edma.c **** {
- 803              		.loc 1 541 0
- 804              		.cfi_startproc
- 805              		@ args = 0, pretend = 0, frame = 0
- 806              		@ frame_needed = 0, uses_anonymous_args = 0
- 807              	.LVL77:
- 808 0000 70B5     		push	{r4, r5, r6, lr}
- 809              		.cfi_def_cfa_offset 16
- 810              		.cfi_offset 4, -16
- 811              		.cfi_offset 5, -12
- 812              		.cfi_offset 6, -8
- 813              		.cfi_offset 14, -4
+ 800              		.loc 1 541 0
+ 801              		.cfi_startproc
+ 802              		@ args = 0, pretend = 0, frame = 0
+ 803              		@ frame_needed = 0, uses_anonymous_args = 0
+ 804              	.LVL78:
+ 805 0000 70B5     		push	{r4, r5, r6, lr}
+ 806              		.cfi_def_cfa_offset 16
+ 807              		.cfi_offset 4, -16
+ 808              		.cfi_offset 5, -12
+ 809              		.cfi_offset 6, -8
+ 810              		.cfi_offset 14, -4
  542:../drivers/fsl_i2c_edma.c ****     assert(handle->dmaHandle);
  543:../drivers/fsl_i2c_edma.c **** 
  544:../drivers/fsl_i2c_edma.c ****     if (!count)
- 814              		.loc 1 544 0
- 815 0002 1446     		mov	r4, r2
- 816 0004 7AB1     		cbz	r2, .L84
+ 811              		.loc 1 544 0
+ 812 0002 1446     		mov	r4, r2
+ 813 0004 7AB1     		cbz	r2, .L79
  545:../drivers/fsl_i2c_edma.c ****     {
  546:../drivers/fsl_i2c_edma.c ****         return kStatus_InvalidArgument;
  547:../drivers/fsl_i2c_edma.c ****     }
  548:../drivers/fsl_i2c_edma.c **** 
  549:../drivers/fsl_i2c_edma.c ****     if (kIdleState != handle->state)
- 817              		.loc 1 549 0
- 818 0006 487F     		ldrb	r0, [r1, #29]	@ zero_extendqisi2
- 819              	.LVL78:
- 820 0008 8E69     		ldr	r6, [r1, #24]
- 821 000a 50B1     		cbz	r0, .L83
+ 814              		.loc 1 549 0
+ 815 0006 487F     		ldrb	r0, [r1, #29]	@ zero_extendqisi2
+ 816              	.LVL79:
+ 817 0008 8E69     		ldr	r6, [r1, #24]
+ 818 000a 50B1     		cbz	r0, .L78
  550:../drivers/fsl_i2c_edma.c ****     {
  551:../drivers/fsl_i2c_edma.c ****         *count = (handle->transferSize -
  552:../drivers/fsl_i2c_edma.c ****                   (uint32_t)handle->nbytes *
  553:../drivers/fsl_i2c_edma.c ****                       EDMA_GetRemainingMajorLoopCount(handle->dmaHandle->base, handle->dmaHandle->c
- 822              		.loc 1 553 0
- 823 000c 0B6A     		ldr	r3, [r1, #32]
+ 819              		.loc 1 553 0
+ 820 000c 0B6A     		ldr	r3, [r1, #32]
  552:../drivers/fsl_i2c_edma.c ****                       EDMA_GetRemainingMajorLoopCount(handle->dmaHandle->base, handle->dmaHandle->c
- 824              		.loc 1 552 0
- 825 000e 0D7F     		ldrb	r5, [r1, #28]	@ zero_extendqisi2
- 826              		.loc 1 553 0
- 827 0010 9868     		ldr	r0, [r3, #8]
- 828 0012 197C     		ldrb	r1, [r3, #16]	@ zero_extendqisi2
- 829              	.LVL79:
- 830 0014 FFF7FEFF 		bl	EDMA_GetRemainingMajorLoopCount
- 831              	.LVL80:
+ 821              		.loc 1 552 0
+ 822 000e 0D7F     		ldrb	r5, [r1, #28]	@ zero_extendqisi2
+ 823              		.loc 1 553 0
+ 824 0010 9868     		ldr	r0, [r3, #8]
+ 825 0012 197C     		ldrb	r1, [r3, #16]	@ zero_extendqisi2
+ 826              	.LVL80:
+ 827 0014 FFF7FEFF 		bl	EDMA_GetRemainingMajorLoopCount
+ 828              	.LVL81:
  551:../drivers/fsl_i2c_edma.c ****                   (uint32_t)handle->nbytes *
- 832              		.loc 1 551 0
- 833 0018 00FB1560 		mls	r0, r0, r5, r6
- 834 001c 2060     		str	r0, [r4]
+ 829              		.loc 1 551 0
+ 830 0018 00FB1560 		mls	r0, r0, r5, r6
+ 831 001c 2060     		str	r0, [r4]
  554:../drivers/fsl_i2c_edma.c ****     }
  555:../drivers/fsl_i2c_edma.c ****     else
  556:../drivers/fsl_i2c_edma.c ****     {
@@ -2029,103 +2032,107 @@
  558:../drivers/fsl_i2c_edma.c ****     }
  559:../drivers/fsl_i2c_edma.c **** 
  560:../drivers/fsl_i2c_edma.c ****     return kStatus_Success;
- 835              		.loc 1 560 0
- 836 001e 0020     		movs	r0, #0
- 837 0020 70BD     		pop	{r4, r5, r6, pc}
- 838              	.LVL81:
- 839              	.L83:
- 557:../drivers/fsl_i2c_edma.c ****     }
- 840              		.loc 1 557 0
- 841 0022 1660     		str	r6, [r2]
- 842 0024 70BD     		pop	{r4, r5, r6, pc}
- 843              	.LVL82:
- 844              	.L84:
- 546:../drivers/fsl_i2c_edma.c ****     }
- 845              		.loc 1 546 0
- 846 0026 0420     		movs	r0, #4
- 847              	.LVL83:
+ 832              		.loc 1 560 0
+ 833 001e 0020     		movs	r0, #0
+ 834              	.L76:
  561:../drivers/fsl_i2c_edma.c **** }
- 848              		.loc 1 561 0
- 849 0028 70BD     		pop	{r4, r5, r6, pc}
- 850              		.cfi_endproc
- 851              	.LFE169:
- 853              		.section	.text.I2C_MasterTransferAbortEDMA,"ax",%progbits
- 854              		.align	1
- 855              		.global	I2C_MasterTransferAbortEDMA
- 856              		.syntax unified
- 857              		.thumb
- 858              		.thumb_func
- 859              		.fpu fpv4-sp-d16
- 861              	I2C_MasterTransferAbortEDMA:
- 862              	.LFB170:
+ 835              		.loc 1 561 0
+ 836 0020 70BD     		pop	{r4, r5, r6, pc}
+ 837              	.LVL82:
+ 838              	.L78:
+ 557:../drivers/fsl_i2c_edma.c ****     }
+ 839              		.loc 1 557 0
+ 840 0022 1660     		str	r6, [r2]
+ 841 0024 FCE7     		b	.L76
+ 842              	.LVL83:
+ 843              	.L79:
+ 546:../drivers/fsl_i2c_edma.c ****     }
+ 844              		.loc 1 546 0
+ 845 0026 0420     		movs	r0, #4
+ 846              	.LVL84:
+ 847 0028 FAE7     		b	.L76
+ 848              		.cfi_endproc
+ 849              	.LFE169:
+ 851              		.section	.text.I2C_MasterTransferAbortEDMA,"ax",%progbits
+ 852              		.align	1
+ 853              		.global	I2C_MasterTransferAbortEDMA
+ 854              		.syntax unified
+ 855              		.thumb
+ 856              		.thumb_func
+ 857              		.fpu fpv4-sp-d16
+ 859              	I2C_MasterTransferAbortEDMA:
+ 860              	.LFB170:
  562:../drivers/fsl_i2c_edma.c **** 
  563:../drivers/fsl_i2c_edma.c **** void I2C_MasterTransferAbortEDMA(I2C_Type *base, i2c_master_edma_handle_t *handle)
  564:../drivers/fsl_i2c_edma.c **** {
- 863              		.loc 1 564 0
- 864              		.cfi_startproc
- 865              		@ args = 0, pretend = 0, frame = 0
- 866              		@ frame_needed = 0, uses_anonymous_args = 0
- 867              	.LVL84:
- 868 0000 38B5     		push	{r3, r4, r5, lr}
- 869              		.cfi_def_cfa_offset 16
- 870              		.cfi_offset 3, -16
- 871              		.cfi_offset 4, -12
- 872              		.cfi_offset 5, -8
- 873              		.cfi_offset 14, -4
- 874              		.loc 1 564 0
- 875 0002 0546     		mov	r5, r0
+ 861              		.loc 1 564 0
+ 862              		.cfi_startproc
+ 863              		@ args = 0, pretend = 0, frame = 0
+ 864              		@ frame_needed = 0, uses_anonymous_args = 0
+ 865              	.LVL85:
+ 866 0000 38B5     		push	{r3, r4, r5, lr}
+ 867              		.cfi_def_cfa_offset 16
+ 868              		.cfi_offset 3, -16
+ 869              		.cfi_offset 4, -12
+ 870              		.cfi_offset 5, -8
+ 871              		.cfi_offset 14, -4
+ 872              		.loc 1 564 0
+ 873 0002 0546     		mov	r5, r0
  565:../drivers/fsl_i2c_edma.c ****     EDMA_AbortTransfer(handle->dmaHandle);
- 876              		.loc 1 565 0
- 877 0004 086A     		ldr	r0, [r1, #32]
- 878              	.LVL85:
+ 874              		.loc 1 565 0
+ 875 0004 086A     		ldr	r0, [r1, #32]
+ 876              	.LVL86:
  564:../drivers/fsl_i2c_edma.c ****     EDMA_AbortTransfer(handle->dmaHandle);
- 879              		.loc 1 564 0
- 880 0006 0C46     		mov	r4, r1
- 881              		.loc 1 565 0
- 882 0008 FFF7FEFF 		bl	EDMA_AbortTransfer
- 883              	.LVL86:
- 884              	.LBB79:
- 885              	.LBB80:
- 886              		.loc 2 529 0
- 887 000c AB78     		ldrb	r3, [r5, #2]	@ zero_extendqisi2
- 888 000e 03F0FE03 		and	r3, r3, #254
- 889 0012 AB70     		strb	r3, [r5, #2]
- 890              	.LVL87:
- 891              	.LBE80:
- 892              	.LBE79:
+ 877              		.loc 1 564 0
+ 878 0006 0C46     		mov	r4, r1
+ 879              		.loc 1 565 0
+ 880 0008 FFF7FEFF 		bl	EDMA_AbortTransfer
+ 881              	.LVL87:
+ 882              	.LBB79:
+ 883              	.LBB80:
+ 884              		.loc 2 529 0
+ 885 000c AB78     		ldrb	r3, [r5, #2]	@ zero_extendqisi2
+ 886 000e 03F0FE03 		and	r3, r3, #254
+ 887 0012 AB70     		strb	r3, [r5, #2]
+ 888              	.LVL88:
+ 889              	.LBE80:
+ 890              	.LBE79:
  566:../drivers/fsl_i2c_edma.c **** 
  567:../drivers/fsl_i2c_edma.c ****     /* Disable dma transfer. */
  568:../drivers/fsl_i2c_edma.c ****     I2C_EnableDMA(base, false);
  569:../drivers/fsl_i2c_edma.c **** 
  570:../drivers/fsl_i2c_edma.c ****     /* Reset the state to idle. */
  571:../drivers/fsl_i2c_edma.c ****     handle->state = kIdleState;
- 893              		.loc 1 571 0
- 894 0014 0023     		movs	r3, #0
- 895 0016 6377     		strb	r3, [r4, #29]
- 896 0018 38BD     		pop	{r3, r4, r5, pc}
- 897              		.cfi_endproc
- 898              	.LFE170:
- 900              		.section	.bss.s_edmaPrivateHandle,"aw",%nobits
- 901              		.align	2
- 902              		.set	.LANCHOR0,. + 0
- 905              	s_edmaPrivateHandle:
- 906 0000 00000000 		.space	24
- 906      00000000 
- 906      00000000 
- 906      00000000 
- 906      00000000 
- 907              		.text
- 908              	.Letext0:
- 909              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 910              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 911              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 912              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 913              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 914              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 915              		.file 9 "../CMSIS/core_cm4.h"
- 916              		.file 10 "../CMSIS/system_MK64F12.h"
- 917              		.file 11 "../CMSIS/MK64F12.h"
- 918              		.file 12 "../drivers/fsl_common.h"
- 919              		.file 13 "../drivers/fsl_clock.h"
- 920              		.file 14 "../drivers/fsl_edma.h"
- 921              		.file 15 "../drivers/fsl_i2c_edma.h"
+ 891              		.loc 1 571 0
+ 892 0014 0023     		movs	r3, #0
+ 893 0016 6377     		strb	r3, [r4, #29]
+ 572:../drivers/fsl_i2c_edma.c **** }
+ 894              		.loc 1 572 0
+ 895 0018 38BD     		pop	{r3, r4, r5, pc}
+ 896              		.cfi_endproc
+ 897              	.LFE170:
+ 899              		.section	.bss.s_edmaPrivateHandle,"aw",%nobits
+ 900              		.align	2
+ 901              		.set	.LANCHOR0,. + 0
+ 904              	s_edmaPrivateHandle:
+ 905 0000 00000000 		.space	24
+ 905      00000000 
+ 905      00000000 
+ 905      00000000 
+ 905      00000000 
+ 906              		.text
+ 907              	.Letext0:
+ 908              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 909              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 910              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 911              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 912              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 913              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 914              		.file 9 "../CMSIS/core_cm4.h"
+ 915              		.file 10 "../CMSIS/system_MK64F12.h"
+ 916              		.file 11 "../CMSIS/MK64F12.h"
+ 917              		.file 12 "../drivers/fsl_common.h"
+ 918              		.file 13 "../drivers/fsl_clock.h"
+ 919              		.file 14 "../drivers/fsl_edma.h"
+ 920              		.file 15 "../drivers/fsl_i2c_edma.h"
+ 921              		.file 16 "<built-in>"

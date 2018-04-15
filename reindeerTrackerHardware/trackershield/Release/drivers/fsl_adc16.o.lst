@@ -1003,78 +1003,80 @@
  168              		.loc 1 131 0
  169 009c 4362     		str	r3, [r0, #36]
  170              	.LVL18:
- 171 009e 30BD     		pop	{r4, r5, pc}
- 172              	.LVL19:
- 173              	.L10:
- 174              	.LBB15:
- 175              	.LBB11:
-  66:../drivers/fsl_adc16.c ****     {
- 176              		.loc 1 66 0
- 177 00a0 0023     		movs	r3, #0
- 178 00a2 B7E7     		b	.L2
- 179              	.LVL20:
- 180              	.L8:
- 181              	.LBE11:
- 182              	.LBE15:
- 183              		.loc 1 131 0
- 184 00a4 436A     		ldr	r3, [r0, #36]
- 185 00a6 23F00803 		bic	r3, r3, #8
- 186 00aa F7E7     		b	.L27
- 187              	.L29:
- 188              		.align	2
- 189              	.L28:
- 190 00ac 00B00340 		.word	1073983488
- 191 00b0 00000000 		.word	.LANCHOR0
- 192              		.cfi_endproc
- 193              	.LFE152:
- 195              		.section	.text.ADC16_Deinit,"ax",%progbits
- 196              		.align	1
- 197              		.global	ADC16_Deinit
- 198              		.syntax unified
- 199              		.thumb
- 200              		.thumb_func
- 201              		.fpu fpv4-sp-d16
- 203              	ADC16_Deinit:
- 204              	.LFB153:
  132:../drivers/fsl_adc16.c ****     }
  133:../drivers/fsl_adc16.c **** }
+ 171              		.loc 1 133 0
+ 172 009e 30BD     		pop	{r4, r5, pc}
+ 173              	.LVL19:
+ 174              	.L10:
+ 175              	.LBB15:
+ 176              	.LBB11:
+  66:../drivers/fsl_adc16.c ****     {
+ 177              		.loc 1 66 0
+ 178 00a0 0023     		movs	r3, #0
+ 179 00a2 B7E7     		b	.L2
+ 180              	.LVL20:
+ 181              	.L8:
+ 182              	.LBE11:
+ 183              	.LBE15:
+ 131:../drivers/fsl_adc16.c ****     }
+ 184              		.loc 1 131 0
+ 185 00a4 436A     		ldr	r3, [r0, #36]
+ 186 00a6 23F00803 		bic	r3, r3, #8
+ 187 00aa F7E7     		b	.L27
+ 188              	.L29:
+ 189              		.align	2
+ 190              	.L28:
+ 191 00ac 00B00340 		.word	1073983488
+ 192 00b0 00000000 		.word	.LANCHOR0
+ 193              		.cfi_endproc
+ 194              	.LFE152:
+ 196              		.section	.text.ADC16_Deinit,"ax",%progbits
+ 197              		.align	1
+ 198              		.global	ADC16_Deinit
+ 199              		.syntax unified
+ 200              		.thumb
+ 201              		.thumb_func
+ 202              		.fpu fpv4-sp-d16
+ 204              	ADC16_Deinit:
+ 205              	.LFB153:
  134:../drivers/fsl_adc16.c **** 
  135:../drivers/fsl_adc16.c **** void ADC16_Deinit(ADC_Type *base)
  136:../drivers/fsl_adc16.c **** {
- 205              		.loc 1 136 0
- 206              		.cfi_startproc
- 207              		@ args = 0, pretend = 0, frame = 0
- 208              		@ frame_needed = 0, uses_anonymous_args = 0
- 209              		@ link register save eliminated.
- 210              	.LVL21:
- 211              	.LBB20:
- 212              	.LBB21:
+ 206              		.loc 1 136 0
+ 207              		.cfi_startproc
+ 208              		@ args = 0, pretend = 0, frame = 0
+ 209              		@ frame_needed = 0, uses_anonymous_args = 0
+ 210              		@ link register save eliminated.
+ 211              	.LVL21:
+ 212              	.LBB20:
+ 213              	.LBB21:
   68:../drivers/fsl_adc16.c ****         {
- 213              		.loc 1 68 0
- 214 0000 0D4B     		ldr	r3, .L34
- 215 0002 9842     		cmp	r0, r3
- 216 0004 16D0     		beq	.L32
- 217              	.LVL22:
+ 214              		.loc 1 68 0
+ 215 0000 0D4B     		ldr	r3, .L34
+ 216 0002 9842     		cmp	r0, r3
+ 217 0004 16D0     		beq	.L32
+ 218              	.LVL22:
   66:../drivers/fsl_adc16.c ****     {
- 218              		.loc 1 66 0
- 219 0006 03F50023 		add	r3, r3, #524288
- 220 000a 9842     		cmp	r0, r3
- 221 000c 0CBF     		ite	eq
- 222 000e 0120     		moveq	r0, #1
- 223 0010 0220     		movne	r0, #2
- 224              	.LVL23:
- 225              	.L31:
- 226              	.LBE21:
- 227              	.LBE20:
+ 219              		.loc 1 66 0
+ 220 0006 03F50023 		add	r3, r3, #524288
+ 221 000a 9842     		cmp	r0, r3
+ 222 000c 0CBF     		ite	eq
+ 223 000e 0120     		moveq	r0, #1
+ 224 0010 0220     		movne	r0, #2
+ 225              	.LVL23:
+ 226              	.L31:
+ 227              	.LBE21:
+ 228              	.LBE20:
  137:../drivers/fsl_adc16.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
  138:../drivers/fsl_adc16.c ****     /* Disable the clock. */
  139:../drivers/fsl_adc16.c ****     CLOCK_DisableClock(s_adc16Clocks[ADC16_GetInstance(base)]);
- 228              		.loc 1 139 0
- 229 0012 0A4B     		ldr	r3, .L34+4
- 230 0014 53F82020 		ldr	r2, [r3, r0, lsl #2]
- 231              	.LVL24:
- 232              	.LBB23:
- 233              	.LBB24:
+ 229              		.loc 1 139 0
+ 230 0012 0A4B     		ldr	r3, .L34+4
+ 231 0014 53F82020 		ldr	r2, [r3, r0, lsl #2]
+ 232              	.LVL24:
+ 233              	.LBB23:
+ 234              	.LBB24:
  696:../drivers/fsl_clock.h **** }
  697:../drivers/fsl_clock.h **** 
  698:../drivers/fsl_clock.h **** /*!
@@ -1085,116 +1087,118 @@
  703:../drivers/fsl_clock.h **** static inline void CLOCK_DisableClock(clock_ip_name_t name)
  704:../drivers/fsl_clock.h **** {
  705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
- 234              		.loc 2 705 0
- 235 0018 130C     		lsrs	r3, r2, #16
- 236 001a 03F18043 		add	r3, r3, #1073741824
- 237 001e 03F58E23 		add	r3, r3, #290816
+ 235              		.loc 2 705 0
+ 236 0018 130C     		lsrs	r3, r2, #16
+ 237 001a 03F18043 		add	r3, r3, #1073741824
+ 238 001e 03F58E23 		add	r3, r3, #290816
  706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
- 238              		.loc 2 706 0
- 239 0022 92B2     		uxth	r2, r2
- 240              	.LVL25:
- 241 0024 1968     		ldr	r1, [r3]
- 242 0026 0120     		movs	r0, #1
- 243              	.LVL26:
- 244 0028 00FA02F2 		lsl	r2, r0, r2
- 245 002c 21EA0202 		bic	r2, r1, r2
- 246 0030 1A60     		str	r2, [r3]
- 247 0032 7047     		bx	lr
- 248              	.LVL27:
- 249              	.L32:
- 250              	.LBE24:
- 251              	.LBE23:
- 252              	.LBB25:
- 253              	.LBB22:
-  66:../drivers/fsl_adc16.c ****     {
- 254              		.loc 1 66 0
- 255 0034 0020     		movs	r0, #0
- 256              	.LVL28:
- 257 0036 ECE7     		b	.L31
- 258              	.L35:
- 259              		.align	2
- 260              	.L34:
- 261 0038 00B00340 		.word	1073983488
- 262 003c 00000000 		.word	.LANCHOR0
- 263              	.LBE22:
- 264              	.LBE25:
- 265              		.cfi_endproc
- 266              	.LFE153:
- 268              		.section	.text.ADC16_GetDefaultConfig,"ax",%progbits
- 269              		.align	1
- 270              		.global	ADC16_GetDefaultConfig
- 271              		.syntax unified
- 272              		.thumb
- 273              		.thumb_func
- 274              		.fpu fpv4-sp-d16
- 276              	ADC16_GetDefaultConfig:
- 277              	.LFB154:
+ 239              		.loc 2 706 0
+ 240 0022 92B2     		uxth	r2, r2
+ 241              	.LVL25:
+ 242 0024 1968     		ldr	r1, [r3]
+ 243 0026 0120     		movs	r0, #1
+ 244              	.LVL26:
+ 245 0028 00FA02F2 		lsl	r2, r0, r2
+ 246 002c 21EA0202 		bic	r2, r1, r2
+ 247 0030 1A60     		str	r2, [r3]
+ 248              	.LBE24:
+ 249              	.LBE23:
  140:../drivers/fsl_adc16.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
  141:../drivers/fsl_adc16.c **** }
+ 250              		.loc 1 141 0
+ 251 0032 7047     		bx	lr
+ 252              	.LVL27:
+ 253              	.L32:
+ 254              	.LBB25:
+ 255              	.LBB22:
+  66:../drivers/fsl_adc16.c ****     {
+ 256              		.loc 1 66 0
+ 257 0034 0020     		movs	r0, #0
+ 258              	.LVL28:
+ 259 0036 ECE7     		b	.L31
+ 260              	.L35:
+ 261              		.align	2
+ 262              	.L34:
+ 263 0038 00B00340 		.word	1073983488
+ 264 003c 00000000 		.word	.LANCHOR0
+ 265              	.LBE22:
+ 266              	.LBE25:
+ 267              		.cfi_endproc
+ 268              	.LFE153:
+ 270              		.section	.text.ADC16_GetDefaultConfig,"ax",%progbits
+ 271              		.align	1
+ 272              		.global	ADC16_GetDefaultConfig
+ 273              		.syntax unified
+ 274              		.thumb
+ 275              		.thumb_func
+ 276              		.fpu fpv4-sp-d16
+ 278              	ADC16_GetDefaultConfig:
+ 279              	.LFB154:
  142:../drivers/fsl_adc16.c **** 
  143:../drivers/fsl_adc16.c **** void ADC16_GetDefaultConfig(adc16_config_t *config)
  144:../drivers/fsl_adc16.c **** {
- 278              		.loc 1 144 0
- 279              		.cfi_startproc
- 280              		@ args = 0, pretend = 0, frame = 0
- 281              		@ frame_needed = 0, uses_anonymous_args = 0
- 282              		@ link register save eliminated.
- 283              	.LVL29:
+ 280              		.loc 1 144 0
+ 281              		.cfi_startproc
+ 282              		@ args = 0, pretend = 0, frame = 0
+ 283              		@ frame_needed = 0, uses_anonymous_args = 0
+ 284              		@ link register save eliminated.
+ 285              	.LVL29:
  145:../drivers/fsl_adc16.c ****     assert(NULL != config);
  146:../drivers/fsl_adc16.c **** 
  147:../drivers/fsl_adc16.c ****     config->referenceVoltageSource = kADC16_ReferenceVoltageSourceVref;
  148:../drivers/fsl_adc16.c ****     config->clockSource = kADC16_ClockSourceAsynchronousClock;
  149:../drivers/fsl_adc16.c ****     config->enableAsynchronousClock = true;
- 284              		.loc 1 149 0
- 285 0000 0122     		movs	r2, #1
+ 286              		.loc 1 149 0
+ 287 0000 0122     		movs	r2, #1
  147:../drivers/fsl_adc16.c ****     config->clockSource = kADC16_ClockSourceAsynchronousClock;
- 286              		.loc 1 147 0
- 287 0002 0023     		movs	r3, #0
+ 288              		.loc 1 147 0
+ 289 0002 0023     		movs	r3, #0
  148:../drivers/fsl_adc16.c ****     config->enableAsynchronousClock = true;
- 288              		.loc 1 148 0
- 289 0004 0321     		movs	r1, #3
- 290              		.loc 1 149 0
- 291 0006 8270     		strb	r2, [r0, #2]
+ 290              		.loc 1 148 0
+ 291 0004 0321     		movs	r1, #3
+ 292              		.loc 1 149 0
+ 293 0006 8270     		strb	r2, [r0, #2]
  150:../drivers/fsl_adc16.c ****     config->clockDivider = kADC16_ClockDivider8;
  151:../drivers/fsl_adc16.c ****     config->resolution = kADC16_ResolutionSE12Bit;
- 292              		.loc 1 151 0
- 293 0008 0271     		strb	r2, [r0, #4]
+ 294              		.loc 1 151 0
+ 295 0008 0271     		strb	r2, [r0, #4]
  152:../drivers/fsl_adc16.c ****     config->longSampleMode = kADC16_LongSampleDisabled;
- 294              		.loc 1 152 0
- 295 000a 0422     		movs	r2, #4
+ 296              		.loc 1 152 0
+ 297 000a 0422     		movs	r2, #4
  147:../drivers/fsl_adc16.c ****     config->clockSource = kADC16_ClockSourceAsynchronousClock;
- 296              		.loc 1 147 0
- 297 000c 0370     		strb	r3, [r0]
+ 298              		.loc 1 147 0
+ 299 000c 0370     		strb	r3, [r0]
  148:../drivers/fsl_adc16.c ****     config->enableAsynchronousClock = true;
- 298              		.loc 1 148 0
- 299 000e 4170     		strb	r1, [r0, #1]
+ 300              		.loc 1 148 0
+ 301 000e 4170     		strb	r1, [r0, #1]
  150:../drivers/fsl_adc16.c ****     config->resolution = kADC16_ResolutionSE12Bit;
- 300              		.loc 1 150 0
- 301 0010 C170     		strb	r1, [r0, #3]
- 302              		.loc 1 152 0
- 303 0012 4271     		strb	r2, [r0, #5]
+ 302              		.loc 1 150 0
+ 303 0010 C170     		strb	r1, [r0, #3]
+ 304              		.loc 1 152 0
+ 305 0012 4271     		strb	r2, [r0, #5]
  153:../drivers/fsl_adc16.c ****     config->enableHighSpeed = false;
- 304              		.loc 1 153 0
- 305 0014 8371     		strb	r3, [r0, #6]
+ 306              		.loc 1 153 0
+ 307 0014 8371     		strb	r3, [r0, #6]
  154:../drivers/fsl_adc16.c ****     config->enableLowPower = false;
- 306              		.loc 1 154 0
- 307 0016 C371     		strb	r3, [r0, #7]
+ 308              		.loc 1 154 0
+ 309 0016 C371     		strb	r3, [r0, #7]
  155:../drivers/fsl_adc16.c ****     config->enableContinuousConversion = false;
- 308              		.loc 1 155 0
- 309 0018 0372     		strb	r3, [r0, #8]
- 310 001a 7047     		bx	lr
- 311              		.cfi_endproc
- 312              	.LFE154:
- 314              		.section	.text.ADC16_SetChannelMuxMode,"ax",%progbits
- 315              		.align	1
- 316              		.global	ADC16_SetChannelMuxMode
- 317              		.syntax unified
- 318              		.thumb
- 319              		.thumb_func
- 320              		.fpu fpv4-sp-d16
- 322              	ADC16_SetChannelMuxMode:
- 323              	.LFB156:
+ 310              		.loc 1 155 0
+ 311 0018 0372     		strb	r3, [r0, #8]
  156:../drivers/fsl_adc16.c **** }
+ 312              		.loc 1 156 0
+ 313 001a 7047     		bx	lr
+ 314              		.cfi_endproc
+ 315              	.LFE154:
+ 317              		.section	.text.ADC16_SetChannelMuxMode,"ax",%progbits
+ 318              		.align	1
+ 319              		.global	ADC16_SetChannelMuxMode
+ 320              		.syntax unified
+ 321              		.thumb
+ 322              		.thumb_func
+ 323              		.fpu fpv4-sp-d16
+ 325              	ADC16_SetChannelMuxMode:
+ 326              	.LFB156:
  157:../drivers/fsl_adc16.c **** 
  158:../drivers/fsl_adc16.c **** #if defined(FSL_FEATURE_ADC16_HAS_CALIBRATION) && FSL_FEATURE_ADC16_HAS_CALIBRATION
  159:../drivers/fsl_adc16.c **** status_t ADC16_DoAutoCalibration(ADC_Type *base)
@@ -1257,101 +1261,104 @@
  216:../drivers/fsl_adc16.c **** #if defined(FSL_FEATURE_ADC16_HAS_MUX_SELECT) && FSL_FEATURE_ADC16_HAS_MUX_SELECT
  217:../drivers/fsl_adc16.c **** void ADC16_SetChannelMuxMode(ADC_Type *base, adc16_channel_mux_mode_t mode)
  218:../drivers/fsl_adc16.c **** {
- 324              		.loc 1 218 0
- 325              		.cfi_startproc
- 326              		@ args = 0, pretend = 0, frame = 0
- 327              		@ frame_needed = 0, uses_anonymous_args = 0
- 328              		@ link register save eliminated.
- 329              	.LVL30:
+ 327              		.loc 1 218 0
+ 328              		.cfi_startproc
+ 329              		@ args = 0, pretend = 0, frame = 0
+ 330              		@ frame_needed = 0, uses_anonymous_args = 0
+ 331              		@ link register save eliminated.
+ 332              	.LVL30:
  219:../drivers/fsl_adc16.c ****     if (kADC16_ChannelMuxA == mode)
  220:../drivers/fsl_adc16.c ****     {
  221:../drivers/fsl_adc16.c ****         base->CFG2 &= ~ADC_CFG2_MUXSEL_MASK;
- 330              		.loc 1 221 0
- 331 0000 C368     		ldr	r3, [r0, #12]
+ 333              		.loc 1 221 0
+ 334 0000 C368     		ldr	r3, [r0, #12]
  219:../drivers/fsl_adc16.c ****     if (kADC16_ChannelMuxA == mode)
- 332              		.loc 1 219 0
- 333 0002 19B9     		cbnz	r1, .L38
- 334              		.loc 1 221 0
- 335 0004 23F01003 		bic	r3, r3, #16
- 336              	.L40:
+ 335              		.loc 1 219 0
+ 336 0002 19B9     		cbnz	r1, .L38
+ 337              		.loc 1 221 0
+ 338 0004 23F01003 		bic	r3, r3, #16
+ 339              	.L40:
  222:../drivers/fsl_adc16.c ****     }
  223:../drivers/fsl_adc16.c ****     else /* kADC16_ChannelMuxB. */
  224:../drivers/fsl_adc16.c ****     {
  225:../drivers/fsl_adc16.c ****         base->CFG2 |= ADC_CFG2_MUXSEL_MASK;
- 337              		.loc 1 225 0
- 338 0008 C360     		str	r3, [r0, #12]
- 339 000a 7047     		bx	lr
- 340              	.L38:
- 341 000c 43F01003 		orr	r3, r3, #16
- 342 0010 FAE7     		b	.L40
- 343              		.cfi_endproc
- 344              	.LFE156:
- 346              		.section	.text.ADC16_SetHardwareCompareConfig,"ax",%progbits
- 347              		.align	1
- 348              		.global	ADC16_SetHardwareCompareConfig
- 349              		.syntax unified
- 350              		.thumb
- 351              		.thumb_func
- 352              		.fpu fpv4-sp-d16
- 354              	ADC16_SetHardwareCompareConfig:
- 355              	.LFB157:
+ 340              		.loc 1 225 0
+ 341 0008 C360     		str	r3, [r0, #12]
  226:../drivers/fsl_adc16.c ****     }
  227:../drivers/fsl_adc16.c **** }
+ 342              		.loc 1 227 0
+ 343 000a 7047     		bx	lr
+ 344              	.L38:
+ 225:../drivers/fsl_adc16.c ****     }
+ 345              		.loc 1 225 0
+ 346 000c 43F01003 		orr	r3, r3, #16
+ 347 0010 FAE7     		b	.L40
+ 348              		.cfi_endproc
+ 349              	.LFE156:
+ 351              		.section	.text.ADC16_SetHardwareCompareConfig,"ax",%progbits
+ 352              		.align	1
+ 353              		.global	ADC16_SetHardwareCompareConfig
+ 354              		.syntax unified
+ 355              		.thumb
+ 356              		.thumb_func
+ 357              		.fpu fpv4-sp-d16
+ 359              	ADC16_SetHardwareCompareConfig:
+ 360              	.LFB157:
  228:../drivers/fsl_adc16.c **** #endif /* FSL_FEATURE_ADC16_HAS_MUX_SELECT */
  229:../drivers/fsl_adc16.c **** 
  230:../drivers/fsl_adc16.c **** void ADC16_SetHardwareCompareConfig(ADC_Type *base, const adc16_hardware_compare_config_t *config)
  231:../drivers/fsl_adc16.c **** {
- 356              		.loc 1 231 0
- 357              		.cfi_startproc
- 358              		@ args = 0, pretend = 0, frame = 0
- 359              		@ frame_needed = 0, uses_anonymous_args = 0
- 360              		@ link register save eliminated.
- 361              	.LVL31:
+ 361              		.loc 1 231 0
+ 362              		.cfi_startproc
+ 363              		@ args = 0, pretend = 0, frame = 0
+ 364              		@ frame_needed = 0, uses_anonymous_args = 0
+ 365              		@ link register save eliminated.
+ 366              	.LVL31:
  232:../drivers/fsl_adc16.c ****     uint32_t tmp32 = base->SC2 & ~(ADC_SC2_ACFE_MASK | ADC_SC2_ACFGT_MASK | ADC_SC2_ACREN_MASK);
- 362              		.loc 1 232 0
- 363 0000 036A     		ldr	r3, [r0, #32]
- 364 0002 23F03803 		bic	r3, r3, #56
- 365              	.LVL32:
+ 367              		.loc 1 232 0
+ 368 0000 036A     		ldr	r3, [r0, #32]
+ 369 0002 23F03803 		bic	r3, r3, #56
+ 370              	.LVL32:
  233:../drivers/fsl_adc16.c **** 
  234:../drivers/fsl_adc16.c ****     if (!config) /* Pass "NULL" to disable the feature. */
- 366              		.loc 1 234 0
- 367 0006 09B9     		cbnz	r1, .L42
+ 371              		.loc 1 234 0
+ 372 0006 09B9     		cbnz	r1, .L42
  235:../drivers/fsl_adc16.c ****     {
  236:../drivers/fsl_adc16.c ****         base->SC2 = tmp32;
- 368              		.loc 1 236 0
- 369 0008 0362     		str	r3, [r0, #32]
+ 373              		.loc 1 236 0
+ 374 0008 0362     		str	r3, [r0, #32]
  237:../drivers/fsl_adc16.c ****         return;
- 370              		.loc 1 237 0
- 371 000a 7047     		bx	lr
- 372              	.L42:
- 373              	.LVL33:
+ 375              		.loc 1 237 0
+ 376 000a 7047     		bx	lr
+ 377              	.L42:
+ 378              	.LVL33:
  238:../drivers/fsl_adc16.c ****     }
  239:../drivers/fsl_adc16.c ****     /* Enable the feature. */
  240:../drivers/fsl_adc16.c ****     tmp32 |= ADC_SC2_ACFE_MASK;
  241:../drivers/fsl_adc16.c **** 
  242:../drivers/fsl_adc16.c ****     /* Select the hardware compare working mode. */
  243:../drivers/fsl_adc16.c ****     switch (config->hardwareCompareMode)
- 374              		.loc 1 243 0
- 375 000c 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
- 376 000e 022A     		cmp	r2, #2
- 377 0010 0DD0     		beq	.L45
- 378 0012 032A     		cmp	r2, #3
- 379 0014 0ED0     		beq	.L46
- 380 0016 012A     		cmp	r2, #1
+ 379              		.loc 1 243 0
+ 380 000c 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 381 000e 022A     		cmp	r2, #2
+ 382 0010 0DD0     		beq	.L45
+ 383 0012 032A     		cmp	r2, #3
+ 384 0014 0ED0     		beq	.L46
+ 385 0016 012A     		cmp	r2, #1
  240:../drivers/fsl_adc16.c **** 
- 381              		.loc 1 240 0
- 382 0018 14BF     		ite	ne
- 383 001a 43F02003 		orrne	r3, r3, #32
- 384              	.LVL34:
+ 386              		.loc 1 240 0
+ 387 0018 14BF     		ite	ne
+ 388 001a 43F02003 		orrne	r3, r3, #32
+ 389              	.LVL34:
  244:../drivers/fsl_adc16.c ****     {
  245:../drivers/fsl_adc16.c ****         case kADC16_HardwareCompareMode0:
  246:../drivers/fsl_adc16.c ****             break;
  247:../drivers/fsl_adc16.c ****         case kADC16_HardwareCompareMode1:
  248:../drivers/fsl_adc16.c ****             tmp32 |= ADC_SC2_ACFGT_MASK;
- 385              		.loc 1 248 0
- 386 001e 43F03003 		orreq	r3, r3, #48
- 387              	.LVL35:
- 388              	.L48:
+ 390              		.loc 1 248 0
+ 391 001e 43F03003 		orreq	r3, r3, #48
+ 392              	.LVL35:
+ 393              	.L48:
  249:../drivers/fsl_adc16.c ****             break;
  250:../drivers/fsl_adc16.c ****         case kADC16_HardwareCompareMode2:
  251:../drivers/fsl_adc16.c ****             tmp32 |= ADC_SC2_ACREN_MASK;
@@ -1363,101 +1370,103 @@
  257:../drivers/fsl_adc16.c ****             break;
  258:../drivers/fsl_adc16.c ****     }
  259:../drivers/fsl_adc16.c ****     base->SC2 = tmp32;
- 389              		.loc 1 259 0
- 390 0022 0362     		str	r3, [r0, #32]
+ 394              		.loc 1 259 0
+ 395 0022 0362     		str	r3, [r0, #32]
  260:../drivers/fsl_adc16.c **** 
  261:../drivers/fsl_adc16.c ****     /* Load the compare values. */
  262:../drivers/fsl_adc16.c ****     base->CV1 = ADC_CV1_CV(config->value1);
- 391              		.loc 1 262 0
- 392 0024 4B88     		ldrh	r3, [r1, #2]
- 393              	.LVL36:
- 394 0026 8361     		str	r3, [r0, #24]
- 395              	.LVL37:
+ 396              		.loc 1 262 0
+ 397 0024 4B88     		ldrh	r3, [r1, #2]
+ 398              	.LVL36:
+ 399 0026 8361     		str	r3, [r0, #24]
+ 400              	.LVL37:
  263:../drivers/fsl_adc16.c ****     base->CV2 = ADC_CV2_CV(config->value2);
- 396              		.loc 1 263 0
- 397 0028 8B88     		ldrh	r3, [r1, #4]
- 398 002a C361     		str	r3, [r0, #28]
- 399 002c 7047     		bx	lr
- 400              	.LVL38:
- 401              	.L45:
- 251:../drivers/fsl_adc16.c ****             break;
- 402              		.loc 1 251 0
- 403 002e 43F02803 		orr	r3, r3, #40
- 404              	.LVL39:
- 252:../drivers/fsl_adc16.c ****         case kADC16_HardwareCompareMode3:
- 405              		.loc 1 252 0
- 406 0032 F6E7     		b	.L48
- 407              	.LVL40:
- 408              	.L46:
- 254:../drivers/fsl_adc16.c ****             break;
- 409              		.loc 1 254 0
- 410 0034 43F03803 		orr	r3, r3, #56
- 411              	.LVL41:
- 255:../drivers/fsl_adc16.c ****         default:
- 412              		.loc 1 255 0
- 413 0038 F3E7     		b	.L48
- 414              		.cfi_endproc
- 415              	.LFE157:
- 417              		.section	.text.ADC16_SetHardwareAverage,"ax",%progbits
- 418              		.align	1
- 419              		.global	ADC16_SetHardwareAverage
- 420              		.syntax unified
- 421              		.thumb
- 422              		.thumb_func
- 423              		.fpu fpv4-sp-d16
- 425              	ADC16_SetHardwareAverage:
- 426              	.LFB158:
+ 401              		.loc 1 263 0
+ 402 0028 8B88     		ldrh	r3, [r1, #4]
+ 403 002a C361     		str	r3, [r0, #28]
  264:../drivers/fsl_adc16.c **** }
+ 404              		.loc 1 264 0
+ 405 002c 7047     		bx	lr
+ 406              	.LVL38:
+ 407              	.L45:
+ 251:../drivers/fsl_adc16.c ****             break;
+ 408              		.loc 1 251 0
+ 409 002e 43F02803 		orr	r3, r3, #40
+ 410              	.LVL39:
+ 252:../drivers/fsl_adc16.c ****         case kADC16_HardwareCompareMode3:
+ 411              		.loc 1 252 0
+ 412 0032 F6E7     		b	.L48
+ 413              	.LVL40:
+ 414              	.L46:
+ 254:../drivers/fsl_adc16.c ****             break;
+ 415              		.loc 1 254 0
+ 416 0034 43F03803 		orr	r3, r3, #56
+ 417              	.LVL41:
+ 255:../drivers/fsl_adc16.c ****         default:
+ 418              		.loc 1 255 0
+ 419 0038 F3E7     		b	.L48
+ 420              		.cfi_endproc
+ 421              	.LFE157:
+ 423              		.section	.text.ADC16_SetHardwareAverage,"ax",%progbits
+ 424              		.align	1
+ 425              		.global	ADC16_SetHardwareAverage
+ 426              		.syntax unified
+ 427              		.thumb
+ 428              		.thumb_func
+ 429              		.fpu fpv4-sp-d16
+ 431              	ADC16_SetHardwareAverage:
+ 432              	.LFB158:
  265:../drivers/fsl_adc16.c **** 
  266:../drivers/fsl_adc16.c **** #if defined(FSL_FEATURE_ADC16_HAS_HW_AVERAGE) && FSL_FEATURE_ADC16_HAS_HW_AVERAGE
  267:../drivers/fsl_adc16.c **** void ADC16_SetHardwareAverage(ADC_Type *base, adc16_hardware_average_mode_t mode)
  268:../drivers/fsl_adc16.c **** {
- 427              		.loc 1 268 0
- 428              		.cfi_startproc
- 429              		@ args = 0, pretend = 0, frame = 0
- 430              		@ frame_needed = 0, uses_anonymous_args = 0
- 431              		@ link register save eliminated.
- 432              	.LVL42:
+ 433              		.loc 1 268 0
+ 434              		.cfi_startproc
+ 435              		@ args = 0, pretend = 0, frame = 0
+ 436              		@ frame_needed = 0, uses_anonymous_args = 0
+ 437              		@ link register save eliminated.
+ 438              	.LVL42:
  269:../drivers/fsl_adc16.c ****     uint32_t tmp32 = base->SC3 & ~(ADC_SC3_AVGE_MASK | ADC_SC3_AVGS_MASK);
  270:../drivers/fsl_adc16.c **** 
  271:../drivers/fsl_adc16.c ****     if (kADC16_HardwareAverageDisabled != mode)
- 433              		.loc 1 271 0
- 434 0000 0429     		cmp	r1, #4
- 269:../drivers/fsl_adc16.c ****     uint32_t tmp32 = base->SC3 & ~(ADC_SC3_AVGE_MASK | ADC_SC3_AVGS_MASK);
- 435              		.loc 1 269 0
- 436 0002 436A     		ldr	r3, [r0, #36]
- 272:../drivers/fsl_adc16.c ****     {
- 273:../drivers/fsl_adc16.c ****         tmp32 |= ADC_SC3_AVGE_MASK | ADC_SC3_AVGS(mode);
- 437              		.loc 1 273 0
- 438 0004 18BF     		it	ne
- 439 0006 01F00301 		andne	r1, r1, #3
- 440              	.LVL43:
+ 439              		.loc 1 271 0
+ 440 0000 0429     		cmp	r1, #4
  269:../drivers/fsl_adc16.c ****     uint32_t tmp32 = base->SC3 & ~(ADC_SC3_AVGE_MASK | ADC_SC3_AVGS_MASK);
  441              		.loc 1 269 0
- 442 000a 23F00703 		bic	r3, r3, #7
- 443              	.LVL44:
- 444              		.loc 1 273 0
- 445 000e 1CBF     		itt	ne
- 446 0010 41F00401 		orrne	r1, r1, #4
- 447 0014 0B43     		orrne	r3, r3, r1
- 448              	.LVL45:
+ 442 0002 436A     		ldr	r3, [r0, #36]
+ 272:../drivers/fsl_adc16.c ****     {
+ 273:../drivers/fsl_adc16.c ****         tmp32 |= ADC_SC3_AVGE_MASK | ADC_SC3_AVGS(mode);
+ 443              		.loc 1 273 0
+ 444 0004 18BF     		it	ne
+ 445 0006 01F00301 		andne	r1, r1, #3
+ 446              	.LVL43:
+ 269:../drivers/fsl_adc16.c ****     uint32_t tmp32 = base->SC3 & ~(ADC_SC3_AVGE_MASK | ADC_SC3_AVGS_MASK);
+ 447              		.loc 1 269 0
+ 448 000a 23F00703 		bic	r3, r3, #7
+ 449              	.LVL44:
+ 450              		.loc 1 273 0
+ 451 000e 1CBF     		itt	ne
+ 452 0010 41F00401 		orrne	r1, r1, #4
+ 453 0014 0B43     		orrne	r3, r3, r1
+ 454              	.LVL45:
  274:../drivers/fsl_adc16.c ****     }
  275:../drivers/fsl_adc16.c ****     base->SC3 = tmp32;
- 449              		.loc 1 275 0
- 450 0016 4362     		str	r3, [r0, #36]
- 451 0018 7047     		bx	lr
- 452              		.cfi_endproc
- 453              	.LFE158:
- 455              		.section	.text.ADC16_GetStatusFlags,"ax",%progbits
- 456              		.align	1
- 457              		.global	ADC16_GetStatusFlags
- 458              		.syntax unified
- 459              		.thumb
- 460              		.thumb_func
- 461              		.fpu fpv4-sp-d16
- 463              	ADC16_GetStatusFlags:
- 464              	.LFB159:
+ 455              		.loc 1 275 0
+ 456 0016 4362     		str	r3, [r0, #36]
  276:../drivers/fsl_adc16.c **** }
+ 457              		.loc 1 276 0
+ 458 0018 7047     		bx	lr
+ 459              		.cfi_endproc
+ 460              	.LFE158:
+ 462              		.section	.text.ADC16_GetStatusFlags,"ax",%progbits
+ 463              		.align	1
+ 464              		.global	ADC16_GetStatusFlags
+ 465              		.syntax unified
+ 466              		.thumb
+ 467              		.thumb_func
+ 468              		.fpu fpv4-sp-d16
+ 470              	ADC16_GetStatusFlags:
+ 471              	.LFB159:
  277:../drivers/fsl_adc16.c **** #endif /* FSL_FEATURE_ADC16_HAS_HW_AVERAGE */
  278:../drivers/fsl_adc16.c **** 
  279:../drivers/fsl_adc16.c **** #if defined(FSL_FEATURE_ADC16_HAS_PGA) && FSL_FEATURE_ADC16_HAS_PGA
@@ -1497,98 +1506,98 @@
  313:../drivers/fsl_adc16.c **** 
  314:../drivers/fsl_adc16.c **** uint32_t ADC16_GetStatusFlags(ADC_Type *base)
  315:../drivers/fsl_adc16.c **** {
- 465              		.loc 1 315 0
- 466              		.cfi_startproc
- 467              		@ args = 0, pretend = 0, frame = 0
- 468              		@ frame_needed = 0, uses_anonymous_args = 0
- 469              		@ link register save eliminated.
- 470              	.LVL46:
+ 472              		.loc 1 315 0
+ 473              		.cfi_startproc
+ 474              		@ args = 0, pretend = 0, frame = 0
+ 475              		@ frame_needed = 0, uses_anonymous_args = 0
+ 476              		@ link register save eliminated.
+ 477              	.LVL46:
  316:../drivers/fsl_adc16.c ****     uint32_t ret = 0;
  317:../drivers/fsl_adc16.c **** 
  318:../drivers/fsl_adc16.c ****     if (0U != (base->SC2 & ADC_SC2_ADACT_MASK))
- 471              		.loc 1 318 0
- 472 0000 036A     		ldr	r3, [r0, #32]
+ 478              		.loc 1 318 0
+ 479 0000 036A     		ldr	r3, [r0, #32]
  319:../drivers/fsl_adc16.c ****     {
  320:../drivers/fsl_adc16.c ****         ret |= kADC16_ActiveFlag;
  321:../drivers/fsl_adc16.c ****     }
  322:../drivers/fsl_adc16.c **** #if defined(FSL_FEATURE_ADC16_HAS_CALIBRATION) && FSL_FEATURE_ADC16_HAS_CALIBRATION
  323:../drivers/fsl_adc16.c ****     if (0U != (base->SC3 & ADC_SC3_CALF_MASK))
- 473              		.loc 1 323 0
- 474 0002 426A     		ldr	r2, [r0, #36]
+ 480              		.loc 1 323 0
+ 481 0002 426A     		ldr	r2, [r0, #36]
  320:../drivers/fsl_adc16.c ****     }
- 475              		.loc 1 320 0
- 476 0004 03F08003 		and	r3, r3, #128
- 477              	.LVL47:
- 478              		.loc 1 323 0
- 479 0008 5206     		lsls	r2, r2, #25
+ 482              		.loc 1 320 0
+ 483 0004 03F08003 		and	r3, r3, #128
+ 484              	.LVL47:
+ 485              		.loc 1 323 0
+ 486 0008 5206     		lsls	r2, r2, #25
  324:../drivers/fsl_adc16.c ****     {
  325:../drivers/fsl_adc16.c ****         ret |= kADC16_CalibrationFailedFlag;
- 480              		.loc 1 325 0
- 481 000a 48BF     		it	mi
- 482 000c 43F04003 		orrmi	r3, r3, #64
- 483              	.LVL48:
+ 487              		.loc 1 325 0
+ 488 000a 48BF     		it	mi
+ 489 000c 43F04003 		orrmi	r3, r3, #64
+ 490              	.LVL48:
  326:../drivers/fsl_adc16.c ****     }
  327:../drivers/fsl_adc16.c **** #endif /* FSL_FEATURE_ADC16_HAS_CALIBRATION */
  328:../drivers/fsl_adc16.c ****     return ret;
  329:../drivers/fsl_adc16.c **** }
- 484              		.loc 1 329 0
- 485 0010 1846     		mov	r0, r3
- 486              	.LVL49:
- 487 0012 7047     		bx	lr
- 488              		.cfi_endproc
- 489              	.LFE159:
- 491              		.section	.text.ADC16_DoAutoCalibration,"ax",%progbits
- 492              		.align	1
- 493              		.global	ADC16_DoAutoCalibration
- 494              		.syntax unified
- 495              		.thumb
- 496              		.thumb_func
- 497              		.fpu fpv4-sp-d16
- 499              	ADC16_DoAutoCalibration:
- 500              	.LFB155:
+ 491              		.loc 1 329 0
+ 492 0010 1846     		mov	r0, r3
+ 493              	.LVL49:
+ 494 0012 7047     		bx	lr
+ 495              		.cfi_endproc
+ 496              	.LFE159:
+ 498              		.section	.text.ADC16_DoAutoCalibration,"ax",%progbits
+ 499              		.align	1
+ 500              		.global	ADC16_DoAutoCalibration
+ 501              		.syntax unified
+ 502              		.thumb
+ 503              		.thumb_func
+ 504              		.fpu fpv4-sp-d16
+ 506              	ADC16_DoAutoCalibration:
+ 507              	.LFB155:
  160:../drivers/fsl_adc16.c ****     bool bHWTrigger = false;
- 501              		.loc 1 160 0
- 502              		.cfi_startproc
- 503              		@ args = 0, pretend = 0, frame = 8
- 504              		@ frame_needed = 0, uses_anonymous_args = 0
- 505              	.LVL50:
- 506 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
- 507              		.cfi_def_cfa_offset 32
- 508              		.cfi_offset 4, -20
- 509              		.cfi_offset 5, -16
- 510              		.cfi_offset 6, -12
- 511              		.cfi_offset 7, -8
- 512              		.cfi_offset 14, -4
+ 508              		.loc 1 160 0
+ 509              		.cfi_startproc
+ 510              		@ args = 0, pretend = 0, frame = 8
+ 511              		@ frame_needed = 0, uses_anonymous_args = 0
+ 512              	.LVL50:
+ 513 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 514              		.cfi_def_cfa_offset 32
+ 515              		.cfi_offset 4, -20
+ 516              		.cfi_offset 5, -16
+ 517              		.cfi_offset 6, -12
+ 518              		.cfi_offset 7, -8
+ 519              		.cfi_offset 14, -4
  167:../drivers/fsl_adc16.c ****     {
- 513              		.loc 1 167 0
- 514 0002 056A     		ldr	r5, [r0, #32]
- 515 0004 15F04005 		ands	r5, r5, #64
- 516              	.LVL51:
+ 520              		.loc 1 167 0
+ 521 0002 056A     		ldr	r5, [r0, #32]
+ 522 0004 15F04005 		ands	r5, r5, #64
+ 523              	.LVL51:
  170:../drivers/fsl_adc16.c ****     }
- 517              		.loc 1 170 0
- 518 0008 1EBF     		ittt	ne
- 519 000a 036A     		ldrne	r3, [r0, #32]
- 520 000c 23F04003 		bicne	r3, r3, #64
- 521 0010 0362     		strne	r3, [r0, #32]
+ 524              		.loc 1 170 0
+ 525 0008 1EBF     		ittt	ne
+ 526 000a 036A     		ldrne	r3, [r0, #32]
+ 527 000c 23F04003 		bicne	r3, r3, #64
+ 528 0010 0362     		strne	r3, [r0, #32]
  174:../drivers/fsl_adc16.c ****     while (0U == (kADC16_ChannelConversionDoneFlag & ADC16_GetChannelStatusFlags(base, 0U)))
- 522              		.loc 1 174 0
- 523 0012 436A     		ldr	r3, [r0, #36]
- 524 0014 43F0C003 		orr	r3, r3, #192
+ 529              		.loc 1 174 0
+ 530 0012 436A     		ldr	r3, [r0, #36]
+ 531 0014 43F0C003 		orr	r3, r3, #192
  160:../drivers/fsl_adc16.c ****     bool bHWTrigger = false;
- 525              		.loc 1 160 0
- 526 0018 0146     		mov	r1, r0
+ 532              		.loc 1 160 0
+ 533 0018 0146     		mov	r1, r0
  169:../drivers/fsl_adc16.c ****         base->SC2 &= ~ADC_SC2_ADTRG_MASK;
- 527              		.loc 1 169 0
- 528 001a 18BF     		it	ne
- 529 001c 0125     		movne	r5, #1
- 530              	.LVL52:
+ 534              		.loc 1 169 0
+ 535 001a 18BF     		it	ne
+ 536 001c 0125     		movne	r5, #1
+ 537              	.LVL52:
  174:../drivers/fsl_adc16.c ****     while (0U == (kADC16_ChannelConversionDoneFlag & ADC16_GetChannelStatusFlags(base, 0U)))
- 531              		.loc 1 174 0
- 532 001e 4362     		str	r3, [r0, #36]
- 533              	.LVL53:
- 534              	.L63:
- 535              	.LBB26:
- 536              	.LBB27:
+ 538              		.loc 1 174 0
+ 539 001e 4362     		str	r3, [r0, #36]
+ 540              	.LVL53:
+ 541              	.L64:
+ 542              	.LBB26:
+ 543              	.LBB27:
  330:../drivers/fsl_adc16.c **** 
  331:../drivers/fsl_adc16.c **** void ADC16_ClearStatusFlags(ADC_Type *base, uint32_t mask)
  332:../drivers/fsl_adc16.c **** {
@@ -1629,248 +1638,253 @@
  367:../drivers/fsl_adc16.c ****     uint32_t ret = 0U;
  368:../drivers/fsl_adc16.c **** 
  369:../drivers/fsl_adc16.c ****     if (0U != (base->SC1[channelGroup] & ADC_SC1_COCO_MASK))
- 537              		.loc 1 369 0
- 538 0020 0B68     		ldr	r3, [r1]
- 539              	.LBE27:
- 540              	.LBE26:
- 175:../drivers/fsl_adc16.c ****     {
- 541              		.loc 1 175 0
- 542 0022 1A06     		lsls	r2, r3, #24
- 543 0024 36D5     		bpl	.L66
- 163:../drivers/fsl_adc16.c **** 
- 544              		.loc 1 163 0
- 545 0026 0024     		movs	r4, #0
- 546              	.L64:
- 547              	.LVL54:
- 184:../drivers/fsl_adc16.c **** 
- 548              		.loc 1 184 0
- 549 0028 0B69     		ldr	r3, [r1, #16]
- 550 002a 0193     		str	r3, [sp, #4]
- 187:../drivers/fsl_adc16.c ****     {
- 551              		.loc 1 187 0
- 552 002c 1DB1     		cbz	r5, .L67
- 189:../drivers/fsl_adc16.c ****     }
- 553              		.loc 1 189 0
- 554 002e 0B6A     		ldr	r3, [r1, #32]
- 555 0030 43F04003 		orr	r3, r3, #64
- 556 0034 0B62     		str	r3, [r1, #32]
- 557              	.L67:
- 192:../drivers/fsl_adc16.c ****     {
- 558              		.loc 1 192 0
- 559 0036 0846     		mov	r0, r1
- 560 0038 FFF7FEFF 		bl	ADC16_GetStatusFlags
- 561              	.LVL55:
- 562 003c 4306     		lsls	r3, r0, #25
- 563 003e 30D4     		bmi	.L72
- 196:../drivers/fsl_adc16.c ****     {
- 564              		.loc 1 196 0
- 565 0040 2CBB     		cbnz	r4, .L61
- 202:../drivers/fsl_adc16.c ****     tmp32 = 0x8000U | (tmp32 >> 1U);
- 566              		.loc 1 202 0
- 567 0042 CB6C     		ldr	r3, [r1, #76]
- 568 0044 8F6C     		ldr	r7, [r1, #72]
- 569 0046 4E6C     		ldr	r6, [r1, #68]
- 570 0048 0D6C     		ldr	r5, [r1, #64]
- 571              	.LVL56:
- 572 004a C86B     		ldr	r0, [r1, #60]
- 573 004c 8A6B     		ldr	r2, [r1, #56]
- 574 004e 3B44     		add	r3, r3, r7
- 575 0050 3344     		add	r3, r3, r6
- 576 0052 2B44     		add	r3, r3, r5
- 577 0054 0344     		add	r3, r3, r0
- 578 0056 1344     		add	r3, r3, r2
- 579 0058 0193     		str	r3, [sp, #4]
- 203:../drivers/fsl_adc16.c ****     base->PG = tmp32;
- 580              		.loc 1 203 0
- 581 005a 019B     		ldr	r3, [sp, #4]
- 582 005c 5B08     		lsrs	r3, r3, #1
- 583 005e 43F40043 		orr	r3, r3, #32768
- 584 0062 0193     		str	r3, [sp, #4]
- 204:../drivers/fsl_adc16.c **** 
- 585              		.loc 1 204 0
- 586 0064 019B     		ldr	r3, [sp, #4]
- 587 0066 CB62     		str	r3, [r1, #44]
- 207:../drivers/fsl_adc16.c ****     tmp32 = 0x8000U | (tmp32 >> 1U);
- 588              		.loc 1 207 0
- 589 0068 CB6E     		ldr	r3, [r1, #108]
- 590 006a 8F6E     		ldr	r7, [r1, #104]
- 591 006c 4E6E     		ldr	r6, [r1, #100]
- 592 006e 0D6E     		ldr	r5, [r1, #96]
- 593 0070 C86D     		ldr	r0, [r1, #92]
- 594 0072 8A6D     		ldr	r2, [r1, #88]
- 595 0074 3B44     		add	r3, r3, r7
- 596 0076 3344     		add	r3, r3, r6
- 597 0078 2B44     		add	r3, r3, r5
- 598 007a 0344     		add	r3, r3, r0
- 599 007c 1344     		add	r3, r3, r2
- 600 007e 0193     		str	r3, [sp, #4]
- 208:../drivers/fsl_adc16.c ****     base->MG = tmp32;
- 601              		.loc 1 208 0
- 602 0080 019B     		ldr	r3, [sp, #4]
- 603 0082 5B08     		lsrs	r3, r3, #1
- 604 0084 43F40043 		orr	r3, r3, #32768
- 605 0088 0193     		str	r3, [sp, #4]
- 209:../drivers/fsl_adc16.c **** #endif /* FSL_FEATURE_ADC16_HAS_DIFF_MODE */
- 606              		.loc 1 209 0
- 607 008a 019B     		ldr	r3, [sp, #4]
- 608 008c 0B63     		str	r3, [r1, #48]
- 609              	.LVL57:
- 610              	.L61:
- 213:../drivers/fsl_adc16.c **** #endif /* FSL_FEATURE_ADC16_HAS_CALIBRATION */
- 611              		.loc 1 213 0
- 612 008e 2046     		mov	r0, r4
- 613 0090 03B0     		add	sp, sp, #12
- 614              		.cfi_remember_state
- 615              		.cfi_def_cfa_offset 20
- 616              		@ sp needed
- 617 0092 F0BD     		pop	{r4, r5, r6, r7, pc}
- 618              	.LVL58:
- 619              	.L66:
- 620              		.cfi_restore_state
+ 544              		.loc 1 369 0
+ 545 0020 0B68     		ldr	r3, [r1]
+ 546 0022 1806     		lsls	r0, r3, #24
+ 547 0024 3BD4     		bmi	.L68
+ 548              	.LVL54:
+ 549              	.LBE27:
+ 550              	.LBE26:
  178:../drivers/fsl_adc16.c ****         {
- 621              		.loc 1 178 0
- 622 0094 0846     		mov	r0, r1
- 623 0096 FFF7FEFF 		bl	ADC16_GetStatusFlags
- 624              	.LVL59:
- 625 009a 4006     		lsls	r0, r0, #25
- 626 009c C0D5     		bpl	.L63
+ 551              		.loc 1 178 0
+ 552 0026 0846     		mov	r0, r1
+ 553 0028 FFF7FEFF 		bl	ADC16_GetStatusFlags
+ 554              	.LVL55:
+ 555 002c 4206     		lsls	r2, r0, #25
+ 556 002e F7D5     		bpl	.L64
  180:../drivers/fsl_adc16.c ****             break;
- 627              		.loc 1 180 0
- 628 009e 0124     		movs	r4, #1
- 629 00a0 C2E7     		b	.L64
- 630              	.LVL60:
- 631              	.L72:
- 632 00a2 0124     		movs	r4, #1
- 633              	.LVL61:
- 634 00a4 F3E7     		b	.L61
- 635              		.cfi_endproc
- 636              	.LFE155:
- 638              		.section	.text.ADC16_ClearStatusFlags,"ax",%progbits
- 639              		.align	1
- 640              		.global	ADC16_ClearStatusFlags
- 641              		.syntax unified
- 642              		.thumb
- 643              		.thumb_func
- 644              		.fpu fpv4-sp-d16
- 646              	ADC16_ClearStatusFlags:
- 647              	.LFB160:
+ 557              		.loc 1 180 0
+ 558 0030 0124     		movs	r4, #1
+ 559              	.L63:
+ 560              	.LVL56:
+ 184:../drivers/fsl_adc16.c **** 
+ 561              		.loc 1 184 0
+ 562 0032 0B69     		ldr	r3, [r1, #16]
+ 563 0034 0193     		str	r3, [sp, #4]
+ 187:../drivers/fsl_adc16.c ****     {
+ 564              		.loc 1 187 0
+ 565 0036 1DB1     		cbz	r5, .L65
+ 189:../drivers/fsl_adc16.c ****     }
+ 566              		.loc 1 189 0
+ 567 0038 0B6A     		ldr	r3, [r1, #32]
+ 568 003a 43F04003 		orr	r3, r3, #64
+ 569 003e 0B62     		str	r3, [r1, #32]
+ 570              	.L65:
+ 192:../drivers/fsl_adc16.c ****     {
+ 571              		.loc 1 192 0
+ 572 0040 0846     		mov	r0, r1
+ 573 0042 FFF7FEFF 		bl	ADC16_GetStatusFlags
+ 574              	.LVL57:
+ 575 0046 4306     		lsls	r3, r0, #25
+ 576 0048 2BD4     		bmi	.L69
+ 196:../drivers/fsl_adc16.c ****     {
+ 577              		.loc 1 196 0
+ 578 004a 2CBB     		cbnz	r4, .L61
+ 202:../drivers/fsl_adc16.c ****     tmp32 = 0x8000U | (tmp32 >> 1U);
+ 579              		.loc 1 202 0
+ 580 004c CB6C     		ldr	r3, [r1, #76]
+ 581 004e 8F6C     		ldr	r7, [r1, #72]
+ 582 0050 4E6C     		ldr	r6, [r1, #68]
+ 583 0052 0D6C     		ldr	r5, [r1, #64]
+ 584              	.LVL58:
+ 585 0054 C86B     		ldr	r0, [r1, #60]
+ 586 0056 8A6B     		ldr	r2, [r1, #56]
+ 587 0058 3B44     		add	r3, r3, r7
+ 588 005a 3344     		add	r3, r3, r6
+ 589 005c 2B44     		add	r3, r3, r5
+ 590 005e 0344     		add	r3, r3, r0
+ 591 0060 1344     		add	r3, r3, r2
+ 592 0062 0193     		str	r3, [sp, #4]
+ 203:../drivers/fsl_adc16.c ****     base->PG = tmp32;
+ 593              		.loc 1 203 0
+ 594 0064 019B     		ldr	r3, [sp, #4]
+ 595 0066 5B08     		lsrs	r3, r3, #1
+ 596 0068 43F40043 		orr	r3, r3, #32768
+ 597 006c 0193     		str	r3, [sp, #4]
+ 204:../drivers/fsl_adc16.c **** 
+ 598              		.loc 1 204 0
+ 599 006e 019B     		ldr	r3, [sp, #4]
+ 600 0070 CB62     		str	r3, [r1, #44]
+ 207:../drivers/fsl_adc16.c ****     tmp32 = 0x8000U | (tmp32 >> 1U);
+ 601              		.loc 1 207 0
+ 602 0072 CB6E     		ldr	r3, [r1, #108]
+ 603 0074 8F6E     		ldr	r7, [r1, #104]
+ 604 0076 4E6E     		ldr	r6, [r1, #100]
+ 605 0078 0D6E     		ldr	r5, [r1, #96]
+ 606 007a C86D     		ldr	r0, [r1, #92]
+ 607 007c 8A6D     		ldr	r2, [r1, #88]
+ 608 007e 3B44     		add	r3, r3, r7
+ 609 0080 3344     		add	r3, r3, r6
+ 610 0082 2B44     		add	r3, r3, r5
+ 611 0084 0344     		add	r3, r3, r0
+ 612 0086 1344     		add	r3, r3, r2
+ 613 0088 0193     		str	r3, [sp, #4]
+ 208:../drivers/fsl_adc16.c ****     base->MG = tmp32;
+ 614              		.loc 1 208 0
+ 615 008a 019B     		ldr	r3, [sp, #4]
+ 616 008c 5B08     		lsrs	r3, r3, #1
+ 617 008e 43F40043 		orr	r3, r3, #32768
+ 618 0092 0193     		str	r3, [sp, #4]
+ 209:../drivers/fsl_adc16.c **** #endif /* FSL_FEATURE_ADC16_HAS_DIFF_MODE */
+ 619              		.loc 1 209 0
+ 620 0094 019B     		ldr	r3, [sp, #4]
+ 621 0096 0B63     		str	r3, [r1, #48]
+ 622              	.LVL59:
+ 623              	.L61:
+ 213:../drivers/fsl_adc16.c **** #endif /* FSL_FEATURE_ADC16_HAS_CALIBRATION */
+ 624              		.loc 1 213 0
+ 625 0098 2046     		mov	r0, r4
+ 626 009a 03B0     		add	sp, sp, #12
+ 627              		.cfi_remember_state
+ 628              		.cfi_def_cfa_offset 20
+ 629              		@ sp needed
+ 630 009c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 631              	.LVL60:
+ 632              	.L68:
+ 633              		.cfi_restore_state
+ 163:../drivers/fsl_adc16.c **** 
+ 634              		.loc 1 163 0
+ 635 009e 0024     		movs	r4, #0
+ 636 00a0 C7E7     		b	.L63
+ 637              	.LVL61:
+ 638              	.L69:
+ 194:../drivers/fsl_adc16.c ****     }
+ 639              		.loc 1 194 0
+ 640 00a2 0124     		movs	r4, #1
+ 641              	.LVL62:
+ 642 00a4 F8E7     		b	.L61
+ 643              		.cfi_endproc
+ 644              	.LFE155:
+ 646              		.section	.text.ADC16_ClearStatusFlags,"ax",%progbits
+ 647              		.align	1
+ 648              		.global	ADC16_ClearStatusFlags
+ 649              		.syntax unified
+ 650              		.thumb
+ 651              		.thumb_func
+ 652              		.fpu fpv4-sp-d16
+ 654              	ADC16_ClearStatusFlags:
+ 655              	.LFB160:
  332:../drivers/fsl_adc16.c **** #if defined(FSL_FEATURE_ADC16_HAS_CALIBRATION) && FSL_FEATURE_ADC16_HAS_CALIBRATION
- 648              		.loc 1 332 0
- 649              		.cfi_startproc
- 650              		@ args = 0, pretend = 0, frame = 0
- 651              		@ frame_needed = 0, uses_anonymous_args = 0
- 652              		@ link register save eliminated.
- 653              	.LVL62:
+ 656              		.loc 1 332 0
+ 657              		.cfi_startproc
+ 658              		@ args = 0, pretend = 0, frame = 0
+ 659              		@ frame_needed = 0, uses_anonymous_args = 0
+ 660              		@ link register save eliminated.
+ 661              	.LVL63:
  334:../drivers/fsl_adc16.c ****     {
- 654              		.loc 1 334 0
- 655 0000 4B06     		lsls	r3, r1, #25
+ 662              		.loc 1 334 0
+ 663 0000 4B06     		lsls	r3, r1, #25
  336:../drivers/fsl_adc16.c ****     }
- 656              		.loc 1 336 0
- 657 0002 42BF     		ittt	mi
- 658 0004 436A     		ldrmi	r3, [r0, #36]
- 659 0006 43F04003 		orrmi	r3, r3, #64
- 660 000a 4362     		strmi	r3, [r0, #36]
- 661 000c 7047     		bx	lr
- 662              		.cfi_endproc
- 663              	.LFE160:
- 665              		.section	.text.ADC16_SetChannelConfig,"ax",%progbits
- 666              		.align	1
- 667              		.global	ADC16_SetChannelConfig
- 668              		.syntax unified
- 669              		.thumb
- 670              		.thumb_func
- 671              		.fpu fpv4-sp-d16
- 673              	ADC16_SetChannelConfig:
- 674              	.LFB161:
+ 664              		.loc 1 336 0
+ 665 0002 42BF     		ittt	mi
+ 666 0004 436A     		ldrmi	r3, [r0, #36]
+ 667 0006 43F04003 		orrmi	r3, r3, #64
+ 668 000a 4362     		strmi	r3, [r0, #36]
+ 339:../drivers/fsl_adc16.c **** 
+ 669              		.loc 1 339 0
+ 670 000c 7047     		bx	lr
+ 671              		.cfi_endproc
+ 672              	.LFE160:
+ 674              		.section	.text.ADC16_SetChannelConfig,"ax",%progbits
+ 675              		.align	1
+ 676              		.global	ADC16_SetChannelConfig
+ 677              		.syntax unified
+ 678              		.thumb
+ 679              		.thumb_func
+ 680              		.fpu fpv4-sp-d16
+ 682              	ADC16_SetChannelConfig:
+ 683              	.LFB161:
  342:../drivers/fsl_adc16.c ****     assert(channelGroup < ADC_SC1_COUNT);
- 675              		.loc 1 342 0
- 676              		.cfi_startproc
- 677              		@ args = 0, pretend = 0, frame = 0
- 678              		@ frame_needed = 0, uses_anonymous_args = 0
- 679              	.LVL63:
- 680 0000 10B5     		push	{r4, lr}
- 681              		.cfi_def_cfa_offset 8
- 682              		.cfi_offset 4, -8
- 683              		.cfi_offset 14, -4
+ 684              		.loc 1 342 0
+ 685              		.cfi_startproc
+ 686              		@ args = 0, pretend = 0, frame = 0
+ 687              		@ frame_needed = 0, uses_anonymous_args = 0
+ 688              	.LVL64:
+ 689 0000 10B5     		push	{r4, lr}
+ 690              		.cfi_def_cfa_offset 8
+ 691              		.cfi_offset 4, -8
+ 692              		.cfi_offset 14, -4
  346:../drivers/fsl_adc16.c **** 
- 684              		.loc 1 346 0
- 685 0002 1368     		ldr	r3, [r2]
+ 693              		.loc 1 346 0
+ 694 0002 1368     		ldr	r3, [r2]
  350:../drivers/fsl_adc16.c ****     {
- 686              		.loc 1 350 0
- 687 0004 5479     		ldrb	r4, [r2, #5]	@ zero_extendqisi2
+ 695              		.loc 1 350 0
+ 696 0004 5479     		ldrb	r4, [r2, #5]	@ zero_extendqisi2
  346:../drivers/fsl_adc16.c **** 
- 688              		.loc 1 346 0
- 689 0006 03F01F03 		and	r3, r3, #31
- 690              	.LVL64:
+ 697              		.loc 1 346 0
+ 698 0006 03F01F03 		and	r3, r3, #31
+ 699              	.LVL65:
  350:../drivers/fsl_adc16.c ****     {
- 691              		.loc 1 350 0
- 692 000a 0CB1     		cbz	r4, .L82
+ 700              		.loc 1 350 0
+ 701 000a 0CB1     		cbz	r4, .L81
  352:../drivers/fsl_adc16.c ****     }
- 693              		.loc 1 352 0
- 694 000c 43F02003 		orr	r3, r3, #32
- 695              	.LVL65:
- 696              	.L82:
+ 702              		.loc 1 352 0
+ 703 000c 43F02003 		orr	r3, r3, #32
+ 704              	.LVL66:
+ 705              	.L81:
  356:../drivers/fsl_adc16.c ****     {
- 697              		.loc 1 356 0
- 698 0010 1279     		ldrb	r2, [r2, #4]	@ zero_extendqisi2
- 699              	.LVL66:
- 700 0012 0AB1     		cbz	r2, .L83
+ 706              		.loc 1 356 0
+ 707 0010 1279     		ldrb	r2, [r2, #4]	@ zero_extendqisi2
+ 708              	.LVL67:
+ 709 0012 0AB1     		cbz	r2, .L82
  358:../drivers/fsl_adc16.c ****     }
- 701              		.loc 1 358 0
- 702 0014 43F04003 		orr	r3, r3, #64
- 703              	.LVL67:
- 704              	.L83:
+ 710              		.loc 1 358 0
+ 711 0014 43F04003 		orr	r3, r3, #64
+ 712              	.LVL68:
+ 713              	.L82:
  360:../drivers/fsl_adc16.c **** }
- 705              		.loc 1 360 0
- 706 0018 40F82130 		str	r3, [r0, r1, lsl #2]
- 707 001c 10BD     		pop	{r4, pc}
- 708              		.cfi_endproc
- 709              	.LFE161:
- 711              		.section	.text.ADC16_GetChannelStatusFlags,"ax",%progbits
- 712              		.align	1
- 713              		.global	ADC16_GetChannelStatusFlags
- 714              		.syntax unified
- 715              		.thumb
- 716              		.thumb_func
- 717              		.fpu fpv4-sp-d16
- 719              	ADC16_GetChannelStatusFlags:
- 720              	.LFB162:
+ 714              		.loc 1 360 0
+ 715 0018 40F82130 		str	r3, [r0, r1, lsl #2]
+ 361:../drivers/fsl_adc16.c **** 
+ 716              		.loc 1 361 0
+ 717 001c 10BD     		pop	{r4, pc}
+ 718              		.cfi_endproc
+ 719              	.LFE161:
+ 721              		.section	.text.ADC16_GetChannelStatusFlags,"ax",%progbits
+ 722              		.align	1
+ 723              		.global	ADC16_GetChannelStatusFlags
+ 724              		.syntax unified
+ 725              		.thumb
+ 726              		.thumb_func
+ 727              		.fpu fpv4-sp-d16
+ 729              	ADC16_GetChannelStatusFlags:
+ 730              	.LFB162:
  364:../drivers/fsl_adc16.c ****     assert(channelGroup < ADC_SC1_COUNT);
- 721              		.loc 1 364 0
- 722              		.cfi_startproc
- 723              		@ args = 0, pretend = 0, frame = 0
- 724              		@ frame_needed = 0, uses_anonymous_args = 0
- 725              		@ link register save eliminated.
- 726              	.LVL68:
- 727              		.loc 1 369 0
- 728 0000 50F82100 		ldr	r0, [r0, r1, lsl #2]
- 729              	.LVL69:
+ 731              		.loc 1 364 0
+ 732              		.cfi_startproc
+ 733              		@ args = 0, pretend = 0, frame = 0
+ 734              		@ frame_needed = 0, uses_anonymous_args = 0
+ 735              		@ link register save eliminated.
+ 736              	.LVL69:
+ 737              		.loc 1 369 0
+ 738 0000 50F82100 		ldr	r0, [r0, r1, lsl #2]
+ 739              	.LVL70:
  370:../drivers/fsl_adc16.c ****     {
  371:../drivers/fsl_adc16.c ****         ret |= kADC16_ChannelConversionDoneFlag;
  372:../drivers/fsl_adc16.c ****     }
  373:../drivers/fsl_adc16.c ****     return ret;
  374:../drivers/fsl_adc16.c **** }
- 730              		.loc 1 374 0
- 731 0004 00F08000 		and	r0, r0, #128
- 732 0008 7047     		bx	lr
- 733              		.cfi_endproc
- 734              	.LFE162:
- 736              		.section	.rodata.s_adc16Clocks,"a",%progbits
- 737              		.align	2
- 738              		.set	.LANCHOR0,. + 0
- 741              	s_adc16Clocks:
- 742 0000 1B003C10 		.word	272367643
- 743 0004 1B003010 		.word	271581211
- 744              		.text
- 745              	.Letext0:
- 746              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 747              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 748              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 749              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 750              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 751              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 752              		.file 9 "../CMSIS/core_cm4.h"
- 753              		.file 10 "../CMSIS/system_MK64F12.h"
- 754              		.file 11 "../CMSIS/MK64F12.h"
- 755              		.file 12 "../drivers/fsl_common.h"
- 756              		.file 13 "../drivers/fsl_adc16.h"
+ 740              		.loc 1 374 0
+ 741 0004 00F08000 		and	r0, r0, #128
+ 742 0008 7047     		bx	lr
+ 743              		.cfi_endproc
+ 744              	.LFE162:
+ 746              		.section	.rodata.s_adc16Clocks,"a",%progbits
+ 747              		.align	2
+ 748              		.set	.LANCHOR0,. + 0
+ 751              	s_adc16Clocks:
+ 752 0000 1B003C10 		.word	272367643
+ 753 0004 1B003010 		.word	271581211
+ 754              		.text
+ 755              	.Letext0:
+ 756              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 757              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 758              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 759              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 760              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 761              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 762              		.file 9 "../CMSIS/core_cm4.h"
+ 763              		.file 10 "../CMSIS/system_MK64F12.h"
+ 764              		.file 11 "../CMSIS/MK64F12.h"
+ 765              		.file 12 "../drivers/fsl_common.h"
+ 766              		.file 13 "../drivers/fsl_adc16.h"

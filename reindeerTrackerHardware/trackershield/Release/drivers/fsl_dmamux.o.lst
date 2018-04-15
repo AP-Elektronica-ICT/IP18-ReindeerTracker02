@@ -820,39 +820,40 @@
   40 0004 43F00203 		orr	r3, r3, #2
   41 0008 1360     		str	r3, [r2]
   42              	.LVL1:
-  43 000a 7047     		bx	lr
-  44              	.L3:
-  45              		.align	2
-  46              	.L2:
-  47 000c 3C800440 		.word	1074036796
-  48              	.LBE7:
-  49              	.LBE6:
-  50              		.cfi_endproc
-  51              	.LFE153:
-  53              		.section	.text.DMAMUX_Deinit,"ax",%progbits
-  54              		.align	1
-  55              		.global	DMAMUX_Deinit
-  56              		.syntax unified
-  57              		.thumb
-  58              		.thumb_func
-  59              		.fpu fpv4-sp-d16
-  61              	DMAMUX_Deinit:
-  62              	.LFB154:
+  43              	.LBE7:
+  44              	.LBE6:
   87:../drivers/fsl_dmamux.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
   88:../drivers/fsl_dmamux.c ****     CLOCK_EnableClock(s_dmamuxClockName[DMAMUX_GetInstance(base)]);
   89:../drivers/fsl_dmamux.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
   90:../drivers/fsl_dmamux.c **** }
+  45              		.loc 1 90 0
+  46 000a 7047     		bx	lr
+  47              	.L3:
+  48              		.align	2
+  49              	.L2:
+  50 000c 3C800440 		.word	1074036796
+  51              		.cfi_endproc
+  52              	.LFE153:
+  54              		.section	.text.DMAMUX_Deinit,"ax",%progbits
+  55              		.align	1
+  56              		.global	DMAMUX_Deinit
+  57              		.syntax unified
+  58              		.thumb
+  59              		.thumb_func
+  60              		.fpu fpv4-sp-d16
+  62              	DMAMUX_Deinit:
+  63              	.LFB154:
   91:../drivers/fsl_dmamux.c **** 
   92:../drivers/fsl_dmamux.c **** void DMAMUX_Deinit(DMAMUX_Type *base)
   93:../drivers/fsl_dmamux.c **** {
-  63              		.loc 1 93 0
-  64              		.cfi_startproc
-  65              		@ args = 0, pretend = 0, frame = 0
-  66              		@ frame_needed = 0, uses_anonymous_args = 0
-  67              		@ link register save eliminated.
-  68              	.LVL2:
-  69              	.LBB12:
-  70              	.LBB13:
+  64              		.loc 1 93 0
+  65              		.cfi_startproc
+  66              		@ args = 0, pretend = 0, frame = 0
+  67              		@ frame_needed = 0, uses_anonymous_args = 0
+  68              		@ link register save eliminated.
+  69              	.LVL2:
+  70              	.LBB12:
+  71              	.LBB13:
  696:../drivers/fsl_clock.h **** }
  697:../drivers/fsl_clock.h **** 
  698:../drivers/fsl_clock.h **** /*!
@@ -864,29 +865,34 @@
  704:../drivers/fsl_clock.h **** {
  705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
  706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
-  71              		.loc 2 706 0
-  72 0000 024A     		ldr	r2, .L5
-  73 0002 1368     		ldr	r3, [r2]
-  74 0004 23F00203 		bic	r3, r3, #2
-  75 0008 1360     		str	r3, [r2]
-  76              	.LVL3:
-  77 000a 7047     		bx	lr
-  78              	.L6:
-  79              		.align	2
-  80              	.L5:
-  81 000c 3C800440 		.word	1074036796
-  82              	.LBE13:
-  83              	.LBE12:
-  84              		.cfi_endproc
-  85              	.LFE154:
-  87              		.text
-  88              	.Letext0:
-  89              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
-  90              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
-  91              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
-  92              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
-  93              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
-  94              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
-  95              		.file 9 "../CMSIS/core_cm4.h"
-  96              		.file 10 "../CMSIS/system_MK64F12.h"
-  97              		.file 11 "../CMSIS/MK64F12.h"
+  72              		.loc 2 706 0
+  73 0000 024A     		ldr	r2, .L5
+  74 0002 1368     		ldr	r3, [r2]
+  75 0004 23F00203 		bic	r3, r3, #2
+  76 0008 1360     		str	r3, [r2]
+  77              	.LVL3:
+  78              	.LBE13:
+  79              	.LBE12:
+  94:../drivers/fsl_dmamux.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+  95:../drivers/fsl_dmamux.c ****     CLOCK_DisableClock(s_dmamuxClockName[DMAMUX_GetInstance(base)]);
+  96:../drivers/fsl_dmamux.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+  97:../drivers/fsl_dmamux.c **** }
+  80              		.loc 1 97 0
+  81 000a 7047     		bx	lr
+  82              	.L6:
+  83              		.align	2
+  84              	.L5:
+  85 000c 3C800440 		.word	1074036796
+  86              		.cfi_endproc
+  87              	.LFE154:
+  89              		.text
+  90              	.Letext0:
+  91              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+  92              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+  93              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+  94              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+  95              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+  96              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+  97              		.file 9 "../CMSIS/core_cm4.h"
+  98              		.file 10 "../CMSIS/system_MK64F12.h"
+  99              		.file 11 "../CMSIS/MK64F12.h"

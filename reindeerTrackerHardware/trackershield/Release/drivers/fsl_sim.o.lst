@@ -86,33 +86,34 @@
   42 0010 1843     		orrs	r0, r0, r3
   43              	.LVL1:
   44 0012 1060     		str	r0, [r2]
-  45 0014 7047     		bx	lr
-  46              	.L3:
-  47 0016 00BF     		.align	2
-  48              	.L2:
-  49 0018 00700440 		.word	1074032640
-  50              		.cfi_endproc
-  51              	.LFE148:
-  53              		.section	.text.SIM_GetUniqueId,"ax",%progbits
-  54              		.align	1
-  55              		.global	SIM_GetUniqueId
-  56              		.syntax unified
-  57              		.thumb
-  58              		.thumb_func
-  59              		.fpu fpv4-sp-d16
-  61              	SIM_GetUniqueId:
-  62              	.LFB149:
   46:../drivers/fsl_sim.c **** }
+  45              		.loc 1 46 0
+  46 0014 7047     		bx	lr
+  47              	.L3:
+  48 0016 00BF     		.align	2
+  49              	.L2:
+  50 0018 00700440 		.word	1074032640
+  51              		.cfi_endproc
+  52              	.LFE148:
+  54              		.section	.text.SIM_GetUniqueId,"ax",%progbits
+  55              		.align	1
+  56              		.global	SIM_GetUniqueId
+  57              		.syntax unified
+  58              		.thumb
+  59              		.thumb_func
+  60              		.fpu fpv4-sp-d16
+  62              	SIM_GetUniqueId:
+  63              	.LFB149:
   47:../drivers/fsl_sim.c **** #endif /* FSL_FEATURE_SIM_OPT_HAS_USB_VOLTAGE_REGULATOR */
   48:../drivers/fsl_sim.c **** 
   49:../drivers/fsl_sim.c **** void SIM_GetUniqueId(sim_uid_t *uid)
   50:../drivers/fsl_sim.c **** {
-  63              		.loc 1 50 0
-  64              		.cfi_startproc
-  65              		@ args = 0, pretend = 0, frame = 0
-  66              		@ frame_needed = 0, uses_anonymous_args = 0
-  67              		@ link register save eliminated.
-  68              	.LVL2:
+  64              		.loc 1 50 0
+  65              		.cfi_startproc
+  66              		@ args = 0, pretend = 0, frame = 0
+  67              		@ frame_needed = 0, uses_anonymous_args = 0
+  68              		@ link register save eliminated.
+  69              	.LVL2:
   51:../drivers/fsl_sim.c **** #if defined(SIM_UIDH)
   52:../drivers/fsl_sim.c ****     uid->H = SIM->UIDH;
   53:../drivers/fsl_sim.c **** #endif
@@ -120,39 +121,41 @@
   55:../drivers/fsl_sim.c ****     uid->M = SIM->UIDM;
   56:../drivers/fsl_sim.c **** #else
   57:../drivers/fsl_sim.c ****     uid->MH = SIM->UIDMH;
-  69              		.loc 1 57 0
-  70 0000 064B     		ldr	r3, .L5
-  71 0002 41F25802 		movw	r2, #4184
-  72 0006 9A58     		ldr	r2, [r3, r2]
-  73 0008 0260     		str	r2, [r0]
+  70              		.loc 1 57 0
+  71 0000 064B     		ldr	r3, .L5
+  72 0002 41F25802 		movw	r2, #4184
+  73 0006 9A58     		ldr	r2, [r3, r2]
+  74 0008 0260     		str	r2, [r0]
   58:../drivers/fsl_sim.c ****     uid->ML = SIM->UIDML;
-  74              		.loc 1 58 0
-  75 000a 41F25C02 		movw	r2, #4188
-  76 000e 9A58     		ldr	r2, [r3, r2]
-  77 0010 4260     		str	r2, [r0, #4]
+  75              		.loc 1 58 0
+  76 000a 41F25C02 		movw	r2, #4188
+  77 000e 9A58     		ldr	r2, [r3, r2]
+  78 0010 4260     		str	r2, [r0, #4]
   59:../drivers/fsl_sim.c **** #endif /* FSL_FEATURE_SIM_HAS_UIDM */
   60:../drivers/fsl_sim.c ****     uid->L = SIM->UIDL;
-  78              		.loc 1 60 0
-  79 0012 03F58353 		add	r3, r3, #4192
-  80 0016 1B68     		ldr	r3, [r3]
-  81 0018 8360     		str	r3, [r0, #8]
-  82 001a 7047     		bx	lr
-  83              	.L6:
-  84              		.align	2
-  85              	.L5:
-  86 001c 00700440 		.word	1074032640
-  87              		.cfi_endproc
-  88              	.LFE149:
-  90              		.text
-  91              	.Letext0:
-  92              		.file 2 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
-  93              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
-  94              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
-  95              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
-  96              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
-  97              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
-  98              		.file 8 "../CMSIS/core_cm4.h"
-  99              		.file 9 "../CMSIS/system_MK64F12.h"
- 100              		.file 10 "../CMSIS/MK64F12.h"
- 101              		.file 11 "../drivers/fsl_clock.h"
- 102              		.file 12 "../drivers/fsl_sim.h"
+  79              		.loc 1 60 0
+  80 0012 03F58353 		add	r3, r3, #4192
+  81 0016 1B68     		ldr	r3, [r3]
+  82 0018 8360     		str	r3, [r0, #8]
+  61:../drivers/fsl_sim.c **** }
+  83              		.loc 1 61 0
+  84 001a 7047     		bx	lr
+  85              	.L6:
+  86              		.align	2
+  87              	.L5:
+  88 001c 00700440 		.word	1074032640
+  89              		.cfi_endproc
+  90              	.LFE149:
+  92              		.text
+  93              	.Letext0:
+  94              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+  95              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+  96              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+  97              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+  98              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+  99              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 100              		.file 8 "../CMSIS/core_cm4.h"
+ 101              		.file 9 "../CMSIS/system_MK64F12.h"
+ 102              		.file 10 "../CMSIS/MK64F12.h"
+ 103              		.file 11 "../drivers/fsl_clock.h"
+ 104              		.file 12 "../drivers/fsl_sim.h"

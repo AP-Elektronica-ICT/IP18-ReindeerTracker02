@@ -42,7 +42,7 @@ void configure_acc() {
 
 	tmp = accReadReg( FXOS8700Q_A_FFMT_THS);
 	tmp |= 0x8F;
-	accWriteReg(FXOS8700Q_A_FFMT_THS, 0x8b);
+	accWriteReg(FXOS8700Q_A_FFMT_THS, 0x88);
 
 }
 

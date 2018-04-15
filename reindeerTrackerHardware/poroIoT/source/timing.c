@@ -42,14 +42,18 @@ void rtcInit() {
 	RTC_GetDefaultConfig(&rtc_config);
 	//SIM -> SOPT1 |= 0xC0000;
 
+	DisableIRQ(RTC_IRQn);
+
 	CLOCK_EnableClock(kCLOCK_Rtc0);
+	RTC_DisableInterrupts(RTC, kRTC_AlarmInterruptEnable);
+	RTC_ClearStatusFlags(RTC, kRTC_AlarmFlag);
 	RTC_Reset(RTC);
 	RTC_Init(RTC, &rtc_config);
 
-	RTC_SetOscCapLoad(RTC, kRTC_Capacitor_8p);
+	RTC_SetOscCapLoad(RTC, kRTC_Capacitor_4p);
 	RTC_SetClockSource(RTC);
 
-	RTC ->TAR = 0xa;
+	RTC ->TAR = RTC_REPORT_INTERVAL;
 
 	RTC_EnableInterrupts(RTC, kRTC_AlarmInterruptEnable);
 	EnableIRQ(RTC_IRQn);

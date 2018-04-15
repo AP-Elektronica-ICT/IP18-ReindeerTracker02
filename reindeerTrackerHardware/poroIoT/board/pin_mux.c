@@ -96,6 +96,8 @@ void BOARD_InitPins(void) {
 
 	  //PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);	// wakeup pin for stock frdm
 
+	  PORT_SetPinMux(PORTD, 5u, kPORT_PinDisabledOrAnalog);   //Temperature sensor pin
+	  PORT_SetPinMux(PORTB, 1u, kPORT_PinDisabledOrAnalog);   //Voltage measure pin
 
 	  PORT_SetPinMux(PORTB, 0u, kPORT_MuxAsGpio);
 	  PORT_SetPinMux(PORTD, 6u, kPORT_MuxAlt3);				// UART3 PIN RX (nbiot)

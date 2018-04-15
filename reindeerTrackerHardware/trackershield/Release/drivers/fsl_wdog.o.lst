@@ -119,103 +119,91 @@
   59 001a 8271     		strb	r2, [r0, #6]
   60              		.loc 1 57 0
   61 001c 0361     		str	r3, [r0, #16]
-  62 001e 7047     		bx	lr
-  63              		.cfi_endproc
-  64              	.LFE156:
-  66              		.section	.text.WDOG_Init,"ax",%progbits
-  67              		.align	1
-  68              		.global	WDOG_Init
-  69              		.syntax unified
-  70              		.thumb
-  71              		.thumb_func
-  72              		.fpu fpv4-sp-d16
-  74              	WDOG_Init:
-  75              	.LFB157:
   58:../drivers/fsl_wdog.c **** }
+  62              		.loc 1 58 0
+  63 001e 7047     		bx	lr
+  64              		.cfi_endproc
+  65              	.LFE156:
+  67              		.section	.text.WDOG_Init,"ax",%progbits
+  68              		.align	1
+  69              		.global	WDOG_Init
+  70              		.syntax unified
+  71              		.thumb
+  72              		.thumb_func
+  73              		.fpu fpv4-sp-d16
+  75              	WDOG_Init:
+  76              	.LFB157:
   59:../drivers/fsl_wdog.c **** 
   60:../drivers/fsl_wdog.c **** void WDOG_Init(WDOG_Type *base, const wdog_config_t *config)
   61:../drivers/fsl_wdog.c **** {
-  76              		.loc 1 61 0
-  77              		.cfi_startproc
-  78              		@ args = 0, pretend = 0, frame = 0
-  79              		@ frame_needed = 0, uses_anonymous_args = 0
-  80              	.LVL1:
+  77              		.loc 1 61 0
+  78              		.cfi_startproc
+  79              		@ args = 0, pretend = 0, frame = 0
+  80              		@ frame_needed = 0, uses_anonymous_args = 0
+  81              	.LVL1:
   62:../drivers/fsl_wdog.c ****     assert(config);
   63:../drivers/fsl_wdog.c **** 
   64:../drivers/fsl_wdog.c ****     uint32_t value = 0U;
   65:../drivers/fsl_wdog.c ****     uint32_t primaskValue = 0U;
   66:../drivers/fsl_wdog.c **** 
   67:../drivers/fsl_wdog.c ****     value = WDOG_STCTRLH_WDOGEN(config->enableWdog) | WDOG_STCTRLH_CLKSRC(config->clockSource) |
-  81              		.loc 1 67 0
-  82 0000 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+  82              		.loc 1 67 0
+  83 0000 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
   68:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
+  84              		.loc 1 68 0
+  85 0002 CA79     		ldrb	r2, [r1, #7]	@ zero_extendqisi2
+  67:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
+  86              		.loc 1 67 0
+  87 0004 43F48043 		orr	r3, r3, #16384
+  88 0008 43EA8203 		orr	r3, r3, r2, lsl #2
+  89              		.loc 1 68 0
+  90 000c 0A7A     		ldrb	r2, [r1, #8]	@ zero_extendqisi2
+  67:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
+  91              		.loc 1 67 0
+  92 000e 43EAC203 		orr	r3, r3, r2, lsl #3
   69:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_ALLOWUPDATE(config->enableUpdate) | WDOG_STCTRLH_DBGEN(config->workMode.en
+  93              		.loc 1 69 0
+  94 0012 8A79     		ldrb	r2, [r1, #6]	@ zero_extendqisi2
+  67:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
+  95              		.loc 1 67 0
+  96 0014 43EA0213 		orr	r3, r3, r2, lsl #4
+  97              		.loc 1 69 0
+  98 0018 4A79     		ldrb	r2, [r1, #5]	@ zero_extendqisi2
+  67:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
+  99              		.loc 1 67 0
+ 100 001a 43EA4213 		orr	r3, r3, r2, lsl #5
   70:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_STOPEN(config->workMode.enableStop) |
+ 101              		.loc 1 70 0
+ 102 001e 0A79     		ldrb	r2, [r1, #4]	@ zero_extendqisi2
+  67:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
+ 103              		.loc 1 67 0
+ 104 0020 43EA8213 		orr	r3, r3, r2, lsl #6
   71:../drivers/fsl_wdog.c **** #if defined(FSL_FEATURE_WDOG_HAS_WAITEN) && FSL_FEATURE_WDOG_HAS_WAITEN
   72:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_WAITEN(config->workMode.enableWait) |
-  83              		.loc 1 72 0
-  84 0002 CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
+ 105              		.loc 1 72 0
+ 106 0024 CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
   67:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
-  85              		.loc 1 67 0
-  86 0004 43F48043 		orr	r3, r3, #16384
-  87 0008 43EAC213 		orr	r3, r3, r2, lsl #7
-  88 000c 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
-  89 000e 5200     		lsls	r2, r2, #1
-  90 0010 02F00202 		and	r2, r2, #2
-  91 0014 1343     		orrs	r3, r3, r2
-  68:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
-  92              		.loc 1 68 0
-  93 0016 CA79     		ldrb	r2, [r1, #7]	@ zero_extendqisi2
-  94 0018 9200     		lsls	r2, r2, #2
-  95 001a 02F00402 		and	r2, r2, #4
-  67:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
-  96              		.loc 1 67 0
-  97 001e 1343     		orrs	r3, r3, r2
-  68:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
-  98              		.loc 1 68 0
-  99 0020 0A7A     		ldrb	r2, [r1, #8]	@ zero_extendqisi2
- 100 0022 D200     		lsls	r2, r2, #3
- 101 0024 02F00802 		and	r2, r2, #8
-  67:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
- 102              		.loc 1 67 0
- 103 0028 1343     		orrs	r3, r3, r2
-  69:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_STOPEN(config->workMode.enableStop) |
- 104              		.loc 1 69 0
- 105 002a 8A79     		ldrb	r2, [r1, #6]	@ zero_extendqisi2
- 106 002c 1201     		lsls	r2, r2, #4
- 107 002e 02F01002 		and	r2, r2, #16
-  67:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
- 108              		.loc 1 67 0
- 109 0032 1343     		orrs	r3, r3, r2
-  69:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_STOPEN(config->workMode.enableStop) |
- 110              		.loc 1 69 0
- 111 0034 4A79     		ldrb	r2, [r1, #5]	@ zero_extendqisi2
- 112 0036 5201     		lsls	r2, r2, #5
- 113 0038 02F02002 		and	r2, r2, #32
-  67:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
- 114              		.loc 1 67 0
- 115 003c 1343     		orrs	r3, r3, r2
-  70:../drivers/fsl_wdog.c **** #if defined(FSL_FEATURE_WDOG_HAS_WAITEN) && FSL_FEATURE_WDOG_HAS_WAITEN
- 116              		.loc 1 70 0
- 117 003e 0A79     		ldrb	r2, [r1, #4]	@ zero_extendqisi2
- 118 0040 9201     		lsls	r2, r2, #6
- 119 0042 02F04002 		and	r2, r2, #64
+ 107              		.loc 1 67 0
+ 108 0026 43EAC213 		orr	r3, r3, r2, lsl #7
+ 109 002a 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+ 110 002c 5200     		lsls	r2, r2, #1
+ 111 002e 02F00202 		and	r2, r2, #2
   61:../drivers/fsl_wdog.c ****     assert(config);
- 120              		.loc 1 61 0
- 121 0046 30B5     		push	{r4, r5, lr}
- 122              		.cfi_def_cfa_offset 12
- 123              		.cfi_offset 4, -12
- 124              		.cfi_offset 5, -8
- 125              		.cfi_offset 14, -4
+ 112              		.loc 1 61 0
+ 113 0032 30B5     		push	{r4, r5, lr}
+ 114              		.cfi_def_cfa_offset 12
+ 115              		.cfi_offset 4, -12
+ 116              		.cfi_offset 5, -8
+ 117              		.cfi_offset 14, -4
   67:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_IRQRSTEN(config->enableInterrupt) | WDOG_STCTRLH_WINEN(config->enableWindo
- 126              		.loc 1 67 0
- 127 0048 43EA0205 		orr	r5, r3, r2
- 128              	.LVL2:
- 129              	.LBB58:
- 130              	.LBB59:
- 131              	.LBB60:
- 132              	.LBB61:
- 133              		.file 2 "../CMSIS/cmsis_gcc.h"
+ 118              		.loc 1 67 0
+ 119 0034 43EA0205 		orr	r5, r3, r2
+ 120              	.LVL2:
+ 121              	.LBB58:
+ 122              	.LBB59:
+ 123              	.LBB60:
+ 124              	.LBB61:
+ 125              		.file 2 "../CMSIS/cmsis_gcc.h"
    1:../CMSIS/cmsis_gcc.h **** /**************************************************************************//**
    2:../CMSIS/cmsis_gcc.h ****  * @file     cmsis_gcc.h
    3:../CMSIS/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
@@ -599,33 +587,33 @@
  381:../CMSIS/cmsis_gcc.h ****   uint32_t result;
  382:../CMSIS/cmsis_gcc.h **** 
  383:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) );
- 134              		.loc 2 383 0
- 135              		.syntax unified
- 136              	@ 383 "../CMSIS/cmsis_gcc.h" 1
- 137 004c EFF31083 		MRS r3, primask
- 138              	@ 0 "" 2
- 139              		.thumb
- 140              		.syntax unified
- 141              	.LBE61:
- 142              	.LBE60:
- 143              	.LBB62:
- 144              	.LBB63:
+ 126              		.loc 2 383 0
+ 127              		.syntax unified
+ 128              	@ 383 "../CMSIS/cmsis_gcc.h" 1
+ 129 0038 EFF31083 		MRS r3, primask
+ 130              	@ 0 "" 2
+ 131              		.thumb
+ 132              		.syntax unified
+ 133              	.LBE61:
+ 134              	.LBE60:
+ 135              	.LBB62:
+ 136              	.LBB63:
  139:../CMSIS/cmsis_gcc.h **** }
- 145              		.loc 2 139 0
- 146              		.syntax unified
- 147              	@ 139 "../CMSIS/cmsis_gcc.h" 1
- 148 0050 72B6     		cpsid i
- 149              	@ 0 "" 2
- 150              	.LVL3:
- 151              		.thumb
- 152              		.syntax unified
- 153              	.LBE63:
- 154              	.LBE62:
- 155              	.LBE59:
- 156              	.LBE58:
- 157              	.LBB64:
- 158              	.LBB65:
- 159              		.file 3 "../drivers/fsl_wdog.h"
+ 137              		.loc 2 139 0
+ 138              		.syntax unified
+ 139              	@ 139 "../CMSIS/cmsis_gcc.h" 1
+ 140 003c 72B6     		cpsid i
+ 141              	@ 0 "" 2
+ 142              	.LVL3:
+ 143              		.thumb
+ 144              		.syntax unified
+ 145              	.LBE63:
+ 146              	.LBE62:
+ 147              	.LBE59:
+ 148              	.LBE58:
+ 149              	.LBB64:
+ 150              	.LBB65:
+ 151              		.file 3 "../drivers/fsl_wdog.h"
    1:../drivers/fsl_wdog.h **** /*
    2:../drivers/fsl_wdog.h ****  * The Clear BSD License
    3:../drivers/fsl_wdog.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
@@ -1017,16 +1005,16 @@
  389:../drivers/fsl_wdog.h **** static inline void WDOG_Unlock(WDOG_Type *base)
  390:../drivers/fsl_wdog.h **** {
  391:../drivers/fsl_wdog.h ****     base->UNLOCK = WDOG_FIRST_WORD_OF_UNLOCK;
- 160              		.loc 3 391 0
- 161 0052 4CF22052 		movw	r2, #50464
- 162 0056 C281     		strh	r2, [r0, #14]	@ movhi
+ 152              		.loc 3 391 0
+ 153 003e 4CF22052 		movw	r2, #50464
+ 154 0042 C281     		strh	r2, [r0, #14]	@ movhi
  392:../drivers/fsl_wdog.h ****     base->UNLOCK = WDOG_SECOND_WORD_OF_UNLOCK;
- 163              		.loc 3 392 0
- 164 0058 4DF62812 		movw	r2, #55592
- 165 005c C281     		strh	r2, [r0, #14]	@ movhi
- 166              	.LVL4:
- 167              	.LBE65:
- 168              	.LBE64:
+ 155              		.loc 3 392 0
+ 156 0044 4DF62812 		movw	r2, #55592
+ 157 0048 C281     		strh	r2, [r0, #14]	@ movhi
+ 158              	.LVL4:
+ 159              	.LBE65:
+ 160              	.LBE64:
   73:../drivers/fsl_wdog.c **** #endif /* FSL_FEATURE_WDOG_HAS_WAITEN */
   74:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_DISTESTWDOG(1U);
   75:../drivers/fsl_wdog.c **** 
@@ -1036,55 +1024,55 @@
   79:../drivers/fsl_wdog.c ****     WDOG_Unlock(base);
   80:../drivers/fsl_wdog.c ****     /* Wait one bus clock cycle */
   81:../drivers/fsl_wdog.c ****     base->RSTCNT = 0U;
- 169              		.loc 1 81 0
- 170 005e 0022     		movs	r2, #0
- 171 0060 8282     		strh	r2, [r0, #20]	@ movhi
+ 161              		.loc 1 81 0
+ 162 004a 0022     		movs	r2, #0
+ 163 004c 8282     		strh	r2, [r0, #20]	@ movhi
   82:../drivers/fsl_wdog.c ****     /* Set configruation */
   83:../drivers/fsl_wdog.c ****     base->PRESC = WDOG_PRESC_PRESCVAL(config->prescaler);
- 172              		.loc 1 83 0
- 173 0062 8A78     		ldrb	r2, [r1, #2]	@ zero_extendqisi2
+ 164              		.loc 1 83 0
+ 165 004e 8A78     		ldrb	r2, [r1, #2]	@ zero_extendqisi2
   84:../drivers/fsl_wdog.c ****     base->WINH = (uint16_t)((config->windowValue >> 16U) & 0xFFFFU);
- 174              		.loc 1 84 0
- 175 0064 CC68     		ldr	r4, [r1, #12]
+ 166              		.loc 1 84 0
+ 167 0050 CC68     		ldr	r4, [r1, #12]
   85:../drivers/fsl_wdog.c ****     base->WINL = (uint16_t)((config->windowValue) & 0xFFFFU);
   86:../drivers/fsl_wdog.c ****     base->TOVALH = (uint16_t)((config->timeoutValue >> 16U) & 0xFFFFU);
- 176              		.loc 1 86 0
- 177 0066 0969     		ldr	r1, [r1, #16]
- 178              	.LVL5:
+ 168              		.loc 1 86 0
+ 169 0052 0969     		ldr	r1, [r1, #16]
+ 170              	.LVL5:
   83:../drivers/fsl_wdog.c ****     base->WINH = (uint16_t)((config->windowValue >> 16U) & 0xFFFFU);
- 179              		.loc 1 83 0
- 180 0068 1202     		lsls	r2, r2, #8
- 181 006a 02F4E062 		and	r2, r2, #1792
- 182 006e C282     		strh	r2, [r0, #22]	@ movhi
+ 171              		.loc 1 83 0
+ 172 0054 1202     		lsls	r2, r2, #8
+ 173 0056 02F4E062 		and	r2, r2, #1792
+ 174 005a C282     		strh	r2, [r0, #22]	@ movhi
   84:../drivers/fsl_wdog.c ****     base->WINH = (uint16_t)((config->windowValue >> 16U) & 0xFFFFU);
- 183              		.loc 1 84 0
- 184 0070 220C     		lsrs	r2, r4, #16
- 185 0072 0281     		strh	r2, [r0, #8]	@ movhi
+ 175              		.loc 1 84 0
+ 176 005c 220C     		lsrs	r2, r4, #16
+ 177 005e 0281     		strh	r2, [r0, #8]	@ movhi
   85:../drivers/fsl_wdog.c ****     base->WINL = (uint16_t)((config->windowValue) & 0xFFFFU);
- 186              		.loc 1 85 0
- 187 0074 A4B2     		uxth	r4, r4
- 188              		.loc 1 86 0
- 189 0076 0A0C     		lsrs	r2, r1, #16
+ 178              		.loc 1 85 0
+ 179 0060 A4B2     		uxth	r4, r4
+ 180              		.loc 1 86 0
+ 181 0062 0A0C     		lsrs	r2, r1, #16
   85:../drivers/fsl_wdog.c ****     base->WINL = (uint16_t)((config->windowValue) & 0xFFFFU);
- 190              		.loc 1 85 0
- 191 0078 4481     		strh	r4, [r0, #10]	@ movhi
+ 182              		.loc 1 85 0
+ 183 0064 4481     		strh	r4, [r0, #10]	@ movhi
   87:../drivers/fsl_wdog.c ****     base->TOVALL = (uint16_t)((config->timeoutValue) & 0xFFFFU);
- 192              		.loc 1 87 0
- 193 007a 89B2     		uxth	r1, r1
+ 184              		.loc 1 87 0
+ 185 0066 89B2     		uxth	r1, r1
   86:../drivers/fsl_wdog.c ****     base->TOVALL = (uint16_t)((config->timeoutValue) & 0xFFFFU);
- 194              		.loc 1 86 0
- 195 007c 8280     		strh	r2, [r0, #4]	@ movhi
+ 186              		.loc 1 86 0
+ 187 0068 8280     		strh	r2, [r0, #4]	@ movhi
   88:../drivers/fsl_wdog.c ****     base->STCTRLH = value;
- 196              		.loc 1 88 0
- 197 007e AAB2     		uxth	r2, r5
+ 188              		.loc 1 88 0
+ 189 006a AAB2     		uxth	r2, r5
   87:../drivers/fsl_wdog.c ****     base->TOVALL = (uint16_t)((config->timeoutValue) & 0xFFFFU);
- 198              		.loc 1 87 0
- 199 0080 C180     		strh	r1, [r0, #6]	@ movhi
- 200              		.loc 1 88 0
- 201 0082 0280     		strh	r2, [r0]	@ movhi
- 202              	.LBB66:
- 203              	.LBB67:
- 204              	.LBB68:
+ 190              		.loc 1 87 0
+ 191 006c C180     		strh	r1, [r0, #6]	@ movhi
+ 192              		.loc 1 88 0
+ 193 006e 0280     		strh	r2, [r0]	@ movhi
+ 194              	.LBB66:
+ 195              	.LBB67:
+ 196              	.LBB68:
  384:../CMSIS/cmsis_gcc.h ****   return(result);
  385:../CMSIS/cmsis_gcc.h **** }
  386:../CMSIS/cmsis_gcc.h **** 
@@ -1113,80 +1101,81 @@
  409:../CMSIS/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __set_PRIMASK(uint32_t priMask)
  410:../CMSIS/cmsis_gcc.h **** {
  411:../CMSIS/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
- 205              		.loc 2 411 0
- 206              		.syntax unified
- 207              	@ 411 "../CMSIS/cmsis_gcc.h" 1
- 208 0084 83F31088 		MSR primask, r3
- 209              	@ 0 "" 2
- 210              		.thumb
- 211              		.syntax unified
- 212 0088 30BD     		pop	{r4, r5, pc}
- 213              	.LBE68:
- 214              	.LBE67:
- 215              	.LBE66:
- 216              		.cfi_endproc
- 217              	.LFE157:
- 219              		.section	.text.WDOG_Deinit,"ax",%progbits
- 220              		.align	1
- 221              		.global	WDOG_Deinit
- 222              		.syntax unified
- 223              		.thumb
- 224              		.thumb_func
- 225              		.fpu fpv4-sp-d16
- 227              	WDOG_Deinit:
- 228              	.LFB158:
+ 197              		.loc 2 411 0
+ 198              		.syntax unified
+ 199              	@ 411 "../CMSIS/cmsis_gcc.h" 1
+ 200 0070 83F31088 		MSR primask, r3
+ 201              	@ 0 "" 2
+ 202              		.thumb
+ 203              		.syntax unified
+ 204              	.LBE68:
+ 205              	.LBE67:
+ 206              	.LBE66:
   89:../drivers/fsl_wdog.c ****     EnableGlobalIRQ(primaskValue);
   90:../drivers/fsl_wdog.c **** }
+ 207              		.loc 1 90 0
+ 208 0074 30BD     		pop	{r4, r5, pc}
+ 209              		.cfi_endproc
+ 210              	.LFE157:
+ 212              		.section	.text.WDOG_Deinit,"ax",%progbits
+ 213              		.align	1
+ 214              		.global	WDOG_Deinit
+ 215              		.syntax unified
+ 216              		.thumb
+ 217              		.thumb_func
+ 218              		.fpu fpv4-sp-d16
+ 220              	WDOG_Deinit:
+ 221              	.LFB158:
   91:../drivers/fsl_wdog.c **** 
   92:../drivers/fsl_wdog.c **** void WDOG_Deinit(WDOG_Type *base)
   93:../drivers/fsl_wdog.c **** {
- 229              		.loc 1 93 0
- 230              		.cfi_startproc
- 231              		@ args = 0, pretend = 0, frame = 0
- 232              		@ frame_needed = 0, uses_anonymous_args = 0
- 233              		@ link register save eliminated.
- 234              	.LVL6:
- 235              	.LBB69:
- 236              	.LBB70:
- 237              	.LBB71:
- 238              	.LBB72:
+ 222              		.loc 1 93 0
+ 223              		.cfi_startproc
+ 224              		@ args = 0, pretend = 0, frame = 0
+ 225              		@ frame_needed = 0, uses_anonymous_args = 0
+ 226              		@ link register save eliminated.
+ 227              	.LVL6:
+ 228              	.LBB69:
+ 229              	.LBB70:
+ 230              	.LBB71:
+ 231              	.LBB72:
  383:../CMSIS/cmsis_gcc.h ****   return(result);
- 239              		.loc 2 383 0
- 240              		.syntax unified
- 241              	@ 383 "../CMSIS/cmsis_gcc.h" 1
- 242 0000 EFF31082 		MRS r2, primask
- 243              	@ 0 "" 2
- 244              		.thumb
- 245              		.syntax unified
- 246              	.LBE72:
- 247              	.LBE71:
- 248              	.LBB73:
- 249              	.LBB74:
+ 232              		.loc 2 383 0
+ 233              		.syntax unified
+ 234              	@ 383 "../CMSIS/cmsis_gcc.h" 1
+ 235 0000 EFF31082 		MRS r2, primask
+ 236              	@ 0 "" 2
+ 237              		.thumb
+ 238              		.syntax unified
+ 239              	.LBE72:
+ 240              	.LBE71:
+ 241              	.LBB73:
+ 242              	.LBB74:
  139:../CMSIS/cmsis_gcc.h **** }
- 250              		.loc 2 139 0
- 251              		.syntax unified
- 252              	@ 139 "../CMSIS/cmsis_gcc.h" 1
- 253 0004 72B6     		cpsid i
- 254              	@ 0 "" 2
- 255              	.LVL7:
- 256              		.thumb
- 257              		.syntax unified
- 258              	.LBE74:
- 259              	.LBE73:
- 260              	.LBE70:
- 261              	.LBE69:
- 262              	.LBB75:
- 263              	.LBB76:
+ 243              		.loc 2 139 0
+ 244              		.syntax unified
+ 245              	@ 139 "../CMSIS/cmsis_gcc.h" 1
+ 246 0004 72B6     		cpsid i
+ 247              	@ 0 "" 2
+ 248              	.LVL7:
+ 249              		.thumb
+ 250              		.syntax unified
+ 251              	.LBE74:
+ 252              	.LBE73:
+ 253              	.LBE70:
+ 254              	.LBE69:
+ 255              	.LBB75:
+ 256              	.LBB76:
  391:../drivers/fsl_wdog.h ****     base->UNLOCK = WDOG_SECOND_WORD_OF_UNLOCK;
- 264              		.loc 3 391 0
- 265 0006 4CF22053 		movw	r3, #50464
- 266 000a C381     		strh	r3, [r0, #14]	@ movhi
- 267              		.loc 3 392 0
- 268 000c 4DF62813 		movw	r3, #55592
- 269 0010 C381     		strh	r3, [r0, #14]	@ movhi
- 270              	.LVL8:
- 271              	.LBE76:
- 272              	.LBE75:
+ 257              		.loc 3 391 0
+ 258 0006 4CF22053 		movw	r3, #50464
+ 259 000a C381     		strh	r3, [r0, #14]	@ movhi
+ 260              		.loc 3 392 0
+ 261 000c 4DF62813 		movw	r3, #55592
+ 262 0010 C381     		strh	r3, [r0, #14]	@ movhi
+ 263              	.LVL8:
+ 264              	.LBE76:
+ 265              	.LBE75:
   94:../drivers/fsl_wdog.c ****     uint32_t primaskValue = 0U;
   95:../drivers/fsl_wdog.c **** 
   96:../drivers/fsl_wdog.c ****     /* Disable the global interrupts */
@@ -1194,38 +1183,38 @@
   98:../drivers/fsl_wdog.c ****     WDOG_Unlock(base);
   99:../drivers/fsl_wdog.c ****     /* Wait one bus clock cycle */
  100:../drivers/fsl_wdog.c ****     base->RSTCNT = 0U;
- 273              		.loc 1 100 0
- 274 0012 0023     		movs	r3, #0
- 275 0014 8382     		strh	r3, [r0, #20]	@ movhi
- 276              	.LVL9:
- 277              	.LBB77:
- 278              	.LBB78:
+ 266              		.loc 1 100 0
+ 267 0012 0023     		movs	r3, #0
+ 268 0014 8382     		strh	r3, [r0, #20]	@ movhi
+ 269              	.LVL9:
+ 270              	.LBB77:
+ 271              	.LBB78:
  273:../drivers/fsl_wdog.h **** }
- 279              		.loc 3 273 0
- 280 0016 0388     		ldrh	r3, [r0]
- 281 0018 23F00103 		bic	r3, r3, #1
- 282 001c 1B04     		lsls	r3, r3, #16
- 283 001e 1B0C     		lsrs	r3, r3, #16
- 284 0020 0380     		strh	r3, [r0]	@ movhi
- 285              	.LVL10:
- 286              	.LBE78:
- 287              	.LBE77:
- 288              	.LBB79:
- 289              	.LBB80:
- 290              	.LBB81:
- 291              		.loc 2 411 0
- 292              		.syntax unified
- 293              	@ 411 "../CMSIS/cmsis_gcc.h" 1
- 294 0022 82F31088 		MSR primask, r2
- 295              	@ 0 "" 2
- 296              	.LVL11:
- 297              		.thumb
- 298              		.syntax unified
- 299              	.LBE81:
- 300              	.LBE80:
- 301              	.LBE79:
- 302              	.LBB82:
- 303              	.LBB83:
+ 272              		.loc 3 273 0
+ 273 0016 0388     		ldrh	r3, [r0]
+ 274 0018 23F00103 		bic	r3, r3, #1
+ 275 001c 1B04     		lsls	r3, r3, #16
+ 276 001e 1B0C     		lsrs	r3, r3, #16
+ 277 0020 0380     		strh	r3, [r0]	@ movhi
+ 278              	.LVL10:
+ 279              	.LBE78:
+ 280              	.LBE77:
+ 281              	.LBB79:
+ 282              	.LBB80:
+ 283              	.LBB81:
+ 284              		.loc 2 411 0
+ 285              		.syntax unified
+ 286              	@ 411 "../CMSIS/cmsis_gcc.h" 1
+ 287 0022 82F31088 		MSR primask, r2
+ 288              	@ 0 "" 2
+ 289              	.LVL11:
+ 290              		.thumb
+ 291              		.syntax unified
+ 292              	.LBE81:
+ 293              	.LBE80:
+ 294              	.LBE79:
+ 295              	.LBB82:
+ 296              	.LBB83:
  393:../drivers/fsl_wdog.h **** }
  394:../drivers/fsl_wdog.h **** 
  395:../drivers/fsl_wdog.h **** /*!
@@ -1260,107 +1249,108 @@
  424:../drivers/fsl_wdog.h **** static inline void WDOG_ClearResetCount(WDOG_Type *base)
  425:../drivers/fsl_wdog.h **** {
  426:../drivers/fsl_wdog.h ****     base->RSTCNT |= UINT16_MAX;
- 304              		.loc 3 426 0
- 305 0026 838A     		ldrh	r3, [r0, #20]
- 306 0028 4FF6FF73 		movw	r3, #65535
- 307 002c 8382     		strh	r3, [r0, #20]	@ movhi
- 308              	.LVL12:
- 309 002e 7047     		bx	lr
- 310              	.LBE83:
- 311              	.LBE82:
- 312              		.cfi_endproc
- 313              	.LFE158:
- 315              		.section	.text.WDOG_SetTestModeConfig,"ax",%progbits
- 316              		.align	1
- 317              		.global	WDOG_SetTestModeConfig
- 318              		.syntax unified
- 319              		.thumb
- 320              		.thumb_func
- 321              		.fpu fpv4-sp-d16
- 323              	WDOG_SetTestModeConfig:
- 324              	.LFB159:
+ 297              		.loc 3 426 0
+ 298 0026 838A     		ldrh	r3, [r0, #20]
+ 299 0028 4FF6FF73 		movw	r3, #65535
+ 300 002c 8382     		strh	r3, [r0, #20]	@ movhi
+ 301              	.LVL12:
+ 302              	.LBE83:
+ 303              	.LBE82:
  101:../drivers/fsl_wdog.c ****     WDOG_Disable(base);
  102:../drivers/fsl_wdog.c ****     EnableGlobalIRQ(primaskValue);
  103:../drivers/fsl_wdog.c ****     WDOG_ClearResetCount(base);
  104:../drivers/fsl_wdog.c **** }
+ 304              		.loc 1 104 0
+ 305 002e 7047     		bx	lr
+ 306              		.cfi_endproc
+ 307              	.LFE158:
+ 309              		.section	.text.WDOG_SetTestModeConfig,"ax",%progbits
+ 310              		.align	1
+ 311              		.global	WDOG_SetTestModeConfig
+ 312              		.syntax unified
+ 313              		.thumb
+ 314              		.thumb_func
+ 315              		.fpu fpv4-sp-d16
+ 317              	WDOG_SetTestModeConfig:
+ 318              	.LFB159:
  105:../drivers/fsl_wdog.c **** 
  106:../drivers/fsl_wdog.c **** void WDOG_SetTestModeConfig(WDOG_Type *base, wdog_test_config_t *config)
  107:../drivers/fsl_wdog.c **** {
- 325              		.loc 1 107 0
- 326              		.cfi_startproc
- 327              		@ args = 0, pretend = 0, frame = 0
- 328              		@ frame_needed = 0, uses_anonymous_args = 0
- 329              	.LVL13:
+ 319              		.loc 1 107 0
+ 320              		.cfi_startproc
+ 321              		@ args = 0, pretend = 0, frame = 0
+ 322              		@ frame_needed = 0, uses_anonymous_args = 0
+ 323              	.LVL13:
  108:../drivers/fsl_wdog.c ****     assert(config);
  109:../drivers/fsl_wdog.c **** 
  110:../drivers/fsl_wdog.c ****     uint32_t value = 0U;
  111:../drivers/fsl_wdog.c ****     uint32_t primaskValue = 0U;
  112:../drivers/fsl_wdog.c **** 
  113:../drivers/fsl_wdog.c ****     value = WDOG_STCTRLH_DISTESTWDOG(0U) | WDOG_STCTRLH_TESTWDOG(1U) | WDOG_STCTRLH_TESTSEL(config-
- 330              		.loc 1 113 0
- 331 0000 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 324              		.loc 1 113 0
+ 325 0000 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
  114:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_BYTESEL(config->testedByte) | WDOG_STCTRLH_IRQRSTEN(0U) | WDOG_STCTRLH_WDO
- 332              		.loc 1 114 0
- 333 0002 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+ 326              		.loc 1 114 0
+ 327 0002 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
  113:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_BYTESEL(config->testedByte) | WDOG_STCTRLH_IRQRSTEN(0U) | WDOG_STCTRLH_WDO
- 334              		.loc 1 113 0
- 335 0004 DB02     		lsls	r3, r3, #11
- 336              		.loc 1 114 0
- 337 0006 1203     		lsls	r2, r2, #12
- 338 0008 02F44052 		and	r2, r2, #12288
- 339 000c 03F40063 		and	r3, r3, #2048
- 340 0010 1343     		orrs	r3, r3, r2
- 341 0012 43F48263 		orr	r3, r3, #1040
+ 328              		.loc 1 113 0
+ 329 0004 DB02     		lsls	r3, r3, #11
+ 330              		.loc 1 114 0
+ 331 0006 1203     		lsls	r2, r2, #12
+ 332 0008 02F44052 		and	r2, r2, #12288
+ 333 000c 03F40063 		and	r3, r3, #2048
+ 334 0010 1343     		orrs	r3, r3, r2
+ 335 0012 43F48263 		orr	r3, r3, #1040
  107:../drivers/fsl_wdog.c ****     assert(config);
- 342              		.loc 1 107 0
- 343 0016 10B5     		push	{r4, lr}
- 344              		.cfi_def_cfa_offset 8
- 345              		.cfi_offset 4, -8
- 346              		.cfi_offset 14, -4
- 347 0018 43F00103 		orr	r3, r3, #1
- 348              	.LVL14:
- 349              	.LBB84:
- 350              	.LBB85:
- 351              	.LBB86:
- 352              	.LBB87:
+ 336              		.loc 1 107 0
+ 337 0016 10B5     		push	{r4, lr}
+ 338              		.cfi_def_cfa_offset 8
+ 339              		.cfi_offset 4, -8
+ 340              		.cfi_offset 14, -4
+ 341 0018 43F00103 		orr	r3, r3, #1
+ 342              	.LVL14:
+ 343              	.LBB84:
+ 344              	.LBB85:
+ 345              	.LBB86:
+ 346              	.LBB87:
  383:../CMSIS/cmsis_gcc.h ****   return(result);
- 353              		.loc 2 383 0
- 354              		.syntax unified
- 355              	@ 383 "../CMSIS/cmsis_gcc.h" 1
- 356 001c EFF31084 		MRS r4, primask
- 357              	@ 0 "" 2
- 358              		.thumb
- 359              		.syntax unified
- 360              	.LBE87:
- 361              	.LBE86:
- 362              	.LBB88:
- 363              	.LBB89:
+ 347              		.loc 2 383 0
+ 348              		.syntax unified
+ 349              	@ 383 "../CMSIS/cmsis_gcc.h" 1
+ 350 001c EFF31084 		MRS r4, primask
+ 351              	@ 0 "" 2
+ 352              		.thumb
+ 353              		.syntax unified
+ 354              	.LBE87:
+ 355              	.LBE86:
+ 356              	.LBB88:
+ 357              	.LBB89:
  139:../CMSIS/cmsis_gcc.h **** }
- 364              		.loc 2 139 0
+ 358              		.loc 2 139 0
+ 359              		.syntax unified
+ 360              	@ 139 "../CMSIS/cmsis_gcc.h" 1
+ 361 0020 72B6     		cpsid i
+ 362              	@ 0 "" 2
+ 363              	.LVL15:
+ 364              		.thumb
  365              		.syntax unified
- 366              	@ 139 "../CMSIS/cmsis_gcc.h" 1
- 367 0020 72B6     		cpsid i
- 368              	@ 0 "" 2
- 369              	.LVL15:
- 370              		.thumb
- 371              		.syntax unified
- 372              	.LBE89:
- 373              	.LBE88:
- 374              	.LBE85:
- 375              	.LBE84:
- 376              	.LBB90:
- 377              	.LBB91:
+ 366              	.LBE89:
+ 367              	.LBE88:
+ 368              	.LBE85:
+ 369              	.LBE84:
+ 370              	.LBB90:
+ 371              	.LBB91:
  391:../drivers/fsl_wdog.h ****     base->UNLOCK = WDOG_SECOND_WORD_OF_UNLOCK;
- 378              		.loc 3 391 0
- 379 0022 4CF22052 		movw	r2, #50464
- 380 0026 C281     		strh	r2, [r0, #14]	@ movhi
+ 372              		.loc 3 391 0
+ 373 0022 4CF22052 		movw	r2, #50464
+ 374 0026 C281     		strh	r2, [r0, #14]	@ movhi
  392:../drivers/fsl_wdog.h **** }
- 381              		.loc 3 392 0
- 382 0028 4DF62812 		movw	r2, #55592
- 383 002c C281     		strh	r2, [r0, #14]	@ movhi
- 384              	.LVL16:
- 385              	.LBE91:
- 386              	.LBE90:
+ 375              		.loc 3 392 0
+ 376 0028 4DF62812 		movw	r2, #55592
+ 377 002c C281     		strh	r2, [r0, #14]	@ movhi
+ 378              	.LVL16:
+ 379              	.LBE91:
+ 380              	.LBE90:
  115:../drivers/fsl_wdog.c ****             WDOG_STCTRLH_ALLOWUPDATE(1U);
  116:../drivers/fsl_wdog.c **** 
  117:../drivers/fsl_wdog.c ****     /* Disable the global interrupts. Otherwise, an interrupt could effectively invalidate the unlo
@@ -1369,205 +1359,207 @@
  120:../drivers/fsl_wdog.c ****     WDOG_Unlock(base);
  121:../drivers/fsl_wdog.c ****     /* Wait one bus clock cycle */
  122:../drivers/fsl_wdog.c ****     base->RSTCNT = 0U;
- 387              		.loc 1 122 0
- 388 002e 0022     		movs	r2, #0
- 389 0030 8282     		strh	r2, [r0, #20]	@ movhi
+ 381              		.loc 1 122 0
+ 382 002e 0022     		movs	r2, #0
+ 383 0030 8282     		strh	r2, [r0, #20]	@ movhi
  123:../drivers/fsl_wdog.c ****     /* Set configruation */
  124:../drivers/fsl_wdog.c ****     base->TOVALH = (uint16_t)((config->timeoutValue >> 16U) & 0xFFFFU);
- 390              		.loc 1 124 0
- 391 0032 4A68     		ldr	r2, [r1, #4]
- 392 0034 110C     		lsrs	r1, r2, #16
- 393              	.LVL17:
+ 384              		.loc 1 124 0
+ 385 0032 4A68     		ldr	r2, [r1, #4]
+ 386 0034 110C     		lsrs	r1, r2, #16
+ 387              	.LVL17:
  125:../drivers/fsl_wdog.c ****     base->TOVALL = (uint16_t)((config->timeoutValue) & 0xFFFFU);
- 394              		.loc 1 125 0
- 395 0036 92B2     		uxth	r2, r2
+ 388              		.loc 1 125 0
+ 389 0036 92B2     		uxth	r2, r2
  124:../drivers/fsl_wdog.c ****     base->TOVALL = (uint16_t)((config->timeoutValue) & 0xFFFFU);
- 396              		.loc 1 124 0
- 397 0038 8180     		strh	r1, [r0, #4]	@ movhi
- 398              		.loc 1 125 0
- 399 003a C280     		strh	r2, [r0, #6]	@ movhi
+ 390              		.loc 1 124 0
+ 391 0038 8180     		strh	r1, [r0, #4]	@ movhi
+ 392              		.loc 1 125 0
+ 393 003a C280     		strh	r2, [r0, #6]	@ movhi
  126:../drivers/fsl_wdog.c ****     base->STCTRLH = value;
- 400              		.loc 1 126 0
- 401 003c 0380     		strh	r3, [r0]	@ movhi
- 402              	.LBB92:
- 403              	.LBB93:
- 404              	.LBB94:
- 405              		.loc 2 411 0
- 406              		.syntax unified
- 407              	@ 411 "../CMSIS/cmsis_gcc.h" 1
- 408 003e 84F31088 		MSR primask, r4
- 409              	@ 0 "" 2
- 410              		.thumb
- 411              		.syntax unified
- 412 0042 10BD     		pop	{r4, pc}
- 413              	.LBE94:
- 414              	.LBE93:
- 415              	.LBE92:
- 416              		.cfi_endproc
- 417              	.LFE159:
- 419              		.section	.text.WDOG_GetStatusFlags,"ax",%progbits
- 420              		.align	1
- 421              		.global	WDOG_GetStatusFlags
- 422              		.syntax unified
- 423              		.thumb
- 424              		.thumb_func
- 425              		.fpu fpv4-sp-d16
- 427              	WDOG_GetStatusFlags:
- 428              	.LFB160:
+ 394              		.loc 1 126 0
+ 395 003c 0380     		strh	r3, [r0]	@ movhi
+ 396              	.LBB92:
+ 397              	.LBB93:
+ 398              	.LBB94:
+ 399              		.loc 2 411 0
+ 400              		.syntax unified
+ 401              	@ 411 "../CMSIS/cmsis_gcc.h" 1
+ 402 003e 84F31088 		MSR primask, r4
+ 403              	@ 0 "" 2
+ 404              		.thumb
+ 405              		.syntax unified
+ 406              	.LBE94:
+ 407              	.LBE93:
+ 408              	.LBE92:
  127:../drivers/fsl_wdog.c ****     EnableGlobalIRQ(primaskValue);
  128:../drivers/fsl_wdog.c **** }
+ 409              		.loc 1 128 0
+ 410 0042 10BD     		pop	{r4, pc}
+ 411              		.cfi_endproc
+ 412              	.LFE159:
+ 414              		.section	.text.WDOG_GetStatusFlags,"ax",%progbits
+ 415              		.align	1
+ 416              		.global	WDOG_GetStatusFlags
+ 417              		.syntax unified
+ 418              		.thumb
+ 419              		.thumb_func
+ 420              		.fpu fpv4-sp-d16
+ 422              	WDOG_GetStatusFlags:
+ 423              	.LFB160:
  129:../drivers/fsl_wdog.c **** 
  130:../drivers/fsl_wdog.c **** uint32_t WDOG_GetStatusFlags(WDOG_Type *base)
  131:../drivers/fsl_wdog.c **** {
- 429              		.loc 1 131 0
- 430              		.cfi_startproc
- 431              		@ args = 0, pretend = 0, frame = 0
- 432              		@ frame_needed = 0, uses_anonymous_args = 0
- 433              		@ link register save eliminated.
- 434              	.LVL18:
+ 424              		.loc 1 131 0
+ 425              		.cfi_startproc
+ 426              		@ args = 0, pretend = 0, frame = 0
+ 427              		@ frame_needed = 0, uses_anonymous_args = 0
+ 428              		@ link register save eliminated.
+ 429              	.LVL18:
  132:../drivers/fsl_wdog.c ****     uint32_t status_flag = 0U;
  133:../drivers/fsl_wdog.c **** 
  134:../drivers/fsl_wdog.c ****     status_flag |= (base->STCTRLH & WDOG_STCTRLH_WDOGEN_MASK);
- 435              		.loc 1 134 0
- 436 0000 0288     		ldrh	r2, [r0]
- 437              	.LVL19:
+ 430              		.loc 1 134 0
+ 431 0000 0288     		ldrh	r2, [r0]
+ 432              	.LVL19:
  135:../drivers/fsl_wdog.c ****     status_flag |= (base->STCTRLL & WDOG_STCTRLL_INTFLG_MASK);
- 438              		.loc 1 135 0
- 439 0002 4388     		ldrh	r3, [r0, #2]
- 440              	.LVL20:
- 441 0004 02F00100 		and	r0, r2, #1
- 442              	.LVL21:
- 443 0008 03F40043 		and	r3, r3, #32768
- 444              	.LVL22:
+ 433              		.loc 1 135 0
+ 434 0002 4388     		ldrh	r3, [r0, #2]
+ 435              	.LVL20:
+ 436 0004 02F00100 		and	r0, r2, #1
+ 437              	.LVL21:
+ 438 0008 03F40043 		and	r3, r3, #32768
+ 439              	.LVL22:
  136:../drivers/fsl_wdog.c **** 
  137:../drivers/fsl_wdog.c ****     return status_flag;
  138:../drivers/fsl_wdog.c **** }
- 445              		.loc 1 138 0
- 446 000c 1843     		orrs	r0, r0, r3
- 447 000e 7047     		bx	lr
- 448              		.cfi_endproc
- 449              	.LFE160:
- 451              		.section	.text.WDOG_ClearStatusFlags,"ax",%progbits
- 452              		.align	1
- 453              		.global	WDOG_ClearStatusFlags
- 454              		.syntax unified
- 455              		.thumb
- 456              		.thumb_func
- 457              		.fpu fpv4-sp-d16
- 459              	WDOG_ClearStatusFlags:
- 460              	.LFB161:
+ 440              		.loc 1 138 0
+ 441 000c 1843     		orrs	r0, r0, r3
+ 442 000e 7047     		bx	lr
+ 443              		.cfi_endproc
+ 444              	.LFE160:
+ 446              		.section	.text.WDOG_ClearStatusFlags,"ax",%progbits
+ 447              		.align	1
+ 448              		.global	WDOG_ClearStatusFlags
+ 449              		.syntax unified
+ 450              		.thumb
+ 451              		.thumb_func
+ 452              		.fpu fpv4-sp-d16
+ 454              	WDOG_ClearStatusFlags:
+ 455              	.LFB161:
  139:../drivers/fsl_wdog.c **** 
  140:../drivers/fsl_wdog.c **** void WDOG_ClearStatusFlags(WDOG_Type *base, uint32_t mask)
  141:../drivers/fsl_wdog.c **** {
- 461              		.loc 1 141 0
- 462              		.cfi_startproc
- 463              		@ args = 0, pretend = 0, frame = 0
- 464              		@ frame_needed = 0, uses_anonymous_args = 0
- 465              		@ link register save eliminated.
- 466              	.LVL23:
+ 456              		.loc 1 141 0
+ 457              		.cfi_startproc
+ 458              		@ args = 0, pretend = 0, frame = 0
+ 459              		@ frame_needed = 0, uses_anonymous_args = 0
+ 460              		@ link register save eliminated.
+ 461              	.LVL23:
  142:../drivers/fsl_wdog.c ****     if (mask & kWDOG_TimeoutFlag)
- 467              		.loc 1 142 0
- 468 0000 0B04     		lsls	r3, r1, #16
- 469 0002 06D5     		bpl	.L6
+ 462              		.loc 1 142 0
+ 463 0000 0B04     		lsls	r3, r1, #16
  143:../drivers/fsl_wdog.c ****     {
  144:../drivers/fsl_wdog.c ****         base->STCTRLL |= WDOG_STCTRLL_INTFLG_MASK;
- 470              		.loc 1 144 0
- 471 0004 4388     		ldrh	r3, [r0, #2]
- 472 0006 6FEA4343 		mvn	r3, r3, lsl #17
- 473 000a 6FEA5343 		mvn	r3, r3, lsr #17
- 474 000e 9BB2     		uxth	r3, r3
- 475 0010 4380     		strh	r3, [r0, #2]	@ movhi
- 476              	.L6:
- 477 0012 7047     		bx	lr
- 478              		.cfi_endproc
- 479              	.LFE161:
- 481              		.section	.text.WDOG_Refresh,"ax",%progbits
- 482              		.align	1
- 483              		.global	WDOG_Refresh
- 484              		.syntax unified
- 485              		.thumb
- 486              		.thumb_func
- 487              		.fpu fpv4-sp-d16
- 489              	WDOG_Refresh:
- 490              	.LFB162:
+ 464              		.loc 1 144 0
+ 465 0002 42BF     		ittt	mi
+ 466 0004 4388     		ldrhmi	r3, [r0, #2]
+ 467 0006 43F40043 		orrmi	r3, r3, #32768
+ 468 000a 4380     		strhmi	r3, [r0, #2]	@ movhi
  145:../drivers/fsl_wdog.c ****     }
  146:../drivers/fsl_wdog.c **** }
+ 469              		.loc 1 146 0
+ 470 000c 7047     		bx	lr
+ 471              		.cfi_endproc
+ 472              	.LFE161:
+ 474              		.section	.text.WDOG_Refresh,"ax",%progbits
+ 475              		.align	1
+ 476              		.global	WDOG_Refresh
+ 477              		.syntax unified
+ 478              		.thumb
+ 479              		.thumb_func
+ 480              		.fpu fpv4-sp-d16
+ 482              	WDOG_Refresh:
+ 483              	.LFB162:
  147:../drivers/fsl_wdog.c **** 
  148:../drivers/fsl_wdog.c **** void WDOG_Refresh(WDOG_Type *base)
  149:../drivers/fsl_wdog.c **** {
- 491              		.loc 1 149 0
- 492              		.cfi_startproc
- 493              		@ args = 0, pretend = 0, frame = 0
- 494              		@ frame_needed = 0, uses_anonymous_args = 0
- 495              		@ link register save eliminated.
- 496              	.LVL24:
- 497              	.LBB95:
- 498              	.LBB96:
- 499              	.LBB97:
- 500              	.LBB98:
+ 484              		.loc 1 149 0
+ 485              		.cfi_startproc
+ 486              		@ args = 0, pretend = 0, frame = 0
+ 487              		@ frame_needed = 0, uses_anonymous_args = 0
+ 488              		@ link register save eliminated.
+ 489              	.LVL24:
+ 490              	.LBB95:
+ 491              	.LBB96:
+ 492              	.LBB97:
+ 493              	.LBB98:
  383:../CMSIS/cmsis_gcc.h ****   return(result);
- 501              		.loc 2 383 0
- 502              		.syntax unified
- 503              	@ 383 "../CMSIS/cmsis_gcc.h" 1
- 504 0000 EFF31083 		MRS r3, primask
- 505              	@ 0 "" 2
- 506              		.thumb
- 507              		.syntax unified
- 508              	.LBE98:
- 509              	.LBE97:
- 510              	.LBB99:
- 511              	.LBB100:
+ 494              		.loc 2 383 0
+ 495              		.syntax unified
+ 496              	@ 383 "../CMSIS/cmsis_gcc.h" 1
+ 497 0000 EFF31083 		MRS r3, primask
+ 498              	@ 0 "" 2
+ 499              		.thumb
+ 500              		.syntax unified
+ 501              	.LBE98:
+ 502              	.LBE97:
+ 503              	.LBB99:
+ 504              	.LBB100:
  139:../CMSIS/cmsis_gcc.h **** }
- 512              		.loc 2 139 0
- 513              		.syntax unified
- 514              	@ 139 "../CMSIS/cmsis_gcc.h" 1
- 515 0004 72B6     		cpsid i
- 516              	@ 0 "" 2
- 517              	.LVL25:
- 518              		.thumb
- 519              		.syntax unified
- 520              	.LBE100:
- 521              	.LBE99:
- 522              	.LBE96:
- 523              	.LBE95:
+ 505              		.loc 2 139 0
+ 506              		.syntax unified
+ 507              	@ 139 "../CMSIS/cmsis_gcc.h" 1
+ 508 0004 72B6     		cpsid i
+ 509              	@ 0 "" 2
+ 510              	.LVL25:
+ 511              		.thumb
+ 512              		.syntax unified
+ 513              	.LBE100:
+ 514              	.LBE99:
+ 515              	.LBE96:
+ 516              	.LBE95:
  150:../drivers/fsl_wdog.c ****     uint32_t primaskValue = 0U;
  151:../drivers/fsl_wdog.c **** 
  152:../drivers/fsl_wdog.c ****     /* Disable the global interrupt to protect refresh sequence */
  153:../drivers/fsl_wdog.c ****     primaskValue = DisableGlobalIRQ();
  154:../drivers/fsl_wdog.c ****     base->REFRESH = WDOG_FIRST_WORD_OF_REFRESH;
- 524              		.loc 1 154 0
- 525 0006 4AF20262 		movw	r2, #42498
- 526 000a 8281     		strh	r2, [r0, #12]	@ movhi
+ 517              		.loc 1 154 0
+ 518 0006 4AF20262 		movw	r2, #42498
+ 519 000a 8281     		strh	r2, [r0, #12]	@ movhi
  155:../drivers/fsl_wdog.c ****     base->REFRESH = WDOG_SECOND_WORD_OF_REFRESH;
- 527              		.loc 1 155 0
- 528 000c 4BF28042 		movw	r2, #46208
- 529 0010 8281     		strh	r2, [r0, #12]	@ movhi
- 530              	.LBB101:
- 531              	.LBB102:
- 532              	.LBB103:
- 533              		.loc 2 411 0
- 534              		.syntax unified
- 535              	@ 411 "../CMSIS/cmsis_gcc.h" 1
- 536 0012 83F31088 		MSR primask, r3
- 537              	@ 0 "" 2
- 538              		.thumb
- 539              		.syntax unified
- 540 0016 7047     		bx	lr
- 541              	.LBE103:
- 542              	.LBE102:
- 543              	.LBE101:
- 544              		.cfi_endproc
- 545              	.LFE162:
- 547              		.text
- 548              	.Letext0:
- 549              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 550              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 551              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 552              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 553              		.file 8 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 554              		.file 9 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 555              		.file 10 "../CMSIS/core_cm4.h"
- 556              		.file 11 "../CMSIS/system_MK64F12.h"
- 557              		.file 12 "../CMSIS/MK64F12.h"
- 558              		.file 13 "../drivers/fsl_clock.h"
- 559              		.file 14 "../drivers/fsl_common.h"
+ 520              		.loc 1 155 0
+ 521 000c 4BF28042 		movw	r2, #46208
+ 522 0010 8281     		strh	r2, [r0, #12]	@ movhi
+ 523              	.LBB101:
+ 524              	.LBB102:
+ 525              	.LBB103:
+ 526              		.loc 2 411 0
+ 527              		.syntax unified
+ 528              	@ 411 "../CMSIS/cmsis_gcc.h" 1
+ 529 0012 83F31088 		MSR primask, r3
+ 530              	@ 0 "" 2
+ 531              		.thumb
+ 532              		.syntax unified
+ 533              	.LBE103:
+ 534              	.LBE102:
+ 535              	.LBE101:
+ 156:../drivers/fsl_wdog.c ****     EnableGlobalIRQ(primaskValue);
+ 157:../drivers/fsl_wdog.c **** }
+ 536              		.loc 1 157 0
+ 537 0016 7047     		bx	lr
+ 538              		.cfi_endproc
+ 539              	.LFE162:
+ 541              		.text
+ 542              	.Letext0:
+ 543              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 544              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 545              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 546              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 547              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 548              		.file 9 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 549              		.file 10 "../CMSIS/core_cm4.h"
+ 550              		.file 11 "../CMSIS/system_MK64F12.h"
+ 551              		.file 12 "../CMSIS/MK64F12.h"
+ 552              		.file 13 "../drivers/fsl_clock.h"
+ 553              		.file 14 "../drivers/fsl_common.h"

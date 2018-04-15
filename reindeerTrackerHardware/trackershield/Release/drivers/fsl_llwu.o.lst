@@ -194,58 +194,59 @@
   76 002a 0270     		strb	r2, [r0]
   77              	.LVL7:
   78              	.L1:
-  79 002c 10BD     		pop	{r4, pc}
-  80              	.LVL8:
-  81              	.L6:
-  73:../drivers/fsl_llwu.c ****             break;
-  82              		.loc 1 73 0
-  83 002e 0230     		adds	r0, r0, #2
-  84              	.LVL9:
-  74:../drivers/fsl_llwu.c **** #endif
-  85              		.loc 1 74 0
-  86 0030 EFE7     		b	.L8
-  87              	.LVL10:
-  88              	.L7:
-  78:../drivers/fsl_llwu.c ****             break;
-  89              		.loc 1 78 0
-  90 0032 0330     		adds	r0, r0, #3
-  91              	.LVL11:
-  79:../drivers/fsl_llwu.c **** #endif
-  92              		.loc 1 79 0
-  93 0034 EDE7     		b	.L8
-  94              		.cfi_endproc
-  95              	.LFE149:
-  97              		.section	.text.LLWU_GetExternalWakeupPinFlag,"ax",%progbits
-  98              		.align	1
-  99              		.global	LLWU_GetExternalWakeupPinFlag
- 100              		.syntax unified
- 101              		.thumb
- 102              		.thumb_func
- 103              		.fpu fpv4-sp-d16
- 105              	LLWU_GetExternalWakeupPinFlag:
- 106              	.LFB150:
  118:../drivers/fsl_llwu.c ****     }
  119:../drivers/fsl_llwu.c **** }
+  79              		.loc 1 119 0
+  80 002c 10BD     		pop	{r4, pc}
+  81              	.LVL8:
+  82              	.L6:
+  73:../drivers/fsl_llwu.c ****             break;
+  83              		.loc 1 73 0
+  84 002e 0230     		adds	r0, r0, #2
+  85              	.LVL9:
+  74:../drivers/fsl_llwu.c **** #endif
+  86              		.loc 1 74 0
+  87 0030 EFE7     		b	.L8
+  88              	.LVL10:
+  89              	.L7:
+  78:../drivers/fsl_llwu.c ****             break;
+  90              		.loc 1 78 0
+  91 0032 0330     		adds	r0, r0, #3
+  92              	.LVL11:
+  79:../drivers/fsl_llwu.c **** #endif
+  93              		.loc 1 79 0
+  94 0034 EDE7     		b	.L8
+  95              		.cfi_endproc
+  96              	.LFE149:
+  98              		.section	.text.LLWU_GetExternalWakeupPinFlag,"ax",%progbits
+  99              		.align	1
+ 100              		.global	LLWU_GetExternalWakeupPinFlag
+ 101              		.syntax unified
+ 102              		.thumb
+ 103              		.thumb_func
+ 104              		.fpu fpv4-sp-d16
+ 106              	LLWU_GetExternalWakeupPinFlag:
+ 107              	.LFB150:
  120:../drivers/fsl_llwu.c **** 
  121:../drivers/fsl_llwu.c **** bool LLWU_GetExternalWakeupPinFlag(LLWU_Type *base, uint32_t pinIndex)
  122:../drivers/fsl_llwu.c **** {
- 107              		.loc 1 122 0
- 108              		.cfi_startproc
- 109              		@ args = 0, pretend = 0, frame = 0
- 110              		@ frame_needed = 0, uses_anonymous_args = 0
- 111              		@ link register save eliminated.
- 112              	.LVL12:
+ 108              		.loc 1 122 0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 0
+ 111              		@ frame_needed = 0, uses_anonymous_args = 0
+ 112              		@ link register save eliminated.
+ 113              	.LVL12:
  123:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
  124:../drivers/fsl_llwu.c ****     return (bool)(base->PF & (1U << pinIndex));
  125:../drivers/fsl_llwu.c **** #else
  126:../drivers/fsl_llwu.c ****     volatile uint8_t *regBase;
  127:../drivers/fsl_llwu.c **** 
  128:../drivers/fsl_llwu.c ****     switch (pinIndex >> 3U)
- 113              		.loc 1 128 0
- 114 0000 CB08     		lsrs	r3, r1, #3
- 115 0002 03D0     		beq	.L14
- 116 0004 012B     		cmp	r3, #1
- 117 0006 0BD0     		beq	.L15
+ 114              		.loc 1 128 0
+ 115 0000 CB08     		lsrs	r3, r1, #3
+ 116 0002 03D0     		beq	.L14
+ 117 0004 012B     		cmp	r3, #1
+ 118 0006 0BD0     		beq	.L15
  129:../drivers/fsl_llwu.c ****     {
  130:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PF) && FSL_FEATURE_LLWU_HAS_PF)
  131:../drivers/fsl_llwu.c ****         case 0U:
@@ -298,76 +299,76 @@
  178:../drivers/fsl_llwu.c ****     else
  179:../drivers/fsl_llwu.c ****     {
  180:../drivers/fsl_llwu.c ****         return false;
- 118              		.loc 1 180 0
- 119 0008 0020     		movs	r0, #0
- 120              	.LVL13:
- 121              	.L13:
+ 119              		.loc 1 180 0
+ 120 0008 0020     		movs	r0, #0
+ 121              	.LVL13:
+ 122              	.L13:
  181:../drivers/fsl_llwu.c ****     }
  182:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_REG_BITWIDTH */
  183:../drivers/fsl_llwu.c **** }
- 122              		.loc 1 183 0
- 123 000a 7047     		bx	lr
- 124              	.LVL14:
- 125              	.L14:
+ 123              		.loc 1 183 0
+ 124 000a 7047     		bx	lr
+ 125              	.LVL14:
+ 126              	.L14:
  151:../drivers/fsl_llwu.c ****             break;
- 126              		.loc 1 151 0
- 127 000c 0530     		adds	r0, r0, #5
- 128              	.LVL15:
- 129              	.L16:
+ 127              		.loc 1 151 0
+ 128 000c 0530     		adds	r0, r0, #5
+ 129              	.LVL15:
+ 130              	.L16:
  174:../drivers/fsl_llwu.c ****     {
- 130              		.loc 1 174 0
- 131 000e 0028     		cmp	r0, #0
- 132 0010 FBD0     		beq	.L13
+ 131              		.loc 1 174 0
+ 132 000e 0028     		cmp	r0, #0
+ 133 0010 FBD0     		beq	.L13
  176:../drivers/fsl_llwu.c ****     }
- 133              		.loc 1 176 0
- 134 0012 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
- 135              	.LVL16:
- 136 0014 01F00701 		and	r1, r1, #7
- 137              	.LVL17:
- 138 0018 C840     		lsrs	r0, r0, r1
- 139 001a 00F00100 		and	r0, r0, #1
- 140 001e 7047     		bx	lr
- 141              	.LVL18:
- 142              	.L15:
+ 134              		.loc 1 176 0
+ 135 0012 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 136              	.LVL16:
+ 137 0014 01F00701 		and	r1, r1, #7
+ 138              	.LVL17:
+ 139 0018 C840     		lsrs	r0, r0, r1
+ 140 001a 00F00100 		and	r0, r0, #1
+ 141 001e 7047     		bx	lr
+ 142              	.LVL18:
+ 143              	.L15:
  155:../drivers/fsl_llwu.c ****             break;
- 143              		.loc 1 155 0
- 144 0020 0630     		adds	r0, r0, #6
- 145              	.LVL19:
+ 144              		.loc 1 155 0
+ 145 0020 0630     		adds	r0, r0, #6
+ 146              	.LVL19:
  156:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
- 146              		.loc 1 156 0
- 147 0022 F4E7     		b	.L16
- 148              		.cfi_endproc
- 149              	.LFE150:
- 151              		.section	.text.LLWU_ClearExternalWakeupPinFlag,"ax",%progbits
- 152              		.align	1
- 153              		.global	LLWU_ClearExternalWakeupPinFlag
- 154              		.syntax unified
- 155              		.thumb
- 156              		.thumb_func
- 157              		.fpu fpv4-sp-d16
- 159              	LLWU_ClearExternalWakeupPinFlag:
- 160              	.LFB151:
+ 147              		.loc 1 156 0
+ 148 0022 F4E7     		b	.L16
+ 149              		.cfi_endproc
+ 150              	.LFE150:
+ 152              		.section	.text.LLWU_ClearExternalWakeupPinFlag,"ax",%progbits
+ 153              		.align	1
+ 154              		.global	LLWU_ClearExternalWakeupPinFlag
+ 155              		.syntax unified
+ 156              		.thumb
+ 157              		.thumb_func
+ 158              		.fpu fpv4-sp-d16
+ 160              	LLWU_ClearExternalWakeupPinFlag:
+ 161              	.LFB151:
  184:../drivers/fsl_llwu.c **** 
  185:../drivers/fsl_llwu.c **** void LLWU_ClearExternalWakeupPinFlag(LLWU_Type *base, uint32_t pinIndex)
  186:../drivers/fsl_llwu.c **** {
- 161              		.loc 1 186 0
- 162              		.cfi_startproc
- 163              		@ args = 0, pretend = 0, frame = 0
- 164              		@ frame_needed = 0, uses_anonymous_args = 0
- 165              		@ link register save eliminated.
- 166              	.LVL20:
+ 162              		.loc 1 186 0
+ 163              		.cfi_startproc
+ 164              		@ args = 0, pretend = 0, frame = 0
+ 165              		@ frame_needed = 0, uses_anonymous_args = 0
+ 166              		@ link register save eliminated.
+ 167              	.LVL20:
  187:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
  188:../drivers/fsl_llwu.c ****     base->PF = (1U << pinIndex);
  189:../drivers/fsl_llwu.c **** #else
  190:../drivers/fsl_llwu.c ****     volatile uint8_t *regBase;
  191:../drivers/fsl_llwu.c ****     switch (pinIndex >> 3U)
- 167              		.loc 1 191 0
- 168 0000 CB08     		lsrs	r3, r1, #3
- 169 0002 02D0     		beq	.L22
- 170 0004 012B     		cmp	r3, #1
- 171 0006 09D0     		beq	.L23
- 172 0008 7047     		bx	lr
- 173              	.L22:
+ 168              		.loc 1 191 0
+ 169 0000 CB08     		lsrs	r3, r1, #3
+ 170 0002 02D0     		beq	.L22
+ 171 0004 012B     		cmp	r3, #1
+ 172 0006 09D0     		beq	.L23
+ 173 0008 7047     		bx	lr
+ 174              	.L22:
  192:../drivers/fsl_llwu.c ****     {
  193:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PF) && FSL_FEATURE_LLWU_HAS_PF)
  194:../drivers/fsl_llwu.c ****         case 0U:
@@ -391,10 +392,10 @@
  212:../drivers/fsl_llwu.c **** #else
  213:../drivers/fsl_llwu.c ****         case 0U:
  214:../drivers/fsl_llwu.c ****             regBase = &base->F1;
- 174              		.loc 1 214 0
- 175 000a 0530     		adds	r0, r0, #5
- 176              	.LVL21:
- 177              	.L24:
+ 175              		.loc 1 214 0
+ 176 000a 0530     		adds	r0, r0, #5
+ 177              	.LVL21:
+ 178              	.L24:
  215:../drivers/fsl_llwu.c ****             break;
  216:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN) && (FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN > 8))
  217:../drivers/fsl_llwu.c ****         case 1U:
@@ -417,55 +418,58 @@
  234:../drivers/fsl_llwu.c ****             break;
  235:../drivers/fsl_llwu.c ****     }
  236:../drivers/fsl_llwu.c ****     if (regBase)
- 178              		.loc 1 236 0
- 179 000c 28B1     		cbz	r0, .L20
+ 179              		.loc 1 236 0
+ 180 000c 28B1     		cbz	r0, .L20
  237:../drivers/fsl_llwu.c ****     {
  238:../drivers/fsl_llwu.c ****         *regBase = (1U << pinIndex % 8U);
- 180              		.loc 1 238 0
- 181 000e 01F00703 		and	r3, r1, #7
- 182 0012 0121     		movs	r1, #1
- 183              	.LVL22:
- 184 0014 9940     		lsls	r1, r1, r3
- 185 0016 C9B2     		uxtb	r1, r1
- 186 0018 0170     		strb	r1, [r0]
- 187              	.L20:
- 188 001a 7047     		bx	lr
- 189              	.LVL23:
- 190              	.L23:
- 218:../drivers/fsl_llwu.c ****             break;
- 191              		.loc 1 218 0
- 192 001c 0630     		adds	r0, r0, #6
- 193              	.LVL24:
- 219:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
- 194              		.loc 1 219 0
- 195 001e F5E7     		b	.L24
- 196              		.cfi_endproc
- 197              	.LFE151:
- 199              		.section	.text.LLWU_SetPinFilterMode,"ax",%progbits
- 200              		.align	1
- 201              		.global	LLWU_SetPinFilterMode
- 202              		.syntax unified
- 203              		.thumb
- 204              		.thumb_func
- 205              		.fpu fpv4-sp-d16
- 207              	LLWU_SetPinFilterMode:
- 208              	.LFB152:
+ 181              		.loc 1 238 0
+ 182 000e 01F00703 		and	r3, r1, #7
+ 183 0012 0121     		movs	r1, #1
+ 184              	.LVL22:
+ 185 0014 9940     		lsls	r1, r1, r3
+ 186 0016 C9B2     		uxtb	r1, r1
+ 187 0018 0170     		strb	r1, [r0]
+ 188              	.L20:
  239:../drivers/fsl_llwu.c ****     }
  240:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_REG_BITWIDTH */
  241:../drivers/fsl_llwu.c **** }
+ 189              		.loc 1 241 0
+ 190 001a 7047     		bx	lr
+ 191              	.LVL23:
+ 192              	.L23:
+ 218:../drivers/fsl_llwu.c ****             break;
+ 193              		.loc 1 218 0
+ 194 001c 0630     		adds	r0, r0, #6
+ 195              	.LVL24:
+ 219:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
+ 196              		.loc 1 219 0
+ 197 001e F5E7     		b	.L24
+ 198              		.cfi_endproc
+ 199              	.LFE151:
+ 201              		.section	.text.LLWU_SetPinFilterMode,"ax",%progbits
+ 202              		.align	1
+ 203              		.global	LLWU_SetPinFilterMode
+ 204              		.syntax unified
+ 205              		.thumb
+ 206              		.thumb_func
+ 207              		.fpu fpv4-sp-d16
+ 209              	LLWU_SetPinFilterMode:
+ 210              	.LFB152:
  242:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN */
  243:../drivers/fsl_llwu.c **** 
  244:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && FSL_FEATURE_LLWU_HAS_PIN_FILTER)
  245:../drivers/fsl_llwu.c **** void LLWU_SetPinFilterMode(LLWU_Type *base, uint32_t filterIndex, llwu_external_pin_filter_mode_t f
  246:../drivers/fsl_llwu.c **** {
- 209              		.loc 1 246 0
- 210              		.cfi_startproc
- 211              		@ args = 0, pretend = 0, frame = 8
- 212              		@ frame_needed = 0, uses_anonymous_args = 0
- 213              	.LVL25:
- 214 0000 07B5     		push	{r0, r1, r2, lr}
- 215              		.cfi_def_cfa_offset 16
- 216              		.cfi_offset 14, -4
+ 211              		.loc 1 246 0
+ 212              		.cfi_startproc
+ 213              		@ args = 0, pretend = 0, frame = 8
+ 214              		@ frame_needed = 0, uses_anonymous_args = 0
+ 215              		@ link register save eliminated.
+ 216              	.LVL25:
+ 217 0000 82B0     		sub	sp, sp, #8
+ 218              		.cfi_def_cfa_offset 8
+ 219              		.loc 1 246 0
+ 220 0002 0DF1080C 		add	ip, sp, #8
  247:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
  248:../drivers/fsl_llwu.c ****     base->FILT = ((base->FILT) & ~((LLWU_FILT_FILTSEL1_MASK | LLWU_FILT_FILTE1_MASK) << ((filterInd
  249:../drivers/fsl_llwu.c ****                  ((LLWU_FILT_FILTSEL1(filterMode.pinIndex) | LLWU_FILT_FILTE1(filterMode.filterMode
@@ -476,18 +480,17 @@
  254:../drivers/fsl_llwu.c ****     volatile uint8_t *regBase;
  255:../drivers/fsl_llwu.c **** 
  256:../drivers/fsl_llwu.c ****     switch (filterIndex)
- 217              		.loc 1 256 0
- 218 0002 0129     		cmp	r1, #1
+ 221              		.loc 1 256 0
+ 222 0006 0129     		cmp	r1, #1
  246:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
- 219              		.loc 1 246 0
- 220 0004 0DF1080E 		add	lr, sp, #8
- 221 0008 0EE90C00 		stmdb	lr, {r2, r3}
- 222              		.loc 1 256 0
- 223 000c 04D0     		beq	.L30
- 224 000e 0229     		cmp	r1, #2
- 225 0010 16D0     		beq	.L31
- 226              	.LVL26:
- 227              	.L28:
+ 223              		.loc 1 246 0
+ 224 0008 0CE90C00 		stmdb	ip, {r2, r3}
+ 225              		.loc 1 256 0
+ 226 000c 03D0     		beq	.L30
+ 227 000e 0229     		cmp	r1, #2
+ 228 0010 15D0     		beq	.L31
+ 229              	.LVL26:
+ 230              	.L28:
  257:../drivers/fsl_llwu.c ****     {
  258:../drivers/fsl_llwu.c ****         case 1U:
  259:../drivers/fsl_llwu.c ****             regBase = &base->FILT1;
@@ -521,94 +524,94 @@
  287:../drivers/fsl_llwu.c ****     }
  288:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_REG_BITWIDTH */
  289:../drivers/fsl_llwu.c **** }
- 228              		.loc 1 289 0
- 229 0012 03B0     		add	sp, sp, #12
- 230              		.cfi_remember_state
- 231              		.cfi_def_cfa_offset 4
- 232              		@ sp needed
- 233 0014 5DF804FB 		ldr	pc, [sp], #4
- 234              	.LVL27:
- 235              	.L30:
- 236              		.cfi_restore_state
+ 231              		.loc 1 289 0
+ 232 0012 02B0     		add	sp, sp, #8
+ 233              		.cfi_remember_state
+ 234              		.cfi_def_cfa_offset 0
+ 235              		@ sp needed
+ 236 0014 7047     		bx	lr
+ 237              	.LVL27:
+ 238              	.L30:
+ 239              		.cfi_restore_state
  259:../drivers/fsl_llwu.c ****             break;
- 237              		.loc 1 259 0
- 238 0018 0830     		adds	r0, r0, #8
- 239              	.LVL28:
- 240              	.L32:
+ 240              		.loc 1 259 0
+ 241 0016 0830     		adds	r0, r0, #8
+ 242              	.LVL28:
+ 243              	.L32:
  281:../drivers/fsl_llwu.c ****     {
- 241              		.loc 1 281 0
- 242 001a 0028     		cmp	r0, #0
- 243 001c F9D0     		beq	.L28
+ 244              		.loc 1 281 0
+ 245 0018 0028     		cmp	r0, #0
+ 246 001a FAD0     		beq	.L28
  284:../drivers/fsl_llwu.c ****                    LLWU_FILT1_FILTF_MASK /* W1C to clear the FILTF flag bit. */
- 244              		.loc 1 284 0
- 245 001e 9DF80430 		ldrb	r3, [sp, #4]	@ zero_extendqisi2
- 246 0022 0099     		ldr	r1, [sp]
- 247              	.LVL29:
+ 247              		.loc 1 284 0
+ 248 001c 9DF80430 		ldrb	r3, [sp, #4]	@ zero_extendqisi2
+ 249 0020 0099     		ldr	r1, [sp]
+ 250              	.LVL29:
  283:../drivers/fsl_llwu.c ****                    LLWU_FILT1_FILTSEL(filterMode.pinIndex) | LLWU_FILT1_FILTE(filterMode.filterMode
- 248              		.loc 1 283 0
- 249 0024 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
+ 251              		.loc 1 283 0
+ 252 0022 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
  284:../drivers/fsl_llwu.c ****                    LLWU_FILT1_FILTF_MASK /* W1C to clear the FILTF flag bit. */
- 250              		.loc 1 284 0
- 251 0026 5B01     		lsls	r3, r3, #5
- 252 0028 03F06003 		and	r3, r3, #96
- 253 002c 01F00F01 		and	r1, r1, #15
- 254 0030 0B43     		orrs	r3, r3, r1
+ 253              		.loc 1 284 0
+ 254 0024 5B01     		lsls	r3, r3, #5
+ 255 0026 03F06003 		and	r3, r3, #96
+ 256 002a 01F00F01 		and	r1, r1, #15
+ 257 002e 0B43     		orrs	r3, r3, r1
  283:../drivers/fsl_llwu.c ****                    LLWU_FILT1_FILTSEL(filterMode.pinIndex) | LLWU_FILT1_FILTE(filterMode.filterMode
- 255              		.loc 1 283 0
- 256 0032 02F09002 		and	r2, r2, #144
+ 258              		.loc 1 283 0
+ 259 0030 02F09002 		and	r2, r2, #144
  284:../drivers/fsl_llwu.c ****                    LLWU_FILT1_FILTF_MASK /* W1C to clear the FILTF flag bit. */
- 257              		.loc 1 284 0
- 258 0036 1343     		orrs	r3, r3, r2
- 259 0038 43F08003 		orr	r3, r3, #128
+ 260              		.loc 1 284 0
+ 261 0034 1343     		orrs	r3, r3, r2
+ 262 0036 43F08003 		orr	r3, r3, #128
  283:../drivers/fsl_llwu.c ****                    LLWU_FILT1_FILTSEL(filterMode.pinIndex) | LLWU_FILT1_FILTE(filterMode.filterMode
- 260              		.loc 1 283 0
- 261 003c 0370     		strb	r3, [r0]
- 262              		.loc 1 289 0
- 263 003e E8E7     		b	.L28
- 264              	.LVL30:
- 265              	.L31:
+ 263              		.loc 1 283 0
+ 264 003a 0370     		strb	r3, [r0]
+ 265              		.loc 1 289 0
+ 266 003c E9E7     		b	.L28
+ 267              	.LVL30:
+ 268              	.L31:
  263:../drivers/fsl_llwu.c ****             break;
- 266              		.loc 1 263 0
- 267 0040 0930     		adds	r0, r0, #9
- 268              	.LVL31:
+ 269              		.loc 1 263 0
+ 270 003e 0930     		adds	r0, r0, #9
+ 271              	.LVL31:
  264:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
- 269              		.loc 1 264 0
- 270 0042 EAE7     		b	.L32
- 271              		.cfi_endproc
- 272              	.LFE152:
- 274              		.section	.text.LLWU_GetPinFilterFlag,"ax",%progbits
- 275              		.align	1
- 276              		.global	LLWU_GetPinFilterFlag
- 277              		.syntax unified
- 278              		.thumb
- 279              		.thumb_func
- 280              		.fpu fpv4-sp-d16
- 282              	LLWU_GetPinFilterFlag:
- 283              	.LFB153:
+ 272              		.loc 1 264 0
+ 273 0040 EAE7     		b	.L32
+ 274              		.cfi_endproc
+ 275              	.LFE152:
+ 277              		.section	.text.LLWU_GetPinFilterFlag,"ax",%progbits
+ 278              		.align	1
+ 279              		.global	LLWU_GetPinFilterFlag
+ 280              		.syntax unified
+ 281              		.thumb
+ 282              		.thumb_func
+ 283              		.fpu fpv4-sp-d16
+ 285              	LLWU_GetPinFilterFlag:
+ 286              	.LFB153:
  290:../drivers/fsl_llwu.c **** 
  291:../drivers/fsl_llwu.c **** bool LLWU_GetPinFilterFlag(LLWU_Type *base, uint32_t filterIndex)
  292:../drivers/fsl_llwu.c **** {
- 284              		.loc 1 292 0
- 285              		.cfi_startproc
- 286              		@ args = 0, pretend = 0, frame = 0
- 287              		@ frame_needed = 0, uses_anonymous_args = 0
- 288              		@ link register save eliminated.
- 289              	.LVL32:
+ 287              		.loc 1 292 0
+ 288              		.cfi_startproc
+ 289              		@ args = 0, pretend = 0, frame = 0
+ 290              		@ frame_needed = 0, uses_anonymous_args = 0
+ 291              		@ link register save eliminated.
+ 292              	.LVL32:
  293:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
  294:../drivers/fsl_llwu.c ****     return (bool)(base->FILT & (1U << (filterIndex * 8U - 1)));
  295:../drivers/fsl_llwu.c **** #else
  296:../drivers/fsl_llwu.c ****     bool status = false;
  297:../drivers/fsl_llwu.c **** 
  298:../drivers/fsl_llwu.c ****     switch (filterIndex)
- 290              		.loc 1 298 0
- 291 0000 0129     		cmp	r1, #1
- 292 0002 03D0     		beq	.L38
- 293 0004 0229     		cmp	r1, #2
- 294 0006 04D0     		beq	.L39
+ 293              		.loc 1 298 0
+ 294 0000 0129     		cmp	r1, #1
+ 295 0002 03D0     		beq	.L38
+ 296 0004 0229     		cmp	r1, #2
+ 297 0006 04D0     		beq	.L39
  296:../drivers/fsl_llwu.c **** 
- 295              		.loc 1 296 0
- 296 0008 0020     		movs	r0, #0
- 297              	.LVL33:
+ 298              		.loc 1 296 0
+ 299 0008 0020     		movs	r0, #0
+ 300              	.LVL33:
  299:../drivers/fsl_llwu.c ****     {
  300:../drivers/fsl_llwu.c ****         case 1:
  301:../drivers/fsl_llwu.c ****             status = (base->FILT1 & LLWU_FILT1_FILTF_MASK);
@@ -635,49 +638,49 @@
  322:../drivers/fsl_llwu.c ****     return status;
  323:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_REG_BITWIDTH */
  324:../drivers/fsl_llwu.c **** }
- 298              		.loc 1 324 0
- 299 000a 7047     		bx	lr
- 300              	.LVL34:
- 301              	.L38:
+ 301              		.loc 1 324 0
+ 302 000a 7047     		bx	lr
+ 303              	.LVL34:
+ 304              	.L38:
  301:../drivers/fsl_llwu.c ****             break;
- 302              		.loc 1 301 0
- 303 000c 007A     		ldrb	r0, [r0, #8]	@ zero_extendqisi2
- 304              	.LVL35:
- 305              	.L42:
+ 305              		.loc 1 301 0
+ 306 000c 007A     		ldrb	r0, [r0, #8]	@ zero_extendqisi2
+ 307              	.LVL35:
+ 308              	.L42:
  305:../drivers/fsl_llwu.c ****             break;
- 306              		.loc 1 305 0
- 307 000e C009     		lsrs	r0, r0, #7
- 308              	.LVL36:
+ 309              		.loc 1 305 0
+ 310 000e C009     		lsrs	r0, r0, #7
+ 311              	.LVL36:
  306:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
- 309              		.loc 1 306 0
- 310 0010 7047     		bx	lr
- 311              	.LVL37:
- 312              	.L39:
+ 312              		.loc 1 306 0
+ 313 0010 7047     		bx	lr
+ 314              	.LVL37:
+ 315              	.L39:
  305:../drivers/fsl_llwu.c ****             break;
- 313              		.loc 1 305 0
- 314 0012 407A     		ldrb	r0, [r0, #9]	@ zero_extendqisi2
- 315              	.LVL38:
- 316 0014 FBE7     		b	.L42
- 317              		.cfi_endproc
- 318              	.LFE153:
- 320              		.section	.text.LLWU_ClearPinFilterFlag,"ax",%progbits
- 321              		.align	1
- 322              		.global	LLWU_ClearPinFilterFlag
- 323              		.syntax unified
- 324              		.thumb
- 325              		.thumb_func
- 326              		.fpu fpv4-sp-d16
- 328              	LLWU_ClearPinFilterFlag:
- 329              	.LFB154:
+ 316              		.loc 1 305 0
+ 317 0012 407A     		ldrb	r0, [r0, #9]	@ zero_extendqisi2
+ 318              	.LVL38:
+ 319 0014 FBE7     		b	.L42
+ 320              		.cfi_endproc
+ 321              	.LFE153:
+ 323              		.section	.text.LLWU_ClearPinFilterFlag,"ax",%progbits
+ 324              		.align	1
+ 325              		.global	LLWU_ClearPinFilterFlag
+ 326              		.syntax unified
+ 327              		.thumb
+ 328              		.thumb_func
+ 329              		.fpu fpv4-sp-d16
+ 331              	LLWU_ClearPinFilterFlag:
+ 332              	.LFB154:
  325:../drivers/fsl_llwu.c **** 
  326:../drivers/fsl_llwu.c **** void LLWU_ClearPinFilterFlag(LLWU_Type *base, uint32_t filterIndex)
  327:../drivers/fsl_llwu.c **** {
- 330              		.loc 1 327 0
- 331              		.cfi_startproc
- 332              		@ args = 0, pretend = 0, frame = 0
- 333              		@ frame_needed = 0, uses_anonymous_args = 0
- 334              		@ link register save eliminated.
- 335              	.LVL39:
+ 333              		.loc 1 327 0
+ 334              		.cfi_startproc
+ 335              		@ args = 0, pretend = 0, frame = 0
+ 336              		@ frame_needed = 0, uses_anonymous_args = 0
+ 337              		@ link register save eliminated.
+ 338              	.LVL39:
  328:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_REG_BITWIDTH) && (FSL_FEATURE_LLWU_REG_BITWIDTH == 32))
  329:../drivers/fsl_llwu.c ****     uint32_t reg;
  330:../drivers/fsl_llwu.c **** 
@@ -711,20 +714,20 @@
  358:../drivers/fsl_llwu.c ****     uint8_t reg;
  359:../drivers/fsl_llwu.c **** 
  360:../drivers/fsl_llwu.c ****     switch (filterIndex)
- 336              		.loc 1 360 0
- 337 0000 0129     		cmp	r1, #1
- 338 0002 02D0     		beq	.L45
- 339 0004 0229     		cmp	r1, #2
- 340 0006 07D0     		beq	.L46
- 341 0008 7047     		bx	lr
- 342              	.L45:
+ 339              		.loc 1 360 0
+ 340 0000 0129     		cmp	r1, #1
+ 341 0002 02D0     		beq	.L45
+ 342 0004 0229     		cmp	r1, #2
+ 343 0006 07D0     		beq	.L46
+ 344 0008 7047     		bx	lr
+ 345              	.L45:
  361:../drivers/fsl_llwu.c ****     {
  362:../drivers/fsl_llwu.c ****         case 1:
  363:../drivers/fsl_llwu.c ****             regBase = &base->FILT1;
- 343              		.loc 1 363 0
- 344 000a 0830     		adds	r0, r0, #8
- 345              	.LVL40:
- 346              	.L47:
+ 346              		.loc 1 363 0
+ 347 000a 0830     		adds	r0, r0, #8
+ 348              	.LVL40:
+ 349              	.L47:
  364:../drivers/fsl_llwu.c ****             break;
  365:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_PIN_FILTER) && (FSL_FEATURE_LLWU_HAS_PIN_FILTER > 1))
  366:../drivers/fsl_llwu.c ****         case 2:
@@ -747,95 +750,98 @@
  383:../drivers/fsl_llwu.c ****     }
  384:../drivers/fsl_llwu.c **** 
  385:../drivers/fsl_llwu.c ****     if (regBase)
- 347              		.loc 1 385 0
- 348 000c 18B1     		cbz	r0, .L43
+ 350              		.loc 1 385 0
+ 351 000c 18B1     		cbz	r0, .L43
  386:../drivers/fsl_llwu.c ****     {
  387:../drivers/fsl_llwu.c ****         reg = *regBase;
- 349              		.loc 1 387 0
- 350 000e 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
- 351              	.LVL41:
+ 352              		.loc 1 387 0
+ 353 000e 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 354              	.LVL41:
  388:../drivers/fsl_llwu.c ****         reg |= LLWU_FILT1_FILTF_MASK;
- 352              		.loc 1 388 0
- 353 0010 43F08003 		orr	r3, r3, #128
- 354              	.LVL42:
+ 355              		.loc 1 388 0
+ 356 0010 43F08003 		orr	r3, r3, #128
+ 357              	.LVL42:
  389:../drivers/fsl_llwu.c ****         *regBase = reg;
- 355              		.loc 1 389 0
- 356 0014 0370     		strb	r3, [r0]
- 357              	.LVL43:
- 358              	.L43:
- 359 0016 7047     		bx	lr
- 360              	.LVL44:
- 361              	.L46:
- 367:../drivers/fsl_llwu.c ****             break;
- 362              		.loc 1 367 0
- 363 0018 0930     		adds	r0, r0, #9
- 364              	.LVL45:
- 368:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
- 365              		.loc 1 368 0
- 366 001a F7E7     		b	.L47
- 367              		.cfi_endproc
- 368              	.LFE154:
- 370              		.section	.text.LLWU_SetResetPinMode,"ax",%progbits
- 371              		.align	1
- 372              		.global	LLWU_SetResetPinMode
- 373              		.syntax unified
- 374              		.thumb
- 375              		.thumb_func
- 376              		.fpu fpv4-sp-d16
- 378              	LLWU_SetResetPinMode:
- 379              	.LFB155:
+ 358              		.loc 1 389 0
+ 359 0014 0370     		strb	r3, [r0]
+ 360              	.LVL43:
+ 361              	.L43:
  390:../drivers/fsl_llwu.c ****     }
  391:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_REG_BITWIDTH */
  392:../drivers/fsl_llwu.c **** }
+ 362              		.loc 1 392 0
+ 363 0016 7047     		bx	lr
+ 364              	.LVL44:
+ 365              	.L46:
+ 367:../drivers/fsl_llwu.c ****             break;
+ 366              		.loc 1 367 0
+ 367 0018 0930     		adds	r0, r0, #9
+ 368              	.LVL45:
+ 368:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
+ 369              		.loc 1 368 0
+ 370 001a F7E7     		b	.L47
+ 371              		.cfi_endproc
+ 372              	.LFE154:
+ 374              		.section	.text.LLWU_SetResetPinMode,"ax",%progbits
+ 375              		.align	1
+ 376              		.global	LLWU_SetResetPinMode
+ 377              		.syntax unified
+ 378              		.thumb
+ 379              		.thumb_func
+ 380              		.fpu fpv4-sp-d16
+ 382              	LLWU_SetResetPinMode:
+ 383              	.LFB155:
  393:../drivers/fsl_llwu.c **** #endif /* FSL_FEATURE_LLWU_HAS_PIN_FILTER */
  394:../drivers/fsl_llwu.c **** 
  395:../drivers/fsl_llwu.c **** #if (defined(FSL_FEATURE_LLWU_HAS_RESET_ENABLE) && FSL_FEATURE_LLWU_HAS_RESET_ENABLE)
  396:../drivers/fsl_llwu.c **** void LLWU_SetResetPinMode(LLWU_Type *base, bool pinEnable, bool enableInLowLeakageMode)
  397:../drivers/fsl_llwu.c **** {
- 380              		.loc 1 397 0
- 381              		.cfi_startproc
- 382              		@ args = 0, pretend = 0, frame = 0
- 383              		@ frame_needed = 0, uses_anonymous_args = 0
- 384              		@ link register save eliminated.
- 385              	.LVL46:
+ 384              		.loc 1 397 0
+ 385              		.cfi_startproc
+ 386              		@ args = 0, pretend = 0, frame = 0
+ 387              		@ frame_needed = 0, uses_anonymous_args = 0
+ 388              		@ link register save eliminated.
+ 389              	.LVL46:
  398:../drivers/fsl_llwu.c ****     uint8_t reg;
  399:../drivers/fsl_llwu.c **** 
  400:../drivers/fsl_llwu.c ****     reg = base->RST;
- 386              		.loc 1 400 0
- 387 0000 837A     		ldrb	r3, [r0, #10]	@ zero_extendqisi2
- 388              	.LVL47:
+ 390              		.loc 1 400 0
+ 391 0000 837A     		ldrb	r3, [r0, #10]	@ zero_extendqisi2
+ 392              	.LVL47:
  401:../drivers/fsl_llwu.c ****     reg &= ~(LLWU_RST_LLRSTE_MASK | LLWU_RST_RSTFILT_MASK);
  402:../drivers/fsl_llwu.c ****     reg |=
  403:../drivers/fsl_llwu.c ****         (((uint32_t)pinEnable << LLWU_RST_LLRSTE_SHIFT) | ((uint32_t)enableInLowLeakageMode << LLWU
- 389              		.loc 1 403 0
- 390 0002 42EA4101 		orr	r1, r2, r1, lsl #1
- 391              	.LVL48:
+ 393              		.loc 1 403 0
+ 394 0002 42EA4101 		orr	r1, r2, r1, lsl #1
+ 395              	.LVL48:
  401:../drivers/fsl_llwu.c ****     reg &= ~(LLWU_RST_LLRSTE_MASK | LLWU_RST_RSTFILT_MASK);
- 392              		.loc 1 401 0
- 393 0006 03F0FC03 		and	r3, r3, #252
- 394              	.LVL49:
+ 396              		.loc 1 401 0
+ 397 0006 03F0FC03 		and	r3, r3, #252
+ 398              	.LVL49:
  402:../drivers/fsl_llwu.c ****         (((uint32_t)pinEnable << LLWU_RST_LLRSTE_SHIFT) | ((uint32_t)enableInLowLeakageMode << LLWU
- 395              		.loc 1 402 0
- 396 000a 0B43     		orrs	r3, r3, r1
- 397              	.LVL50:
- 398 000c DBB2     		uxtb	r3, r3
- 399              	.LVL51:
+ 399              		.loc 1 402 0
+ 400 000a 0B43     		orrs	r3, r3, r1
+ 401              	.LVL50:
+ 402 000c DBB2     		uxtb	r3, r3
+ 403              	.LVL51:
  404:../drivers/fsl_llwu.c ****     base->RST = reg;
- 400              		.loc 1 404 0
- 401 000e 8372     		strb	r3, [r0, #10]
- 402 0010 7047     		bx	lr
- 403              		.cfi_endproc
- 404              	.LFE155:
- 406              		.text
- 407              	.Letext0:
- 408              		.file 2 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/machine/_default_type
- 409              		.file 3 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_stdint.h"
- 410              		.file 4 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/lock.h"
- 411              		.file 5 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/_types.h"
- 412              		.file 6 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1/include/stddef.
- 413              		.file 7 "/usr/local/gcc-arm-none-eabi-6-2017-q2-update/arm-none-eabi/include/sys/reent.h"
- 414              		.file 8 "../CMSIS/core_cm4.h"
- 415              		.file 9 "../CMSIS/system_MK64F12.h"
- 416              		.file 10 "../CMSIS/MK64F12.h"
- 417              		.file 11 "../drivers/fsl_clock.h"
- 418              		.file 12 "../drivers/fsl_llwu.h"
+ 404              		.loc 1 404 0
+ 405 000e 8372     		strb	r3, [r0, #10]
+ 405:../drivers/fsl_llwu.c **** }
+ 406              		.loc 1 405 0
+ 407 0010 7047     		bx	lr
+ 408              		.cfi_endproc
+ 409              	.LFE155:
+ 411              		.text
+ 412              	.Letext0:
+ 413              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 414              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 415              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 416              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 417              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 418              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 419              		.file 8 "../CMSIS/core_cm4.h"
+ 420              		.file 9 "../CMSIS/system_MK64F12.h"
+ 421              		.file 10 "../CMSIS/MK64F12.h"
+ 422              		.file 11 "../drivers/fsl_clock.h"
+ 423              		.file 12 "../drivers/fsl_llwu.h"

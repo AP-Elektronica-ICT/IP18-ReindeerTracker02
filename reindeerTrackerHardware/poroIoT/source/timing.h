@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+#define RTC_REPORT_INTERVAL 300
+
 
 uint32_t millis();
 
