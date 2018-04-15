@@ -16,6 +16,7 @@ export class AppComponent {
     // firebase.initializeApp(environment.firebase);
     af.auth.onAuthStateChanged((auth) => {
       console.log(auth);
+      this.authh.setCurrentUser();
       this.loaded = true;
     })
   }

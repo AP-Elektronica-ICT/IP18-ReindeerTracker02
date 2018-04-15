@@ -8,6 +8,7 @@ import {Observable} from "rxjs/Observable";
 @Injectable()
 export class AuthService {
   url = AppSettings.API_ENDPOINT;
+  currentUser = null;
 
   constructor(private af: AngularFireAuth, private http: HttpClient) { }
 
@@ -63,6 +64,24 @@ export class AuthService {
 
   signOut(): Promise<any> {
     return this.af.auth.signOut();
+  }
+
+  setCurrentUser() {
+    if (this.isAuthenticated()) {
+      this.http.get(this.url + '/users/' + this.getCurrentUID())
+        .subscribe(res => {
+          this.currentUser = res;
+          console.log(res);
+        })
+    }
+  }
+
+  isAdmin() {
+    if (this.currentUser) {
+      return this.currentUser.admin;
+    } else {
+      return false
+    }
   }
 
 }

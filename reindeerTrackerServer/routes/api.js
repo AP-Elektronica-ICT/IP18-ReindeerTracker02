@@ -256,17 +256,24 @@ router.post('/users', function (req, res) {
         phoneNumber: req.body.phoneNumber,
         location: req.body.location
     });
+    if (newUser.email.includes("reindeertracker.com")) {
+        newUser.admin = true;
+    }
+    console.log(newUser);
     newUser.save()
         .then(function (value) {
+            console.log('added');
             res.status(201).json('user added');
         })
         .catch(function (reason) {
+            console.log(reason);
             res.status(500).json(reason);
         })
 });
 
 router.get('/users/:userID', function (req, res) {
     const userID = req.params.userID;
+    console.log(userID);
     User.findOne({uid: userID})
         .then(function (user) {
             if (user) {

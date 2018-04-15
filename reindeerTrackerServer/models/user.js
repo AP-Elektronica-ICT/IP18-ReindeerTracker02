@@ -5,6 +5,10 @@ var userSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    admin: {
+        type: Boolean,
+        default: false
+    },
     email: {
         type: String,
         required: true
