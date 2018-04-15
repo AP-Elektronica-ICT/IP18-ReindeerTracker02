@@ -23,6 +23,10 @@ var deviceSchema = new mongoose.Schema({
     birthyear: String,
     imageUrl: String,
     gender: String,
+    average: {
+        type: Number,
+        default: 0
+    },
     logs: [{
         lat: {
             type: Number,
@@ -55,7 +59,7 @@ var deviceSchema = new mongoose.Schema({
 );
 
 deviceSchema.virtual('lastLog').get(function () {
-    const lastLog = this.logs[0];
+    var lastLog = this.logs[0];
     return lastLog;
 });
 

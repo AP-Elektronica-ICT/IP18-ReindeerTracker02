@@ -3,6 +3,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var router = express.Router();
 var admin = require("firebase-admin");
 var config = require('../config');
+var geodist = require('geodist');
 
 // IMPORTANT: LOGS ARE ADDED AT THE BEGINNING OF THE ARRAY
 
@@ -100,9 +101,10 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
         {$push: {logs: { $each: [log], $position: 0}}, isAlive: log.isAlive})
         .then(function (status) {
             res.status(200).json('log added');
-            if (!log.isAlive || log.battery < 20) {
-                Device.findOne({deviceKey: deviceKey})
-                    .then(function (device) {
+            Device.findOne({deviceKey: deviceKey})
+                .then(function (device) {
+                    updateDeviceAverage(device.logs, device.average, device.deviceKey);
+                    if (!log.isAlive || log.battery < 20) {
                         getDeviceTokens(device.userIDs)
                             .then(function (deviceTokens) {
                                 if (!log.isAlive) {
@@ -126,13 +128,26 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
                                     sendNotification(message);
                                 }
                             });
-                    })
-            }
+                    }
+                })
         })
         .catch(function (err) {
             res.status(500).send('could not add log to device');
         })
 });
+
+function updateDeviceAverage(logs, previousAverage, deviceKey) {
+    var logAmount = logs.length;
+    if (logAmount > 2) {
+        var dist = geodist({lat: logs[0].lat, lon: logs[0].long}, {lat: logs[1].lat, lon: logs[1].long});
+        var avg = getTotalAverage(previousAverage, logAmount - 2, dist);
+        Device.update({deviceKey: deviceKey}, {average: avg});
+    }
+}
+
+function getTotalAverage(previousAverage, currentOfAverage, newDistance) {
+    return (previousAverage * (currentOfAverage - 1) + newDistance) / currentOfAverage;
+}
 
 function getDeviceTokens(users) {
     return new Promise(function (resolve, reject) {
