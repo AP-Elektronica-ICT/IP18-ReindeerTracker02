@@ -36,7 +36,6 @@
 #define VOLTAGE_MEAS_CHANNEL 2
 #define DEBUG_MODE 0
 
-
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
@@ -154,19 +153,20 @@ int main(void)
 #if DEBUG_MODE == 0
 
 	initAdc();
-	while(1){
+	while (1)
+	{
 		/*
-		int32_t temp = (65535 - ADC_read16b(TEMP_CHANNEL)) / 541 -60;
+		 int32_t temp = (65535 - ADC_read16b(TEMP_CHANNEL)) / 541 -60;
+		 char buf[50];
+		 sprintf(buf, "Temperature: %ld\r\n", temp);
+		 PCprint(buf);
+		 delay_ms(500);
+		 */
 		char buf[50];
-		sprintf(buf, "Temperature: %ld\r\n", temp);
-			PCprint(buf);
-			delay_ms(500);
-*/
-		char buf[50];
-				sprintf(buf, "Voltage: %d\r\n", ADC_read16b(VOLTAGE_MEAS_CHANNEL));
-					PCprint(buf);
-					delay_ms(500);
-
+		sprintf(buf, "Voltage: %d\r\n", ADC_read16b(VOLTAGE_MEAS_CHANNEL));
+		PCprint(buf);
+		delay_ms(500);
+		break;
 	}
 
 	if (wake == 2) //wakeup by accelerometer
@@ -244,8 +244,7 @@ int main(void)
 	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power off RF modules
 
 	blinkLed(2000);
-	PCprint(
-			"Reindeer IoT is reset \r\n");
+	PCprint("Reindeer IoT is reset \r\n");
 
 	/*
 	 * Copy all reindeer variables to struct before starting network operations
@@ -287,10 +286,10 @@ int main(void)
 		checkGPSDataAndPrint(GPS_recBuf);
 
 		if (cmd == 1)
-			{
-				strcpy(reindeerData.dead, "false");
-				break; //if PC commanded "iot" then break and start sending
-			}
+		{
+			strcpy(reindeerData.dead, "false");
+			break; //if PC commanded "iot" then break and start sending
+		}
 	}
 
 #else
@@ -311,7 +310,7 @@ int main(void)
 			strcpy(reindeerData.latitude, testLat);
 			strcpy(reindeerData.longitude, testLon);
 
-			break;//For test purpose break away without real GPS coordinates
+			break;	//For test purpose break away without real GPS coordinates
 
 			if (getGPS())
 			{
