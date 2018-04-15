@@ -15,7 +15,7 @@ void NB_reboot();
 void NB_cops_register();
 void NB_cops_deRegister();
 void NB_cops_readRegister();
-void NB_network_status();
+uint8_t NB_network_status();
 void NB_define_pdp();
 void NB_active_pdp();
 void NB_show_ip();
@@ -24,6 +24,8 @@ uint8_t NB_send_msg(char *mqttMessage, uint8_t msgLen);
 void NB_read_msg();
 void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen);
 void NB_received_data();
+
+void NB_send(char *data);
 
 extern const char postHeader[];
 

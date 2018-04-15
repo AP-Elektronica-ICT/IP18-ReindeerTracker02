@@ -15,8 +15,8 @@
 unsigned char buffer[50];
 
 void acc_init() {
-	accWriteReg(0x2a, 0x1d); //write accelerometer CTRL_REG1 (active mode)
-	accWriteReg(0x5B, 0x03); //Acc temperature sensor enable
+	accWriteReg(0x2a, 0x24); //write accelerometer CTRL_REG1 (active mode)
+	accWriteReg(0x2a, 0x21); //write accelerometer CTRL_REG1 (active mode)
 
 }
 
@@ -24,8 +24,13 @@ void configure_acc() {
 
 	uint8_t tmp = 0;
 
+	accWriteReg(0x2b, 0x40); //reset accelerometer
+
+	accWriteReg(0x2b, 0x02); //reset accelerometer
+
+
 	tmp = accReadReg(FXOS8700Q_CTRL_REG4); //read old contents of CTRL REG 4 to tmp
-	tmp |= 0x84; //make changes to it
+	tmp |= 0x04; //make changes to it
 	accWriteReg(FXOS8700Q_CTRL_REG4, tmp); //write it back
 
 	tmp = accReadReg(FXOS8700Q_CTRL_REG5);
@@ -40,9 +45,13 @@ void configure_acc() {
 	tmp |= 0x78;
 	accWriteReg(FXOS8700Q_A_FFMT_CFG, tmp);
 
-	tmp = accReadReg( FXOS8700Q_A_FFMT_THS);
-	tmp |= 0x8F;
-	accWriteReg(FXOS8700Q_A_FFMT_THS, 0x88);
+
+	accWriteReg(FXOS8700Q_A_FFMT_THS, 0xff);
+
+
+	accWriteReg(FXOS8700Q_A_FFMT_THS, 0x8b);
+
+	//accWriteReg(0x18, 0x2); //debounce counter
 
 }
 

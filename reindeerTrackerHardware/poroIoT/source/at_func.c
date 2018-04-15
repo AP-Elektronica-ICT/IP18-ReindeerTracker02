@@ -79,7 +79,7 @@ uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer) {
 
 	char cmd_buf[500];
 	uint8_t result = 2;
-	uint32_t time_limit = 1000;
+	uint32_t time_limit = 1500;
 
 	NB_bufPtr = 0;
 
@@ -97,9 +97,10 @@ uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer) {
 	while (millis() < time_limit) {
 		if (NB_strReady) {
 
+			PCprint(NB_recBuf);
 			if (strstr(NB_recBuf, AT_exptAnswer) != NULL) //if received buffer contains expected answer
 			{
-				PCprint(NB_recBuf);
+
 				result = 0;
 				break;
 			} else if (strstr(NB_recBuf, "ERROR") != NULL) {
