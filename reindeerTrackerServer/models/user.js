@@ -28,7 +28,8 @@ var userSchema = new mongoose.Schema({
     location: {
         type: String,
         required: true
-    }
+    },
+    deviceToken: String
 });
 
 module.exports = mongoose.model('User', userSchema);

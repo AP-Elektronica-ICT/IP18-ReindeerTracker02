@@ -1,7 +1,9 @@
 import { Component, trigger, state, style, transition, animate,keyframes } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {AlertController, IonicPage, NavController, NavParams} from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { SignUpPage } from '../sign-up/sign-up';
+import {FormGroup} from "@angular/forms";
+import {AuthProvider} from "../../providers/auth/auth";
 
 /**
  * Generated class for the LogInPage page.
@@ -16,7 +18,7 @@ import { SignUpPage } from '../sign-up/sign-up';
   templateUrl: 'log-in.html',
 
   animations: [
- 
+
     //For the logo
     trigger('flyInBottomSlow', [
       state('in', style({
@@ -27,7 +29,7 @@ import { SignUpPage } from '../sign-up/sign-up';
         animate('2000ms ease-in-out')
       ])
     ]),
- 
+
     //For the background detail
     trigger('flyInBottomFast', [
       state('in', style({
@@ -38,7 +40,7 @@ import { SignUpPage } from '../sign-up/sign-up';
         animate('1000ms ease-in-out')
       ])
     ]),
- 
+
     //For the login form
     trigger('bounceInBottom', [
       state('in', style({
@@ -71,16 +73,74 @@ export class LogInPage {
   loginState: any = "in";
   formState: any = "in";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  loginError = false;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthProvider, public alertCtrl: AlertController) {
   }
 
-  login(){
-    this.navCtrl.push(HomePage);
+  ionViewDidLoad() {
+    console.log(this.auth.isAuthenticated());
+    if (this.auth.isAuthenticated()) {
+      this.navCtrl.setRoot(HomePage);
+    }
+  }
+
+  login(form: FormGroup) {
+    this.loginError = false;
+    const email = form.controls.email.value;
+    const password = form.controls.password.value;
+    this.auth.loginWithEmailPassword(email, password)
+      .then(res => {
+        //this.navCtrl.push(HomePage);
+        this.navCtrl.setRoot(HomePage);
+      })
+      .catch(err => {
+        this.loginError = true;
+      })
   }
 
   signup(){
     this.navCtrl.push(SignUpPage);
   }
 
+  showForgotPasswordPrompt() {
+    let prompt = this.alertCtrl.create({
+      title: 'Forgot password',
+      message: "Please enter your email address, an email to reset your password will be sent shortly after.",
+      inputs: [
+        {
+          name: 'email',
+          placeholder: 'Email',
+          type: 'email'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Send',
+          handler: data => {
+            this.auth.resetPassword(data.email)
+              .then(res => {
+                this.showEmailResetAlert();
+              })
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
 
+  showEmailResetAlert() {
+    let alert = this.alertCtrl.create({
+      title: 'Email sent',
+      subTitle: 'An email has been sent to reset your password',
+      buttons: ['OK']
+    });
+    alert.present();
+  }
 }

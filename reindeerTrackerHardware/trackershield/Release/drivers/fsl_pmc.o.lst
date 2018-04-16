@@ -1,0 +1,220 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_pmc.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.PMC_ConfigureLowVoltDetect,"ax",%progbits
+  18              		.align	1
+  19              		.global	PMC_ConfigureLowVoltDetect
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	PMC_ConfigureLowVoltDetect:
+  26              	.LFB154:
+  27              		.file 1 "../drivers/fsl_pmc.c"
+   1:../drivers/fsl_pmc.c **** /*
+   2:../drivers/fsl_pmc.c ****  * The Clear BSD License
+   3:../drivers/fsl_pmc.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_pmc.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_pmc.c ****  * All rights reserved.
+   6:../drivers/fsl_pmc.c ****  *
+   7:../drivers/fsl_pmc.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_pmc.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_pmc.c ****  * that the following conditions are met:
+  10:../drivers/fsl_pmc.c ****  *
+  11:../drivers/fsl_pmc.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_pmc.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_pmc.c ****  *
+  14:../drivers/fsl_pmc.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_pmc.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_pmc.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_pmc.c ****  *
+  18:../drivers/fsl_pmc.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_pmc.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_pmc.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_pmc.c ****  *
+  22:../drivers/fsl_pmc.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_pmc.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_pmc.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_pmc.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_pmc.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_pmc.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_pmc.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_pmc.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_pmc.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_pmc.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_pmc.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_pmc.c ****  */
+  34:../drivers/fsl_pmc.c **** #include "fsl_pmc.h"
+  35:../drivers/fsl_pmc.c **** 
+  36:../drivers/fsl_pmc.c **** #if (defined(FSL_FEATURE_PMC_HAS_PARAM) && FSL_FEATURE_PMC_HAS_PARAM)
+  37:../drivers/fsl_pmc.c **** void PMC_GetParam(PMC_Type *base, pmc_param_t *param)
+  38:../drivers/fsl_pmc.c **** {
+  39:../drivers/fsl_pmc.c ****     uint32_t reg = base->PARAM;
+  40:../drivers/fsl_pmc.c ****     ;
+  41:../drivers/fsl_pmc.c ****     param->vlpoEnable = (bool)(reg & PMC_PARAM_VLPOE_MASK);
+  42:../drivers/fsl_pmc.c ****     param->hvdEnable = (bool)(reg & PMC_PARAM_HVDE_MASK);
+  43:../drivers/fsl_pmc.c **** }
+  44:../drivers/fsl_pmc.c **** #endif /* FSL_FEATURE_PMC_HAS_PARAM */
+  45:../drivers/fsl_pmc.c **** 
+  46:../drivers/fsl_pmc.c **** void PMC_ConfigureLowVoltDetect(PMC_Type *base, const pmc_low_volt_detect_config_t *config)
+  47:../drivers/fsl_pmc.c **** {
+  28              		.loc 1 47 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+  48:../drivers/fsl_pmc.c ****     base->LVDSC1 = (0U |
+  49:../drivers/fsl_pmc.c **** #if (defined(FSL_FEATURE_PMC_HAS_LVDV) && FSL_FEATURE_PMC_HAS_LVDV)
+  50:../drivers/fsl_pmc.c ****                     ((uint32_t)config->voltSelect << PMC_LVDSC1_LVDV_SHIFT) |
+  51:../drivers/fsl_pmc.c **** #endif
+  52:../drivers/fsl_pmc.c ****                     ((uint32_t)config->enableInt << PMC_LVDSC1_LVDIE_SHIFT) |
+  53:../drivers/fsl_pmc.c ****                     ((uint32_t)config->enableReset << PMC_LVDSC1_LVDRE_SHIFT)
+  54:../drivers/fsl_pmc.c ****                     /* Clear the Low Voltage Detect Flag with previouse power detect setting */
+  55:../drivers/fsl_pmc.c ****                     | PMC_LVDSC1_LVDACK_MASK);
+  34              		.loc 1 55 0
+  35 0000 8B78     		ldrb	r3, [r1, #2]	@ zero_extendqisi2
+  52:../drivers/fsl_pmc.c ****                     ((uint32_t)config->enableReset << PMC_LVDSC1_LVDRE_SHIFT)
+  36              		.loc 1 52 0
+  37 0002 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+  38              		.loc 1 55 0
+  39 0004 43F04003 		orr	r3, r3, #64
+  40 0008 43EA4213 		orr	r3, r3, r2, lsl #5
+  53:../drivers/fsl_pmc.c ****                     /* Clear the Low Voltage Detect Flag with previouse power detect setting */
+  41              		.loc 1 53 0
+  42 000c 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+  43              		.loc 1 55 0
+  44 000e 43EA0213 		orr	r3, r3, r2, lsl #4
+  45 0012 DBB2     		uxtb	r3, r3
+  48:../drivers/fsl_pmc.c ****     base->LVDSC1 = (0U |
+  46              		.loc 1 48 0
+  47 0014 0370     		strb	r3, [r0]
+  56:../drivers/fsl_pmc.c **** }
+  48              		.loc 1 56 0
+  49 0016 7047     		bx	lr
+  50              		.cfi_endproc
+  51              	.LFE154:
+  53              		.section	.text.PMC_ConfigureLowVoltWarning,"ax",%progbits
+  54              		.align	1
+  55              		.global	PMC_ConfigureLowVoltWarning
+  56              		.syntax unified
+  57              		.thumb
+  58              		.thumb_func
+  59              		.fpu fpv4-sp-d16
+  61              	PMC_ConfigureLowVoltWarning:
+  62              	.LFB155:
+  57:../drivers/fsl_pmc.c **** 
+  58:../drivers/fsl_pmc.c **** void PMC_ConfigureLowVoltWarning(PMC_Type *base, const pmc_low_volt_warning_config_t *config)
+  59:../drivers/fsl_pmc.c **** {
+  63              		.loc 1 59 0
+  64              		.cfi_startproc
+  65              		@ args = 0, pretend = 0, frame = 0
+  66              		@ frame_needed = 0, uses_anonymous_args = 0
+  67              		@ link register save eliminated.
+  68              	.LVL1:
+  60:../drivers/fsl_pmc.c ****     base->LVDSC2 = (0U |
+  61:../drivers/fsl_pmc.c **** #if (defined(FSL_FEATURE_PMC_HAS_LVWV) && FSL_FEATURE_PMC_HAS_LVWV)
+  62:../drivers/fsl_pmc.c ****                     ((uint32_t)config->voltSelect << PMC_LVDSC2_LVWV_SHIFT) |
+  63:../drivers/fsl_pmc.c **** #endif
+  64:../drivers/fsl_pmc.c ****                     ((uint32_t)config->enableInt << PMC_LVDSC2_LVWIE_SHIFT)
+  65:../drivers/fsl_pmc.c ****                     /* Clear the Low Voltage Warning Flag with previouse power detect setting */
+  66:../drivers/fsl_pmc.c ****                     | PMC_LVDSC2_LVWACK_MASK);
+  69              		.loc 1 66 0
+  70 0000 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
+  64:../drivers/fsl_pmc.c ****                     /* Clear the Low Voltage Warning Flag with previouse power detect setting */
+  71              		.loc 1 64 0
+  72 0002 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+  73              		.loc 1 66 0
+  74 0004 43F04003 		orr	r3, r3, #64
+  75 0008 43EA4213 		orr	r3, r3, r2, lsl #5
+  76 000c DBB2     		uxtb	r3, r3
+  60:../drivers/fsl_pmc.c ****     base->LVDSC2 = (0U |
+  77              		.loc 1 60 0
+  78 000e 4370     		strb	r3, [r0, #1]
+  67:../drivers/fsl_pmc.c **** }
+  79              		.loc 1 67 0
+  80 0010 7047     		bx	lr
+  81              		.cfi_endproc
+  82              	.LFE155:
+  84              		.section	.text.PMC_ConfigureBandgapBuffer,"ax",%progbits
+  85              		.align	1
+  86              		.global	PMC_ConfigureBandgapBuffer
+  87              		.syntax unified
+  88              		.thumb
+  89              		.thumb_func
+  90              		.fpu fpv4-sp-d16
+  92              	PMC_ConfigureBandgapBuffer:
+  93              	.LFB156:
+  68:../drivers/fsl_pmc.c **** 
+  69:../drivers/fsl_pmc.c **** #if (defined(FSL_FEATURE_PMC_HAS_HVDSC1) && FSL_FEATURE_PMC_HAS_HVDSC1)
+  70:../drivers/fsl_pmc.c **** void PMC_ConfigureHighVoltDetect(PMC_Type *base, const pmc_high_volt_detect_config_t *config)
+  71:../drivers/fsl_pmc.c **** {
+  72:../drivers/fsl_pmc.c ****     base->HVDSC1 = (((uint32_t)config->voltSelect << PMC_HVDSC1_HVDV_SHIFT) |
+  73:../drivers/fsl_pmc.c ****                     ((uint32_t)config->enableInt << PMC_HVDSC1_HVDIE_SHIFT) |
+  74:../drivers/fsl_pmc.c ****                     ((uint32_t)config->enableReset << PMC_HVDSC1_HVDRE_SHIFT)
+  75:../drivers/fsl_pmc.c ****                     /* Clear the High Voltage Detect Flag with previouse power detect setting */
+  76:../drivers/fsl_pmc.c ****                     | PMC_HVDSC1_HVDACK_MASK);
+  77:../drivers/fsl_pmc.c **** }
+  78:../drivers/fsl_pmc.c **** #endif /* FSL_FEATURE_PMC_HAS_HVDSC1 */
+  79:../drivers/fsl_pmc.c **** 
+  80:../drivers/fsl_pmc.c **** #if ((defined(FSL_FEATURE_PMC_HAS_BGBE) && FSL_FEATURE_PMC_HAS_BGBE) || \
+  81:../drivers/fsl_pmc.c ****      (defined(FSL_FEATURE_PMC_HAS_BGEN) && FSL_FEATURE_PMC_HAS_BGEN) || \
+  82:../drivers/fsl_pmc.c ****      (defined(FSL_FEATURE_PMC_HAS_BGBDS) && FSL_FEATURE_PMC_HAS_BGBDS))
+  83:../drivers/fsl_pmc.c **** void PMC_ConfigureBandgapBuffer(PMC_Type *base, const pmc_bandgap_buffer_config_t *config)
+  84:../drivers/fsl_pmc.c **** {
+  94              		.loc 1 84 0
+  95              		.cfi_startproc
+  96              		@ args = 0, pretend = 0, frame = 0
+  97              		@ frame_needed = 0, uses_anonymous_args = 0
+  98              		@ link register save eliminated.
+  99              	.LVL2:
+  85:../drivers/fsl_pmc.c ****     base->REGSC = (0U
+  86:../drivers/fsl_pmc.c **** #if (defined(FSL_FEATURE_PMC_HAS_BGBE) && FSL_FEATURE_PMC_HAS_BGBE)
+  87:../drivers/fsl_pmc.c ****                    | ((uint32_t)config->enable << PMC_REGSC_BGBE_SHIFT)
+  88:../drivers/fsl_pmc.c **** #endif /* FSL_FEATURE_PMC_HAS_BGBE */
+  89:../drivers/fsl_pmc.c **** #if (defined(FSL_FEATURE_PMC_HAS_BGEN) && FSL_FEATURE_PMC_HAS_BGEN)
+  90:../drivers/fsl_pmc.c ****                    | (((uint32_t)config->enableInLowPowerMode << PMC_REGSC_BGEN_SHIFT))
+ 100              		.loc 1 90 0
+ 101 0000 4A78     		ldrb	r2, [r1, #1]	@ zero_extendqisi2
+ 102 0002 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 103 0004 43EA0213 		orr	r3, r3, r2, lsl #4
+ 104 0008 DBB2     		uxtb	r3, r3
+  85:../drivers/fsl_pmc.c ****     base->REGSC = (0U
+ 105              		.loc 1 85 0
+ 106 000a 8370     		strb	r3, [r0, #2]
+  91:../drivers/fsl_pmc.c **** #endif /* FSL_FEATURE_PMC_HAS_BGEN */
+  92:../drivers/fsl_pmc.c **** #if (defined(FSL_FEATURE_PMC_HAS_BGBDS) && FSL_FEATURE_PMC_HAS_BGBDS)
+  93:../drivers/fsl_pmc.c ****                    | ((uint32_t)config->drive << PMC_REGSC_BGBDS_SHIFT)
+  94:../drivers/fsl_pmc.c **** #endif /* FSL_FEATURE_PMC_HAS_BGBDS */
+  95:../drivers/fsl_pmc.c ****                        );
+  96:../drivers/fsl_pmc.c **** }
+ 107              		.loc 1 96 0
+ 108 000c 7047     		bx	lr
+ 109              		.cfi_endproc
+ 110              	.LFE156:
+ 112              		.text
+ 113              	.Letext0:
+ 114              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 115              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 116              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 117              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 118              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 119              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 120              		.file 8 "../CMSIS/core_cm4.h"
+ 121              		.file 9 "../CMSIS/system_MK64F12.h"
+ 122              		.file 10 "../CMSIS/MK64F12.h"
+ 123              		.file 11 "../drivers/fsl_clock.h"
+ 124              		.file 12 "../drivers/fsl_pmc.h"

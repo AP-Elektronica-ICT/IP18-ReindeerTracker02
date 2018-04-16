@@ -1,0 +1,2441 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_shell.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.HelpCommand,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	HelpCommand:
+  25              	.LFB149:
+  26              		.file 1 "../utilities/fsl_shell.c"
+   1:../utilities/fsl_shell.c **** /*
+   2:../utilities/fsl_shell.c ****  * The Clear BSD License
+   3:../utilities/fsl_shell.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../utilities/fsl_shell.c ****  * Copyright 2016-2017 NXP
+   5:../utilities/fsl_shell.c ****  * All rights reserved.
+   6:../utilities/fsl_shell.c ****  *
+   7:../utilities/fsl_shell.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../utilities/fsl_shell.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../utilities/fsl_shell.c ****  * that the following conditions are met:
+  10:../utilities/fsl_shell.c ****  *
+  11:../utilities/fsl_shell.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../utilities/fsl_shell.c ****  *   of conditions and the following disclaimer.
+  13:../utilities/fsl_shell.c ****  *
+  14:../utilities/fsl_shell.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../utilities/fsl_shell.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../utilities/fsl_shell.c ****  *   other materials provided with the distribution.
+  17:../utilities/fsl_shell.c ****  *
+  18:../utilities/fsl_shell.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../utilities/fsl_shell.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../utilities/fsl_shell.c ****  *   software without specific prior written permission.
+  21:../utilities/fsl_shell.c ****  *
+  22:../utilities/fsl_shell.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../utilities/fsl_shell.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../utilities/fsl_shell.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../utilities/fsl_shell.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../utilities/fsl_shell.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../utilities/fsl_shell.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../utilities/fsl_shell.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../utilities/fsl_shell.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../utilities/fsl_shell.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../utilities/fsl_shell.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../utilities/fsl_shell.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../utilities/fsl_shell.c ****  *
+  34:../utilities/fsl_shell.c ****  * POSIX getopt for Windows
+  35:../utilities/fsl_shell.c ****  * Code given out at the 1985 UNIFORUM conference in Dallas.
+  36:../utilities/fsl_shell.c ****  *
+  37:../utilities/fsl_shell.c ****  * From std-unix@ut-sally.UUCP (Moderator, John Quarterman) Sun Nov  3 14:34:15 1985
+  38:../utilities/fsl_shell.c ****  * Relay-Version: version B 2.10.3 4.3bsd-beta 6/6/85; site gatech.CSNET
+  39:../utilities/fsl_shell.c ****  * Posting-Version: version B 2.10.2 9/18/84; site ut-sally.UUCP
+  40:../utilities/fsl_shell.c ****  * Path: gatech!akgua!mhuxv!mhuxt!mhuxr!ulysses!allegra!mit-eddie!genrad!panda!talcott!harvard!seis
+  41:../utilities/fsl_shell.c ****  * From: std-unix@ut-sally.UUCP (Moderator, John Quarterman)
+  42:../utilities/fsl_shell.c ****  * Newsgroups: mod.std.unix
+  43:../utilities/fsl_shell.c ****  * Subject: public domain AT&T getopt source
+  44:../utilities/fsl_shell.c ****  * Message-ID: <3352@ut-sally.UUCP>
+  45:../utilities/fsl_shell.c ****  * Date: 3 Nov 85 19:34:15 GMT
+  46:../utilities/fsl_shell.c ****  * Date-Received: 4 Nov 85 12:25:09 GMT
+  47:../utilities/fsl_shell.c ****  * Organization: IEEE/P1003 Portable Operating System Environment Committee
+  48:../utilities/fsl_shell.c ****  * Lines: 91
+  49:../utilities/fsl_shell.c ****  * Approved: jsq@ut-sally.UUC
+  50:../utilities/fsl_shell.c ****  * Here's something you've all been waiting for:  the AT&T public domain
+  51:../utilities/fsl_shell.c ****  * source for getopt(3).  It is the code which was given out at the 1985
+  52:../utilities/fsl_shell.c ****  * UNIFORUM conference in Dallas.  I obtained it by electronic mail
+  53:../utilities/fsl_shell.c ****  * directly from AT&T.  The people there assure me that it is indeed
+  54:../utilities/fsl_shell.c ****  * in the public domain
+  55:../utilities/fsl_shell.c ****  * There is no manual page.  That is because the one they gave out at
+  56:../utilities/fsl_shell.c ****  * UNIFORUM was slightly different from the current System V Release 2
+  57:../utilities/fsl_shell.c ****  * manual page.  The difference apparently involved a note about the
+  58:../utilities/fsl_shell.c ****  * famous rules 5 and 6, recommending using white space between an option
+  59:../utilities/fsl_shell.c ****  * and its first argument, and not grouping options that have arguments.
+  60:../utilities/fsl_shell.c ****  * Getopt itself is currently lenient about both of these things White
+  61:../utilities/fsl_shell.c ****  * space is allowed, but not mandatory, and the last option in a group can
+  62:../utilities/fsl_shell.c ****  * have an argument.  That particular version of the man page evidently
+  63:../utilities/fsl_shell.c ****  * has no official existence, and my source at AT&T did not send a copy.
+  64:../utilities/fsl_shell.c ****  * The current SVR2 man page reflects the actual behavor of this getopt.
+  65:../utilities/fsl_shell.c ****  * However, I am not about to post a copy of anything licensed by AT&T.
+  66:../utilities/fsl_shell.c ****  */
+  67:../utilities/fsl_shell.c **** 
+  68:../utilities/fsl_shell.c **** #include <assert.h>
+  69:../utilities/fsl_shell.c **** #include "fsl_shell.h"
+  70:../utilities/fsl_shell.c **** 
+  71:../utilities/fsl_shell.c **** /*******************************************************************************
+  72:../utilities/fsl_shell.c ****  * Definitions
+  73:../utilities/fsl_shell.c ****  ******************************************************************************/
+  74:../utilities/fsl_shell.c **** #define KEY_ESC (0x1BU)
+  75:../utilities/fsl_shell.c **** #define KET_DEL (0x7FU)
+  76:../utilities/fsl_shell.c **** 
+  77:../utilities/fsl_shell.c **** /*******************************************************************************
+  78:../utilities/fsl_shell.c ****  * Prototypes
+  79:../utilities/fsl_shell.c ****  ******************************************************************************/
+  80:../utilities/fsl_shell.c **** static int32_t HelpCommand(p_shell_context_t context, int32_t argc, char **argv); /*!< help command
+  81:../utilities/fsl_shell.c **** 
+  82:../utilities/fsl_shell.c **** static int32_t ExitCommand(p_shell_context_t context, int32_t argc, char **argv); /*!< exit command
+  83:../utilities/fsl_shell.c **** 
+  84:../utilities/fsl_shell.c **** static int32_t ParseLine(const char *cmd, uint32_t len, char *argv[SHELL_MAX_ARGS]); /*!< parse lin
+  85:../utilities/fsl_shell.c **** 
+  86:../utilities/fsl_shell.c **** static int32_t StrCompare(const char *str1, const char *str2, int32_t count); /*!< compare string c
+  87:../utilities/fsl_shell.c **** 
+  88:../utilities/fsl_shell.c **** static void ProcessCommand(p_shell_context_t context, const char *cmd); /*!< process a command */
+  89:../utilities/fsl_shell.c **** 
+  90:../utilities/fsl_shell.c **** static void GetHistoryCommand(p_shell_context_t context, uint8_t hist_pos); /*!< get commands histo
+  91:../utilities/fsl_shell.c **** 
+  92:../utilities/fsl_shell.c **** static void AutoComplete(p_shell_context_t context); /*!< auto complete command */
+  93:../utilities/fsl_shell.c **** 
+  94:../utilities/fsl_shell.c **** static uint8_t GetChar(p_shell_context_t context); /*!< get a char from communication interface */
+  95:../utilities/fsl_shell.c **** 
+  96:../utilities/fsl_shell.c **** static int32_t StrLen(const char *str); /*!< get string length */
+  97:../utilities/fsl_shell.c **** 
+  98:../utilities/fsl_shell.c **** static char *StrCopy(char *dest, const char *src, int32_t count); /*!< string copy */
+  99:../utilities/fsl_shell.c **** 
+ 100:../utilities/fsl_shell.c **** /*******************************************************************************
+ 101:../utilities/fsl_shell.c ****  * Variables
+ 102:../utilities/fsl_shell.c ****  ******************************************************************************/
+ 103:../utilities/fsl_shell.c **** static const shell_command_context_t xHelpCommand = {"help", "\r\n\"help\": Lists all the registere
+ 104:../utilities/fsl_shell.c ****                                                      HelpCommand, 0};
+ 105:../utilities/fsl_shell.c **** 
+ 106:../utilities/fsl_shell.c **** static const shell_command_context_t xExitCommand = {"exit", "\r\n\"exit\": Exit program\r\n", Exit
+ 107:../utilities/fsl_shell.c **** 
+ 108:../utilities/fsl_shell.c **** static shell_command_context_list_t g_RegisteredCommands;
+ 109:../utilities/fsl_shell.c **** 
+ 110:../utilities/fsl_shell.c **** static char g_paramBuffer[SHELL_BUFFER_SIZE];
+ 111:../utilities/fsl_shell.c **** 
+ 112:../utilities/fsl_shell.c **** /*******************************************************************************
+ 113:../utilities/fsl_shell.c ****  * Code
+ 114:../utilities/fsl_shell.c ****  ******************************************************************************/
+ 115:../utilities/fsl_shell.c **** void SHELL_Init(
+ 116:../utilities/fsl_shell.c ****     p_shell_context_t context, send_data_cb_t send_cb, recv_data_cb_t recv_cb, printf_data_t shell_
+ 117:../utilities/fsl_shell.c **** {
+ 118:../utilities/fsl_shell.c ****     assert(send_cb != NULL);
+ 119:../utilities/fsl_shell.c ****     assert(recv_cb != NULL);
+ 120:../utilities/fsl_shell.c ****     assert(prompt != NULL);
+ 121:../utilities/fsl_shell.c ****     assert(shell_printf != NULL);
+ 122:../utilities/fsl_shell.c **** 
+ 123:../utilities/fsl_shell.c ****     /* Memset for context */
+ 124:../utilities/fsl_shell.c ****     memset(context, 0, sizeof(shell_context_struct));
+ 125:../utilities/fsl_shell.c ****     context->send_data_func = send_cb;
+ 126:../utilities/fsl_shell.c ****     context->recv_data_func = recv_cb;
+ 127:../utilities/fsl_shell.c ****     context->printf_data_func = shell_printf;
+ 128:../utilities/fsl_shell.c ****     context->prompt = prompt;
+ 129:../utilities/fsl_shell.c **** 
+ 130:../utilities/fsl_shell.c ****     SHELL_RegisterCommand(&xHelpCommand);
+ 131:../utilities/fsl_shell.c ****     SHELL_RegisterCommand(&xExitCommand);
+ 132:../utilities/fsl_shell.c **** }
+ 133:../utilities/fsl_shell.c **** 
+ 134:../utilities/fsl_shell.c **** int32_t SHELL_Main(p_shell_context_t context)
+ 135:../utilities/fsl_shell.c **** {
+ 136:../utilities/fsl_shell.c ****     uint8_t ch;
+ 137:../utilities/fsl_shell.c ****     int32_t i;
+ 138:../utilities/fsl_shell.c **** 
+ 139:../utilities/fsl_shell.c ****     if (!context)
+ 140:../utilities/fsl_shell.c ****     {
+ 141:../utilities/fsl_shell.c ****         return -1;
+ 142:../utilities/fsl_shell.c ****     }
+ 143:../utilities/fsl_shell.c **** 
+ 144:../utilities/fsl_shell.c ****     context->exit = false;
+ 145:../utilities/fsl_shell.c ****     context->printf_data_func("\r\nSHELL (build: %s)\r\n", __DATE__);
+ 146:../utilities/fsl_shell.c ****     context->printf_data_func("Copyright (c) 2017 NXP Semiconductor\r\n");
+ 147:../utilities/fsl_shell.c ****     context->printf_data_func(context->prompt);
+ 148:../utilities/fsl_shell.c **** 
+ 149:../utilities/fsl_shell.c ****     while (1)
+ 150:../utilities/fsl_shell.c ****     {
+ 151:../utilities/fsl_shell.c ****         if (context->exit)
+ 152:../utilities/fsl_shell.c ****         {
+ 153:../utilities/fsl_shell.c ****             break;
+ 154:../utilities/fsl_shell.c ****         }
+ 155:../utilities/fsl_shell.c ****         ch = GetChar(context);
+ 156:../utilities/fsl_shell.c ****         /* If error occured when getting a char, continue to receive a new char. */
+ 157:../utilities/fsl_shell.c ****         if ((uint8_t)(-1) == ch)
+ 158:../utilities/fsl_shell.c ****         {
+ 159:../utilities/fsl_shell.c ****             continue;
+ 160:../utilities/fsl_shell.c ****         }
+ 161:../utilities/fsl_shell.c ****         /* Special key */
+ 162:../utilities/fsl_shell.c ****         if (ch == KEY_ESC)
+ 163:../utilities/fsl_shell.c ****         {
+ 164:../utilities/fsl_shell.c ****             context->stat = kSHELL_Special;
+ 165:../utilities/fsl_shell.c ****             continue;
+ 166:../utilities/fsl_shell.c ****         }
+ 167:../utilities/fsl_shell.c ****         else if (context->stat == kSHELL_Special)
+ 168:../utilities/fsl_shell.c ****         {
+ 169:../utilities/fsl_shell.c ****             /* Function key */
+ 170:../utilities/fsl_shell.c ****             if (ch == '[')
+ 171:../utilities/fsl_shell.c ****             {
+ 172:../utilities/fsl_shell.c ****                 context->stat = kSHELL_Function;
+ 173:../utilities/fsl_shell.c ****                 continue;
+ 174:../utilities/fsl_shell.c ****             }
+ 175:../utilities/fsl_shell.c ****             context->stat = kSHELL_Normal;
+ 176:../utilities/fsl_shell.c ****         }
+ 177:../utilities/fsl_shell.c ****         else if (context->stat == kSHELL_Function)
+ 178:../utilities/fsl_shell.c ****         {
+ 179:../utilities/fsl_shell.c ****             context->stat = kSHELL_Normal;
+ 180:../utilities/fsl_shell.c **** 
+ 181:../utilities/fsl_shell.c ****             switch ((uint8_t)ch)
+ 182:../utilities/fsl_shell.c ****             {
+ 183:../utilities/fsl_shell.c ****                 /* History operation here */
+ 184:../utilities/fsl_shell.c ****                 case 'A': /* Up key */
+ 185:../utilities/fsl_shell.c ****                     GetHistoryCommand(context, context->hist_current);
+ 186:../utilities/fsl_shell.c ****                     if (context->hist_current < (context->hist_count - 1))
+ 187:../utilities/fsl_shell.c ****                     {
+ 188:../utilities/fsl_shell.c ****                         context->hist_current++;
+ 189:../utilities/fsl_shell.c ****                     }
+ 190:../utilities/fsl_shell.c ****                     break;
+ 191:../utilities/fsl_shell.c ****                 case 'B': /* Down key */
+ 192:../utilities/fsl_shell.c ****                     GetHistoryCommand(context, context->hist_current);
+ 193:../utilities/fsl_shell.c ****                     if (context->hist_current > 0)
+ 194:../utilities/fsl_shell.c ****                     {
+ 195:../utilities/fsl_shell.c ****                         context->hist_current--;
+ 196:../utilities/fsl_shell.c ****                     }
+ 197:../utilities/fsl_shell.c ****                     break;
+ 198:../utilities/fsl_shell.c ****                 case 'D': /* Left key */
+ 199:../utilities/fsl_shell.c ****                     if (context->c_pos)
+ 200:../utilities/fsl_shell.c ****                     {
+ 201:../utilities/fsl_shell.c ****                         context->printf_data_func("\b");
+ 202:../utilities/fsl_shell.c ****                         context->c_pos--;
+ 203:../utilities/fsl_shell.c ****                     }
+ 204:../utilities/fsl_shell.c ****                     break;
+ 205:../utilities/fsl_shell.c ****                 case 'C': /* Right key */
+ 206:../utilities/fsl_shell.c ****                     if (context->c_pos < context->l_pos)
+ 207:../utilities/fsl_shell.c ****                     {
+ 208:../utilities/fsl_shell.c ****                         context->printf_data_func("%c", context->line[context->c_pos]);
+ 209:../utilities/fsl_shell.c ****                         context->c_pos++;
+ 210:../utilities/fsl_shell.c ****                     }
+ 211:../utilities/fsl_shell.c ****                     break;
+ 212:../utilities/fsl_shell.c ****                 default:
+ 213:../utilities/fsl_shell.c ****                     break;
+ 214:../utilities/fsl_shell.c ****             }
+ 215:../utilities/fsl_shell.c ****             continue;
+ 216:../utilities/fsl_shell.c ****         }
+ 217:../utilities/fsl_shell.c ****         /* Handle tab key */
+ 218:../utilities/fsl_shell.c ****         else if (ch == '\t')
+ 219:../utilities/fsl_shell.c ****         {
+ 220:../utilities/fsl_shell.c **** #if SHELL_AUTO_COMPLETE
+ 221:../utilities/fsl_shell.c ****             /* Move the cursor to the beginning of line */
+ 222:../utilities/fsl_shell.c ****             for (i = 0; i < context->c_pos; i++)
+ 223:../utilities/fsl_shell.c ****             {
+ 224:../utilities/fsl_shell.c ****                 context->printf_data_func("\b");
+ 225:../utilities/fsl_shell.c ****             }
+ 226:../utilities/fsl_shell.c ****             /* Do auto complete */
+ 227:../utilities/fsl_shell.c ****             AutoComplete(context);
+ 228:../utilities/fsl_shell.c ****             /* Move position to end */
+ 229:../utilities/fsl_shell.c ****             context->c_pos = context->l_pos = StrLen(context->line);
+ 230:../utilities/fsl_shell.c **** #endif
+ 231:../utilities/fsl_shell.c ****             continue;
+ 232:../utilities/fsl_shell.c ****         }
+ 233:../utilities/fsl_shell.c **** #if SHELL_SEARCH_IN_HIST
+ 234:../utilities/fsl_shell.c ****         /* Search command in history */
+ 235:../utilities/fsl_shell.c ****         else if ((ch == '`') && (context->l_pos == 0) && (context->line[0] == 0x00))
+ 236:../utilities/fsl_shell.c ****         {
+ 237:../utilities/fsl_shell.c ****         }
+ 238:../utilities/fsl_shell.c **** #endif
+ 239:../utilities/fsl_shell.c ****         /* Handle backspace key */
+ 240:../utilities/fsl_shell.c ****         else if ((ch == KET_DEL) || (ch == '\b'))
+ 241:../utilities/fsl_shell.c ****         {
+ 242:../utilities/fsl_shell.c ****             /* There must be at last one char */
+ 243:../utilities/fsl_shell.c ****             if (context->c_pos == 0)
+ 244:../utilities/fsl_shell.c ****             {
+ 245:../utilities/fsl_shell.c ****                 continue;
+ 246:../utilities/fsl_shell.c ****             }
+ 247:../utilities/fsl_shell.c **** 
+ 248:../utilities/fsl_shell.c ****             context->l_pos--;
+ 249:../utilities/fsl_shell.c ****             context->c_pos--;
+ 250:../utilities/fsl_shell.c **** 
+ 251:../utilities/fsl_shell.c ****             if (context->l_pos > context->c_pos)
+ 252:../utilities/fsl_shell.c ****             {
+ 253:../utilities/fsl_shell.c ****                 memmove(&context->line[context->c_pos], &context->line[context->c_pos + 1],
+ 254:../utilities/fsl_shell.c ****                         context->l_pos - context->c_pos);
+ 255:../utilities/fsl_shell.c ****                 context->line[context->l_pos] = 0;
+ 256:../utilities/fsl_shell.c ****                 context->printf_data_func("\b%s  \b", &context->line[context->c_pos]);
+ 257:../utilities/fsl_shell.c **** 
+ 258:../utilities/fsl_shell.c ****                 /* Reset position */
+ 259:../utilities/fsl_shell.c ****                 for (i = context->c_pos; i <= context->l_pos; i++)
+ 260:../utilities/fsl_shell.c ****                 {
+ 261:../utilities/fsl_shell.c ****                     context->printf_data_func("\b");
+ 262:../utilities/fsl_shell.c ****                 }
+ 263:../utilities/fsl_shell.c ****             }
+ 264:../utilities/fsl_shell.c ****             else /* Normal backspace operation */
+ 265:../utilities/fsl_shell.c ****             {
+ 266:../utilities/fsl_shell.c ****                 context->printf_data_func("\b \b");
+ 267:../utilities/fsl_shell.c ****                 context->line[context->l_pos] = 0;
+ 268:../utilities/fsl_shell.c ****             }
+ 269:../utilities/fsl_shell.c ****             continue;
+ 270:../utilities/fsl_shell.c ****         }
+ 271:../utilities/fsl_shell.c ****         else
+ 272:../utilities/fsl_shell.c ****         {
+ 273:../utilities/fsl_shell.c ****         }
+ 274:../utilities/fsl_shell.c **** 
+ 275:../utilities/fsl_shell.c ****         /* Input too long */
+ 276:../utilities/fsl_shell.c ****         if (context->l_pos >= (SHELL_BUFFER_SIZE - 1))
+ 277:../utilities/fsl_shell.c ****         {
+ 278:../utilities/fsl_shell.c ****             context->l_pos = 0;
+ 279:../utilities/fsl_shell.c ****         }
+ 280:../utilities/fsl_shell.c **** 
+ 281:../utilities/fsl_shell.c ****         /* Handle end of line, break */
+ 282:../utilities/fsl_shell.c ****         if ((ch == '\r') || (ch == '\n'))
+ 283:../utilities/fsl_shell.c ****         {
+ 284:../utilities/fsl_shell.c ****             static char endoflinechar = 0U;
+ 285:../utilities/fsl_shell.c **** 
+ 286:../utilities/fsl_shell.c ****             if ((endoflinechar != 0U) && (endoflinechar != ch))
+ 287:../utilities/fsl_shell.c ****             {
+ 288:../utilities/fsl_shell.c ****                 continue;
+ 289:../utilities/fsl_shell.c ****             }
+ 290:../utilities/fsl_shell.c ****             else
+ 291:../utilities/fsl_shell.c ****             {
+ 292:../utilities/fsl_shell.c ****                 endoflinechar = ch;
+ 293:../utilities/fsl_shell.c ****                 context->printf_data_func("\r\n");
+ 294:../utilities/fsl_shell.c ****                 /* If command line is NULL, will start a new transfer */
+ 295:../utilities/fsl_shell.c ****                 if (0U == StrLen(context->line))
+ 296:../utilities/fsl_shell.c ****                 {
+ 297:../utilities/fsl_shell.c ****                     context->printf_data_func(context->prompt);
+ 298:../utilities/fsl_shell.c ****                     continue;
+ 299:../utilities/fsl_shell.c ****                 }
+ 300:../utilities/fsl_shell.c ****                 ProcessCommand(context, context->line);
+ 301:../utilities/fsl_shell.c ****                 /* Reset all params */
+ 302:../utilities/fsl_shell.c ****                 context->c_pos = context->l_pos = 0;
+ 303:../utilities/fsl_shell.c ****                 context->hist_current = 0;
+ 304:../utilities/fsl_shell.c ****                 context->printf_data_func(context->prompt);
+ 305:../utilities/fsl_shell.c ****                 memset(context->line, 0, sizeof(context->line));
+ 306:../utilities/fsl_shell.c ****                 continue;
+ 307:../utilities/fsl_shell.c ****             }
+ 308:../utilities/fsl_shell.c ****         }
+ 309:../utilities/fsl_shell.c **** 
+ 310:../utilities/fsl_shell.c ****         /* Normal character */
+ 311:../utilities/fsl_shell.c ****         if (context->c_pos < context->l_pos)
+ 312:../utilities/fsl_shell.c ****         {
+ 313:../utilities/fsl_shell.c ****             memmove(&context->line[context->c_pos + 1], &context->line[context->c_pos],
+ 314:../utilities/fsl_shell.c ****                     context->l_pos - context->c_pos);
+ 315:../utilities/fsl_shell.c ****             context->line[context->c_pos] = ch;
+ 316:../utilities/fsl_shell.c ****             context->printf_data_func("%s", &context->line[context->c_pos]);
+ 317:../utilities/fsl_shell.c ****             /* Move the cursor to new position */
+ 318:../utilities/fsl_shell.c ****             for (i = context->c_pos; i < context->l_pos; i++)
+ 319:../utilities/fsl_shell.c ****             {
+ 320:../utilities/fsl_shell.c ****                 context->printf_data_func("\b");
+ 321:../utilities/fsl_shell.c ****             }
+ 322:../utilities/fsl_shell.c ****         }
+ 323:../utilities/fsl_shell.c ****         else
+ 324:../utilities/fsl_shell.c ****         {
+ 325:../utilities/fsl_shell.c ****             context->line[context->l_pos] = ch;
+ 326:../utilities/fsl_shell.c ****             context->printf_data_func("%c", ch);
+ 327:../utilities/fsl_shell.c ****         }
+ 328:../utilities/fsl_shell.c **** 
+ 329:../utilities/fsl_shell.c ****         ch = 0;
+ 330:../utilities/fsl_shell.c ****         context->l_pos++;
+ 331:../utilities/fsl_shell.c ****         context->c_pos++;
+ 332:../utilities/fsl_shell.c ****     }
+ 333:../utilities/fsl_shell.c ****     return 0;
+ 334:../utilities/fsl_shell.c **** }
+ 335:../utilities/fsl_shell.c **** 
+ 336:../utilities/fsl_shell.c **** static int32_t HelpCommand(p_shell_context_t context, int32_t argc, char **argv)
+ 337:../utilities/fsl_shell.c **** {
+  27              		.loc 1 337 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 70B5     		push	{r4, r5, r6, lr}
+  33              		.cfi_def_cfa_offset 16
+  34              		.cfi_offset 4, -16
+  35              		.cfi_offset 5, -12
+  36              		.cfi_offset 6, -8
+  37              		.cfi_offset 14, -4
+ 338:../utilities/fsl_shell.c ****     uint8_t i = 0;
+ 339:../utilities/fsl_shell.c **** 
+ 340:../utilities/fsl_shell.c ****     for (i = 0; i < g_RegisteredCommands.numberOfCommandInList; i++)
+  38              		.loc 1 340 0
+  39 0002 094C     		ldr	r4, .L4
+ 337:../utilities/fsl_shell.c ****     uint8_t i = 0;
+  40              		.loc 1 337 0
+  41 0004 0646     		mov	r6, r0
+  42              		.loc 1 340 0
+  43 0006 0023     		movs	r3, #0
+  44              	.LVL1:
+  45              	.L2:
+  46              		.loc 1 340 0 is_stmt 0 discriminator 1
+  47 0008 94F85020 		ldrb	r2, [r4, #80]	@ zero_extendqisi2
+  48 000c 5D1C     		adds	r5, r3, #1
+  49 000e DBB2     		uxtb	r3, r3
+  50 0010 9A42     		cmp	r2, r3
+  51 0012 01D8     		bhi	.L3
+ 341:../utilities/fsl_shell.c ****     {
+ 342:../utilities/fsl_shell.c ****         context->printf_data_func(g_RegisteredCommands.CommandList[i]->pcHelpString);
+ 343:../utilities/fsl_shell.c ****     }
+ 344:../utilities/fsl_shell.c ****     return 0;
+ 345:../utilities/fsl_shell.c **** }
+  52              		.loc 1 345 0 is_stmt 1
+  53 0014 0020     		movs	r0, #0
+  54 0016 70BD     		pop	{r4, r5, r6, pc}
+  55              	.LVL2:
+  56              	.L3:
+ 342:../utilities/fsl_shell.c ****     }
+  57              		.loc 1 342 0 discriminator 3
+  58 0018 54F82320 		ldr	r2, [r4, r3, lsl #2]
+  59 001c 336D     		ldr	r3, [r6, #80]
+  60              	.LVL3:
+  61 001e 5068     		ldr	r0, [r2, #4]
+  62 0020 9847     		blx	r3
+  63              	.LVL4:
+  64 0022 2B46     		mov	r3, r5
+  65 0024 F0E7     		b	.L2
+  66              	.L5:
+  67 0026 00BF     		.align	2
+  68              	.L4:
+  69 0028 00000000 		.word	.LANCHOR0
+  70              		.cfi_endproc
+  71              	.LFE149:
+  73              		.section	.text.ExitCommand,"ax",%progbits
+  74              		.align	1
+  75              		.syntax unified
+  76              		.thumb
+  77              		.thumb_func
+  78              		.fpu fpv4-sp-d16
+  80              	ExitCommand:
+  81              	.LFB150:
+ 346:../utilities/fsl_shell.c **** 
+ 347:../utilities/fsl_shell.c **** static int32_t ExitCommand(p_shell_context_t context, int32_t argc, char **argv)
+ 348:../utilities/fsl_shell.c **** {
+  82              		.loc 1 348 0
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 0
+  85              		@ frame_needed = 0, uses_anonymous_args = 0
+  86              	.LVL5:
+  87 0000 10B5     		push	{r4, lr}
+  88              		.cfi_def_cfa_offset 8
+  89              		.cfi_offset 4, -8
+  90              		.cfi_offset 14, -4
+ 349:../utilities/fsl_shell.c ****     /* Skip warning */
+ 350:../utilities/fsl_shell.c ****     context->printf_data_func("\r\nSHELL exited\r\n");
+  91              		.loc 1 350 0
+  92 0002 036D     		ldr	r3, [r0, #80]
+ 348:../utilities/fsl_shell.c ****     /* Skip warning */
+  93              		.loc 1 348 0
+  94 0004 0446     		mov	r4, r0
+  95              		.loc 1 350 0
+  96 0006 0348     		ldr	r0, .L7
+  97              	.LVL6:
+  98 0008 9847     		blx	r3
+  99              	.LVL7:
+ 351:../utilities/fsl_shell.c ****     context->exit = true;
+ 100              		.loc 1 351 0
+ 101 000a 0123     		movs	r3, #1
+ 102 000c 84F81831 		strb	r3, [r4, #280]
+ 352:../utilities/fsl_shell.c ****     return 0;
+ 353:../utilities/fsl_shell.c **** }
+ 103              		.loc 1 353 0
+ 104 0010 0020     		movs	r0, #0
+ 105 0012 10BD     		pop	{r4, pc}
+ 106              	.LVL8:
+ 107              	.L8:
+ 108              		.align	2
+ 109              	.L7:
+ 110 0014 00000000 		.word	.LC0
+ 111              		.cfi_endproc
+ 112              	.LFE150:
+ 114              		.section	.text.StrCopy,"ax",%progbits
+ 115              		.align	1
+ 116              		.syntax unified
+ 117              		.thumb
+ 118              		.thumb_func
+ 119              		.fpu fpv4-sp-d16
+ 121              	StrCopy:
+ 122              	.LFB154:
+ 354:../utilities/fsl_shell.c **** 
+ 355:../utilities/fsl_shell.c **** static void ProcessCommand(p_shell_context_t context, const char *cmd)
+ 356:../utilities/fsl_shell.c **** {
+ 357:../utilities/fsl_shell.c ****     static const shell_command_context_t *tmpCommand = NULL;
+ 358:../utilities/fsl_shell.c ****     static const char *tmpCommandString;
+ 359:../utilities/fsl_shell.c ****     int32_t argc;
+ 360:../utilities/fsl_shell.c ****     char *argv[SHELL_BUFFER_SIZE];
+ 361:../utilities/fsl_shell.c ****     uint8_t flag = 1;
+ 362:../utilities/fsl_shell.c ****     uint8_t tmpCommandLen;
+ 363:../utilities/fsl_shell.c ****     uint8_t tmpLen;
+ 364:../utilities/fsl_shell.c ****     uint8_t i = 0;
+ 365:../utilities/fsl_shell.c **** 
+ 366:../utilities/fsl_shell.c ****     tmpLen = StrLen(cmd);
+ 367:../utilities/fsl_shell.c ****     argc = ParseLine(cmd, tmpLen, argv);
+ 368:../utilities/fsl_shell.c **** 
+ 369:../utilities/fsl_shell.c ****     if ((tmpCommand == NULL) && (argc > 0))
+ 370:../utilities/fsl_shell.c ****     {
+ 371:../utilities/fsl_shell.c ****         for (i = 0; i < g_RegisteredCommands.numberOfCommandInList; i++)
+ 372:../utilities/fsl_shell.c ****         {
+ 373:../utilities/fsl_shell.c ****             tmpCommand = g_RegisteredCommands.CommandList[i];
+ 374:../utilities/fsl_shell.c ****             tmpCommandString = tmpCommand->pcCommand;
+ 375:../utilities/fsl_shell.c ****             tmpCommandLen = StrLen(tmpCommandString);
+ 376:../utilities/fsl_shell.c ****             /* Compare with space or end of string */
+ 377:../utilities/fsl_shell.c ****             if ((cmd[tmpCommandLen] == ' ') || (cmd[tmpCommandLen] == 0x00))
+ 378:../utilities/fsl_shell.c ****             {
+ 379:../utilities/fsl_shell.c ****                 if (StrCompare(tmpCommandString, argv[0], tmpCommandLen) == 0)
+ 380:../utilities/fsl_shell.c ****                 {
+ 381:../utilities/fsl_shell.c ****                     /* support commands with optional number of parameters */
+ 382:../utilities/fsl_shell.c ****                     if (tmpCommand->cExpectedNumberOfParameters == SHELL_OPTIONAL_PARAMS)
+ 383:../utilities/fsl_shell.c ****                     {
+ 384:../utilities/fsl_shell.c ****                         flag = 0;
+ 385:../utilities/fsl_shell.c ****                     }
+ 386:../utilities/fsl_shell.c ****                     else if ((tmpCommand->cExpectedNumberOfParameters == 0) && (argc == 1))
+ 387:../utilities/fsl_shell.c ****                     {
+ 388:../utilities/fsl_shell.c ****                         flag = 0;
+ 389:../utilities/fsl_shell.c ****                     }
+ 390:../utilities/fsl_shell.c ****                     else if (tmpCommand->cExpectedNumberOfParameters > 0)
+ 391:../utilities/fsl_shell.c ****                     {
+ 392:../utilities/fsl_shell.c ****                         if ((argc - 1) == tmpCommand->cExpectedNumberOfParameters)
+ 393:../utilities/fsl_shell.c ****                         {
+ 394:../utilities/fsl_shell.c ****                             flag = 0;
+ 395:../utilities/fsl_shell.c ****                         }
+ 396:../utilities/fsl_shell.c ****                     }
+ 397:../utilities/fsl_shell.c ****                     else
+ 398:../utilities/fsl_shell.c ****                     {
+ 399:../utilities/fsl_shell.c ****                         flag = 1;
+ 400:../utilities/fsl_shell.c ****                     }
+ 401:../utilities/fsl_shell.c ****                     break;
+ 402:../utilities/fsl_shell.c ****                 }
+ 403:../utilities/fsl_shell.c ****             }
+ 404:../utilities/fsl_shell.c ****         }
+ 405:../utilities/fsl_shell.c ****     }
+ 406:../utilities/fsl_shell.c **** 
+ 407:../utilities/fsl_shell.c ****     if ((tmpCommand != NULL) && (flag == 1U))
+ 408:../utilities/fsl_shell.c ****     {
+ 409:../utilities/fsl_shell.c ****         context->printf_data_func(
+ 410:../utilities/fsl_shell.c ****             "\r\nIncorrect command parameter(s).  Enter \"help\" to view a list of available comman
+ 411:../utilities/fsl_shell.c ****         tmpCommand = NULL;
+ 412:../utilities/fsl_shell.c ****     }
+ 413:../utilities/fsl_shell.c ****     else if (tmpCommand != NULL)
+ 414:../utilities/fsl_shell.c ****     {
+ 415:../utilities/fsl_shell.c ****         tmpLen = StrLen(cmd);
+ 416:../utilities/fsl_shell.c ****         /* Compare with last command. Push back to history buffer if different */
+ 417:../utilities/fsl_shell.c ****         if (tmpLen != StrCompare(cmd, context->hist_buf[0], StrLen(cmd)))
+ 418:../utilities/fsl_shell.c ****         {
+ 419:../utilities/fsl_shell.c ****             for (i = SHELL_HIST_MAX - 1; i > 0; i--)
+ 420:../utilities/fsl_shell.c ****             {
+ 421:../utilities/fsl_shell.c ****                 memset(context->hist_buf[i], '\0', SHELL_BUFFER_SIZE);
+ 422:../utilities/fsl_shell.c ****                 tmpLen = StrLen(context->hist_buf[i - 1]);
+ 423:../utilities/fsl_shell.c ****                 StrCopy(context->hist_buf[i], context->hist_buf[i - 1], tmpLen);
+ 424:../utilities/fsl_shell.c ****             }
+ 425:../utilities/fsl_shell.c ****             memset(context->hist_buf[0], '\0', SHELL_BUFFER_SIZE);
+ 426:../utilities/fsl_shell.c ****             tmpLen = StrLen(cmd);
+ 427:../utilities/fsl_shell.c ****             StrCopy(context->hist_buf[0], cmd, tmpLen);
+ 428:../utilities/fsl_shell.c ****             if (context->hist_count < SHELL_HIST_MAX)
+ 429:../utilities/fsl_shell.c ****             {
+ 430:../utilities/fsl_shell.c ****                 context->hist_count++;
+ 431:../utilities/fsl_shell.c ****             }
+ 432:../utilities/fsl_shell.c ****         }
+ 433:../utilities/fsl_shell.c ****         tmpCommand->pFuncCallBack(context, argc, argv);
+ 434:../utilities/fsl_shell.c ****         tmpCommand = NULL;
+ 435:../utilities/fsl_shell.c ****     }
+ 436:../utilities/fsl_shell.c ****     else
+ 437:../utilities/fsl_shell.c ****     {
+ 438:../utilities/fsl_shell.c ****         context->printf_data_func(
+ 439:../utilities/fsl_shell.c ****             "\r\nCommand not recognised.  Enter 'help' to view a list of available commands.\r\n\r\
+ 440:../utilities/fsl_shell.c ****         tmpCommand = NULL;
+ 441:../utilities/fsl_shell.c ****     }
+ 442:../utilities/fsl_shell.c **** }
+ 443:../utilities/fsl_shell.c **** 
+ 444:../utilities/fsl_shell.c **** static void GetHistoryCommand(p_shell_context_t context, uint8_t hist_pos)
+ 445:../utilities/fsl_shell.c **** {
+ 446:../utilities/fsl_shell.c ****     uint8_t i;
+ 447:../utilities/fsl_shell.c ****     uint32_t tmp;
+ 448:../utilities/fsl_shell.c **** 
+ 449:../utilities/fsl_shell.c ****     if (context->hist_buf[0][0] == '\0')
+ 450:../utilities/fsl_shell.c ****     {
+ 451:../utilities/fsl_shell.c ****         context->hist_current = 0;
+ 452:../utilities/fsl_shell.c ****         return;
+ 453:../utilities/fsl_shell.c ****     }
+ 454:../utilities/fsl_shell.c ****     if (hist_pos >= SHELL_HIST_MAX)
+ 455:../utilities/fsl_shell.c ****     {
+ 456:../utilities/fsl_shell.c ****         hist_pos = SHELL_HIST_MAX - 1;
+ 457:../utilities/fsl_shell.c ****     }
+ 458:../utilities/fsl_shell.c ****     tmp = StrLen(context->line);
+ 459:../utilities/fsl_shell.c ****     /* Clear current if have */
+ 460:../utilities/fsl_shell.c ****     if (tmp > 0)
+ 461:../utilities/fsl_shell.c ****     {
+ 462:../utilities/fsl_shell.c ****         memset(context->line, '\0', tmp);
+ 463:../utilities/fsl_shell.c ****         for (i = 0; i < tmp; i++)
+ 464:../utilities/fsl_shell.c ****         {
+ 465:../utilities/fsl_shell.c ****             context->printf_data_func("\b \b");
+ 466:../utilities/fsl_shell.c ****         }
+ 467:../utilities/fsl_shell.c ****     }
+ 468:../utilities/fsl_shell.c **** 
+ 469:../utilities/fsl_shell.c ****     context->l_pos = StrLen(context->hist_buf[hist_pos]);
+ 470:../utilities/fsl_shell.c ****     context->c_pos = context->l_pos;
+ 471:../utilities/fsl_shell.c ****     StrCopy(context->line, context->hist_buf[hist_pos], context->l_pos);
+ 472:../utilities/fsl_shell.c ****     context->printf_data_func(context->hist_buf[hist_pos]);
+ 473:../utilities/fsl_shell.c **** }
+ 474:../utilities/fsl_shell.c **** 
+ 475:../utilities/fsl_shell.c **** static void AutoComplete(p_shell_context_t context)
+ 476:../utilities/fsl_shell.c **** {
+ 477:../utilities/fsl_shell.c ****     int32_t len;
+ 478:../utilities/fsl_shell.c ****     int32_t minLen;
+ 479:../utilities/fsl_shell.c ****     uint8_t i = 0;
+ 480:../utilities/fsl_shell.c ****     const shell_command_context_t *tmpCommand = NULL;
+ 481:../utilities/fsl_shell.c ****     const char *namePtr;
+ 482:../utilities/fsl_shell.c ****     const char *cmdName;
+ 483:../utilities/fsl_shell.c **** 
+ 484:../utilities/fsl_shell.c ****     minLen = 0;
+ 485:../utilities/fsl_shell.c ****     namePtr = NULL;
+ 486:../utilities/fsl_shell.c **** 
+ 487:../utilities/fsl_shell.c ****     if (!StrLen(context->line))
+ 488:../utilities/fsl_shell.c ****     {
+ 489:../utilities/fsl_shell.c ****         return;
+ 490:../utilities/fsl_shell.c ****     }
+ 491:../utilities/fsl_shell.c ****     context->printf_data_func("\r\n");
+ 492:../utilities/fsl_shell.c ****     /* Empty tab, list all commands */
+ 493:../utilities/fsl_shell.c ****     if (context->line[0] == '\0')
+ 494:../utilities/fsl_shell.c ****     {
+ 495:../utilities/fsl_shell.c ****         HelpCommand(context, 0, NULL);
+ 496:../utilities/fsl_shell.c ****         return;
+ 497:../utilities/fsl_shell.c ****     }
+ 498:../utilities/fsl_shell.c ****     /* Do auto complete */
+ 499:../utilities/fsl_shell.c ****     for (i = 0; i < g_RegisteredCommands.numberOfCommandInList; i++)
+ 500:../utilities/fsl_shell.c ****     {
+ 501:../utilities/fsl_shell.c ****         tmpCommand = g_RegisteredCommands.CommandList[i];
+ 502:../utilities/fsl_shell.c ****         cmdName = tmpCommand->pcCommand;
+ 503:../utilities/fsl_shell.c ****         if (StrCompare(context->line, cmdName, StrLen(context->line)) == 0)
+ 504:../utilities/fsl_shell.c ****         {
+ 505:../utilities/fsl_shell.c ****             if (minLen == 0)
+ 506:../utilities/fsl_shell.c ****             {
+ 507:../utilities/fsl_shell.c ****                 namePtr = cmdName;
+ 508:../utilities/fsl_shell.c ****                 minLen = StrLen(namePtr);
+ 509:../utilities/fsl_shell.c ****                 /* Show possible matches */
+ 510:../utilities/fsl_shell.c ****                 context->printf_data_func("%s\r\n", cmdName);
+ 511:../utilities/fsl_shell.c ****                 continue;
+ 512:../utilities/fsl_shell.c ****             }
+ 513:../utilities/fsl_shell.c ****             len = StrCompare(namePtr, cmdName, StrLen(namePtr));
+ 514:../utilities/fsl_shell.c ****             if (len < 0)
+ 515:../utilities/fsl_shell.c ****             {
+ 516:../utilities/fsl_shell.c ****                 len = len * (-1);
+ 517:../utilities/fsl_shell.c ****             }
+ 518:../utilities/fsl_shell.c ****             if (len < minLen)
+ 519:../utilities/fsl_shell.c ****             {
+ 520:../utilities/fsl_shell.c ****                 minLen = len;
+ 521:../utilities/fsl_shell.c ****             }
+ 522:../utilities/fsl_shell.c ****         }
+ 523:../utilities/fsl_shell.c ****     }
+ 524:../utilities/fsl_shell.c ****     /* Auto complete string */
+ 525:../utilities/fsl_shell.c ****     if (namePtr)
+ 526:../utilities/fsl_shell.c ****     {
+ 527:../utilities/fsl_shell.c ****         StrCopy(context->line, namePtr, minLen);
+ 528:../utilities/fsl_shell.c ****     }
+ 529:../utilities/fsl_shell.c ****     context->printf_data_func("%s%s", context->prompt, context->line);
+ 530:../utilities/fsl_shell.c ****     return;
+ 531:../utilities/fsl_shell.c **** }
+ 532:../utilities/fsl_shell.c **** 
+ 533:../utilities/fsl_shell.c **** static char *StrCopy(char *dest, const char *src, int32_t count)
+ 534:../utilities/fsl_shell.c **** {
+ 123              		.loc 1 534 0
+ 124              		.cfi_startproc
+ 125              		@ args = 0, pretend = 0, frame = 0
+ 126              		@ frame_needed = 0, uses_anonymous_args = 0
+ 127              	.LVL9:
+ 128 0000 10B5     		push	{r4, lr}
+ 129              		.cfi_def_cfa_offset 8
+ 130              		.cfi_offset 4, -8
+ 131              		.cfi_offset 14, -4
+ 535:../utilities/fsl_shell.c ****     char *ret = dest;
+ 536:../utilities/fsl_shell.c ****     int32_t i = 0;
+ 537:../utilities/fsl_shell.c **** 
+ 538:../utilities/fsl_shell.c ****     for (i = 0; i < count; i++)
+ 132              		.loc 1 538 0
+ 133 0002 0023     		movs	r3, #0
+ 134              	.LVL10:
+ 135              	.L10:
+ 136              		.loc 1 538 0 is_stmt 0 discriminator 1
+ 137 0004 9342     		cmp	r3, r2
+ 138 0006 00DB     		blt	.L11
+ 539:../utilities/fsl_shell.c ****     {
+ 540:../utilities/fsl_shell.c ****         dest[i] = src[i];
+ 541:../utilities/fsl_shell.c ****     }
+ 542:../utilities/fsl_shell.c **** 
+ 543:../utilities/fsl_shell.c ****     return ret;
+ 544:../utilities/fsl_shell.c **** }
+ 139              		.loc 1 544 0 is_stmt 1
+ 140 0008 10BD     		pop	{r4, pc}
+ 141              	.L11:
+ 540:../utilities/fsl_shell.c ****     }
+ 142              		.loc 1 540 0 discriminator 3
+ 143 000a CC56     		ldrsb	r4, [r1, r3]
+ 144 000c C454     		strb	r4, [r0, r3]
+ 538:../utilities/fsl_shell.c ****     {
+ 145              		.loc 1 538 0 discriminator 3
+ 146 000e 0133     		adds	r3, r3, #1
+ 147              	.LVL11:
+ 148 0010 F8E7     		b	.L10
+ 149              		.cfi_endproc
+ 150              	.LFE154:
+ 152              		.section	.text.StrLen,"ax",%progbits
+ 153              		.align	1
+ 154              		.syntax unified
+ 155              		.thumb
+ 156              		.thumb_func
+ 157              		.fpu fpv4-sp-d16
+ 159              	StrLen:
+ 160              	.LFB155:
+ 545:../utilities/fsl_shell.c **** 
+ 546:../utilities/fsl_shell.c **** static int32_t StrLen(const char *str)
+ 547:../utilities/fsl_shell.c **** {
+ 161              		.loc 1 547 0
+ 162              		.cfi_startproc
+ 163              		@ args = 0, pretend = 0, frame = 0
+ 164              		@ frame_needed = 0, uses_anonymous_args = 0
+ 165              		@ link register save eliminated.
+ 166              	.LVL12:
+ 167              		.loc 1 547 0
+ 168 0000 0246     		mov	r2, r0
+ 548:../utilities/fsl_shell.c ****     int32_t i = 0;
+ 549:../utilities/fsl_shell.c **** 
+ 550:../utilities/fsl_shell.c ****     while (*str)
+ 169              		.loc 1 550 0
+ 170 0002 0346     		mov	r3, r0
+ 171              	.LVL13:
+ 172              	.L13:
+ 173 0004 981A     		subs	r0, r3, r2
+ 174              	.LVL14:
+ 175 0006 13F9011B 		ldrsb	r1, [r3], #1
+ 176              	.LVL15:
+ 177 000a 0029     		cmp	r1, #0
+ 178 000c FAD1     		bne	.L13
+ 551:../utilities/fsl_shell.c ****     {
+ 552:../utilities/fsl_shell.c ****         str++;
+ 553:../utilities/fsl_shell.c ****         i++;
+ 554:../utilities/fsl_shell.c ****     }
+ 555:../utilities/fsl_shell.c ****     return i;
+ 556:../utilities/fsl_shell.c **** }
+ 179              		.loc 1 556 0
+ 180 000e 7047     		bx	lr
+ 181              		.cfi_endproc
+ 182              	.LFE155:
+ 184              		.section	.text.StrCompare,"ax",%progbits
+ 185              		.align	1
+ 186              		.syntax unified
+ 187              		.thumb
+ 188              		.thumb_func
+ 189              		.fpu fpv4-sp-d16
+ 191              	StrCompare:
+ 192              	.LFB156:
+ 557:../utilities/fsl_shell.c **** 
+ 558:../utilities/fsl_shell.c **** static int32_t StrCompare(const char *str1, const char *str2, int32_t count)
+ 559:../utilities/fsl_shell.c **** {
+ 193              		.loc 1 559 0
+ 194              		.cfi_startproc
+ 195              		@ args = 0, pretend = 0, frame = 0
+ 196              		@ frame_needed = 0, uses_anonymous_args = 0
+ 197              	.LVL16:
+ 198 0000 10B5     		push	{r4, lr}
+ 199              		.cfi_def_cfa_offset 8
+ 200              		.cfi_offset 4, -8
+ 201              		.cfi_offset 14, -4
+ 202 0002 0A44     		add	r2, r2, r1
+ 203              	.LVL17:
+ 204              	.L16:
+ 560:../utilities/fsl_shell.c ****     while (count--)
+ 205              		.loc 1 560 0
+ 206 0004 9142     		cmp	r1, r2
+ 207 0006 01D1     		bne	.L18
+ 561:../utilities/fsl_shell.c ****     {
+ 562:../utilities/fsl_shell.c ****         if (*str1++ != *str2++)
+ 563:../utilities/fsl_shell.c ****         {
+ 564:../utilities/fsl_shell.c ****             return *(unsigned char *)(str1 - 1) - *(unsigned char *)(str2 - 1);
+ 565:../utilities/fsl_shell.c ****         }
+ 566:../utilities/fsl_shell.c ****     }
+ 567:../utilities/fsl_shell.c ****     return 0;
+ 208              		.loc 1 567 0
+ 209 0008 0020     		movs	r0, #0
+ 210              	.LVL18:
+ 211 000a 08E0     		b	.L15
+ 212              	.LVL19:
+ 213              	.L18:
+ 562:../utilities/fsl_shell.c ****         {
+ 214              		.loc 1 562 0
+ 215 000c 10F9013B 		ldrsb	r3, [r0], #1
+ 216              	.LVL20:
+ 217 0010 11F9014B 		ldrsb	r4, [r1], #1
+ 218              	.LVL21:
+ 219 0014 A342     		cmp	r3, r4
+ 220 0016 F5D0     		beq	.L16
+ 564:../utilities/fsl_shell.c ****         }
+ 221              		.loc 1 564 0
+ 222 0018 DBB2     		uxtb	r3, r3
+ 223 001a E0B2     		uxtb	r0, r4
+ 224              	.LVL22:
+ 225 001c 181A     		subs	r0, r3, r0
+ 226              	.LVL23:
+ 227              	.L15:
+ 568:../utilities/fsl_shell.c **** }
+ 228              		.loc 1 568 0
+ 229 001e 10BD     		pop	{r4, pc}
+ 230              		.cfi_endproc
+ 231              	.LFE156:
+ 233              		.section	.text.GetHistoryCommand,"ax",%progbits
+ 234              		.align	1
+ 235              		.syntax unified
+ 236              		.thumb
+ 237              		.thumb_func
+ 238              		.fpu fpv4-sp-d16
+ 240              	GetHistoryCommand:
+ 241              	.LFB152:
+ 445:../utilities/fsl_shell.c ****     uint8_t i;
+ 242              		.loc 1 445 0
+ 243              		.cfi_startproc
+ 244              		@ args = 0, pretend = 0, frame = 0
+ 245              		@ frame_needed = 0, uses_anonymous_args = 0
+ 246              	.LVL24:
+ 247 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 248              		.cfi_def_cfa_offset 32
+ 249              		.cfi_offset 4, -32
+ 250              		.cfi_offset 5, -28
+ 251              		.cfi_offset 6, -24
+ 252              		.cfi_offset 7, -20
+ 253              		.cfi_offset 8, -16
+ 254              		.cfi_offset 9, -12
+ 255              		.cfi_offset 10, -8
+ 256              		.cfi_offset 14, -4
+ 449:../utilities/fsl_shell.c ****     {
+ 257              		.loc 1 449 0
+ 258 0004 90F95830 		ldrsb	r3, [r0, #88]
+ 445:../utilities/fsl_shell.c ****     uint8_t i;
+ 259              		.loc 1 445 0
+ 260 0008 0546     		mov	r5, r0
+ 449:../utilities/fsl_shell.c ****     {
+ 261              		.loc 1 449 0
+ 262 000a 1BB9     		cbnz	r3, .L21
+ 451:../utilities/fsl_shell.c ****         return;
+ 263              		.loc 1 451 0
+ 264 000c A0F85430 		strh	r3, [r0, #84]	@ movhi
+ 473:../utilities/fsl_shell.c **** 
+ 265              		.loc 1 473 0
+ 266 0010 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 267              	.L21:
+ 268              	.LVL25:
+ 269 0014 0229     		cmp	r1, #2
+ 270              	.LBB4:
+ 271              	.LBB5:
+ 458:../utilities/fsl_shell.c ****     /* Clear current if have */
+ 272              		.loc 1 458 0
+ 273 0016 00F10506 		add	r6, r0, #5
+ 274 001a 28BF     		it	cs
+ 275 001c 0221     		movcs	r1, #2
+ 276              	.LVL26:
+ 277 001e 3046     		mov	r0, r6
+ 278              	.LVL27:
+ 279 0020 0C46     		mov	r4, r1
+ 280              	.LVL28:
+ 281 0022 FFF7FEFF 		bl	StrLen
+ 282              	.LVL29:
+ 460:../utilities/fsl_shell.c ****     {
+ 283              		.loc 1 460 0
+ 284 0026 8046     		mov	r8, r0
+ 285 0028 98B9     		cbnz	r0, .L23
+ 286              	.LVL30:
+ 287              	.L26:
+ 469:../utilities/fsl_shell.c ****     context->c_pos = context->l_pos;
+ 288              		.loc 1 469 0
+ 289 002a 05EB8414 		add	r4, r5, r4, lsl #6
+ 290              	.LVL31:
+ 291 002e 5834     		adds	r4, r4, #88
+ 292 0030 2046     		mov	r0, r4
+ 293 0032 FFF7FEFF 		bl	StrLen
+ 294              	.LVL32:
+ 295 0036 C2B2     		uxtb	r2, r0
+ 296 0038 85F84620 		strb	r2, [r5, #70]
+ 470:../utilities/fsl_shell.c ****     StrCopy(context->line, context->hist_buf[hist_pos], context->l_pos);
+ 297              		.loc 1 470 0
+ 298 003c 85F84720 		strb	r2, [r5, #71]
+ 471:../utilities/fsl_shell.c ****     context->printf_data_func(context->hist_buf[hist_pos]);
+ 299              		.loc 1 471 0
+ 300 0040 2146     		mov	r1, r4
+ 301 0042 3046     		mov	r0, r6
+ 302 0044 FFF7FEFF 		bl	StrCopy
+ 303              	.LVL33:
+ 472:../utilities/fsl_shell.c **** }
+ 304              		.loc 1 472 0
+ 305 0048 2B6D     		ldr	r3, [r5, #80]
+ 306 004a 2046     		mov	r0, r4
+ 307              	.LBE5:
+ 308              	.LBE4:
+ 473:../utilities/fsl_shell.c **** 
+ 309              		.loc 1 473 0
+ 310 004c BDE8F047 		pop	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 311              		.cfi_remember_state
+ 312              		.cfi_restore 14
+ 313              		.cfi_restore 10
+ 314              		.cfi_restore 9
+ 315              		.cfi_restore 8
+ 316              		.cfi_restore 7
+ 317              		.cfi_restore 6
+ 318              		.cfi_restore 5
+ 319              		.cfi_restore 4
+ 320              		.cfi_def_cfa_offset 0
+ 321              	.LVL34:
+ 322              	.LBB7:
+ 323              	.LBB6:
+ 472:../utilities/fsl_shell.c **** }
+ 324              		.loc 1 472 0
+ 325 0050 1847     		bx	r3
+ 326              	.LVL35:
+ 327              	.L23:
+ 328              		.cfi_restore_state
+ 462:../utilities/fsl_shell.c ****         for (i = 0; i < tmp; i++)
+ 329              		.loc 1 462 0
+ 330 0052 0246     		mov	r2, r0
+ 331 0054 0021     		movs	r1, #0
+ 332 0056 3046     		mov	r0, r6
+ 333              	.LVL36:
+ 334 0058 FFF7FEFF 		bl	memset
+ 335              	.LVL37:
+ 465:../utilities/fsl_shell.c ****         }
+ 336              		.loc 1 465 0
+ 337 005c DFF81490 		ldr	r9, .L28
+ 462:../utilities/fsl_shell.c ****         for (i = 0; i < tmp; i++)
+ 338              		.loc 1 462 0
+ 339 0060 0027     		movs	r7, #0
+ 340              	.LVL38:
+ 341              	.L24:
+ 342 0062 FBB2     		uxtb	r3, r7
+ 463:../utilities/fsl_shell.c ****         {
+ 343              		.loc 1 463 0
+ 344 0064 9845     		cmp	r8, r3
+ 345 0066 07F10107 		add	r7, r7, #1
+ 346              	.LVL39:
+ 347 006a DED9     		bls	.L26
+ 465:../utilities/fsl_shell.c ****         }
+ 348              		.loc 1 465 0
+ 349 006c 2B6D     		ldr	r3, [r5, #80]
+ 350              	.LVL40:
+ 351 006e 4846     		mov	r0, r9
+ 352 0070 9847     		blx	r3
+ 353              	.LVL41:
+ 354 0072 F6E7     		b	.L24
+ 355              	.L29:
+ 356              		.align	2
+ 357              	.L28:
+ 358 0074 00000000 		.word	.LC1
+ 359              	.LBE6:
+ 360              	.LBE7:
+ 361              		.cfi_endproc
+ 362              	.LFE152:
+ 364              		.section	.text.SHELL_Main,"ax",%progbits
+ 365              		.align	1
+ 366              		.global	SHELL_Main
+ 367              		.syntax unified
+ 368              		.thumb
+ 369              		.thumb_func
+ 370              		.fpu fpv4-sp-d16
+ 372              	SHELL_Main:
+ 373              	.LFB148:
+ 135:../utilities/fsl_shell.c ****     uint8_t ch;
+ 374              		.loc 1 135 0
+ 375              		.cfi_startproc
+ 376              		@ args = 0, pretend = 0, frame = 272
+ 377              		@ frame_needed = 0, uses_anonymous_args = 0
+ 378              	.LVL42:
+ 379 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 380              		.cfi_def_cfa_offset 36
+ 381              		.cfi_offset 4, -36
+ 382              		.cfi_offset 5, -32
+ 383              		.cfi_offset 6, -28
+ 384              		.cfi_offset 7, -24
+ 385              		.cfi_offset 8, -20
+ 386              		.cfi_offset 9, -16
+ 387              		.cfi_offset 10, -12
+ 388              		.cfi_offset 11, -8
+ 389              		.cfi_offset 14, -4
+ 139:../utilities/fsl_shell.c ****     {
+ 390              		.loc 1 139 0
+ 391 0004 0446     		mov	r4, r0
+ 135:../utilities/fsl_shell.c ****     uint8_t ch;
+ 392              		.loc 1 135 0
+ 393 0006 C5B0     		sub	sp, sp, #276
+ 394              		.cfi_def_cfa_offset 312
+ 139:../utilities/fsl_shell.c ****     {
+ 395              		.loc 1 139 0
+ 396 0008 0028     		cmp	r0, #0
+ 397 000a 00F07282 		beq	.L90
+ 144:../utilities/fsl_shell.c ****     context->printf_data_func("\r\nSHELL (build: %s)\r\n", __DATE__);
+ 398              		.loc 1 144 0
+ 399 000e 0023     		movs	r3, #0
+ 400 0010 80F81831 		strb	r3, [r0, #280]
+ 145:../utilities/fsl_shell.c ****     context->printf_data_func("Copyright (c) 2017 NXP Semiconductor\r\n");
+ 401              		.loc 1 145 0
+ 402 0014 B149     		ldr	r1, .L142
+ 403 0016 036D     		ldr	r3, [r0, #80]
+ 404 0018 B148     		ldr	r0, .L142+4
+ 405              	.LVL43:
+ 406              	.LBB17:
+ 293:../utilities/fsl_shell.c ****                 /* If command line is NULL, will start a new transfer */
+ 407              		.loc 1 293 0
+ 408 001a DFF8F492 		ldr	r9, .L142+52
+ 409              	.LBE17:
+ 145:../utilities/fsl_shell.c ****     context->printf_data_func("Copyright (c) 2017 NXP Semiconductor\r\n");
+ 410              		.loc 1 145 0
+ 411 001e 9847     		blx	r3
+ 412              	.LVL44:
+ 146:../utilities/fsl_shell.c ****     context->printf_data_func(context->prompt);
+ 413              		.loc 1 146 0
+ 414 0020 236D     		ldr	r3, [r4, #80]
+ 415 0022 B048     		ldr	r0, .L142+8
+ 416 0024 9847     		blx	r3
+ 417              	.LVL45:
+ 147:../utilities/fsl_shell.c **** 
+ 418              		.loc 1 147 0
+ 419 0026 236D     		ldr	r3, [r4, #80]
+ 420 0028 2068     		ldr	r0, [r4]
+ 421 002a 9847     		blx	r3
+ 422              	.LVL46:
+ 423              	.L32:
+ 151:../utilities/fsl_shell.c ****         {
+ 424              		.loc 1 151 0
+ 425 002c 94F81851 		ldrb	r5, [r4, #280]	@ zero_extendqisi2
+ 426 0030 002D     		cmp	r5, #0
+ 427 0032 40F06382 		bne	.L91
+ 428              	.LVL47:
+ 429              	.LBB26:
+ 430              	.LBB27:
+ 569:../utilities/fsl_shell.c **** 
+ 570:../utilities/fsl_shell.c **** static int32_t ParseLine(const char *cmd, uint32_t len, char *argv[SHELL_MAX_ARGS])
+ 571:../utilities/fsl_shell.c **** {
+ 572:../utilities/fsl_shell.c ****     uint32_t argc;
+ 573:../utilities/fsl_shell.c ****     char *p;
+ 574:../utilities/fsl_shell.c ****     uint32_t position;
+ 575:../utilities/fsl_shell.c **** 
+ 576:../utilities/fsl_shell.c ****     /* Init params */
+ 577:../utilities/fsl_shell.c ****     memset(g_paramBuffer, '\0', len + 1);
+ 578:../utilities/fsl_shell.c ****     StrCopy(g_paramBuffer, cmd, len);
+ 579:../utilities/fsl_shell.c **** 
+ 580:../utilities/fsl_shell.c ****     p = g_paramBuffer;
+ 581:../utilities/fsl_shell.c ****     position = 0;
+ 582:../utilities/fsl_shell.c ****     argc = 0;
+ 583:../utilities/fsl_shell.c **** 
+ 584:../utilities/fsl_shell.c ****     while (position < len)
+ 585:../utilities/fsl_shell.c ****     {
+ 586:../utilities/fsl_shell.c ****         /* Skip all blanks */
+ 587:../utilities/fsl_shell.c ****         while (((char)(*p) == ' ') && (position < len))
+ 588:../utilities/fsl_shell.c ****         {
+ 589:../utilities/fsl_shell.c ****             *p = '\0';
+ 590:../utilities/fsl_shell.c ****             p++;
+ 591:../utilities/fsl_shell.c ****             position++;
+ 592:../utilities/fsl_shell.c ****         }
+ 593:../utilities/fsl_shell.c ****         /* Process begin of a string */
+ 594:../utilities/fsl_shell.c ****         if (*p == '"')
+ 595:../utilities/fsl_shell.c ****         {
+ 596:../utilities/fsl_shell.c ****             p++;
+ 597:../utilities/fsl_shell.c ****             position++;
+ 598:../utilities/fsl_shell.c ****             argv[argc] = p;
+ 599:../utilities/fsl_shell.c ****             argc++;
+ 600:../utilities/fsl_shell.c ****             /* Skip this string */
+ 601:../utilities/fsl_shell.c ****             while ((*p != '"') && (position < len))
+ 602:../utilities/fsl_shell.c ****             {
+ 603:../utilities/fsl_shell.c ****                 p++;
+ 604:../utilities/fsl_shell.c ****                 position++;
+ 605:../utilities/fsl_shell.c ****             }
+ 606:../utilities/fsl_shell.c ****             /* Skip '"' */
+ 607:../utilities/fsl_shell.c ****             *p = '\0';
+ 608:../utilities/fsl_shell.c ****             p++;
+ 609:../utilities/fsl_shell.c ****             position++;
+ 610:../utilities/fsl_shell.c ****         }
+ 611:../utilities/fsl_shell.c ****         else /* Normal char */
+ 612:../utilities/fsl_shell.c ****         {
+ 613:../utilities/fsl_shell.c ****             argv[argc] = p;
+ 614:../utilities/fsl_shell.c ****             argc++;
+ 615:../utilities/fsl_shell.c ****             while (((char)*p != ' ') && ((char)*p != '\t') && (position < len))
+ 616:../utilities/fsl_shell.c ****             {
+ 617:../utilities/fsl_shell.c ****                 p++;
+ 618:../utilities/fsl_shell.c ****                 position++;
+ 619:../utilities/fsl_shell.c ****             }
+ 620:../utilities/fsl_shell.c ****         }
+ 621:../utilities/fsl_shell.c ****     }
+ 622:../utilities/fsl_shell.c ****     return argc;
+ 623:../utilities/fsl_shell.c **** }
+ 624:../utilities/fsl_shell.c **** 
+ 625:../utilities/fsl_shell.c **** int32_t SHELL_RegisterCommand(const shell_command_context_t *command_context)
+ 626:../utilities/fsl_shell.c **** {
+ 627:../utilities/fsl_shell.c ****     int32_t result = 0;
+ 628:../utilities/fsl_shell.c **** 
+ 629:../utilities/fsl_shell.c ****     /* If have room  in command list */
+ 630:../utilities/fsl_shell.c ****     if (g_RegisteredCommands.numberOfCommandInList < SHELL_MAX_CMD)
+ 631:../utilities/fsl_shell.c ****     {
+ 632:../utilities/fsl_shell.c ****         g_RegisteredCommands.CommandList[g_RegisteredCommands.numberOfCommandInList++] = command_co
+ 633:../utilities/fsl_shell.c ****     }
+ 634:../utilities/fsl_shell.c ****     else
+ 635:../utilities/fsl_shell.c ****     {
+ 636:../utilities/fsl_shell.c ****         result = -1;
+ 637:../utilities/fsl_shell.c ****     }
+ 638:../utilities/fsl_shell.c ****     return result;
+ 639:../utilities/fsl_shell.c **** }
+ 640:../utilities/fsl_shell.c **** 
+ 641:../utilities/fsl_shell.c **** static uint8_t GetChar(p_shell_context_t context)
+ 642:../utilities/fsl_shell.c **** {
+ 643:../utilities/fsl_shell.c ****     uint8_t ch;
+ 644:../utilities/fsl_shell.c **** 
+ 645:../utilities/fsl_shell.c **** #if SHELL_USE_FILE_STREAM
+ 646:../utilities/fsl_shell.c ****     ch = fgetc(context->STDIN);
+ 647:../utilities/fsl_shell.c **** #else
+ 648:../utilities/fsl_shell.c ****     context->recv_data_func(&ch, 1U);
+ 431              		.loc 1 648 0
+ 432 0036 0121     		movs	r1, #1
+ 433 0038 E36C     		ldr	r3, [r4, #76]
+ 434 003a 04A8     		add	r0, sp, #16
+ 435 003c 9847     		blx	r3
+ 436              	.LVL48:
+ 649:../utilities/fsl_shell.c **** #endif
+ 650:../utilities/fsl_shell.c ****     return ch;
+ 437              		.loc 1 650 0
+ 438 003e 9DF81010 		ldrb	r1, [sp, #16]	@ zero_extendqisi2
+ 439              	.LBE27:
+ 440              	.LBE26:
+ 157:../utilities/fsl_shell.c ****         {
+ 441              		.loc 1 157 0
+ 442 0042 FF29     		cmp	r1, #255
+ 443 0044 F2D0     		beq	.L32
+ 162:../utilities/fsl_shell.c ****         {
+ 444              		.loc 1 162 0
+ 445 0046 1B29     		cmp	r1, #27
+ 446 0048 02D1     		bne	.L35
+ 164:../utilities/fsl_shell.c ****             continue;
+ 447              		.loc 1 164 0
+ 448 004a 0123     		movs	r3, #1
+ 449              	.L137:
+ 172:../utilities/fsl_shell.c ****                 continue;
+ 450              		.loc 1 172 0
+ 451 004c 2371     		strb	r3, [r4, #4]
+ 173:../utilities/fsl_shell.c ****             }
+ 452              		.loc 1 173 0
+ 453 004e EDE7     		b	.L32
+ 454              	.L35:
+ 167:../utilities/fsl_shell.c ****         {
+ 455              		.loc 1 167 0
+ 456 0050 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
+ 457 0052 012B     		cmp	r3, #1
+ 458 0054 26D1     		bne	.L36
+ 170:../utilities/fsl_shell.c ****             {
+ 459              		.loc 1 170 0
+ 460 0056 5B29     		cmp	r1, #91
+ 461 0058 01D1     		bne	.L37
+ 172:../utilities/fsl_shell.c ****                 continue;
+ 462              		.loc 1 172 0
+ 463 005a 0223     		movs	r3, #2
+ 464 005c F6E7     		b	.L137
+ 465              	.L37:
+ 175:../utilities/fsl_shell.c ****         }
+ 466              		.loc 1 175 0
+ 467 005e 2571     		strb	r5, [r4, #4]
+ 468              	.L38:
+ 276:../utilities/fsl_shell.c ****         {
+ 469              		.loc 1 276 0
+ 470 0060 94F84630 		ldrb	r3, [r4, #70]	@ zero_extendqisi2
+ 471 0064 3E2B     		cmp	r3, #62
+ 278:../utilities/fsl_shell.c ****         }
+ 472              		.loc 1 278 0
+ 473 0066 84BF     		itt	hi
+ 474 0068 0023     		movhi	r3, #0
+ 475 006a 84F84630 		strbhi	r3, [r4, #70]
+ 282:../utilities/fsl_shell.c ****         {
+ 476              		.loc 1 282 0
+ 477 006e 0D29     		cmp	r1, #13
+ 478 0070 02D0     		beq	.L59
+ 282:../utilities/fsl_shell.c ****         {
+ 479              		.loc 1 282 0 is_stmt 0 discriminator 1
+ 480 0072 0A29     		cmp	r1, #10
+ 481 0074 40F00E82 		bne	.L60
+ 482              	.L59:
+ 483              	.LBB28:
+ 286:../utilities/fsl_shell.c ****             {
+ 484              		.loc 1 286 0 is_stmt 1
+ 485 0078 9B4B     		ldr	r3, .L142+12
+ 486 007a 93F90030 		ldrsb	r3, [r3]
+ 487 007e 0BB1     		cbz	r3, .L61
+ 286:../utilities/fsl_shell.c ****             {
+ 488              		.loc 1 286 0 is_stmt 0 discriminator 1
+ 489 0080 8B42     		cmp	r3, r1
+ 490 0082 D3D1     		bne	.L32
+ 491              	.L61:
+ 292:../utilities/fsl_shell.c ****                 context->printf_data_func("\r\n");
+ 492              		.loc 1 292 0 is_stmt 1
+ 493 0084 984B     		ldr	r3, .L142+12
+ 293:../utilities/fsl_shell.c ****                 /* If command line is NULL, will start a new transfer */
+ 494              		.loc 1 293 0
+ 495 0086 4846     		mov	r0, r9
+ 292:../utilities/fsl_shell.c ****                 context->printf_data_func("\r\n");
+ 496              		.loc 1 292 0
+ 497 0088 1970     		strb	r1, [r3]
+ 295:../utilities/fsl_shell.c ****                 {
+ 498              		.loc 1 295 0
+ 499 008a 661D     		adds	r6, r4, #5
+ 293:../utilities/fsl_shell.c ****                 /* If command line is NULL, will start a new transfer */
+ 500              		.loc 1 293 0
+ 501 008c 236D     		ldr	r3, [r4, #80]
+ 502 008e 9847     		blx	r3
+ 503              	.LVL49:
+ 295:../utilities/fsl_shell.c ****                 {
+ 504              		.loc 1 295 0
+ 505 0090 3046     		mov	r0, r6
+ 506 0092 FFF7FEFF 		bl	StrLen
+ 507              	.LVL50:
+ 508 0096 0028     		cmp	r0, #0
+ 509 0098 40F0EE80 		bne	.L62
+ 297:../utilities/fsl_shell.c ****                     continue;
+ 510              		.loc 1 297 0
+ 511 009c 236D     		ldr	r3, [r4, #80]
+ 512 009e 2068     		ldr	r0, [r4]
+ 513 00a0 9847     		blx	r3
+ 514              	.LVL51:
+ 298:../utilities/fsl_shell.c ****                 }
+ 515              		.loc 1 298 0
+ 516 00a2 C3E7     		b	.L32
+ 517              	.L36:
+ 518              	.LBE28:
+ 177:../utilities/fsl_shell.c ****         {
+ 519              		.loc 1 177 0
+ 520 00a4 022B     		cmp	r3, #2
+ 521 00a6 3FD1     		bne	.L39
+ 181:../utilities/fsl_shell.c ****             {
+ 522              		.loc 1 181 0
+ 523 00a8 4139     		subs	r1, r1, #65
+ 179:../utilities/fsl_shell.c **** 
+ 524              		.loc 1 179 0
+ 525 00aa 2571     		strb	r5, [r4, #4]
+ 181:../utilities/fsl_shell.c ****             {
+ 526              		.loc 1 181 0
+ 527 00ac 0329     		cmp	r1, #3
+ 528 00ae BDD8     		bhi	.L32
+ 529 00b0 DFE801F0 		tbb	[pc, r1]
+ 530              	.L41:
+ 531 00b4 02       		.byte	(.L40-.L41)/2
+ 532 00b5 12       		.byte	(.L42-.L41)/2
+ 533 00b6 2A       		.byte	(.L43-.L41)/2
+ 534 00b7 1D       		.byte	(.L44-.L41)/2
+ 535              		.p2align 1
+ 536              	.L40:
+ 185:../utilities/fsl_shell.c ****                     if (context->hist_current < (context->hist_count - 1))
+ 537              		.loc 1 185 0
+ 538 00b8 94F85410 		ldrb	r1, [r4, #84]	@ zero_extendqisi2
+ 539 00bc 2046     		mov	r0, r4
+ 540 00be FFF7FEFF 		bl	GetHistoryCommand
+ 541              	.LVL52:
+ 186:../utilities/fsl_shell.c ****                     {
+ 542              		.loc 1 186 0
+ 543 00c2 B4F85620 		ldrh	r2, [r4, #86]
+ 544 00c6 B4F85430 		ldrh	r3, [r4, #84]
+ 545 00ca 013A     		subs	r2, r2, #1
+ 546 00cc 9342     		cmp	r3, r2
+ 547 00ce ADDA     		bge	.L32
+ 188:../utilities/fsl_shell.c ****                     }
+ 548              		.loc 1 188 0
+ 549 00d0 0133     		adds	r3, r3, #1
+ 550              	.L138:
+ 195:../utilities/fsl_shell.c ****                     }
+ 551              		.loc 1 195 0
+ 552 00d2 A4F85430 		strh	r3, [r4, #84]	@ movhi
+ 553 00d6 A9E7     		b	.L32
+ 554              	.L42:
+ 192:../utilities/fsl_shell.c ****                     if (context->hist_current > 0)
+ 555              		.loc 1 192 0
+ 556 00d8 94F85410 		ldrb	r1, [r4, #84]	@ zero_extendqisi2
+ 557 00dc 2046     		mov	r0, r4
+ 558 00de FFF7FEFF 		bl	GetHistoryCommand
+ 559              	.LVL53:
+ 193:../utilities/fsl_shell.c ****                     {
+ 560              		.loc 1 193 0
+ 561 00e2 B4F85430 		ldrh	r3, [r4, #84]
+ 562 00e6 002B     		cmp	r3, #0
+ 563 00e8 A0D0     		beq	.L32
+ 195:../utilities/fsl_shell.c ****                     }
+ 564              		.loc 1 195 0
+ 565 00ea 013B     		subs	r3, r3, #1
+ 566 00ec F1E7     		b	.L138
+ 567              	.L44:
+ 199:../utilities/fsl_shell.c ****                     {
+ 568              		.loc 1 199 0
+ 569 00ee 94F84730 		ldrb	r3, [r4, #71]	@ zero_extendqisi2
+ 570 00f2 002B     		cmp	r3, #0
+ 571 00f4 9AD0     		beq	.L32
+ 201:../utilities/fsl_shell.c ****                         context->c_pos--;
+ 572              		.loc 1 201 0
+ 573 00f6 236D     		ldr	r3, [r4, #80]
+ 574 00f8 7C48     		ldr	r0, .L142+16
+ 575 00fa 9847     		blx	r3
+ 576              	.LVL54:
+ 202:../utilities/fsl_shell.c ****                     }
+ 577              		.loc 1 202 0
+ 578 00fc 94F84730 		ldrb	r3, [r4, #71]	@ zero_extendqisi2
+ 579 0100 013B     		subs	r3, r3, #1
+ 580              	.L139:
+ 331:../utilities/fsl_shell.c ****     }
+ 581              		.loc 1 331 0
+ 582 0102 84F84730 		strb	r3, [r4, #71]
+ 583 0106 91E7     		b	.L32
+ 584              	.L43:
+ 206:../utilities/fsl_shell.c ****                     {
+ 585              		.loc 1 206 0
+ 586 0108 94F84730 		ldrb	r3, [r4, #71]	@ zero_extendqisi2
+ 587 010c 94F84620 		ldrb	r2, [r4, #70]	@ zero_extendqisi2
+ 588 0110 9A42     		cmp	r2, r3
+ 589 0112 8BD9     		bls	.L32
+ 208:../utilities/fsl_shell.c ****                         context->c_pos++;
+ 590              		.loc 1 208 0
+ 591 0114 2344     		add	r3, r3, r4
+ 592 0116 226D     		ldr	r2, [r4, #80]
+ 593 0118 93F90510 		ldrsb	r1, [r3, #5]
+ 594 011c 7448     		ldr	r0, .L142+20
+ 595 011e 9047     		blx	r2
+ 596              	.LVL55:
+ 597              	.L140:
+ 331:../utilities/fsl_shell.c ****     }
+ 598              		.loc 1 331 0
+ 599 0120 94F84730 		ldrb	r3, [r4, #71]	@ zero_extendqisi2
+ 600 0124 0133     		adds	r3, r3, #1
+ 601 0126 ECE7     		b	.L139
+ 602              	.L39:
+ 218:../utilities/fsl_shell.c ****         {
+ 603              		.loc 1 218 0
+ 604 0128 0929     		cmp	r1, #9
+ 605 012a 63D1     		bne	.L136
+ 224:../utilities/fsl_shell.c ****             }
+ 606              		.loc 1 224 0
+ 607 012c 6F4E     		ldr	r6, .L142+16
+ 608 012e 03E0     		b	.L45
+ 609              	.LVL56:
+ 610              	.L47:
+ 224:../utilities/fsl_shell.c ****             }
+ 611              		.loc 1 224 0 is_stmt 0 discriminator 3
+ 612 0130 236D     		ldr	r3, [r4, #80]
+ 613 0132 3046     		mov	r0, r6
+ 614 0134 9847     		blx	r3
+ 615              	.LVL57:
+ 222:../utilities/fsl_shell.c ****             {
+ 616              		.loc 1 222 0 is_stmt 1 discriminator 3
+ 617 0136 0135     		adds	r5, r5, #1
+ 618              	.LVL58:
+ 619              	.L45:
+ 222:../utilities/fsl_shell.c ****             {
+ 620              		.loc 1 222 0 is_stmt 0 discriminator 1
+ 621 0138 94F84730 		ldrb	r3, [r4, #71]	@ zero_extendqisi2
+ 622 013c AB42     		cmp	r3, r5
+ 623 013e F7DC     		bgt	.L47
+ 624              	.LVL59:
+ 625              	.LBB29:
+ 626              	.LBB30:
+ 487:../utilities/fsl_shell.c ****     {
+ 627              		.loc 1 487 0 is_stmt 1
+ 628 0140 651D     		adds	r5, r4, #5
+ 629              	.LVL60:
+ 630 0142 2846     		mov	r0, r5
+ 631 0144 FFF7FEFF 		bl	StrLen
+ 632              	.LVL61:
+ 633 0148 50B1     		cbz	r0, .L48
+ 491:../utilities/fsl_shell.c ****     /* Empty tab, list all commands */
+ 634              		.loc 1 491 0
+ 635 014a 236D     		ldr	r3, [r4, #80]
+ 636 014c 4846     		mov	r0, r9
+ 637 014e 9847     		blx	r3
+ 638              	.LVL62:
+ 493:../utilities/fsl_shell.c ****     {
+ 639              		.loc 1 493 0
+ 640 0150 94F90520 		ldrsb	r2, [r4, #5]
+ 641 0154 002A     		cmp	r2, #0
+ 642 0156 46D1     		bne	.L93
+ 495:../utilities/fsl_shell.c ****         return;
+ 643              		.loc 1 495 0
+ 644 0158 1146     		mov	r1, r2
+ 645 015a 2046     		mov	r0, r4
+ 646 015c FFF7FEFF 		bl	HelpCommand
+ 647              	.LVL63:
+ 648              	.L48:
+ 649              	.LBE30:
+ 650              	.LBE29:
+ 229:../utilities/fsl_shell.c **** #endif
+ 651              		.loc 1 229 0
+ 652 0160 2846     		mov	r0, r5
+ 653 0162 FFF7FEFF 		bl	StrLen
+ 654              	.LVL64:
+ 655 0166 C0B2     		uxtb	r0, r0
+ 656 0168 84F84600 		strb	r0, [r4, #70]
+ 657 016c 84F84700 		strb	r0, [r4, #71]
+ 231:../utilities/fsl_shell.c ****         }
+ 658              		.loc 1 231 0
+ 659 0170 5CE7     		b	.L32
+ 660              	.LVL65:
+ 661              	.L52:
+ 662              	.LBB32:
+ 663              	.LBB31:
+ 502:../utilities/fsl_shell.c ****         if (StrCompare(context->line, cmdName, StrLen(context->line)) == 0)
+ 664              		.loc 1 502 0
+ 665 0172 5AF82220 		ldr	r2, [r10, r2, lsl #2]
+ 503:../utilities/fsl_shell.c ****         {
+ 666              		.loc 1 503 0
+ 667 0176 2846     		mov	r0, r5
+ 502:../utilities/fsl_shell.c ****         if (StrCompare(context->line, cmdName, StrLen(context->line)) == 0)
+ 668              		.loc 1 502 0
+ 669 0178 D2F80080 		ldr	r8, [r2]
+ 670              	.LVL66:
+ 503:../utilities/fsl_shell.c ****         {
+ 671              		.loc 1 503 0
+ 672 017c FFF7FEFF 		bl	StrLen
+ 673              	.LVL67:
+ 674 0180 4146     		mov	r1, r8
+ 675 0182 0246     		mov	r2, r0
+ 676 0184 2846     		mov	r0, r5
+ 677 0186 FFF7FEFF 		bl	StrCompare
+ 678              	.LVL68:
+ 679 018a 48B9     		cbnz	r0, .L50
+ 505:../utilities/fsl_shell.c ****             {
+ 680              		.loc 1 505 0
+ 681 018c E7B9     		cbnz	r7, .L51
+ 682              	.LVL69:
+ 508:../utilities/fsl_shell.c ****                 /* Show possible matches */
+ 683              		.loc 1 508 0
+ 684 018e 4046     		mov	r0, r8
+ 685 0190 FFF7FEFF 		bl	StrLen
+ 686              	.LVL70:
+ 510:../utilities/fsl_shell.c ****                 continue;
+ 687              		.loc 1 510 0
+ 688 0194 226D     		ldr	r2, [r4, #80]
+ 508:../utilities/fsl_shell.c ****                 /* Show possible matches */
+ 689              		.loc 1 508 0
+ 690 0196 0746     		mov	r7, r0
+ 691              	.LVL71:
+ 510:../utilities/fsl_shell.c ****                 continue;
+ 692              		.loc 1 510 0
+ 693 0198 4146     		mov	r1, r8
+ 694 019a 5648     		ldr	r0, .L142+24
+ 695              	.LVL72:
+ 696 019c 9047     		blx	r2
+ 697              	.LVL73:
+ 507:../utilities/fsl_shell.c ****                 minLen = StrLen(namePtr);
+ 698              		.loc 1 507 0
+ 699 019e 4646     		mov	r6, r8
+ 700              	.LVL74:
+ 701              	.L50:
+ 702 01a0 0BF1010B 		add	fp, fp, #1
+ 703              	.LVL75:
+ 704              	.L49:
+ 499:../utilities/fsl_shell.c ****     {
+ 705              		.loc 1 499 0
+ 706 01a4 9AF85010 		ldrb	r1, [r10, #80]	@ zero_extendqisi2
+ 707 01a8 5FFA8BF2 		uxtb	r2, fp
+ 708 01ac 9142     		cmp	r1, r2
+ 709 01ae E0D8     		bhi	.L52
+ 525:../utilities/fsl_shell.c ****     {
+ 710              		.loc 1 525 0
+ 711 01b0 26B1     		cbz	r6, .L53
+ 527:../utilities/fsl_shell.c ****     }
+ 712              		.loc 1 527 0
+ 713 01b2 3A46     		mov	r2, r7
+ 714 01b4 3146     		mov	r1, r6
+ 715 01b6 2846     		mov	r0, r5
+ 716 01b8 FFF7FEFF 		bl	StrCopy
+ 717              	.LVL76:
+ 718              	.L53:
+ 529:../utilities/fsl_shell.c ****     return;
+ 719              		.loc 1 529 0
+ 720 01bc 236D     		ldr	r3, [r4, #80]
+ 721 01be 2168     		ldr	r1, [r4]
+ 722 01c0 4D48     		ldr	r0, .L142+28
+ 723 01c2 2A46     		mov	r2, r5
+ 724 01c4 9847     		blx	r3
+ 725              	.LVL77:
+ 726 01c6 CBE7     		b	.L48
+ 727              	.LVL78:
+ 728              	.L51:
+ 513:../utilities/fsl_shell.c ****             if (len < 0)
+ 729              		.loc 1 513 0
+ 730 01c8 3046     		mov	r0, r6
+ 731 01ca FFF7FEFF 		bl	StrLen
+ 732              	.LVL79:
+ 733 01ce 4146     		mov	r1, r8
+ 734 01d0 0246     		mov	r2, r0
+ 735 01d2 3046     		mov	r0, r6
+ 736 01d4 FFF7FEFF 		bl	StrCompare
+ 737              	.LVL80:
+ 738 01d8 0028     		cmp	r0, #0
+ 739 01da B8BF     		it	lt
+ 740 01dc 4042     		rsblt	r0, r0, #0
+ 741              	.LVL81:
+ 742 01de 8742     		cmp	r7, r0
+ 743 01e0 A8BF     		it	ge
+ 744 01e2 0746     		movge	r7, r0
+ 745              	.LVL82:
+ 746 01e4 DCE7     		b	.L50
+ 747              	.LVL83:
+ 748              	.L93:
+ 493:../utilities/fsl_shell.c ****     {
+ 749              		.loc 1 493 0
+ 750 01e6 4FF0000B 		mov	fp, #0
+ 485:../utilities/fsl_shell.c **** 
+ 751              		.loc 1 485 0
+ 752 01ea 5E46     		mov	r6, fp
+ 484:../utilities/fsl_shell.c ****     namePtr = NULL;
+ 753              		.loc 1 484 0
+ 754 01ec 5F46     		mov	r7, fp
+ 499:../utilities/fsl_shell.c ****     {
+ 755              		.loc 1 499 0
+ 756 01ee DFF824A1 		ldr	r10, .L142+56
+ 757 01f2 D7E7     		b	.L49
+ 758              	.LVL84:
+ 759              	.L136:
+ 760              	.LBE31:
+ 761              	.LBE32:
+ 235:../utilities/fsl_shell.c ****         {
+ 762              		.loc 1 235 0
+ 763 01f4 6029     		cmp	r1, #96
+ 764 01f6 3FF433AF 		beq	.L38
+ 240:../utilities/fsl_shell.c ****         {
+ 765              		.loc 1 240 0
+ 766 01fa 7F29     		cmp	r1, #127
+ 767 01fc 02D0     		beq	.L54
+ 240:../utilities/fsl_shell.c ****         {
+ 768              		.loc 1 240 0 is_stmt 0 discriminator 1
+ 769 01fe 0829     		cmp	r1, #8
+ 770 0200 7FF42EAF 		bne	.L38
+ 771              	.L54:
+ 243:../utilities/fsl_shell.c ****             {
+ 772              		.loc 1 243 0 is_stmt 1
+ 773 0204 94F84730 		ldrb	r3, [r4, #71]	@ zero_extendqisi2
+ 774 0208 002B     		cmp	r3, #0
+ 775 020a 3FF40FAF 		beq	.L32
+ 248:../utilities/fsl_shell.c ****             context->c_pos--;
+ 776              		.loc 1 248 0
+ 777 020e 94F84620 		ldrb	r2, [r4, #70]	@ zero_extendqisi2
+ 249:../utilities/fsl_shell.c **** 
+ 778              		.loc 1 249 0
+ 779 0212 013B     		subs	r3, r3, #1
+ 248:../utilities/fsl_shell.c ****             context->c_pos--;
+ 780              		.loc 1 248 0
+ 781 0214 013A     		subs	r2, r2, #1
+ 782 0216 D2B2     		uxtb	r2, r2
+ 249:../utilities/fsl_shell.c **** 
+ 783              		.loc 1 249 0
+ 784 0218 DBB2     		uxtb	r3, r3
+ 251:../utilities/fsl_shell.c ****             {
+ 785              		.loc 1 251 0
+ 786 021a 9A42     		cmp	r2, r3
+ 248:../utilities/fsl_shell.c ****             context->c_pos--;
+ 787              		.loc 1 248 0
+ 788 021c 84F84620 		strb	r2, [r4, #70]
+ 249:../utilities/fsl_shell.c **** 
+ 789              		.loc 1 249 0
+ 790 0220 84F84730 		strb	r3, [r4, #71]
+ 251:../utilities/fsl_shell.c ****             {
+ 791              		.loc 1 251 0
+ 792 0224 1FD9     		bls	.L55
+ 253:../utilities/fsl_shell.c ****                         context->l_pos - context->c_pos);
+ 793              		.loc 1 253 0
+ 794 0226 991D     		adds	r1, r3, #6
+ 795 0228 581D     		adds	r0, r3, #5
+ 796 022a D21A     		subs	r2, r2, r3
+ 797 022c 2144     		add	r1, r1, r4
+ 798 022e 2044     		add	r0, r0, r4
+ 799 0230 FFF7FEFF 		bl	memmove
+ 800              	.LVL85:
+ 255:../utilities/fsl_shell.c ****                 context->printf_data_func("\b%s  \b", &context->line[context->c_pos]);
+ 801              		.loc 1 255 0
+ 802 0234 94F84630 		ldrb	r3, [r4, #70]	@ zero_extendqisi2
+ 256:../utilities/fsl_shell.c **** 
+ 803              		.loc 1 256 0
+ 804 0238 3048     		ldr	r0, .L142+32
+ 261:../utilities/fsl_shell.c ****                 }
+ 805              		.loc 1 261 0
+ 806 023a 2C4E     		ldr	r6, .L142+16
+ 255:../utilities/fsl_shell.c ****                 context->printf_data_func("\b%s  \b", &context->line[context->c_pos]);
+ 807              		.loc 1 255 0
+ 808 023c 2344     		add	r3, r3, r4
+ 809 023e 0022     		movs	r2, #0
+ 810 0240 5A71     		strb	r2, [r3, #5]
+ 256:../utilities/fsl_shell.c **** 
+ 811              		.loc 1 256 0
+ 812 0242 94F84710 		ldrb	r1, [r4, #71]	@ zero_extendqisi2
+ 813 0246 236D     		ldr	r3, [r4, #80]
+ 814 0248 0531     		adds	r1, r1, #5
+ 815 024a 2144     		add	r1, r1, r4
+ 816 024c 9847     		blx	r3
+ 817              	.LVL86:
+ 259:../utilities/fsl_shell.c ****                 {
+ 818              		.loc 1 259 0
+ 819 024e 94F84750 		ldrb	r5, [r4, #71]	@ zero_extendqisi2
+ 820              	.LVL87:
+ 821              	.L56:
+ 259:../utilities/fsl_shell.c ****                 {
+ 822              		.loc 1 259 0 is_stmt 0 discriminator 1
+ 823 0252 94F84630 		ldrb	r3, [r4, #70]	@ zero_extendqisi2
+ 824 0256 AB42     		cmp	r3, r5
+ 825 0258 FFF6E8AE 		blt	.L32
+ 261:../utilities/fsl_shell.c ****                 }
+ 826              		.loc 1 261 0 is_stmt 1 discriminator 3
+ 827 025c 236D     		ldr	r3, [r4, #80]
+ 828 025e 3046     		mov	r0, r6
+ 829 0260 9847     		blx	r3
+ 830              	.LVL88:
+ 259:../utilities/fsl_shell.c ****                 {
+ 831              		.loc 1 259 0 discriminator 3
+ 832 0262 0135     		adds	r5, r5, #1
+ 833              	.LVL89:
+ 834 0264 F5E7     		b	.L56
+ 835              	.LVL90:
+ 836              	.L55:
+ 266:../utilities/fsl_shell.c ****                 context->line[context->l_pos] = 0;
+ 837              		.loc 1 266 0
+ 838 0266 236D     		ldr	r3, [r4, #80]
+ 839 0268 2548     		ldr	r0, .L142+36
+ 840 026a 9847     		blx	r3
+ 841              	.LVL91:
+ 267:../utilities/fsl_shell.c ****             }
+ 842              		.loc 1 267 0
+ 843 026c 94F84630 		ldrb	r3, [r4, #70]	@ zero_extendqisi2
+ 844 0270 2344     		add	r3, r3, r4
+ 845 0272 0022     		movs	r2, #0
+ 846 0274 5A71     		strb	r2, [r3, #5]
+ 847 0276 D9E6     		b	.L32
+ 848              	.L62:
+ 849              	.LVL92:
+ 850 0278 C7B2     		uxtb	r7, r0
+ 851              	.LVL93:
+ 852              	.LBB33:
+ 853              	.LBB18:
+ 854              	.LBB19:
+ 855              	.LBB20:
+ 856              	.LBB21:
+ 577:../utilities/fsl_shell.c ****     StrCopy(g_paramBuffer, cmd, len);
+ 857              		.loc 1 577 0
+ 858 027a 7A1C     		adds	r2, r7, #1
+ 859 027c 0021     		movs	r1, #0
+ 860 027e 2148     		ldr	r0, .L142+40
+ 861              	.LVL94:
+ 862 0280 FFF7FEFF 		bl	memset
+ 863              	.LVL95:
+ 578:../utilities/fsl_shell.c **** 
+ 864              		.loc 1 578 0
+ 865 0284 3146     		mov	r1, r6
+ 866 0286 3A46     		mov	r2, r7
+ 867 0288 1E48     		ldr	r0, .L142+40
+ 868 028a FFF7FEFF 		bl	StrCopy
+ 869              	.LVL96:
+ 870 028e 0025     		movs	r5, #0
+ 580:../utilities/fsl_shell.c ****     position = 0;
+ 871              		.loc 1 580 0
+ 872 0290 1C4B     		ldr	r3, .L142+40
+ 581:../utilities/fsl_shell.c ****     argc = 0;
+ 873              		.loc 1 581 0
+ 874 0292 2946     		mov	r1, r5
+ 589:../utilities/fsl_shell.c ****             p++;
+ 875              		.loc 1 589 0
+ 876 0294 AC46     		mov	ip, r5
+ 877              	.LVL97:
+ 878              	.L63:
+ 584:../utilities/fsl_shell.c ****     {
+ 879              		.loc 1 584 0
+ 880 0296 8F42     		cmp	r7, r1
+ 881 0298 57D8     		bhi	.L95
+ 882              	.LVL98:
+ 883              	.LBE21:
+ 884              	.LBE20:
+ 369:../utilities/fsl_shell.c ****     {
+ 885              		.loc 1 369 0
+ 886 029a 1B4F     		ldr	r7, .L142+44
+ 887              	.LVL99:
+ 888 029c 3A68     		ldr	r2, [r7]
+ 889 029e 002A     		cmp	r2, #0
+ 890 02a0 70D0     		beq	.L73
+ 891              	.LVL100:
+ 892              	.L75:
+ 361:../utilities/fsl_shell.c ****     uint8_t tmpCommandLen;
+ 893              		.loc 1 361 0
+ 894 02a2 0120     		movs	r0, #1
+ 895              	.L74:
+ 896              	.LVL101:
+ 407:../utilities/fsl_shell.c ****     {
+ 897              		.loc 1 407 0
+ 898 02a4 D7F800B0 		ldr	fp, [r7]
+ 899 02a8 BBF1000F 		cmp	fp, #0
+ 900 02ac 00F0EC80 		beq	.L80
+ 901 02b0 0028     		cmp	r0, #0
+ 902 02b2 00F09F80 		beq	.L81
+ 903              	.LVL102:
+ 409:../utilities/fsl_shell.c ****             "\r\nIncorrect command parameter(s).  Enter \"help\" to view a list of available comman
+ 904              		.loc 1 409 0
+ 905 02b6 236D     		ldr	r3, [r4, #80]
+ 906 02b8 1448     		ldr	r0, .L142+48
+ 907 02ba 9847     		blx	r3
+ 908              	.LVL103:
+ 909              	.L141:
+ 434:../utilities/fsl_shell.c ****     }
+ 910              		.loc 1 434 0
+ 911 02bc 0023     		movs	r3, #0
+ 912 02be 3B60     		str	r3, [r7]
+ 913              	.L82:
+ 914              	.LVL104:
+ 915              	.LBE19:
+ 916              	.LBE18:
+ 302:../utilities/fsl_shell.c ****                 context->hist_current = 0;
+ 917              		.loc 1 302 0
+ 918 02c0 0025     		movs	r5, #0
+ 919 02c2 A4F84650 		strh	r5, [r4, #70]	@ movhi
+ 303:../utilities/fsl_shell.c ****                 context->printf_data_func(context->prompt);
+ 920              		.loc 1 303 0
+ 921 02c6 A4F85450 		strh	r5, [r4, #84]	@ movhi
+ 304:../utilities/fsl_shell.c ****                 memset(context->line, 0, sizeof(context->line));
+ 922              		.loc 1 304 0
+ 923 02ca 236D     		ldr	r3, [r4, #80]
+ 924 02cc 2068     		ldr	r0, [r4]
+ 925 02ce 9847     		blx	r3
+ 926              	.LVL105:
+ 305:../utilities/fsl_shell.c ****                 continue;
+ 927              		.loc 1 305 0
+ 928 02d0 4022     		movs	r2, #64
+ 929 02d2 2946     		mov	r1, r5
+ 930 02d4 3046     		mov	r0, r6
+ 931 02d6 FFF7FEFF 		bl	memset
+ 932              	.LVL106:
+ 306:../utilities/fsl_shell.c ****             }
+ 933              		.loc 1 306 0
+ 934 02da A7E6     		b	.L32
+ 935              	.L143:
+ 936              		.align	2
+ 937              	.L142:
+ 938 02dc 00000000 		.word	.LC2
+ 939 02e0 0C000000 		.word	.LC3
+ 940 02e4 22000000 		.word	.LC4
+ 941 02e8 00000000 		.word	.LANCHOR2
+ 942 02ec 49000000 		.word	.LC5
+ 943 02f0 4B000000 		.word	.LC6
+ 944 02f4 51000000 		.word	.LC8
+ 945 02f8 56000000 		.word	.LC9
+ 946 02fc 5B000000 		.word	.LC10
+ 947 0300 00000000 		.word	.LC1
+ 948 0304 00000000 		.word	.LANCHOR1
+ 949 0308 00000000 		.word	.LANCHOR3
+ 950 030c 62000000 		.word	.LC11
+ 951 0310 4E000000 		.word	.LC7
+ 952 0314 00000000 		.word	.LANCHOR0
+ 953              	.LVL107:
+ 954              	.L65:
+ 955              	.LBB25:
+ 956              	.LBB24:
+ 957              	.LBB23:
+ 958              	.LBB22:
+ 589:../utilities/fsl_shell.c ****             p++;
+ 959              		.loc 1 589 0
+ 960 0318 03F801CB 		strb	ip, [r3], #1
+ 961              	.LVL108:
+ 962              	.L72:
+ 587:../utilities/fsl_shell.c ****         {
+ 963              		.loc 1 587 0
+ 964 031c 93F90010 		ldrsb	r1, [r3]
+ 965 0320 2029     		cmp	r1, #32
+ 966 0322 03EB0E02 		add	r2, r3, lr
+ 967              	.LVL109:
+ 968 0326 13D1     		bne	.L64
+ 969 0328 9742     		cmp	r7, r2
+ 970 032a F5D8     		bhi	.L65
+ 971              	.L66:
+ 613:../utilities/fsl_shell.c ****             argc++;
+ 972              		.loc 1 613 0
+ 973 032c 04AA     		add	r2, sp, #16
+ 974              	.LVL110:
+ 975 032e 42F82530 		str	r3, [r2, r5, lsl #2]
+ 976              	.LVL111:
+ 977              	.L70:
+ 615:../utilities/fsl_shell.c ****             {
+ 978              		.loc 1 615 0
+ 979 0332 93F90020 		ldrsb	r2, [r3]
+ 980 0336 202A     		cmp	r2, #32
+ 981 0338 03EB0E01 		add	r1, r3, lr
+ 982              	.LVL112:
+ 983 033c 1ED0     		beq	.L69
+ 984 033e 092A     		cmp	r2, #9
+ 985 0340 1CD0     		beq	.L69
+ 986 0342 8F42     		cmp	r7, r1
+ 987 0344 1AD9     		bls	.L69
+ 988              	.LVL113:
+ 617:../utilities/fsl_shell.c ****                 position++;
+ 989              		.loc 1 617 0
+ 990 0346 0133     		adds	r3, r3, #1
+ 991              	.LVL114:
+ 992 0348 F3E7     		b	.L70
+ 993              	.LVL115:
+ 994              	.L95:
+ 995 034a A1EB030E 		sub	lr, r1, r3
+ 996 034e E5E7     		b	.L72
+ 997              	.LVL116:
+ 998              	.L64:
+ 594:../utilities/fsl_shell.c ****         {
+ 999              		.loc 1 594 0
+ 1000 0350 2229     		cmp	r1, #34
+ 1001 0352 EBD1     		bne	.L66
+ 598:../utilities/fsl_shell.c ****             argc++;
+ 1002              		.loc 1 598 0
+ 1003 0354 04A9     		add	r1, sp, #16
+ 1004              	.LVL117:
+ 596:../utilities/fsl_shell.c ****             position++;
+ 1005              		.loc 1 596 0
+ 1006 0356 581C     		adds	r0, r3, #1
+ 1007              	.LVL118:
+ 601:../utilities/fsl_shell.c ****             {
+ 1008              		.loc 1 601 0
+ 1009 0358 013A     		subs	r2, r2, #1
+ 1010              	.LVL119:
+ 598:../utilities/fsl_shell.c ****             argc++;
+ 1011              		.loc 1 598 0
+ 1012 035a 41F82500 		str	r0, [r1, r5, lsl #2]
+ 1013              	.LVL120:
+ 601:../utilities/fsl_shell.c ****             {
+ 1014              		.loc 1 601 0
+ 1015 035e D21A     		subs	r2, r2, r3
+ 1016              	.LVL121:
+ 1017              	.L68:
+ 1018 0360 90F90080 		ldrsb	r8, [r0]
+ 1019 0364 431C     		adds	r3, r0, #1
+ 1020 0366 B8F1220F 		cmp	r8, #34
+ 1021 036a 03EB0E01 		add	r1, r3, lr
+ 1022 036e 03D0     		beq	.L67
+ 1023 0370 02EB0308 		add	r8, r2, r3
+ 1024 0374 4745     		cmp	r7, r8
+ 1025 0376 03D8     		bhi	.L94
+ 1026              	.L67:
+ 607:../utilities/fsl_shell.c ****             p++;
+ 1027              		.loc 1 607 0
+ 1028 0378 80F800C0 		strb	ip, [r0]
+ 1029              	.LVL122:
+ 1030              	.L69:
+ 1031 037c 0135     		adds	r5, r5, #1
+ 1032 037e 8AE7     		b	.L63
+ 1033              	.LVL123:
+ 1034              	.L94:
+ 601:../utilities/fsl_shell.c ****             {
+ 1035              		.loc 1 601 0
+ 1036 0380 1846     		mov	r0, r3
+ 1037 0382 EDE7     		b	.L68
+ 1038              	.LVL124:
+ 1039              	.L73:
+ 1040              	.LBE22:
+ 1041              	.LBE23:
+ 369:../utilities/fsl_shell.c ****     {
+ 1042              		.loc 1 369 0
+ 1043 0384 002D     		cmp	r5, #0
+ 1044 0386 8CDD     		ble	.L75
+ 371:../utilities/fsl_shell.c ****         {
+ 1045              		.loc 1 371 0
+ 1046 0388 5D4B     		ldr	r3, .L144
+ 1047 038a 0393     		str	r3, [sp, #12]
+ 1048 038c 93F85010 		ldrb	r1, [r3, #80]	@ zero_extendqisi2
+ 1049 0390 0291     		str	r1, [sp, #8]
+ 379:../utilities/fsl_shell.c ****                 {
+ 1050              		.loc 1 379 0
+ 1051 0392 0499     		ldr	r1, [sp, #16]
+ 1052 0394 0191     		str	r1, [sp, #4]
+ 1053 0396 9046     		mov	r8, r2
+ 1054              	.LVL125:
+ 1055              	.L76:
+ 371:../utilities/fsl_shell.c ****         {
+ 1056              		.loc 1 371 0
+ 1057 0398 029A     		ldr	r2, [sp, #8]
+ 1058 039a 5FFA88F3 		uxtb	r3, r8
+ 1059 039e 9342     		cmp	r3, r2
+ 1060 03a0 BFF47FAF 		bcs	.L75
+ 373:../utilities/fsl_shell.c ****             tmpCommandString = tmpCommand->pcCommand;
+ 1061              		.loc 1 373 0
+ 1062 03a4 039B     		ldr	r3, [sp, #12]
+ 1063 03a6 53F828A0 		ldr	r10, [r3, r8, lsl #2]
+ 1064 03aa 564B     		ldr	r3, .L144+4
+ 374:../utilities/fsl_shell.c ****             tmpCommandLen = StrLen(tmpCommandString);
+ 1065              		.loc 1 374 0
+ 1066 03ac DAF800B0 		ldr	fp, [r10]
+ 373:../utilities/fsl_shell.c ****             tmpCommandString = tmpCommand->pcCommand;
+ 1067              		.loc 1 373 0
+ 1068 03b0 C3F800A0 		str	r10, [r3]
+ 375:../utilities/fsl_shell.c ****             /* Compare with space or end of string */
+ 1069              		.loc 1 375 0
+ 1070 03b4 5846     		mov	r0, fp
+ 1071 03b6 FFF7FEFF 		bl	StrLen
+ 1072              	.LVL126:
+ 1073 03ba C2B2     		uxtb	r2, r0
+ 377:../utilities/fsl_shell.c ****             {
+ 1074              		.loc 1 377 0
+ 1075 03bc B356     		ldrsb	r3, [r6, r2]
+ 1076 03be 33F02003 		bics	r3, r3, #32
+ 1077 03c2 14D1     		bne	.L77
+ 379:../utilities/fsl_shell.c ****                 {
+ 1078              		.loc 1 379 0
+ 1079 03c4 0199     		ldr	r1, [sp, #4]
+ 1080 03c6 5846     		mov	r0, fp
+ 1081              	.LVL127:
+ 1082 03c8 FFF7FEFF 		bl	StrCompare
+ 1083              	.LVL128:
+ 1084 03cc 78B9     		cbnz	r0, .L77
+ 382:../utilities/fsl_shell.c ****                     {
+ 1085              		.loc 1 382 0
+ 1086 03ce 9AF80C30 		ldrb	r3, [r10, #12]	@ zero_extendqisi2
+ 1087 03d2 FF2B     		cmp	r3, #255
+ 1088 03d4 3FF466AF 		beq	.L74
+ 386:../utilities/fsl_shell.c ****                     {
+ 1089              		.loc 1 386 0
+ 1090 03d8 23B9     		cbnz	r3, .L78
+ 361:../utilities/fsl_shell.c ****     uint8_t tmpCommandLen;
+ 1091              		.loc 1 361 0
+ 1092 03da 15F1FF30 		adds	r0, r5, #-1
+ 1093 03de 18BF     		it	ne
+ 1094 03e0 0120     		movne	r0, #1
+ 1095 03e2 5FE7     		b	.L74
+ 1096              	.L78:
+ 392:../utilities/fsl_shell.c ****                         {
+ 1097              		.loc 1 392 0
+ 1098 03e4 681E     		subs	r0, r5, #1
+ 361:../utilities/fsl_shell.c ****     uint8_t tmpCommandLen;
+ 1099              		.loc 1 361 0
+ 1100 03e6 C01A     		subs	r0, r0, r3
+ 1101 03e8 18BF     		it	ne
+ 1102 03ea 0120     		movne	r0, #1
+ 1103 03ec 5AE7     		b	.L74
+ 1104              	.L77:
+ 1105              	.LVL129:
+ 1106 03ee 08F10108 		add	r8, r8, #1
+ 1107              	.LVL130:
+ 1108 03f2 D1E7     		b	.L76
+ 1109              	.LVL131:
+ 1110              	.L81:
+ 415:../utilities/fsl_shell.c ****         /* Compare with last command. Push back to history buffer if different */
+ 1111              		.loc 1 415 0
+ 1112 03f4 3046     		mov	r0, r6
+ 1113 03f6 FFF7FEFF 		bl	StrLen
+ 1114              	.LVL132:
+ 417:../utilities/fsl_shell.c ****         {
+ 1115              		.loc 1 417 0
+ 1116 03fa 04F15808 		add	r8, r4, #88
+ 415:../utilities/fsl_shell.c ****         /* Compare with last command. Push back to history buffer if different */
+ 1117              		.loc 1 415 0
+ 1118 03fe 8246     		mov	r10, r0
+ 1119              	.LVL133:
+ 417:../utilities/fsl_shell.c ****         {
+ 1120              		.loc 1 417 0
+ 1121 0400 0246     		mov	r2, r0
+ 1122 0402 4146     		mov	r1, r8
+ 1123 0404 3046     		mov	r0, r6
+ 1124              	.LVL134:
+ 1125 0406 FFF7FEFF 		bl	StrCompare
+ 1126              	.LVL135:
+ 1127 040a 5FFA8AFA 		uxtb	r10, r10
+ 1128 040e 8245     		cmp	r10, r0
+ 1129 0410 33D0     		beq	.L84
+ 1130              	.LVL136:
+ 421:../utilities/fsl_shell.c ****                 tmpLen = StrLen(context->hist_buf[i - 1]);
+ 1131              		.loc 1 421 0
+ 1132 0412 04F1D803 		add	r3, r4, #216
+ 422:../utilities/fsl_shell.c ****                 StrCopy(context->hist_buf[i], context->hist_buf[i - 1], tmpLen);
+ 1133              		.loc 1 422 0
+ 1134 0416 04F1980A 		add	r10, r4, #152
+ 421:../utilities/fsl_shell.c ****                 tmpLen = StrLen(context->hist_buf[i - 1]);
+ 1135              		.loc 1 421 0
+ 1136 041a 4022     		movs	r2, #64
+ 1137 041c 0021     		movs	r1, #0
+ 1138 041e 1846     		mov	r0, r3
+ 1139 0420 0193     		str	r3, [sp, #4]
+ 1140 0422 FFF7FEFF 		bl	memset
+ 1141              	.LVL137:
+ 422:../utilities/fsl_shell.c ****                 StrCopy(context->hist_buf[i], context->hist_buf[i - 1], tmpLen);
+ 1142              		.loc 1 422 0
+ 1143 0426 5046     		mov	r0, r10
+ 1144 0428 FFF7FEFF 		bl	StrLen
+ 1145              	.LVL138:
+ 423:../utilities/fsl_shell.c ****             }
+ 1146              		.loc 1 423 0
+ 1147 042c 019B     		ldr	r3, [sp, #4]
+ 1148 042e C2B2     		uxtb	r2, r0
+ 1149 0430 5146     		mov	r1, r10
+ 1150 0432 1846     		mov	r0, r3
+ 1151              	.LVL139:
+ 1152 0434 FFF7FEFF 		bl	StrCopy
+ 1153              	.LVL140:
+ 421:../utilities/fsl_shell.c ****                 tmpLen = StrLen(context->hist_buf[i - 1]);
+ 1154              		.loc 1 421 0
+ 1155 0438 4022     		movs	r2, #64
+ 1156              	.LVL141:
+ 1157 043a 0021     		movs	r1, #0
+ 1158 043c 5046     		mov	r0, r10
+ 1159 043e FFF7FEFF 		bl	memset
+ 1160              	.LVL142:
+ 422:../utilities/fsl_shell.c ****                 StrCopy(context->hist_buf[i], context->hist_buf[i - 1], tmpLen);
+ 1161              		.loc 1 422 0
+ 1162 0442 4046     		mov	r0, r8
+ 1163 0444 FFF7FEFF 		bl	StrLen
+ 1164              	.LVL143:
+ 423:../utilities/fsl_shell.c ****             }
+ 1165              		.loc 1 423 0
+ 1166 0448 4146     		mov	r1, r8
+ 1167 044a C2B2     		uxtb	r2, r0
+ 1168 044c 5046     		mov	r0, r10
+ 1169              	.LVL144:
+ 1170 044e FFF7FEFF 		bl	StrCopy
+ 1171              	.LVL145:
+ 425:../utilities/fsl_shell.c ****             tmpLen = StrLen(cmd);
+ 1172              		.loc 1 425 0
+ 1173 0452 4022     		movs	r2, #64
+ 1174              	.LVL146:
+ 1175 0454 0021     		movs	r1, #0
+ 1176 0456 4046     		mov	r0, r8
+ 1177 0458 FFF7FEFF 		bl	memset
+ 1178              	.LVL147:
+ 426:../utilities/fsl_shell.c ****             StrCopy(context->hist_buf[0], cmd, tmpLen);
+ 1179              		.loc 1 426 0
+ 1180 045c 3046     		mov	r0, r6
+ 1181 045e FFF7FEFF 		bl	StrLen
+ 1182              	.LVL148:
+ 427:../utilities/fsl_shell.c ****             if (context->hist_count < SHELL_HIST_MAX)
+ 1183              		.loc 1 427 0
+ 1184 0462 3146     		mov	r1, r6
+ 1185 0464 C2B2     		uxtb	r2, r0
+ 1186 0466 4046     		mov	r0, r8
+ 1187              	.LVL149:
+ 1188 0468 FFF7FEFF 		bl	StrCopy
+ 1189              	.LVL150:
+ 428:../utilities/fsl_shell.c ****             {
+ 1190              		.loc 1 428 0
+ 1191 046c B4F85630 		ldrh	r3, [r4, #86]
+ 1192 0470 022B     		cmp	r3, #2
+ 430:../utilities/fsl_shell.c ****             }
+ 1193              		.loc 1 430 0
+ 1194 0472 9CBF     		itt	ls
+ 1195 0474 0133     		addls	r3, r3, #1
+ 1196 0476 A4F85630 		strhls	r3, [r4, #86]	@ movhi
+ 1197              	.LVL151:
+ 1198              	.L84:
+ 433:../utilities/fsl_shell.c ****         tmpCommand = NULL;
+ 1199              		.loc 1 433 0
+ 1200 047a DBF80830 		ldr	r3, [fp, #8]
+ 1201 047e 04AA     		add	r2, sp, #16
+ 1202 0480 2946     		mov	r1, r5
+ 1203 0482 2046     		mov	r0, r4
+ 1204 0484 9847     		blx	r3
+ 1205              	.LVL152:
+ 1206 0486 19E7     		b	.L141
+ 1207              	.L80:
+ 438:../utilities/fsl_shell.c ****             "\r\nCommand not recognised.  Enter 'help' to view a list of available commands.\r\n\r\
+ 1208              		.loc 1 438 0
+ 1209 0488 236D     		ldr	r3, [r4, #80]
+ 1210 048a 1F48     		ldr	r0, .L144+8
+ 1211 048c 9847     		blx	r3
+ 1212              	.LVL153:
+ 440:../utilities/fsl_shell.c ****     }
+ 1213              		.loc 1 440 0
+ 1214 048e C7F800B0 		str	fp, [r7]
+ 1215 0492 15E7     		b	.L82
+ 1216              	.LVL154:
+ 1217              	.L60:
+ 1218              	.LBE24:
+ 1219              	.LBE25:
+ 1220              	.LBE33:
+ 311:../utilities/fsl_shell.c ****         {
+ 1221              		.loc 1 311 0
+ 1222 0494 94F84720 		ldrb	r2, [r4, #71]	@ zero_extendqisi2
+ 1223 0498 94F84630 		ldrb	r3, [r4, #70]	@ zero_extendqisi2
+ 1224 049c 9A42     		cmp	r2, r3
+ 1225 049e 4DB2     		sxtb	r5, r1
+ 1226 04a0 21D2     		bcs	.L86
+ 313:../utilities/fsl_shell.c ****                     context->l_pos - context->c_pos);
+ 1227              		.loc 1 313 0
+ 1228 04a2 511D     		adds	r1, r2, #5
+ 1229 04a4 901D     		adds	r0, r2, #6
+ 1230 04a6 2144     		add	r1, r1, r4
+ 1231 04a8 9A1A     		subs	r2, r3, r2
+ 1232 04aa 2044     		add	r0, r0, r4
+ 1233 04ac FFF7FEFF 		bl	memmove
+ 1234              	.LVL155:
+ 315:../utilities/fsl_shell.c ****             context->printf_data_func("%s", &context->line[context->c_pos]);
+ 1235              		.loc 1 315 0
+ 1236 04b0 94F84710 		ldrb	r1, [r4, #71]	@ zero_extendqisi2
+ 316:../utilities/fsl_shell.c ****             /* Move the cursor to new position */
+ 1237              		.loc 1 316 0
+ 1238 04b4 1548     		ldr	r0, .L144+12
+ 320:../utilities/fsl_shell.c ****             }
+ 1239              		.loc 1 320 0
+ 1240 04b6 164E     		ldr	r6, .L144+16
+ 315:../utilities/fsl_shell.c ****             context->printf_data_func("%s", &context->line[context->c_pos]);
+ 1241              		.loc 1 315 0
+ 1242 04b8 6318     		adds	r3, r4, r1
+ 316:../utilities/fsl_shell.c ****             /* Move the cursor to new position */
+ 1243              		.loc 1 316 0
+ 1244 04ba 0531     		adds	r1, r1, #5
+ 315:../utilities/fsl_shell.c ****             context->printf_data_func("%s", &context->line[context->c_pos]);
+ 1245              		.loc 1 315 0
+ 1246 04bc 5D71     		strb	r5, [r3, #5]
+ 316:../utilities/fsl_shell.c ****             /* Move the cursor to new position */
+ 1247              		.loc 1 316 0
+ 1248 04be 236D     		ldr	r3, [r4, #80]
+ 1249 04c0 2144     		add	r1, r1, r4
+ 1250 04c2 9847     		blx	r3
+ 1251              	.LVL156:
+ 318:../utilities/fsl_shell.c ****             {
+ 1252              		.loc 1 318 0
+ 1253 04c4 94F84750 		ldrb	r5, [r4, #71]	@ zero_extendqisi2
+ 1254              	.LVL157:
+ 1255              	.L87:
+ 318:../utilities/fsl_shell.c ****             {
+ 1256              		.loc 1 318 0 is_stmt 0 discriminator 1
+ 1257 04c8 94F84630 		ldrb	r3, [r4, #70]	@ zero_extendqisi2
+ 1258 04cc AB42     		cmp	r3, r5
+ 1259 04ce 05DC     		bgt	.L88
+ 1260              	.LVL158:
+ 1261              	.L89:
+ 330:../utilities/fsl_shell.c ****         context->c_pos++;
+ 1262              		.loc 1 330 0 is_stmt 1
+ 1263 04d0 94F84630 		ldrb	r3, [r4, #70]	@ zero_extendqisi2
+ 1264 04d4 0133     		adds	r3, r3, #1
+ 1265 04d6 84F84630 		strb	r3, [r4, #70]
+ 1266 04da 21E6     		b	.L140
+ 1267              	.LVL159:
+ 1268              	.L88:
+ 320:../utilities/fsl_shell.c ****             }
+ 1269              		.loc 1 320 0 discriminator 3
+ 1270 04dc 236D     		ldr	r3, [r4, #80]
+ 1271 04de 3046     		mov	r0, r6
+ 1272 04e0 9847     		blx	r3
+ 1273              	.LVL160:
+ 318:../utilities/fsl_shell.c ****             {
+ 1274              		.loc 1 318 0 discriminator 3
+ 1275 04e2 0135     		adds	r5, r5, #1
+ 1276              	.LVL161:
+ 1277 04e4 F0E7     		b	.L87
+ 1278              	.LVL162:
+ 1279              	.L86:
+ 325:../utilities/fsl_shell.c ****             context->printf_data_func("%c", ch);
+ 1280              		.loc 1 325 0
+ 1281 04e6 2344     		add	r3, r3, r4
+ 326:../utilities/fsl_shell.c ****         }
+ 1282              		.loc 1 326 0
+ 1283 04e8 0A48     		ldr	r0, .L144+20
+ 325:../utilities/fsl_shell.c ****             context->printf_data_func("%c", ch);
+ 1284              		.loc 1 325 0
+ 1285 04ea 5D71     		strb	r5, [r3, #5]
+ 326:../utilities/fsl_shell.c ****         }
+ 1286              		.loc 1 326 0
+ 1287 04ec 236D     		ldr	r3, [r4, #80]
+ 1288 04ee 9847     		blx	r3
+ 1289              	.LVL163:
+ 1290 04f0 EEE7     		b	.L89
+ 1291              	.LVL164:
+ 1292              	.L90:
+ 141:../utilities/fsl_shell.c ****     }
+ 1293              		.loc 1 141 0
+ 1294 04f2 4FF0FF30 		mov	r0, #-1
+ 1295              	.LVL165:
+ 1296              	.L30:
+ 334:../utilities/fsl_shell.c **** 
+ 1297              		.loc 1 334 0
+ 1298 04f6 45B0     		add	sp, sp, #276
+ 1299              		.cfi_remember_state
+ 1300              		.cfi_def_cfa_offset 36
+ 1301              		@ sp needed
+ 1302 04f8 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1303              	.LVL166:
+ 1304              	.L91:
+ 1305              		.cfi_restore_state
+ 333:../utilities/fsl_shell.c **** }
+ 1306              		.loc 1 333 0
+ 1307 04fc 0020     		movs	r0, #0
+ 1308 04fe FAE7     		b	.L30
+ 1309              	.L145:
+ 1310              		.align	2
+ 1311              	.L144:
+ 1312 0500 00000000 		.word	.LANCHOR0
+ 1313 0504 00000000 		.word	.LANCHOR3
+ 1314 0508 BC000000 		.word	.LC12
+ 1315 050c 0E010000 		.word	.LC13
+ 1316 0510 49000000 		.word	.LC5
+ 1317 0514 4B000000 		.word	.LC6
+ 1318              		.cfi_endproc
+ 1319              	.LFE148:
+ 1321              		.section	.text.SHELL_RegisterCommand,"ax",%progbits
+ 1322              		.align	1
+ 1323              		.global	SHELL_RegisterCommand
+ 1324              		.syntax unified
+ 1325              		.thumb
+ 1326              		.thumb_func
+ 1327              		.fpu fpv4-sp-d16
+ 1329              	SHELL_RegisterCommand:
+ 1330              	.LFB158:
+ 626:../utilities/fsl_shell.c ****     int32_t result = 0;
+ 1331              		.loc 1 626 0
+ 1332              		.cfi_startproc
+ 1333              		@ args = 0, pretend = 0, frame = 0
+ 1334              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1335              		@ link register save eliminated.
+ 1336              	.LVL167:
+ 630:../utilities/fsl_shell.c ****     {
+ 1337              		.loc 1 630 0
+ 1338 0000 074B     		ldr	r3, .L149
+ 1339 0002 93F85020 		ldrb	r2, [r3, #80]	@ zero_extendqisi2
+ 1340 0006 132A     		cmp	r2, #19
+ 632:../utilities/fsl_shell.c ****     }
+ 1341              		.loc 1 632 0
+ 1342 0008 9FBF     		itttt	ls
+ 1343 000a 511C     		addls	r1, r2, #1
+ 1344 000c 43F82200 		strls	r0, [r3, r2, lsl #2]
+ 1345 0010 83F85010 		strbls	r1, [r3, #80]
+ 627:../utilities/fsl_shell.c **** 
+ 1346              		.loc 1 627 0
+ 1347 0014 0020     		movls	r0, #0
+ 1348              	.LVL168:
+ 636:../utilities/fsl_shell.c ****     }
+ 1349              		.loc 1 636 0
+ 1350 0016 88BF     		it	hi
+ 1351 0018 4FF0FF30 		movhi	r0, #-1
+ 1352              	.LVL169:
+ 639:../utilities/fsl_shell.c **** 
+ 1353              		.loc 1 639 0
+ 1354 001c 7047     		bx	lr
+ 1355              	.L150:
+ 1356 001e 00BF     		.align	2
+ 1357              	.L149:
+ 1358 0020 00000000 		.word	.LANCHOR0
+ 1359              		.cfi_endproc
+ 1360              	.LFE158:
+ 1362              		.section	.text.SHELL_Init,"ax",%progbits
+ 1363              		.align	1
+ 1364              		.global	SHELL_Init
+ 1365              		.syntax unified
+ 1366              		.thumb
+ 1367              		.thumb_func
+ 1368              		.fpu fpv4-sp-d16
+ 1370              	SHELL_Init:
+ 1371              	.LFB147:
+ 117:../utilities/fsl_shell.c ****     assert(send_cb != NULL);
+ 1372              		.loc 1 117 0
+ 1373              		.cfi_startproc
+ 1374              		@ args = 4, pretend = 0, frame = 0
+ 1375              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1376              	.LVL170:
+ 1377 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 1378              		.cfi_def_cfa_offset 24
+ 1379              		.cfi_offset 4, -24
+ 1380              		.cfi_offset 5, -20
+ 1381              		.cfi_offset 6, -16
+ 1382              		.cfi_offset 7, -12
+ 1383              		.cfi_offset 8, -8
+ 1384              		.cfi_offset 14, -4
+ 117:../utilities/fsl_shell.c ****     assert(send_cb != NULL);
+ 1385              		.loc 1 117 0
+ 1386 0004 0446     		mov	r4, r0
+ 1387 0006 1E46     		mov	r6, r3
+ 1388 0008 8846     		mov	r8, r1
+ 1389 000a 1746     		mov	r7, r2
+ 1390 000c 069D     		ldr	r5, [sp, #24]
+ 124:../utilities/fsl_shell.c ****     context->send_data_func = send_cb;
+ 1391              		.loc 1 124 0
+ 1392 000e 4FF48E72 		mov	r2, #284
+ 1393              	.LVL171:
+ 1394 0012 0021     		movs	r1, #0
+ 1395              	.LVL172:
+ 1396 0014 FFF7FEFF 		bl	memset
+ 1397              	.LVL173:
+ 126:../utilities/fsl_shell.c ****     context->printf_data_func = shell_printf;
+ 1398              		.loc 1 126 0
+ 1399 0018 C4E91287 		strd	r8, r7, [r4, #72]
+ 127:../utilities/fsl_shell.c ****     context->prompt = prompt;
+ 1400              		.loc 1 127 0
+ 1401 001c 2665     		str	r6, [r4, #80]
+ 128:../utilities/fsl_shell.c **** 
+ 1402              		.loc 1 128 0
+ 1403 001e 2560     		str	r5, [r4]
+ 130:../utilities/fsl_shell.c ****     SHELL_RegisterCommand(&xExitCommand);
+ 1404              		.loc 1 130 0
+ 1405 0020 0348     		ldr	r0, .L152
+ 1406 0022 FFF7FEFF 		bl	SHELL_RegisterCommand
+ 1407              	.LVL174:
+ 131:../utilities/fsl_shell.c **** }
+ 1408              		.loc 1 131 0
+ 1409 0026 0348     		ldr	r0, .L152+4
+ 132:../utilities/fsl_shell.c **** 
+ 1410              		.loc 1 132 0
+ 1411 0028 BDE8F041 		pop	{r4, r5, r6, r7, r8, lr}
+ 1412              		.cfi_restore 14
+ 1413              		.cfi_restore 8
+ 1414              		.cfi_restore 7
+ 1415              		.cfi_restore 6
+ 1416              		.cfi_restore 5
+ 1417              		.cfi_restore 4
+ 1418              		.cfi_def_cfa_offset 0
+ 1419              	.LVL175:
+ 131:../utilities/fsl_shell.c **** }
+ 1420              		.loc 1 131 0
+ 1421 002c FFF7FEBF 		b	SHELL_RegisterCommand
+ 1422              	.LVL176:
+ 1423              	.L153:
+ 1424              		.align	2
+ 1425              	.L152:
+ 1426 0030 00000000 		.word	.LANCHOR4
+ 1427 0034 00000000 		.word	.LANCHOR5
+ 1428              		.cfi_endproc
+ 1429              	.LFE147:
+ 1431              		.section	.bss.endoflinechar.8276,"aw",%nobits
+ 1432              		.set	.LANCHOR2,. + 0
+ 1435              	endoflinechar.8276:
+ 1436 0000 00       		.space	1
+ 1437              		.section	.bss.g_RegisteredCommands,"aw",%nobits
+ 1438              		.align	2
+ 1439              		.set	.LANCHOR0,. + 0
+ 1442              	g_RegisteredCommands:
+ 1443 0000 00000000 		.space	84
+ 1443      00000000 
+ 1443      00000000 
+ 1443      00000000 
+ 1443      00000000 
+ 1444              		.section	.bss.g_paramBuffer,"aw",%nobits
+ 1445              		.set	.LANCHOR1,. + 0
+ 1448              	g_paramBuffer:
+ 1449 0000 00000000 		.space	64
+ 1449      00000000 
+ 1449      00000000 
+ 1449      00000000 
+ 1449      00000000 
+ 1450              		.section	.bss.tmpCommand.8299,"aw",%nobits
+ 1451              		.align	2
+ 1452              		.set	.LANCHOR3,. + 0
+ 1455              	tmpCommand.8299:
+ 1456 0000 00000000 		.space	4
+ 1457              		.section	.rodata.ExitCommand.str1.1,"aMS",%progbits,1
+ 1458              	.LC0:
+ 1459 0000 0D0A5348 		.ascii	"\015\012SHELL exited\015\012\000"
+ 1459      454C4C20 
+ 1459      65786974 
+ 1459      65640D0A 
+ 1459      00
+ 1460              		.section	.rodata.GetHistoryCommand.str1.1,"aMS",%progbits,1
+ 1461              	.LC1:
+ 1462 0000 08200800 		.ascii	"\010 \010\000"
+ 1463              		.section	.rodata.SHELL_Main.str1.1,"aMS",%progbits,1
+ 1464              	.LC2:
+ 1465 0000 41707220 		.ascii	"Apr  9 2018\000"
+ 1465      20392032 
+ 1465      30313800 
+ 1466              	.LC3:
+ 1467 000c 0D0A5348 		.ascii	"\015\012SHELL (build: %s)\015\012\000"
+ 1467      454C4C20 
+ 1467      28627569 
+ 1467      6C643A20 
+ 1467      2573290D 
+ 1468              	.LC4:
+ 1469 0022 436F7079 		.ascii	"Copyright (c) 2017 NXP Semiconductor\015\012\000"
+ 1469      72696768 
+ 1469      74202863 
+ 1469      29203230 
+ 1469      3137204E 
+ 1470              	.LC5:
+ 1471 0049 0800     		.ascii	"\010\000"
+ 1472              	.LC6:
+ 1473 004b 256300   		.ascii	"%c\000"
+ 1474              	.LC7:
+ 1475 004e 0D0A00   		.ascii	"\015\012\000"
+ 1476              	.LC8:
+ 1477 0051 25730D0A 		.ascii	"%s\015\012\000"
+ 1477      00
+ 1478              	.LC9:
+ 1479 0056 25732573 		.ascii	"%s%s\000"
+ 1479      00
+ 1480              	.LC10:
+ 1481 005b 08257320 		.ascii	"\010%s  \010\000"
+ 1481      200800
+ 1482              	.LC11:
+ 1483 0062 0D0A496E 		.ascii	"\015\012Incorrect command parameter(s).  Enter \"he"
+ 1483      636F7272 
+ 1483      65637420 
+ 1483      636F6D6D 
+ 1483      616E6420 
+ 1484 008e 6C702220 		.ascii	"lp\" to view a list of available commands.\015\012\015"
+ 1484      746F2076 
+ 1484      69657720 
+ 1484      61206C69 
+ 1484      7374206F 
+ 1485 00ba 0A00     		.ascii	"\012\000"
+ 1486              	.LC12:
+ 1487 00bc 0D0A436F 		.ascii	"\015\012Command not recognised.  Enter 'help' to vi"
+ 1487      6D6D616E 
+ 1487      64206E6F 
+ 1487      74207265 
+ 1487      636F676E 
+ 1488 00e9 65772061 		.ascii	"ew a list of available commands.\015\012\015\012\000"
+ 1488      206C6973 
+ 1488      74206F66 
+ 1488      20617661 
+ 1488      696C6162 
+ 1489              	.LC13:
+ 1490 010e 257300   		.ascii	"%s\000"
+ 1491              		.section	.rodata.str1.1,"aMS",%progbits,1
+ 1492              	.LC14:
+ 1493 0000 65786974 		.ascii	"exit\000"
+ 1493      00
+ 1494              	.LC15:
+ 1495 0005 0D0A2265 		.ascii	"\015\012\"exit\": Exit program\015\012\000"
+ 1495      78697422 
+ 1495      3A204578 
+ 1495      69742070 
+ 1495      726F6772 
+ 1496              	.LC16:
+ 1497 001e 68656C70 		.ascii	"help\000"
+ 1497      00
+ 1498              	.LC17:
+ 1499 0023 0D0A2268 		.ascii	"\015\012\"help\": Lists all the registered commands"
+ 1499      656C7022 
+ 1499      3A204C69 
+ 1499      73747320 
+ 1499      616C6C20 
+ 1500 004e 0D0A00   		.ascii	"\015\012\000"
+ 1501              		.section	.rodata.xExitCommand,"a",%progbits
+ 1502              		.align	2
+ 1503              		.set	.LANCHOR5,. + 0
+ 1506              	xExitCommand:
+ 1507 0000 00000000 		.word	.LC14
+ 1508 0004 05000000 		.word	.LC15
+ 1509 0008 00000000 		.word	ExitCommand
+ 1510 000c 00       		.byte	0
+ 1511 000d 000000   		.space	3
+ 1512              		.section	.rodata.xHelpCommand,"a",%progbits
+ 1513              		.align	2
+ 1514              		.set	.LANCHOR4,. + 0
+ 1517              	xHelpCommand:
+ 1518 0000 1E000000 		.word	.LC16
+ 1519 0004 23000000 		.word	.LC17
+ 1520 0008 00000000 		.word	HelpCommand
+ 1521 000c 00       		.byte	0
+ 1522 000d 000000   		.space	3
+ 1523              		.text
+ 1524              	.Letext0:
+ 1525              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1526              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1527              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1528              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1529              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1530              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1531              		.file 8 "../CMSIS/core_cm4.h"
+ 1532              		.file 9 "../CMSIS/system_MK64F12.h"
+ 1533              		.file 10 "../drivers/fsl_clock.h"
+ 1534              		.file 11 "../utilities/fsl_shell.h"
+ 1535              		.file 12 "../drivers/fsl_common.h"
+ 1536              		.file 13 "<built-in>"
+ 1537              		.file 14 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"

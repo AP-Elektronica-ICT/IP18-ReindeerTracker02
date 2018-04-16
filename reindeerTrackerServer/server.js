@@ -16,11 +16,20 @@ const options = {
 
 mongoose.connect(config.database, options);
 
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./reindeer-tracker-firebase-adminsdk-8qjsq-22476b41d0.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://reindeer-tracker.firebaseio.com"
+});
+
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors({
-    origin: ['http://localhost:4200', 'http://localhost:8100'],
+    origin: ['http://localhost:4200', 'http://localhost:8100', 'http://teunverhaert.ddns.net:3001'],
     credentials: true
     }));
 

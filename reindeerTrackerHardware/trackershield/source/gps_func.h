@@ -9,11 +9,11 @@
 #define SOURCE_GPS_FUNC_H_
 
 
-void getGPS();
+uint8_t getGPS();
 
 
 void activateGPS();
-extern char UART3_recBuf[1000];
+extern char GPS_recBuf[600];
 extern uint8_t UART3_receive();
 extern volatile uint8_t UART3_strReady;
 void parseData(char* latStr, char* lonStr);

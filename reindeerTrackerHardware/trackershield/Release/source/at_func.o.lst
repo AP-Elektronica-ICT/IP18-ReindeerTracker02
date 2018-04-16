@@ -1,0 +1,585 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"at_func.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.breakIfAtOk,"ax",%progbits
+  18              		.align	1
+  19              		.global	breakIfAtOk
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	breakIfAtOk:
+  26              	.LFB3:
+  27              		.file 1 "../source/at_func.c"
+   1:../source/at_func.c **** #include <stdint.h>
+   2:../source/at_func.c **** #include <stdio.h>
+   3:../source/at_func.c **** #include <stdlib.h>
+   4:../source/at_func.c **** 
+   5:../source/at_func.c **** #include "at_func.h"
+   6:../source/at_func.c **** #include <string.h>
+   7:../source/at_func.c **** #include "timing.h"
+   8:../source/at_func.c **** 
+   9:../source/at_func.c **** extern void UART3_send(char* data);
+  10:../source/at_func.c **** 
+  11:../source/at_func.c **** extern volatile uint8_t UART3_strReady;
+  12:../source/at_func.c **** 
+  13:../source/at_func.c **** extern char UART3_recBuf[];
+  14:../source/at_func.c **** extern volatile uint16_t UART3_bufPtr;
+  15:../source/at_func.c **** 
+  16:../source/at_func.c **** char* AT_REQ = "AT";
+  17:../source/at_func.c **** 
+  18:../source/at_func.c **** char* AT_CGMI = "CGMI";  // check manufacturer
+  19:../source/at_func.c **** char* AT_NPIN = "NPIN=0,\"1234\"";  // sets, the PIN-code
+  20:../source/at_func.c **** char* AT_COPS = "COPS";            //Register to operator network
+  21:../source/at_func.c **** char* AT_CEREG = "CEREG?";  //connection status
+  22:../source/at_func.c **** char* AT_NRB = "NRB";
+  23:../source/at_func.c **** char* AT_CGDCONT = "CGDCONT=1,\"IP\",\"\",\"\"";
+  24:../source/at_func.c **** char* AT_CGACT = "CGACT";
+  25:../source/at_func.c **** char* AT_CSQ = "CSQ";  //Signal quality
+  26:../source/at_func.c **** char* AT_CGPADDR = "CGPADDR";        //shows module ip address
+  27:../source/at_func.c **** char* AT_NSOCR = "NSOCR=\"DGRAM\",17,42000,1"; //create UDP socket, port 420000
+  28:../source/at_func.c **** //char AT_NSOST[] = "NSOST=0,\"195.34.89.241\",7,2,\"f8f8\"";
+  29:../source/at_func.c **** char* AT_NSOST = "NSOST=";
+  30:../source/at_func.c **** 
+  31:../source/at_func.c **** 
+  32:../source/at_func.c **** char* AT_NSORF = "NSORF=0,2";    //show received data, =<socket>, <data_length>
+  33:../source/at_func.c **** char* AT_CMEE = "CMEE=";
+  34:../source/at_func.c **** char* AT_CFUN = "CFUN"; // sets functionality mode, edit this to change power mode
+  35:../source/at_func.c **** 
+  36:../source/at_func.c **** char* AT_CCLK = "CCLK"; // sets and reads rtc example: AT+CCLK="14/07/01,15:00:00+01"
+  37:../source/at_func.c **** 
+  38:../source/at_func.c **** 
+  39:../source/at_func.c **** /*
+  40:../source/at_func.c ****  * Small function to check if NBiot receive buffer contains OK
+  41:../source/at_func.c ****  * we can use this to break from response waiting loop if we already got OK answer
+  42:../source/at_func.c ****  */
+  43:../source/at_func.c **** uint8_t breakIfAtOk()
+  44:../source/at_func.c **** {
+  28              		.loc 1 44 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+  45:../source/at_func.c **** 	if(strstr(UART3_recBuf,"OK") != NULL)
+  36              		.loc 1 45 0
+  37 0002 0449     		ldr	r1, .L2
+  38 0004 0448     		ldr	r0, .L2+4
+  39 0006 FFF7FEFF 		bl	strstr
+  40              	.LVL0:
+  46:../source/at_func.c **** 	{
+  47:../source/at_func.c **** 		return 1;
+  48:../source/at_func.c **** 	}
+  49:../source/at_func.c **** 	return 0;
+  50:../source/at_func.c **** }
+  41              		.loc 1 50 0
+  42 000a 0030     		adds	r0, r0, #0
+  43 000c 18BF     		it	ne
+  44 000e 0120     		movne	r0, #1
+  45 0010 08BD     		pop	{r3, pc}
+  46              	.L3:
+  47 0012 00BF     		.align	2
+  48              	.L2:
+  49 0014 00000000 		.word	.LC0
+  50 0018 00000000 		.word	UART3_recBuf
+  51              		.cfi_endproc
+  52              	.LFE3:
+  54              		.section	.text.AT_checkResult,"ax",%progbits
+  55              		.align	1
+  56              		.global	AT_checkResult
+  57              		.syntax unified
+  58              		.thumb
+  59              		.thumb_func
+  60              		.fpu fpv4-sp-d16
+  62              	AT_checkResult:
+  63              	.LFB4:
+  51:../source/at_func.c **** 
+  52:../source/at_func.c **** /*
+  53:../source/at_func.c ****  * Check AT command return result and print related ok message or error message.
+  54:../source/at_func.c ****  *
+  55:../source/at_func.c ****  * res = AT command return code. 0 = command succeeded, 1 = module responded with ERROR, 2 = there 
+  56:../source/at_func.c ****  * *subject = string that specifies the command
+  57:../source/at_func.c ****  */
+  58:../source/at_func.c **** 
+  59:../source/at_func.c **** void AT_checkResult(uint8_t res, char *subject)
+  60:../source/at_func.c **** {
+  64              		.loc 1 60 0
+  65              		.cfi_startproc
+  66              		@ args = 0, pretend = 0, frame = 0
+  67              		@ frame_needed = 0, uses_anonymous_args = 0
+  68              		@ link register save eliminated.
+  69              	.LVL1:
+  61:../source/at_func.c **** 
+  62:../source/at_func.c **** 	if (res == 0)
+  70              		.loc 1 62 0
+  71 0000 10B9     		cbnz	r0, .L5
+  63:../source/at_func.c **** 	{
+  64:../source/at_func.c **** 		printf("%s OK\r\n",subject);
+  72              		.loc 1 64 0
+  73 0002 0448     		ldr	r0, .L8
+  74              	.LVL2:
+  75              	.L7:
+  65:../source/at_func.c **** 	}
+  66:../source/at_func.c **** 	else if (res == 1)
+  67:../source/at_func.c **** 	{
+  68:../source/at_func.c **** 		printf("%s ERROR\r\n", subject);
+  69:../source/at_func.c **** 	}
+  70:../source/at_func.c **** 	else
+  71:../source/at_func.c **** 	{
+  72:../source/at_func.c **** 		printf("%s NO RESPONSE\r\n",subject);
+  76              		.loc 1 72 0
+  77 0004 FFF7FEBF 		b	printf
+  78              	.LVL3:
+  79              	.L5:
+  66:../source/at_func.c **** 	{
+  80              		.loc 1 66 0
+  81 0008 0128     		cmp	r0, #1
+  68:../source/at_func.c **** 	}
+  82              		.loc 1 68 0
+  83 000a 0CBF     		ite	eq
+  84 000c 0248     		ldreq	r0, .L8+4
+  85              	.LVL4:
+  86              		.loc 1 72 0
+  87 000e 0348     		ldrne	r0, .L8+8
+  88 0010 F8E7     		b	.L7
+  89              	.L9:
+  90 0012 00BF     		.align	2
+  91              	.L8:
+  92 0014 00000000 		.word	.LC1
+  93 0018 08000000 		.word	.LC2
+  94 001c 13000000 		.word	.LC3
+  95              		.cfi_endproc
+  96              	.LFE4:
+  98              		.section	.text.AT_send,"ax",%progbits
+  99              		.align	1
+ 100              		.global	AT_send
+ 101              		.syntax unified
+ 102              		.thumb
+ 103              		.thumb_func
+ 104              		.fpu fpv4-sp-d16
+ 106              	AT_send:
+ 107              	.LFB5:
+  73:../source/at_func.c **** 	}
+  74:../source/at_func.c **** }
+  75:../source/at_func.c **** 
+  76:../source/at_func.c **** /*
+  77:../source/at_func.c ****  *
+  78:../source/at_func.c ****  * Send AT command to module.
+  79:../source/at_func.c ****  * Parameter:
+  80:../source/at_func.c ****  *
+  81:../source/at_func.c ****  * *AT_cmd = pointer to AT command suffix (the part after "AT+"
+  82:../source/at_func.c ****  * *AT_parameter = parameters to add to the command
+  83:../source/at_func.c ****  * *AT_exptAnswer = expected answer string that module should answer to the command
+  84:../source/at_func.c ****  *
+  85:../source/at_func.c ****  */
+  86:../source/at_func.c **** uint8_t AT_send(char *AT_cmd, char *AT_parameter, char *AT_exptAnswer)
+  87:../source/at_func.c **** {
+ 108              		.loc 1 87 0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 504
+ 111              		@ frame_needed = 0, uses_anonymous_args = 0
+ 112              	.LVL5:
+ 113 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 114              		.cfi_def_cfa_offset 24
+ 115              		.cfi_offset 4, -24
+ 116              		.cfi_offset 5, -20
+ 117              		.cfi_offset 6, -16
+ 118              		.cfi_offset 7, -12
+ 119              		.cfi_offset 8, -8
+ 120              		.cfi_offset 14, -4
+  88:../source/at_func.c **** 
+  89:../source/at_func.c **** 	char cmd_buf[500];
+  90:../source/at_func.c **** 	uint8_t result = 2;
+  91:../source/at_func.c **** 	uint32_t time_limit = 1000;
+  92:../source/at_func.c **** 
+  93:../source/at_func.c **** 	UART3_bufPtr = 0;
+ 121              		.loc 1 93 0
+ 122 0004 264D     		ldr	r5, .L21
+  94:../source/at_func.c **** 	memset(UART3_recBuf, 0, 1000);
+  95:../source/at_func.c **** 
+  96:../source/at_func.c **** 	sprintf(cmd_buf, "AT+%s%s\r\n", AT_cmd, AT_parameter);
+  97:../source/at_func.c **** 	UART3_send(cmd_buf);
+  98:../source/at_func.c **** 	printf("send to module: %s\r\n", cmd_buf);
+  99:../source/at_func.c **** 
+ 100:../source/at_func.c **** 	if (strstr(cmd_buf, "NRB") != NULL)
+ 101:../source/at_func.c **** 	{
+ 102:../source/at_func.c **** 		time_limit = 10000;
+ 103:../source/at_func.c **** 	}
+ 104:../source/at_func.c **** 
+ 105:../source/at_func.c **** 	time_limit = millis() + time_limit;
+ 106:../source/at_func.c **** 	while (millis() < time_limit)
+ 107:../source/at_func.c **** 	{
+ 108:../source/at_func.c **** 		if (UART3_strReady)
+ 109:../source/at_func.c **** 		{
+ 110:../source/at_func.c **** 			//UART3_strReady = 0;
+ 111:../source/at_func.c **** 			if (strstr(UART3_recBuf, AT_exptAnswer) != NULL) //if received buffer contains expected answer
+ 123              		.loc 1 111 0
+ 124 0006 274F     		ldr	r7, .L21+4
+  87:../source/at_func.c **** 
+ 125              		.loc 1 87 0
+ 126 0008 FEB0     		sub	sp, sp, #504
+ 127              		.cfi_def_cfa_offset 528
+  87:../source/at_func.c **** 
+ 128              		.loc 1 87 0
+ 129 000a 0446     		mov	r4, r0
+ 130 000c 0E46     		mov	r6, r1
+ 131 000e 9046     		mov	r8, r2
+  93:../source/at_func.c **** 	memset(UART3_recBuf, 0, 1000);
+ 132              		.loc 1 93 0
+ 133 0010 0021     		movs	r1, #0
+ 134              	.LVL6:
+  94:../source/at_func.c **** 	memset(UART3_recBuf, 0, 1000);
+ 135              		.loc 1 94 0
+ 136 0012 4FF47A72 		mov	r2, #1000
+ 137              	.LVL7:
+ 138 0016 2348     		ldr	r0, .L21+4
+ 139              	.LVL8:
+  93:../source/at_func.c **** 	memset(UART3_recBuf, 0, 1000);
+ 140              		.loc 1 93 0
+ 141 0018 2980     		strh	r1, [r5]	@ movhi
+  94:../source/at_func.c **** 	memset(UART3_recBuf, 0, 1000);
+ 142              		.loc 1 94 0
+ 143 001a FFF7FEFF 		bl	memset
+ 144              	.LVL9:
+  96:../source/at_func.c **** 	UART3_send(cmd_buf);
+ 145              		.loc 1 96 0
+ 146 001e 3346     		mov	r3, r6
+ 147 0020 2246     		mov	r2, r4
+ 148 0022 2149     		ldr	r1, .L21+8
+ 108:../source/at_func.c **** 		{
+ 149              		.loc 1 108 0
+ 150 0024 214E     		ldr	r6, .L21+12
+ 151              	.LVL10:
+  96:../source/at_func.c **** 	UART3_send(cmd_buf);
+ 152              		.loc 1 96 0
+ 153 0026 01A8     		add	r0, sp, #4
+ 154 0028 FFF7FEFF 		bl	sprintf
+ 155              	.LVL11:
+  97:../source/at_func.c **** 	printf("send to module: %s\r\n", cmd_buf);
+ 156              		.loc 1 97 0
+ 157 002c 01A8     		add	r0, sp, #4
+ 158 002e FFF7FEFF 		bl	UART3_send
+ 159              	.LVL12:
+  98:../source/at_func.c **** 
+ 160              		.loc 1 98 0
+ 161 0032 01A9     		add	r1, sp, #4
+ 162 0034 1E48     		ldr	r0, .L21+16
+ 163 0036 FFF7FEFF 		bl	printf
+ 164              	.LVL13:
+ 100:../source/at_func.c **** 	{
+ 165              		.loc 1 100 0
+ 166 003a 1E49     		ldr	r1, .L21+20
+ 167 003c 01A8     		add	r0, sp, #4
+ 168 003e FFF7FEFF 		bl	strstr
+ 169              	.LVL14:
+ 102:../source/at_func.c **** 	}
+ 170              		.loc 1 102 0
+ 171 0042 0028     		cmp	r0, #0
+ 172 0044 42F21074 		movw	r4, #10000
+ 173              	.LVL15:
+ 174 0048 08BF     		it	eq
+ 175 004a 4FF47A74 		moveq	r4, #1000
+ 176              	.LVL16:
+ 105:../source/at_func.c **** 	while (millis() < time_limit)
+ 177              		.loc 1 105 0
+ 178 004e FFF7FEFF 		bl	millis
+ 179              	.LVL17:
+ 180 0052 0444     		add	r4, r4, r0
+ 181              	.LVL18:
+ 182              	.L13:
+ 106:../source/at_func.c **** 	{
+ 183              		.loc 1 106 0
+ 184 0054 FFF7FEFF 		bl	millis
+ 185              	.LVL19:
+ 186 0058 A042     		cmp	r0, r4
+ 187 005a 01D3     		bcc	.L16
+  90:../source/at_func.c **** 	uint32_t time_limit = 1000;
+ 188              		.loc 1 90 0
+ 189 005c 0224     		movs	r4, #2
+ 190              	.LVL20:
+ 191 005e 0BE0     		b	.L15
+ 192              	.LVL21:
+ 193              	.L16:
+ 108:../source/at_func.c **** 		{
+ 194              		.loc 1 108 0
+ 195 0060 3378     		ldrb	r3, [r6]	@ zero_extendqisi2
+ 196 0062 002B     		cmp	r3, #0
+ 197 0064 F6D0     		beq	.L13
+ 198              		.loc 1 111 0
+ 199 0066 4146     		mov	r1, r8
+ 200 0068 3846     		mov	r0, r7
+ 201 006a FFF7FEFF 		bl	strstr
+ 202              	.LVL22:
+ 203 006e 70B1     		cbz	r0, .L14
+ 112:../source/at_func.c **** 			{
+ 113:../source/at_func.c **** 				printf(UART3_recBuf);
+ 204              		.loc 1 113 0
+ 205 0070 0C48     		ldr	r0, .L21+4
+ 206 0072 FFF7FEFF 		bl	printf
+ 207              	.LVL23:
+ 114:../source/at_func.c **** 				result = 0;
+ 208              		.loc 1 114 0
+ 209 0076 0024     		movs	r4, #0
+ 210              	.LVL24:
+ 211              	.L15:
+ 115:../source/at_func.c **** 				break;
+ 116:../source/at_func.c **** 			}
+ 117:../source/at_func.c **** 			else if (strstr(UART3_recBuf, "ERROR") != NULL)
+ 118:../source/at_func.c **** 			{
+ 119:../source/at_func.c **** 
+ 120:../source/at_func.c **** 				result = 1;
+ 121:../source/at_func.c **** 				break;
+ 122:../source/at_func.c **** 			}
+ 123:../source/at_func.c **** 			UART3_strReady = 0;
+ 124:../source/at_func.c **** 		}
+ 125:../source/at_func.c **** 	}
+ 126:../source/at_func.c **** 	UART3_bufPtr = 0;
+ 212              		.loc 1 126 0
+ 213 0078 0021     		movs	r1, #0
+ 127:../source/at_func.c **** 	memset(UART3_recBuf, 0, 1000);
+ 214              		.loc 1 127 0
+ 215 007a 4FF47A72 		mov	r2, #1000
+ 216 007e 0948     		ldr	r0, .L21+4
+ 126:../source/at_func.c **** 	memset(UART3_recBuf, 0, 1000);
+ 217              		.loc 1 126 0
+ 218 0080 2980     		strh	r1, [r5]	@ movhi
+ 219              		.loc 1 127 0
+ 220 0082 FFF7FEFF 		bl	memset
+ 221              	.LVL25:
+ 128:../source/at_func.c **** 
+ 129:../source/at_func.c **** 	return result;
+ 130:../source/at_func.c **** }
+ 222              		.loc 1 130 0
+ 223 0086 2046     		mov	r0, r4
+ 224 0088 7EB0     		add	sp, sp, #504
+ 225              		.cfi_remember_state
+ 226              		.cfi_def_cfa_offset 24
+ 227              		@ sp needed
+ 228 008a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 229              	.LVL26:
+ 230              	.L14:
+ 231              		.cfi_restore_state
+ 117:../source/at_func.c **** 			{
+ 232              		.loc 1 117 0
+ 233 008e 0A49     		ldr	r1, .L21+24
+ 234 0090 3846     		mov	r0, r7
+ 235 0092 FFF7FEFF 		bl	strstr
+ 236              	.LVL27:
+ 237 0096 08B9     		cbnz	r0, .L18
+ 123:../source/at_func.c **** 		}
+ 238              		.loc 1 123 0
+ 239 0098 3070     		strb	r0, [r6]
+ 240 009a DBE7     		b	.L13
+ 241              	.L18:
+ 120:../source/at_func.c **** 				break;
+ 242              		.loc 1 120 0
+ 243 009c 0124     		movs	r4, #1
+ 244              	.LVL28:
+ 245 009e EBE7     		b	.L15
+ 246              	.L22:
+ 247              		.align	2
+ 248              	.L21:
+ 249 00a0 00000000 		.word	UART3_bufPtr
+ 250 00a4 00000000 		.word	UART3_recBuf
+ 251 00a8 00000000 		.word	.LC4
+ 252 00ac 00000000 		.word	UART3_strReady
+ 253 00b0 0A000000 		.word	.LC5
+ 254 00b4 1F000000 		.word	.LC6
+ 255 00b8 23000000 		.word	.LC7
+ 256              		.cfi_endproc
+ 257              	.LFE5:
+ 259              		.global	AT_CCLK
+ 260              		.global	AT_CFUN
+ 261              		.global	AT_CMEE
+ 262              		.global	AT_NSORF
+ 263              		.global	AT_NSOST
+ 264              		.global	AT_NSOCR
+ 265              		.global	AT_CGPADDR
+ 266              		.global	AT_CSQ
+ 267              		.global	AT_CGACT
+ 268              		.global	AT_CGDCONT
+ 269              		.global	AT_NRB
+ 270              		.global	AT_CEREG
+ 271              		.global	AT_COPS
+ 272              		.global	AT_NPIN
+ 273              		.global	AT_CGMI
+ 274              		.global	AT_REQ
+ 275              		.section	.data.AT_CCLK,"aw",%progbits
+ 276              		.align	2
+ 279              	AT_CCLK:
+ 280 0000 00000000 		.word	.LC8
+ 281              		.section	.data.AT_CEREG,"aw",%progbits
+ 282              		.align	2
+ 285              	AT_CEREG:
+ 286 0000 61000000 		.word	.LC18
+ 287              		.section	.data.AT_CFUN,"aw",%progbits
+ 288              		.align	2
+ 291              	AT_CFUN:
+ 292 0000 05000000 		.word	.LC9
+ 293              		.section	.data.AT_CGACT,"aw",%progbits
+ 294              		.align	2
+ 297              	AT_CGACT:
+ 298 0000 46000000 		.word	.LC16
+ 299              		.section	.data.AT_CGDCONT,"aw",%progbits
+ 300              		.align	2
+ 303              	AT_CGDCONT:
+ 304 0000 4C000000 		.word	.LC17
+ 305              		.section	.data.AT_CGMI,"aw",%progbits
+ 306              		.align	2
+ 309              	AT_CGMI:
+ 310 0000 7B000000 		.word	.LC21
+ 311              		.section	.data.AT_CGPADDR,"aw",%progbits
+ 312              		.align	2
+ 315              	AT_CGPADDR:
+ 316 0000 3A000000 		.word	.LC14
+ 317              		.section	.data.AT_CMEE,"aw",%progbits
+ 318              		.align	2
+ 321              	AT_CMEE:
+ 322 0000 0A000000 		.word	.LC10
+ 323              		.section	.data.AT_COPS,"aw",%progbits
+ 324              		.align	2
+ 327              	AT_COPS:
+ 328 0000 68000000 		.word	.LC19
+ 329              		.section	.data.AT_CSQ,"aw",%progbits
+ 330              		.align	2
+ 333              	AT_CSQ:
+ 334 0000 42000000 		.word	.LC15
+ 335              		.section	.data.AT_NPIN,"aw",%progbits
+ 336              		.align	2
+ 339              	AT_NPIN:
+ 340 0000 6D000000 		.word	.LC20
+ 341              		.section	.data.AT_NRB,"aw",%progbits
+ 342              		.align	2
+ 345              	AT_NRB:
+ 346 0000 1F000000 		.word	.LC6
+ 347              		.section	.data.AT_NSOCR,"aw",%progbits
+ 348              		.align	2
+ 351              	AT_NSOCR:
+ 352 0000 21000000 		.word	.LC13
+ 353              		.section	.data.AT_NSORF,"aw",%progbits
+ 354              		.align	2
+ 357              	AT_NSORF:
+ 358 0000 10000000 		.word	.LC11
+ 359              		.section	.data.AT_NSOST,"aw",%progbits
+ 360              		.align	2
+ 363              	AT_NSOST:
+ 364 0000 1A000000 		.word	.LC12
+ 365              		.section	.data.AT_REQ,"aw",%progbits
+ 366              		.align	2
+ 369              	AT_REQ:
+ 370 0000 80000000 		.word	.LC22
+ 371              		.section	.rodata.AT_checkResult.str1.1,"aMS",%progbits,1
+ 372              	.LC1:
+ 373 0000 2573204F 		.ascii	"%s OK\015\012\000"
+ 373      4B0D0A00 
+ 374              	.LC2:
+ 375 0008 25732045 		.ascii	"%s ERROR\015\012\000"
+ 375      52524F52 
+ 375      0D0A00
+ 376              	.LC3:
+ 377 0013 2573204E 		.ascii	"%s NO RESPONSE\015\012\000"
+ 377      4F205245 
+ 377      53504F4E 
+ 377      53450D0A 
+ 377      00
+ 378              		.section	.rodata.AT_send.str1.1,"aMS",%progbits,1
+ 379              	.LC4:
+ 380 0000 41542B25 		.ascii	"AT+%s%s\015\012\000"
+ 380      7325730D 
+ 380      0A00
+ 381              	.LC5:
+ 382 000a 73656E64 		.ascii	"send to module: %s\015\012\000"
+ 382      20746F20 
+ 382      6D6F6475 
+ 382      6C653A20 
+ 382      25730D0A 
+ 383              	.LC6:
+ 384 001f 4E524200 		.ascii	"NRB\000"
+ 385              	.LC7:
+ 386 0023 4552524F 		.ascii	"ERROR\000"
+ 386      5200
+ 387              		.section	.rodata.breakIfAtOk.str1.1,"aMS",%progbits,1
+ 388              	.LC0:
+ 389 0000 4F4B00   		.ascii	"OK\000"
+ 390              		.section	.rodata.str1.1,"aMS",%progbits,1
+ 391              	.LC8:
+ 392 0000 43434C4B 		.ascii	"CCLK\000"
+ 392      00
+ 393              	.LC9:
+ 394 0005 4346554E 		.ascii	"CFUN\000"
+ 394      00
+ 395              	.LC10:
+ 396 000a 434D4545 		.ascii	"CMEE=\000"
+ 396      3D00
+ 397              	.LC11:
+ 398 0010 4E534F52 		.ascii	"NSORF=0,2\000"
+ 398      463D302C 
+ 398      3200
+ 399              	.LC12:
+ 400 001a 4E534F53 		.ascii	"NSOST=\000"
+ 400      543D00
+ 401              	.LC13:
+ 402 0021 4E534F43 		.ascii	"NSOCR=\"DGRAM\",17,42000,1\000"
+ 402      523D2244 
+ 402      4752414D 
+ 402      222C3137 
+ 402      2C343230 
+ 403              	.LC14:
+ 404 003a 43475041 		.ascii	"CGPADDR\000"
+ 404      44445200 
+ 405              	.LC15:
+ 406 0042 43535100 		.ascii	"CSQ\000"
+ 407              	.LC16:
+ 408 0046 43474143 		.ascii	"CGACT\000"
+ 408      5400
+ 409              	.LC17:
+ 410 004c 43474443 		.ascii	"CGDCONT=1,\"IP\",\"\",\"\"\000"
+ 410      4F4E543D 
+ 410      312C2249 
+ 410      50222C22 
+ 410      222C2222 
+ 411              	.LC18:
+ 412 0061 43455245 		.ascii	"CEREG?\000"
+ 412      473F00
+ 413              	.LC19:
+ 414 0068 434F5053 		.ascii	"COPS\000"
+ 414      00
+ 415              	.LC20:
+ 416 006d 4E50494E 		.ascii	"NPIN=0,\"1234\"\000"
+ 416      3D302C22 
+ 416      31323334 
+ 416      2200
+ 417              	.LC21:
+ 418 007b 43474D49 		.ascii	"CGMI\000"
+ 418      00
+ 419              	.LC22:
+ 420 0080 415400   		.ascii	"AT\000"
+ 421              		.text
+ 422              	.Letext0:
+ 423              		.file 2 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 424              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 425              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 426              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 427              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 428              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 429              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 430              		.file 9 "../source/at_func.h"
+ 431              		.file 10 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
+ 432              		.file 11 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ 433              		.file 12 "../source/timing.h"
+ 434              		.file 13 "<built-in>"

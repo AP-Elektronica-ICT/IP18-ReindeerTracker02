@@ -1,3 +1,15 @@
-<p>
-  sensor-data works!
-</p>
+<div class="card card-body">
+    <h4 class="card-title">Login granted!</h4>
+    <p class="card-text">Select a reindeer below to view detail info</p>
+</div>
+
+<ul class="list-group" *ngIf="devices">
+  <li *ngFor="let device of devices" class="list-group-item" (click)="selectDevice(device.deviceKey)">
+    {{device.deviceKey}}
+  </li>
+    <!--<li class="list-group-item" [routerLink]="['/detail']">Reindeer 1</li>
+    <li class="list-group-item">Reindeer 2</li>
+    <li class="list-group-item">Reindeer 3</li>
+    <li class="list-group-item">Reindeer 4</li>
+    <li class="list-group-item">Reindeer 5</li>-->
+</ul>

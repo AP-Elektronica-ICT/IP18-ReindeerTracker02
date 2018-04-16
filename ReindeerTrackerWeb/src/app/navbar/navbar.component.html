@@ -1,7 +1,7 @@
 <nav>
   <div>
     <p class="logo" routerLink="/">ReindeerFinder</p>
-    <div class="buttons">
+    <div class="buttons" *ngIf="!authService.isAuthenticated()">
       <a href="#">Specifications</a>
       <a href="#">About</a>
       <a href="#">Buy now</a>
@@ -9,6 +9,13 @@
         <a routerLink="/login">Login</a>
         <span>or</span>
         <button routerLink="/signup">Sign up</button>
+      </div>
+    </div>
+    <div class="buttons" *ngIf="authService.isAuthenticated()">
+      <a routerLink="/user">Devices</a>
+      <a href="#">Profile</a>
+      <div class="auth">
+        <button (click)="signOut()">Logout</button>
       </div>
     </div>
     <div class="nav-button">

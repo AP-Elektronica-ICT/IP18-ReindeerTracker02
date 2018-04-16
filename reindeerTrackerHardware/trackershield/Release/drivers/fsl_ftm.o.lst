@@ -1,0 +1,3614 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 4
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fsl_ftm.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.FTM_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	FTM_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	FTM_Init:
+  26              	.LFB168:
+  27              		.file 1 "../drivers/fsl_ftm.c"
+   1:../drivers/fsl_ftm.c **** /*
+   2:../drivers/fsl_ftm.c ****  * The Clear BSD License
+   3:../drivers/fsl_ftm.c ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_ftm.c ****  * Copyright 2016-2017 NXP
+   5:../drivers/fsl_ftm.c ****  * All rights reserved.
+   6:../drivers/fsl_ftm.c ****  *
+   7:../drivers/fsl_ftm.c ****  * Redistribution and use in source and binary forms, with or without modification,
+   8:../drivers/fsl_ftm.c ****  * are permitted (subject to the limitations in the disclaimer below) provided
+   9:../drivers/fsl_ftm.c ****  * that the following conditions are met:
+  10:../drivers/fsl_ftm.c ****  *
+  11:../drivers/fsl_ftm.c ****  * o Redistributions of source code must retain the above copyright notice, this list
+  12:../drivers/fsl_ftm.c ****  *   of conditions and the following disclaimer.
+  13:../drivers/fsl_ftm.c ****  *
+  14:../drivers/fsl_ftm.c ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  15:../drivers/fsl_ftm.c ****  *   list of conditions and the following disclaimer in the documentation and/or
+  16:../drivers/fsl_ftm.c ****  *   other materials provided with the distribution.
+  17:../drivers/fsl_ftm.c ****  *
+  18:../drivers/fsl_ftm.c ****  * o Neither the name of the copyright holder nor the names of its
+  19:../drivers/fsl_ftm.c ****  *   contributors may be used to endorse or promote products derived from this
+  20:../drivers/fsl_ftm.c ****  *   software without specific prior written permission.
+  21:../drivers/fsl_ftm.c ****  *
+  22:../drivers/fsl_ftm.c ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  23:../drivers/fsl_ftm.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  24:../drivers/fsl_ftm.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  25:../drivers/fsl_ftm.c ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  26:../drivers/fsl_ftm.c ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  27:../drivers/fsl_ftm.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  28:../drivers/fsl_ftm.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  29:../drivers/fsl_ftm.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  30:../drivers/fsl_ftm.c ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  31:../drivers/fsl_ftm.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  32:../drivers/fsl_ftm.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  33:../drivers/fsl_ftm.c ****  */
+  34:../drivers/fsl_ftm.c **** 
+  35:../drivers/fsl_ftm.c **** #include "fsl_ftm.h"
+  36:../drivers/fsl_ftm.c **** 
+  37:../drivers/fsl_ftm.c **** /*******************************************************************************
+  38:../drivers/fsl_ftm.c ****  * Prototypes
+  39:../drivers/fsl_ftm.c ****  ******************************************************************************/
+  40:../drivers/fsl_ftm.c **** /*!
+  41:../drivers/fsl_ftm.c ****  * @brief Gets the instance from the base address
+  42:../drivers/fsl_ftm.c ****  *
+  43:../drivers/fsl_ftm.c ****  * @param base FTM peripheral base address
+  44:../drivers/fsl_ftm.c ****  *
+  45:../drivers/fsl_ftm.c ****  * @return The FTM instance
+  46:../drivers/fsl_ftm.c ****  */
+  47:../drivers/fsl_ftm.c **** static uint32_t FTM_GetInstance(FTM_Type *base);
+  48:../drivers/fsl_ftm.c **** 
+  49:../drivers/fsl_ftm.c **** /*!
+  50:../drivers/fsl_ftm.c ****  * @brief Sets the FTM register PWM synchronization method
+  51:../drivers/fsl_ftm.c ****  *
+  52:../drivers/fsl_ftm.c ****  * This function will set the necessary bits for the PWM synchronization mode that
+  53:../drivers/fsl_ftm.c ****  * user wishes to use.
+  54:../drivers/fsl_ftm.c ****  *
+  55:../drivers/fsl_ftm.c ****  * @param base       FTM peripheral base address
+  56:../drivers/fsl_ftm.c ****  * @param syncMethod Syncronization methods to use to update buffered registers. This is a logical
+  57:../drivers/fsl_ftm.c ****  *                   OR of members of the enumeration ::ftm_pwm_sync_method_t
+  58:../drivers/fsl_ftm.c ****  */
+  59:../drivers/fsl_ftm.c **** static void FTM_SetPwmSync(FTM_Type *base, uint32_t syncMethod);
+  60:../drivers/fsl_ftm.c **** 
+  61:../drivers/fsl_ftm.c **** /*!
+  62:../drivers/fsl_ftm.c ****  * @brief Sets the reload points used as loading points for register update
+  63:../drivers/fsl_ftm.c ****  *
+  64:../drivers/fsl_ftm.c ****  * This function will set the necessary bits based on what the user wishes to use as loading
+  65:../drivers/fsl_ftm.c ****  * points for FTM register update. When using this it is not required to use PWM synchnronization.
+  66:../drivers/fsl_ftm.c ****  *
+  67:../drivers/fsl_ftm.c ****  * @param base         FTM peripheral base address
+  68:../drivers/fsl_ftm.c ****  * @param reloadPoints FTM reload points. This is a logical OR of members of the
+  69:../drivers/fsl_ftm.c ****  *                     enumeration ::ftm_reload_point_t
+  70:../drivers/fsl_ftm.c ****  */
+  71:../drivers/fsl_ftm.c **** static void FTM_SetReloadPoints(FTM_Type *base, uint32_t reloadPoints);
+  72:../drivers/fsl_ftm.c **** 
+  73:../drivers/fsl_ftm.c **** /*******************************************************************************
+  74:../drivers/fsl_ftm.c ****  * Variables
+  75:../drivers/fsl_ftm.c ****  ******************************************************************************/
+  76:../drivers/fsl_ftm.c **** /*! @brief Pointers to FTM bases for each instance. */
+  77:../drivers/fsl_ftm.c **** static FTM_Type *const s_ftmBases[] = FTM_BASE_PTRS;
+  78:../drivers/fsl_ftm.c **** 
+  79:../drivers/fsl_ftm.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+  80:../drivers/fsl_ftm.c **** /*! @brief Pointers to FTM clocks for each instance. */
+  81:../drivers/fsl_ftm.c **** static const clock_ip_name_t s_ftmClocks[] = FTM_CLOCKS;
+  82:../drivers/fsl_ftm.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+  83:../drivers/fsl_ftm.c **** 
+  84:../drivers/fsl_ftm.c **** /*******************************************************************************
+  85:../drivers/fsl_ftm.c ****  * Code
+  86:../drivers/fsl_ftm.c ****  ******************************************************************************/
+  87:../drivers/fsl_ftm.c **** static uint32_t FTM_GetInstance(FTM_Type *base)
+  88:../drivers/fsl_ftm.c **** {
+  89:../drivers/fsl_ftm.c ****     uint32_t instance;
+  90:../drivers/fsl_ftm.c ****     uint32_t ftmArrayCount = (sizeof(s_ftmBases) / sizeof(s_ftmBases[0]));
+  91:../drivers/fsl_ftm.c **** 
+  92:../drivers/fsl_ftm.c ****     /* Find the instance index from base address mappings. */
+  93:../drivers/fsl_ftm.c ****     for (instance = 0; instance < ftmArrayCount; instance++)
+  94:../drivers/fsl_ftm.c ****     {
+  95:../drivers/fsl_ftm.c ****         if (s_ftmBases[instance] == base)
+  96:../drivers/fsl_ftm.c ****         {
+  97:../drivers/fsl_ftm.c ****             break;
+  98:../drivers/fsl_ftm.c ****         }
+  99:../drivers/fsl_ftm.c ****     }
+ 100:../drivers/fsl_ftm.c **** 
+ 101:../drivers/fsl_ftm.c ****     assert(instance < ftmArrayCount);
+ 102:../drivers/fsl_ftm.c **** 
+ 103:../drivers/fsl_ftm.c ****     return instance;
+ 104:../drivers/fsl_ftm.c **** }
+ 105:../drivers/fsl_ftm.c **** 
+ 106:../drivers/fsl_ftm.c **** static void FTM_SetPwmSync(FTM_Type *base, uint32_t syncMethod)
+ 107:../drivers/fsl_ftm.c **** {
+ 108:../drivers/fsl_ftm.c ****     uint8_t chnlNumber = 0;
+ 109:../drivers/fsl_ftm.c ****     uint32_t reg = 0, syncReg = 0;
+ 110:../drivers/fsl_ftm.c **** 
+ 111:../drivers/fsl_ftm.c ****     syncReg = base->SYNC;
+ 112:../drivers/fsl_ftm.c ****     /* Enable PWM synchronization of output mask register */
+ 113:../drivers/fsl_ftm.c ****     syncReg |= FTM_SYNC_SYNCHOM_MASK;
+ 114:../drivers/fsl_ftm.c **** 
+ 115:../drivers/fsl_ftm.c ****     reg = base->COMBINE;
+ 116:../drivers/fsl_ftm.c ****     for (chnlNumber = 0; chnlNumber < (FSL_FEATURE_FTM_CHANNEL_COUNTn(base) / 2); chnlNumber++)
+ 117:../drivers/fsl_ftm.c ****     {
+ 118:../drivers/fsl_ftm.c ****         /* Enable PWM synchronization of registers C(n)V and C(n+1)V */
+ 119:../drivers/fsl_ftm.c ****         reg |= (1U << (FTM_COMBINE_SYNCEN0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlNumber)));
+ 120:../drivers/fsl_ftm.c ****     }
+ 121:../drivers/fsl_ftm.c ****     base->COMBINE = reg;
+ 122:../drivers/fsl_ftm.c **** 
+ 123:../drivers/fsl_ftm.c ****     reg = base->SYNCONF;
+ 124:../drivers/fsl_ftm.c **** 
+ 125:../drivers/fsl_ftm.c ****     /* Use enhanced PWM synchronization method. Use PWM sync to update register values */
+ 126:../drivers/fsl_ftm.c ****     reg |= (FTM_SYNCONF_SYNCMODE_MASK | FTM_SYNCONF_CNTINC_MASK | FTM_SYNCONF_INVC_MASK | FTM_SYNCO
+ 127:../drivers/fsl_ftm.c **** 
+ 128:../drivers/fsl_ftm.c ****     if (syncMethod & FTM_SYNC_SWSYNC_MASK)
+ 129:../drivers/fsl_ftm.c ****     {
+ 130:../drivers/fsl_ftm.c ****         /* Enable needed bits for software trigger to update registers with its buffer value */
+ 131:../drivers/fsl_ftm.c ****         reg |= (FTM_SYNCONF_SWRSTCNT_MASK | FTM_SYNCONF_SWWRBUF_MASK | FTM_SYNCONF_SWINVC_MASK |
+ 132:../drivers/fsl_ftm.c ****                 FTM_SYNCONF_SWSOC_MASK | FTM_SYNCONF_SWOM_MASK);
+ 133:../drivers/fsl_ftm.c ****     }
+ 134:../drivers/fsl_ftm.c **** 
+ 135:../drivers/fsl_ftm.c ****     if (syncMethod & (FTM_SYNC_TRIG0_MASK | FTM_SYNC_TRIG1_MASK | FTM_SYNC_TRIG2_MASK))
+ 136:../drivers/fsl_ftm.c ****     {
+ 137:../drivers/fsl_ftm.c ****         /* Enable needed bits for hardware trigger to update registers with its buffer value */
+ 138:../drivers/fsl_ftm.c ****         reg |= (FTM_SYNCONF_HWRSTCNT_MASK | FTM_SYNCONF_HWWRBUF_MASK | FTM_SYNCONF_HWINVC_MASK |
+ 139:../drivers/fsl_ftm.c ****                 FTM_SYNCONF_HWSOC_MASK | FTM_SYNCONF_HWOM_MASK);
+ 140:../drivers/fsl_ftm.c **** 
+ 141:../drivers/fsl_ftm.c ****         /* Enable the appropriate hardware trigger that is used for PWM sync */
+ 142:../drivers/fsl_ftm.c ****         if (syncMethod & FTM_SYNC_TRIG0_MASK)
+ 143:../drivers/fsl_ftm.c ****         {
+ 144:../drivers/fsl_ftm.c ****             syncReg |= FTM_SYNC_TRIG0_MASK;
+ 145:../drivers/fsl_ftm.c ****         }
+ 146:../drivers/fsl_ftm.c ****         if (syncMethod & FTM_SYNC_TRIG1_MASK)
+ 147:../drivers/fsl_ftm.c ****         {
+ 148:../drivers/fsl_ftm.c ****             syncReg |= FTM_SYNC_TRIG1_MASK;
+ 149:../drivers/fsl_ftm.c ****         }
+ 150:../drivers/fsl_ftm.c ****         if (syncMethod & FTM_SYNC_TRIG2_MASK)
+ 151:../drivers/fsl_ftm.c ****         {
+ 152:../drivers/fsl_ftm.c ****             syncReg |= FTM_SYNC_TRIG2_MASK;
+ 153:../drivers/fsl_ftm.c ****         }
+ 154:../drivers/fsl_ftm.c ****     }
+ 155:../drivers/fsl_ftm.c **** 
+ 156:../drivers/fsl_ftm.c ****     /* Write back values to the SYNC register */
+ 157:../drivers/fsl_ftm.c ****     base->SYNC = syncReg;
+ 158:../drivers/fsl_ftm.c **** 
+ 159:../drivers/fsl_ftm.c ****     /* Write the PWM synch values to the SYNCONF register */
+ 160:../drivers/fsl_ftm.c ****     base->SYNCONF = reg;
+ 161:../drivers/fsl_ftm.c **** }
+ 162:../drivers/fsl_ftm.c **** 
+ 163:../drivers/fsl_ftm.c **** static void FTM_SetReloadPoints(FTM_Type *base, uint32_t reloadPoints)
+ 164:../drivers/fsl_ftm.c **** {
+ 165:../drivers/fsl_ftm.c ****     uint32_t chnlNumber = 0;
+ 166:../drivers/fsl_ftm.c ****     uint32_t reg = 0;
+ 167:../drivers/fsl_ftm.c **** 
+ 168:../drivers/fsl_ftm.c ****     /* Need CNTINC bit to be 1 for CNTIN register to update with its buffer value on reload  */
+ 169:../drivers/fsl_ftm.c ****     base->SYNCONF |= FTM_SYNCONF_CNTINC_MASK;
+ 170:../drivers/fsl_ftm.c **** 
+ 171:../drivers/fsl_ftm.c ****     reg = base->COMBINE;
+ 172:../drivers/fsl_ftm.c ****     for (chnlNumber = 0; chnlNumber < (FSL_FEATURE_FTM_CHANNEL_COUNTn(base) / 2); chnlNumber++)
+ 173:../drivers/fsl_ftm.c ****     {
+ 174:../drivers/fsl_ftm.c ****         /* Need SYNCEN bit to be 1 for CnV reg to update with its buffer value on reload  */
+ 175:../drivers/fsl_ftm.c ****         reg |= (1U << (FTM_COMBINE_SYNCEN0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlNumber)));
+ 176:../drivers/fsl_ftm.c ****     }
+ 177:../drivers/fsl_ftm.c ****     base->COMBINE = reg;
+ 178:../drivers/fsl_ftm.c **** 
+ 179:../drivers/fsl_ftm.c ****     /* Set the reload points */
+ 180:../drivers/fsl_ftm.c ****     reg = base->PWMLOAD;
+ 181:../drivers/fsl_ftm.c **** 
+ 182:../drivers/fsl_ftm.c ****     /* Enable the selected channel match reload points */
+ 183:../drivers/fsl_ftm.c ****     reg &= ~((1U << FSL_FEATURE_FTM_CHANNEL_COUNTn(base)) - 1);
+ 184:../drivers/fsl_ftm.c ****     reg |= (reloadPoints & ((1U << FSL_FEATURE_FTM_CHANNEL_COUNTn(base)) - 1));
+ 185:../drivers/fsl_ftm.c **** 
+ 186:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_HALFCYCLE_RELOAD) && (FSL_FEATURE_FTM_HAS_HALFCYCLE_RELOAD)
+ 187:../drivers/fsl_ftm.c ****     /* Enable half cycle match as a reload point */
+ 188:../drivers/fsl_ftm.c ****     if (reloadPoints & kFTM_HalfCycMatch)
+ 189:../drivers/fsl_ftm.c ****     {
+ 190:../drivers/fsl_ftm.c ****         reg |= FTM_PWMLOAD_HCSEL_MASK;
+ 191:../drivers/fsl_ftm.c ****     }
+ 192:../drivers/fsl_ftm.c ****     else
+ 193:../drivers/fsl_ftm.c ****     {
+ 194:../drivers/fsl_ftm.c ****         reg &= ~FTM_PWMLOAD_HCSEL_MASK;
+ 195:../drivers/fsl_ftm.c ****     }
+ 196:../drivers/fsl_ftm.c **** #endif /* FSL_FEATURE_FTM_HAS_HALFCYCLE_RELOAD */
+ 197:../drivers/fsl_ftm.c **** 
+ 198:../drivers/fsl_ftm.c ****     base->PWMLOAD = reg;
+ 199:../drivers/fsl_ftm.c **** 
+ 200:../drivers/fsl_ftm.c ****     /* These reload points are used when counter is in up-down counting mode */
+ 201:../drivers/fsl_ftm.c ****     reg = base->SYNC;
+ 202:../drivers/fsl_ftm.c ****     if (reloadPoints & kFTM_CntMax)
+ 203:../drivers/fsl_ftm.c ****     {
+ 204:../drivers/fsl_ftm.c ****         /* Reload when counter turns from up to down */
+ 205:../drivers/fsl_ftm.c ****         reg |= FTM_SYNC_CNTMAX_MASK;
+ 206:../drivers/fsl_ftm.c ****     }
+ 207:../drivers/fsl_ftm.c ****     else
+ 208:../drivers/fsl_ftm.c ****     {
+ 209:../drivers/fsl_ftm.c ****         reg &= ~FTM_SYNC_CNTMAX_MASK;
+ 210:../drivers/fsl_ftm.c ****     }
+ 211:../drivers/fsl_ftm.c **** 
+ 212:../drivers/fsl_ftm.c ****     if (reloadPoints & kFTM_CntMin)
+ 213:../drivers/fsl_ftm.c ****     {
+ 214:../drivers/fsl_ftm.c ****         /* Reload when counter turns from down to up */
+ 215:../drivers/fsl_ftm.c ****         reg |= FTM_SYNC_CNTMIN_MASK;
+ 216:../drivers/fsl_ftm.c ****     }
+ 217:../drivers/fsl_ftm.c ****     else
+ 218:../drivers/fsl_ftm.c ****     {
+ 219:../drivers/fsl_ftm.c ****         reg &= ~FTM_SYNC_CNTMIN_MASK;
+ 220:../drivers/fsl_ftm.c ****     }
+ 221:../drivers/fsl_ftm.c ****     base->SYNC = reg;
+ 222:../drivers/fsl_ftm.c **** }
+ 223:../drivers/fsl_ftm.c **** 
+ 224:../drivers/fsl_ftm.c **** status_t FTM_Init(FTM_Type *base, const ftm_config_t *config)
+ 225:../drivers/fsl_ftm.c **** {
+  28              		.loc 1 225 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+ 226:../drivers/fsl_ftm.c ****     assert(config);
+ 227:../drivers/fsl_ftm.c **** 
+ 228:../drivers/fsl_ftm.c ****     uint32_t reg;
+ 229:../drivers/fsl_ftm.c **** 
+ 230:../drivers/fsl_ftm.c ****     if (!(config->pwmSyncMode &
+  33              		.loc 1 230 0
+  34 0000 4B68     		ldr	r3, [r1, #4]
+  35 0002 13F0F00F 		tst	r3, #240
+ 225:../drivers/fsl_ftm.c ****     assert(config);
+  36              		.loc 1 225 0
+  37 0006 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  38              		.cfi_def_cfa_offset 36
+  39              		.cfi_offset 4, -36
+  40              		.cfi_offset 5, -32
+  41              		.cfi_offset 6, -28
+  42              		.cfi_offset 7, -24
+  43              		.cfi_offset 8, -20
+  44              		.cfi_offset 9, -16
+  45              		.cfi_offset 10, -12
+  46              		.cfi_offset 11, -8
+  47              		.cfi_offset 14, -4
+  48              		.loc 1 230 0
+  49 000a 00F00A81 		beq	.L25
+  50              	.LVL1:
+  51              	.LBB10:
+  52              	.LBB11:
+  95:../drivers/fsl_ftm.c ****         {
+  53              		.loc 1 95 0
+  54 000e 864B     		ldr	r3, .L58
+  55 0010 9842     		cmp	r0, r3
+  56 0012 00F0CB80 		beq	.L26
+  57              	.LVL2:
+  58 0016 03F58053 		add	r3, r3, #4096
+  59 001a 9842     		cmp	r0, r3
+  60 001c 00F0C880 		beq	.L27
+  61              	.LVL3:
+  62 0020 03F58053 		add	r3, r3, #4096
+  63 0024 9842     		cmp	r0, r3
+  64 0026 00F0C580 		beq	.L28
+  65              	.LVL4:
+  93:../drivers/fsl_ftm.c ****     {
+  66              		.loc 1 93 0
+  67 002a 03F5FE23 		add	r3, r3, #520192
+  68 002e 9842     		cmp	r0, r3
+  69 0030 0CBF     		ite	eq
+  70 0032 0323     		moveq	r3, #3
+  71 0034 0423     		movne	r3, #4
+  72              	.LVL5:
+  73              	.L3:
+  74              	.LBE11:
+  75              	.LBE10:
+ 231:../drivers/fsl_ftm.c ****           (FTM_SYNC_TRIG0_MASK | FTM_SYNC_TRIG1_MASK | FTM_SYNC_TRIG2_MASK | FTM_SYNC_SWSYNC_MASK))
+ 232:../drivers/fsl_ftm.c ****     {
+ 233:../drivers/fsl_ftm.c ****         /* Invalid PWM sync mode */
+ 234:../drivers/fsl_ftm.c ****         return kStatus_Fail;
+ 235:../drivers/fsl_ftm.c ****     }
+ 236:../drivers/fsl_ftm.c **** 
+ 237:../drivers/fsl_ftm.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+ 238:../drivers/fsl_ftm.c ****     /* Ungate the FTM clock*/
+ 239:../drivers/fsl_ftm.c ****     CLOCK_EnableClock(s_ftmClocks[FTM_GetInstance(base)]);
+  76              		.loc 1 239 0
+  77 0036 7D4A     		ldr	r2, .L58+4
+  78              	.LBB13:
+  79              	.LBB14:
+ 116:../drivers/fsl_ftm.c ****     {
+  80              		.loc 1 116 0
+  81 0038 DFF8ECE1 		ldr	lr, .L58
+  82              	.LBE14:
+  83              	.LBE13:
+  84              		.loc 1 239 0
+  85 003c 52F82330 		ldr	r3, [r2, r3, lsl #2]
+  86              	.LVL6:
+  87              	.LBB18:
+  88              	.LBB15:
+ 116:../drivers/fsl_ftm.c ****     {
+  89              		.loc 1 116 0
+  90 0040 DFF8EC81 		ldr	r8, .L58+8
+  91 0044 DFF8ECA1 		ldr	r10, .L58+12
+  92 0048 DFF8ECB1 		ldr	fp, .L58+16
+  93              	.LBE15:
+  94              	.LBE18:
+  95              	.LBB19:
+  96              	.LBB20:
+  97              		.file 2 "../drivers/fsl_clock.h"
+   1:../drivers/fsl_clock.h **** /*
+   2:../drivers/fsl_clock.h ****  * The Clear BSD License
+   3:../drivers/fsl_clock.h ****  * Copyright (c) 2015, Freescale Semiconductor, Inc.
+   4:../drivers/fsl_clock.h ****  * Copyright (c) 2016 - 2017 , NXP
+   5:../drivers/fsl_clock.h ****  * All rights reserved.
+   6:../drivers/fsl_clock.h ****  *
+   7:../drivers/fsl_clock.h ****  *
+   8:../drivers/fsl_clock.h ****  * Redistribution and use in source and binary forms, with or without modification,
+   9:../drivers/fsl_clock.h ****  * are permitted (subject to the limitations in the disclaimer below) provided
+  10:../drivers/fsl_clock.h ****  * that the following conditions are met:
+  11:../drivers/fsl_clock.h ****  *
+  12:../drivers/fsl_clock.h ****  * o Redistributions of source code must retain the above copyright notice, this list
+  13:../drivers/fsl_clock.h ****  *   of conditions and the following disclaimer.
+  14:../drivers/fsl_clock.h ****  *
+  15:../drivers/fsl_clock.h ****  * o Redistributions in binary form must reproduce the above copyright notice, this
+  16:../drivers/fsl_clock.h ****  *   list of conditions and the following disclaimer in the documentation and/or
+  17:../drivers/fsl_clock.h ****  *   other materials provided with the distribution.
+  18:../drivers/fsl_clock.h ****  *
+  19:../drivers/fsl_clock.h ****  * o Neither the name of copyright holder nor the names of its
+  20:../drivers/fsl_clock.h ****  *   contributors may be used to endorse or promote products derived from this
+  21:../drivers/fsl_clock.h ****  *   software without specific prior written permission.
+  22:../drivers/fsl_clock.h ****  *
+  23:../drivers/fsl_clock.h ****  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+  24:../drivers/fsl_clock.h ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  25:../drivers/fsl_clock.h ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  26:../drivers/fsl_clock.h ****  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  27:../drivers/fsl_clock.h ****  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  28:../drivers/fsl_clock.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  29:../drivers/fsl_clock.h ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  30:../drivers/fsl_clock.h ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  31:../drivers/fsl_clock.h ****  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  32:../drivers/fsl_clock.h ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  33:../drivers/fsl_clock.h ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  34:../drivers/fsl_clock.h ****  */
+  35:../drivers/fsl_clock.h **** 
+  36:../drivers/fsl_clock.h **** #ifndef _FSL_CLOCK_H_
+  37:../drivers/fsl_clock.h **** #define _FSL_CLOCK_H_
+  38:../drivers/fsl_clock.h **** 
+  39:../drivers/fsl_clock.h **** #include "fsl_common.h"
+  40:../drivers/fsl_clock.h **** 
+  41:../drivers/fsl_clock.h **** /*! @addtogroup clock */
+  42:../drivers/fsl_clock.h **** /*! @{ */
+  43:../drivers/fsl_clock.h **** 
+  44:../drivers/fsl_clock.h **** /*! @file */
+  45:../drivers/fsl_clock.h **** 
+  46:../drivers/fsl_clock.h **** /*******************************************************************************
+  47:../drivers/fsl_clock.h ****  * Configurations
+  48:../drivers/fsl_clock.h ****  ******************************************************************************/
+  49:../drivers/fsl_clock.h **** 
+  50:../drivers/fsl_clock.h **** /*! @brief Configures whether to check a parameter in a function.
+  51:../drivers/fsl_clock.h ****  *
+  52:../drivers/fsl_clock.h ****  * Some MCG settings must be changed with conditions, for example:
+  53:../drivers/fsl_clock.h ****  *  1. MCGIRCLK settings, such as the source, divider, and the trim value should not change when
+  54:../drivers/fsl_clock.h ****  *     MCGIRCLK is used as a system clock source.
+  55:../drivers/fsl_clock.h ****  *  2. MCG_C7[OSCSEL] should not be changed  when the external reference clock is used
+  56:../drivers/fsl_clock.h ****  *     as a system clock source. For example, in FBE/BLPE/PBE modes.
+  57:../drivers/fsl_clock.h ****  *  3. The users should only switch between the supported clock modes.
+  58:../drivers/fsl_clock.h ****  *
+  59:../drivers/fsl_clock.h ****  * MCG functions check the parameter and MCG status before setting, if not allowed
+  60:../drivers/fsl_clock.h ****  * to change, the functions return error. The parameter checking increases code size,
+  61:../drivers/fsl_clock.h ****  * if code size is a critical requirement, change #MCG_CONFIG_CHECK_PARAM to 0 to
+  62:../drivers/fsl_clock.h ****  * disable parameter checking.
+  63:../drivers/fsl_clock.h ****  */
+  64:../drivers/fsl_clock.h **** #ifndef MCG_CONFIG_CHECK_PARAM
+  65:../drivers/fsl_clock.h **** #define MCG_CONFIG_CHECK_PARAM 0U
+  66:../drivers/fsl_clock.h **** #endif
+  67:../drivers/fsl_clock.h **** 
+  68:../drivers/fsl_clock.h **** /*! @brief Configure whether driver controls clock
+  69:../drivers/fsl_clock.h ****  *
+  70:../drivers/fsl_clock.h ****  * When set to 0, peripheral drivers will enable clock in initialize function
+  71:../drivers/fsl_clock.h ****  * and disable clock in de-initialize function. When set to 1, peripheral
+  72:../drivers/fsl_clock.h ****  * driver will not control the clock, application could contol the clock out of
+  73:../drivers/fsl_clock.h ****  * the driver.
+  74:../drivers/fsl_clock.h ****  *
+  75:../drivers/fsl_clock.h ****  * @note All drivers share this feature switcher. If it is set to 1, application
+  76:../drivers/fsl_clock.h ****  * should handle clock enable and disable for all drivers.
+  77:../drivers/fsl_clock.h ****  */
+  78:../drivers/fsl_clock.h **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL))
+  79:../drivers/fsl_clock.h **** #define FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL 0
+  80:../drivers/fsl_clock.h **** #endif
+  81:../drivers/fsl_clock.h **** 
+  82:../drivers/fsl_clock.h **** /*******************************************************************************
+  83:../drivers/fsl_clock.h ****  * Definitions
+  84:../drivers/fsl_clock.h ****  ******************************************************************************/
+  85:../drivers/fsl_clock.h **** 
+  86:../drivers/fsl_clock.h **** /*! @name Driver version */
+  87:../drivers/fsl_clock.h **** /*@{*/
+  88:../drivers/fsl_clock.h **** /*! @brief CLOCK driver version 2.2.1. */
+  89:../drivers/fsl_clock.h **** #define FSL_CLOCK_DRIVER_VERSION (MAKE_VERSION(2, 2, 1))
+  90:../drivers/fsl_clock.h **** /*@}*/
+  91:../drivers/fsl_clock.h **** 
+  92:../drivers/fsl_clock.h **** /*! @brief External XTAL0 (OSC0) clock frequency.
+  93:../drivers/fsl_clock.h ****  *
+  94:../drivers/fsl_clock.h ****  * The XTAL0/EXTAL0 (OSC0) clock frequency in Hz. When the clock is set up, use the
+  95:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal0Freq to set the value in the clock driver. For example,
+  96:../drivers/fsl_clock.h ****  * if XTAL0 is 8 MHz:
+  97:../drivers/fsl_clock.h ****  * @code
+  98:../drivers/fsl_clock.h ****  * CLOCK_InitOsc0(...); // Set up the OSC0
+  99:../drivers/fsl_clock.h ****  * CLOCK_SetXtal0Freq(80000000); // Set the XTAL0 value to the clock driver.
+ 100:../drivers/fsl_clock.h ****  * @endcode
+ 101:../drivers/fsl_clock.h ****  *
+ 102:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where only one core needs to set up the
+ 103:../drivers/fsl_clock.h ****  * OSC0 using the CLOCK_InitOsc0. All other cores need to call the CLOCK_SetXtal0Freq
+ 104:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+ 105:../drivers/fsl_clock.h ****  */
+ 106:../drivers/fsl_clock.h **** extern uint32_t g_xtal0Freq;
+ 107:../drivers/fsl_clock.h **** 
+ 108:../drivers/fsl_clock.h **** /*! @brief External XTAL32/EXTAL32/RTC_CLKIN clock frequency.
+ 109:../drivers/fsl_clock.h ****  *
+ 110:../drivers/fsl_clock.h ****  * The XTAL32/EXTAL32/RTC_CLKIN clock frequency in Hz. When the clock is set up, use the
+ 111:../drivers/fsl_clock.h ****  * function CLOCK_SetXtal32Freq to set the value in the clock driver.
+ 112:../drivers/fsl_clock.h ****  *
+ 113:../drivers/fsl_clock.h ****  * This is important for the multicore platforms where only one core needs to set up
+ 114:../drivers/fsl_clock.h ****  * the clock. All other cores need to call the CLOCK_SetXtal32Freq
+ 115:../drivers/fsl_clock.h ****  * to get a valid clock frequency.
+ 116:../drivers/fsl_clock.h ****  */
+ 117:../drivers/fsl_clock.h **** extern uint32_t g_xtal32Freq;
+ 118:../drivers/fsl_clock.h **** 
+ 119:../drivers/fsl_clock.h **** /*! @brief IRC48M clock frequency in Hz. */
+ 120:../drivers/fsl_clock.h **** #define MCG_INTERNAL_IRC_48M 48000000U
+ 121:../drivers/fsl_clock.h **** 
+ 122:../drivers/fsl_clock.h **** #if (defined(OSC) && !(defined(OSC0)))
+ 123:../drivers/fsl_clock.h **** #define OSC0 OSC
+ 124:../drivers/fsl_clock.h **** #endif
+ 125:../drivers/fsl_clock.h **** 
+ 126:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DMAMUX. */
+ 127:../drivers/fsl_clock.h **** #define DMAMUX_CLOCKS  \
+ 128:../drivers/fsl_clock.h ****     {                  \
+ 129:../drivers/fsl_clock.h ****         kCLOCK_Dmamux0 \
+ 130:../drivers/fsl_clock.h ****     }
+ 131:../drivers/fsl_clock.h **** 
+ 132:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for RTC. */
+ 133:../drivers/fsl_clock.h **** #define RTC_CLOCKS  \
+ 134:../drivers/fsl_clock.h ****     {               \
+ 135:../drivers/fsl_clock.h ****         kCLOCK_Rtc0 \
+ 136:../drivers/fsl_clock.h ****     }
+ 137:../drivers/fsl_clock.h **** 
+ 138:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for ENET. */
+ 139:../drivers/fsl_clock.h **** #define ENET_CLOCKS  \
+ 140:../drivers/fsl_clock.h ****     {                \
+ 141:../drivers/fsl_clock.h ****         kCLOCK_Enet0 \
+ 142:../drivers/fsl_clock.h ****     }
+ 143:../drivers/fsl_clock.h **** 
+ 144:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PORT. */
+ 145:../drivers/fsl_clock.h **** #define PORT_CLOCKS                                                          \
+ 146:../drivers/fsl_clock.h ****     {                                                                        \
+ 147:../drivers/fsl_clock.h ****         kCLOCK_PortA, kCLOCK_PortB, kCLOCK_PortC, kCLOCK_PortD, kCLOCK_PortE \
+ 148:../drivers/fsl_clock.h ****     }
+ 149:../drivers/fsl_clock.h **** 
+ 150:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SAI. */
+ 151:../drivers/fsl_clock.h **** #define SAI_CLOCKS  \
+ 152:../drivers/fsl_clock.h ****     {               \
+ 153:../drivers/fsl_clock.h ****         kCLOCK_Sai0 \
+ 154:../drivers/fsl_clock.h ****     }
+ 155:../drivers/fsl_clock.h **** 
+ 156:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FLEXBUS. */
+ 157:../drivers/fsl_clock.h **** #define FLEXBUS_CLOCKS  \
+ 158:../drivers/fsl_clock.h ****     {                   \
+ 159:../drivers/fsl_clock.h ****         kCLOCK_Flexbus0 \
+ 160:../drivers/fsl_clock.h ****     }
+ 161:../drivers/fsl_clock.h **** 
+ 162:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for EWM. */
+ 163:../drivers/fsl_clock.h **** #define EWM_CLOCKS  \
+ 164:../drivers/fsl_clock.h ****     {               \
+ 165:../drivers/fsl_clock.h ****         kCLOCK_Ewm0 \
+ 166:../drivers/fsl_clock.h ****     }
+ 167:../drivers/fsl_clock.h **** 
+ 168:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PIT. */
+ 169:../drivers/fsl_clock.h **** #define PIT_CLOCKS  \
+ 170:../drivers/fsl_clock.h ****     {               \
+ 171:../drivers/fsl_clock.h ****         kCLOCK_Pit0 \
+ 172:../drivers/fsl_clock.h ****     }
+ 173:../drivers/fsl_clock.h **** 
+ 174:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DSPI. */
+ 175:../drivers/fsl_clock.h **** #define DSPI_CLOCKS                           \
+ 176:../drivers/fsl_clock.h ****     {                                         \
+ 177:../drivers/fsl_clock.h ****         kCLOCK_Spi0, kCLOCK_Spi1, kCLOCK_Spi2 \
+ 178:../drivers/fsl_clock.h ****     }
+ 179:../drivers/fsl_clock.h **** 
+ 180:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for LPTMR. */
+ 181:../drivers/fsl_clock.h **** #define LPTMR_CLOCKS  \
+ 182:../drivers/fsl_clock.h ****     {                 \
+ 183:../drivers/fsl_clock.h ****         kCLOCK_Lptmr0 \
+ 184:../drivers/fsl_clock.h ****     }
+ 185:../drivers/fsl_clock.h **** 
+ 186:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for SDHC. */
+ 187:../drivers/fsl_clock.h **** #define SDHC_CLOCKS  \
+ 188:../drivers/fsl_clock.h ****     {                \
+ 189:../drivers/fsl_clock.h ****         kCLOCK_Sdhc0 \
+ 190:../drivers/fsl_clock.h ****     }
+ 191:../drivers/fsl_clock.h **** 
+ 192:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FTM. */
+ 193:../drivers/fsl_clock.h **** #define FTM_CLOCKS                                         \
+ 194:../drivers/fsl_clock.h ****     {                                                      \
+ 195:../drivers/fsl_clock.h ****         kCLOCK_Ftm0, kCLOCK_Ftm1, kCLOCK_Ftm2, kCLOCK_Ftm3 \
+ 196:../drivers/fsl_clock.h ****     }
+ 197:../drivers/fsl_clock.h **** 
+ 198:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for EDMA. */
+ 199:../drivers/fsl_clock.h **** #define EDMA_CLOCKS \
+ 200:../drivers/fsl_clock.h ****     {               \
+ 201:../drivers/fsl_clock.h ****         kCLOCK_Dma0 \
+ 202:../drivers/fsl_clock.h ****     }
+ 203:../drivers/fsl_clock.h **** 
+ 204:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FLEXCAN. */
+ 205:../drivers/fsl_clock.h **** #define FLEXCAN_CLOCKS  \
+ 206:../drivers/fsl_clock.h ****     {                   \
+ 207:../drivers/fsl_clock.h ****         kCLOCK_Flexcan0 \
+ 208:../drivers/fsl_clock.h ****     }
+ 209:../drivers/fsl_clock.h **** 
+ 210:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for DAC. */
+ 211:../drivers/fsl_clock.h **** #define DAC_CLOCKS               \
+ 212:../drivers/fsl_clock.h ****     {                            \
+ 213:../drivers/fsl_clock.h ****         kCLOCK_Dac0, kCLOCK_Dac1 \
+ 214:../drivers/fsl_clock.h ****     }
+ 215:../drivers/fsl_clock.h **** 
+ 216:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for ADC16. */
+ 217:../drivers/fsl_clock.h **** #define ADC16_CLOCKS             \
+ 218:../drivers/fsl_clock.h ****     {                            \
+ 219:../drivers/fsl_clock.h ****         kCLOCK_Adc0, kCLOCK_Adc1 \
+ 220:../drivers/fsl_clock.h ****     }
+ 221:../drivers/fsl_clock.h **** 
+ 222:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for MPU. */
+ 223:../drivers/fsl_clock.h **** #define SYSMPU_CLOCKS  \
+ 224:../drivers/fsl_clock.h ****     {                  \
+ 225:../drivers/fsl_clock.h ****         kCLOCK_Sysmpu0 \
+ 226:../drivers/fsl_clock.h ****     }
+ 227:../drivers/fsl_clock.h **** 
+ 228:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for VREF. */
+ 229:../drivers/fsl_clock.h **** #define VREF_CLOCKS  \
+ 230:../drivers/fsl_clock.h ****     {                \
+ 231:../drivers/fsl_clock.h ****         kCLOCK_Vref0 \
+ 232:../drivers/fsl_clock.h ****     }
+ 233:../drivers/fsl_clock.h **** 
+ 234:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CMT. */
+ 235:../drivers/fsl_clock.h **** #define CMT_CLOCKS  \
+ 236:../drivers/fsl_clock.h ****     {               \
+ 237:../drivers/fsl_clock.h ****         kCLOCK_Cmt0 \
+ 238:../drivers/fsl_clock.h ****     }
+ 239:../drivers/fsl_clock.h **** 
+ 240:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for UART. */
+ 241:../drivers/fsl_clock.h **** #define UART_CLOCKS                                                                        \
+ 242:../drivers/fsl_clock.h ****     {                                                                                      \
+ 243:../drivers/fsl_clock.h ****         kCLOCK_Uart0, kCLOCK_Uart1, kCLOCK_Uart2, kCLOCK_Uart3, kCLOCK_Uart4, kCLOCK_Uart5 \
+ 244:../drivers/fsl_clock.h ****     }
+ 245:../drivers/fsl_clock.h **** 
+ 246:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for RNGA. */
+ 247:../drivers/fsl_clock.h **** #define RNGA_CLOCKS  \
+ 248:../drivers/fsl_clock.h ****     {                \
+ 249:../drivers/fsl_clock.h ****         kCLOCK_Rnga0 \
+ 250:../drivers/fsl_clock.h ****     }
+ 251:../drivers/fsl_clock.h **** 
+ 252:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CRC. */
+ 253:../drivers/fsl_clock.h **** #define CRC_CLOCKS  \
+ 254:../drivers/fsl_clock.h ****     {               \
+ 255:../drivers/fsl_clock.h ****         kCLOCK_Crc0 \
+ 256:../drivers/fsl_clock.h ****     }
+ 257:../drivers/fsl_clock.h **** 
+ 258:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for I2C. */
+ 259:../drivers/fsl_clock.h **** #define I2C_CLOCKS                            \
+ 260:../drivers/fsl_clock.h ****     {                                         \
+ 261:../drivers/fsl_clock.h ****         kCLOCK_I2c0, kCLOCK_I2c1, kCLOCK_I2c2 \
+ 262:../drivers/fsl_clock.h ****     }
+ 263:../drivers/fsl_clock.h **** 
+ 264:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for PDB. */
+ 265:../drivers/fsl_clock.h **** #define PDB_CLOCKS  \
+ 266:../drivers/fsl_clock.h ****     {               \
+ 267:../drivers/fsl_clock.h ****         kCLOCK_Pdb0 \
+ 268:../drivers/fsl_clock.h ****     }
+ 269:../drivers/fsl_clock.h **** 
+ 270:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for FTF. */
+ 271:../drivers/fsl_clock.h **** #define FTF_CLOCKS  \
+ 272:../drivers/fsl_clock.h ****     {               \
+ 273:../drivers/fsl_clock.h ****         kCLOCK_Ftf0 \
+ 274:../drivers/fsl_clock.h ****     }
+ 275:../drivers/fsl_clock.h **** 
+ 276:../drivers/fsl_clock.h **** /*! @brief Clock ip name array for CMP. */
+ 277:../drivers/fsl_clock.h **** #define CMP_CLOCKS                            \
+ 278:../drivers/fsl_clock.h ****     {                                         \
+ 279:../drivers/fsl_clock.h ****         kCLOCK_Cmp0, kCLOCK_Cmp1, kCLOCK_Cmp2 \
+ 280:../drivers/fsl_clock.h ****     }
+ 281:../drivers/fsl_clock.h **** 
+ 282:../drivers/fsl_clock.h **** /*!
+ 283:../drivers/fsl_clock.h ****  * @brief LPO clock frequency.
+ 284:../drivers/fsl_clock.h ****  */
+ 285:../drivers/fsl_clock.h **** #define LPO_CLK_FREQ 1000U
+ 286:../drivers/fsl_clock.h **** 
+ 287:../drivers/fsl_clock.h **** /*! @brief Peripherals clock source definition. */
+ 288:../drivers/fsl_clock.h **** #define SYS_CLK kCLOCK_CoreSysClk
+ 289:../drivers/fsl_clock.h **** #define BUS_CLK kCLOCK_BusClk
+ 290:../drivers/fsl_clock.h **** 
+ 291:../drivers/fsl_clock.h **** #define I2C0_CLK_SRC BUS_CLK
+ 292:../drivers/fsl_clock.h **** #define I2C1_CLK_SRC BUS_CLK
+ 293:../drivers/fsl_clock.h **** #define I2C2_CLK_SRC BUS_CLK
+ 294:../drivers/fsl_clock.h **** #define DSPI0_CLK_SRC BUS_CLK
+ 295:../drivers/fsl_clock.h **** #define DSPI1_CLK_SRC BUS_CLK
+ 296:../drivers/fsl_clock.h **** #define DSPI2_CLK_SRC BUS_CLK
+ 297:../drivers/fsl_clock.h **** #define UART0_CLK_SRC SYS_CLK
+ 298:../drivers/fsl_clock.h **** #define UART1_CLK_SRC SYS_CLK
+ 299:../drivers/fsl_clock.h **** #define UART2_CLK_SRC BUS_CLK
+ 300:../drivers/fsl_clock.h **** #define UART3_CLK_SRC BUS_CLK
+ 301:../drivers/fsl_clock.h **** #define UART4_CLK_SRC BUS_CLK
+ 302:../drivers/fsl_clock.h **** #define UART5_CLK_SRC BUS_CLK
+ 303:../drivers/fsl_clock.h **** 
+ 304:../drivers/fsl_clock.h **** /*! @brief Clock name used to get clock frequency. */
+ 305:../drivers/fsl_clock.h **** typedef enum _clock_name
+ 306:../drivers/fsl_clock.h **** {
+ 307:../drivers/fsl_clock.h **** 
+ 308:../drivers/fsl_clock.h ****     /* ----------------------------- System layer clock -------------------------------*/
+ 309:../drivers/fsl_clock.h ****     kCLOCK_CoreSysClk,    /*!< Core/system clock                                         */
+ 310:../drivers/fsl_clock.h ****     kCLOCK_PlatClk,       /*!< Platform clock                                            */
+ 311:../drivers/fsl_clock.h ****     kCLOCK_BusClk,        /*!< Bus clock                                                 */
+ 312:../drivers/fsl_clock.h ****     kCLOCK_FlexBusClk,    /*!< FlexBus clock                                             */
+ 313:../drivers/fsl_clock.h ****     kCLOCK_FlashClk,      /*!< Flash clock                                               */
+ 314:../drivers/fsl_clock.h ****     kCLOCK_FastPeriphClk, /*!< Fast peripheral clock                                     */
+ 315:../drivers/fsl_clock.h ****     kCLOCK_PllFllSelClk,  /*!< The clock after SIM[PLLFLLSEL].                           */
+ 316:../drivers/fsl_clock.h **** 
+ 317:../drivers/fsl_clock.h ****     /* ---------------------------------- OSC clock -----------------------------------*/
+ 318:../drivers/fsl_clock.h ****     kCLOCK_Er32kClk,       /*!< External reference 32K clock (ERCLK32K)                   */
+ 319:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClk,      /*!< OSC0 external reference clock (OSC0ERCLK)                 */
+ 320:../drivers/fsl_clock.h ****     kCLOCK_Osc1ErClk,      /*!< OSC1 external reference clock (OSC1ERCLK)                 */
+ 321:../drivers/fsl_clock.h ****     kCLOCK_Osc0ErClkUndiv, /*!< OSC0 external reference undivided clock(OSC0ERCLK_UNDIV). */
+ 322:../drivers/fsl_clock.h **** 
+ 323:../drivers/fsl_clock.h ****     /* ----------------------------- MCG and MCG-Lite clock ---------------------------*/
+ 324:../drivers/fsl_clock.h ****     kCLOCK_McgFixedFreqClk,   /*!< MCG fixed frequency clock (MCGFFCLK)                      */
+ 325:../drivers/fsl_clock.h ****     kCLOCK_McgInternalRefClk, /*!< MCG internal reference clock (MCGIRCLK)                   */
+ 326:../drivers/fsl_clock.h ****     kCLOCK_McgFllClk,         /*!< MCGFLLCLK                                                 */
+ 327:../drivers/fsl_clock.h ****     kCLOCK_McgPll0Clk,        /*!< MCGPLL0CLK                                                */
+ 328:../drivers/fsl_clock.h ****     kCLOCK_McgPll1Clk,        /*!< MCGPLL1CLK                                                */
+ 329:../drivers/fsl_clock.h ****     kCLOCK_McgExtPllClk,      /*!< EXT_PLLCLK                                                */
+ 330:../drivers/fsl_clock.h ****     kCLOCK_McgPeriphClk,      /*!< MCG peripheral clock (MCGPCLK)                            */
+ 331:../drivers/fsl_clock.h ****     kCLOCK_McgIrc48MClk,      /*!< MCG IRC48M clock                                          */
+ 332:../drivers/fsl_clock.h **** 
+ 333:../drivers/fsl_clock.h ****     /* --------------------------------- Other clock ----------------------------------*/
+ 334:../drivers/fsl_clock.h ****     kCLOCK_LpoClk, /*!< LPO clock                                                 */
+ 335:../drivers/fsl_clock.h **** 
+ 336:../drivers/fsl_clock.h **** } clock_name_t;
+ 337:../drivers/fsl_clock.h **** 
+ 338:../drivers/fsl_clock.h **** /*! @brief USB clock source definition. */
+ 339:../drivers/fsl_clock.h **** typedef enum _clock_usb_src
+ 340:../drivers/fsl_clock.h **** {
+ 341:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcPll0 = SIM_SOPT2_USBSRC(1U) | SIM_SOPT2_PLLFLLSEL(1U),   /*!< Use PLL0.      */
+ 342:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcIrc48M = SIM_SOPT2_USBSRC(1U) | SIM_SOPT2_PLLFLLSEL(3U), /*!< Use IRC48M.    */
+ 343:../drivers/fsl_clock.h ****     kCLOCK_UsbSrcExt = SIM_SOPT2_USBSRC(0U)                               /*!< Use USB_CLKIN. */
+ 344:../drivers/fsl_clock.h **** } clock_usb_src_t;
+ 345:../drivers/fsl_clock.h **** 
+ 346:../drivers/fsl_clock.h **** /*------------------------------------------------------------------------------
+ 347:../drivers/fsl_clock.h **** 
+ 348:../drivers/fsl_clock.h ****  clock_gate_t definition:
+ 349:../drivers/fsl_clock.h **** 
+ 350:../drivers/fsl_clock.h ****  31                              16                              0
+ 351:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 352:../drivers/fsl_clock.h ****  | SIM_SCGC register offset       |   control bit offset in SCGC |
+ 353:../drivers/fsl_clock.h ****  -----------------------------------------------------------------
+ 354:../drivers/fsl_clock.h **** 
+ 355:../drivers/fsl_clock.h ****  For example, the SDHC clock gate is controlled by SIM_SCGC3[17], the
+ 356:../drivers/fsl_clock.h ****  SIM_SCGC3 offset in SIM is 0x1030, then kCLOCK_GateSdhc0 is defined as
+ 357:../drivers/fsl_clock.h **** 
+ 358:../drivers/fsl_clock.h ****               kCLOCK_GateSdhc0 = (0x1030 << 16) | 17;
+ 359:../drivers/fsl_clock.h **** 
+ 360:../drivers/fsl_clock.h **** ------------------------------------------------------------------------------*/
+ 361:../drivers/fsl_clock.h **** 
+ 362:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_SHIFT 16U
+ 363:../drivers/fsl_clock.h **** #define CLK_GATE_REG_OFFSET_MASK 0xFFFF0000U
+ 364:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_SHIFT 0U
+ 365:../drivers/fsl_clock.h **** #define CLK_GATE_BIT_SHIFT_MASK 0x0000FFFFU
+ 366:../drivers/fsl_clock.h **** 
+ 367:../drivers/fsl_clock.h **** #define CLK_GATE_DEFINE(reg_offset, bit_shift)                                  \
+ 368:../drivers/fsl_clock.h ****     ((((reg_offset) << CLK_GATE_REG_OFFSET_SHIFT) & CLK_GATE_REG_OFFSET_MASK) | \
+ 369:../drivers/fsl_clock.h ****      (((bit_shift) << CLK_GATE_BIT_SHIFT_SHIFT) & CLK_GATE_BIT_SHIFT_MASK))
+ 370:../drivers/fsl_clock.h **** 
+ 371:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_REG_OFFSET(x) (((x)&CLK_GATE_REG_OFFSET_MASK) >> CLK_GATE_REG_OFFSET_SHIF
+ 372:../drivers/fsl_clock.h **** #define CLK_GATE_ABSTRACT_BITS_SHIFT(x) (((x)&CLK_GATE_BIT_SHIFT_MASK) >> CLK_GATE_BIT_SHIFT_SHIFT)
+ 373:../drivers/fsl_clock.h **** 
+ 374:../drivers/fsl_clock.h **** /*! @brief Clock gate name used for CLOCK_EnableClock/CLOCK_DisableClock. */
+ 375:../drivers/fsl_clock.h **** typedef enum _clock_ip_name
+ 376:../drivers/fsl_clock.h **** {
+ 377:../drivers/fsl_clock.h ****     kCLOCK_IpInvalid = 0U,
+ 378:../drivers/fsl_clock.h ****     kCLOCK_I2c2 = CLK_GATE_DEFINE(0x1028U, 6U),
+ 379:../drivers/fsl_clock.h ****     kCLOCK_Uart4 = CLK_GATE_DEFINE(0x1028U, 10U),
+ 380:../drivers/fsl_clock.h ****     kCLOCK_Uart5 = CLK_GATE_DEFINE(0x1028U, 11U),
+ 381:../drivers/fsl_clock.h **** 
+ 382:../drivers/fsl_clock.h ****     kCLOCK_Enet0 = CLK_GATE_DEFINE(0x102CU, 0U),
+ 383:../drivers/fsl_clock.h ****     kCLOCK_Dac0 = CLK_GATE_DEFINE(0x102CU, 12U),
+ 384:../drivers/fsl_clock.h ****     kCLOCK_Dac1 = CLK_GATE_DEFINE(0x102CU, 13U),
+ 385:../drivers/fsl_clock.h **** 
+ 386:../drivers/fsl_clock.h ****     kCLOCK_Spi2 = CLK_GATE_DEFINE(0x1030U, 12U),
+ 387:../drivers/fsl_clock.h ****     kCLOCK_Sdhc0 = CLK_GATE_DEFINE(0x1030U, 17U),
+ 388:../drivers/fsl_clock.h ****     kCLOCK_Ftm3 = CLK_GATE_DEFINE(0x1030U, 25U),
+ 389:../drivers/fsl_clock.h ****     kCLOCK_Adc1 = CLK_GATE_DEFINE(0x1030U, 27U),
+ 390:../drivers/fsl_clock.h **** 
+ 391:../drivers/fsl_clock.h ****     kCLOCK_Ewm0 = CLK_GATE_DEFINE(0x1034U, 1U),
+ 392:../drivers/fsl_clock.h ****     kCLOCK_Cmt0 = CLK_GATE_DEFINE(0x1034U, 2U),
+ 393:../drivers/fsl_clock.h ****     kCLOCK_I2c0 = CLK_GATE_DEFINE(0x1034U, 6U),
+ 394:../drivers/fsl_clock.h ****     kCLOCK_I2c1 = CLK_GATE_DEFINE(0x1034U, 7U),
+ 395:../drivers/fsl_clock.h ****     kCLOCK_Uart0 = CLK_GATE_DEFINE(0x1034U, 10U),
+ 396:../drivers/fsl_clock.h ****     kCLOCK_Uart1 = CLK_GATE_DEFINE(0x1034U, 11U),
+ 397:../drivers/fsl_clock.h ****     kCLOCK_Uart2 = CLK_GATE_DEFINE(0x1034U, 12U),
+ 398:../drivers/fsl_clock.h ****     kCLOCK_Uart3 = CLK_GATE_DEFINE(0x1034U, 13U),
+ 399:../drivers/fsl_clock.h ****     kCLOCK_Usbfs0 = CLK_GATE_DEFINE(0x1034U, 18U),
+ 400:../drivers/fsl_clock.h ****     kCLOCK_Cmp0 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 401:../drivers/fsl_clock.h ****     kCLOCK_Cmp1 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 402:../drivers/fsl_clock.h ****     kCLOCK_Cmp2 = CLK_GATE_DEFINE(0x1034U, 19U),
+ 403:../drivers/fsl_clock.h ****     kCLOCK_Vref0 = CLK_GATE_DEFINE(0x1034U, 20U),
+ 404:../drivers/fsl_clock.h **** 
+ 405:../drivers/fsl_clock.h ****     kCLOCK_Lptmr0 = CLK_GATE_DEFINE(0x1038U, 0U),
+ 406:../drivers/fsl_clock.h ****     kCLOCK_PortA = CLK_GATE_DEFINE(0x1038U, 9U),
+ 407:../drivers/fsl_clock.h ****     kCLOCK_PortB = CLK_GATE_DEFINE(0x1038U, 10U),
+ 408:../drivers/fsl_clock.h ****     kCLOCK_PortC = CLK_GATE_DEFINE(0x1038U, 11U),
+ 409:../drivers/fsl_clock.h ****     kCLOCK_PortD = CLK_GATE_DEFINE(0x1038U, 12U),
+ 410:../drivers/fsl_clock.h ****     kCLOCK_PortE = CLK_GATE_DEFINE(0x1038U, 13U),
+ 411:../drivers/fsl_clock.h **** 
+ 412:../drivers/fsl_clock.h ****     kCLOCK_Ftf0 = CLK_GATE_DEFINE(0x103CU, 0U),
+ 413:../drivers/fsl_clock.h ****     kCLOCK_Dmamux0 = CLK_GATE_DEFINE(0x103CU, 1U),
+ 414:../drivers/fsl_clock.h ****     kCLOCK_Flexcan0 = CLK_GATE_DEFINE(0x103CU, 4U),
+ 415:../drivers/fsl_clock.h ****     kCLOCK_Rnga0 = CLK_GATE_DEFINE(0x103CU, 9U),
+ 416:../drivers/fsl_clock.h ****     kCLOCK_Spi0 = CLK_GATE_DEFINE(0x103CU, 12U),
+ 417:../drivers/fsl_clock.h ****     kCLOCK_Spi1 = CLK_GATE_DEFINE(0x103CU, 13U),
+ 418:../drivers/fsl_clock.h ****     kCLOCK_Sai0 = CLK_GATE_DEFINE(0x103CU, 15U),
+ 419:../drivers/fsl_clock.h ****     kCLOCK_Crc0 = CLK_GATE_DEFINE(0x103CU, 18U),
+ 420:../drivers/fsl_clock.h ****     kCLOCK_Usbdcd0 = CLK_GATE_DEFINE(0x103CU, 21U),
+ 421:../drivers/fsl_clock.h ****     kCLOCK_Pdb0 = CLK_GATE_DEFINE(0x103CU, 22U),
+ 422:../drivers/fsl_clock.h ****     kCLOCK_Pit0 = CLK_GATE_DEFINE(0x103CU, 23U),
+ 423:../drivers/fsl_clock.h ****     kCLOCK_Ftm0 = CLK_GATE_DEFINE(0x103CU, 24U),
+ 424:../drivers/fsl_clock.h ****     kCLOCK_Ftm1 = CLK_GATE_DEFINE(0x103CU, 25U),
+ 425:../drivers/fsl_clock.h ****     kCLOCK_Ftm2 = CLK_GATE_DEFINE(0x103CU, 26U),
+ 426:../drivers/fsl_clock.h ****     kCLOCK_Adc0 = CLK_GATE_DEFINE(0x103CU, 27U),
+ 427:../drivers/fsl_clock.h ****     kCLOCK_Rtc0 = CLK_GATE_DEFINE(0x103CU, 29U),
+ 428:../drivers/fsl_clock.h **** 
+ 429:../drivers/fsl_clock.h ****     kCLOCK_Flexbus0 = CLK_GATE_DEFINE(0x1040U, 0U),
+ 430:../drivers/fsl_clock.h ****     kCLOCK_Dma0 = CLK_GATE_DEFINE(0x1040U, 1U),
+ 431:../drivers/fsl_clock.h ****     kCLOCK_Sysmpu0 = CLK_GATE_DEFINE(0x1040U, 2U),
+ 432:../drivers/fsl_clock.h **** } clock_ip_name_t;
+ 433:../drivers/fsl_clock.h **** 
+ 434:../drivers/fsl_clock.h **** /*!@brief SIM configuration structure for clock setting. */
+ 435:../drivers/fsl_clock.h **** typedef struct _sim_clock_config
+ 436:../drivers/fsl_clock.h **** {
+ 437:../drivers/fsl_clock.h ****     uint8_t pllFllSel; /*!< PLL/FLL/IRC48M selection.    */
+ 438:../drivers/fsl_clock.h ****     uint8_t er32kSrc;  /*!< ERCLK32K source selection.   */
+ 439:../drivers/fsl_clock.h ****     uint32_t clkdiv1;  /*!< SIM_CLKDIV1.                 */
+ 440:../drivers/fsl_clock.h **** } sim_clock_config_t;
+ 441:../drivers/fsl_clock.h **** 
+ 442:../drivers/fsl_clock.h **** /*! @brief OSC work mode. */
+ 443:../drivers/fsl_clock.h **** typedef enum _osc_mode
+ 444:../drivers/fsl_clock.h **** {
+ 445:../drivers/fsl_clock.h ****     kOSC_ModeExt = 0U, /*!< Use an external clock.   */
+ 446:../drivers/fsl_clock.h **** #if (defined(MCG_C2_EREFS_MASK) && !(defined(MCG_C2_EREFS0_MASK)))
+ 447:../drivers/fsl_clock.h ****     kOSC_ModeOscLowPower = MCG_C2_EREFS_MASK, /*!< Oscillator low power. */
+ 448:../drivers/fsl_clock.h **** #else
+ 449:../drivers/fsl_clock.h ****     kOSC_ModeOscLowPower = MCG_C2_EREFS0_MASK, /*!< Oscillator low power. */
+ 450:../drivers/fsl_clock.h **** #endif
+ 451:../drivers/fsl_clock.h ****     kOSC_ModeOscHighGain = 0U
+ 452:../drivers/fsl_clock.h **** #if (defined(MCG_C2_EREFS_MASK) && !(defined(MCG_C2_EREFS0_MASK)))
+ 453:../drivers/fsl_clock.h ****                            |
+ 454:../drivers/fsl_clock.h ****                            MCG_C2_EREFS_MASK
+ 455:../drivers/fsl_clock.h **** #else
+ 456:../drivers/fsl_clock.h ****                            |
+ 457:../drivers/fsl_clock.h ****                            MCG_C2_EREFS0_MASK
+ 458:../drivers/fsl_clock.h **** #endif
+ 459:../drivers/fsl_clock.h **** #if (defined(MCG_C2_HGO_MASK) && !(defined(MCG_C2_HGO0_MASK)))
+ 460:../drivers/fsl_clock.h ****                            |
+ 461:../drivers/fsl_clock.h ****                            MCG_C2_HGO_MASK, /*!< Oscillator high gain. */
+ 462:../drivers/fsl_clock.h **** #else
+ 463:../drivers/fsl_clock.h ****                            |
+ 464:../drivers/fsl_clock.h ****                            MCG_C2_HGO0_MASK, /*!< Oscillator high gain. */
+ 465:../drivers/fsl_clock.h **** #endif
+ 466:../drivers/fsl_clock.h **** } osc_mode_t;
+ 467:../drivers/fsl_clock.h **** 
+ 468:../drivers/fsl_clock.h **** /*! @brief Oscillator capacitor load setting.*/
+ 469:../drivers/fsl_clock.h **** enum _osc_cap_load
+ 470:../drivers/fsl_clock.h **** {
+ 471:../drivers/fsl_clock.h ****     kOSC_Cap2P = OSC_CR_SC2P_MASK,  /*!< 2  pF capacitor load */
+ 472:../drivers/fsl_clock.h ****     kOSC_Cap4P = OSC_CR_SC4P_MASK,  /*!< 4  pF capacitor load */
+ 473:../drivers/fsl_clock.h ****     kOSC_Cap8P = OSC_CR_SC8P_MASK,  /*!< 8  pF capacitor load */
+ 474:../drivers/fsl_clock.h ****     kOSC_Cap16P = OSC_CR_SC16P_MASK /*!< 16 pF capacitor load */
+ 475:../drivers/fsl_clock.h **** };
+ 476:../drivers/fsl_clock.h **** 
+ 477:../drivers/fsl_clock.h **** /*! @brief OSCERCLK enable mode. */
+ 478:../drivers/fsl_clock.h **** enum _oscer_enable_mode
+ 479:../drivers/fsl_clock.h **** {
+ 480:../drivers/fsl_clock.h ****     kOSC_ErClkEnable = OSC_CR_ERCLKEN_MASK,       /*!< Enable.              */
+ 481:../drivers/fsl_clock.h ****     kOSC_ErClkEnableInStop = OSC_CR_EREFSTEN_MASK /*!< Enable in stop mode. */
+ 482:../drivers/fsl_clock.h **** };
+ 483:../drivers/fsl_clock.h **** 
+ 484:../drivers/fsl_clock.h **** /*! @brief OSC configuration for OSCERCLK. */
+ 485:../drivers/fsl_clock.h **** typedef struct _oscer_config
+ 486:../drivers/fsl_clock.h **** {
+ 487:../drivers/fsl_clock.h ****     uint8_t enableMode; /*!< OSCERCLK enable mode. OR'ed value of @ref _oscer_enable_mode. */
+ 488:../drivers/fsl_clock.h **** 
+ 489:../drivers/fsl_clock.h **** } oscer_config_t;
+ 490:../drivers/fsl_clock.h **** 
+ 491:../drivers/fsl_clock.h **** /*!
+ 492:../drivers/fsl_clock.h ****  * @brief OSC Initialization Configuration Structure
+ 493:../drivers/fsl_clock.h ****  *
+ 494:../drivers/fsl_clock.h ****  * Defines the configuration data structure to initialize the OSC.
+ 495:../drivers/fsl_clock.h ****  * When porting to a new board, set the following members
+ 496:../drivers/fsl_clock.h ****  * according to the board setting:
+ 497:../drivers/fsl_clock.h ****  * 1. freq: The external frequency.
+ 498:../drivers/fsl_clock.h ****  * 2. workMode: The OSC module mode.
+ 499:../drivers/fsl_clock.h ****  */
+ 500:../drivers/fsl_clock.h **** typedef struct _osc_config
+ 501:../drivers/fsl_clock.h **** {
+ 502:../drivers/fsl_clock.h ****     uint32_t freq;              /*!< External clock frequency.    */
+ 503:../drivers/fsl_clock.h ****     uint8_t capLoad;            /*!< Capacitor load setting.      */
+ 504:../drivers/fsl_clock.h ****     osc_mode_t workMode;        /*!< OSC work mode setting.       */
+ 505:../drivers/fsl_clock.h ****     oscer_config_t oscerConfig; /*!< Configuration for OSCERCLK.  */
+ 506:../drivers/fsl_clock.h **** } osc_config_t;
+ 507:../drivers/fsl_clock.h **** 
+ 508:../drivers/fsl_clock.h **** /*! @brief MCG FLL reference clock source select. */
+ 509:../drivers/fsl_clock.h **** typedef enum _mcg_fll_src
+ 510:../drivers/fsl_clock.h **** {
+ 511:../drivers/fsl_clock.h ****     kMCG_FllSrcExternal, /*!< External reference clock is selected          */
+ 512:../drivers/fsl_clock.h ****     kMCG_FllSrcInternal  /*!< The slow internal reference clock is selected */
+ 513:../drivers/fsl_clock.h **** } mcg_fll_src_t;
+ 514:../drivers/fsl_clock.h **** 
+ 515:../drivers/fsl_clock.h **** /*! @brief MCG internal reference clock select */
+ 516:../drivers/fsl_clock.h **** typedef enum _mcg_irc_mode
+ 517:../drivers/fsl_clock.h **** {
+ 518:../drivers/fsl_clock.h ****     kMCG_IrcSlow, /*!< Slow internal reference clock selected */
+ 519:../drivers/fsl_clock.h ****     kMCG_IrcFast  /*!< Fast internal reference clock selected */
+ 520:../drivers/fsl_clock.h **** } mcg_irc_mode_t;
+ 521:../drivers/fsl_clock.h **** 
+ 522:../drivers/fsl_clock.h **** /*! @brief MCG DCO Maximum Frequency with 32.768 kHz Reference */
+ 523:../drivers/fsl_clock.h **** typedef enum _mcg_dmx32
+ 524:../drivers/fsl_clock.h **** {
+ 525:../drivers/fsl_clock.h ****     kMCG_Dmx32Default, /*!< DCO has a default range of 25% */
+ 526:../drivers/fsl_clock.h ****     kMCG_Dmx32Fine     /*!< DCO is fine-tuned for maximum frequency with 32.768 kHz reference */
+ 527:../drivers/fsl_clock.h **** } mcg_dmx32_t;
+ 528:../drivers/fsl_clock.h **** 
+ 529:../drivers/fsl_clock.h **** /*! @brief MCG DCO range select */
+ 530:../drivers/fsl_clock.h **** typedef enum _mcg_drs
+ 531:../drivers/fsl_clock.h **** {
+ 532:../drivers/fsl_clock.h ****     kMCG_DrsLow,     /*!< Low frequency range       */
+ 533:../drivers/fsl_clock.h ****     kMCG_DrsMid,     /*!< Mid frequency range       */
+ 534:../drivers/fsl_clock.h ****     kMCG_DrsMidHigh, /*!< Mid-High frequency range  */
+ 535:../drivers/fsl_clock.h ****     kMCG_DrsHigh     /*!< High frequency range      */
+ 536:../drivers/fsl_clock.h **** } mcg_drs_t;
+ 537:../drivers/fsl_clock.h **** 
+ 538:../drivers/fsl_clock.h **** /*! @brief MCG PLL reference clock select */
+ 539:../drivers/fsl_clock.h **** typedef enum _mcg_pll_ref_src
+ 540:../drivers/fsl_clock.h **** {
+ 541:../drivers/fsl_clock.h ****     kMCG_PllRefOsc0, /*!< Selects OSC0 as PLL reference clock                 */
+ 542:../drivers/fsl_clock.h ****     kMCG_PllRefOsc1  /*!< Selects OSC1 as PLL reference clock                 */
+ 543:../drivers/fsl_clock.h **** } mcg_pll_ref_src_t;
+ 544:../drivers/fsl_clock.h **** 
+ 545:../drivers/fsl_clock.h **** /*! @brief MCGOUT clock source. */
+ 546:../drivers/fsl_clock.h **** typedef enum _mcg_clkout_src
+ 547:../drivers/fsl_clock.h **** {
+ 548:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcOut,      /*!< Output of the FLL is selected (reset default)  */
+ 549:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcInternal, /*!< Internal reference clock is selected           */
+ 550:../drivers/fsl_clock.h ****     kMCG_ClkOutSrcExternal, /*!< External reference clock is selected           */
+ 551:../drivers/fsl_clock.h **** } mcg_clkout_src_t;
+ 552:../drivers/fsl_clock.h **** 
+ 553:../drivers/fsl_clock.h **** /*! @brief MCG Automatic Trim Machine Select */
+ 554:../drivers/fsl_clock.h **** typedef enum _mcg_atm_select
+ 555:../drivers/fsl_clock.h **** {
+ 556:../drivers/fsl_clock.h ****     kMCG_AtmSel32k, /*!< 32 kHz Internal Reference Clock selected  */
+ 557:../drivers/fsl_clock.h ****     kMCG_AtmSel4m   /*!< 4 MHz Internal Reference Clock selected   */
+ 558:../drivers/fsl_clock.h **** } mcg_atm_select_t;
+ 559:../drivers/fsl_clock.h **** 
+ 560:../drivers/fsl_clock.h **** /*! @brief MCG OSC Clock Select */
+ 561:../drivers/fsl_clock.h **** typedef enum _mcg_oscsel
+ 562:../drivers/fsl_clock.h **** {
+ 563:../drivers/fsl_clock.h ****     kMCG_OscselOsc, /*!< Selects System Oscillator (OSCCLK) */
+ 564:../drivers/fsl_clock.h ****     kMCG_OscselRtc, /*!< Selects 32 kHz RTC Oscillator      */
+ 565:../drivers/fsl_clock.h ****     kMCG_OscselIrc  /*!< Selects 48 MHz IRC Oscillator      */
+ 566:../drivers/fsl_clock.h **** } mcg_oscsel_t;
+ 567:../drivers/fsl_clock.h **** 
+ 568:../drivers/fsl_clock.h **** /*! @brief MCG PLLCS select */
+ 569:../drivers/fsl_clock.h **** typedef enum _mcg_pll_clk_select
+ 570:../drivers/fsl_clock.h **** {
+ 571:../drivers/fsl_clock.h ****     kMCG_PllClkSelPll0, /*!< PLL0 output clock is selected  */
+ 572:../drivers/fsl_clock.h ****     kMCG_PllClkSelPll1  /* PLL1 output clock is selected    */
+ 573:../drivers/fsl_clock.h **** } mcg_pll_clk_select_t;
+ 574:../drivers/fsl_clock.h **** 
+ 575:../drivers/fsl_clock.h **** /*! @brief MCG clock monitor mode. */
+ 576:../drivers/fsl_clock.h **** typedef enum _mcg_monitor_mode
+ 577:../drivers/fsl_clock.h **** {
+ 578:../drivers/fsl_clock.h ****     kMCG_MonitorNone, /*!< Clock monitor is disabled.         */
+ 579:../drivers/fsl_clock.h ****     kMCG_MonitorInt,  /*!< Trigger interrupt when clock lost. */
+ 580:../drivers/fsl_clock.h ****     kMCG_MonitorReset /*!< System reset when clock lost.      */
+ 581:../drivers/fsl_clock.h **** } mcg_monitor_mode_t;
+ 582:../drivers/fsl_clock.h **** 
+ 583:../drivers/fsl_clock.h **** /*! @brief MCG status. */
+ 584:../drivers/fsl_clock.h **** enum _mcg_status
+ 585:../drivers/fsl_clock.h **** {
+ 586:../drivers/fsl_clock.h ****     kStatus_MCG_ModeUnreachable = MAKE_STATUS(kStatusGroup_MCG, 0),       /*!< Can't switch to targ
+ 587:../drivers/fsl_clock.h ****     kStatus_MCG_ModeInvalid = MAKE_STATUS(kStatusGroup_MCG, 1),           /*!< Current mode invalid
+ 588:../drivers/fsl_clock.h ****                                                                                function. */
+ 589:../drivers/fsl_clock.h ****     kStatus_MCG_AtmBusClockInvalid = MAKE_STATUS(kStatusGroup_MCG, 2),    /*!< Invalid bus clock fo
+ 590:../drivers/fsl_clock.h ****     kStatus_MCG_AtmDesiredFreqInvalid = MAKE_STATUS(kStatusGroup_MCG, 3), /*!< Invalid desired freq
+ 591:../drivers/fsl_clock.h ****     kStatus_MCG_AtmIrcUsed = MAKE_STATUS(kStatusGroup_MCG, 4),            /*!< IRC is used when usi
+ 592:../drivers/fsl_clock.h ****     kStatus_MCG_AtmHardwareFail = MAKE_STATUS(kStatusGroup_MCG, 5),       /*!< Hardware fail occurs
+ 593:../drivers/fsl_clock.h ****     kStatus_MCG_SourceUsed = MAKE_STATUS(kStatusGroup_MCG, 6)             /*!< Can't change the clo
+ 594:../drivers/fsl_clock.h ****                                                                                it is in use. */
+ 595:../drivers/fsl_clock.h **** };
+ 596:../drivers/fsl_clock.h **** 
+ 597:../drivers/fsl_clock.h **** /*! @brief MCG status flags. */
+ 598:../drivers/fsl_clock.h **** enum _mcg_status_flags_t
+ 599:../drivers/fsl_clock.h **** {
+ 600:../drivers/fsl_clock.h ****     kMCG_Osc0LostFlag = (1U << 0U),   /*!< OSC0 lost.         */
+ 601:../drivers/fsl_clock.h ****     kMCG_Osc0InitFlag = (1U << 1U),   /*!< OSC0 crystal initialized. */
+ 602:../drivers/fsl_clock.h ****     kMCG_RtcOscLostFlag = (1U << 4U), /*!< RTC OSC lost.      */
+ 603:../drivers/fsl_clock.h ****     kMCG_Pll0LostFlag = (1U << 5U),   /*!< PLL0 lost.         */
+ 604:../drivers/fsl_clock.h ****     kMCG_Pll0LockFlag = (1U << 6U),   /*!< PLL0 locked.       */
+ 605:../drivers/fsl_clock.h **** };
+ 606:../drivers/fsl_clock.h **** 
+ 607:../drivers/fsl_clock.h **** /*! @brief MCG internal reference clock (MCGIRCLK) enable mode definition. */
+ 608:../drivers/fsl_clock.h **** enum _mcg_irclk_enable_mode
+ 609:../drivers/fsl_clock.h **** {
+ 610:../drivers/fsl_clock.h ****     kMCG_IrclkEnable = MCG_C1_IRCLKEN_MASK,       /*!< MCGIRCLK enable.              */
+ 611:../drivers/fsl_clock.h ****     kMCG_IrclkEnableInStop = MCG_C1_IREFSTEN_MASK /*!< MCGIRCLK enable in stop mode. */
+ 612:../drivers/fsl_clock.h **** };
+ 613:../drivers/fsl_clock.h **** 
+ 614:../drivers/fsl_clock.h **** /*! @brief MCG PLL clock enable mode definition. */
+ 615:../drivers/fsl_clock.h **** enum _mcg_pll_enable_mode
+ 616:../drivers/fsl_clock.h **** {
+ 617:../drivers/fsl_clock.h ****     kMCG_PllEnableIndependent = MCG_C5_PLLCLKEN0_MASK, /*!< MCGPLLCLK enable independent of the
+ 618:../drivers/fsl_clock.h ****                                                            MCG clock mode. Generally, the PLL
+ 619:../drivers/fsl_clock.h ****                                                            is disabled in FLL modes
+ 620:../drivers/fsl_clock.h ****                                                            (FEI/FBI/FEE/FBE). Setting the PLL clock
+ 621:../drivers/fsl_clock.h ****                                                            enable independent, enables the
+ 622:../drivers/fsl_clock.h ****                                                            PLL in the FLL modes.          */
+ 623:../drivers/fsl_clock.h ****     kMCG_PllEnableInStop = MCG_C5_PLLSTEN0_MASK        /*!< MCGPLLCLK enable in STOP mode. */
+ 624:../drivers/fsl_clock.h **** };
+ 625:../drivers/fsl_clock.h **** 
+ 626:../drivers/fsl_clock.h **** /*! @brief MCG mode definitions */
+ 627:../drivers/fsl_clock.h **** typedef enum _mcg_mode
+ 628:../drivers/fsl_clock.h **** {
+ 629:../drivers/fsl_clock.h ****     kMCG_ModeFEI = 0U, /*!< FEI   - FLL Engaged Internal         */
+ 630:../drivers/fsl_clock.h ****     kMCG_ModeFBI,      /*!< FBI   - FLL Bypassed Internal        */
+ 631:../drivers/fsl_clock.h ****     kMCG_ModeBLPI,     /*!< BLPI  - Bypassed Low Power Internal  */
+ 632:../drivers/fsl_clock.h ****     kMCG_ModeFEE,      /*!< FEE   - FLL Engaged External         */
+ 633:../drivers/fsl_clock.h ****     kMCG_ModeFBE,      /*!< FBE   - FLL Bypassed External        */
+ 634:../drivers/fsl_clock.h ****     kMCG_ModeBLPE,     /*!< BLPE  - Bypassed Low Power External  */
+ 635:../drivers/fsl_clock.h ****     kMCG_ModePBE,      /*!< PBE   - PLL Bypassed External        */
+ 636:../drivers/fsl_clock.h ****     kMCG_ModePEE,      /*!< PEE   - PLL Engaged External         */
+ 637:../drivers/fsl_clock.h ****     kMCG_ModeError     /*!< Unknown mode                         */
+ 638:../drivers/fsl_clock.h **** } mcg_mode_t;
+ 639:../drivers/fsl_clock.h **** 
+ 640:../drivers/fsl_clock.h **** /*! @brief MCG PLL configuration. */
+ 641:../drivers/fsl_clock.h **** typedef struct _mcg_pll_config
+ 642:../drivers/fsl_clock.h **** {
+ 643:../drivers/fsl_clock.h ****     uint8_t enableMode; /*!< Enable mode. OR'ed value of @ref _mcg_pll_enable_mode. */
+ 644:../drivers/fsl_clock.h ****     uint8_t prdiv;      /*!< Reference divider PRDIV.    */
+ 645:../drivers/fsl_clock.h ****     uint8_t vdiv;       /*!< VCO divider VDIV.           */
+ 646:../drivers/fsl_clock.h **** } mcg_pll_config_t;
+ 647:../drivers/fsl_clock.h **** 
+ 648:../drivers/fsl_clock.h **** /*! @brief MCG mode change configuration structure
+ 649:../drivers/fsl_clock.h ****  *
+ 650:../drivers/fsl_clock.h ****  * When porting to a new board, set the following members
+ 651:../drivers/fsl_clock.h ****  * according to the board setting:
+ 652:../drivers/fsl_clock.h ****  * 1. frdiv: If the FLL uses the external reference clock, set this
+ 653:../drivers/fsl_clock.h ****  *    value to ensure that the external reference clock divided by frdiv is
+ 654:../drivers/fsl_clock.h ****  *    in the 31.25 kHz to 39.0625 kHz range.
+ 655:../drivers/fsl_clock.h ****  * 2. The PLL reference clock divider PRDIV: PLL reference clock frequency after
+ 656:../drivers/fsl_clock.h ****  *    PRDIV should be in the FSL_FEATURE_MCG_PLL_REF_MIN to
+ 657:../drivers/fsl_clock.h ****  *    FSL_FEATURE_MCG_PLL_REF_MAX range.
+ 658:../drivers/fsl_clock.h ****  */
+ 659:../drivers/fsl_clock.h **** typedef struct _mcg_config
+ 660:../drivers/fsl_clock.h **** {
+ 661:../drivers/fsl_clock.h ****     mcg_mode_t mcgMode; /*!< MCG mode.                   */
+ 662:../drivers/fsl_clock.h **** 
+ 663:../drivers/fsl_clock.h ****     /* ----------------------- MCGIRCCLK settings ------------------------ */
+ 664:../drivers/fsl_clock.h ****     uint8_t irclkEnableMode; /*!< MCGIRCLK enable mode.       */
+ 665:../drivers/fsl_clock.h ****     mcg_irc_mode_t ircs;     /*!< Source, MCG_C2[IRCS].       */
+ 666:../drivers/fsl_clock.h ****     uint8_t fcrdiv;          /*!< Divider, MCG_SC[FCRDIV].    */
+ 667:../drivers/fsl_clock.h **** 
+ 668:../drivers/fsl_clock.h ****     /* ------------------------ MCG FLL settings ------------------------- */
+ 669:../drivers/fsl_clock.h ****     uint8_t frdiv;       /*!< Divider MCG_C1[FRDIV].      */
+ 670:../drivers/fsl_clock.h ****     mcg_drs_t drs;       /*!< DCO range MCG_C4[DRST_DRS]. */
+ 671:../drivers/fsl_clock.h ****     mcg_dmx32_t dmx32;   /*!< MCG_C4[DMX32].              */
+ 672:../drivers/fsl_clock.h ****     mcg_oscsel_t oscsel; /*!< OSC select MCG_C7[OSCSEL].  */
+ 673:../drivers/fsl_clock.h **** 
+ 674:../drivers/fsl_clock.h ****     /* ------------------------ MCG PLL settings ------------------------- */
+ 675:../drivers/fsl_clock.h ****     mcg_pll_config_t pll0Config; /*!< MCGPLL0CLK configuration.   */
+ 676:../drivers/fsl_clock.h **** 
+ 677:../drivers/fsl_clock.h **** } mcg_config_t;
+ 678:../drivers/fsl_clock.h **** 
+ 679:../drivers/fsl_clock.h **** /*******************************************************************************
+ 680:../drivers/fsl_clock.h ****  * API
+ 681:../drivers/fsl_clock.h ****  ******************************************************************************/
+ 682:../drivers/fsl_clock.h **** 
+ 683:../drivers/fsl_clock.h **** #if defined(__cplusplus)
+ 684:../drivers/fsl_clock.h **** extern "C" {
+ 685:../drivers/fsl_clock.h **** #endif /* __cplusplus */
+ 686:../drivers/fsl_clock.h **** 
+ 687:../drivers/fsl_clock.h **** /*!
+ 688:../drivers/fsl_clock.h ****  * @brief Enable the clock for specific IP.
+ 689:../drivers/fsl_clock.h ****  *
+ 690:../drivers/fsl_clock.h ****  * @param name  Which clock to enable, see \ref clock_ip_name_t.
+ 691:../drivers/fsl_clock.h ****  */
+ 692:../drivers/fsl_clock.h **** static inline void CLOCK_EnableClock(clock_ip_name_t name)
+ 693:../drivers/fsl_clock.h **** {
+ 694:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+  98              		.loc 2 694 0
+  99 004c 1A0C     		lsrs	r2, r3, #16
+ 100 004e 02F18042 		add	r2, r2, #1073741824
+ 101 0052 02F58E22 		add	r2, r2, #290816
+ 695:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) |= (1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+ 102              		.loc 2 695 0
+ 103 0056 0126     		movs	r6, #1
+ 104 0058 1468     		ldr	r4, [r2]
+ 105 005a 9BB2     		uxth	r3, r3
+ 106              	.LVL7:
+ 107 005c 06FA03F3 		lsl	r3, r6, r3
+ 108 0060 2343     		orrs	r3, r3, r4
+ 109 0062 1360     		str	r3, [r2]
+ 110              	.LBE20:
+ 111              	.LBE19:
+ 240:../drivers/fsl_ftm.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+ 241:../drivers/fsl_ftm.c ****    
+ 242:../drivers/fsl_ftm.c ****     /* Configure the fault mode, enable FTM mode and disable write protection */
+ 243:../drivers/fsl_ftm.c ****     base->MODE = FTM_MODE_FAULTM(config->faultMode) | FTM_MODE_FTMEN_MASK | FTM_MODE_WPDIS_MASK;
+ 112              		.loc 1 243 0
+ 113 0064 0B7B     		ldrb	r3, [r1, #12]	@ zero_extendqisi2
+ 244:../drivers/fsl_ftm.c **** 
+ 245:../drivers/fsl_ftm.c ****     /* Configure the update mechanism for buffered registers */
+ 246:../drivers/fsl_ftm.c ****     FTM_SetPwmSync(base, config->pwmSyncMode);
+ 114              		.loc 1 246 0
+ 115 0066 4C68     		ldr	r4, [r1, #4]
+ 116              	.LVL8:
+ 243:../drivers/fsl_ftm.c **** 
+ 117              		.loc 1 243 0
+ 118 0068 5B01     		lsls	r3, r3, #5
+ 119 006a 03F06003 		and	r3, r3, #96
+ 120 006e 43F00503 		orr	r3, r3, #5
+ 121 0072 4365     		str	r3, [r0, #84]
+ 122              	.LBB21:
+ 123              	.LBB16:
+ 111:../drivers/fsl_ftm.c ****     /* Enable PWM synchronization of output mask register */
+ 124              		.loc 1 111 0
+ 125 0074 D0F858C0 		ldr	ip, [r0, #88]
+ 126              	.LVL9:
+ 115:../drivers/fsl_ftm.c ****     for (chnlNumber = 0; chnlNumber < (FSL_FEATURE_FTM_CHANNEL_COUNTn(base) / 2); chnlNumber++)
+ 127              		.loc 1 115 0
+ 128 0078 476E     		ldr	r7, [r0, #100]
+ 129              	.LVL10:
+ 113:../drivers/fsl_ftm.c **** 
+ 130              		.loc 1 113 0
+ 131 007a 4CF00802 		orr	r2, ip, #8
+ 132              	.LVL11:
+ 115:../drivers/fsl_ftm.c ****     for (chnlNumber = 0; chnlNumber < (FSL_FEATURE_FTM_CHANNEL_COUNTn(base) / 2); chnlNumber++)
+ 133              		.loc 1 115 0
+ 134 007e 0025     		movs	r5, #0
+ 116:../drivers/fsl_ftm.c ****     {
+ 135              		.loc 1 116 0
+ 136 0080 B146     		mov	r9, r6
+ 137              	.LVL12:
+ 138              	.L4:
+ 139 0082 7045     		cmp	r0, lr
+ 140 0084 EBB2     		uxtb	r3, r5
+ 141 0086 00F0A380 		beq	.L33
+ 142 008a 4045     		cmp	r0, r8
+ 143 008c 00F09480 		beq	.L32
+ 144 0090 5045     		cmp	r0, r10
+ 145 0092 00F09180 		beq	.L32
+ 146 0096 5845     		cmp	r0, fp
+ 147 0098 00F09A80 		beq	.L33
+ 148              	.LVL13:
+ 149              	.L9:
+ 121:../drivers/fsl_ftm.c **** 
+ 150              		.loc 1 121 0
+ 151 009c 4766     		str	r7, [r0, #100]
+ 128:../drivers/fsl_ftm.c ****     {
+ 152              		.loc 1 128 0
+ 153 009e 2506     		lsls	r5, r4, #24
+ 123:../drivers/fsl_ftm.c **** 
+ 154              		.loc 1 123 0
+ 155 00a0 D0F88C30 		ldr	r3, [r0, #140]
+ 156              	.LVL14:
+ 128:../drivers/fsl_ftm.c ****     {
+ 157              		.loc 1 128 0
+ 158 00a4 00F19680 		bmi	.L6
+ 126:../drivers/fsl_ftm.c **** 
+ 159              		.loc 1 126 0
+ 160 00a8 43F0B403 		orr	r3, r3, #180
+ 161              	.LVL15:
+ 162              	.L10:
+ 135:../drivers/fsl_ftm.c ****     {
+ 163              		.loc 1 135 0
+ 164 00ac 14F0700F 		tst	r4, #112
+ 165 00b0 0DD0     		beq	.L11
+ 142:../drivers/fsl_ftm.c ****         {
+ 166              		.loc 1 142 0
+ 167 00b2 E706     		lsls	r7, r4, #27
+ 144:../drivers/fsl_ftm.c ****         }
+ 168              		.loc 1 144 0
+ 169 00b4 48BF     		it	mi
+ 170 00b6 4CF01802 		orrmi	r2, ip, #24
+ 171              	.LVL16:
+ 146:../drivers/fsl_ftm.c ****         {
+ 172              		.loc 1 146 0
+ 173 00ba A606     		lsls	r6, r4, #26
+ 148:../drivers/fsl_ftm.c ****         }
+ 174              		.loc 1 148 0
+ 175 00bc 48BF     		it	mi
+ 176 00be 42F02002 		orrmi	r2, r2, #32
+ 150:../drivers/fsl_ftm.c ****         {
+ 177              		.loc 1 150 0
+ 178 00c2 6506     		lsls	r5, r4, #25
+ 138:../drivers/fsl_ftm.c ****                 FTM_SYNCONF_HWSOC_MASK | FTM_SYNCONF_HWOM_MASK);
+ 179              		.loc 1 138 0
+ 180 00c4 43F4F813 		orr	r3, r3, #2031616
+ 181              	.LVL17:
+ 152:../drivers/fsl_ftm.c ****         }
+ 182              		.loc 1 152 0
+ 183 00c8 48BF     		it	mi
+ 184 00ca 42F04002 		orrmi	r2, r2, #64
+ 185              	.LVL18:
+ 186              	.L11:
+ 157:../drivers/fsl_ftm.c **** 
+ 187              		.loc 1 157 0
+ 188 00ce 8265     		str	r2, [r0, #88]
+ 160:../drivers/fsl_ftm.c **** }
+ 189              		.loc 1 160 0
+ 190 00d0 C0F88C30 		str	r3, [r0, #140]
+ 191              	.LVL19:
+ 192              	.LBE16:
+ 193              	.LBE21:
+ 194              	.LBB22:
+ 195              	.LBB23:
+ 169:../drivers/fsl_ftm.c **** 
+ 196              		.loc 1 169 0
+ 197 00d4 D0F88C30 		ldr	r3, [r0, #140]
+ 198              	.LBE23:
+ 199              	.LBE22:
+ 247:../drivers/fsl_ftm.c **** 
+ 248:../drivers/fsl_ftm.c ****     /* Setup intermediate register reload points */
+ 249:../drivers/fsl_ftm.c ****     FTM_SetReloadPoints(base, config->reloadPoints);
+ 200              		.loc 1 249 0
+ 201 00d8 8A68     		ldr	r2, [r1, #8]
+ 202              	.LVL20:
+ 203              	.LBB26:
+ 204              	.LBB24:
+ 172:../drivers/fsl_ftm.c ****     {
+ 205              		.loc 1 172 0
+ 206 00da 534E     		ldr	r6, .L58
+ 207 00dc 544F     		ldr	r7, .L58+8
+ 208 00de DFF854E1 		ldr	lr, .L58+12
+ 209 00e2 DFF85481 		ldr	r8, .L58+16
+ 169:../drivers/fsl_ftm.c **** 
+ 210              		.loc 1 169 0
+ 211 00e6 43F00403 		orr	r3, r3, #4
+ 212 00ea C0F88C30 		str	r3, [r0, #140]
+ 171:../drivers/fsl_ftm.c ****     for (chnlNumber = 0; chnlNumber < (FSL_FEATURE_FTM_CHANNEL_COUNTn(base) / 2); chnlNumber++)
+ 213              		.loc 1 171 0
+ 214 00ee 456E     		ldr	r5, [r0, #100]
+ 215              	.LVL21:
+ 172:../drivers/fsl_ftm.c ****     {
+ 216              		.loc 1 172 0
+ 217 00f0 0024     		movs	r4, #0
+ 218 00f2 4FF0010C 		mov	ip, #1
+ 219              	.LVL22:
+ 220              	.L14:
+ 221 00f6 B042     		cmp	r0, r6
+ 222 00f8 7BD0     		beq	.L37
+ 223 00fa B842     		cmp	r0, r7
+ 224 00fc 6FD0     		beq	.L36
+ 225 00fe 7045     		cmp	r0, lr
+ 226 0100 6DD0     		beq	.L36
+ 227 0102 4045     		cmp	r0, r8
+ 228 0104 75D0     		beq	.L37
+ 229              	.L19:
+ 183:../drivers/fsl_ftm.c ****     reg |= (reloadPoints & ((1U << FSL_FEATURE_FTM_CHANNEL_COUNTn(base)) - 1));
+ 230              		.loc 1 183 0
+ 231 0106 484B     		ldr	r3, .L58
+ 177:../drivers/fsl_ftm.c **** 
+ 232              		.loc 1 177 0
+ 233 0108 4566     		str	r5, [r0, #100]
+ 183:../drivers/fsl_ftm.c ****     reg |= (reloadPoints & ((1U << FSL_FEATURE_FTM_CHANNEL_COUNTn(base)) - 1));
+ 234              		.loc 1 183 0
+ 235 010a 9842     		cmp	r0, r3
+ 180:../drivers/fsl_ftm.c **** 
+ 236              		.loc 1 180 0
+ 237 010c D0F89840 		ldr	r4, [r0, #152]
+ 238              	.LVL23:
+ 183:../drivers/fsl_ftm.c ****     reg |= (reloadPoints & ((1U << FSL_FEATURE_FTM_CHANNEL_COUNTn(base)) - 1));
+ 239              		.loc 1 183 0
+ 240 0110 71D1     		bne	.L16
+ 241 0112 6FF0FF03 		mvn	r3, #255
+ 242              	.L17:
+ 243 0116 1C40     		ands	r4, r4, r3
+ 244              	.LVL24:
+ 184:../drivers/fsl_ftm.c **** 
+ 245              		.loc 1 184 0
+ 246 0118 434B     		ldr	r3, .L58
+ 247 011a 9842     		cmp	r0, r3
+ 248 011c 7DD0     		beq	.L41
+ 249 011e 03F58053 		add	r3, r3, #4096
+ 250 0122 9842     		cmp	r0, r3
+ 251 0124 7BD0     		beq	.L43
+ 252 0126 03F58053 		add	r3, r3, #4096
+ 253 012a 9842     		cmp	r0, r3
+ 254 012c 77D0     		beq	.L43
+ 255 012e 03F5FE23 		add	r3, r3, #520192
+ 256 0132 9842     		cmp	r0, r3
+ 257 0134 14BF     		ite	ne
+ 258 0136 4FF0FF33 		movne	r3, #-1
+ 259 013a FF23     		moveq	r3, #255
+ 260              	.L20:
+ 261 013c 1340     		ands	r3, r3, r2
+ 262 013e 2343     		orrs	r3, r3, r4
+ 263              	.LVL25:
+ 198:../drivers/fsl_ftm.c **** 
+ 264              		.loc 1 198 0
+ 265 0140 C0F89830 		str	r3, [r0, #152]
+ 201:../drivers/fsl_ftm.c ****     if (reloadPoints & kFTM_CntMax)
+ 266              		.loc 1 201 0
+ 267 0144 836D     		ldr	r3, [r0, #88]
+ 268              	.LVL26:
+ 202:../drivers/fsl_ftm.c ****     {
+ 269              		.loc 1 202 0
+ 270 0146 D405     		lsls	r4, r2, #23
+ 205:../drivers/fsl_ftm.c ****     }
+ 271              		.loc 1 205 0
+ 272 0148 4CBF     		ite	mi
+ 273 014a 43F00203 		orrmi	r3, r3, #2
+ 274              	.LVL27:
+ 209:../drivers/fsl_ftm.c ****     }
+ 275              		.loc 1 209 0
+ 276 014e 23F00203 		bicpl	r3, r3, #2
+ 277              	.LVL28:
+ 212:../drivers/fsl_ftm.c ****     {
+ 278              		.loc 1 212 0
+ 279 0152 9205     		lsls	r2, r2, #22
+ 280              	.LVL29:
+ 215:../drivers/fsl_ftm.c ****     }
+ 281              		.loc 1 215 0
+ 282 0154 4CBF     		ite	mi
+ 283 0156 43F00103 		orrmi	r3, r3, #1
+ 284              	.LVL30:
+ 219:../drivers/fsl_ftm.c ****     }
+ 285              		.loc 1 219 0
+ 286 015a 23F00103 		bicpl	r3, r3, #1
+ 287              	.LVL31:
+ 221:../drivers/fsl_ftm.c **** }
+ 288              		.loc 1 221 0
+ 289 015e 8365     		str	r3, [r0, #88]
+ 290              	.LVL32:
+ 291              	.LBE24:
+ 292              	.LBE26:
+ 250:../drivers/fsl_ftm.c **** 
+ 251:../drivers/fsl_ftm.c ****     /* Set the clock prescale factor */
+ 252:../drivers/fsl_ftm.c ****     base->SC = FTM_SC_PS(config->prescale);
+ 293              		.loc 1 252 0
+ 294 0160 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 253:../drivers/fsl_ftm.c **** 
+ 254:../drivers/fsl_ftm.c ****     /* Setup the counter operation */
+ 255:../drivers/fsl_ftm.c ****     base->CONF = (FTM_CONF_BDMMODE(config->bdmMode) | FTM_CONF_GTBEEN(config->useGlobalTimeBase));
+ 295              		.loc 1 255 0
+ 296 0162 8A7E     		ldrb	r2, [r1, #26]	@ zero_extendqisi2
+ 252:../drivers/fsl_ftm.c **** 
+ 297              		.loc 1 252 0
+ 298 0164 03F00703 		and	r3, r3, #7
+ 299 0168 0360     		str	r3, [r0]
+ 300              		.loc 1 255 0
+ 301 016a 4B78     		ldrb	r3, [r1, #1]	@ zero_extendqisi2
+ 302 016c 9B01     		lsls	r3, r3, #6
+ 303 016e DBB2     		uxtb	r3, r3
+ 304 0170 43EA4223 		orr	r3, r3, r2, lsl #9
+ 305 0174 C0F88430 		str	r3, [r0, #132]
+ 256:../drivers/fsl_ftm.c **** 
+ 257:../drivers/fsl_ftm.c ****     /* Initial state of channel output */
+ 258:../drivers/fsl_ftm.c ****     base->OUTINIT = config->chnlInitState;
+ 306              		.loc 1 258 0
+ 307 0178 0B7E     		ldrb	r3, [r1, #24]	@ zero_extendqisi2
+ 308 017a C365     		str	r3, [r0, #92]
+ 259:../drivers/fsl_ftm.c **** 
+ 260:../drivers/fsl_ftm.c ****     /* Channel polarity */
+ 261:../drivers/fsl_ftm.c ****     base->POL = config->chnlPolarity;
+ 309              		.loc 1 261 0
+ 310 017c 4B7E     		ldrb	r3, [r1, #25]	@ zero_extendqisi2
+ 311 017e 0367     		str	r3, [r0, #112]
+ 262:../drivers/fsl_ftm.c **** 
+ 263:../drivers/fsl_ftm.c ****     /* Set the external trigger sources */
+ 264:../drivers/fsl_ftm.c ****     base->EXTTRIG = config->extTriggers;
+ 312              		.loc 1 264 0
+ 313 0180 4B69     		ldr	r3, [r1, #20]
+ 314 0182 C366     		str	r3, [r0, #108]
+ 265:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_RELOAD_INITIALIZATION_TRIGGER) && (FSL_FEATURE_FTM_HAS_RELOAD_INITI
+ 266:../drivers/fsl_ftm.c ****     if (config->extTriggers & kFTM_ReloadInitTrigger)
+ 267:../drivers/fsl_ftm.c ****     {
+ 268:../drivers/fsl_ftm.c ****         base->CONF |= FTM_CONF_ITRIGR_MASK;
+ 269:../drivers/fsl_ftm.c ****     }
+ 270:../drivers/fsl_ftm.c ****     else
+ 271:../drivers/fsl_ftm.c ****     {
+ 272:../drivers/fsl_ftm.c ****         base->CONF &= ~FTM_CONF_ITRIGR_MASK;
+ 273:../drivers/fsl_ftm.c ****     }
+ 274:../drivers/fsl_ftm.c **** #endif /* FSL_FEATURE_FTM_HAS_RELOAD_INITIALIZATION_TRIGGER */
+ 275:../drivers/fsl_ftm.c **** 
+ 276:../drivers/fsl_ftm.c ****     /* FTM deadtime insertion control */
+ 277:../drivers/fsl_ftm.c ****     base->DEADTIME = (0u | 
+ 278:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_VALUE) && (FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_
+ 279:../drivers/fsl_ftm.c ****                         /* Has extended deadtime value register) */
+ 280:../drivers/fsl_ftm.c ****                         FTM_DEADTIME_DTVALEX(config->deadTimeValue >> 6) | 
+ 281:../drivers/fsl_ftm.c **** #endif /* FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_VALUE */
+ 282:../drivers/fsl_ftm.c ****                         FTM_DEADTIME_DTPS(config->deadTimePrescale) | 
+ 315              		.loc 1 282 0
+ 316 0184 8B7B     		ldrb	r3, [r1, #14]	@ zero_extendqisi2
+ 283:../drivers/fsl_ftm.c ****                         FTM_DEADTIME_DTVAL(config->deadTimeValue));
+ 317              		.loc 1 283 0
+ 318 0186 0A69     		ldr	r2, [r1, #16]
+ 282:../drivers/fsl_ftm.c ****                         FTM_DEADTIME_DTVAL(config->deadTimeValue));
+ 319              		.loc 1 282 0
+ 320 0188 9B01     		lsls	r3, r3, #6
+ 321              		.loc 1 283 0
+ 322 018a 02F03F02 		and	r2, r2, #63
+ 277:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_VALUE) && (FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_
+ 323              		.loc 1 277 0
+ 324 018e DBB2     		uxtb	r3, r3
+ 282:../drivers/fsl_ftm.c ****                         FTM_DEADTIME_DTVAL(config->deadTimeValue));
+ 325              		.loc 1 282 0
+ 326 0190 1343     		orrs	r3, r3, r2
+ 277:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_VALUE) && (FSL_FEATURE_FTM_HAS_EXTENDED_DEADTIME_
+ 327              		.loc 1 277 0
+ 328 0192 8366     		str	r3, [r0, #104]
+ 284:../drivers/fsl_ftm.c **** 
+ 285:../drivers/fsl_ftm.c ****     /* FTM fault filter value */
+ 286:../drivers/fsl_ftm.c ****     reg = base->FLTCTRL;
+ 287:../drivers/fsl_ftm.c ****     reg &= ~FTM_FLTCTRL_FFVAL_MASK;
+ 288:../drivers/fsl_ftm.c ****     reg |= FTM_FLTCTRL_FFVAL(config->faultFilterValue);
+ 329              		.loc 1 288 0
+ 330 0194 4B7B     		ldrb	r3, [r1, #13]	@ zero_extendqisi2
+ 286:../drivers/fsl_ftm.c ****     reg &= ~FTM_FLTCTRL_FFVAL_MASK;
+ 331              		.loc 1 286 0
+ 332 0196 C26F     		ldr	r2, [r0, #124]
+ 333              	.LVL33:
+ 334              		.loc 1 288 0
+ 335 0198 1B02     		lsls	r3, r3, #8
+ 287:../drivers/fsl_ftm.c ****     reg |= FTM_FLTCTRL_FFVAL(config->faultFilterValue);
+ 336              		.loc 1 287 0
+ 337 019a 22F47062 		bic	r2, r2, #3840
+ 338              	.LVL34:
+ 339              		.loc 1 288 0
+ 340 019e 03F47063 		and	r3, r3, #3840
+ 341 01a2 1343     		orrs	r3, r3, r2
+ 342              	.LVL35:
+ 289:../drivers/fsl_ftm.c ****     base->FLTCTRL = reg;
+ 343              		.loc 1 289 0
+ 344 01a4 C367     		str	r3, [r0, #124]
+ 290:../drivers/fsl_ftm.c **** 
+ 291:../drivers/fsl_ftm.c ****     return kStatus_Success;
+ 345              		.loc 1 291 0
+ 346 01a6 0020     		movs	r0, #0
+ 347              	.LVL36:
+ 348              	.L1:
+ 292:../drivers/fsl_ftm.c **** }
+ 349              		.loc 1 292 0
+ 350 01a8 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 351              	.LVL37:
+ 352              	.L26:
+ 353              	.LBB27:
+ 354              	.LBB12:
+  93:../drivers/fsl_ftm.c ****     {
+ 355              		.loc 1 93 0
+ 356 01ac 0023     		movs	r3, #0
+ 357 01ae 42E7     		b	.L3
+ 358              	.LVL38:
+ 359              	.L27:
+ 360 01b0 0123     		movs	r3, #1
+ 361 01b2 40E7     		b	.L3
+ 362              	.LVL39:
+ 363              	.L28:
+ 364 01b4 0223     		movs	r3, #2
+ 365 01b6 3EE7     		b	.L3
+ 366              	.LVL40:
+ 367              	.L32:
+ 368              	.LBE12:
+ 369              	.LBE27:
+ 370              	.LBB28:
+ 371              	.LBB17:
+ 116:../drivers/fsl_ftm.c ****     {
+ 372              		.loc 1 116 0
+ 373 01b8 0126     		movs	r6, #1
+ 374              	.L5:
+ 375 01ba B342     		cmp	r3, r6
+ 376 01bc 05F10105 		add	r5, r5, #1
+ 377              	.LVL41:
+ 378 01c0 BFF66CAF 		bge	.L9
+ 119:../drivers/fsl_ftm.c ****     }
+ 379              		.loc 1 119 0
+ 380 01c4 DB00     		lsls	r3, r3, #3
+ 381              	.LVL42:
+ 382 01c6 0533     		adds	r3, r3, #5
+ 383 01c8 09FA03F3 		lsl	r3, r9, r3
+ 384 01cc 1F43     		orrs	r7, r7, r3
+ 385              	.LVL43:
+ 386 01ce 58E7     		b	.L4
+ 387              	.L33:
+ 116:../drivers/fsl_ftm.c ****     {
+ 388              		.loc 1 116 0
+ 389 01d0 0426     		movs	r6, #4
+ 390 01d2 F2E7     		b	.L5
+ 391              	.LVL44:
+ 392              	.L6:
+ 131:../drivers/fsl_ftm.c ****                 FTM_SYNCONF_SWSOC_MASK | FTM_SYNCONF_SWOM_MASK);
+ 393              		.loc 1 131 0
+ 394 01d4 43F4FD53 		orr	r3, r3, #8096
+ 395              	.LVL45:
+ 396 01d8 43F01403 		orr	r3, r3, #20
+ 397              	.LVL46:
+ 398 01dc 66E7     		b	.L10
+ 399              	.LVL47:
+ 400              	.L36:
+ 401              	.LBE17:
+ 402              	.LBE28:
+ 403              	.LBB29:
+ 404              	.LBB25:
+ 172:../drivers/fsl_ftm.c ****     {
+ 405              		.loc 1 172 0
+ 406 01de 0123     		movs	r3, #1
+ 407              	.L15:
+ 408 01e0 9C42     		cmp	r4, r3
+ 409 01e2 90D2     		bcs	.L19
+ 175:../drivers/fsl_ftm.c ****     }
+ 410              		.loc 1 175 0
+ 411 01e4 E300     		lsls	r3, r4, #3
+ 412 01e6 0533     		adds	r3, r3, #5
+ 413 01e8 0CFA03F3 		lsl	r3, ip, r3
+ 414 01ec 1D43     		orrs	r5, r5, r3
+ 415              	.LVL48:
+ 172:../drivers/fsl_ftm.c ****     {
+ 416              		.loc 1 172 0
+ 417 01ee 0134     		adds	r4, r4, #1
+ 418              	.LVL49:
+ 419 01f0 81E7     		b	.L14
+ 420              	.L37:
+ 421 01f2 0423     		movs	r3, #4
+ 422 01f4 F4E7     		b	.L15
+ 423              	.LVL50:
+ 424              	.L16:
+ 183:../drivers/fsl_ftm.c ****     reg |= (reloadPoints & ((1U << FSL_FEATURE_FTM_CHANNEL_COUNTn(base)) - 1));
+ 425              		.loc 1 183 0
+ 426 01f6 0E4B     		ldr	r3, .L58+8
+ 427 01f8 9842     		cmp	r0, r3
+ 428 01fa 0BD0     		beq	.L39
+ 429 01fc 03F58053 		add	r3, r3, #4096
+ 430 0200 9842     		cmp	r0, r3
+ 431 0202 07D0     		beq	.L39
+ 432 0204 03F5FE23 		add	r3, r3, #520192
+ 433 0208 9842     		cmp	r0, r3
+ 434 020a 14BF     		ite	ne
+ 435 020c 0023     		movne	r3, #0
+ 436 020e 6FF0FF03 		mvneq	r3, #255
+ 437 0212 80E7     		b	.L17
+ 438              	.L39:
+ 439 0214 6FF00303 		mvn	r3, #3
+ 440 0218 7DE7     		b	.L17
+ 441              	.L41:
+ 184:../drivers/fsl_ftm.c **** 
+ 442              		.loc 1 184 0
+ 443 021a FF23     		movs	r3, #255
+ 444 021c 8EE7     		b	.L20
+ 445              	.L43:
+ 446 021e 0323     		movs	r3, #3
+ 447 0220 8CE7     		b	.L20
+ 448              	.LVL51:
+ 449              	.L25:
+ 450              	.LBE25:
+ 451              	.LBE29:
+ 234:../drivers/fsl_ftm.c ****     }
+ 452              		.loc 1 234 0
+ 453 0222 0120     		movs	r0, #1
+ 454              	.LVL52:
+ 455 0224 C0E7     		b	.L1
+ 456              	.L59:
+ 457 0226 00BF     		.align	2
+ 458              	.L58:
+ 459 0228 00800340 		.word	1073971200
+ 460 022c 00000000 		.word	.LANCHOR0
+ 461 0230 00900340 		.word	1073975296
+ 462 0234 00A00340 		.word	1073979392
+ 463 0238 00900B40 		.word	1074499584
+ 464              		.cfi_endproc
+ 465              	.LFE168:
+ 467              		.section	.text.FTM_Deinit,"ax",%progbits
+ 468              		.align	1
+ 469              		.global	FTM_Deinit
+ 470              		.syntax unified
+ 471              		.thumb
+ 472              		.thumb_func
+ 473              		.fpu fpv4-sp-d16
+ 475              	FTM_Deinit:
+ 476              	.LFB169:
+ 293:../drivers/fsl_ftm.c **** 
+ 294:../drivers/fsl_ftm.c **** void FTM_Deinit(FTM_Type *base)
+ 295:../drivers/fsl_ftm.c **** {
+ 477              		.loc 1 295 0
+ 478              		.cfi_startproc
+ 479              		@ args = 0, pretend = 0, frame = 0
+ 480              		@ frame_needed = 0, uses_anonymous_args = 0
+ 481              		@ link register save eliminated.
+ 482              	.LVL53:
+ 296:../drivers/fsl_ftm.c ****     /* Set clock source to none to disable counter */
+ 297:../drivers/fsl_ftm.c ****     base->SC &= ~(FTM_SC_CLKS_MASK);
+ 483              		.loc 1 297 0
+ 484 0000 0368     		ldr	r3, [r0]
+ 485 0002 23F01803 		bic	r3, r3, #24
+ 486 0006 0360     		str	r3, [r0]
+ 487              	.LVL54:
+ 488              	.LBB34:
+ 489              	.LBB35:
+  95:../drivers/fsl_ftm.c ****         {
+ 490              		.loc 1 95 0
+ 491 0008 134B     		ldr	r3, .L66
+ 492 000a 9842     		cmp	r0, r3
+ 493 000c 1ED0     		beq	.L62
+ 494              	.LVL55:
+ 495 000e 03F58053 		add	r3, r3, #4096
+ 496 0012 9842     		cmp	r0, r3
+ 497 0014 1CD0     		beq	.L63
+ 498              	.LVL56:
+ 499 0016 03F58053 		add	r3, r3, #4096
+ 500 001a 9842     		cmp	r0, r3
+ 501 001c 1AD0     		beq	.L64
+ 502              	.LVL57:
+  93:../drivers/fsl_ftm.c ****     {
+ 503              		.loc 1 93 0
+ 504 001e 03F5FE23 		add	r3, r3, #520192
+ 505 0022 9842     		cmp	r0, r3
+ 506 0024 0CBF     		ite	eq
+ 507 0026 0320     		moveq	r0, #3
+ 508 0028 0420     		movne	r0, #4
+ 509              	.LVL58:
+ 510              	.L61:
+ 511              	.LBE35:
+ 512              	.LBE34:
+ 298:../drivers/fsl_ftm.c **** 
+ 299:../drivers/fsl_ftm.c **** #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
+ 300:../drivers/fsl_ftm.c ****     /* Gate the FTM clock */
+ 301:../drivers/fsl_ftm.c ****     CLOCK_DisableClock(s_ftmClocks[FTM_GetInstance(base)]);
+ 513              		.loc 1 301 0
+ 514 002a 0C4B     		ldr	r3, .L66+4
+ 515 002c 53F82020 		ldr	r2, [r3, r0, lsl #2]
+ 516              	.LVL59:
+ 517              	.LBB37:
+ 518              	.LBB38:
+ 696:../drivers/fsl_clock.h **** }
+ 697:../drivers/fsl_clock.h **** 
+ 698:../drivers/fsl_clock.h **** /*!
+ 699:../drivers/fsl_clock.h ****  * @brief Disable the clock for specific IP.
+ 700:../drivers/fsl_clock.h ****  *
+ 701:../drivers/fsl_clock.h ****  * @param name  Which clock to disable, see \ref clock_ip_name_t.
+ 702:../drivers/fsl_clock.h ****  */
+ 703:../drivers/fsl_clock.h **** static inline void CLOCK_DisableClock(clock_ip_name_t name)
+ 704:../drivers/fsl_clock.h **** {
+ 705:../drivers/fsl_clock.h ****     uint32_t regAddr = SIM_BASE + CLK_GATE_ABSTRACT_REG_OFFSET((uint32_t)name);
+ 519              		.loc 2 705 0
+ 520 0030 130C     		lsrs	r3, r2, #16
+ 521 0032 03F18043 		add	r3, r3, #1073741824
+ 522 0036 03F58E23 		add	r3, r3, #290816
+ 706:../drivers/fsl_clock.h ****     (*(volatile uint32_t *)regAddr) &= ~(1U << CLK_GATE_ABSTRACT_BITS_SHIFT((uint32_t)name));
+ 523              		.loc 2 706 0
+ 524 003a 92B2     		uxth	r2, r2
+ 525              	.LVL60:
+ 526 003c 1968     		ldr	r1, [r3]
+ 527 003e 0120     		movs	r0, #1
+ 528              	.LVL61:
+ 529 0040 00FA02F2 		lsl	r2, r0, r2
+ 530 0044 21EA0202 		bic	r2, r1, r2
+ 531 0048 1A60     		str	r2, [r3]
+ 532              	.LBE38:
+ 533              	.LBE37:
+ 302:../drivers/fsl_ftm.c **** #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
+ 303:../drivers/fsl_ftm.c **** }
+ 534              		.loc 1 303 0
+ 535 004a 7047     		bx	lr
+ 536              	.LVL62:
+ 537              	.L62:
+ 538              	.LBB39:
+ 539              	.LBB36:
+  93:../drivers/fsl_ftm.c ****     {
+ 540              		.loc 1 93 0
+ 541 004c 0020     		movs	r0, #0
+ 542              	.LVL63:
+ 543 004e ECE7     		b	.L61
+ 544              	.LVL64:
+ 545              	.L63:
+ 546 0050 0120     		movs	r0, #1
+ 547              	.LVL65:
+ 548 0052 EAE7     		b	.L61
+ 549              	.LVL66:
+ 550              	.L64:
+ 551 0054 0220     		movs	r0, #2
+ 552              	.LVL67:
+ 553 0056 E8E7     		b	.L61
+ 554              	.L67:
+ 555              		.align	2
+ 556              	.L66:
+ 557 0058 00800340 		.word	1073971200
+ 558 005c 00000000 		.word	.LANCHOR0
+ 559              	.LBE36:
+ 560              	.LBE39:
+ 561              		.cfi_endproc
+ 562              	.LFE169:
+ 564              		.section	.text.FTM_GetDefaultConfig,"ax",%progbits
+ 565              		.align	1
+ 566              		.global	FTM_GetDefaultConfig
+ 567              		.syntax unified
+ 568              		.thumb
+ 569              		.thumb_func
+ 570              		.fpu fpv4-sp-d16
+ 572              	FTM_GetDefaultConfig:
+ 573              	.LFB170:
+ 304:../drivers/fsl_ftm.c **** 
+ 305:../drivers/fsl_ftm.c **** void FTM_GetDefaultConfig(ftm_config_t *config)
+ 306:../drivers/fsl_ftm.c **** {
+ 574              		.loc 1 306 0
+ 575              		.cfi_startproc
+ 576              		@ args = 0, pretend = 0, frame = 0
+ 577              		@ frame_needed = 0, uses_anonymous_args = 0
+ 578              		@ link register save eliminated.
+ 579              	.LVL68:
+ 307:../drivers/fsl_ftm.c ****     assert(config);
+ 308:../drivers/fsl_ftm.c **** 
+ 309:../drivers/fsl_ftm.c ****     /* Divide FTM clock by 1 */
+ 310:../drivers/fsl_ftm.c ****     config->prescale = kFTM_Prescale_Divide_1;
+ 580              		.loc 1 310 0
+ 581 0000 0023     		movs	r3, #0
+ 311:../drivers/fsl_ftm.c ****     /* FTM behavior in BDM mode */
+ 312:../drivers/fsl_ftm.c ****     config->bdmMode = kFTM_BdmMode_0;
+ 313:../drivers/fsl_ftm.c ****     /* Software trigger will be used to update registers */
+ 314:../drivers/fsl_ftm.c ****     config->pwmSyncMode = kFTM_SoftwareTrigger;
+ 582              		.loc 1 314 0
+ 583 0002 8022     		movs	r2, #128
+ 315:../drivers/fsl_ftm.c ****     /* No intermediate register load */
+ 316:../drivers/fsl_ftm.c ****     config->reloadPoints = 0;
+ 584              		.loc 1 316 0
+ 585 0004 C0E90123 		strd	r2, r3, [r0, #4]
+ 317:../drivers/fsl_ftm.c ****     /* Fault control disabled for all channels */
+ 318:../drivers/fsl_ftm.c ****     config->faultMode = kFTM_Fault_Disable;
+ 319:../drivers/fsl_ftm.c ****     /* Disable the fault filter */
+ 320:../drivers/fsl_ftm.c ****     config->faultFilterValue = 0;
+ 321:../drivers/fsl_ftm.c ****     /* Divide the system clock by 1 */
+ 322:../drivers/fsl_ftm.c ****     config->deadTimePrescale = kFTM_Deadtime_Prescale_1;
+ 586              		.loc 1 322 0
+ 587 0008 0122     		movs	r2, #1
+ 310:../drivers/fsl_ftm.c ****     /* FTM behavior in BDM mode */
+ 588              		.loc 1 310 0
+ 589 000a 0370     		strb	r3, [r0]
+ 312:../drivers/fsl_ftm.c ****     /* Software trigger will be used to update registers */
+ 590              		.loc 1 312 0
+ 591 000c 4370     		strb	r3, [r0, #1]
+ 318:../drivers/fsl_ftm.c ****     /* Disable the fault filter */
+ 592              		.loc 1 318 0
+ 593 000e 0373     		strb	r3, [r0, #12]
+ 320:../drivers/fsl_ftm.c ****     /* Divide the system clock by 1 */
+ 594              		.loc 1 320 0
+ 595 0010 4373     		strb	r3, [r0, #13]
+ 596              		.loc 1 322 0
+ 597 0012 8273     		strb	r2, [r0, #14]
+ 323:../drivers/fsl_ftm.c ****     /* No counts are inserted */
+ 324:../drivers/fsl_ftm.c ****     config->deadTimeValue = 0;
+ 598              		.loc 1 324 0
+ 599 0014 C0E90433 		strd	r3, r3, [r0, #16]
+ 325:../drivers/fsl_ftm.c ****     /* No external trigger */
+ 326:../drivers/fsl_ftm.c ****     config->extTriggers = 0;
+ 600              		.loc 1 326 0
+ 601 0018 0383     		strh	r3, [r0, #24]	@ movhi
+ 327:../drivers/fsl_ftm.c ****     /* Initialization value is 0 for all channels */
+ 328:../drivers/fsl_ftm.c ****     config->chnlInitState = 0;
+ 329:../drivers/fsl_ftm.c ****     /* Active high polarity for all channels */
+ 330:../drivers/fsl_ftm.c ****     config->chnlPolarity = 0;
+ 331:../drivers/fsl_ftm.c ****     /* Use internal FTM counter as timebase */
+ 332:../drivers/fsl_ftm.c ****     config->useGlobalTimeBase = false;
+ 602              		.loc 1 332 0
+ 603 001a 8376     		strb	r3, [r0, #26]
+ 333:../drivers/fsl_ftm.c **** }
+ 604              		.loc 1 333 0
+ 605 001c 7047     		bx	lr
+ 606              		.cfi_endproc
+ 607              	.LFE170:
+ 609              		.section	.text.FTM_SetupPwm,"ax",%progbits
+ 610              		.align	1
+ 611              		.global	FTM_SetupPwm
+ 612              		.syntax unified
+ 613              		.thumb
+ 614              		.thumb_func
+ 615              		.fpu fpv4-sp-d16
+ 617              	FTM_SetupPwm:
+ 618              	.LFB171:
+ 334:../drivers/fsl_ftm.c **** 
+ 335:../drivers/fsl_ftm.c **** status_t FTM_SetupPwm(FTM_Type *base,
+ 336:../drivers/fsl_ftm.c ****                       const ftm_chnl_pwm_signal_param_t *chnlParams,
+ 337:../drivers/fsl_ftm.c ****                       uint8_t numOfChnls,
+ 338:../drivers/fsl_ftm.c ****                       ftm_pwm_mode_t mode,
+ 339:../drivers/fsl_ftm.c ****                       uint32_t pwmFreq_Hz,
+ 340:../drivers/fsl_ftm.c ****                       uint32_t srcClock_Hz)
+ 341:../drivers/fsl_ftm.c **** {
+ 619              		.loc 1 341 0
+ 620              		.cfi_startproc
+ 621              		@ args = 8, pretend = 0, frame = 0
+ 622              		@ frame_needed = 0, uses_anonymous_args = 0
+ 623              	.LVL69:
+ 624 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 625              		.cfi_def_cfa_offset 36
+ 626              		.cfi_offset 4, -36
+ 627              		.cfi_offset 5, -32
+ 628              		.cfi_offset 6, -28
+ 629              		.cfi_offset 7, -24
+ 630              		.cfi_offset 8, -20
+ 631              		.cfi_offset 9, -16
+ 632              		.cfi_offset 10, -12
+ 633              		.cfi_offset 11, -8
+ 634              		.cfi_offset 14, -4
+ 342:../drivers/fsl_ftm.c ****     assert(chnlParams);
+ 343:../drivers/fsl_ftm.c ****     assert(srcClock_Hz);
+ 344:../drivers/fsl_ftm.c ****     assert(pwmFreq_Hz);
+ 345:../drivers/fsl_ftm.c ****     assert(numOfChnls);
+ 346:../drivers/fsl_ftm.c **** 
+ 347:../drivers/fsl_ftm.c ****     uint32_t mod, reg;
+ 348:../drivers/fsl_ftm.c ****     uint32_t ftmClock = (srcClock_Hz / (1U << (base->SC & FTM_SC_PS_MASK)));
+ 635              		.loc 1 348 0
+ 636 0004 0668     		ldr	r6, [r0]
+ 637 0006 0A9C     		ldr	r4, [sp, #40]
+ 341:../drivers/fsl_ftm.c ****     assert(chnlParams);
+ 638              		.loc 1 341 0
+ 639 0008 099D     		ldr	r5, [sp, #36]
+ 640              		.loc 1 348 0
+ 641 000a 06F00706 		and	r6, r6, #7
+ 349:../drivers/fsl_ftm.c ****     uint16_t cnv, cnvFirstEdge;
+ 350:../drivers/fsl_ftm.c ****     uint8_t i;
+ 351:../drivers/fsl_ftm.c **** 
+ 352:../drivers/fsl_ftm.c ****     switch (mode)
+ 642              		.loc 1 352 0
+ 643 000e 012B     		cmp	r3, #1
+ 348:../drivers/fsl_ftm.c ****     uint16_t cnv, cnvFirstEdge;
+ 644              		.loc 1 348 0
+ 645 0010 24FA06F4 		lsr	r4, r4, r6
+ 646              	.LVL70:
+ 647              		.loc 1 352 0
+ 648 0014 0ED0     		beq	.L71
+ 649 0016 01D3     		bcc	.L72
+ 650 0018 022B     		cmp	r3, #2
+ 651 001a 09D1     		bne	.L96
+ 652              	.L72:
+ 353:../drivers/fsl_ftm.c ****     {
+ 354:../drivers/fsl_ftm.c ****         case kFTM_EdgeAlignedPwm:
+ 355:../drivers/fsl_ftm.c ****         case kFTM_CombinedPwm:
+ 356:../drivers/fsl_ftm.c ****             base->SC &= ~FTM_SC_CPWMS_MASK;
+ 357:../drivers/fsl_ftm.c ****             mod = (ftmClock / pwmFreq_Hz) - 1;
+ 653              		.loc 1 357 0
+ 654 001c B4FBF5F4 		udiv	r4, r4, r5
+ 655              	.LVL71:
+ 356:../drivers/fsl_ftm.c ****             mod = (ftmClock / pwmFreq_Hz) - 1;
+ 656              		.loc 1 356 0
+ 657 0020 0668     		ldr	r6, [r0]
+ 658              	.LVL72:
+ 659 0022 26F02006 		bic	r6, r6, #32
+ 660 0026 0660     		str	r6, [r0]
+ 661              		.loc 1 357 0
+ 662 0028 013C     		subs	r4, r4, #1
+ 663              	.LVL73:
+ 664              	.L73:
+ 358:../drivers/fsl_ftm.c ****             break;
+ 359:../drivers/fsl_ftm.c ****         case kFTM_CenterAlignedPwm:
+ 360:../drivers/fsl_ftm.c ****             base->SC |= FTM_SC_CPWMS_MASK;
+ 361:../drivers/fsl_ftm.c ****             mod = ftmClock / (pwmFreq_Hz * 2);
+ 362:../drivers/fsl_ftm.c ****             break;
+ 363:../drivers/fsl_ftm.c ****         default:
+ 364:../drivers/fsl_ftm.c ****             return kStatus_Fail;
+ 365:../drivers/fsl_ftm.c ****     }
+ 366:../drivers/fsl_ftm.c **** 
+ 367:../drivers/fsl_ftm.c ****     /* Return an error in case we overflow the registers, probably would require changing
+ 368:../drivers/fsl_ftm.c ****      * clock source to get the desired frequency */
+ 369:../drivers/fsl_ftm.c ****     if (mod > 65535U)
+ 665              		.loc 1 369 0
+ 666 002a B4F5803F 		cmp	r4, #65536
+ 667 002e 09D3     		bcc	.L74
+ 668              	.LVL74:
+ 669              	.L96:
+ 364:../drivers/fsl_ftm.c ****     }
+ 670              		.loc 1 364 0
+ 671 0030 0120     		movs	r0, #1
+ 672              	.LVL75:
+ 673 0032 18E0     		b	.L69
+ 674              	.LVL76:
+ 675              	.L71:
+ 360:../drivers/fsl_ftm.c ****             mod = ftmClock / (pwmFreq_Hz * 2);
+ 676              		.loc 1 360 0
+ 677 0034 0668     		ldr	r6, [r0]
+ 678 0036 46F02006 		orr	r6, r6, #32
+ 361:../drivers/fsl_ftm.c ****             break;
+ 679              		.loc 1 361 0
+ 680 003a 6D00     		lsls	r5, r5, #1
+ 360:../drivers/fsl_ftm.c ****             mod = ftmClock / (pwmFreq_Hz * 2);
+ 681              		.loc 1 360 0
+ 682 003c 0660     		str	r6, [r0]
+ 361:../drivers/fsl_ftm.c ****             break;
+ 683              		.loc 1 361 0
+ 684 003e B4FBF5F4 		udiv	r4, r4, r5
+ 685              	.LVL77:
+ 362:../drivers/fsl_ftm.c ****         default:
+ 686              		.loc 1 362 0
+ 687 0042 F2E7     		b	.L73
+ 688              	.L74:
+ 370:../drivers/fsl_ftm.c ****     {
+ 371:../drivers/fsl_ftm.c ****         return kStatus_Fail;
+ 372:../drivers/fsl_ftm.c ****     }
+ 373:../drivers/fsl_ftm.c ****     /* Set the PWM period */
+ 374:../drivers/fsl_ftm.c ****     base->MOD = mod;
+ 375:../drivers/fsl_ftm.c **** 
+ 376:../drivers/fsl_ftm.c ****     /* Setup each FTM channel */
+ 377:../drivers/fsl_ftm.c ****     for (i = 0; i < numOfChnls; i++)
+ 378:../drivers/fsl_ftm.c ****     {
+ 379:../drivers/fsl_ftm.c ****         /* Return error if requested dutycycle is greater than the max allowed */
+ 380:../drivers/fsl_ftm.c ****         if (chnlParams->dutyCyclePercent > 100)
+ 381:../drivers/fsl_ftm.c ****         {
+ 382:../drivers/fsl_ftm.c ****             return kStatus_Fail;
+ 383:../drivers/fsl_ftm.c ****         }
+ 384:../drivers/fsl_ftm.c **** 
+ 385:../drivers/fsl_ftm.c ****         if ((mode == kFTM_EdgeAlignedPwm) || (mode == kFTM_CenterAlignedPwm))
+ 386:../drivers/fsl_ftm.c ****         {
+ 387:../drivers/fsl_ftm.c ****             /* Clear the current mode and edge level bits */
+ 388:../drivers/fsl_ftm.c ****             reg = base->CONTROLS[chnlParams->chnlNumber].CnSC;
+ 389:../drivers/fsl_ftm.c ****             reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MAS
+ 390:../drivers/fsl_ftm.c **** 
+ 391:../drivers/fsl_ftm.c ****             /* Setup the active level */
+ 392:../drivers/fsl_ftm.c ****             reg |= (uint32_t)(chnlParams->level << FTM_CnSC_ELSA_SHIFT);
+ 393:../drivers/fsl_ftm.c **** 
+ 394:../drivers/fsl_ftm.c ****             /* Edge-aligned mode needs MSB to be 1, don't care for Center-aligned mode */
+ 395:../drivers/fsl_ftm.c ****             reg |= FTM_CnSC_MSB(1U);
+ 396:../drivers/fsl_ftm.c **** 
+ 397:../drivers/fsl_ftm.c ****             /* Update the mode and edge level */
+ 398:../drivers/fsl_ftm.c ****             base->CONTROLS[chnlParams->chnlNumber].CnSC = reg;
+ 399:../drivers/fsl_ftm.c **** 
+ 400:../drivers/fsl_ftm.c ****             if (chnlParams->dutyCyclePercent == 0)
+ 401:../drivers/fsl_ftm.c ****             {
+ 402:../drivers/fsl_ftm.c ****                 /* Signal stays low */
+ 403:../drivers/fsl_ftm.c ****                 cnv = 0;
+ 404:../drivers/fsl_ftm.c ****             }
+ 405:../drivers/fsl_ftm.c ****             else
+ 406:../drivers/fsl_ftm.c ****             {
+ 407:../drivers/fsl_ftm.c ****                 cnv = (mod * chnlParams->dutyCyclePercent) / 100;
+ 408:../drivers/fsl_ftm.c ****                 /* For 100% duty cycle */
+ 409:../drivers/fsl_ftm.c ****                 if (cnv >= mod)
+ 410:../drivers/fsl_ftm.c ****                 {
+ 411:../drivers/fsl_ftm.c ****                     cnv = mod + 1;
+ 412:../drivers/fsl_ftm.c ****                 }
+ 413:../drivers/fsl_ftm.c ****             }
+ 414:../drivers/fsl_ftm.c **** 
+ 415:../drivers/fsl_ftm.c ****             base->CONTROLS[chnlParams->chnlNumber].CnV = cnv;
+ 416:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT) && (FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT)
+ 417:../drivers/fsl_ftm.c ****             /* Set to output mode */
+ 418:../drivers/fsl_ftm.c ****             FTM_SetPwmOutputEnable(base, chnlParams->chnlNumber, true);
+ 419:../drivers/fsl_ftm.c **** #endif
+ 420:../drivers/fsl_ftm.c ****         }
+ 421:../drivers/fsl_ftm.c ****         else
+ 422:../drivers/fsl_ftm.c ****         {
+ 423:../drivers/fsl_ftm.c ****             /* This check is added for combined mode as the channel number should be the pair numbe
+ 424:../drivers/fsl_ftm.c ****             if (chnlParams->chnlNumber >= (FSL_FEATURE_FTM_CHANNEL_COUNTn(base) / 2))
+ 425:../drivers/fsl_ftm.c ****             {
+ 426:../drivers/fsl_ftm.c ****                 return kStatus_Fail;
+ 427:../drivers/fsl_ftm.c ****             }
+ 428:../drivers/fsl_ftm.c **** 
+ 429:../drivers/fsl_ftm.c ****             /* Return error if requested value is greater than the max allowed */
+ 430:../drivers/fsl_ftm.c ****             if (chnlParams->firstEdgeDelayPercent > 100)
+ 431:../drivers/fsl_ftm.c ****             {
+ 432:../drivers/fsl_ftm.c ****                 return kStatus_Fail;
+ 433:../drivers/fsl_ftm.c ****             }
+ 434:../drivers/fsl_ftm.c **** 
+ 435:../drivers/fsl_ftm.c ****             /* Configure delay of the first edge */
+ 436:../drivers/fsl_ftm.c ****             if (chnlParams->firstEdgeDelayPercent == 0)
+ 437:../drivers/fsl_ftm.c ****             {
+ 438:../drivers/fsl_ftm.c ****                 /* No delay for the first edge */
+ 439:../drivers/fsl_ftm.c ****                 cnvFirstEdge = 0;
+ 440:../drivers/fsl_ftm.c ****             }
+ 441:../drivers/fsl_ftm.c ****             else
+ 442:../drivers/fsl_ftm.c ****             {
+ 443:../drivers/fsl_ftm.c ****                 cnvFirstEdge = (mod * chnlParams->firstEdgeDelayPercent) / 100;
+ 444:../drivers/fsl_ftm.c ****             }
+ 445:../drivers/fsl_ftm.c **** 
+ 446:../drivers/fsl_ftm.c ****             /* Configure dutycycle */
+ 447:../drivers/fsl_ftm.c ****             if (chnlParams->dutyCyclePercent == 0)
+ 448:../drivers/fsl_ftm.c ****             {
+ 449:../drivers/fsl_ftm.c ****                 /* Signal stays low */
+ 450:../drivers/fsl_ftm.c ****                 cnv = 0;
+ 451:../drivers/fsl_ftm.c ****                 cnvFirstEdge = 0;
+ 452:../drivers/fsl_ftm.c ****             }
+ 453:../drivers/fsl_ftm.c ****             else
+ 454:../drivers/fsl_ftm.c ****             {
+ 455:../drivers/fsl_ftm.c ****                 cnv = (mod * chnlParams->dutyCyclePercent) / 100;
+ 456:../drivers/fsl_ftm.c ****                 /* For 100% duty cycle */
+ 457:../drivers/fsl_ftm.c ****                 if (cnv >= mod)
+ 458:../drivers/fsl_ftm.c ****                 {
+ 459:../drivers/fsl_ftm.c ****                     cnv = mod + 1;
+ 460:../drivers/fsl_ftm.c ****                 }
+ 461:../drivers/fsl_ftm.c ****             }
+ 462:../drivers/fsl_ftm.c **** 
+ 463:../drivers/fsl_ftm.c ****             /* Clear the current mode and edge level bits for channel n */
+ 464:../drivers/fsl_ftm.c ****             reg = base->CONTROLS[chnlParams->chnlNumber * 2].CnSC;
+ 465:../drivers/fsl_ftm.c ****             reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MAS
+ 466:../drivers/fsl_ftm.c **** 
+ 467:../drivers/fsl_ftm.c ****             /* Setup the active level for channel n */
+ 468:../drivers/fsl_ftm.c ****             reg |= (uint32_t)(chnlParams->level << FTM_CnSC_ELSA_SHIFT);
+ 469:../drivers/fsl_ftm.c **** 
+ 470:../drivers/fsl_ftm.c ****             /* Update the mode and edge level for channel n */
+ 471:../drivers/fsl_ftm.c ****             base->CONTROLS[chnlParams->chnlNumber * 2].CnSC = reg;
+ 472:../drivers/fsl_ftm.c **** 
+ 473:../drivers/fsl_ftm.c ****             /* Clear the current mode and edge level bits for channel n + 1 */
+ 474:../drivers/fsl_ftm.c ****             reg = base->CONTROLS[(chnlParams->chnlNumber * 2) + 1].CnSC;
+ 475:../drivers/fsl_ftm.c ****             reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MAS
+ 476:../drivers/fsl_ftm.c **** 
+ 477:../drivers/fsl_ftm.c ****             /* Setup the active level for channel n + 1 */
+ 478:../drivers/fsl_ftm.c ****             reg |= (uint32_t)(chnlParams->level << FTM_CnSC_ELSA_SHIFT);
+ 479:../drivers/fsl_ftm.c **** 
+ 480:../drivers/fsl_ftm.c ****             /* Update the mode and edge level for channel n + 1*/
+ 481:../drivers/fsl_ftm.c ****             base->CONTROLS[(chnlParams->chnlNumber * 2) + 1].CnSC = reg;
+ 482:../drivers/fsl_ftm.c **** 
+ 483:../drivers/fsl_ftm.c ****             /* Set the combine bit for the channel pair */
+ 484:../drivers/fsl_ftm.c ****             base->COMBINE |=
+ 485:../drivers/fsl_ftm.c ****                 (1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlParams->chnl
+ 689              		.loc 1 485 0
+ 690 0044 4FF0010A 		mov	r10, #1
+ 691 0048 0E1D     		adds	r6, r1, #4
+ 459:../drivers/fsl_ftm.c ****                 }
+ 692              		.loc 1 459 0
+ 693 004a 04EB0A0E 		add	lr, r4, r10
+ 694 004e 01EB8201 		add	r1, r1, r2, lsl #2
+ 695              	.LVL78:
+ 424:../drivers/fsl_ftm.c ****             {
+ 696              		.loc 1 424 0
+ 697 0052 DFF8F0B0 		ldr	fp, .L97+4
+ 374:../drivers/fsl_ftm.c **** 
+ 698              		.loc 1 374 0
+ 699 0056 8460     		str	r4, [r0, #8]
+ 700              	.LVL79:
+ 701 0058 01F10409 		add	r9, r1, #4
+ 459:../drivers/fsl_ftm.c ****                 }
+ 702              		.loc 1 459 0
+ 703 005c 1FFA8EFE 		uxth	lr, lr
+ 704              	.LVL80:
+ 705              	.L75:
+ 377:../drivers/fsl_ftm.c ****     {
+ 706              		.loc 1 377 0 discriminator 1
+ 707 0060 B145     		cmp	r9, r6
+ 708 0062 02D1     		bne	.L85
+ 486:../drivers/fsl_ftm.c **** 
+ 487:../drivers/fsl_ftm.c ****             /* Set the channel pair values */
+ 488:../drivers/fsl_ftm.c ****             base->CONTROLS[chnlParams->chnlNumber * 2].CnV = cnvFirstEdge;
+ 489:../drivers/fsl_ftm.c ****             base->CONTROLS[(chnlParams->chnlNumber * 2) + 1].CnV = cnvFirstEdge + cnv;
+ 490:../drivers/fsl_ftm.c **** 
+ 491:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT) && (FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT)
+ 492:../drivers/fsl_ftm.c ****             /* Set to output mode */
+ 493:../drivers/fsl_ftm.c ****             FTM_SetPwmOutputEnable(base, (ftm_chnl_t)((uint8_t)chnlParams->chnlNumber * 2), true);
+ 494:../drivers/fsl_ftm.c ****             FTM_SetPwmOutputEnable(base, (ftm_chnl_t)((uint8_t)chnlParams->chnlNumber * 2 + 1), tru
+ 495:../drivers/fsl_ftm.c **** #endif
+ 496:../drivers/fsl_ftm.c ****         }
+ 497:../drivers/fsl_ftm.c ****         chnlParams++;
+ 498:../drivers/fsl_ftm.c ****     }
+ 499:../drivers/fsl_ftm.c **** 
+ 500:../drivers/fsl_ftm.c ****     return kStatus_Success;
+ 709              		.loc 1 500 0
+ 710 0064 0020     		movs	r0, #0
+ 711              	.LVL81:
+ 712              	.L69:
+ 501:../drivers/fsl_ftm.c **** }
+ 713              		.loc 1 501 0
+ 714 0066 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 715              	.LVL82:
+ 716              	.L85:
+ 380:../drivers/fsl_ftm.c ****         {
+ 717              		.loc 1 380 0
+ 718 006a 16F8027C 		ldrb	r7, [r6, #-2]	@ zero_extendqisi2
+ 719 006e 642F     		cmp	r7, #100
+ 720 0070 DED8     		bhi	.L96
+ 385:../drivers/fsl_ftm.c ****         {
+ 721              		.loc 1 385 0
+ 722 0072 012B     		cmp	r3, #1
+ 723 0074 16F8045C 		ldrb	r5, [r6, #-4]	@ zero_extendqisi2
+ 724 0078 17D8     		bhi	.L77
+ 725 007a 00EBC505 		add	r5, r0, r5, lsl #3
+ 392:../drivers/fsl_ftm.c **** 
+ 726              		.loc 1 392 0
+ 727 007e 16F8031C 		ldrb	r1, [r6, #-3]	@ zero_extendqisi2
+ 388:../drivers/fsl_ftm.c ****             reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MAS
+ 728              		.loc 1 388 0
+ 729 0082 EA68     		ldr	r2, [r5, #12]
+ 730              	.LVL83:
+ 389:../drivers/fsl_ftm.c **** 
+ 731              		.loc 1 389 0
+ 732 0084 22F03C02 		bic	r2, r2, #60
+ 733              	.LVL84:
+ 392:../drivers/fsl_ftm.c **** 
+ 734              		.loc 1 392 0
+ 735 0088 42EA8102 		orr	r2, r2, r1, lsl #2
+ 736              	.LVL85:
+ 395:../drivers/fsl_ftm.c **** 
+ 737              		.loc 1 395 0
+ 738 008c 42F02002 		orr	r2, r2, #32
+ 739              	.LVL86:
+ 398:../drivers/fsl_ftm.c **** 
+ 740              		.loc 1 398 0
+ 741 0090 EA60     		str	r2, [r5, #12]
+ 400:../drivers/fsl_ftm.c ****             {
+ 742              		.loc 1 400 0
+ 743 0092 3FB1     		cbz	r7, .L78
+ 407:../drivers/fsl_ftm.c ****                 /* For 100% duty cycle */
+ 744              		.loc 1 407 0
+ 745 0094 6743     		muls	r7, r4, r7
+ 746 0096 6422     		movs	r2, #100
+ 747              	.LVL87:
+ 748 0098 B7FBF2F7 		udiv	r7, r7, r2
+ 749              	.LVL88:
+ 409:../drivers/fsl_ftm.c ****                 {
+ 750              		.loc 1 409 0
+ 751 009c A742     		cmp	r7, r4
+ 407:../drivers/fsl_ftm.c ****                 /* For 100% duty cycle */
+ 752              		.loc 1 407 0
+ 753 009e 34BF     		ite	cc
+ 754 00a0 BFB2     		uxthcc	r7, r7
+ 755              	.LVL89:
+ 411:../drivers/fsl_ftm.c ****                 }
+ 756              		.loc 1 411 0
+ 757 00a2 7746     		movcs	r7, lr
+ 758              	.LVL90:
+ 759              	.L78:
+ 415:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT) && (FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT)
+ 760              		.loc 1 415 0
+ 761 00a4 2F61     		str	r7, [r5, #16]
+ 762              	.LVL91:
+ 763              	.L80:
+ 764 00a6 0436     		adds	r6, r6, #4
+ 765              	.LVL92:
+ 766 00a8 DAE7     		b	.L75
+ 767              	.L77:
+ 424:../drivers/fsl_ftm.c ****             {
+ 768              		.loc 1 424 0
+ 769 00aa 254A     		ldr	r2, .L97
+ 770 00ac 9042     		cmp	r0, r2
+ 771 00ae 09D0     		beq	.L88
+ 424:../drivers/fsl_ftm.c ****             {
+ 772              		.loc 1 424 0 is_stmt 0 discriminator 1
+ 773 00b0 02F58052 		add	r2, r2, #4096
+ 774 00b4 9042     		cmp	r0, r2
+ 775 00b6 3DD0     		beq	.L90
+ 424:../drivers/fsl_ftm.c ****             {
+ 776              		.loc 1 424 0 discriminator 3
+ 777 00b8 02F58052 		add	r2, r2, #4096
+ 778 00bc 9042     		cmp	r0, r2
+ 779 00be 39D0     		beq	.L90
+ 424:../drivers/fsl_ftm.c ****             {
+ 780              		.loc 1 424 0 discriminator 5
+ 781 00c0 5845     		cmp	r0, fp
+ 782 00c2 B5D1     		bne	.L96
+ 783              	.L88:
+ 424:../drivers/fsl_ftm.c ****             {
+ 784              		.loc 1 424 0
+ 785 00c4 0422     		movs	r2, #4
+ 786              	.L81:
+ 424:../drivers/fsl_ftm.c ****             {
+ 787              		.loc 1 424 0 discriminator 16
+ 788 00c6 AA42     		cmp	r2, r5
+ 789 00c8 B2DD     		ble	.L96
+ 430:../drivers/fsl_ftm.c ****             {
+ 790              		.loc 1 430 0 is_stmt 1
+ 791 00ca 16F8011C 		ldrb	r1, [r6, #-1]	@ zero_extendqisi2
+ 792 00ce 6429     		cmp	r1, #100
+ 793 00d0 AED8     		bhi	.L96
+ 436:../drivers/fsl_ftm.c ****             {
+ 794              		.loc 1 436 0
+ 795 00d2 21B1     		cbz	r1, .L82
+ 443:../drivers/fsl_ftm.c ****             }
+ 796              		.loc 1 443 0
+ 797 00d4 6143     		muls	r1, r4, r1
+ 798 00d6 6422     		movs	r2, #100
+ 799 00d8 B1FBF2F1 		udiv	r1, r1, r2
+ 800 00dc 89B2     		uxth	r1, r1
+ 801              	.LVL93:
+ 802              	.L82:
+ 447:../drivers/fsl_ftm.c ****             {
+ 803              		.loc 1 447 0
+ 804 00de 5FB3     		cbz	r7, .L92
+ 455:../drivers/fsl_ftm.c ****                 /* For 100% duty cycle */
+ 805              		.loc 1 455 0
+ 806 00e0 6422     		movs	r2, #100
+ 807 00e2 6743     		muls	r7, r4, r7
+ 808 00e4 B7FBF2F7 		udiv	r7, r7, r2
+ 809              	.LVL94:
+ 457:../drivers/fsl_ftm.c ****                 {
+ 810              		.loc 1 457 0
+ 811 00e8 A742     		cmp	r7, r4
+ 455:../drivers/fsl_ftm.c ****                 /* For 100% duty cycle */
+ 812              		.loc 1 455 0
+ 813 00ea 34BF     		ite	cc
+ 814 00ec BAB2     		uxthcc	r2, r7
+ 459:../drivers/fsl_ftm.c ****                 }
+ 815              		.loc 1 459 0
+ 816 00ee 7246     		movcs	r2, lr
+ 817              	.LVL95:
+ 818              	.L83:
+ 819 00f0 00EB0517 		add	r7, r0, r5, lsl #4
+ 468:../drivers/fsl_ftm.c **** 
+ 820              		.loc 1 468 0
+ 821 00f4 16F803CC 		ldrb	ip, [r6, #-3]	@ zero_extendqisi2
+ 464:../drivers/fsl_ftm.c ****             reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MAS
+ 822              		.loc 1 464 0
+ 823 00f8 D7F80C80 		ldr	r8, [r7, #12]
+ 824              	.LVL96:
+ 468:../drivers/fsl_ftm.c **** 
+ 825              		.loc 1 468 0
+ 826 00fc 4FEA8C0C 		lsl	ip, ip, #2
+ 465:../drivers/fsl_ftm.c **** 
+ 827              		.loc 1 465 0
+ 828 0100 28F03C08 		bic	r8, r8, #60
+ 829              	.LVL97:
+ 468:../drivers/fsl_ftm.c **** 
+ 830              		.loc 1 468 0
+ 831 0104 4CEA0808 		orr	r8, ip, r8
+ 832              	.LVL98:
+ 471:../drivers/fsl_ftm.c **** 
+ 833              		.loc 1 471 0
+ 834 0108 C7F80C80 		str	r8, [r7, #12]
+ 474:../drivers/fsl_ftm.c ****             reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MAS
+ 835              		.loc 1 474 0
+ 836 010c D7F81480 		ldr	r8, [r7, #20]
+ 837              	.LVL99:
+ 475:../drivers/fsl_ftm.c **** 
+ 838              		.loc 1 475 0
+ 839 0110 28F03C08 		bic	r8, r8, #60
+ 840              	.LVL100:
+ 478:../drivers/fsl_ftm.c **** 
+ 841              		.loc 1 478 0
+ 842 0114 4CEA080C 		orr	ip, ip, r8
+ 843              	.LVL101:
+ 481:../drivers/fsl_ftm.c **** 
+ 844              		.loc 1 481 0
+ 845 0118 C7F814C0 		str	ip, [r7, #20]
+ 484:../drivers/fsl_ftm.c ****                 (1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlParams->chnl
+ 846              		.loc 1 484 0
+ 847 011c D0F864C0 		ldr	ip, [r0, #100]
+ 848              	.LVL102:
+ 485:../drivers/fsl_ftm.c **** 
+ 849              		.loc 1 485 0
+ 850 0120 ED00     		lsls	r5, r5, #3
+ 851 0122 0AFA05F5 		lsl	r5, r10, r5
+ 484:../drivers/fsl_ftm.c ****                 (1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlParams->chnl
+ 852              		.loc 1 484 0
+ 853 0126 45EA0C05 		orr	r5, r5, ip
+ 489:../drivers/fsl_ftm.c **** 
+ 854              		.loc 1 489 0
+ 855 012a 0A44     		add	r2, r2, r1
+ 856              	.LVL103:
+ 484:../drivers/fsl_ftm.c ****                 (1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlParams->chnl
+ 857              		.loc 1 484 0
+ 858 012c 4566     		str	r5, [r0, #100]
+ 859              	.LVL104:
+ 488:../drivers/fsl_ftm.c ****             base->CONTROLS[(chnlParams->chnlNumber * 2) + 1].CnV = cnvFirstEdge + cnv;
+ 860              		.loc 1 488 0
+ 861 012e 3961     		str	r1, [r7, #16]
+ 489:../drivers/fsl_ftm.c **** 
+ 862              		.loc 1 489 0
+ 863 0130 BA61     		str	r2, [r7, #24]
+ 864 0132 B8E7     		b	.L80
+ 865              	.LVL105:
+ 866              	.L90:
+ 424:../drivers/fsl_ftm.c ****             {
+ 867              		.loc 1 424 0
+ 868 0134 0122     		movs	r2, #1
+ 869 0136 C6E7     		b	.L81
+ 870              	.LVL106:
+ 871              	.L92:
+ 451:../drivers/fsl_ftm.c ****             }
+ 872              		.loc 1 451 0
+ 873 0138 3946     		mov	r1, r7
+ 874              	.LVL107:
+ 450:../drivers/fsl_ftm.c ****                 cnvFirstEdge = 0;
+ 875              		.loc 1 450 0
+ 876 013a 3A46     		mov	r2, r7
+ 877 013c D8E7     		b	.L83
+ 878              	.L98:
+ 879 013e 00BF     		.align	2
+ 880              	.L97:
+ 881 0140 00800340 		.word	1073971200
+ 882 0144 00900B40 		.word	1074499584
+ 883              		.cfi_endproc
+ 884              	.LFE171:
+ 886              		.section	.text.FTM_UpdatePwmDutycycle,"ax",%progbits
+ 887              		.align	1
+ 888              		.global	FTM_UpdatePwmDutycycle
+ 889              		.syntax unified
+ 890              		.thumb
+ 891              		.thumb_func
+ 892              		.fpu fpv4-sp-d16
+ 894              	FTM_UpdatePwmDutycycle:
+ 895              	.LFB172:
+ 502:../drivers/fsl_ftm.c **** 
+ 503:../drivers/fsl_ftm.c **** void FTM_UpdatePwmDutycycle(FTM_Type *base,
+ 504:../drivers/fsl_ftm.c ****                             ftm_chnl_t chnlNumber,
+ 505:../drivers/fsl_ftm.c ****                             ftm_pwm_mode_t currentPwmMode,
+ 506:../drivers/fsl_ftm.c ****                             uint8_t dutyCyclePercent)
+ 507:../drivers/fsl_ftm.c **** {
+ 896              		.loc 1 507 0
+ 897              		.cfi_startproc
+ 898              		@ args = 0, pretend = 0, frame = 0
+ 899              		@ frame_needed = 0, uses_anonymous_args = 0
+ 900              	.LVL108:
+ 901 0000 30B5     		push	{r4, r5, lr}
+ 902              		.cfi_def_cfa_offset 12
+ 903              		.cfi_offset 4, -12
+ 904              		.cfi_offset 5, -8
+ 905              		.cfi_offset 14, -4
+ 508:../drivers/fsl_ftm.c ****     uint16_t cnv, cnvFirstEdge = 0, mod;
+ 509:../drivers/fsl_ftm.c **** 
+ 510:../drivers/fsl_ftm.c ****     mod = base->MOD;
+ 906              		.loc 1 510 0
+ 907 0002 8468     		ldr	r4, [r0, #8]
+ 511:../drivers/fsl_ftm.c ****     if ((currentPwmMode == kFTM_EdgeAlignedPwm) || (currentPwmMode == kFTM_CenterAlignedPwm))
+ 908              		.loc 1 511 0
+ 909 0004 012A     		cmp	r2, #1
+ 510:../drivers/fsl_ftm.c ****     if ((currentPwmMode == kFTM_EdgeAlignedPwm) || (currentPwmMode == kFTM_CenterAlignedPwm))
+ 910              		.loc 1 510 0
+ 911 0006 A5B2     		uxth	r5, r4
+ 912              	.LVL109:
+ 913              		.loc 1 511 0
+ 914 0008 10D8     		bhi	.L100
+ 512:../drivers/fsl_ftm.c ****     {
+ 513:../drivers/fsl_ftm.c ****         cnv = (mod * dutyCyclePercent) / 100;
+ 915              		.loc 1 513 0
+ 916 000a 2A46     		mov	r2, r5
+ 917              	.LVL110:
+ 918 000c 5A43     		muls	r2, r3, r2
+ 919 000e 6423     		movs	r3, #100
+ 920              	.LVL111:
+ 921 0010 92FBF3F2 		sdiv	r2, r2, r3
+ 922 0014 92B2     		uxth	r2, r2
+ 923              	.LVL112:
+ 514:../drivers/fsl_ftm.c ****         /* For 100% duty cycle */
+ 515:../drivers/fsl_ftm.c ****         if (cnv >= mod)
+ 924              		.loc 1 515 0
+ 925 0016 9542     		cmp	r5, r2
+ 516:../drivers/fsl_ftm.c ****         {
+ 517:../drivers/fsl_ftm.c ****             cnv = mod + 1;
+ 518:../drivers/fsl_ftm.c ****         }
+ 519:../drivers/fsl_ftm.c ****         base->CONTROLS[chnlNumber].CnV = cnv;
+ 926              		.loc 1 519 0
+ 927 0018 01F10101 		add	r1, r1, #1
+ 928              	.LVL113:
+ 517:../drivers/fsl_ftm.c ****         }
+ 929              		.loc 1 517 0
+ 930 001c 98BF     		it	ls
+ 931 001e 6A1C     		addls	r2, r5, #1
+ 932              	.LVL114:
+ 933              		.loc 1 519 0
+ 934 0020 00EBC100 		add	r0, r0, r1, lsl #3
+ 935              	.LVL115:
+ 517:../drivers/fsl_ftm.c ****         }
+ 936              		.loc 1 517 0
+ 937 0024 98BF     		it	ls
+ 938 0026 92B2     		uxthls	r2, r2
+ 939              	.LVL116:
+ 940              		.loc 1 519 0
+ 941 0028 8260     		str	r2, [r0, #8]
+ 942              	.LVL117:
+ 943              	.L99:
+ 520:../drivers/fsl_ftm.c ****     }
+ 521:../drivers/fsl_ftm.c ****     else
+ 522:../drivers/fsl_ftm.c ****     {
+ 523:../drivers/fsl_ftm.c ****         /* This check is added for combined mode as the channel number should be the pair number */
+ 524:../drivers/fsl_ftm.c ****         if (chnlNumber >= (FSL_FEATURE_FTM_CHANNEL_COUNTn(base) / 2))
+ 525:../drivers/fsl_ftm.c ****         {
+ 526:../drivers/fsl_ftm.c ****             return;
+ 527:../drivers/fsl_ftm.c ****         }
+ 528:../drivers/fsl_ftm.c **** 
+ 529:../drivers/fsl_ftm.c ****         cnv = (mod * dutyCyclePercent) / 100;
+ 530:../drivers/fsl_ftm.c ****         cnvFirstEdge = base->CONTROLS[chnlNumber * 2].CnV;
+ 531:../drivers/fsl_ftm.c ****         /* For 100% duty cycle */
+ 532:../drivers/fsl_ftm.c ****         if (cnv >= mod)
+ 533:../drivers/fsl_ftm.c ****         {
+ 534:../drivers/fsl_ftm.c ****             cnv = mod + 1;
+ 535:../drivers/fsl_ftm.c ****         }
+ 536:../drivers/fsl_ftm.c ****         base->CONTROLS[(chnlNumber * 2) + 1].CnV = cnvFirstEdge + cnv;
+ 537:../drivers/fsl_ftm.c ****     }
+ 538:../drivers/fsl_ftm.c **** }
+ 944              		.loc 1 538 0
+ 945 002a 30BD     		pop	{r4, r5, pc}
+ 946              	.LVL118:
+ 947              	.L100:
+ 524:../drivers/fsl_ftm.c ****         {
+ 948              		.loc 1 524 0
+ 949 002c 124A     		ldr	r2, .L108
+ 950              	.LVL119:
+ 951 002e 9042     		cmp	r0, r2
+ 952 0030 0BD0     		beq	.L105
+ 524:../drivers/fsl_ftm.c ****         {
+ 953              		.loc 1 524 0 is_stmt 0 discriminator 1
+ 954 0032 02F58052 		add	r2, r2, #4096
+ 955 0036 9042     		cmp	r0, r2
+ 956 0038 1BD0     		beq	.L107
+ 524:../drivers/fsl_ftm.c ****         {
+ 957              		.loc 1 524 0 discriminator 3
+ 958 003a 02F58052 		add	r2, r2, #4096
+ 959 003e 9042     		cmp	r0, r2
+ 960 0040 17D0     		beq	.L107
+ 524:../drivers/fsl_ftm.c ****         {
+ 961              		.loc 1 524 0 discriminator 5
+ 962 0042 02F5FE22 		add	r2, r2, #520192
+ 963 0046 9042     		cmp	r0, r2
+ 964 0048 EFD1     		bne	.L99
+ 965              	.L105:
+ 524:../drivers/fsl_ftm.c ****         {
+ 966              		.loc 1 524 0
+ 967 004a 0422     		movs	r2, #4
+ 968              	.L103:
+ 524:../drivers/fsl_ftm.c ****         {
+ 969              		.loc 1 524 0 discriminator 16
+ 970 004c 8A42     		cmp	r2, r1
+ 971 004e ECDD     		ble	.L99
+ 529:../drivers/fsl_ftm.c ****         cnvFirstEdge = base->CONTROLS[chnlNumber * 2].CnV;
+ 972              		.loc 1 529 0 is_stmt 1
+ 973 0050 A4B2     		uxth	r4, r4
+ 974 0052 6422     		movs	r2, #100
+ 975 0054 00EB0110 		add	r0, r0, r1, lsl #4
+ 976              	.LVL120:
+ 977 0058 6343     		muls	r3, r4, r3
+ 978              	.LVL121:
+ 979 005a 93FBF2F3 		sdiv	r3, r3, r2
+ 980 005e 9BB2     		uxth	r3, r3
+ 981              	.LVL122:
+ 532:../drivers/fsl_ftm.c ****         {
+ 982              		.loc 1 532 0
+ 983 0060 9D42     		cmp	r5, r3
+ 530:../drivers/fsl_ftm.c ****         /* For 100% duty cycle */
+ 984              		.loc 1 530 0
+ 985 0062 0169     		ldr	r1, [r0, #16]
+ 986              	.LVL123:
+ 534:../drivers/fsl_ftm.c ****         }
+ 987              		.loc 1 534 0
+ 988 0064 9CBF     		itt	ls
+ 989 0066 6A1C     		addls	r2, r5, #1
+ 990 0068 93B2     		uxthls	r3, r2
+ 991              	.LVL124:
+ 536:../drivers/fsl_ftm.c ****     }
+ 992              		.loc 1 536 0
+ 993 006a 13FA81F3 		uxtah	r3, r3, r1
+ 994              	.LVL125:
+ 995 006e 8361     		str	r3, [r0, #24]
+ 996 0070 DBE7     		b	.L99
+ 997              	.LVL126:
+ 998              	.L107:
+ 524:../drivers/fsl_ftm.c ****         {
+ 999              		.loc 1 524 0
+ 1000 0072 0122     		movs	r2, #1
+ 1001 0074 EAE7     		b	.L103
+ 1002              	.L109:
+ 1003 0076 00BF     		.align	2
+ 1004              	.L108:
+ 1005 0078 00800340 		.word	1073971200
+ 1006              		.cfi_endproc
+ 1007              	.LFE172:
+ 1009              		.section	.text.FTM_UpdateChnlEdgeLevelSelect,"ax",%progbits
+ 1010              		.align	1
+ 1011              		.global	FTM_UpdateChnlEdgeLevelSelect
+ 1012              		.syntax unified
+ 1013              		.thumb
+ 1014              		.thumb_func
+ 1015              		.fpu fpv4-sp-d16
+ 1017              	FTM_UpdateChnlEdgeLevelSelect:
+ 1018              	.LFB173:
+ 539:../drivers/fsl_ftm.c **** 
+ 540:../drivers/fsl_ftm.c **** void FTM_UpdateChnlEdgeLevelSelect(FTM_Type *base, ftm_chnl_t chnlNumber, uint8_t level)
+ 541:../drivers/fsl_ftm.c **** {
+ 1019              		.loc 1 541 0
+ 1020              		.cfi_startproc
+ 1021              		@ args = 0, pretend = 0, frame = 0
+ 1022              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1023              		@ link register save eliminated.
+ 1024              	.LVL127:
+ 1025 0000 00EBC101 		add	r1, r0, r1, lsl #3
+ 1026              	.LVL128:
+ 542:../drivers/fsl_ftm.c ****     uint32_t reg = base->CONTROLS[chnlNumber].CnSC;
+ 543:../drivers/fsl_ftm.c **** 
+ 544:../drivers/fsl_ftm.c ****     /* Clear the field and write the new level value */
+ 545:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
+ 546:../drivers/fsl_ftm.c ****     reg |= ((uint32_t)level << FTM_CnSC_ELSA_SHIFT) & (FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
+ 1027              		.loc 1 546 0
+ 1028 0004 9200     		lsls	r2, r2, #2
+ 1029              	.LVL129:
+ 542:../drivers/fsl_ftm.c ****     uint32_t reg = base->CONTROLS[chnlNumber].CnSC;
+ 1030              		.loc 1 542 0
+ 1031 0006 CB68     		ldr	r3, [r1, #12]
+ 1032              	.LVL130:
+ 1033              		.loc 1 546 0
+ 1034 0008 02F00C02 		and	r2, r2, #12
+ 545:../drivers/fsl_ftm.c ****     reg |= ((uint32_t)level << FTM_CnSC_ELSA_SHIFT) & (FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
+ 1035              		.loc 1 545 0
+ 1036 000c 23F00C03 		bic	r3, r3, #12
+ 1037              	.LVL131:
+ 1038              		.loc 1 546 0
+ 1039 0010 1A43     		orrs	r2, r2, r3
+ 1040              	.LVL132:
+ 547:../drivers/fsl_ftm.c **** 
+ 548:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlNumber].CnSC = reg;
+ 1041              		.loc 1 548 0
+ 1042 0012 CA60     		str	r2, [r1, #12]
+ 549:../drivers/fsl_ftm.c **** }
+ 1043              		.loc 1 549 0
+ 1044 0014 7047     		bx	lr
+ 1045              		.cfi_endproc
+ 1046              	.LFE173:
+ 1048              		.section	.text.FTM_SetupInputCapture,"ax",%progbits
+ 1049              		.align	1
+ 1050              		.global	FTM_SetupInputCapture
+ 1051              		.syntax unified
+ 1052              		.thumb
+ 1053              		.thumb_func
+ 1054              		.fpu fpv4-sp-d16
+ 1056              	FTM_SetupInputCapture:
+ 1057              	.LFB174:
+ 550:../drivers/fsl_ftm.c **** 
+ 551:../drivers/fsl_ftm.c **** void FTM_SetupInputCapture(FTM_Type *base,
+ 552:../drivers/fsl_ftm.c ****                            ftm_chnl_t chnlNumber,
+ 553:../drivers/fsl_ftm.c ****                            ftm_input_capture_edge_t captureMode,
+ 554:../drivers/fsl_ftm.c ****                            uint32_t filterValue)
+ 555:../drivers/fsl_ftm.c **** {
+ 1058              		.loc 1 555 0
+ 1059              		.cfi_startproc
+ 1060              		@ args = 0, pretend = 0, frame = 0
+ 1061              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1062              	.LVL133:
+ 1063 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1064              		.cfi_def_cfa_offset 20
+ 1065              		.cfi_offset 4, -20
+ 1066              		.cfi_offset 5, -16
+ 1067              		.cfi_offset 6, -12
+ 1068              		.cfi_offset 7, -8
+ 1069              		.cfi_offset 14, -4
+ 556:../drivers/fsl_ftm.c ****     uint32_t reg;
+ 557:../drivers/fsl_ftm.c **** 
+ 558:../drivers/fsl_ftm.c ****     /* Clear the combine bit for the channel pair */
+ 559:../drivers/fsl_ftm.c ****     base->COMBINE &= ~(1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * (chnlNumbe
+ 1070              		.loc 1 559 0
+ 1071 0002 4C08     		lsrs	r4, r1, #1
+ 1072 0004 466E     		ldr	r6, [r0, #100]
+ 1073 0006 0125     		movs	r5, #1
+ 1074 0008 E400     		lsls	r4, r4, #3
+ 1075 000a 05FA04F7 		lsl	r7, r5, r4
+ 1076 000e 26EA0706 		bic	r6, r6, r7
+ 1077 0012 4666     		str	r6, [r0, #100]
+ 560:../drivers/fsl_ftm.c ****     /* Clear the dual edge capture mode because it's it's higher priority */
+ 561:../drivers/fsl_ftm.c ****     base->COMBINE &= ~(1U << (FTM_COMBINE_DECAPEN0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * (chnlNumbe
+ 1078              		.loc 1 561 0
+ 1079 0014 466E     		ldr	r6, [r0, #100]
+ 1080 0016 0234     		adds	r4, r4, #2
+ 1081 0018 05FA04F4 		lsl	r4, r5, r4
+ 1082 001c 26EA0404 		bic	r4, r6, r4
+ 1083 0020 4466     		str	r4, [r0, #100]
+ 562:../drivers/fsl_ftm.c **** #if !(defined(FSL_FEATURE_FTM_HAS_NO_QDCTRL) && FSL_FEATURE_FTM_HAS_NO_QDCTRL)
+ 563:../drivers/fsl_ftm.c ****     /* Clear the quadrature decoder mode beacause it's higher priority */
+ 564:../drivers/fsl_ftm.c ****     base->QDCTRL &= ~FTM_QDCTRL_QUADEN_MASK;
+ 1084              		.loc 1 564 0
+ 1085 0022 D0F88040 		ldr	r4, [r0, #128]
+ 1086 0026 00EBC105 		add	r5, r0, r1, lsl #3
+ 1087 002a 24F00104 		bic	r4, r4, #1
+ 1088 002e C0F88040 		str	r4, [r0, #128]
+ 565:../drivers/fsl_ftm.c **** #endif
+ 566:../drivers/fsl_ftm.c **** 
+ 567:../drivers/fsl_ftm.c ****     reg = base->CONTROLS[chnlNumber].CnSC;
+ 1089              		.loc 1 567 0
+ 1090 0032 EC68     		ldr	r4, [r5, #12]
+ 1091              	.LVL134:
+ 568:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
+ 1092              		.loc 1 568 0
+ 1093 0034 24F03C04 		bic	r4, r4, #60
+ 1094              	.LVL135:
+ 569:../drivers/fsl_ftm.c ****     reg |= captureMode;
+ 1095              		.loc 1 569 0
+ 1096 0038 2243     		orrs	r2, r2, r4
+ 1097              	.LVL136:
+ 570:../drivers/fsl_ftm.c **** 
+ 571:../drivers/fsl_ftm.c ****     /* Set the requested input capture mode */
+ 572:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlNumber].CnSC = reg;
+ 573:../drivers/fsl_ftm.c ****     /* Input filter available only for channels 0, 1, 2, 3 */
+ 574:../drivers/fsl_ftm.c ****     if (chnlNumber < kFTM_Chnl_4)
+ 1098              		.loc 1 574 0
+ 1099 003a 0329     		cmp	r1, #3
+ 572:../drivers/fsl_ftm.c ****     /* Input filter available only for channels 0, 1, 2, 3 */
+ 1100              		.loc 1 572 0
+ 1101 003c EA60     		str	r2, [r5, #12]
+ 1102              		.loc 1 574 0
+ 1103 003e 09D8     		bhi	.L111
+ 575:../drivers/fsl_ftm.c ****     {
+ 576:../drivers/fsl_ftm.c ****         reg = base->FILTER;
+ 1104              		.loc 1 576 0
+ 1105 0040 826F     		ldr	r2, [r0, #120]
+ 1106              	.LVL137:
+ 577:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH0FVAL_MASK << (FTM_FILTER_CH1FVAL_SHIFT * chnlNumber));
+ 1107              		.loc 1 577 0
+ 1108 0042 8900     		lsls	r1, r1, #2
+ 1109              	.LVL138:
+ 1110 0044 0F24     		movs	r4, #15
+ 1111 0046 8C40     		lsls	r4, r4, r1
+ 1112 0048 22EA0402 		bic	r2, r2, r4
+ 1113              	.LVL139:
+ 578:../drivers/fsl_ftm.c ****         reg |= (filterValue << (FTM_FILTER_CH1FVAL_SHIFT * chnlNumber));
+ 1114              		.loc 1 578 0
+ 1115 004c 03FA01F1 		lsl	r1, r3, r1
+ 1116 0050 1143     		orrs	r1, r1, r2
+ 1117              	.LVL140:
+ 579:../drivers/fsl_ftm.c ****         base->FILTER = reg;
+ 1118              		.loc 1 579 0
+ 1119 0052 8167     		str	r1, [r0, #120]
+ 1120              	.LVL141:
+ 1121              	.L111:
+ 580:../drivers/fsl_ftm.c ****     }
+ 581:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT) && (FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT)
+ 582:../drivers/fsl_ftm.c ****     /* Set to input mode */
+ 583:../drivers/fsl_ftm.c ****     FTM_SetPwmOutputEnable(base, chnlNumber, false);
+ 584:../drivers/fsl_ftm.c **** #endif
+ 585:../drivers/fsl_ftm.c **** }
+ 1122              		.loc 1 585 0
+ 1123 0054 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1124              		.cfi_endproc
+ 1125              	.LFE174:
+ 1127              		.section	.text.FTM_SetupOutputCompare,"ax",%progbits
+ 1128              		.align	1
+ 1129              		.global	FTM_SetupOutputCompare
+ 1130              		.syntax unified
+ 1131              		.thumb
+ 1132              		.thumb_func
+ 1133              		.fpu fpv4-sp-d16
+ 1135              	FTM_SetupOutputCompare:
+ 1136              	.LFB175:
+ 586:../drivers/fsl_ftm.c **** 
+ 587:../drivers/fsl_ftm.c **** void FTM_SetupOutputCompare(FTM_Type *base,
+ 588:../drivers/fsl_ftm.c ****                             ftm_chnl_t chnlNumber,
+ 589:../drivers/fsl_ftm.c ****                             ftm_output_compare_mode_t compareMode,
+ 590:../drivers/fsl_ftm.c ****                             uint32_t compareValue)
+ 591:../drivers/fsl_ftm.c **** {
+ 1137              		.loc 1 591 0
+ 1138              		.cfi_startproc
+ 1139              		@ args = 0, pretend = 0, frame = 0
+ 1140              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1141              	.LVL142:
+ 1142 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1143              		.cfi_def_cfa_offset 20
+ 1144              		.cfi_offset 4, -20
+ 1145              		.cfi_offset 5, -16
+ 1146              		.cfi_offset 6, -12
+ 1147              		.cfi_offset 7, -8
+ 1148              		.cfi_offset 14, -4
+ 592:../drivers/fsl_ftm.c ****     uint32_t reg;
+ 593:../drivers/fsl_ftm.c **** 
+ 594:../drivers/fsl_ftm.c ****     /* Clear the combine bit for the channel pair */
+ 595:../drivers/fsl_ftm.c ****     base->COMBINE &= ~(1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * (chnlNumbe
+ 1149              		.loc 1 595 0
+ 1150 0002 4C08     		lsrs	r4, r1, #1
+ 1151 0004 466E     		ldr	r6, [r0, #100]
+ 1152 0006 E400     		lsls	r4, r4, #3
+ 1153 0008 0125     		movs	r5, #1
+ 1154 000a 05FA04F7 		lsl	r7, r5, r4
+ 1155 000e 26EA0706 		bic	r6, r6, r7
+ 1156 0012 4666     		str	r6, [r0, #100]
+ 596:../drivers/fsl_ftm.c ****     /* Clear the dual edge capture mode because it's it's higher priority */
+ 597:../drivers/fsl_ftm.c ****     base->COMBINE &= ~(1U << (FTM_COMBINE_DECAPEN0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * (chnlNumbe
+ 1157              		.loc 1 597 0
+ 1158 0014 466E     		ldr	r6, [r0, #100]
+ 1159 0016 0234     		adds	r4, r4, #2
+ 1160 0018 05FA04F4 		lsl	r4, r5, r4
+ 1161 001c 26EA0404 		bic	r4, r6, r4
+ 1162 0020 4466     		str	r4, [r0, #100]
+ 598:../drivers/fsl_ftm.c **** #if !(defined(FSL_FEATURE_FTM_HAS_NO_QDCTRL) && FSL_FEATURE_FTM_HAS_NO_QDCTRL)
+ 599:../drivers/fsl_ftm.c ****     /* Clear the quadrature decoder mode beacause it's higher priority */
+ 600:../drivers/fsl_ftm.c ****     base->QDCTRL &= ~FTM_QDCTRL_QUADEN_MASK;
+ 1163              		.loc 1 600 0
+ 1164 0022 D0F88040 		ldr	r4, [r0, #128]
+ 1165 0026 24F00104 		bic	r4, r4, #1
+ 1166 002a C0F88040 		str	r4, [r0, #128]
+ 1167 002e 00EBC100 		add	r0, r0, r1, lsl #3
+ 1168              	.LVL143:
+ 601:../drivers/fsl_ftm.c **** #endif    
+ 602:../drivers/fsl_ftm.c ****     
+ 603:../drivers/fsl_ftm.c ****     reg = base->CONTROLS[chnlNumber].CnSC;
+ 1169              		.loc 1 603 0
+ 1170 0032 C168     		ldr	r1, [r0, #12]
+ 1171              	.LVL144:
+ 604:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
+ 1172              		.loc 1 604 0
+ 1173 0034 21F03C01 		bic	r1, r1, #60
+ 1174              	.LVL145:
+ 605:../drivers/fsl_ftm.c ****     reg |= compareMode;
+ 1175              		.loc 1 605 0
+ 1176 0038 0A43     		orrs	r2, r2, r1
+ 1177              	.LVL146:
+ 606:../drivers/fsl_ftm.c ****     /* Setup the channel output behaviour when a match occurs with the compare value */
+ 607:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlNumber].CnSC = reg;
+ 1178              		.loc 1 607 0
+ 1179 003a C260     		str	r2, [r0, #12]
+ 608:../drivers/fsl_ftm.c **** 
+ 609:../drivers/fsl_ftm.c ****     /* Set output on match to the requested level */
+ 610:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlNumber].CnV = compareValue;
+ 1180              		.loc 1 610 0
+ 1181 003c 0361     		str	r3, [r0, #16]
+ 611:../drivers/fsl_ftm.c **** 
+ 612:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT) && (FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT)
+ 613:../drivers/fsl_ftm.c ****     /* Set to output mode */
+ 614:../drivers/fsl_ftm.c ****     FTM_SetPwmOutputEnable(base, chnlNumber, true);
+ 615:../drivers/fsl_ftm.c **** #endif
+ 616:../drivers/fsl_ftm.c **** }
+ 1182              		.loc 1 616 0
+ 1183 003e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1184              		.cfi_endproc
+ 1185              	.LFE175:
+ 1187              		.section	.text.FTM_SetupDualEdgeCapture,"ax",%progbits
+ 1188              		.align	1
+ 1189              		.global	FTM_SetupDualEdgeCapture
+ 1190              		.syntax unified
+ 1191              		.thumb
+ 1192              		.thumb_func
+ 1193              		.fpu fpv4-sp-d16
+ 1195              	FTM_SetupDualEdgeCapture:
+ 1196              	.LFB176:
+ 617:../drivers/fsl_ftm.c **** 
+ 618:../drivers/fsl_ftm.c **** void FTM_SetupDualEdgeCapture(FTM_Type *base,
+ 619:../drivers/fsl_ftm.c ****                               ftm_chnl_t chnlPairNumber,
+ 620:../drivers/fsl_ftm.c ****                               const ftm_dual_edge_capture_param_t *edgeParam,
+ 621:../drivers/fsl_ftm.c ****                               uint32_t filterValue)
+ 622:../drivers/fsl_ftm.c **** {
+ 1197              		.loc 1 622 0
+ 1198              		.cfi_startproc
+ 1199              		@ args = 0, pretend = 0, frame = 0
+ 1200              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1201              	.LVL147:
+ 1202 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1203              		.cfi_def_cfa_offset 20
+ 1204              		.cfi_offset 4, -20
+ 1205              		.cfi_offset 5, -16
+ 1206              		.cfi_offset 6, -12
+ 1207              		.cfi_offset 7, -8
+ 1208              		.cfi_offset 14, -4
+ 623:../drivers/fsl_ftm.c ****     assert(edgeParam);
+ 624:../drivers/fsl_ftm.c **** 
+ 625:../drivers/fsl_ftm.c ****     uint32_t reg;
+ 626:../drivers/fsl_ftm.c **** 
+ 627:../drivers/fsl_ftm.c ****     reg = base->COMBINE;
+ 1209              		.loc 1 627 0
+ 1210 0002 446E     		ldr	r4, [r0, #100]
+ 1211              	.LVL148:
+ 628:../drivers/fsl_ftm.c ****     /* Clear the combine bit for the channel pair */
+ 629:../drivers/fsl_ftm.c ****     reg &= ~(1U << (FTM_COMBINE_COMBINE0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlPairNumber)));
+ 1212              		.loc 1 629 0
+ 1213 0004 CE00     		lsls	r6, r1, #3
+ 1214 0006 0125     		movs	r5, #1
+ 1215 0008 05FA06F7 		lsl	r7, r5, r6
+ 1216 000c 24EA0707 		bic	r7, r4, r7
+ 1217              	.LVL149:
+ 630:../drivers/fsl_ftm.c ****     /* Enable the DECAPEN bit */
+ 631:../drivers/fsl_ftm.c ****     reg |= (1U << (FTM_COMBINE_DECAPEN0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlPairNumber)));
+ 1218              		.loc 1 631 0
+ 1219 0010 B41C     		adds	r4, r6, #2
+ 632:../drivers/fsl_ftm.c ****     reg |= (1U << (FTM_COMBINE_DECAP0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlPairNumber)));
+ 1220              		.loc 1 632 0
+ 1221 0012 0336     		adds	r6, r6, #3
+ 1222              	.LVL150:
+ 631:../drivers/fsl_ftm.c ****     reg |= (1U << (FTM_COMBINE_DECAP0_SHIFT + (FTM_COMBINE_COMBINE1_SHIFT * chnlPairNumber)));
+ 1223              		.loc 1 631 0
+ 1224 0014 05FA04F4 		lsl	r4, r5, r4
+ 1225              		.loc 1 632 0
+ 1226 0018 B540     		lsls	r5, r5, r6
+ 1227 001a 2C43     		orrs	r4, r4, r5
+ 1228 001c 00EB0116 		add	r6, r0, r1, lsl #4
+ 1229              	.LVL151:
+ 1230 0020 3C43     		orrs	r4, r4, r7
+ 1231              	.LVL152:
+ 633:../drivers/fsl_ftm.c ****     base->COMBINE = reg;
+ 1232              		.loc 1 633 0
+ 1233 0022 4466     		str	r4, [r0, #100]
+ 634:../drivers/fsl_ftm.c **** 
+ 635:../drivers/fsl_ftm.c ****     /* Setup the edge detection from channel n and n + 1 */
+ 636:../drivers/fsl_ftm.c ****     reg = base->CONTROLS[chnlPairNumber * 2].CnSC;
+ 1234              		.loc 1 636 0
+ 1235 0024 F768     		ldr	r7, [r6, #12]
+ 1236              	.LVL153:
+ 637:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
+ 638:../drivers/fsl_ftm.c ****     reg |= ((uint32_t)edgeParam->mode | (uint32_t)edgeParam->currChanEdgeMode);
+ 1237              		.loc 1 638 0
+ 1238 0026 1478     		ldrb	r4, [r2]	@ zero_extendqisi2
+ 1239 0028 5578     		ldrb	r5, [r2, #1]	@ zero_extendqisi2
+ 639:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlPairNumber * 2].CnSC = reg;
+ 640:../drivers/fsl_ftm.c **** 
+ 641:../drivers/fsl_ftm.c ****     reg = base->CONTROLS[(chnlPairNumber * 2) + 1].CnSC;
+ 642:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
+ 643:../drivers/fsl_ftm.c ****     reg |= ((uint32_t)edgeParam->mode | (uint32_t)edgeParam->nextChanEdgeMode);
+ 1240              		.loc 1 643 0
+ 1241 002a 9278     		ldrb	r2, [r2, #2]	@ zero_extendqisi2
+ 1242              	.LVL154:
+ 638:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlPairNumber * 2].CnSC = reg;
+ 1243              		.loc 1 638 0
+ 1244 002c 2543     		orrs	r5, r5, r4
+ 637:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
+ 1245              		.loc 1 637 0
+ 1246 002e 27F03C07 		bic	r7, r7, #60
+ 1247              	.LVL155:
+ 638:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlPairNumber * 2].CnSC = reg;
+ 1248              		.loc 1 638 0
+ 1249 0032 3D43     		orrs	r5, r5, r7
+ 1250              	.LVL156:
+ 639:../drivers/fsl_ftm.c ****     base->CONTROLS[chnlPairNumber * 2].CnSC = reg;
+ 1251              		.loc 1 639 0
+ 1252 0034 F560     		str	r5, [r6, #12]
+ 641:../drivers/fsl_ftm.c ****     reg &= ~(FTM_CnSC_MSA_MASK | FTM_CnSC_MSB_MASK | FTM_CnSC_ELSA_MASK | FTM_CnSC_ELSB_MASK);
+ 1253              		.loc 1 641 0
+ 1254 0036 7569     		ldr	r5, [r6, #20]
+ 1255              	.LVL157:
+ 1256              		.loc 1 643 0
+ 1257 0038 1443     		orrs	r4, r4, r2
+ 642:../drivers/fsl_ftm.c ****     reg |= ((uint32_t)edgeParam->mode | (uint32_t)edgeParam->nextChanEdgeMode);
+ 1258              		.loc 1 642 0
+ 1259 003a 25F03C05 		bic	r5, r5, #60
+ 1260              	.LVL158:
+ 1261              		.loc 1 643 0
+ 1262 003e 2C43     		orrs	r4, r4, r5
+ 1263              	.LVL159:
+ 644:../drivers/fsl_ftm.c ****     base->CONTROLS[(chnlPairNumber * 2) + 1].CnSC = reg;
+ 645:../drivers/fsl_ftm.c **** 
+ 646:../drivers/fsl_ftm.c ****     /* Input filter available only for channels 0, 1, 2, 3 */
+ 647:../drivers/fsl_ftm.c ****     if (chnlPairNumber < kFTM_Chnl_4)
+ 1264              		.loc 1 647 0
+ 1265 0040 0329     		cmp	r1, #3
+ 644:../drivers/fsl_ftm.c ****     base->CONTROLS[(chnlPairNumber * 2) + 1].CnSC = reg;
+ 1266              		.loc 1 644 0
+ 1267 0042 7461     		str	r4, [r6, #20]
+ 1268              		.loc 1 647 0
+ 1269 0044 09D8     		bhi	.L114
+ 648:../drivers/fsl_ftm.c ****     {
+ 649:../drivers/fsl_ftm.c ****         reg = base->FILTER;
+ 1270              		.loc 1 649 0
+ 1271 0046 826F     		ldr	r2, [r0, #120]
+ 1272              	.LVL160:
+ 650:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH0FVAL_MASK << (FTM_FILTER_CH1FVAL_SHIFT * chnlPairNumber));
+ 1273              		.loc 1 650 0
+ 1274 0048 8900     		lsls	r1, r1, #2
+ 1275              	.LVL161:
+ 1276 004a 0F24     		movs	r4, #15
+ 1277 004c 8C40     		lsls	r4, r4, r1
+ 1278 004e 22EA0402 		bic	r2, r2, r4
+ 1279              	.LVL162:
+ 651:../drivers/fsl_ftm.c ****         reg |= (filterValue << (FTM_FILTER_CH1FVAL_SHIFT * chnlPairNumber));
+ 1280              		.loc 1 651 0
+ 1281 0052 03FA01F1 		lsl	r1, r3, r1
+ 1282 0056 1143     		orrs	r1, r1, r2
+ 1283              	.LVL163:
+ 652:../drivers/fsl_ftm.c ****         base->FILTER = reg;
+ 1284              		.loc 1 652 0
+ 1285 0058 8167     		str	r1, [r0, #120]
+ 1286              	.LVL164:
+ 1287              	.L114:
+ 653:../drivers/fsl_ftm.c ****     }
+ 654:../drivers/fsl_ftm.c **** 
+ 655:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT) && (FSL_FEATURE_FTM_HAS_ENABLE_PWM_OUTPUT)
+ 656:../drivers/fsl_ftm.c ****     /* Set to input mode */
+ 657:../drivers/fsl_ftm.c ****     FTM_SetPwmOutputEnable(base, chnlPairNumber, false);
+ 658:../drivers/fsl_ftm.c **** #endif
+ 659:../drivers/fsl_ftm.c **** }
+ 1288              		.loc 1 659 0
+ 1289 005a F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1290              		.cfi_endproc
+ 1291              	.LFE176:
+ 1293              		.section	.text.FTM_SetupQuadDecode,"ax",%progbits
+ 1294              		.align	1
+ 1295              		.global	FTM_SetupQuadDecode
+ 1296              		.syntax unified
+ 1297              		.thumb
+ 1298              		.thumb_func
+ 1299              		.fpu fpv4-sp-d16
+ 1301              	FTM_SetupQuadDecode:
+ 1302              	.LFB177:
+ 660:../drivers/fsl_ftm.c **** 
+ 661:../drivers/fsl_ftm.c **** void FTM_SetupQuadDecode(FTM_Type *base,
+ 662:../drivers/fsl_ftm.c ****                          const ftm_phase_params_t *phaseAParams,
+ 663:../drivers/fsl_ftm.c ****                          const ftm_phase_params_t *phaseBParams,
+ 664:../drivers/fsl_ftm.c ****                          ftm_quad_decode_mode_t quadMode)
+ 665:../drivers/fsl_ftm.c **** {
+ 1303              		.loc 1 665 0
+ 1304              		.cfi_startproc
+ 1305              		@ args = 0, pretend = 0, frame = 0
+ 1306              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1307              	.LVL165:
+ 1308 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1309              		.cfi_def_cfa_offset 20
+ 1310              		.cfi_offset 4, -20
+ 1311              		.cfi_offset 5, -16
+ 1312              		.cfi_offset 6, -12
+ 1313              		.cfi_offset 7, -8
+ 1314              		.cfi_offset 14, -4
+ 666:../drivers/fsl_ftm.c ****     assert(phaseAParams);
+ 667:../drivers/fsl_ftm.c ****     assert(phaseBParams);
+ 668:../drivers/fsl_ftm.c **** 
+ 669:../drivers/fsl_ftm.c ****     uint32_t reg;
+ 670:../drivers/fsl_ftm.c **** 
+ 671:../drivers/fsl_ftm.c ****     /* Set Phase A filter value if phase filter is enabled */
+ 672:../drivers/fsl_ftm.c ****     if (phaseAParams->enablePhaseFilter)
+ 1315              		.loc 1 672 0
+ 1316 0002 0E78     		ldrb	r6, [r1]	@ zero_extendqisi2
+ 1317 0004 3EB1     		cbz	r6, .L117
+ 673:../drivers/fsl_ftm.c ****     {
+ 674:../drivers/fsl_ftm.c ****         reg = base->FILTER;
+ 1318              		.loc 1 674 0
+ 1319 0006 856F     		ldr	r5, [r0, #120]
+ 1320              	.LVL166:
+ 675:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH0FVAL_MASK);
+ 676:../drivers/fsl_ftm.c ****         reg |= FTM_FILTER_CH0FVAL(phaseAParams->phaseFilterVal);
+ 1321              		.loc 1 676 0
+ 1322 0008 4C68     		ldr	r4, [r1, #4]
+ 675:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH0FVAL_MASK);
+ 1323              		.loc 1 675 0
+ 1324 000a 25F00F05 		bic	r5, r5, #15
+ 1325              	.LVL167:
+ 1326              		.loc 1 676 0
+ 1327 000e 04F00F04 		and	r4, r4, #15
+ 1328 0012 2C43     		orrs	r4, r4, r5
+ 1329              	.LVL168:
+ 677:../drivers/fsl_ftm.c ****         base->FILTER = reg;
+ 1330              		.loc 1 677 0
+ 1331 0014 8467     		str	r4, [r0, #120]
+ 1332              	.LVL169:
+ 1333              	.L117:
+ 678:../drivers/fsl_ftm.c ****     }
+ 679:../drivers/fsl_ftm.c **** 
+ 680:../drivers/fsl_ftm.c ****     /* Set Phase B filter value if phase filter is enabled */
+ 681:../drivers/fsl_ftm.c ****     if (phaseBParams->enablePhaseFilter)
+ 1334              		.loc 1 681 0
+ 1335 0016 92F800C0 		ldrb	ip, [r2]	@ zero_extendqisi2
+ 1336 001a BCF1000F 		cmp	ip, #0
+ 1337 001e 07D0     		beq	.L118
+ 682:../drivers/fsl_ftm.c ****     {
+ 683:../drivers/fsl_ftm.c ****         reg = base->FILTER;
+ 684:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH1FVAL_MASK);
+ 685:../drivers/fsl_ftm.c ****         reg |= FTM_FILTER_CH1FVAL(phaseBParams->phaseFilterVal);
+ 1338              		.loc 1 685 0
+ 1339 0020 5568     		ldr	r5, [r2, #4]
+ 683:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FILTER_CH1FVAL_MASK);
+ 1340              		.loc 1 683 0
+ 1341 0022 876F     		ldr	r7, [r0, #120]
+ 1342              	.LVL170:
+ 1343              		.loc 1 685 0
+ 1344 0024 2D01     		lsls	r5, r5, #4
+ 684:../drivers/fsl_ftm.c ****         reg |= FTM_FILTER_CH1FVAL(phaseBParams->phaseFilterVal);
+ 1345              		.loc 1 684 0
+ 1346 0026 27F0F007 		bic	r7, r7, #240
+ 1347              	.LVL171:
+ 1348              		.loc 1 685 0
+ 1349 002a EDB2     		uxtb	r5, r5
+ 1350 002c 3D43     		orrs	r5, r5, r7
+ 1351              	.LVL172:
+ 686:../drivers/fsl_ftm.c ****         base->FILTER = reg;
+ 1352              		.loc 1 686 0
+ 1353 002e 8567     		str	r5, [r0, #120]
+ 1354              	.LVL173:
+ 1355              	.L118:
+ 687:../drivers/fsl_ftm.c ****     }
+ 688:../drivers/fsl_ftm.c **** #if !(defined(FSL_FEATURE_FTM_HAS_NO_QDCTRL) && FSL_FEATURE_FTM_HAS_NO_QDCTRL)
+ 689:../drivers/fsl_ftm.c ****     /* Set Quadrature decode properties */
+ 690:../drivers/fsl_ftm.c ****     reg = base->QDCTRL;
+ 1356              		.loc 1 690 0
+ 1357 0030 D0F88040 		ldr	r4, [r0, #128]
+ 1358              	.LVL174:
+ 691:../drivers/fsl_ftm.c ****     reg &= ~(FTM_QDCTRL_QUADMODE_MASK | FTM_QDCTRL_PHAFLTREN_MASK | FTM_QDCTRL_PHBFLTREN_MASK | FTM
+ 692:../drivers/fsl_ftm.c ****              FTM_QDCTRL_PHBPOL_MASK);
+ 693:../drivers/fsl_ftm.c ****     reg |= (FTM_QDCTRL_QUADMODE(quadMode) | FTM_QDCTRL_PHAFLTREN(phaseAParams->enablePhaseFilter) |
+ 694:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBFLTREN(phaseBParams->enablePhaseFilter) | FTM_QDCTRL_PHAPOL(phaseAParams-
+ 695:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBPOL(phaseBParams->phasePolarity));
+ 1359              		.loc 1 695 0
+ 1360 0034 127A     		ldrb	r2, [r2, #8]	@ zero_extendqisi2
+ 1361              	.LVL175:
+ 691:../drivers/fsl_ftm.c ****     reg &= ~(FTM_QDCTRL_QUADMODE_MASK | FTM_QDCTRL_PHAFLTREN_MASK | FTM_QDCTRL_PHBFLTREN_MASK | FTM
+ 1362              		.loc 1 691 0
+ 1363 0036 24F0F804 		bic	r4, r4, #248
+ 1364              	.LVL176:
+ 693:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBFLTREN(phaseBParams->enablePhaseFilter) | FTM_QDCTRL_PHAPOL(phaseAParams-
+ 1365              		.loc 1 693 0
+ 1366 003a DB00     		lsls	r3, r3, #3
+ 1367              	.LVL177:
+ 1368 003c 44EA8C14 		orr	r4, r4, ip, lsl #6
+ 1369              	.LVL178:
+ 1370 0040 03F00803 		and	r3, r3, #8
+ 1371              		.loc 1 695 0
+ 1372 0044 1201     		lsls	r2, r2, #4
+ 1373 0046 02F01002 		and	r2, r2, #16
+ 1374 004a 2343     		orrs	r3, r3, r4
+ 1375 004c 1343     		orrs	r3, r3, r2
+ 694:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBPOL(phaseBParams->phasePolarity));
+ 1376              		.loc 1 694 0
+ 1377 004e 0A7A     		ldrb	r2, [r1, #8]	@ zero_extendqisi2
+ 1378 0050 5201     		lsls	r2, r2, #5
+ 1379 0052 43EAC613 		orr	r3, r3, r6, lsl #7
+ 1380 0056 02F02002 		and	r2, r2, #32
+ 693:../drivers/fsl_ftm.c ****             FTM_QDCTRL_PHBFLTREN(phaseBParams->enablePhaseFilter) | FTM_QDCTRL_PHAPOL(phaseAParams-
+ 1381              		.loc 1 693 0
+ 1382 005a 1343     		orrs	r3, r3, r2
+ 1383              	.LVL179:
+ 696:../drivers/fsl_ftm.c ****     base->QDCTRL = reg;
+ 1384              		.loc 1 696 0
+ 1385 005c C0F88030 		str	r3, [r0, #128]
+ 697:../drivers/fsl_ftm.c ****     /* Enable Quad decode */
+ 698:../drivers/fsl_ftm.c ****     base->QDCTRL |= FTM_QDCTRL_QUADEN_MASK;
+ 1386              		.loc 1 698 0
+ 1387 0060 D0F88030 		ldr	r3, [r0, #128]
+ 1388              	.LVL180:
+ 1389 0064 43F00103 		orr	r3, r3, #1
+ 1390 0068 C0F88030 		str	r3, [r0, #128]
+ 1391              	.LVL181:
+ 699:../drivers/fsl_ftm.c **** #endif
+ 700:../drivers/fsl_ftm.c **** }
+ 1392              		.loc 1 700 0
+ 1393 006c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1394              		.cfi_endproc
+ 1395              	.LFE177:
+ 1397              		.section	.text.FTM_SetupFault,"ax",%progbits
+ 1398              		.align	1
+ 1399              		.global	FTM_SetupFault
+ 1400              		.syntax unified
+ 1401              		.thumb
+ 1402              		.thumb_func
+ 1403              		.fpu fpv4-sp-d16
+ 1405              	FTM_SetupFault:
+ 1406              	.LFB178:
+ 701:../drivers/fsl_ftm.c **** 
+ 702:../drivers/fsl_ftm.c **** void FTM_SetupFault(FTM_Type *base, ftm_fault_input_t faultNumber, const ftm_fault_param_t *faultPa
+ 703:../drivers/fsl_ftm.c **** {
+ 1407              		.loc 1 703 0
+ 1408              		.cfi_startproc
+ 1409              		@ args = 0, pretend = 0, frame = 0
+ 1410              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1411              	.LVL182:
+ 1412 0000 30B5     		push	{r4, r5, lr}
+ 1413              		.cfi_def_cfa_offset 12
+ 1414              		.cfi_offset 4, -12
+ 1415              		.cfi_offset 5, -8
+ 1416              		.cfi_offset 14, -4
+ 704:../drivers/fsl_ftm.c ****     assert(faultParams);
+ 705:../drivers/fsl_ftm.c **** 
+ 706:../drivers/fsl_ftm.c ****     uint32_t reg;
+ 707:../drivers/fsl_ftm.c **** 
+ 708:../drivers/fsl_ftm.c ****     reg = base->FLTCTRL;
+ 709:../drivers/fsl_ftm.c ****     if (faultParams->enableFaultInput)
+ 1417              		.loc 1 709 0
+ 1418 0002 1578     		ldrb	r5, [r2]	@ zero_extendqisi2
+ 708:../drivers/fsl_ftm.c ****     if (faultParams->enableFaultInput)
+ 1419              		.loc 1 708 0
+ 1420 0004 C36F     		ldr	r3, [r0, #124]
+ 1421              	.LVL183:
+ 1422 0006 0124     		movs	r4, #1
+ 1423 0008 8C40     		lsls	r4, r4, r1
+ 1424              		.loc 1 709 0
+ 1425 000a 7DB1     		cbz	r5, .L126
+ 710:../drivers/fsl_ftm.c ****     {
+ 711:../drivers/fsl_ftm.c ****         /* Enable the fault input */
+ 712:../drivers/fsl_ftm.c ****         reg |= (FTM_FLTCTRL_FAULT0EN_MASK << faultNumber);
+ 1426              		.loc 1 712 0
+ 1427 000c 2343     		orrs	r3, r3, r4
+ 1428              	.LVL184:
+ 1429              	.L127:
+ 1430 000e 0D1D     		adds	r5, r1, #4
+ 1431 0010 1021     		movs	r1, #16
+ 1432              	.LVL185:
+ 1433 0012 A940     		lsls	r1, r1, r5
+ 713:../drivers/fsl_ftm.c ****     }
+ 714:../drivers/fsl_ftm.c ****     else
+ 715:../drivers/fsl_ftm.c ****     {
+ 716:../drivers/fsl_ftm.c ****         /* Disable the fault input */
+ 717:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FLTCTRL_FAULT0EN_MASK << faultNumber);
+ 718:../drivers/fsl_ftm.c ****     }
+ 719:../drivers/fsl_ftm.c **** 
+ 720:../drivers/fsl_ftm.c ****     if (faultParams->useFaultFilter)
+ 1434              		.loc 1 720 0
+ 1435 0014 9578     		ldrb	r5, [r2, #2]	@ zero_extendqisi2
+ 1436 0016 65B1     		cbz	r5, .L128
+ 721:../drivers/fsl_ftm.c ****     {
+ 722:../drivers/fsl_ftm.c ****         /* Enable the fault filter */
+ 723:../drivers/fsl_ftm.c ****         reg |= (FTM_FLTCTRL_FFLTR0EN_MASK << (FTM_FLTCTRL_FFLTR0EN_SHIFT + faultNumber));
+ 1437              		.loc 1 723 0
+ 1438 0018 0B43     		orrs	r3, r3, r1
+ 1439              	.LVL186:
+ 1440              	.L129:
+ 724:../drivers/fsl_ftm.c ****     }
+ 725:../drivers/fsl_ftm.c ****     else
+ 726:../drivers/fsl_ftm.c ****     {
+ 727:../drivers/fsl_ftm.c ****         /* Disable the fault filter */
+ 728:../drivers/fsl_ftm.c ****         reg &= ~(FTM_FLTCTRL_FFLTR0EN_MASK << (FTM_FLTCTRL_FFLTR0EN_SHIFT + faultNumber));
+ 729:../drivers/fsl_ftm.c ****     }
+ 730:../drivers/fsl_ftm.c ****     base->FLTCTRL = reg;
+ 1441              		.loc 1 730 0
+ 1442 001a C367     		str	r3, [r0, #124]
+ 731:../drivers/fsl_ftm.c **** 
+ 732:../drivers/fsl_ftm.c ****     if (faultParams->faultLevel)
+ 1443              		.loc 1 732 0
+ 1444 001c 5378     		ldrb	r3, [r2, #1]	@ zero_extendqisi2
+ 1445              	.LVL187:
+ 1446 001e 5BB1     		cbz	r3, .L130
+ 733:../drivers/fsl_ftm.c ****     {
+ 734:../drivers/fsl_ftm.c ****         /* Active low polarity for the fault input pin */
+ 735:../drivers/fsl_ftm.c ****         base->FLTPOL |= (1U << faultNumber);
+ 1447              		.loc 1 735 0
+ 1448 0020 D0F88830 		ldr	r3, [r0, #136]
+ 1449 0024 1C43     		orrs	r4, r4, r3
+ 1450              	.L132:
+ 736:../drivers/fsl_ftm.c ****     }
+ 737:../drivers/fsl_ftm.c ****     else
+ 738:../drivers/fsl_ftm.c ****     {
+ 739:../drivers/fsl_ftm.c ****         /* Active high polarity for the fault input pin */
+ 740:../drivers/fsl_ftm.c ****         base->FLTPOL &= ~(1U << faultNumber);
+ 1451              		.loc 1 740 0
+ 1452 0026 C0F88840 		str	r4, [r0, #136]
+ 1453              	.LVL188:
+ 741:../drivers/fsl_ftm.c ****     }
+ 742:../drivers/fsl_ftm.c **** }
+ 1454              		.loc 1 742 0
+ 1455 002a 30BD     		pop	{r4, r5, pc}
+ 1456              	.LVL189:
+ 1457              	.L126:
+ 717:../drivers/fsl_ftm.c ****     }
+ 1458              		.loc 1 717 0
+ 1459 002c 23EA0403 		bic	r3, r3, r4
+ 1460              	.LVL190:
+ 1461 0030 EDE7     		b	.L127
+ 1462              	.LVL191:
+ 1463              	.L128:
+ 728:../drivers/fsl_ftm.c ****     }
+ 1464              		.loc 1 728 0
+ 1465 0032 23EA0103 		bic	r3, r3, r1
+ 1466              	.LVL192:
+ 1467 0036 F0E7     		b	.L129
+ 1468              	.LVL193:
+ 1469              	.L130:
+ 740:../drivers/fsl_ftm.c ****     }
+ 1470              		.loc 1 740 0
+ 1471 0038 D0F88830 		ldr	r3, [r0, #136]
+ 1472 003c 23EA0404 		bic	r4, r3, r4
+ 1473 0040 F1E7     		b	.L132
+ 1474              		.cfi_endproc
+ 1475              	.LFE178:
+ 1477              		.section	.text.FTM_EnableInterrupts,"ax",%progbits
+ 1478              		.align	1
+ 1479              		.global	FTM_EnableInterrupts
+ 1480              		.syntax unified
+ 1481              		.thumb
+ 1482              		.thumb_func
+ 1483              		.fpu fpv4-sp-d16
+ 1485              	FTM_EnableInterrupts:
+ 1486              	.LFB179:
+ 743:../drivers/fsl_ftm.c **** 
+ 744:../drivers/fsl_ftm.c **** void FTM_EnableInterrupts(FTM_Type *base, uint32_t mask)
+ 745:../drivers/fsl_ftm.c **** {
+ 1487              		.loc 1 745 0
+ 1488              		.cfi_startproc
+ 1489              		@ args = 0, pretend = 0, frame = 0
+ 1490              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1491              	.LVL194:
+ 1492 0000 10B5     		push	{r4, lr}
+ 1493              		.cfi_def_cfa_offset 8
+ 1494              		.cfi_offset 4, -8
+ 1495              		.cfi_offset 14, -4
+ 746:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFFU);
+ 747:../drivers/fsl_ftm.c ****     uint8_t chnlNumber = 0;
+ 748:../drivers/fsl_ftm.c **** 
+ 749:../drivers/fsl_ftm.c ****     /* Enable the timer overflow interrupt */
+ 750:../drivers/fsl_ftm.c ****     if (mask & kFTM_TimeOverflowInterruptEnable)
+ 1496              		.loc 1 750 0
+ 1497 0002 8C05     		lsls	r4, r1, #22
+ 751:../drivers/fsl_ftm.c ****     {
+ 752:../drivers/fsl_ftm.c ****         base->SC |= FTM_SC_TOIE_MASK;
+ 1498              		.loc 1 752 0
+ 1499 0004 42BF     		ittt	mi
+ 1500 0006 0268     		ldrmi	r2, [r0]
+ 1501 0008 42F04002 		orrmi	r2, r2, #64
+ 1502 000c 0260     		strmi	r2, [r0]
+ 746:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFFU);
+ 1503              		.loc 1 746 0
+ 1504 000e CBB2     		uxtb	r3, r1
+ 1505              	.LVL195:
+ 753:../drivers/fsl_ftm.c ****     }
+ 754:../drivers/fsl_ftm.c **** 
+ 755:../drivers/fsl_ftm.c ****     /* Enable the fault interrupt */
+ 756:../drivers/fsl_ftm.c ****     if (mask & kFTM_FaultInterruptEnable)
+ 1506              		.loc 1 756 0
+ 1507 0010 C905     		lsls	r1, r1, #23
+ 1508              	.LVL196:
+ 757:../drivers/fsl_ftm.c ****     {
+ 758:../drivers/fsl_ftm.c ****         base->MODE |= FTM_MODE_FAULTIE_MASK;
+ 1509              		.loc 1 758 0
+ 1510 0012 42BF     		ittt	mi
+ 1511 0014 426D     		ldrmi	r2, [r0, #84]
+ 1512 0016 42F08002 		orrmi	r2, r2, #128
+ 1513 001a 4265     		strmi	r2, [r0, #84]
+ 745:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFFU);
+ 1514              		.loc 1 745 0
+ 1515 001c 0021     		movs	r1, #0
+ 1516              	.LVL197:
+ 1517              	.L136:
+ 759:../drivers/fsl_ftm.c ****     }
+ 760:../drivers/fsl_ftm.c **** 
+ 761:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT) && (FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT)
+ 762:../drivers/fsl_ftm.c ****     /* Enable the reload interrupt available only on certain SoC's */
+ 763:../drivers/fsl_ftm.c ****     if (mask & kFTM_ReloadInterruptEnable)
+ 764:../drivers/fsl_ftm.c ****     {
+ 765:../drivers/fsl_ftm.c ****         base->SC |= FTM_SC_RIE_MASK;
+ 766:../drivers/fsl_ftm.c ****     }
+ 767:../drivers/fsl_ftm.c **** #endif
+ 768:../drivers/fsl_ftm.c **** 
+ 769:../drivers/fsl_ftm.c ****     /* Enable the channel interrupts */
+ 770:../drivers/fsl_ftm.c ****     while (chnlInts)
+ 1518              		.loc 1 770 0
+ 1519 001e 03B9     		cbnz	r3, .L138
+ 771:../drivers/fsl_ftm.c ****     {
+ 772:../drivers/fsl_ftm.c ****         if (chnlInts & 0x1)
+ 773:../drivers/fsl_ftm.c ****         {
+ 774:../drivers/fsl_ftm.c ****             base->CONTROLS[chnlNumber].CnSC |= FTM_CnSC_CHIE_MASK;
+ 775:../drivers/fsl_ftm.c ****         }
+ 776:../drivers/fsl_ftm.c ****         chnlNumber++;
+ 777:../drivers/fsl_ftm.c ****         chnlInts = chnlInts >> 1U;
+ 778:../drivers/fsl_ftm.c ****     }
+ 779:../drivers/fsl_ftm.c **** }
+ 1520              		.loc 1 779 0
+ 1521 0020 10BD     		pop	{r4, pc}
+ 1522              	.L138:
+ 772:../drivers/fsl_ftm.c ****         {
+ 1523              		.loc 1 772 0
+ 1524 0022 DA07     		lsls	r2, r3, #31
+ 1525 0024 06D5     		bpl	.L137
+ 1526 0026 CAB2     		uxtb	r2, r1
+ 1527 0028 00EBC202 		add	r2, r0, r2, lsl #3
+ 774:../drivers/fsl_ftm.c ****         }
+ 1528              		.loc 1 774 0
+ 1529 002c D468     		ldr	r4, [r2, #12]
+ 1530 002e 44F04004 		orr	r4, r4, #64
+ 1531 0032 D460     		str	r4, [r2, #12]
+ 1532              	.L137:
+ 1533              	.LVL198:
+ 777:../drivers/fsl_ftm.c ****     }
+ 1534              		.loc 1 777 0
+ 1535 0034 5B08     		lsrs	r3, r3, #1
+ 1536              	.LVL199:
+ 1537 0036 0131     		adds	r1, r1, #1
+ 1538              	.LVL200:
+ 1539 0038 F1E7     		b	.L136
+ 1540              		.cfi_endproc
+ 1541              	.LFE179:
+ 1543              		.section	.text.FTM_DisableInterrupts,"ax",%progbits
+ 1544              		.align	1
+ 1545              		.global	FTM_DisableInterrupts
+ 1546              		.syntax unified
+ 1547              		.thumb
+ 1548              		.thumb_func
+ 1549              		.fpu fpv4-sp-d16
+ 1551              	FTM_DisableInterrupts:
+ 1552              	.LFB180:
+ 780:../drivers/fsl_ftm.c **** 
+ 781:../drivers/fsl_ftm.c **** void FTM_DisableInterrupts(FTM_Type *base, uint32_t mask)
+ 782:../drivers/fsl_ftm.c **** {
+ 1553              		.loc 1 782 0
+ 1554              		.cfi_startproc
+ 1555              		@ args = 0, pretend = 0, frame = 0
+ 1556              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1557              	.LVL201:
+ 1558 0000 10B5     		push	{r4, lr}
+ 1559              		.cfi_def_cfa_offset 8
+ 1560              		.cfi_offset 4, -8
+ 1561              		.cfi_offset 14, -4
+ 783:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFF);
+ 784:../drivers/fsl_ftm.c ****     uint8_t chnlNumber = 0;
+ 785:../drivers/fsl_ftm.c **** 
+ 786:../drivers/fsl_ftm.c ****     /* Disable the timer overflow interrupt */
+ 787:../drivers/fsl_ftm.c ****     if (mask & kFTM_TimeOverflowInterruptEnable)
+ 1562              		.loc 1 787 0
+ 1563 0002 8C05     		lsls	r4, r1, #22
+ 788:../drivers/fsl_ftm.c ****     {
+ 789:../drivers/fsl_ftm.c ****         base->SC &= ~FTM_SC_TOIE_MASK;
+ 1564              		.loc 1 789 0
+ 1565 0004 42BF     		ittt	mi
+ 1566 0006 0268     		ldrmi	r2, [r0]
+ 1567 0008 22F04002 		bicmi	r2, r2, #64
+ 1568 000c 0260     		strmi	r2, [r0]
+ 783:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFF);
+ 1569              		.loc 1 783 0
+ 1570 000e CBB2     		uxtb	r3, r1
+ 1571              	.LVL202:
+ 790:../drivers/fsl_ftm.c ****     }
+ 791:../drivers/fsl_ftm.c ****     /* Disable the fault interrupt */
+ 792:../drivers/fsl_ftm.c ****     if (mask & kFTM_FaultInterruptEnable)
+ 1572              		.loc 1 792 0
+ 1573 0010 C905     		lsls	r1, r1, #23
+ 1574              	.LVL203:
+ 793:../drivers/fsl_ftm.c ****     {
+ 794:../drivers/fsl_ftm.c ****         base->MODE &= ~FTM_MODE_FAULTIE_MASK;
+ 1575              		.loc 1 794 0
+ 1576 0012 42BF     		ittt	mi
+ 1577 0014 426D     		ldrmi	r2, [r0, #84]
+ 1578 0016 22F08002 		bicmi	r2, r2, #128
+ 1579 001a 4265     		strmi	r2, [r0, #84]
+ 782:../drivers/fsl_ftm.c ****     uint32_t chnlInts = (mask & 0xFF);
+ 1580              		.loc 1 782 0
+ 1581 001c 0021     		movs	r1, #0
+ 1582              	.LVL204:
+ 1583              	.L151:
+ 795:../drivers/fsl_ftm.c ****     }
+ 796:../drivers/fsl_ftm.c **** 
+ 797:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT) && (FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT)
+ 798:../drivers/fsl_ftm.c ****     /* Disable the reload interrupt available only on certain SoC's */
+ 799:../drivers/fsl_ftm.c ****     if (mask & kFTM_ReloadInterruptEnable)
+ 800:../drivers/fsl_ftm.c ****     {
+ 801:../drivers/fsl_ftm.c ****         base->SC &= ~FTM_SC_RIE_MASK;
+ 802:../drivers/fsl_ftm.c ****     }
+ 803:../drivers/fsl_ftm.c **** #endif
+ 804:../drivers/fsl_ftm.c **** 
+ 805:../drivers/fsl_ftm.c ****     /* Disable the channel interrupts */
+ 806:../drivers/fsl_ftm.c ****     while (chnlInts)
+ 1584              		.loc 1 806 0
+ 1585 001e 03B9     		cbnz	r3, .L153
+ 807:../drivers/fsl_ftm.c ****     {
+ 808:../drivers/fsl_ftm.c ****         if (chnlInts & 0x1)
+ 809:../drivers/fsl_ftm.c ****         {
+ 810:../drivers/fsl_ftm.c ****             base->CONTROLS[chnlNumber].CnSC &= ~FTM_CnSC_CHIE_MASK;
+ 811:../drivers/fsl_ftm.c ****         }
+ 812:../drivers/fsl_ftm.c ****         chnlNumber++;
+ 813:../drivers/fsl_ftm.c ****         chnlInts = chnlInts >> 1U;
+ 814:../drivers/fsl_ftm.c ****     }
+ 815:../drivers/fsl_ftm.c **** }
+ 1586              		.loc 1 815 0
+ 1587 0020 10BD     		pop	{r4, pc}
+ 1588              	.L153:
+ 808:../drivers/fsl_ftm.c ****         {
+ 1589              		.loc 1 808 0
+ 1590 0022 DA07     		lsls	r2, r3, #31
+ 1591 0024 06D5     		bpl	.L152
+ 1592 0026 CAB2     		uxtb	r2, r1
+ 1593 0028 00EBC202 		add	r2, r0, r2, lsl #3
+ 810:../drivers/fsl_ftm.c ****         }
+ 1594              		.loc 1 810 0
+ 1595 002c D468     		ldr	r4, [r2, #12]
+ 1596 002e 24F04004 		bic	r4, r4, #64
+ 1597 0032 D460     		str	r4, [r2, #12]
+ 1598              	.L152:
+ 1599              	.LVL205:
+ 813:../drivers/fsl_ftm.c ****     }
+ 1600              		.loc 1 813 0
+ 1601 0034 5B08     		lsrs	r3, r3, #1
+ 1602              	.LVL206:
+ 1603 0036 0131     		adds	r1, r1, #1
+ 1604              	.LVL207:
+ 1605 0038 F1E7     		b	.L151
+ 1606              		.cfi_endproc
+ 1607              	.LFE180:
+ 1609              		.section	.text.FTM_GetEnabledInterrupts,"ax",%progbits
+ 1610              		.align	1
+ 1611              		.global	FTM_GetEnabledInterrupts
+ 1612              		.syntax unified
+ 1613              		.thumb
+ 1614              		.thumb_func
+ 1615              		.fpu fpv4-sp-d16
+ 1617              	FTM_GetEnabledInterrupts:
+ 1618              	.LFB181:
+ 816:../drivers/fsl_ftm.c **** 
+ 817:../drivers/fsl_ftm.c **** uint32_t FTM_GetEnabledInterrupts(FTM_Type *base)
+ 818:../drivers/fsl_ftm.c **** {
+ 1619              		.loc 1 818 0
+ 1620              		.cfi_startproc
+ 1621              		@ args = 0, pretend = 0, frame = 0
+ 1622              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1623              	.LVL208:
+ 819:../drivers/fsl_ftm.c ****     uint32_t enabledInterrupts = 0;
+ 820:../drivers/fsl_ftm.c ****     int8_t chnlCount = FSL_FEATURE_FTM_CHANNEL_COUNTn(base);
+ 1624              		.loc 1 820 0
+ 1625 0000 1A4B     		ldr	r3, .L181
+ 1626 0002 9842     		cmp	r0, r3
+ 818:../drivers/fsl_ftm.c ****     uint32_t enabledInterrupts = 0;
+ 1627              		.loc 1 818 0
+ 1628 0004 30B5     		push	{r4, r5, lr}
+ 1629              		.cfi_def_cfa_offset 12
+ 1630              		.cfi_offset 4, -12
+ 1631              		.cfi_offset 5, -8
+ 1632              		.cfi_offset 14, -4
+ 818:../drivers/fsl_ftm.c ****     uint32_t enabledInterrupts = 0;
+ 1633              		.loc 1 818 0
+ 1634 0006 0246     		mov	r2, r0
+ 1635              		.loc 1 820 0
+ 1636 0008 1ED0     		beq	.L170
+ 1637              		.loc 1 820 0 is_stmt 0 discriminator 1
+ 1638 000a 03F58053 		add	r3, r3, #4096
+ 1639 000e 9842     		cmp	r0, r3
+ 1640 0010 1CD0     		beq	.L172
+ 1641              		.loc 1 820 0 discriminator 3
+ 1642 0012 03F58053 		add	r3, r3, #4096
+ 1643 0016 9842     		cmp	r0, r3
+ 1644 0018 18D0     		beq	.L172
+ 1645              		.loc 1 820 0 discriminator 5
+ 1646 001a 03F5FE23 		add	r3, r3, #520192
+ 1647 001e 9842     		cmp	r0, r3
+ 1648 0020 14BF     		ite	ne
+ 1649 0022 4FF0FF33 		movne	r3, #-1
+ 1650 0026 0823     		moveq	r3, #8
+ 1651              	.L164:
+ 1652              	.LVL209:
+ 821:../drivers/fsl_ftm.c **** 
+ 822:../drivers/fsl_ftm.c ****     /* The CHANNEL_COUNT macro returns -1 if it cannot match the FTM instance */
+ 823:../drivers/fsl_ftm.c ****     assert(chnlCount != -1);
+ 824:../drivers/fsl_ftm.c **** 
+ 825:../drivers/fsl_ftm.c ****     /* Check if timer overflow interrupt is enabled */
+ 826:../drivers/fsl_ftm.c ****     if (base->SC & FTM_SC_TOIE_MASK)
+ 1653              		.loc 1 826 0 is_stmt 1 discriminator 16
+ 1654 0028 1168     		ldr	r1, [r2]
+ 827:../drivers/fsl_ftm.c ****     {
+ 828:../drivers/fsl_ftm.c ****         enabledInterrupts |= kFTM_TimeOverflowInterruptEnable;
+ 1655              		.loc 1 828 0 discriminator 16
+ 1656 002a 11F0400F 		tst	r1, #64
+ 829:../drivers/fsl_ftm.c ****     }
+ 830:../drivers/fsl_ftm.c ****     /* Check if fault interrupt is enabled */
+ 831:../drivers/fsl_ftm.c ****     if (base->MODE & FTM_MODE_FAULTIE_MASK)
+ 1657              		.loc 1 831 0 discriminator 16
+ 1658 002e 516D     		ldr	r1, [r2, #84]
+ 828:../drivers/fsl_ftm.c ****     }
+ 1659              		.loc 1 828 0 discriminator 16
+ 1660 0030 0CBF     		ite	eq
+ 1661 0032 0020     		moveq	r0, #0
+ 1662              	.LVL210:
+ 1663 0034 4FF40070 		movne	r0, #512
+ 1664              	.LVL211:
+ 1665              		.loc 1 831 0 discriminator 16
+ 1666 0038 0D06     		lsls	r5, r1, #24
+ 832:../drivers/fsl_ftm.c ****     {
+ 833:../drivers/fsl_ftm.c ****         enabledInterrupts |= kFTM_FaultInterruptEnable;
+ 1667              		.loc 1 833 0 discriminator 16
+ 1668 003a 48BF     		it	mi
+ 1669 003c 40F48070 		orrmi	r0, r0, #256
+ 1670              	.LVL212:
+ 834:../drivers/fsl_ftm.c ****     }
+ 835:../drivers/fsl_ftm.c **** 
+ 836:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT) && (FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT)
+ 837:../drivers/fsl_ftm.c ****     /* Check if the reload interrupt is enabled */
+ 838:../drivers/fsl_ftm.c ****     if (base->SC & FTM_SC_RIE_MASK)
+ 839:../drivers/fsl_ftm.c ****     {
+ 840:../drivers/fsl_ftm.c ****         enabledInterrupts |= kFTM_ReloadInterruptEnable;
+ 841:../drivers/fsl_ftm.c ****     }
+ 842:../drivers/fsl_ftm.c **** #endif
+ 843:../drivers/fsl_ftm.c **** 
+ 844:../drivers/fsl_ftm.c ****     /* Check if the channel interrupts are enabled */
+ 845:../drivers/fsl_ftm.c ****     while (chnlCount > 0)
+ 846:../drivers/fsl_ftm.c ****     {
+ 847:../drivers/fsl_ftm.c ****         chnlCount--;
+ 848:../drivers/fsl_ftm.c ****         if (base->CONTROLS[chnlCount].CnSC & FTM_CnSC_CHIE_MASK)
+ 849:../drivers/fsl_ftm.c ****         {
+ 850:../drivers/fsl_ftm.c ****             enabledInterrupts |= (1U << chnlCount);
+ 1671              		.loc 1 850 0 discriminator 16
+ 1672 0040 0125     		movs	r5, #1
+ 1673              	.L167:
+ 845:../drivers/fsl_ftm.c ****     {
+ 1674              		.loc 1 845 0
+ 1675 0042 002B     		cmp	r3, #0
+ 1676 0044 04DC     		bgt	.L169
+ 851:../drivers/fsl_ftm.c ****         }
+ 852:../drivers/fsl_ftm.c ****     }
+ 853:../drivers/fsl_ftm.c **** 
+ 854:../drivers/fsl_ftm.c ****     return enabledInterrupts;
+ 855:../drivers/fsl_ftm.c **** }
+ 1677              		.loc 1 855 0
+ 1678 0046 30BD     		pop	{r4, r5, pc}
+ 1679              	.LVL213:
+ 1680              	.L170:
+ 820:../drivers/fsl_ftm.c **** 
+ 1681              		.loc 1 820 0
+ 1682 0048 0823     		movs	r3, #8
+ 1683 004a EDE7     		b	.L164
+ 1684              	.L172:
+ 1685 004c 0223     		movs	r3, #2
+ 1686 004e EBE7     		b	.L164
+ 1687              	.LVL214:
+ 1688              	.L169:
+ 1689 0050 013B     		subs	r3, r3, #1
+ 1690              	.LVL215:
+ 1691 0052 D9B2     		uxtb	r1, r3
+ 848:../drivers/fsl_ftm.c ****         {
+ 1692              		.loc 1 848 0
+ 1693 0054 4C1C     		adds	r4, r1, #1
+ 1694 0056 02EBC404 		add	r4, r2, r4, lsl #3
+ 1695 005a 4BB2     		sxtb	r3, r1
+ 1696              	.LVL216:
+ 1697 005c 6468     		ldr	r4, [r4, #4]
+ 1698 005e 6406     		lsls	r4, r4, #25
+ 850:../drivers/fsl_ftm.c ****         }
+ 1699              		.loc 1 850 0
+ 1700 0060 44BF     		itt	mi
+ 1701 0062 05FA01F1 		lslmi	r1, r5, r1
+ 1702 0066 0843     		orrmi	r0, r0, r1
+ 1703              	.LVL217:
+ 1704 0068 EBE7     		b	.L167
+ 1705              	.L182:
+ 1706 006a 00BF     		.align	2
+ 1707              	.L181:
+ 1708 006c 00800340 		.word	1073971200
+ 1709              		.cfi_endproc
+ 1710              	.LFE181:
+ 1712              		.section	.text.FTM_GetStatusFlags,"ax",%progbits
+ 1713              		.align	1
+ 1714              		.global	FTM_GetStatusFlags
+ 1715              		.syntax unified
+ 1716              		.thumb
+ 1717              		.thumb_func
+ 1718              		.fpu fpv4-sp-d16
+ 1720              	FTM_GetStatusFlags:
+ 1721              	.LFB182:
+ 856:../drivers/fsl_ftm.c **** 
+ 857:../drivers/fsl_ftm.c **** uint32_t FTM_GetStatusFlags(FTM_Type *base)
+ 858:../drivers/fsl_ftm.c **** {
+ 1722              		.loc 1 858 0
+ 1723              		.cfi_startproc
+ 1724              		@ args = 0, pretend = 0, frame = 0
+ 1725              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1726              		@ link register save eliminated.
+ 1727              	.LVL218:
+ 859:../drivers/fsl_ftm.c ****     uint32_t statusFlags = 0;
+ 860:../drivers/fsl_ftm.c **** 
+ 861:../drivers/fsl_ftm.c ****     /* Check the timer flag */
+ 862:../drivers/fsl_ftm.c ****     if (base->SC & FTM_SC_TOF_MASK)
+ 1728              		.loc 1 862 0
+ 1729 0000 0368     		ldr	r3, [r0]
+ 863:../drivers/fsl_ftm.c ****     {
+ 864:../drivers/fsl_ftm.c ****         statusFlags |= kFTM_TimeOverflowFlag;
+ 865:../drivers/fsl_ftm.c ****     }
+ 866:../drivers/fsl_ftm.c ****     /* Check fault flag */
+ 867:../drivers/fsl_ftm.c ****     if (base->FMS & FTM_FMS_FAULTF_MASK)
+ 1730              		.loc 1 867 0
+ 1731 0002 426F     		ldr	r2, [r0, #116]
+ 864:../drivers/fsl_ftm.c ****     }
+ 1732              		.loc 1 864 0
+ 1733 0004 13F0800F 		tst	r3, #128
+ 1734 0008 0CBF     		ite	eq
+ 1735 000a 0023     		moveq	r3, #0
+ 1736 000c 4FF40073 		movne	r3, #512
+ 1737              	.LVL219:
+ 1738              		.loc 1 867 0
+ 1739 0010 1106     		lsls	r1, r2, #24
+ 868:../drivers/fsl_ftm.c ****     {
+ 869:../drivers/fsl_ftm.c ****         statusFlags |= kFTM_FaultFlag;
+ 870:../drivers/fsl_ftm.c ****     }
+ 871:../drivers/fsl_ftm.c ****     /* Check channel trigger flag */
+ 872:../drivers/fsl_ftm.c ****     if (base->EXTTRIG & FTM_EXTTRIG_TRIGF_MASK)
+ 1740              		.loc 1 872 0
+ 1741 0012 C26E     		ldr	r2, [r0, #108]
+ 873:../drivers/fsl_ftm.c ****     {
+ 874:../drivers/fsl_ftm.c ****         statusFlags |= kFTM_ChnlTriggerFlag;
+ 875:../drivers/fsl_ftm.c ****     }
+ 876:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT) && (FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT)
+ 877:../drivers/fsl_ftm.c ****     /* Check reload flag */
+ 878:../drivers/fsl_ftm.c ****     if (base->SC & FTM_SC_RF_MASK)
+ 879:../drivers/fsl_ftm.c ****     {
+ 880:../drivers/fsl_ftm.c ****         statusFlags |= kFTM_ReloadFlag;
+ 881:../drivers/fsl_ftm.c ****     }
+ 882:../drivers/fsl_ftm.c **** #endif
+ 883:../drivers/fsl_ftm.c **** 
+ 884:../drivers/fsl_ftm.c ****     /* Lower 8 bits contain the channel status flags */
+ 885:../drivers/fsl_ftm.c ****     statusFlags |= (base->STATUS & 0xFFU);
+ 1742              		.loc 1 885 0
+ 1743 0014 006D     		ldr	r0, [r0, #80]
+ 1744              	.LVL220:
+ 869:../drivers/fsl_ftm.c ****     }
+ 1745              		.loc 1 869 0
+ 1746 0016 48BF     		it	mi
+ 1747 0018 43F48073 		orrmi	r3, r3, #256
+ 1748              	.LVL221:
+ 872:../drivers/fsl_ftm.c ****     {
+ 1749              		.loc 1 872 0
+ 1750 001c 1206     		lsls	r2, r2, #24
+ 874:../drivers/fsl_ftm.c ****     }
+ 1751              		.loc 1 874 0
+ 1752 001e 48BF     		it	mi
+ 1753 0020 43F48063 		orrmi	r3, r3, #1024
+ 1754              	.LVL222:
+ 1755              		.loc 1 885 0
+ 1756 0024 C0B2     		uxtb	r0, r0
+ 1757              	.LVL223:
+ 886:../drivers/fsl_ftm.c **** 
+ 887:../drivers/fsl_ftm.c ****     return statusFlags;
+ 888:../drivers/fsl_ftm.c **** }
+ 1758              		.loc 1 888 0
+ 1759 0026 1843     		orrs	r0, r0, r3
+ 1760 0028 7047     		bx	lr
+ 1761              		.cfi_endproc
+ 1762              	.LFE182:
+ 1764              		.section	.text.FTM_ClearStatusFlags,"ax",%progbits
+ 1765              		.align	1
+ 1766              		.global	FTM_ClearStatusFlags
+ 1767              		.syntax unified
+ 1768              		.thumb
+ 1769              		.thumb_func
+ 1770              		.fpu fpv4-sp-d16
+ 1772              	FTM_ClearStatusFlags:
+ 1773              	.LFB183:
+ 889:../drivers/fsl_ftm.c **** 
+ 890:../drivers/fsl_ftm.c **** void FTM_ClearStatusFlags(FTM_Type *base, uint32_t mask)
+ 891:../drivers/fsl_ftm.c **** {
+ 1774              		.loc 1 891 0
+ 1775              		.cfi_startproc
+ 1776              		@ args = 0, pretend = 0, frame = 0
+ 1777              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1778              		@ link register save eliminated.
+ 1779              	.LVL224:
+ 892:../drivers/fsl_ftm.c ****     /* Clear the timer overflow flag by writing a 0 to the bit while it is set */
+ 893:../drivers/fsl_ftm.c ****     if (mask & kFTM_TimeOverflowFlag)
+ 1780              		.loc 1 893 0
+ 1781 0000 8B05     		lsls	r3, r1, #22
+ 894:../drivers/fsl_ftm.c ****     {
+ 895:../drivers/fsl_ftm.c ****         base->SC &= ~FTM_SC_TOF_MASK;
+ 1782              		.loc 1 895 0
+ 1783 0002 42BF     		ittt	mi
+ 1784 0004 0368     		ldrmi	r3, [r0]
+ 1785 0006 23F08003 		bicmi	r3, r3, #128
+ 1786 000a 0360     		strmi	r3, [r0]
+ 896:../drivers/fsl_ftm.c ****     }
+ 897:../drivers/fsl_ftm.c ****     /* Clear fault flag by writing a 0 to the bit while it is set */
+ 898:../drivers/fsl_ftm.c ****     if (mask & kFTM_FaultFlag)
+ 1787              		.loc 1 898 0
+ 1788 000c CA05     		lsls	r2, r1, #23
+ 899:../drivers/fsl_ftm.c ****     {
+ 900:../drivers/fsl_ftm.c ****         base->FMS &= ~FTM_FMS_FAULTF_MASK;
+ 1789              		.loc 1 900 0
+ 1790 000e 42BF     		ittt	mi
+ 1791 0010 436F     		ldrmi	r3, [r0, #116]
+ 1792 0012 23F08003 		bicmi	r3, r3, #128
+ 1793 0016 4367     		strmi	r3, [r0, #116]
+ 901:../drivers/fsl_ftm.c ****     }
+ 902:../drivers/fsl_ftm.c ****     /* Clear channel trigger flag */
+ 903:../drivers/fsl_ftm.c ****     if (mask & kFTM_ChnlTriggerFlag)
+ 1794              		.loc 1 903 0
+ 1795 0018 4B05     		lsls	r3, r1, #21
+ 904:../drivers/fsl_ftm.c ****     {
+ 905:../drivers/fsl_ftm.c ****         base->EXTTRIG &= ~FTM_EXTTRIG_TRIGF_MASK;
+ 1796              		.loc 1 905 0
+ 1797 001a 42BF     		ittt	mi
+ 1798 001c C36E     		ldrmi	r3, [r0, #108]
+ 1799 001e 23F08003 		bicmi	r3, r3, #128
+ 1800 0022 C366     		strmi	r3, [r0, #108]
+ 906:../drivers/fsl_ftm.c ****     }
+ 907:../drivers/fsl_ftm.c **** 
+ 908:../drivers/fsl_ftm.c **** #if defined(FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT) && (FSL_FEATURE_FTM_HAS_RELOAD_INTERRUPT)
+ 909:../drivers/fsl_ftm.c ****     /* Check reload flag by writing a 0 to the bit while it is set */
+ 910:../drivers/fsl_ftm.c ****     if (mask & kFTM_ReloadFlag)
+ 911:../drivers/fsl_ftm.c ****     {
+ 912:../drivers/fsl_ftm.c ****         base->SC &= ~FTM_SC_RF_MASK;
+ 913:../drivers/fsl_ftm.c ****     }
+ 914:../drivers/fsl_ftm.c **** #endif
+ 915:../drivers/fsl_ftm.c ****     /* Clear the channel status flags by writing a 0 to the bit */
+ 916:../drivers/fsl_ftm.c ****     base->STATUS &= ~(mask & 0xFFU);
+ 1801              		.loc 1 916 0
+ 1802 0024 036D     		ldr	r3, [r0, #80]
+ 1803 0026 C9B2     		uxtb	r1, r1
+ 1804              	.LVL225:
+ 1805 0028 23EA0101 		bic	r1, r3, r1
+ 1806 002c 0165     		str	r1, [r0, #80]
+ 917:../drivers/fsl_ftm.c **** }
+ 1807              		.loc 1 917 0
+ 1808 002e 7047     		bx	lr
+ 1809              		.cfi_endproc
+ 1810              	.LFE183:
+ 1812              		.section	.rodata.s_ftmClocks,"a",%progbits
+ 1813              		.align	2
+ 1814              		.set	.LANCHOR0,. + 0
+ 1817              	s_ftmClocks:
+ 1818 0000 18003C10 		.word	272367640
+ 1819 0004 19003C10 		.word	272367641
+ 1820 0008 1A003C10 		.word	272367642
+ 1821 000c 19003010 		.word	271581209
+ 1822              		.text
+ 1823              	.Letext0:
+ 1824              		.file 3 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h"
+ 1825              		.file 4 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1826              		.file 5 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1827              		.file 6 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1828              		.file 7 "/opt/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1829              		.file 8 "/opt/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1830              		.file 9 "../CMSIS/core_cm4.h"
+ 1831              		.file 10 "../CMSIS/system_MK64F12.h"
+ 1832              		.file 11 "../CMSIS/MK64F12.h"
+ 1833              		.file 12 "../drivers/fsl_common.h"
+ 1834              		.file 13 "../drivers/fsl_ftm.h"

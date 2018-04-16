@@ -1,7 +1,9 @@
 var express = require('express');
 var ObjectId = require('mongoose').Types.ObjectId;
 var router = express.Router();
+var admin = require("firebase-admin");
 var config = require('../config');
+var geodist = require('geodist');
 
 // IMPORTANT: LOGS ARE ADDED AT THE BEGINNING OF THE ARRAY
 
@@ -51,7 +53,7 @@ router.post('/devices/single', function (req, res) {
     });
     device.save()
         .then(function () {
-            res.status(201).send('device added');
+            res.status(201).json('device added');
         })
         .catch(function (err) {
             res.status(500).send('could not add device')
@@ -96,15 +98,81 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
     log.initialLog = false;
     Device.update(
         {deviceKey: deviceKey},
-        {$push: {logs: { $each: [log], $position: 0}}, isAlive: log.isAlive}
-    )
+        {$push: {logs: { $each: [log], $position: 0}}, isAlive: log.isAlive})
         .then(function (status) {
-            res.status(200).send('log added');
+            res.status(200).json('log added');
+            Device.findOne({deviceKey: deviceKey})
+                .then(function (device) {
+                    updateDeviceAverage(device.logs, device.average, device.deviceKey);
+                    if (!log.isAlive || log.battery < 20) {
+                        getDeviceTokens(device.userIDs)
+                            .then(function (deviceTokens) {
+                                if (!log.isAlive) {
+                                    var baseMessage = {
+                                        notification: {
+                                            title: device.name + ' (' + device.deviceKey + ') has died.',
+                                            body: 'Check the app to find the location.'
+                                        }
+                                    };
+                                } else {
+                                    var baseMessage = {
+                                        notification: {
+                                            title: device.name + ' (' + device.deviceKey + ') battery is low.',
+                                            body: 'Battery at ' + log.battery + '%. Please check the device to replace the battery.'
+                                        }
+                                    };
+                                }
+                                for (var i=0; i< deviceTokens.length; i++) {
+                                    var message = baseMessage;
+                                    message.token = deviceTokens[i];
+                                    sendNotification(message);
+                                }
+                            });
+                    }
+                })
         })
         .catch(function (err) {
             res.status(500).send('could not add log to device');
         })
 });
+
+function updateDeviceAverage(logs, previousAverage, deviceKey) {
+    var logAmount = logs.length;
+    if (logAmount > 2) {
+        var dist = geodist({lat: logs[0].lat, lon: logs[0].long}, {lat: logs[1].lat, lon: logs[1].long});
+        var avg = getTotalAverage(previousAverage, logAmount - 2, dist);
+        Device.update({deviceKey: deviceKey}, {average: avg});
+    }
+}
+
+function getTotalAverage(previousAverage, currentOfAverage, newDistance) {
+    return (previousAverage * (currentOfAverage - 1) + newDistance) / currentOfAverage;
+}
+
+function getDeviceTokens(users) {
+    return new Promise(function (resolve, reject) {
+        User.find({uid: {$in: users}}).select('deviceToken')
+            .then(function (tokens) {
+                var returnArr = [];
+                for (var i=0; i<tokens.length; i++) {
+                    if (tokens[i] !== '' && tokens[i]) {
+                        returnArr.push(tokens[i].deviceToken);
+                    }
+                }
+                resolve(returnArr);
+            })
+    });
+}
+
+function sendNotification(message) {
+    admin.messaging().send(message)
+        .then(function (response) {
+            console.log('notification sent');
+        })
+        .catch(function (reason) {
+            console.log(reason, 'error');
+        })
+}
 
 router.get('/devices/:deviceKey/details', function (req, res) {
     const deviceKey = req.params.deviceKey;
@@ -190,7 +258,7 @@ router.post('/users', function (req, res) {
     });
     newUser.save()
         .then(function (value) {
-            res.status(201).send('user added');
+            res.status(201).json('user added');
         })
         .catch(function (reason) {
             res.status(500).json(reason);
@@ -215,24 +283,37 @@ router.get('/users/:userID', function (req, res) {
 router.put('/users/:userID/devices', function (req, res) {
     const userID = req.params.userID;
     const deviceKey = req.body.deviceKey;
-    const newLog = {
-        battery: 100,
-        isAlive: true,
-        initialLog: true
-    }
-    Device.update(
-        {deviceKey: deviceKey},
-        {$push: {userIDs: userID, logs: newLog}}
-    )
-        .then(function (value) {
-            if (value.n <= 0) {
-                res.status(404).send('device not found')
-            } else {
-                res.status(200).json('device registered');
+    Device.findOne({deviceKey: deviceKey})
+        .then(function (device) {
+            if (device.logs.length <= 0) {
+                const newLog = {
+                    battery: 100,
+                    isAlive: true,
+                    initialLog: true
+                };
+                Device.update(
+                    {deviceKey: deviceKey},
+                    {$push: {userIDs: userID, logs: newLog}}
+                )
+                    .then(function (value) {
+                        res.status(200).json('device registered');
+                    })
+                    .catch(function (reason) {
+                        res.status(500).send('could not register device');
+                    });
             }
-        })
-        .catch(function (reason) {
-            res.status(500).send('could not register device');
+            else {
+                Device.update(
+                    {deviceKey: deviceKey},
+                    {$push: {userIDs: userID}}
+                )
+                    .then(function (value) {
+                        res.status(200).json('device registered');
+                    })
+                    .catch(function (reason) {
+                        res.status(500).send('could not register device');
+                    });
+            }
         });
 });
 
@@ -248,7 +329,40 @@ router.get('/users/:userID/devices', function (req, res) {
         })
 });
 
+router.delete('/users/:userID/devices', function (req, res) {
+    const userID = req.params.userID;
+    const deviceKey = req.query.deviceKey;
+    Device.update( {deviceKey: deviceKey}, {$pullAll: {userIDs: [userID]}})
+        .then(function (value) {
+            res.status(200).json('deleted');
+        })
+        .catch(function (reason) {
+            res.status(500).send('could not delete');
+        })
+});
 
+router.put('/users/:userID/devicetoken', function (req, res) {
+    const userID = req.params.userID;
+    const deviceToken = req.body.deviceToken;
+    User.update( {deviceToken: deviceToken})
+        .then(function (value) {
+            res.status(200).json('Token saved');
+        })
+        .catch(function (reason) {
+            res.status(500).send('could not save token');
+        })
+});
+
+router.get('/users/:userID/devicetoken', function (req, res) {
+    const userID = req.params.userID;
+    User.findOne({uid: userID})
+        .then(function (user) {
+            res.status(200).json(user.deviceToken);
+        })
+        .catch(function (reason) {
+            res.status(500).json('could not find user');
+        })
+});
 
 function selectDeviceInfo(devices, keys) {
     const returnDevices = [];

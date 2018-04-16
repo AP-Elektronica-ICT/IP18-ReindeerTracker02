@@ -7,6 +7,7 @@ import { ProfilePage } from '../profile/profile';
 import { LogInPage } from '../log-in/log-in';
 import {DeviceProvider} from "../../providers/device/device";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner";
+import {AuthProvider} from "../../providers/auth/auth";
 
 @Component({
   selector: 'page-home',
@@ -16,7 +17,15 @@ export class HomePage {
   devices: any = null;
   message = '';
 
-  constructor(public navCtrl: NavController, private deviceProvider: DeviceProvider, private alert: AlertController, public barcodeScanner: BarcodeScanner) {
+  constructor(public navCtrl: NavController, private deviceProvider: DeviceProvider, private alert: AlertController, public barcodeScanner: BarcodeScanner, private auth: AuthProvider) {
+
+  }
+
+  ionViewDidLoad() {
+
+  }
+
+  ionViewWillEnter() {
     this.getDevices();
   }
 
@@ -125,7 +134,9 @@ export class HomePage {
   }
 
   loadLogOut(){
-    this.navCtrl.push(LogInPage);
+    this.navCtrl.setRoot(LogInPage);
+    this.auth.signOut();
+    this.navCtrl.popToRoot();
   }
 
 }

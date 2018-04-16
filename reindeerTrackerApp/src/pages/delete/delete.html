@@ -33,7 +33,7 @@
       <ion-label>
         <div class="row">
           <div class="col col-50">
-            <ion-checkbox color="dark" checked="false"></ion-checkbox>
+            <ion-checkbox color="dark" checked="false" (ionChange)="toggleDevice(device.deviceKey)"></ion-checkbox>
           </div>
           <div class="col col-50">
             <img class="daimage" src="assets/imgs/icons8-heart-outline-50.png">
@@ -44,12 +44,12 @@
         </div>
       </ion-label>
     </ion-item>
-    
+
     <ion-fab bottom right #fab>
-      <button ion-fab color="light"><ion-icon name="trash"></ion-icon></button>
+      <button ion-fab color="light" (click)="deleteSelectedDevices()"><ion-icon name="trash"></ion-icon></button>
     </ion-fab>
 
-    
-        
+
+
   </ion-list>
 </ion-content>
