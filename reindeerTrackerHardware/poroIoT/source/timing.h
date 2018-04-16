@@ -10,8 +10,8 @@
 
 #include <stdint.h>
 
-#define RTC_REPORT_INTERVAL 300
-
+#define RTC_REPORT_INTERVAL 3599
+#define LPTMR_TIMEOUT 8000
 
 uint32_t millis();
 
@@ -23,6 +23,8 @@ uint32_t rtcGetSeconds();
  * Small delay_ms function
  */
 void delay_ms(uint32_t del);
+
+void initTimer();
 
 
 #endif /* SOURCE_TIMING_H_ */

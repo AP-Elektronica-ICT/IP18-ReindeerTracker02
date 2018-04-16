@@ -29,6 +29,7 @@ import { AuthProvider } from '../providers/auth/auth';
 import {AngularFireAuthModule} from "angularfire2/auth";
 import {FcmProvider} from "../providers/fcm/fcm";
 import {Firebase} from "@ionic-native/firebase";
+import {LaunchNavigator} from "@ionic-native/launch-navigator";
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAud_cLzms8_U55nCkSKNmnRUhXei2pLQs",
@@ -86,7 +87,8 @@ export const firebaseConfig = {
     Camera,
     AuthProvider,
     FcmProvider,
-    Firebase
+    Firebase,
+    LaunchNavigator
   ]
 })
 export class AppModule {}

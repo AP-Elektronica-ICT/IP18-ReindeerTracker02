@@ -26,6 +26,8 @@ extern char* AT_NSOST;
 extern char* AT_NSORF;
 extern char* AT_CMEE;
 
+#define RESPONSE_TIMEOUT_NORMAL_VALUE 2000
+
 uint8_t AT_send(char* AT_cmd, char* AT_parameter, char *AT_exptAnswer);
 
 

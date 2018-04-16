@@ -11,6 +11,7 @@
 #include "nbiot_func.h"
 #include "at_func.h"
 #include "timing.h"
+#include "fsl_lpuart.h"
 
 extern volatile uint8_t UART3_strReady;
 extern uint8_t PCprint(char *data);
@@ -31,6 +32,27 @@ const char* client_id = "reindeertracker";
 const char* topic = "reindeer";
 const char* username = "reindeer";
 const char* passwd = "reindeer1234";
+
+
+/*
+ * Send data to NBiot with LPUART0
+ * String to be sent is pointed by *data
+ *
+ */
+
+void NB_send(char *data)
+{
+	char c = *data++; //assign c a character from the string and post-increment string pointer
+	while (c)
+	{ //loop until c is zero which means string has ended and no more chars has to be sent
+
+		while (!((LPUART0->STAT) & kLPUART_TxDataRegEmptyFlag))
+		{
+		} //wait until LPUART0 Transmission Complete flag rises, so we can send new char
+		LPUART0->DATA = c; //write new character to transmit buffer
+		c = *data++; //assign next character to c and post-increment string pointer
+	}
+}
 
 uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage)
 {
@@ -219,24 +241,31 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 
 	uint8_t reSend_msg = 0;
 
-	while(NB_setPin() == 1) //if setPin returns error then reboot and try again
+	//delay_ms(500);
+	NB_reboot();
+	/*while(NB_setPin() == 1) //if setPin returns error then reboot and try again
 	{
 		NB_reboot();
-	}
+	}*/
 
-	delay_ms(250);  //viivettä pitää olla
-	NB_define_pdp();
+	//delay_ms(2000);  //viivettä pitää olla
+	//NB_define_pdp();
 
 	do
 	{
-		NB_active_pdp();
-		NB_network_status();
+		//NB_active_pdp();
+
+
+		if(NB_network_status() != 0)
+			{
+			break;
+			}
 		/*if(reSend_msg == 1){
 		 NB_network_status();
 		 //delay_ms(1000);
 		 }*/
-
-		NB_show_ip();
+		delay_ms(3000);
+		//NB_show_ip();
 		NB_create_socket();
 		reSend_msg = NB_send_msg(mqttMessage, msgLen);
 
@@ -320,11 +349,13 @@ void NB_cops_readRegister()
 		PCprint("error\r\n");
 	}
 }
-void NB_network_status()
+uint8_t NB_network_status()
 {
 	res = 2;
-	while (res != 0)
+	uint8_t tries = 0;
+	while (( res != 0 ) && (tries < 4))
 	{
+		tries++;
 		res = AT_send(AT_CEREG, "", "+CEREG: 0,1");
 		if (res == 0)
 		{
@@ -335,6 +366,8 @@ void NB_network_status()
 			PCprint("error\r\n");
 		}
 	}
+
+	return res;
 }
 void NB_define_pdp()
 {
@@ -399,7 +432,7 @@ uint8_t NB_send_msg(char *mqttMessage, uint8_t msgLen)
 
 	if (res == 0)
 	{
-		PCprint("sent");
+		PCprint("sent\r\n");
 	}
 	else if (res == 1)
 	{
