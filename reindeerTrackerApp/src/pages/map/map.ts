@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { LaunchNavigator} from '@ionic-native/launch-navigator'
 
 /**
  * Generated class for the MapPage page.
@@ -21,7 +22,7 @@ export class MapPage {
 
   map: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private launchNavigator: LaunchNavigator) {
   }
 
   ionViewDidLoad() {
@@ -50,6 +51,10 @@ export class MapPage {
       position,
       map
     })
+  }
+
+  navMe(address){
+    this.launchNavigator.navigate(address);
   }
 
 }
