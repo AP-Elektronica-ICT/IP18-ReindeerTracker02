@@ -53,12 +53,12 @@ uint8_t checkPcInputAndProcess(char* PC_recBuf)
 		else if (strstr(PC_recBuf, "gpsinfo=1") != NULL)
 		{
 			streamGps = 1;
-			GPIO_ClearPinsOutput(GPIOA, 1 << 19u);
+			GPIO_ClearPinsOutput(GPIOC, 1 << 6u);
 		}
 		else if (strstr(PC_recBuf, "gpsinfo=0") != NULL)
 		{
 			streamGps = 0;
-			GPIO_SetPinsOutput(GPIOA, 1 << 19u);
+			GPIO_SetPinsOutput(GPIOC, 1 << 6u);
 		}
 		else if (strstr(PC_recBuf, "rfoff") != NULL)
 		{

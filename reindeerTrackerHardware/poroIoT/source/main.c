@@ -34,7 +34,7 @@
 
 #define TEMP_CHANNEL 1
 #define VOLTAGE_MEAS_CHANNEL 2
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
@@ -234,14 +234,16 @@ int main(void)
 	struct reindeerData_t reindeerData; //create struct for our reindeer data that will be sent
 	char mqttMessage[450];
 
-	GPIO_PinInit(GPIOA, 19u, &LED_configOutput);
-
 	/*
 	 * set boost regulator enable pin as output. This pin will control the power to RF modules
 	 */
 	GPIO_PinInit(GPIOA, 1u, &LED_configOutput);
 
+	GPIO_PinInit(GPIOC, 6u, &LED_configOutput); //GNSS enable pin
+
 	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power off RF modules
+
+	GPIO_SetPinsOutput(GPIOC, 1 << 6u); //Power off RF modules
 
 	blinkLed(2000);
 	PCprint("Reindeer IoT is reset \r\n");
