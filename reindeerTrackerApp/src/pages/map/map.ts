@@ -28,7 +28,7 @@ export class MapPage {
   ionViewDidLoad() {
     this.showMap();
 
-    this.addMarker(new google.maps.LatLng(51.058518, 5.271671), this.map);
+    this.addRadius(new google.maps.LatLng(51.058518, 5.271671), this.map);
   }
 
   showMap(){
@@ -38,7 +38,7 @@ export class MapPage {
     //map options
     const options = {
       center: location,
-      zoom : 17,
+      zoom : 13,
       streetViewControl: false,
       mapTypeId: 'terrain'
     }
@@ -46,11 +46,17 @@ export class MapPage {
     this.map = new google.maps.Map(this.mapRef.nativeElement, options);
   }
 
-  addMarker(position, map){
-    return new google.maps.Marker({
-      position,
-      map
-    })
+  addRadius(position, map){
+    return new google.maps.Circle({
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+      map: map,
+      center: position,
+      radius: 1000
+    });
   }
 
   navMe(address){
