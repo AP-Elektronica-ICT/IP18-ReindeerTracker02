@@ -136,6 +136,18 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
         })
 });
 
+router.get('/test', function (req, res) {
+    var baseMessage = {
+        notification: {
+            title: 'battery is low.',
+            body: 'Battery at ' + 50 + '%. Please check the device to replace the battery.'
+        },
+        token: "d0SWH8LIv80:APA91bGa-PndencaYzhvJd1gYIKIcpUsueSpCRFr82dGN8ILdSr_V_Vv_eoVZWOEeaVofStYIuvfnSuo04gccg7TAID6-KEblcMFWuQI-8j8B9sqjoc7RDAb6thubJHwiR46_ACHe7jn"
+    };
+    sendNotification(baseMessage);
+    res.json('ok');
+})
+
 function updateDeviceAverage(logs, previousAverage, deviceKey) {
     var logAmount = logs.length;
     if (logAmount > 2) {
