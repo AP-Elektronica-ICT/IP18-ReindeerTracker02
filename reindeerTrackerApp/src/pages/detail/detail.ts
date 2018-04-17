@@ -37,7 +37,7 @@ export class DetailPage {
   }
 
   goToMap(){
-    this.navCtrl.push(MapPage);
+    this.navCtrl.push(MapPage, {lat: this.device.lastLog.lat, long: this.device.lastLog.long});
   }
 
   goToEdit(){
