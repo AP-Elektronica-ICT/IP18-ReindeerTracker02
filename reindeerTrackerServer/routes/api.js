@@ -301,6 +301,13 @@ router.get('/users/:userID', function (req, res) {
 
 router.put('/users/:userID', function (req, res) {
     const userID = req.params.userID;
+    User.update({uid: userID}, {firstName: req.body.firstName, lastName: req.body.lastName, phoneNumber: req.body.phoneNumber, location: req.body.location})
+        .then(function () {
+            res.json('user updated');
+        })
+        .catch(function (reason) {
+            res.status(500).json('could not edit user');
+        })
 });
 
 router.put('/users/:userID/devices', function (req, res) {
