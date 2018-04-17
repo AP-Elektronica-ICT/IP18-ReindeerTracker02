@@ -108,6 +108,8 @@ uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage)
 			reindeerData->dead);
 	length += sprintf(jsonMessage + length, "    \"battery\":\"%d\"\r\n\r\n}",
 			reindeerData->batteryLevel);
+	//length += sprintf(jsonMessage + length, "    \"temperature\":\"%d\"\r\n\r\n}",
+	//			reindeerData->temperature);
 
 	PCprint(jsonMessage);
 
@@ -178,6 +180,9 @@ void assemblePacket(reindeerData_t *reindeerData, char *udpMessage)
 			reindeerData->dead);
 	length += sprintf(jsonMessage + length, "    \"battery\":\"%d\"\r\n\r\n}",
 			reindeerData->batteryLevel);
+	//length += sprintf(jsonMessage + length, "    \"temperature\":\"%d\"\r\n\r\n}",
+	//			reindeerData->temperature);
+
 
 	PCprint(jsonMessage);
 

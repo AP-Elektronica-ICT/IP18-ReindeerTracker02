@@ -6,6 +6,11 @@
  */
 #include "fsl_port.h"
 #include "fsl_adc16.h"
+#define TEMP_CHANNEL 1
+#define VOLTAGE_MEAS_CHANNEL 2
+int32_t temp;
+
+
 
 void initAdc() {
 
@@ -74,4 +79,9 @@ unsigned short ADC_read16b(uint8_t channel_select) {
 	return ADC0->R[0];
 
 }
+int32_t tempMeas(){
 
+
+	 temp = (65535 - ADC_read16b(TEMP_CHANNEL)) / 541 -60;
+	 return temp;
+}

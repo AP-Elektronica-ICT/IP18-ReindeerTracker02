@@ -32,13 +32,17 @@
 #include "timing.h"
 #include "dbg_util.h"
 
+
 #define TEMP_CHANNEL 1
 #define VOLTAGE_MEAS_CHANNEL 2
+
 #define DEBUG_MODE 1
 
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
 
+uint8_t temperature;
+char temp_buf[50];
 volatile uint8_t wake = 0;
 volatile uint8_t NB_strReady = 0;
 volatile uint16_t NB_bufPtr = 0;
@@ -56,6 +60,7 @@ uint8_t streamGps = 0;
 
 char parsedLat[15];
 char parsedLon[15];
+
 
 volatile uint32_t moduleResponseTimeout = RESPONSE_TIMEOUT_NORMAL_VALUE; //timeout variable for waiting all data from module
 
@@ -152,22 +157,19 @@ int main(void)
 
 #if DEBUG_MODE == 0
 
-	initAdc();
-	while (1)
-	{
-		/*
-		 int32_t temp = (65535 - ADC_read16b(TEMP_CHANNEL)) / 541 -60;
+/*
+		 int32_t temp = (65535 - ADC_read16b(1)) / 541 - 60;
 		 char buf[50];
 		 sprintf(buf, "Temperature: %ld\r\n", temp);
 		 PCprint(buf);
 		 delay_ms(500);
-		 */
+
 		char buf[50];
 		sprintf(buf, "Voltage: %d\r\n", ADC_read16b(VOLTAGE_MEAS_CHANNEL));
 		PCprint(buf);
 		delay_ms(500);
 		break;
-	}
+		*/
 
 	if (wake == 2) //wakeup by accelerometer
 	{
@@ -201,6 +203,7 @@ int main(void)
 		delay_ms(10);
 		configure_acc();
 		acc_init();
+		initAdc();
 		rtcInit();
 		initTimer();
 
@@ -215,6 +218,12 @@ int main(void)
 	if (wake == 3)
 	{
 		PCprint("rtc alarm heratti perkele\r\nsending weekly report\r\n");
+
+		initAdc();
+		temperature = tempMeas();
+		sprintf(temp_buf, "Temperature: %ld\r\n", temperature);
+		PCprint(temp_buf);
+
 		initTimer();
 		/*
 		 * Enable RTC and LPTMR IRQ to flush possible interrupts
@@ -243,7 +252,9 @@ int main(void)
 
 	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power off RF modules
 
+
 	GPIO_SetPinsOutput(GPIOC, 1 << 6u); //Power off RF modules
+
 
 	blinkLed(2000);
 	PCprint("Reindeer IoT is reset \r\n");
@@ -271,6 +282,7 @@ int main(void)
 	}
 
 	reindeerData.batteryLevel = 73;
+	reindeerData.temperature = temperature;
 	PCprint("entering while loop\r\n");
 
 #if DEBUG_MODE == 1

@@ -36,6 +36,7 @@ typedef struct reindeerData_t {
 	char longitude[12];
 	char dead[6];
 	uint8_t batteryLevel;
+	int8_t temperature;
 } reindeerData_t;
 
 void assemblePacket(reindeerData_t *reindeerData, char *udpMessage);

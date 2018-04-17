@@ -11,7 +11,7 @@
 
 void initAdc();
 unsigned short ADC_read16b(uint8_t channel_select);
-
+int32_t tempMeas();
 
 
 #endif /* SOURCE_ADC_FUNC_H_ */
