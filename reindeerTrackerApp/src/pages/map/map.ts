@@ -21,19 +21,24 @@ export class MapPage {
   @ViewChild('map') mapRef: ElementRef;
 
   map: any;
+  lat: number;
+  long: number;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private launchNavigator: LaunchNavigator) {
   }
 
   ionViewDidLoad() {
+    this.lat = this.navParams.get('lat');
+    this.long = this.navParams.get('long');
+
     this.showMap();
 
-    this.addRadius(new google.maps.LatLng(51.058518, 5.271671), this.map);
+    this.addRadius(new google.maps.LatLng(this.lat, this.long), this.map);
   }
 
   showMap(){
     //location - lat long
-    const location = new google.maps.LatLng(51.058518, 5.271671);
+    const location = new google.maps.LatLng(this.lat, this.long);
 
     //map options
     const options = {
