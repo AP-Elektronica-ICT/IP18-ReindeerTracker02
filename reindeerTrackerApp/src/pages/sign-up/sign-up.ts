@@ -20,6 +20,7 @@ export class SignUpPage {
 
   currentUser: Userdata = null;
   loaded = false;
+  fromProfile = false;
   errorMessage = null;
   locationArr = ["Käsivarsi", "Kemin-Sompio", "Kiiminki", "Kolari", "Kollaja", "Kuivasalmi", "Kuukas", "Kyrö", "Lappi", "Lohijärvi", "Muddusjärvi", "Muonio", "Muotkatunturi", "Näätämö", "Näkkälä", "Näljänkä", "Narkaus", "Niemelä", "Oijärvi", "Oivanki", "Orajärvi", "Oraniemi", "Paatsjoki", "Paistunturi", "Palojärvi", "Pintamo", "Pohjois-Salla", "Poikajärvi", "Posion", "Livo", "Pudasjärven", "Livo", "Pudasjärvi", "Pyhä-Kallio", "Salla", "Sallivaara", "Sattasniemi", "Syväjärvi", "Taivalkoski", "Timisjärvi", "Tolva", "Vanttaus", "Vätsäri"]
 
@@ -28,11 +29,22 @@ export class SignUpPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SignUpPage');
-    console.log(this.navParams.data);
-    if (this.navParams.data) {
+    if (this.navParams.data.firstName) {
       this.currentUser = this.navParams.data;
+      this.fromProfile = true;
+    } else {
+      this.currentUser = {
+        uid: '',
+        email: '',
+        firstName: '',
+        lastName: '',
+        birthdate: null,
+        phoneNumber: '',
+        location: ''
+      }
     }
     this.loaded = true;
+    console.log(this.currentUser);
   }
 
   signUp(form: FormGroup) {
@@ -62,6 +74,12 @@ export class SignUpPage {
       this.errorMessage = 'Please fill in all the required fields';
     }
     console.log(this.errorMessage);
+  }
+
+  saveChanges() {
+    //TODO: send to server
+    this.currentUser.birthdate = new Date(this.currentUser.birthdate);
+    console.log(this.currentUser);
   }
 
 }

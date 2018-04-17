@@ -27,9 +27,9 @@
       </ion-item>
       <ion-item class="textForm">
         <ion-label floating>Last name</ion-label>
-        <ion-input type="text" ngModel name="lastName" required></ion-input>
+        <ion-input type="text" [(ngModel)]="currentUser.lastName" name="lastName" required></ion-input>
       </ion-item>
-      <div *ngIf="!currentUser">
+      <div *ngIf="!fromProfile">
         <ion-item class="textForm">
           <ion-label floating>Email</ion-label>
           <ion-input type="email" ngModel name="email" required></ion-input>
@@ -45,15 +45,15 @@
       </div>
       <ion-item class="textForm" style="padding-left: 0">
         <ion-label floating>Birthday</ion-label>
-        <ion-datetime ngModel name="birthdate" required></ion-datetime>
+        <ion-datetime [(ngModel)]="currentUser.birthdate" name="birthdate" required></ion-datetime>
       </ion-item>
         <ion-item class="textForm">
             <ion-label floating>phone number</ion-label>
-            <ion-input type="tel" ngModel name="phoneNumber" required></ion-input>
+            <ion-input type="tel" [(ngModel)]="currentUser.phoneNumber" name="phoneNumber" required></ion-input>
         </ion-item>
       <ion-item class="textForm">
         <ion-label floating>Location</ion-label>
-        <ion-select ngModel name="location" required>
+        <ion-select [(ngModel)]="currentUser.location" name="location" required>
           <ion-option *ngFor="let location of locationArr" [value]="location">{{location}}</ion-option>
         </ion-select>
       </ion-item>
@@ -61,6 +61,7 @@
     <br>
     <br>
     <br>
-    <button ion-button class="submit-button" (click)="signUp(myForm)">Sign Up</button>
+    <button ion-button class="submit-button" (click)="signUp(myForm)" *ngIf="!fromProfile">Sign Up</button>
+    <button ion-button class="submit-button" (click)="saveChanges()" *ngIf="fromProfile">Save changes</button>
 </ion-list>
 </ion-content>
