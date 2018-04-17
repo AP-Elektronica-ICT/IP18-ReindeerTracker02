@@ -68,4 +68,9 @@ export class AuthProvider {
   resetPassword(email: string): Promise<any> {
     return this.af.auth.sendPasswordResetEmail(email);
   }
+
+  getUserDetails(): Observable<any> {
+    const uid = this.getCurrentUID();
+    return this.http.get(this.api + '/users/' + uid);
+  }
 }

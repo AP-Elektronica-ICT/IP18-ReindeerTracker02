@@ -35,9 +35,9 @@ export class MyApp {
   }
 
   private initializeFCM() {
+    this.fcmProvider.setFirebaseOnRefreshToken();
     this.fcmProvider.getToken();
     this.fcmProvider.listenToNotifications();
-    //this.fcmProvider.getTokenSync();
   }
 }
 
