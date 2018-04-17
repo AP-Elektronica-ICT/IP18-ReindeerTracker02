@@ -30,6 +30,7 @@ import {AngularFireAuthModule} from "angularfire2/auth";
 import {FcmProvider} from "../providers/fcm/fcm";
 import {Firebase} from "@ionic-native/firebase";
 import {LaunchNavigator} from "@ionic-native/launch-navigator";
+import { LoadingProvider } from '../providers/loading/loading';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAud_cLzms8_U55nCkSKNmnRUhXei2pLQs",
@@ -88,7 +89,8 @@ export const firebaseConfig = {
     AuthProvider,
     FcmProvider,
     Firebase,
-    LaunchNavigator
+    LaunchNavigator,
+    LoadingProvider
   ]
 })
 export class AppModule {}

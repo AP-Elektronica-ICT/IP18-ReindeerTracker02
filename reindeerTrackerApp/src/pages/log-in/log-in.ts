@@ -4,6 +4,7 @@ import { HomePage } from '../home/home';
 import { SignUpPage } from '../sign-up/sign-up';
 import {FormGroup} from "@angular/forms";
 import {AuthProvider} from "../../providers/auth/auth";
+import {LoadingProvider} from "../../providers/loading/loading";
 
 /**
  * Generated class for the LogInPage page.
@@ -75,7 +76,7 @@ export class LogInPage {
 
   loginError = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthProvider, public alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthProvider, public alertCtrl: AlertController, private loading: LoadingProvider) {
   }
 
   ionViewDidLoad() {
@@ -92,6 +93,7 @@ export class LogInPage {
     this.auth.loginWithEmailPassword(email, password)
       .then(res => {
         //this.navCtrl.push(HomePage);
+        this.loading.presentDeviceLoading();
         this.navCtrl.setRoot(HomePage);
       })
       .catch(err => {

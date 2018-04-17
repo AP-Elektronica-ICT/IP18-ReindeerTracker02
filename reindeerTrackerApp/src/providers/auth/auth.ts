@@ -73,4 +73,9 @@ export class AuthProvider {
     const uid = this.getCurrentUID();
     return this.http.get(this.api + '/users/' + uid);
   }
+
+  updateUserDetails(userdata: Userdata): Observable<any> {
+    const uid = this.getCurrentUID();
+    return this.http.put(this.api + '/users/' + uid, userdata);
+  }
 }
