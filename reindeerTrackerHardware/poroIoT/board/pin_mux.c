@@ -90,6 +90,8 @@ void BOARD_InitPins(void) {
 	  PORT_SetPinMux(PORTC, 3u, kPORT_MuxAlt3);           /*LPUAR1 RX  */
 	  PORT_SetPinMux(PORTC, 4u, kPORT_MuxAlt3);           /* LPUAR1 TX   */
 
+	  PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);
+
 	  PORT_SetPinMux(PORTA, 4u, kPORT_MuxAsGpio);
 
 	  PORT_SetPinMux(PORTA, 1u, kPORT_MuxAsGpio);	//boostreg enable pin
