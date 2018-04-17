@@ -18,6 +18,8 @@ import {AuthProvider} from "../../providers/auth/auth";
 })
 export class SignUpPage {
 
+  currentUser: Userdata = null;
+  loaded = false;
   errorMessage = null;
   locationArr = ["Käsivarsi", "Kemin-Sompio", "Kiiminki", "Kolari", "Kollaja", "Kuivasalmi", "Kuukas", "Kyrö", "Lappi", "Lohijärvi", "Muddusjärvi", "Muonio", "Muotkatunturi", "Näätämö", "Näkkälä", "Näljänkä", "Narkaus", "Niemelä", "Oijärvi", "Oivanki", "Orajärvi", "Oraniemi", "Paatsjoki", "Paistunturi", "Palojärvi", "Pintamo", "Pohjois-Salla", "Poikajärvi", "Posion", "Livo", "Pudasjärven", "Livo", "Pudasjärvi", "Pyhä-Kallio", "Salla", "Sallivaara", "Sattasniemi", "Syväjärvi", "Taivalkoski", "Timisjärvi", "Tolva", "Vanttaus", "Vätsäri"]
 
@@ -26,6 +28,11 @@ export class SignUpPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SignUpPage');
+    console.log(this.navParams.data);
+    if (this.navParams.data) {
+      this.currentUser = this.navParams.data;
+    }
+    this.loaded = true;
   }
 
   signUp(form: FormGroup) {

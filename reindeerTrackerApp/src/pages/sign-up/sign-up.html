@@ -14,7 +14,7 @@
 
 
 <ion-content padding>
-  <ion-list inset>
+  <ion-list inset *ngIf="loaded">
     <form class="textForm" #myForm='ngForm'>
       <p *ngIf="errorMessage" style="color: red">{{errorMessage}}</p>
         <!--<div id="image">
@@ -23,24 +23,26 @@
           </div>-->
       <ion-item class="textForm">
         <ion-label floating>First name</ion-label>
-        <ion-input type="text" ngModel name="firstName" required></ion-input>
+        <ion-input type="text" [(ngModel)]="currentUser.firstName" name="firstName" required></ion-input>
       </ion-item>
       <ion-item class="textForm">
         <ion-label floating>Last name</ion-label>
         <ion-input type="text" ngModel name="lastName" required></ion-input>
       </ion-item>
+      <div *ngIf="!currentUser">
         <ion-item class="textForm">
-            <ion-label floating>Email</ion-label>
-            <ion-input type="email" ngModel name="email" required></ion-input>
+          <ion-label floating>Email</ion-label>
+          <ion-input type="email" ngModel name="email" required></ion-input>
         </ion-item>
-      <ion-item class="textForm">
-        <ion-label floating>Password</ion-label>
-        <ion-input type="password" ngModel name="password" required></ion-input>
-      </ion-item>
-      <ion-item class="textForm">
-        <ion-label floating>Repaet password</ion-label>
-        <ion-input type="password" ngModel name="passwordrpt" required></ion-input>
-      </ion-item>
+        <ion-item class="textForm">
+          <ion-label floating>Password</ion-label>
+          <ion-input type="password" ngModel name="password" required></ion-input>
+        </ion-item>
+        <ion-item class="textForm">
+          <ion-label floating>Repaet password</ion-label>
+          <ion-input type="password" ngModel name="passwordrpt" required></ion-input>
+        </ion-item>
+      </div>
       <ion-item class="textForm" style="padding-left: 0">
         <ion-label floating>Birthday</ion-label>
         <ion-datetime ngModel name="birthdate" required></ion-datetime>

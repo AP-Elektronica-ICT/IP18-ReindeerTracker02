@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {AuthProvider} from "../../providers/auth/auth";
+import {SignUpPage} from "../sign-up/sign-up";
 
 /**
  * Generated class for the ProfilePage page.
@@ -26,6 +27,10 @@ export class ProfilePage {
         this.currentUser = res;
         console.log(this.currentUser);
       })
+  }
+
+  editProfile() {
+    this.navCtrl.push(SignUpPage, this.currentUser);
   }
 
 }
