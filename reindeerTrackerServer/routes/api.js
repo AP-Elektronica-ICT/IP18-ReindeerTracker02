@@ -299,6 +299,10 @@ router.get('/users/:userID', function (req, res) {
         })
 });
 
+router.put('/users/:userID', function (req, res) {
+    const userID = req.params.userID;
+});
+
 router.put('/users/:userID/devices', function (req, res) {
     const userID = req.params.userID;
     const deviceKey = req.body.deviceKey;

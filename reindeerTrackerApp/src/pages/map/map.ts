@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
 import { LaunchNavigator} from '@ionic-native/launch-navigator'
 
 /**
@@ -24,10 +24,13 @@ export class MapPage {
   lat: number;
   long: number;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private launchNavigator: LaunchNavigator) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private launchNavigator: LaunchNavigator, private platform: Platform) {
+    this.platform.ready().then(() => {
+      this.loadMaps();
+    })
   }
 
-  ionViewDidLoad() {
+  loadMaps() {
     this.lat = this.navParams.get('lat');
     this.long = this.navParams.get('long');
 

@@ -78,7 +78,6 @@ export class SignUpPage {
 
   saveChanges() {
     //TODO: send to server
-    this.currentUser.birthdate = new Date(this.currentUser.birthdate);
     console.log(this.currentUser);
   }
 
