@@ -67,8 +67,9 @@ export class MapPage {
     });
   }
 
-  navMe(address){
-    this.launchNavigator.navigate(address);
+  navMe(){
+    const position = this.lat + ',' + this.long;
+    this.launchNavigator.navigate(position);
   }
 
 }
