@@ -247,7 +247,9 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 	uint8_t reSend_msg = 0;
 
 	//delay_ms(500);
-	NB_reboot();
+	//NB_reboot();
+
+	AT_send("CFUN=1","","OK");
 	/*while(NB_setPin() == 1) //if setPin returns error then reboot and try again
 	{
 		NB_reboot();

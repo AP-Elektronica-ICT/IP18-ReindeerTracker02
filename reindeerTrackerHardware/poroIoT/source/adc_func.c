@@ -6,6 +6,8 @@
  */
 #include "fsl_port.h"
 #include "fsl_adc16.h"
+#include "dbg_util.h"
+#include <stdio.h>
 #define TEMP_CHANNEL 1
 #define VOLTAGE_MEAS_CHANNEL 2
 int32_t temp;
@@ -82,6 +84,20 @@ unsigned short ADC_read16b(uint8_t channel_select) {
 int32_t tempMeas(){
 
 
-	 temp = (65535 - ADC_read16b(TEMP_CHANNEL)) / 541 -60;
+	 temp = ADC_read16b(TEMP_CHANNEL);
+	 temp = 65535 - temp;
+	 temp = temp / 541 -60;
 	 return temp;
+}
+uint32_t batteryMeas(){
+
+	float battery = 0;
+
+	for(uint8_t k=0; k<10; k++)
+	{
+		battery += ADC_read16b(VOLTAGE_MEAS_CHANNEL);
+	}
+	battery /= 10;
+	battery = (battery - 14979) / 50556 * 100;
+	return (uint32_t)battery;
 }
