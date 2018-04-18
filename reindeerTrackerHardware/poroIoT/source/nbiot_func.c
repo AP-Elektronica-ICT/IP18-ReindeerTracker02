@@ -108,6 +108,8 @@ uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage)
 			reindeerData->dead);
 	length += sprintf(jsonMessage + length, "    \"battery\":\"%d\"\r\n\r\n}",
 			reindeerData->batteryLevel);
+	//length += sprintf(jsonMessage + length, "    \"temperature\":\"%d\"\r\n\r\n}",
+	//			reindeerData->temperature);
 
 	PCprint(jsonMessage);
 
@@ -178,6 +180,9 @@ void assemblePacket(reindeerData_t *reindeerData, char *udpMessage)
 			reindeerData->dead);
 	length += sprintf(jsonMessage + length, "    \"battery\":\"%d\"\r\n\r\n}",
 			reindeerData->batteryLevel);
+	//length += sprintf(jsonMessage + length, "    \"temperature\":\"%d\"\r\n\r\n}",
+	//			reindeerData->temperature);
+
 
 	PCprint(jsonMessage);
 
@@ -242,7 +247,9 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 	uint8_t reSend_msg = 0;
 
 	//delay_ms(500);
-	NB_reboot();
+	//NB_reboot();
+
+	AT_send("CFUN=1","","OK");
 	/*while(NB_setPin() == 1) //if setPin returns error then reboot and try again
 	{
 		NB_reboot();
