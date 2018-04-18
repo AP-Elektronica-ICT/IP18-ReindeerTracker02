@@ -34,7 +34,7 @@
 
 #define TEMP_CHANNEL 1
 #define VOLTAGE_MEAS_CHANNEL 2
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 
 smc_power_mode_vlls_config_t smc_power_mode_vlls_config;
 uart_config_t uart_config;
@@ -243,9 +243,9 @@ int main(void)
 
 	GPIO_ClearPinsOutput(GPIOA, 1 << 1u); //Power off RF modules
 
-	GPIO_SetPinsOutput(GPIOC, 1 << 6u); //Power off RF modules
+	GPIO_SetPinsOutput(GPIOC, 1 << 6u); //Power off GPS
 
-	blinkLed(2000);
+	blinkLed(500);
 	PCprint("Reindeer IoT is reset \r\n");
 
 	/*
@@ -254,7 +254,7 @@ int main(void)
 
 	char testLat[12] = ("6500.02359");
 	char testLon[12] = ("02530.56951");
-	strcpy(reindeerData.serialNum, "11111");
+	strcpy(reindeerData.serialNum, "88888");
 	strcpy(reindeerData.latitude, testLat);
 	strcpy(reindeerData.longitude, testLon);
 
@@ -296,23 +296,37 @@ int main(void)
 
 #else
 
-	while (true)
+	GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
+	NB_reboot();
+	AT_send("CFUN=0","","OK");
+
+
+	PCprint("Waiting for GPS cold start for 30 sec with no printing\r\n");
+	GPIO_ClearPinsOutput(GPIOC, 1 << 6u); //Power on GPS
+	deInit_Uart();
+	//delay_ms(30000); //wait for GPS acquisition with uart deinitialised
+	initUART();
+
+	uint8_t cnt = 0;
+	while (cnt==5)
+
 	{
 
-		if (!GPS_strReady) //Loop until get GPS coordinates
+		if (GPS_strReady) //Loop until get GPS coordinates
 		{
-			//PCprint(GPS_recBuf);
-			//PCprint("\r\n"); //First print out whole buffer
+			PCprint(GPS_recBuf);
+			PCprint("\r\n"); //First print out whole buffer
+			cnt++;
 
-			char testLat[12] = ("6500.02359");
+			/*char testLat[12] = ("6500.02359");
 			char testLon[12] = ("02530.56951");
 
 			parseData(testLat, testLon);
 
 			strcpy(reindeerData.latitude, testLat);
-			strcpy(reindeerData.longitude, testLon);
+			strcpy(reindeerData.longitude, testLon);*/
 
-			break;	//For test purpose break away without real GPS coordinates
+			//break;	//For test purpose break away without real GPS coordinates
 
 			if (getGPS())
 			{
@@ -334,9 +348,10 @@ int main(void)
 
 	//Start data sending
 
-	GPIO_SetPinsOutput(GPIOA, 1 << 1u); //Power on RF modules
-	delay_ms(100); //Wait until voltage stabilize
+	GPIO_SetPinsOutput(GPIOC, 1 << 6u); //turn off GPS
 
+	PCprint("GPS turned off, wait for cap charge \r\n");
+	//delay_ms(10000);
 	//Assemble data to json format and then to MQTT message
 
 	uint8_t msgLen = assembleMqtt(&reindeerData, mqttMessage);

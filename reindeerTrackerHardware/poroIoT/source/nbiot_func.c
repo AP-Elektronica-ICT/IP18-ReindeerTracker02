@@ -242,18 +242,21 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 	uint8_t reSend_msg = 0;
 
 	//delay_ms(500);
+	//AT_send("CFUN=1", "", "OK");
+
+	//AT_send("COPS=0", "", "OK");
 	NB_reboot();
 	/*while(NB_setPin() == 1) //if setPin returns error then reboot and try again
 	{
 		NB_reboot();
 	}*/
 
-	//delay_ms(2000);  //viivettä pitää olla
+	delay_ms(3000);  //viivettä pitää olla
 	//NB_define_pdp();
 
 	do
 	{
-		//NB_active_pdp();
+
 
 
 		if(NB_network_status() != 0)
@@ -264,7 +267,7 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 		 NB_network_status();
 		 //delay_ms(1000);
 		 }*/
-		delay_ms(3000);
+		//delay_ms(3000);
 		//NB_show_ip();
 		NB_create_socket();
 		reSend_msg = NB_send_msg(mqttMessage, msgLen);
@@ -276,7 +279,7 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 void NB_reboot()
 {
 
-	res = AT_send(AT_NRB, "", "+UFOTAS");
+	res = AT_send(AT_NRB, "", "TAS: 0,1");
 	if (res == 0)
 	{
 		PCprint("rebooted\r\n");
@@ -353,7 +356,7 @@ uint8_t NB_network_status()
 {
 	res = 2;
 	uint8_t tries = 0;
-	while (( res != 0 ) && (tries < 4))
+	while (( res != 0 ) && (tries < 7))
 	{
 		tries++;
 		res = AT_send(AT_CEREG, "", "+CEREG: 0,1");
@@ -384,7 +387,7 @@ void NB_define_pdp()
 }
 void NB_active_pdp()
 {
-	res = AT_send(AT_CGACT, "=1,1", "OK");     //Active PDP context 1
+	res = AT_send(AT_CGACT, "=1,0", "OK");     //Active PDP context 1
 
 	if (res == 0)
 	{
