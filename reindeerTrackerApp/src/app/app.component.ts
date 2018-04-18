@@ -18,7 +18,7 @@ export class MyApp {
   rootPage:any = LogInPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private af: AngularFireAuth, private fcmProvider: FcmProvider, private loading: LoadingProvider) {
-    this.loading.presentLoginLoading();
+    //this.loading.presentLoginLoading();
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.

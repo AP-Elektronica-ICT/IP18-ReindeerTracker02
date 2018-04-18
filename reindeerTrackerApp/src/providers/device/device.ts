@@ -4,6 +4,7 @@ import {Observable} from "rxjs/Observable";
 import {AppSettings} from "../../AppSettings";
 import {DeviceDetails} from "../../classes/deviceDetails";
 import {AuthProvider} from "../auth/auth";
+import {Device} from "../../classes/device";
 
 @Injectable()
 export class DeviceProvider {

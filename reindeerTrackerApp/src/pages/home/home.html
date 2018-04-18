@@ -7,7 +7,11 @@
 </ion-header>
 
 <ion-content padding>
-  <p>{{message}}</p>
+  <p *ngIf="message">{{message}}</p>
+  <div class="filter-holder">
+    <div class="filter" (click)="openFilterModal()">Add filter  <ion-icon name="funnel"></ion-icon></div>
+    <div class="filter" *ngFor="let filter of filterStrings">{{filter}}</div>
+  </div>
   <ion-list>
     <ion-list-header class="header-item-styled">
         <ion-avatar item-start>
@@ -20,7 +24,7 @@
       </div>
     </ion-list-header>
 
-    <button ion-item (click)="loadDetail(device.deviceKey)" class="list-item-styled" *ngFor="let device of devices">
+    <button ion-item (click)="loadDetail(device.deviceKey)" class="list-item-styled" *ngFor="let device of displayingDevices">
       <ion-avatar item-start>
         <img src="assets/imgs/icons8-heart-outline-filled-50.png" *ngIf="device.isAlive">
         <img src="assets/imgs/icons8-heart-outline-50.png" *ngIf="!device.isAlive">
