@@ -113,7 +113,10 @@ export class AddPage {
       this.deviceProvider.setDeviceDetails(this.deviceKey, this.deviceDetails)
         .subscribe(res => {
           console.log(res);
-          this.navCtrl.pop();
+          this.deviceProvider.loadUserDevices()
+            .then(() => {
+              this.navCtrl.pop();
+            });
         })
     }
   }

@@ -7,6 +7,13 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-refresher (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content>
+
+    </ion-refresher-content>
+
+    <!---->
+  </ion-refresher>
   <p *ngIf="message">{{message}}</p>
   <div class="filter-holder">
     <div class="filter" (click)="openFilterModal()">Add filter  <ion-icon name="funnel"></ion-icon></div>
@@ -14,9 +21,9 @@
   </div>
   <ion-list>
     <ion-list-header class="header-item-styled">
-        <ion-avatar item-start>
-            <img src="assets/imgs/icons8-heart-outline-half-50.png">
-          </ion-avatar>
+      <ion-avatar item-start>
+        <img src="assets/imgs/icons8-heart-outline-half-50.png">
+      </ion-avatar>
       <div class="row">
         <div class="col col-50">ID</div>
         <div class="col col-50">LAST ACTIVE</div>
@@ -35,7 +42,6 @@
         <div class="col col-50">{{device.lastLog.battery}}</div>
       </div>
     </button>
-
   </ion-list>
 
   <ion-fab right bottom>

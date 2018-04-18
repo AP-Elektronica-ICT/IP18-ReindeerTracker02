@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AlertController, ModalController, NavController} from 'ionic-angular';
+import {AlertController, ModalController, NavController, Refresher} from 'ionic-angular';
 import { DetailPage } from '../detail/detail';
 import { DeletePage } from '../delete/delete';
 import { AddPage } from '../add/add';
@@ -35,6 +35,19 @@ export class HomePage {
 
   ionViewWillEnter() {
     this.getDevices();
+  }
+
+  onRefresh(refresher: Refresher) {
+    this.deviceProvider.loadUserDevices()
+      .then(devices => {
+        console.log(devices);
+        this.devices = devices;
+        this.resetList();
+        this.loading.dismissDeviceLoading();
+        this.filter = this.filterProvider.getFilterOptions();
+        this.addFilter();
+        refresher.complete();
+      })
   }
 
   getDevices() {
