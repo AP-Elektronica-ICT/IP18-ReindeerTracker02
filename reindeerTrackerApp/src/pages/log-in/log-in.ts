@@ -5,6 +5,7 @@ import { SignUpPage } from '../sign-up/sign-up';
 import {FormGroup} from "@angular/forms";
 import {AuthProvider} from "../../providers/auth/auth";
 import {LoadingProvider} from "../../providers/loading/loading";
+import {DeviceProvider} from "../../providers/device/device";
 
 /**
  * Generated class for the LogInPage page.
@@ -76,7 +77,7 @@ export class LogInPage {
 
   loginError = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthProvider, public alertCtrl: AlertController, private loading: LoadingProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthProvider, public alertCtrl: AlertController, private loading: LoadingProvider, private deviceProvider: DeviceProvider) {
   }
 
   ionViewDidLoad() {
@@ -94,7 +95,10 @@ export class LogInPage {
       .then(res => {
         //this.navCtrl.push(HomePage);
         this.loading.presentDeviceLoading();
-        this.navCtrl.setRoot(HomePage);
+        this.deviceProvider.loadUserDevices()
+          .then(() => {
+            this.navCtrl.setRoot(HomePage);
+          })
       })
       .catch(err => {
         this.loginError = true;
