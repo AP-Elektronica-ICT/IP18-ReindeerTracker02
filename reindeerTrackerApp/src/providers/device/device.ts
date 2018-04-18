@@ -9,10 +9,41 @@ import {Device} from "../../classes/device";
 @Injectable()
 export class DeviceProvider {
   api = AppSettings.API_ENDPOINT;
+  private devices: Device[] = [];
 
   constructor(public http: HttpClient, private auth: AuthProvider) {
 
   }
+
+  loadUserDevices(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.getUserDevices()
+        .subscribe(devices => {
+          this.devices = devices;
+          resolve(devices)
+        }, err => {
+          reject();
+        })
+    });
+  }
+
+  getUserDevicesFromStorage(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.devices.length > 0) {
+        resolve(this.getDevicesViaValue());
+      } else {
+        this.loadUserDevices()
+          .then(() => {
+            resolve(this.getDevicesViaValue());
+          });
+      }
+    });
+  }
+
+  private getDevicesViaValue(): any {
+    return JSON.parse(JSON.stringify(this.devices));
+  }
+
 
   getDevice(deviceKey: string): Observable<any> {
     return this.http.get(this.api + '/devices/' + deviceKey);

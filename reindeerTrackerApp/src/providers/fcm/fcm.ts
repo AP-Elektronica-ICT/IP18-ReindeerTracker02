@@ -44,18 +44,6 @@ export class FcmProvider {
   }
 
   private saveToken(token) {
-    /*let toast = this.toast.create({
-      message: token,
-      duration: 3000,
-      position: 'top'
-    });
-
-    toast.onDidDismiss(() => {
-      console.log('Dismissed toast');
-    });
-
-    toast.present();*/
-    //TODO: save token in database linked to user
     const uid = this.auth.getCurrentUID();
     this.httpClient.put(this.api + '/users/' + uid + '/devicetoken', {deviceToken: token})
       .subscribe(res => {

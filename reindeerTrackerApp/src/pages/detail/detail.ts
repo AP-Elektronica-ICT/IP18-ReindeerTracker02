@@ -45,4 +45,6 @@ export class DetailPage {
       this.navCtrl.push(AddPage, {deviceKey: this.deviceKey});
     }
   }
+
+  //TODO: refresh devices after delete
 }

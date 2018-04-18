@@ -38,7 +38,7 @@ export class HomePage {
   }
 
   getDevices() {
-    this.deviceProvider.getUserDevices()
+    /*this.deviceProvider.getUserDevices()
       .subscribe(res => {
         this.devices = res;
         this.displayingDevices = res;
@@ -47,6 +47,14 @@ export class HomePage {
         this.filter = this.filterProvider.getFilterOptions();
         this.addFilter();
 
+      })*/
+    this.deviceProvider.getUserDevicesFromStorage()
+      .then(devices => {
+        this.devices = devices;
+        this.resetList();
+        this.loading.dismissDeviceLoading();
+        this.filter = this.filterProvider.getFilterOptions();
+        this.addFilter();
       })
   }
 
