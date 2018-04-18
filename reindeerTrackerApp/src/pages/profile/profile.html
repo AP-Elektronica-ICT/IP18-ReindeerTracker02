@@ -7,49 +7,40 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>detail</ion-title>
+    <ion-title>Profile</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <div class="top-div">
-    <img class="circle-pic" src="assets/imgs/NoReindeerImage.png">
-  </div>
-  <ion-grid>
+  <ion-grid *ngIf="currentUser">
     <ion-list>
       <ion-item class="list-styled">
         name:
         <p item-end icon-left>
-          Joren Jamar
-        </p>
-      </ion-item>
-      <ion-item class="list-styled">
-        gender:
-        <p item-end icon-left>
-          M
+          {{currentUser.firstName}} {{currentUser.lastName}}
         </p>
       </ion-item>
       <ion-item class="list-styled">
         email:
         <p item-end icon-left>
-          jorenjamar@hotmail.com
+          {{currentUser.email}}
         </p>
       </ion-item>
       <ion-item class="list-styled">
         phone number:
         <p item-end icon-left>
-          +32499295935
+          {{currentUser.phoneNumber}}
         </p>
       </ion-item>
       <ion-item class="list-styled">
-        amount of reindeers:
+        location
         <p item-end icon-left>
-          15
+          {{currentUser.location}}
         </p>
       </ion-item>
       <ion-item class="list-styled">
-        <button ion-button class="map-button" (click)="goToMap()">edit profile</button>
+        <button ion-button class="map-button" (click)="editProfile()">edit profile</button>
       </ion-item>
     </ion-list>

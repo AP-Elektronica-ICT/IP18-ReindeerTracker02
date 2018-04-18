@@ -136,6 +136,18 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
         })
 });
 
+router.get('/test', function (req, res) {
+    var baseMessage = {
+        notification: {
+            title: 'battery is low.',
+            body: 'Battery at ' + 50 + '%. Please check the device to replace the battery.'
+        },
+        token: "d0SWH8LIv80:APA91bGa-PndencaYzhvJd1gYIKIcpUsueSpCRFr82dGN8ILdSr_V_Vv_eoVZWOEeaVofStYIuvfnSuo04gccg7TAID6-KEblcMFWuQI-8j8B9sqjoc7RDAb6thubJHwiR46_ACHe7jn"
+    };
+    sendNotification(baseMessage);
+    res.json('ok');
+})
+
 function updateDeviceAverage(logs, previousAverage, deviceKey) {
     var logAmount = logs.length;
     if (logAmount > 2) {
@@ -256,17 +268,24 @@ router.post('/users', function (req, res) {
         phoneNumber: req.body.phoneNumber,
         location: req.body.location
     });
+    if (newUser.email.includes("reindeertracker.com")) {
+        newUser.admin = true;
+    }
+    console.log(newUser);
     newUser.save()
         .then(function (value) {
+            console.log('added');
             res.status(201).json('user added');
         })
         .catch(function (reason) {
+            console.log(reason);
             res.status(500).json(reason);
         })
 });
 
 router.get('/users/:userID', function (req, res) {
     const userID = req.params.userID;
+    console.log(userID);
     User.findOne({uid: userID})
         .then(function (user) {
             if (user) {
@@ -277,6 +296,17 @@ router.get('/users/:userID', function (req, res) {
         })
         .catch(function (reason) {
             res.status(500).json(reason);
+        })
+});
+
+router.put('/users/:userID', function (req, res) {
+    const userID = req.params.userID;
+    User.update({uid: userID}, {firstName: req.body.firstName, lastName: req.body.lastName, phoneNumber: req.body.phoneNumber, location: req.body.location})
+        .then(function () {
+            res.json('user updated');
+        })
+        .catch(function (reason) {
+            res.status(500).json('could not edit user');
         })
 });
 

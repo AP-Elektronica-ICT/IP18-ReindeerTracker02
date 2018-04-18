@@ -22,7 +22,8 @@
 
     <button ion-item (click)="loadDetail(device.deviceKey)" class="list-item-styled" *ngFor="let device of devices">
       <ion-avatar item-start>
-        <img src="assets/imgs/icons8-heart-outline-50.png">
+        <img src="assets/imgs/icons8-heart-outline-filled-50.png" *ngIf="device.isAlive">
+        <img src="assets/imgs/icons8-heart-outline-50.png" *ngIf="!device.isAlive">
       </ion-avatar>
       <div class="row">
         <div class="col col-50">{{device.deviceKey}}</div>

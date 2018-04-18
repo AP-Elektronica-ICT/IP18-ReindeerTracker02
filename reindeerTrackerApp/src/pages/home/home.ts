@@ -8,6 +8,7 @@ import { LogInPage } from '../log-in/log-in';
 import {DeviceProvider} from "../../providers/device/device";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner";
 import {AuthProvider} from "../../providers/auth/auth";
+import {LoadingProvider} from "../../providers/loading/loading";
 
 @Component({
   selector: 'page-home',
@@ -17,7 +18,7 @@ export class HomePage {
   devices: any = null;
   message = '';
 
-  constructor(public navCtrl: NavController, private deviceProvider: DeviceProvider, private alert: AlertController, public barcodeScanner: BarcodeScanner, private auth: AuthProvider) {
+  constructor(public navCtrl: NavController, private deviceProvider: DeviceProvider, private alert: AlertController, public barcodeScanner: BarcodeScanner, private auth: AuthProvider, private loading: LoadingProvider) {
 
   }
 
@@ -34,6 +35,7 @@ export class HomePage {
       .subscribe(res => {
         this.devices = res;
         console.log(this.devices);
+        this.loading.dismissDeviceLoading();
       })
   }
 

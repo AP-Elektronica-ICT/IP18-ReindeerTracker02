@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {AuthProvider} from "../../providers/auth/auth";
+import {SignUpPage} from "../sign-up/sign-up";
 
 /**
  * Generated class for the ProfilePage page.
@@ -14,12 +16,21 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'profile.html',
 })
 export class ProfilePage {
+  currentUser = null;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthProvider) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ProfilePage');
+    this.auth.getUserDetails()
+      .subscribe(res => {
+        this.currentUser = res;
+        console.log(this.currentUser);
+      })
+  }
+
+  editProfile() {
+    this.navCtrl.push(SignUpPage, this.currentUser);
   }
 
 }

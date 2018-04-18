@@ -16,9 +16,7 @@ export class FcmProvider {
   api = AppSettings.API_ENDPOINT;
 
   constructor(public firebase: Firebase, private platform: Platform, private httpClient: HttpClient, private auth: AuthProvider) {
-    this.firebase.onTokenRefresh().subscribe(token => {
-      this.saveToken(token);
-    });
+
   }
 
   async getToken() {
@@ -32,6 +30,12 @@ export class FcmProvider {
     }
 
     this.saveToken(token);
+  }
+
+  setFirebaseOnRefreshToken() {
+    this.firebase.onTokenRefresh().subscribe(token => {
+      this.saveToken(token);
+    });
   }
 
   getTokenSync() {
