@@ -41,11 +41,7 @@ export class HomePage {
     this.deviceProvider.loadUserDevices()
       .then(devices => {
         console.log(devices);
-        this.devices = devices;
-        this.resetList();
-        this.loading.dismissDeviceLoading();
-        this.filter = this.filterProvider.getFilterOptions();
-        this.addFilter();
+        this.afterDevicesLoaded(devices);
         refresher.complete();
       })
   }
@@ -63,12 +59,16 @@ export class HomePage {
       })*/
     this.deviceProvider.getUserDevicesFromStorage()
       .then(devices => {
-        this.devices = devices;
-        this.resetList();
-        this.loading.dismissDeviceLoading();
-        this.filter = this.filterProvider.getFilterOptions();
-        this.addFilter();
+        this.afterDevicesLoaded(devices);
       })
+  }
+
+  afterDevicesLoaded(devices: Device[]) {
+    this.devices = devices;
+    this.resetList();
+    this.loading.dismissDeviceLoading();
+    this.filter = this.filterProvider.getFilterOptions();
+    this.addFilter();
   }
 
   showKeyInputSelectAlert() {

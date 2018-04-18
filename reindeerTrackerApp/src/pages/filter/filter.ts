@@ -36,4 +36,9 @@ export class FilterPage {
     this.navCtrl.pop();
   }
 
+  reset() {
+    this.options.alive = AliveState.all;
+    this.options.battery = BatteryState.all;
+  }
+
 }

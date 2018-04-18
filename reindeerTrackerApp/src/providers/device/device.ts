@@ -55,6 +55,7 @@ export class DeviceProvider {
 
   getUserDevices(): Observable<any> {
     const uid = this.auth.getCurrentUID();
+    console.log('making http call');
     return this.http.get(this.api + '/users/' + uid + '/devices');
   }
 
