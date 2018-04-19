@@ -8,6 +8,7 @@
 #ifndef SOURCE_GPS_FUNC_H_
 #define SOURCE_GPS_FUNC_H_
 
+#define PRINT_GPS 1
 
 uint8_t getGPS();
 

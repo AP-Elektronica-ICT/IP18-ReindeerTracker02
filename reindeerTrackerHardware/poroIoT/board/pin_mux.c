@@ -93,6 +93,7 @@ void BOARD_InitPins(void) {
 	  PORT_SetPinMux(PORTC, 6u, kPORT_MuxAsGpio);
 
 	  PORT_SetPinMux(PORTA, 4u, kPORT_MuxAsGpio);
+	  PORT_SetPinMux(PORTA, 2u, kPORT_MuxAsGpio); //GPS backup voltage pin
 
 	  PORT_SetPinMux(PORTA, 1u, kPORT_MuxAsGpio);	//boostreg enable pin
 

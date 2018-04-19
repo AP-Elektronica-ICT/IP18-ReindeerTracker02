@@ -6,19 +6,17 @@
  */
 #include "fsl_port.h"
 #include "fsl_adc16.h"
+#include "dbg_util.h"
+#include <stdio.h>
+#define TEMP_CHANNEL 1
+#define VOLTAGE_MEAS_CHANNEL 2
+int32_t temp;
+
+
 
 void initAdc() {
 
-	//ADC0_DP1, ADC0_DM1, ADC1_DP
-	//Write ADC0_C1 select channel AD4
-
-	// PTC0 (X-axis), PTC1 (Y-axis), PTB2 (Z-axis), PTB3 (temp) ADC PIN
-
-	// -1G 26500 0G 32200 1G 39300
-
 	CLOCK_EnableClock(kCLOCK_Adc0);
-	//CLOCK_EnableClock(kCLOCK_PortC);
-	//CLOCK_EnableClock(kCLOCK_PortB);
 
 	adc16_config_t adc_config;
 
@@ -36,7 +34,6 @@ void initAdc() {
 
 	ADC16_Init(ADC0, &adc_config);
 
-	//ADC0 -> SC1[0] |= 0x1F; //Choose AD4 channel 00100
 
 }
 unsigned short ADC_read16b(uint8_t channel_select) {
@@ -74,4 +71,23 @@ unsigned short ADC_read16b(uint8_t channel_select) {
 	return ADC0->R[0];
 
 }
+int32_t tempMeas(){
 
+
+	 temp = ADC_read16b(TEMP_CHANNEL);
+	 temp = 65535 - temp;
+	 temp = temp / 541 -60;
+	 return temp;
+}
+uint32_t batteryMeas(){
+
+	float battery = 0;
+
+	for(uint8_t k=0; k<10; k++)
+	{
+		battery += ADC_read16b(VOLTAGE_MEAS_CHANNEL);
+	}
+	battery /= 10;
+	battery = (battery - 19784) / 45751 * 100;
+	return (uint32_t)battery;
+}

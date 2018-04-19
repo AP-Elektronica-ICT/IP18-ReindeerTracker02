@@ -54,7 +54,7 @@ void NB_send(char *data)
 	}
 }
 
-uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage)
+uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage, char *teunMessage)
 {
 
 	uint8_t clientid_lt = strlen(client_id);
@@ -108,8 +108,21 @@ uint8_t assembleMqtt(reindeerData_t *reindeerData, char *mqttMessage)
 			reindeerData->dead);
 	length += sprintf(jsonMessage + length, "    \"battery\":\"%d\"\r\n\r\n}",
 			reindeerData->batteryLevel);
+	//length += sprintf(jsonMessage + length, "    \"temperature\":\"%d\"\r\n\r\n}",
+	//			reindeerData->temperature);
 
 	PCprint(jsonMessage);
+
+	char *teunPtr = teunMessage;
+
+	for (uint8_t u = 0; u < length; u++) //print the packet as hex dump for debugging
+	{
+
+		teunPtr += sprintf(teunPtr, "%02x",
+				(uint8_t) jsonMessage[packet_ptr]);
+
+	}
+
 
 	w_buf[0] = 0x30;
 	w_buf[1] = 0x00;
@@ -178,6 +191,9 @@ void assemblePacket(reindeerData_t *reindeerData, char *udpMessage)
 			reindeerData->dead);
 	length += sprintf(jsonMessage + length, "    \"battery\":\"%d\"\r\n\r\n}",
 			reindeerData->batteryLevel);
+	//length += sprintf(jsonMessage + length, "    \"temperature\":\"%d\"\r\n\r\n}",
+	//			reindeerData->temperature);
+
 
 	PCprint(jsonMessage);
 
@@ -236,7 +252,7 @@ void NB_received_data()
 	memset(NB_recBuf, 0, strlen(NB_recBuf));
 }
 
-void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
+void NB_create_pdp_send(char *address, char *mqttMessage, uint8_t msgLen)
 {
 
 	uint8_t reSend_msg = 0;
@@ -245,13 +261,7 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 	//AT_send("CFUN=1", "", "OK");
 
 	//AT_send("COPS=0", "", "OK");
-	NB_reboot();
-	/*while(NB_setPin() == 1) //if setPin returns error then reboot and try again
-	{
-		NB_reboot();
-	}*/
-
-	delay_ms(3000);  //viivettä pitää olla
+	  //viivettä pitää olla
 	//NB_define_pdp();
 
 	do
@@ -270,9 +280,12 @@ void NB_create_pdp_send(char *mqttMessage, uint8_t msgLen)
 		//delay_ms(3000);
 		//NB_show_ip();
 		NB_create_socket();
-		reSend_msg = NB_send_msg(mqttMessage, msgLen);
+		reSend_msg = NB_send_msg(address, mqttMessage, msgLen);
 
 	} while (reSend_msg == 1);
+
+	NB_send_msg(address, mqttMessage, msgLen);
+	NB_send_msg(address, mqttMessage, msgLen);
 
 }
 
@@ -423,10 +436,10 @@ void NB_create_socket()
 		PCprint("error\r\n");
 	}
 }
-uint8_t NB_send_msg(char *mqttMessage, uint8_t msgLen)
+uint8_t NB_send_msg(char* address, char *mqttMessage, uint8_t msgLen)
 {
 	char nsost_command[500];
-	sprintf(nsost_command, "0,\"167.99.207.133\",1884,%d,\"%s\"", msgLen,
+	sprintf(nsost_command, "%s,%d,\"%s\"", address, msgLen,
 			mqttMessage);
 
 	//PCprint("%s\r\n",nsost_command);
