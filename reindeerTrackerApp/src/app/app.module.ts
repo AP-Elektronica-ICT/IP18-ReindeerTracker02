@@ -31,6 +31,8 @@ import {FcmProvider} from "../providers/fcm/fcm";
 import {Firebase} from "@ionic-native/firebase";
 import {LaunchNavigator} from "@ionic-native/launch-navigator";
 import { LoadingProvider } from '../providers/loading/loading';
+import {FilterPage} from "../pages/filter/filter";
+import { FilterProvider } from '../providers/filter/filter';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAud_cLzms8_U55nCkSKNmnRUhXei2pLQs",
@@ -51,7 +53,8 @@ export const firebaseConfig = {
     ProfilePage,
     LogInPage,
     SignUpPage,
-    MapPage
+    MapPage,
+    FilterPage
   ],
   imports: [
     BrowserModule,
@@ -72,7 +75,8 @@ export const firebaseConfig = {
     ProfilePage,
     LogInPage,
     SignUpPage,
-    MapPage
+    MapPage,
+    FilterPage
   ],
   providers: [
     StatusBar,
@@ -90,7 +94,8 @@ export const firebaseConfig = {
     FcmProvider,
     Firebase,
     LaunchNavigator,
-    LoadingProvider
+    LoadingProvider,
+    FilterProvider
   ]
 })
 export class AppModule {}

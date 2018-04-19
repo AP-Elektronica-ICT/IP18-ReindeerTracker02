@@ -7,12 +7,23 @@
 </ion-header>
 
 <ion-content padding>
-  <p>{{message}}</p>
+  <ion-refresher (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content>
+
+    </ion-refresher-content>
+
+    <!---->
+  </ion-refresher>
+  <p *ngIf="message">{{message}}</p>
+  <div class="filter-holder">
+    <div class="filter" (click)="openFilterModal()">Add filter  <ion-icon name="funnel"></ion-icon></div>
+    <div class="filter" *ngFor="let filter of filterStrings">{{filter}}</div>
+  </div>
   <ion-list>
     <ion-list-header class="header-item-styled">
-        <ion-avatar item-start>
-            <img src="assets/imgs/icons8-heart-outline-half-50.png">
-          </ion-avatar>
+      <ion-avatar item-start>
+        <img src="assets/imgs/icons8-heart-outline-half-50.png">
+      </ion-avatar>
       <div class="row">
         <div class="col col-50">ID</div>
         <div class="col col-50">LAST ACTIVE</div>
@@ -20,7 +31,7 @@
       </div>
     </ion-list-header>
 
-    <button ion-item (click)="loadDetail(device.deviceKey)" class="list-item-styled" *ngFor="let device of devices">
+    <button ion-item (click)="loadDetail(device.deviceKey)" class="list-item-styled" *ngFor="let device of displayingDevices">
       <ion-avatar item-start>
         <img src="assets/imgs/icons8-heart-outline-filled-50.png" *ngIf="device.isAlive">
         <img src="assets/imgs/icons8-heart-outline-50.png" *ngIf="!device.isAlive">
@@ -31,8 +42,9 @@
         <div class="col col-50">{{device.lastLog.battery}}</div>
       </div>
     </button>
-
   </ion-list>
+
+  <p style="text-align: center; color: gray" *ngIf="displayingDevices.length === 0">No devices to display</p>
 
   <ion-fab right bottom>
     <button ion-fab color="light"><ion-icon name="arrow-dropleft"></ion-icon></button>

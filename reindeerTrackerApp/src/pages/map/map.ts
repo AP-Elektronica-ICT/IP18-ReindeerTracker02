@@ -25,9 +25,7 @@ export class MapPage {
   long: number;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private launchNavigator: LaunchNavigator, private platform: Platform) {
-    this.platform.ready().then(() => {
-      this.loadMaps();
-    })
+
   }
 
   loadMaps() {
@@ -37,6 +35,10 @@ export class MapPage {
     this.showMap();
 
     this.addRadius(new google.maps.LatLng(this.lat, this.long), this.map);
+  }
+
+  ionViewDidLoad(){
+    this.loadMaps();
   }
 
   showMap(){

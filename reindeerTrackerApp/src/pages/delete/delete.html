@@ -36,7 +36,8 @@
             <ion-checkbox color="dark" checked="false" (ionChange)="toggleDevice(device.deviceKey)"></ion-checkbox>
           </div>
           <div class="col col-50">
-            <img class="daimage" src="assets/imgs/icons8-heart-outline-50.png">
+            <img src="assets/imgs/icons8-heart-outline-filled-50.png" *ngIf="device.isAlive">
+            <img src="assets/imgs/icons8-heart-outline-50.png" *ngIf="!device.isAlive">
           </div>
           <div class="col col-50">
             {{device.deviceKey}}

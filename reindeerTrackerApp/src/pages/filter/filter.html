@@ -1,0 +1,60 @@
+<!--
+  Generated template for the FilterPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>filter</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <button ion-button class="submit-button" (click)="reset()">Reset filter</button>
+  <ion-list radio-group [(ngModel)]="options.alive">
+    <ion-list-header no-lines>
+      Is alive
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label>Show all</ion-label>
+      <ion-radio [value]="aliveState.all"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Show alive</ion-label>
+      <ion-radio [value]="aliveState.alive"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Show dead</ion-label>
+      <ion-radio [value]="aliveState.dead"></ion-radio>
+    </ion-item>
+  </ion-list>
+
+  <ion-list radio-group [(ngModel)]="options.battery">
+    <ion-list-header no-lines>
+      Battery
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label>Show all</ion-label>
+      <ion-radio [value]="batteryState.all"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>High battery (>20%)</ion-label>
+      <ion-radio [value]="batteryState.high"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Low battery (<20%)</ion-label>
+      <ion-radio [value]="batteryState.low"></ion-radio>
+    </ion-item>
+  </ion-list>
+  <button ion-button class="submit-button" (click)="save()">Apply filter</button>
+</ion-content>

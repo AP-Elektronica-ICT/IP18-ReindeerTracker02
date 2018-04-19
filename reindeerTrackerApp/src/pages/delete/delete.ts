@@ -48,7 +48,10 @@ export class DeletePage {
         .subscribe(res => {
           this.deleteCount++;
           if (this.deleteCount == amout) {
-            this.navCtrl.pop();
+            this.deviceProvider.loadUserDevices()
+              .then(() => {
+                this.navCtrl.pop();
+              });
           }
         })
     }
