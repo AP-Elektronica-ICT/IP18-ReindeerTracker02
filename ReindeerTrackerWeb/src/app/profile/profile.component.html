@@ -1,5 +1,27 @@
 <div class="container" *ngIf="currentUser">
-  <div class="col-6">
-    <p>Name: {{currentUser.firstName}} {{currentUser.lastName}}</p>
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <div class="card">
+        <div class="card-body">
+          <!--<h5>Name:<br>{{currentUser.firstName}} {{currentUser.lastName}}</h5>
+          <h5>Email:<br>{{currentUser.email}}</h5>
+          <h5>Phone number:<br>{{currentUser.phoneNumber}}</h5>
+          <h5>Location:<br>{{currentUser.location}}</h5>-->
+          <label>Name:</label>
+          <h5>{{currentUser.firstName}} {{currentUser.lastName}}</h5>
+          <label>Email:</label>
+          <h5>{{currentUser.email}}</h5>
+          <label>Phone number:</label>
+          <h5>{{currentUser.phoneNumber}}</h5>
+          <label>Location:</label>
+          <h5>{{currentUser.location}}</h5>
+          <label>Birthday:</label>
+          <h5>{{currentUser.birthdate | date: 'dd/MM/yyyy'}}</h5>
+          <p *ngIf="currentUser.deviceToken" style="font-size: small"><i class="fas fa-mobile-alt"></i> &nbsp;Mobile device registered.</p>
+        </div>
+      </div>
+      <br>
+      <button class="btn" routerLink="edit">Edit profile</button>
+    </div>
   </div>
 </div>

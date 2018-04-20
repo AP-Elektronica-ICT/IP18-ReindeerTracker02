@@ -12,6 +12,7 @@ import {PasswordResetComponent} from "./password-reset/password-reset.component"
 import {SensorDataComponent} from "./sensor-data/sensor-data.component";
 import {DetailComponent} from "./detail/detail.component";
 import {ProfileComponent} from "./profile/profile.component";
+import {ProfileEditComponent} from "./profile-edit/profile-edit.component";
 
 const appRoutes = [
   { path: '', component: HomeComponent},
@@ -22,6 +23,7 @@ const appRoutes = [
   { path: 'login', component: LoginComponent},
   { path: 'signup', component: SignupComponent},
   { path: 'profile', component: ProfileComponent},
+  { path: 'profile/edit', component: ProfileEditComponent},
   { path: 'reset-password', component: PasswordResetComponent},
   { path: 'manifacturer', component: ManifacturerComponent, children: [
       { path: '', component: ManifacturerHomeComponent},

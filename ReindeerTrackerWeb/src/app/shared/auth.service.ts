@@ -94,4 +94,9 @@ export class AuthService {
     }
   }
 
+  saveUserdata(userdata: Userdata) {
+    const uid = this.getCurrentUID();
+    return this.http.put(this.url + '/users/' + uid, userdata);
+  }
+
 }
