@@ -35,8 +35,9 @@ export class SensorDataComponent implements OnInit {
   }
 
   getDevices() {
+    console.log('getting devices');
     this.deviceService.getUserDevices()
-      .subscribe((devices: Device[]) => {
+      .then((devices: Device[]) => {
         console.log(devices);
         this.devices = devices;
         this.resetList();
@@ -103,7 +104,10 @@ export class SensorDataComponent implements OnInit {
   removeDevice(deviceKey: string) {
     this.deviceService.removeDevice(deviceKey)
       .subscribe(res => {
-        this.getDevices();
+        this.deviceService.refreshUserDevices()
+          .then(() => {
+            this.getDevices();
+          });
         this.closeModal();
       }, err => {
         console.log(err);

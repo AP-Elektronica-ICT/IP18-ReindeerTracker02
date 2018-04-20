@@ -88,24 +88,30 @@ export class DeviceInfoComponent implements OnInit {
           this.updateDevice();
           this.deviceService.updateDeviceDetails(this.deviceKey, this.device)
             .subscribe(res => {
-              this.showChangesSavedMessage = true;
-              setTimeout(() => {
-                this.location.back();
-              }, 2000);
+              this.deviceService.refreshUserDevices()
+                .then(() => {
+                  this.showChangesSavedMessage = true;
+                  setTimeout(() => {
+                    this.location.back();
+                  }, 2000);
+                })
             })
         });
     } else {
       this.updateDevice();
       this.deviceService.updateDeviceDetails(this.deviceKey, this.device)
         .subscribe(res => {
-          if (this.detailForm.dirty) {
-            this.showChangesSavedMessage = true;
-            setTimeout(() => {
-              this.location.back();
-            }, 2000);
-          } else {
-            this.location.back();
-          }
+          this.deviceService.refreshUserDevices()
+            .then(() => {
+              if (this.detailForm.dirty) {
+                this.showChangesSavedMessage = true;
+                setTimeout(() => {
+                  this.location.back();
+                }, 2000);
+              } else {
+                this.location.back();
+              }
+            });
         })
     }
   }
