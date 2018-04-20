@@ -383,6 +383,17 @@ router.put('/users/:userID/devicetoken', function (req, res) {
         })
 });
 
+router.delete('/users/:userID/devicetoken', function (req, res) {
+    const userID = req.params.userID;
+    User.update( {deviceToken: null})
+        .then(function (value) {
+            res.status(200).json('Token removed');
+        })
+        .catch(function (reason) {
+            res.status(500).send('could not remove token');
+        })
+});
+
 router.get('/users/:userID/devicetoken', function (req, res) {
     const userID = req.params.userID;
     User.findOne({uid: userID})

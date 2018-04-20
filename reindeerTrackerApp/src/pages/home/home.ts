@@ -13,6 +13,7 @@ import {AliveState, BatteryState, FilterOptions} from "../../classes/filterOptio
 import {Device} from "../../classes/device";
 import {FilterPage} from "../filter/filter";
 import {FilterProvider} from "../../providers/filter/filter";
+import {FcmProvider} from "../../providers/fcm/fcm";
 
 @Component({
   selector: 'page-home',
@@ -25,7 +26,7 @@ export class HomePage {
   filter: FilterOptions = null;
   filterStrings: String[] = [];
 
-  constructor(public navCtrl: NavController, private deviceProvider: DeviceProvider, private alert: AlertController, public barcodeScanner: BarcodeScanner, private auth: AuthProvider, private loading: LoadingProvider, private filterProvider: FilterProvider) {
+  constructor(public navCtrl: NavController, private deviceProvider: DeviceProvider, private alert: AlertController, public barcodeScanner: BarcodeScanner, private auth: AuthProvider, private loading: LoadingProvider, private filterProvider: FilterProvider, private fcm: FcmProvider) {
 
   }
 
@@ -169,6 +170,7 @@ export class HomePage {
 
   loadLogOut(){
     this.navCtrl.setRoot(LogInPage);
+    this.fcm.removeToken();
     this.auth.signOut();
     this.navCtrl.popToRoot();
   }

@@ -51,6 +51,14 @@ export class FcmProvider {
       })
   }
 
+  public removeToken() {
+    const uid = this.auth.getCurrentUID();
+    this.httpClient.delete(this.api + '/users/' + uid + '/devicetoken')
+      .subscribe(res => {
+        console.log(res);
+      })
+  }
+
   listenToNotifications() {
     return this.firebase.onNotificationOpen();
   }
