@@ -19,23 +19,70 @@
   </div>
 </div>
 
+<div class="delete-modal" *ngIf="showNewDeviceModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title ">Add device</h5>
+        <button type="button" class="close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Please enter the device code attached to your device.</p>
+        <div class="form-group">
+          <label for="key">New device key</label>
+          <input type="text" class="form-control" id="key" placeholder="Ex: 123456" [(ngModel)]="newDevice" autocomplete="off">
+        </div>
+        <div class="alert alert-danger" role="alert" *ngIf="errorMessage.length > 0">
+          {{errorMessage}}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="addKey()">Add</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <div class="card card-body">
     <h4 class="card-title">Welcome {{authService.getCurrentUser().firstName}}</h4>
     <p class="card-text">Select a reindeer below to view detail info</p>
     <p *ngIf="!authService.getCurrentUser().deviceToken">Please download the mobile application and log in with your account to receive notifications from the devices. You can download the app
       <a href="#">here</a>.</p>
+      <!--TODO: add link to mobile application-->
   </div>
   <br>
   <div>
-    <button class="btn btn-primary" routerLink="/new-device"><i class="fas fa-plus"></i> &nbsp;Add new device</button>
+    <button class="btn btn-primary" (click)="openNewDeviceModal()"><i class="fas fa-plus"></i> &nbsp;Add new device</button>
   </div>
   <br>
-  <ul class="list-group" *ngIf="devices">
-    <li *ngFor="let device of devices" class="list-group-item">
+  <div class="row">
+    <div class="col  col-2">
+      <label>Alive:</label>
+      <select class="form-control" [(ngModel)]="filterOptions.alive" (change)="addFilter()">
+        <option [value]="aliveState.all">All devices</option>
+        <option [value]="aliveState.alive">Show alive</option>
+        <option [value]="aliveState.dead">Show dead</option>
+      </select>
+    </div>
+    <div class="col  col-3">
+      <label>Battery</label>
+      <select class="form-control" [(ngModel)]="filterOptions.battery" (change)="addFilter()">
+        <option [value]="batteryState.all">Show all</option>
+        <option [value]="batteryState.high">Show high battery (>20%)</option>
+        <option [value]="batteryState.low">Show low battery (<20%)</option>
+      </select>
+    </div>
+  </div>
+  <br>
+  <ul class="list-group" *ngIf="displayingDevices">
+    <li *ngFor="let device of displayingDevices" class="list-group-item">
       <div class="icons">
         <a (click)="editDevice(device.deviceKey)"><i class="fas fa-pencil-alt"></i></a>
-        <a (click)="openModal(device.deviceKey)"><i class="fas fa-times"></i></a>
+        <a (click)="openDeleteModal(device.deviceKey)"><i class="fas fa-times"></i></a>
       </div>
       <div (click)="selectDevice(device.deviceKey)">
         <p>
@@ -53,10 +100,7 @@
         </div>
       </div>
     </li>
-    <!--<li class="list-group-item" [routerLink]="['/detail']">Reindeer 1</li>
-    <li class="list-group-item">Reindeer 2</li>
-    <li class="list-group-item">Reindeer 3</li>
-    <li class="list-group-item">Reindeer 4</li>
-    <li class="list-group-item">Reindeer 5</li>-->
   </ul>
+  <br>
+  <p style="text-align: center; color: gray" *ngIf="displayingDevices.length == 0">No devices to display.</p>
 </div>

@@ -6,6 +6,8 @@ import {AuthService} from "../shared/auth.service";
 import {DeviceService} from "../shared/device.service";
 import {Router} from "@angular/router";
 import {Device} from "../shared/classes/device";
+import {AliveState, BatteryState, FilterOptions} from "../shared/classes/filteroptions";
+import {KeysService} from "../shared/keys.service";
 
 @Component({
   selector: 'app-sensor-data',
@@ -16,10 +18,20 @@ import {Device} from "../shared/classes/device";
 export class SensorDataComponent implements OnInit {
   showDeleteModal: boolean = false;
   deviceToDelete: string = '';
+  showNewDeviceModal: boolean = false;
+  newDevice: string = '';
+  errorMessage: string = '';
+  displayingDevices: Device[] = [];
   devices: Device[] = [];
+  filterOptions: FilterOptions;
+  aliveState = AliveState;
+  batteryState = BatteryState;
 
-  constructor(private server: SensorDataService, private deviceService: DeviceService, private router: Router, public authService: AuthService) {
-
+  constructor(private server: SensorDataService, private deviceService: DeviceService, private router: Router, public authService: AuthService, private keyService: KeysService) {
+    this.filterOptions = {
+      alive: AliveState.all,
+      battery: BatteryState.all
+    }
   }
 
   getDevices() {
@@ -27,6 +39,7 @@ export class SensorDataComponent implements OnInit {
       .subscribe((devices: Device[]) => {
         console.log(devices);
         this.devices = devices;
+        this.resetList();
       });
   }
 
@@ -72,13 +85,19 @@ export class SensorDataComponent implements OnInit {
     this.router.navigate(['/device-info'], {queryParams: {deviceKey: deviceKey}});
   }
 
-  openModal(deviceKey: string) {
+  openDeleteModal(deviceKey: string) {
     this.deviceToDelete = deviceKey;
     this.showDeleteModal = true;
   }
 
+  openNewDeviceModal() {
+    this.showNewDeviceModal = true;
+  }
+
   closeModal() {
     this.showDeleteModal = false;
+    this.showNewDeviceModal = false;
+    this.newDevice = '';
   }
 
   removeDevice(deviceKey: string) {
@@ -89,5 +108,69 @@ export class SensorDataComponent implements OnInit {
       }, err => {
         console.log(err);
       })
+  }
+
+  addFilter() {
+    /*console.log(this.filterOptions.battery);
+    if (this.filterOptions.alive == AliveState.all && this.filterOptions.battery == BatteryState.all) {
+      console.log('reset filter');
+      this.resetList();
+    } else {
+      console.log('applying filter');
+      this.displayingDevices = [];
+      if (this.filterOptions.alive == AliveState.alive) {
+        for (let i=0; i<this.devices.length; i++) {
+          if (this.devices[i].isAlive) {
+            console.log('adding: ' + this.devices[i]);
+            this.displayingDevices.push(this.devices[i]);
+          }
+        }
+      } else if (this.filterOptions.alive == AliveState.dead) {
+        for (let i=0; i<this.devices.length; i++) {
+          if (!this.devices[i].isAlive) {
+            this.displayingDevices.push(this.devices[i]);
+          }
+        }
+      } else {
+        console.log('reset');
+        this.resetList();
+      }
+      console.log(this.displayingDevices);
+      console.log(this.devices);
+      if (this.filterOptions.battery != BatteryState.all) {
+        for (let i=0; i<this.displayingDevices.length; i++) {
+          console.log(this.displayingDevices[i].lastLog.battery, 'battery: ' + this.displayingDevices[i].deviceKey);
+          if (this.filterOptions.battery == BatteryState.high && this.displayingDevices[i].lastLog.battery <= 20) {
+            this.displayingDevices.splice(i, 1);
+            console.log('removing: ' + this.displayingDevices[i].deviceKey);
+          } else if (this.filterOptions.battery == BatteryState.low && this.displayingDevices[i].lastLog.battery > 20) {
+            this.displayingDevices.splice(i, 1);
+            console.log('removing: ' + this.displayingDevices[i].deviceKey);
+          }
+        }
+      }
+      console.log(this.displayingDevices);
+    }*/
+  }
+
+  resetList() {
+    this.displayingDevices = this.devices.slice();
+  }
+
+  public addKey() {
+    this.errorMessage = '';
+    if (this.newDevice.length != 6) {
+      this.errorMessage = 'Device key is not valid';
+    } else {
+      this.keyService.addKeyToUser(this.authService.getCurrentUID(), this.newDevice)
+        .subscribe(res => {
+            console.log(res);
+            this.router.navigate(['device-info'], {queryParams: {deviceKey: this.newDevice}});
+          },
+          err => {
+            console.log(err);
+            this.errorMessage = 'A device with the key ' + this.newDevice + ' does not exist';
+          });
+    }
   }
 }
