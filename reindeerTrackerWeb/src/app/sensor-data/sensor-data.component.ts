@@ -111,46 +111,43 @@ export class SensorDataComponent implements OnInit {
   }
 
   addFilter() {
-    /*console.log(this.filterOptions.battery);
+    this.displayingDevices = [];
     if (this.filterOptions.alive == AliveState.all && this.filterOptions.battery == BatteryState.all) {
-      console.log('reset filter');
       this.resetList();
     } else {
-      console.log('applying filter');
-      this.displayingDevices = [];
+      let temp: Device[] = [];
       if (this.filterOptions.alive == AliveState.alive) {
         for (let i=0; i<this.devices.length; i++) {
           if (this.devices[i].isAlive) {
-            console.log('adding: ' + this.devices[i]);
-            this.displayingDevices.push(this.devices[i]);
+            temp.push(this.devices[i]);
           }
         }
       } else if (this.filterOptions.alive == AliveState.dead) {
         for (let i=0; i<this.devices.length; i++) {
           if (!this.devices[i].isAlive) {
-            this.displayingDevices.push(this.devices[i]);
+            temp.push(this.devices[i]);
           }
         }
       } else {
         console.log('reset');
-        this.resetList();
+        temp = this.devices.slice();
       }
-      console.log(this.displayingDevices);
-      console.log(this.devices);
-      if (this.filterOptions.battery != BatteryState.all) {
-        for (let i=0; i<this.displayingDevices.length; i++) {
-          console.log(this.displayingDevices[i].lastLog.battery, 'battery: ' + this.displayingDevices[i].deviceKey);
-          if (this.filterOptions.battery == BatteryState.high && this.displayingDevices[i].lastLog.battery <= 20) {
-            this.displayingDevices.splice(i, 1);
-            console.log('removing: ' + this.displayingDevices[i].deviceKey);
-          } else if (this.filterOptions.battery == BatteryState.low && this.displayingDevices[i].lastLog.battery > 20) {
-            this.displayingDevices.splice(i, 1);
-            console.log('removing: ' + this.displayingDevices[i].deviceKey);
+      if (this.filterOptions.battery == BatteryState.high) {
+        for (let i=0; i<temp.length; i++) {
+          if (temp[i].lastLog.battery > 20) {
+            this.displayingDevices.push(temp[i]);
           }
         }
+      } else if (this.filterOptions.battery == BatteryState.low) {
+        for (let i=0; i<temp.length; i++) {
+          if (temp[i].lastLog.battery <= 20) {
+            this.displayingDevices.push(temp[i]);
+          }
+        }
+      } else {
+        this.displayingDevices = temp.slice();
       }
-      console.log(this.displayingDevices);
-    }*/
+    }
   }
 
   resetList() {
