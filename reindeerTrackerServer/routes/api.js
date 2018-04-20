@@ -417,4 +417,46 @@ function selectDeviceInfo(devices, keys) {
     return returnDevices;
 }
 
+router.put('/users/:userID/notifications', function (req, res) {
+    const userID = req.params.userID;
+    addNotification(userID, req.body)
+        .then(function () {
+            res.status(200).json('notificaion added');
+        })
+});
+
+function addNotification(userId, notification) {
+    return User.update(
+        {uid: userId},
+        {$push: {notifications: notification}}
+    );
+}
+
+router.put('/users/:userID/notifications/:notificationID/seen', function (req, res) {
+    const userID = req.params.userID;
+    const notificationId = req.params.notificationID;
+    const seen =  req.body.seen;
+    User.update({'notifications._id': new ObjectId(notificationId)}, {'$set': {
+            'notifications.$.seen': seen
+        }})
+        .then(function () {
+            res.status(200).json('notification marked as seen');
+        })
+        .catch(function (reason) {
+            res.status(500).json('could not mark notification as seen');
+        })
+});
+
+router.delete('/users/:userID/notifications/:notificationID', function (req, res) {
+    const userID = req.params.userID;
+    const notificationID = req.params.notificationID;
+    User.update({ uid: userID }, { "$pull": { "notifications": { "_id": new ObjectId(notificationID) } }}, { safe: true, multi:true })
+        .then(function () {
+            res.status(200).json('notification removed');
+        })
+        .catch(function (reason) {
+            res.status(500).json('could not remove notification');
+        })
+})
+
 module.exports = router;

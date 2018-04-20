@@ -33,7 +33,15 @@ var userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    deviceToken: String
+    deviceToken: String,
+    notifications: [{
+        title: String,
+        message: String,
+        seen: {
+            type: Boolean,
+            default: false
+        }
+    }]
 });
 
 module.exports = mongoose.model('User', userSchema);

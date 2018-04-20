@@ -1,3 +1,5 @@
+import {Notification} from "./classes/notification";
+
 export interface Userdata {
   email: string,
   firstName: string,
@@ -7,5 +9,6 @@ export interface Userdata {
   location: string,
   uid?: string,
   deviceToken?: string,
-  admin?: boolean
+  admin?: boolean,
+  notifications?: Notification[]
 }
