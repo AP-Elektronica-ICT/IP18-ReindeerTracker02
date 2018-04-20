@@ -10,7 +10,7 @@ export class KeysService {
   constructor(private httpClient: HttpClient) { }
 
   checkKeyLength(key: string): boolean {
-    return key.length === 6;
+    return key.length === 5;
   }
 
   addValidKeys(keys: string[]): Observable<object> {

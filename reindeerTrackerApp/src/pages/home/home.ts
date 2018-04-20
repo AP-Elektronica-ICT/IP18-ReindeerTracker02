@@ -101,7 +101,7 @@ export class HomePage {
       inputs: [
         {
           name: 'key',
-          placeholder: 'Ex: 123456',
+          placeholder: 'Ex: 12345',
           type: 'number'
         },
       ],

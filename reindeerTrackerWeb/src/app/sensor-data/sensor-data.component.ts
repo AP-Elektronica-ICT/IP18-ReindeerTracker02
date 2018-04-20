@@ -156,7 +156,7 @@ export class SensorDataComponent implements OnInit {
 
   public addKey() {
     this.errorMessage = '';
-    if (this.newDevice.length != 6) {
+    if (this.newDevice.length != 5) {
       this.errorMessage = 'Device key is not valid';
     } else {
       this.keyService.addKeyToUser(this.authService.getCurrentUID(), this.newDevice)
