@@ -1,7 +1,30 @@
+<div class="delete-modal" *ngIf="showDeleteModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title ">Delete device</h5>
+        <button type="button" class="close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to remove <b>{{deviceToDelete}}</b> from your list?</p>
+        <p>After removing the device it will be removed from your list, everyone else who has de device registered will still be able to see it.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="removeDevice(deviceToDelete)">Remove</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <div class="card card-body">
-    <h4 class="card-title">Login granted!</h4>
+    <h4 class="card-title">Welcome {{authService.getCurrentUser().firstName}}</h4>
     <p class="card-text">Select a reindeer below to view detail info</p>
+    <p *ngIf="!authService.getCurrentUser().deviceToken">Please download the mobile application and log in with your account to receive notifications from the devices. You can download the app
+      <a href="#">here</a>.</p>
   </div>
   <br>
   <div>
@@ -9,21 +32,24 @@
   </div>
   <br>
   <ul class="list-group" *ngIf="devices">
-    <li *ngFor="let device of devices" class="list-group-item" (click)="selectDevice(device.deviceKey)">
-      <div class="close-icon">
-        <i class="fas fa-times"></i>
+    <li *ngFor="let device of devices" class="list-group-item">
+      <div class="icons">
+        <a (click)="editDevice(device.deviceKey)"><i class="fas fa-pencil-alt"></i></a>
+        <a (click)="openModal(device.deviceKey)"><i class="fas fa-times"></i></a>
       </div>
-      <p>
-        {{device.name}} <span class="device-key">({{device.deviceKey}})</span>
-      </p>
-      <div>
-        <div style="display: inline-block">
-          <i [class]="getAliveIcon(device)"></i>
-          &nbsp;{{getAliveText(device)}}
-        </div>
-        <div style="display: inline-block; margin-left: 20px">
-          <i [class]="getBatteryIcon(device)"></i>
-          &nbsp;{{device.lastLog.battery}}%
+      <div (click)="selectDevice(device.deviceKey)">
+        <p>
+          {{device.name}} <span class="device-key">({{device.deviceKey}})</span>
+        </p>
+        <div>
+          <div style="display: inline-block">
+            <i [class]="getAliveIcon(device)"></i>
+            &nbsp;{{getAliveText(device)}}
+          </div>
+          <div style="display: inline-block; margin-left: 20px">
+            <i [class]="getBatteryIcon(device)"></i>
+            &nbsp;{{device.lastLog.battery}}%
+          </div>
         </div>
       </div>
     </li>

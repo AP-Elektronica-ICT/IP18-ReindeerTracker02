@@ -9,7 +9,7 @@ import {User} from "firebase/app";
 @Injectable()
 export class AuthService {
   url = AppSettings.API_ENDPOINT;
-  currentUser = null;
+  currentUser: Userdata = null;
 
   constructor(private af: AngularFireAuth, private http: HttpClient) { }
 
@@ -71,7 +71,7 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       if (this.isAuthenticated()) {
         this.http.get(this.url + '/users/' + this.getCurrentUID())
-          .subscribe(res => {
+          .subscribe((res: Userdata) => {
             this.currentUser = res;
             resolve(res);
             console.log(res);

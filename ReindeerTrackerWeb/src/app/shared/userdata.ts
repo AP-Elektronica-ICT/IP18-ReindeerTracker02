@@ -5,5 +5,7 @@ export interface Userdata {
   lastName: string,
   birthdate: Date,
   phoneNumber: string,
-  location: string
+  location: string,
+  deviceToken: string,
+  admin: boolean
 }

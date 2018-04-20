@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { SensorDataService } from './sensor-data.service';
 import { HttpClient } from 'selenium-webdriver/http';
 import { element } from 'protractor';
@@ -14,10 +14,13 @@ import {Device} from "../shared/classes/device";
   providers: [SensorDataService]
 })
 export class SensorDataComponent implements OnInit {
-  naam : string;
+  showDeleteModal: boolean = false;
+  deviceToDelete: string = '';
   devices: Device[] = [];
 
-  constructor(private server: SensorDataService, private deviceService: DeviceService, private router: Router) { }
+  constructor(private server: SensorDataService, private deviceService: DeviceService, private router: Router, public authService: AuthService) {
+
+  }
 
   getDevices() {
     this.deviceService.getUserDevices()
@@ -63,5 +66,28 @@ export class SensorDataComponent implements OnInit {
     } else {
       return 'fas fa-battery-empty red';
     }
+  }
+
+  editDevice(deviceKey: string) {
+    this.router.navigate(['/device-info'], {queryParams: {deviceKey: deviceKey}});
+  }
+
+  openModal(deviceKey: string) {
+    this.deviceToDelete = deviceKey;
+    this.showDeleteModal = true;
+  }
+
+  closeModal() {
+    this.showDeleteModal = false;
+  }
+
+  removeDevice(deviceKey: string) {
+    this.deviceService.removeDevice(deviceKey)
+      .subscribe(res => {
+        this.getDevices();
+        this.closeModal();
+      }, err => {
+        console.log(err);
+      })
   }
 }

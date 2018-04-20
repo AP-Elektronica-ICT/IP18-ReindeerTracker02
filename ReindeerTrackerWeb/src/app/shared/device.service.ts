@@ -32,4 +32,9 @@ export class DeviceService {
     return this.httpClient.put(this.url + '/devices/' + deviceKey + '/details', details);
   }
 
+  removeDevice(deviceKey: string) {
+    const uid = this.auth.getCurrentUID();
+    return this.httpClient.delete(this.url + '/users/' + uid + '/devices?deviceKey=' + deviceKey);
+  }
+
 }
