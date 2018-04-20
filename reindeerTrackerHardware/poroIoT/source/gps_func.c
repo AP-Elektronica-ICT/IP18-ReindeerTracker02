@@ -121,13 +121,16 @@ uint8_t getGPS() {
 		}
 
 		if (strstr(GPS_dataPtrs[6], "A") != NULL) {
-			PCprint("Got GPS\r\n");
+
 			parseData(GPS_dataPtrs[1], GPS_dataPtrs[3]);
 			return 1;
 		}
 
 		else if (strstr(GPS_dataPtrs[6], "V") != NULL) {
+
+#if PRINT_GPS
 			PCprint("Data invalid, waiting for valid data\r\n");
+#endif
 		}
 	}
 
@@ -184,7 +187,7 @@ void parseData(char* latStr, char* lonStr) {
 	uint32_t latMinutes = atol(delPtr);
 	latMinutes = latMinutes / 6; //Convert minutes to decimal degrees
 
-	sprintf(delPtr, "%ld\r\n", latMinutes); //here because of LOOP2 delPtr points after the original zeroes(if there were any)
+	sprintf(delPtr, "%ld", latMinutes); //here because of LOOP2 delPtr points after the original zeroes(if there were any)
 											//and decimal problem is fixed
 
 	while (lonStr[d_ptr] == '0') {
@@ -202,7 +205,7 @@ void parseData(char* latStr, char* lonStr) {
 	uint32_t lonMinutes = atol(delPtr);
 	lonMinutes = lonMinutes / 6;
 
-	sprintf(delPtr, "%ld\r\n", lonMinutes); //here because of LOOP3 delPtr points after the original zeroes(if there were any)
+	sprintf(delPtr, "%ld", lonMinutes); //here because of LOOP3 delPtr points after the original zeroes(if there were any)
 											//and decimal problem is fixed
 
 }

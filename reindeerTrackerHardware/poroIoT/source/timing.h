@@ -10,7 +10,8 @@
 
 #include <stdint.h>
 
-#define RTC_REPORT_INTERVAL 15 //3599
+#define RTC_REPORT_INTERVAL 40
+
 #define LPTMR_TIMEOUT 8000
 
 uint32_t millis();

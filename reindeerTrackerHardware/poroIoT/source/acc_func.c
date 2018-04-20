@@ -49,7 +49,7 @@ void configure_acc() {
 	accWriteReg(FXOS8700Q_A_FFMT_THS, 0xff);
 
 
-	accWriteReg(FXOS8700Q_A_FFMT_THS, 0x8b);
+	accWriteReg(FXOS8700Q_A_FFMT_THS, 0x8f);
 
 	//accWriteReg(0x18, 0x2); //debounce counter
 

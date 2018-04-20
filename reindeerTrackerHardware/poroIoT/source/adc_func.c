@@ -16,16 +16,7 @@ int32_t temp;
 
 void initAdc() {
 
-	//ADC0_DP1, ADC0_DM1, ADC1_DP
-	//Write ADC0_C1 select channel AD4
-
-	// PTC0 (X-axis), PTC1 (Y-axis), PTB2 (Z-axis), PTB3 (temp) ADC PIN
-
-	// -1G 26500 0G 32200 1G 39300
-
 	CLOCK_EnableClock(kCLOCK_Adc0);
-	//CLOCK_EnableClock(kCLOCK_PortC);
-	//CLOCK_EnableClock(kCLOCK_PortB);
 
 	adc16_config_t adc_config;
 
@@ -43,7 +34,6 @@ void initAdc() {
 
 	ADC16_Init(ADC0, &adc_config);
 
-	//ADC0 -> SC1[0] |= 0x1F; //Choose AD4 channel 00100
 
 }
 unsigned short ADC_read16b(uint8_t channel_select) {
@@ -98,6 +88,6 @@ uint32_t batteryMeas(){
 		battery += ADC_read16b(VOLTAGE_MEAS_CHANNEL);
 	}
 	battery /= 10;
-	battery = (battery - 14979) / 50556 * 100;
+	battery = (battery - 19784) / 45751 * 100;
 	return (uint32_t)battery;
 }
