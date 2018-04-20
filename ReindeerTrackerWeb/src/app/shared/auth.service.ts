@@ -64,12 +64,13 @@ export class AuthService {
   }
 
   signOut(): Promise<any> {
+    this.currentUser = null;
     return this.af.auth.signOut();
   }
 
   setCurrentUser(): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (this.isAuthenticated()) {
+      if (this.isAuthenticated() && !this.currentUser) {
         this.http.get(this.url + '/users/' + this.getCurrentUID())
           .subscribe((res: Userdata) => {
             this.currentUser = res;
@@ -84,6 +85,10 @@ export class AuthService {
 
   getCurrentUser() {
     return this.currentUser;
+  }
+
+  setCurrentUserFromUserdata(userdata: Userdata) {
+    this.currentUser = userdata;
   }
 
   isAdmin() {

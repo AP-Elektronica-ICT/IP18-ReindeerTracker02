@@ -25,7 +25,7 @@ export class SignupComponent implements OnInit {
     const email = form.controls.email.value;
     const password =  form.controls.password.value;
     const passwordrpt = form.controls.passwordrpt.value;
-    const userdata = {
+    const userdata: Userdata = {
       email: email,
       firstName: form.controls.firstName.value,
       lastName: form.controls.lastName.value,
@@ -38,6 +38,7 @@ export class SignupComponent implements OnInit {
       this.auth.signupWithEmailPassword(email, password, userdata as Userdata)
         .subscribe(res => {
           console.log(res);
+          this.auth.setCurrentUserFromUserdata(userdata);
           this.router.navigate(['/']);
         }, err => {
           this.errorMessage = 'There is already an account with this email address';
