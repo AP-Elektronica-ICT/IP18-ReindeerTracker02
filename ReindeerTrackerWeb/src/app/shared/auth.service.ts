@@ -4,6 +4,7 @@ import {Userdata} from "./userdata";
 import {HttpClient} from "@angular/common/http";
 import {AppSettings} from "./AppSettings";
 import {Observable} from "rxjs/Observable";
+import {User} from "firebase/app";
 
 @Injectable()
 export class AuthService {
@@ -66,14 +67,23 @@ export class AuthService {
     return this.af.auth.signOut();
   }
 
-  setCurrentUser() {
-    if (this.isAuthenticated()) {
-      this.http.get(this.url + '/users/' + this.getCurrentUID())
-        .subscribe(res => {
-          this.currentUser = res;
-          console.log(res);
-        })
-    }
+  setCurrentUser(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.isAuthenticated()) {
+        this.http.get(this.url + '/users/' + this.getCurrentUID())
+          .subscribe(res => {
+            this.currentUser = res;
+            resolve(res);
+            console.log(res);
+          })
+      } else {
+        reject('Not logged in');
+      }
+    });
+  }
+
+  getCurrentUser() {
+    return this.currentUser;
   }
 
   isAdmin() {

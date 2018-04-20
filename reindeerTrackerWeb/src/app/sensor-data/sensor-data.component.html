@@ -1,15 +1,36 @@
-<div class="card card-body">
+<div class="container">
+  <div class="card card-body">
     <h4 class="card-title">Login granted!</h4>
     <p class="card-text">Select a reindeer below to view detail info</p>
-</div>
-
-<ul class="list-group" *ngIf="devices">
-  <li *ngFor="let device of devices" class="list-group-item" (click)="selectDevice(device.deviceKey)">
-    {{device.deviceKey}}
-  </li>
+  </div>
+  <br>
+  <div>
+    <button class="btn btn-primary" routerLink="/new-device">Add new device</button>
+  </div>
+  <br>
+  <ul class="list-group" *ngIf="devices">
+    <li *ngFor="let device of devices" class="list-group-item" (click)="selectDevice(device.deviceKey)">
+      <div class="close-icon">
+        <i class="fas fa-times"></i>
+      </div>
+      <p>
+        {{device.name}} <span class="device-key">({{device.deviceKey}})</span>
+      </p>
+      <div>
+        <div style="display: inline-block">
+          <i [class]="getAliveIcon(device)"></i>
+          &nbsp;{{getAliveText(device)}}
+        </div>
+        <div style="display: inline-block; margin-left: 20px">
+          <i [class]="getBatteryIcon(device)"></i>
+          &nbsp;{{device.lastLog.battery}}%
+        </div>
+      </div>
+    </li>
     <!--<li class="list-group-item" [routerLink]="['/detail']">Reindeer 1</li>
     <li class="list-group-item">Reindeer 2</li>
     <li class="list-group-item">Reindeer 3</li>
     <li class="list-group-item">Reindeer 4</li>
     <li class="list-group-item">Reindeer 5</li>-->
-</ul>
+  </ul>
+</div>

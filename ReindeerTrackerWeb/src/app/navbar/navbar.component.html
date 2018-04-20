@@ -13,9 +13,9 @@
     </div>
     <div class="buttons" *ngIf="authService.isAuthenticated()">
       <a routerLink="/manifacturer/new-device" *ngIf="authService.isAdmin()">Add new device</a>
-      <div *ngIf="!authService.isAdmin()">
+      <div *ngIf="!authService.isAdmin()" style="display: inline-block">
         <a routerLink="/user">Devices</a>
-        <a href="#">Profile</a>
+        <a routerLink="/profile">Profile</a>
       </div>
       <div class="auth">
         <button (click)="signOut()">Logout</button>

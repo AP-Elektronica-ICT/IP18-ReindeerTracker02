@@ -28,6 +28,7 @@ import { AgmCoreModule } from '@agm/core';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { ProfileComponent } from './profile/profile.component';
 
 
 
@@ -46,7 +47,8 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
     DetailComponent,
     LoginComponent,
     SignupComponent,
-    PasswordResetComponent
+    PasswordResetComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
