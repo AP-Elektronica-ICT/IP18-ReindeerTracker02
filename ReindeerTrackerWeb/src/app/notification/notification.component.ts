@@ -30,4 +30,11 @@ export class NotificationComponent implements OnInit {
     }
   }
 
+  deleteNotification(index: number) {
+    this.authSerivce.deleteNotification(index)
+      .then((notifications: Notification[]) => {
+        this.notifications = notifications;
+      });
+  }
+
 }
