@@ -450,7 +450,7 @@ router.put('/users/:userID/notifications', function (req, res) {
 function addNotification(userId, notification) {
     return User.update(
         {uid: userId},
-        {$push: {notifications: notification}}
+        {$push: {notifications: {$each: [notification], $position: 0}}}
     );
 }
 
