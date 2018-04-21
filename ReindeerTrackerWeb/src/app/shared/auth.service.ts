@@ -117,16 +117,18 @@ export class AuthService {
         notificationIDs.push(this.currentUser.notifications[i]._id);
       }
     }
-    return this.http.put(this.url + '/users/' + uid + '/notifications/seen', notificationIDs)
-      .subscribe(res => {
-        this.currentUser.unseen = 0;
-        for (let i=0; i<this.currentUser.notifications.length; i++) {
-          this.currentUser.notifications[i].seen = true;
-        }
-        console.log('set all as seen');
-      }, err => {
-        console.log(err, 'notification error');
-      })
+    if (notificationIDs.length != 0) {
+      this.http.put(this.url + '/users/' + uid + '/notifications/seen', notificationIDs)
+        .subscribe(res => {
+          this.currentUser.unseen = 0;
+          for (let i=0; i<this.currentUser.notifications.length; i++) {
+            this.currentUser.notifications[i].seen = true;
+          }
+          console.log('set all as seen');
+        }, err => {
+          console.log(err, 'notification error');
+        })
+    }
   }
 
   deleteNotification(index: number): Promise<Notification[]> {
