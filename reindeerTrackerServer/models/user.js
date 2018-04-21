@@ -37,11 +37,30 @@ var userSchema = new mongoose.Schema({
     notifications: [{
         title: String,
         message: String,
+        link: String,
         seen: {
             type: Boolean,
             default: false
         }
     }]
+},
+    {
+        toObject: {
+            virtuals: true
+        },
+        toJSON: {
+            virtuals: true
+        }
+    });
+
+userSchema.virtual('unseen').get(function () {
+    var unseen = 0;
+    for (var i=0; i<this.notifications.length; i++) {
+        if (!this.notifications[i].seen) {
+            unseen++;
+        }
+    }
+    return unseen;
 });
 
 module.exports = mongoose.model('User', userSchema);

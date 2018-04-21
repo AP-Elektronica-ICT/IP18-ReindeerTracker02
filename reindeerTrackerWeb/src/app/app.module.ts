@@ -30,6 +30,7 @@ import { SignupComponent } from './signup/signup.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileEditComponent } from './profile-edit/profile-edit.component';
+import { NotificationComponent } from './notification/notification.component';
 
 
 
@@ -50,7 +51,8 @@ import { ProfileEditComponent } from './profile-edit/profile-edit.component';
     SignupComponent,
     PasswordResetComponent,
     ProfileComponent,
-    ProfileEditComponent
+    ProfileEditComponent,
+    NotificationComponent
   ],
   imports: [
     BrowserModule,

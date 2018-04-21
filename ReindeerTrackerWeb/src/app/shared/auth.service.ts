@@ -5,6 +5,7 @@ import {HttpClient} from "@angular/common/http";
 import {AppSettings} from "./AppSettings";
 import {Observable} from "rxjs/Observable";
 import {User} from "firebase/app";
+import {Notification} from "./classes/notification";
 
 @Injectable()
 export class AuthService {
@@ -102,6 +103,30 @@ export class AuthService {
   saveUserdata(userdata: Userdata) {
     const uid = this.getCurrentUID();
     return this.http.put(this.url + '/users/' + uid, userdata);
+  }
+
+  getNotifications(): Notification[] {
+    return this.currentUser.notifications;
+  }
+
+  markAllNotificationsAsSeen() {
+    const uid = this.getCurrentUID();
+    var notificationIDs = [];
+    for (let i=0; i<this.currentUser.notifications.length; i++) {
+      if (!this.currentUser.notifications[i].seen) {
+        notificationIDs.push(this.currentUser.notifications[i]._id);
+      }
+    }
+    return this.http.put(this.url + '/users/' + uid + '/notifications/seen', notificationIDs)
+      .subscribe(res => {
+        this.currentUser.unseen = 0;
+        for (let i=0; i<this.currentUser.notifications.length; i++) {
+          this.currentUser.notifications[i].seen = true;
+        }
+        console.log('set all as seen');
+      }, err => {
+        console.log(err, 'notification error');
+      })
   }
 
 }

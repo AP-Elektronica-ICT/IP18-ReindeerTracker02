@@ -10,5 +10,6 @@ export interface Userdata {
   uid?: string,
   deviceToken?: string,
   admin?: boolean,
-  notifications?: Notification[]
+  notifications?: Notification[],
+  unseen?: number
 }

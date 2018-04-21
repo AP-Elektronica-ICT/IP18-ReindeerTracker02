@@ -13,6 +13,7 @@ import {SensorDataComponent} from "./sensor-data/sensor-data.component";
 import {DetailComponent} from "./detail/detail.component";
 import {ProfileComponent} from "./profile/profile.component";
 import {ProfileEditComponent} from "./profile-edit/profile-edit.component";
+import {NotificationComponent} from "./notification/notification.component";
 
 const appRoutes = [
   { path: '', component: HomeComponent},
@@ -20,6 +21,7 @@ const appRoutes = [
   { path: 'device-info', component: DeviceInfoComponent},
   { path: 'user', component: SensorDataComponent},
   { path: 'detail', component: DetailComponent},
+  { path: 'notifications', component: NotificationComponent},
   { path: 'login', component: LoginComponent},
   { path: 'signup', component: SignupComponent},
   { path: 'profile', component: ProfileComponent},

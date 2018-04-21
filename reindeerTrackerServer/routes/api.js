@@ -114,6 +114,10 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
                                             body: 'Check the app to find the location.'
                                         }
                                     };
+                                    var dbNotification = {
+                                        title: device.name + ' (' + device.deviceKey + ') has died.',
+                                        message: device.name + ' has unfortunatly died, check his details to find his last location.'
+                                    }
                                 } else {
                                     var baseMessage = {
                                         notification: {
@@ -121,11 +125,18 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
                                             body: 'Battery at ' + log.battery + '%. Please check the device to replace the battery.'
                                         }
                                     };
+                                    var dbNotification = {
+                                        title: device.name + ' (' + device.deviceKey + ') battery is low.',
+                                        message: device.name + "'s battery is low. Please check the device to replace the battery."
+                                    }
                                 }
                                 for (var i=0; i< deviceTokens.length; i++) {
                                     var message = baseMessage;
                                     message.token = deviceTokens[i];
                                     sendNotification(message);
+                                }
+                                for (var i=0; i<device.userIDs.length; i++) {
+                                    addNotification(device.userIDs[i], dbNotification);
                                 }
                             });
                     }
@@ -417,6 +428,17 @@ function selectDeviceInfo(devices, keys) {
     return returnDevices;
 }
 
+router.get('/users/:userID/notifications', function (req, res) {
+    const userID = req.params.userID;
+    User.findOne({uid: userID})
+        .then(function (user) {
+            res.status(200).json(user.notifications);
+        })
+        .catch(function (reason) {
+            res.status(500).json('could not find user');
+        })
+});
+
 router.put('/users/:userID/notifications', function (req, res) {
     const userID = req.params.userID;
     addNotification(userID, req.body)
@@ -432,20 +454,27 @@ function addNotification(userId, notification) {
     );
 }
 
-router.put('/users/:userID/notifications/:notificationID/seen', function (req, res) {
+router.put('/users/:userID/notifications/seen', function (req, res) {
     const userID = req.params.userID;
-    const notificationId = req.params.notificationID;
-    const seen =  req.body.seen;
-    User.update({'notifications._id': new ObjectId(notificationId)}, {'$set': {
-            'notifications.$.seen': seen
-        }})
-        .then(function () {
+    const notificationIDs = req.body;
+    console.log(notificationIDs);
+    for (var i=0; i<notificationIDs.length; i++) {
+        setNotificationAsSeen(notificationIDs[i])
+            .catch(function (reason) {
+                res.status(500).json('could not mark notification as seen');
+                i=notificationIDs.length;
+            });
+        if (i >= notificationIDs.length -1) {
             res.status(200).json('notification marked as seen');
-        })
-        .catch(function (reason) {
-            res.status(500).json('could not mark notification as seen');
-        })
+        }
+    }
 });
+
+function setNotificationAsSeen(id) {
+    return User.update({'notifications._id': new ObjectId(id)}, {'$set': {
+            'notifications.$.seen': true
+        }})
+}
 
 router.delete('/users/:userID/notifications/:notificationID', function (req, res) {
     const userID = req.params.userID;
