@@ -33,6 +33,8 @@ import {LaunchNavigator} from "@ionic-native/launch-navigator";
 import { LoadingProvider } from '../providers/loading/loading';
 import {FilterPage} from "../pages/filter/filter";
 import { FilterProvider } from '../providers/filter/filter';
+import { NotificationProvider } from '../providers/notification/notification';
+import {NotificationPage} from "../pages/notification/notification";
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAud_cLzms8_U55nCkSKNmnRUhXei2pLQs",
@@ -54,7 +56,8 @@ export const firebaseConfig = {
     LogInPage,
     SignUpPage,
     MapPage,
-    FilterPage
+    FilterPage,
+    NotificationPage
   ],
   imports: [
     BrowserModule,
@@ -76,7 +79,8 @@ export const firebaseConfig = {
     LogInPage,
     SignUpPage,
     MapPage,
-    FilterPage
+    FilterPage,
+    NotificationPage
   ],
   providers: [
     StatusBar,
@@ -95,7 +99,8 @@ export const firebaseConfig = {
     Firebase,
     LaunchNavigator,
     LoadingProvider,
-    FilterProvider
+    FilterProvider,
+    NotificationProvider
   ]
 })
 export class AppModule {}

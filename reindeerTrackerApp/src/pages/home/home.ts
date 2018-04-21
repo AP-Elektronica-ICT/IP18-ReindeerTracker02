@@ -14,6 +14,7 @@ import {Device} from "../../classes/device";
 import {FilterPage} from "../filter/filter";
 import {FilterProvider} from "../../providers/filter/filter";
 import {FcmProvider} from "../../providers/fcm/fcm";
+import {NotificationPage} from "../notification/notification";
 
 @Component({
   selector: 'page-home',
@@ -166,6 +167,10 @@ export class HomePage {
 
   loadProfile(){
     this.navCtrl.push(ProfilePage);
+  }
+
+  loadNotification() {
+    this.navCtrl.push(NotificationPage);
   }
 
   loadLogOut(){
