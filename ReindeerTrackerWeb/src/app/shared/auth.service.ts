@@ -137,7 +137,7 @@ export class AuthService {
       const uid = this.getCurrentUID();
       this.http.delete(this.url + '/users/' + uid + '/notifications/' + notificationId)
         .subscribe(res => {
-          if (this.currentUser.notifications[index].seen) {
+          if (!this.currentUser.notifications[index].seen) {
             this.currentUser.unseen--;
           }
           this.currentUser.notifications.splice(index, 1);

@@ -10,6 +10,10 @@ var deviceSchema = new mongoose.Schema({
         type: String,
         unique: true
     }],
+    invites: [{
+        type: String,
+        unique: true
+    }],
     activated: {
         type: Boolean,
         default: false

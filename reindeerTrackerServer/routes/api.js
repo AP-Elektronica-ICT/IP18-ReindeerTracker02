@@ -264,6 +264,60 @@ function generateBirthDate(year, month, day) {
     return new Date(dateString);
 }
 
+router.get('/testnot', function (req, res) {
+    addNotification('O4ztFkRL53ZJUHrSnfoXxzH31dQ2', {
+        title: 'Device invite',
+        message: 'You have been invited to add ' + '12345' + ' to your devices.'
+    })
+        .then(function () {
+            res.json('done');
+        })
+        .catch(function (reason) {
+            res.json(reason);
+        })
+});
+
+router.put('/devices/:deviceKey/invite', function (req, res) {
+    const deviceKey = req.params.deviceKey;
+    const uid = req.body.uid;
+    console.log(uid);
+    Device.update(
+        {deviceKey: deviceKey},
+        {$push: {invites: uid}}
+    )
+        .then(function () {
+            console.log('Invite added');
+            addNotification(uid, {
+                title: 'Device invite',
+                message: 'You have been invited to add ' + deviceKey + ' to your devices.'
+            })
+                .then(function () {
+                    console.log('notification added')
+                })
+                .catch(function (reason) {
+                    console.log(reason);
+                })
+            User.findOne({uid: uid})
+                .then(function (user) {
+                    console.log(user.deviceToken, 'deviceToken')
+                    if (user.deviceToken) {
+                        var message = {
+                            notification: {
+                                title: 'Device invite.',
+                                body: 'You have been invited to add ' + deviceKey + ' to your devices.'
+                            },
+                            token: user.deviceToken
+                        };
+                        sendNotification(message);
+                    }
+                })
+            res.status(200).json('User invited: ' + uid);
+        })
+        .catch(function (reason) {
+            res.status(500).json('Could not invite user');
+        })
+});
+
 /////////////////////////////////////////////////////////////////
 // USERS
 /////////////////////////////////////////////////////////////////
@@ -326,34 +380,38 @@ router.put('/users/:userID/devices', function (req, res) {
     const deviceKey = req.body.deviceKey;
     Device.findOne({deviceKey: deviceKey})
         .then(function (device) {
-            if (device.logs.length <= 0) {
-                const newLog = {
-                    battery: 100,
-                    isAlive: true,
-                    initialLog: true
-                };
-                Device.update(
-                    {deviceKey: deviceKey},
-                    {$push: {userIDs: userID, logs: newLog}}
-                )
-                    .then(function (value) {
-                        res.status(200).json('device registered');
-                    })
-                    .catch(function (reason) {
-                        res.status(500).send('could not register device');
-                    });
-            }
-            else {
-                Device.update(
-                    {deviceKey: deviceKey},
-                    {$push: {userIDs: userID}}
-                )
-                    .then(function (value) {
-                        res.status(200).json('device registered');
-                    })
-                    .catch(function (reason) {
-                        res.status(500).send('could not register device');
-                    });
+            if (device.invites.indexOf(userID) != -1 && device.userIDs.length != 0) {
+                if (device.logs.length <= 0) {
+                    const newLog = {
+                        battery: 100,
+                        isAlive: true,
+                        initialLog: true
+                    };
+                    Device.update(
+                        {deviceKey: deviceKey},
+                        {$push: {userIDs: userID, logs: newLog}}
+                    )
+                        .then(function (value) {
+                            res.status(200).json('device registered');
+                        })
+                        .catch(function (reason) {
+                            res.status(500).send('could not register device');
+                        });
+                }
+                else {
+                    Device.update(
+                        {deviceKey: deviceKey},
+                        {$push: {userIDs: userID}}
+                    )
+                        .then(function (value) {
+                            res.status(200).json('device registered');
+                        })
+                        .catch(function (reason) {
+                            res.status(500).send('could not register device');
+                        });
+                }
+            } else {
+                res.status(401).json('Not invited to add device');
             }
         });
 });
