@@ -417,9 +417,12 @@ router.put('/users/:userID/devices', function (req, res) {
                          isAlive: true,
                          initialLog: true
                      };
+                     if (device.userIDs.length == 0) {
+                         var invite = userID;
+                     }
                      Device.update(
                          {deviceKey: deviceKey},
-                         {$push: {userIDs: userID, logs: newLog}}
+                         {$push: {userIDs: userID, logs: newLog, invites: invite}}
                      )
                          .then(function (value) {
                              res.status(200).json('device registered');
