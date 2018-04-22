@@ -280,7 +280,6 @@ router.get('/testnot', function (req, res) {
 router.put('/devices/:deviceKey/invite', function (req, res) {
     const deviceKey = req.params.deviceKey;
     const email = req.body.email;
-    console.log(uid);
     User.findOne({email: email})
         .then(function (user) {
             const uid = user.uid;
