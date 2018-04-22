@@ -31,6 +31,7 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { NotificationComponent } from './notification/notification.component';
+import {InviteService} from "./shared/invite.service";
 
 
 
@@ -67,7 +68,7 @@ import { NotificationComponent } from './notification/notification.component';
       apiKey: 'AIzaSyCUwftTaruBNv0xSVOsRaAZRdIsJ6WQhSQ'
     })
   ],
-  providers: [AuthService, KeysService, DeviceService, StorageService, AuthService, Http],
+  providers: [AuthService, KeysService, DeviceService, StorageService, AuthService, Http, InviteService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

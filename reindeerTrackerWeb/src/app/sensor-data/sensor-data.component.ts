@@ -8,6 +8,7 @@ import {Router} from "@angular/router";
 import {Device} from "../shared/classes/device";
 import {AliveState, BatteryState, FilterOptions} from "../shared/classes/filteroptions";
 import {KeysService} from "../shared/keys.service";
+import {InviteService} from "../shared/invite.service";
 
 @Component({
   selector: 'app-sensor-data',
@@ -20,14 +21,19 @@ export class SensorDataComponent implements OnInit {
   deviceToDelete: string = '';
   showNewDeviceModal: boolean = false;
   newDevice: string = '';
+  showInviteModal: boolean = false;
   errorMessage: string = '';
+  invite: string = '';
+  inviteDeviceKey: string = '';
+  inviteErrorMessage: string = '';
+  inviteSuccessMessage: string = '';
   displayingDevices: Device[] = [];
   devices: Device[] = [];
   filterOptions: FilterOptions;
   aliveState = AliveState;
   batteryState = BatteryState;
 
-  constructor(private server: SensorDataService, private deviceService: DeviceService, private router: Router, public authService: AuthService, private keyService: KeysService) {
+  constructor(private server: SensorDataService, private deviceService: DeviceService, private router: Router, public authService: AuthService, private keyService: KeysService, private inviteService: InviteService) {
     this.filterOptions = {
       alive: AliveState.all,
       battery: BatteryState.all
@@ -99,6 +105,11 @@ export class SensorDataComponent implements OnInit {
     this.showDeleteModal = false;
     this.showNewDeviceModal = false;
     this.newDevice = '';
+    this.errorMessage = '';
+    this.showInviteModal = false;
+    this.invite = '';
+    this.inviteErrorMessage = '';
+    this.inviteSuccessMessage = '';
   }
 
   removeDevice(deviceKey: string) {
@@ -170,8 +181,29 @@ export class SensorDataComponent implements OnInit {
           },
           err => {
             console.log(err);
-            this.errorMessage = 'A device with the key ' + this.newDevice + ' does not exist';
+            if (err.status == 401) {
+              this.errorMessage = 'You have not been invited to add this device to your list. Ask the owner.';
+            } else {
+              this.errorMessage = 'A device with the key ' + this.newDevice + ' does not exist';
+            }
           });
     }
+  }
+
+  openInviteModal(deviceKey: string) {
+    this.showInviteModal = true;
+    this.inviteDeviceKey = deviceKey;
+  }
+
+  sendInvite() {
+    this.inviteService.sendInvite(this.inviteDeviceKey, this.invite)
+      .subscribe(res => {
+        this.inviteSuccessMessage = 'An invite has been sent to ' + this.invite;
+        setTimeout(() => {
+          this.closeModal();
+        }, 2000);
+      }, err => {
+        this.inviteErrorMessage = 'There is no user registered using this email address.'
+      })
   }
 }
