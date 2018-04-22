@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {AuthProvider} from "../../providers/auth/auth";
 import {SignUpPage} from "../sign-up/sign-up";
+import { LinkProfelPage } from '../link-profel/link-profel';
 
 /**
  * Generated class for the ProfilePage page.

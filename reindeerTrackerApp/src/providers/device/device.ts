@@ -73,4 +73,8 @@ export class DeviceProvider {
     return this.http.put(this.api + '/devices/' + deviceKey + '/details', details);
   }
 
+  putInvite(deviceKey: string, emailAdress: string){
+    return this.http.put(this.api + '/devices/' + deviceKey + '/invite', {email: emailAdress});
+  }
+
 }

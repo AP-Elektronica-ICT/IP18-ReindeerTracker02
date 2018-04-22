@@ -35,6 +35,7 @@ import {FilterPage} from "../pages/filter/filter";
 import { FilterProvider } from '../providers/filter/filter';
 import { NotificationProvider } from '../providers/notification/notification';
 import {NotificationPage} from "../pages/notification/notification";
+import { LinkProfelPage } from '../pages/link-profel/link-profel';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAud_cLzms8_U55nCkSKNmnRUhXei2pLQs",
@@ -57,7 +58,8 @@ export const firebaseConfig = {
     SignUpPage,
     MapPage,
     FilterPage,
-    NotificationPage
+    NotificationPage,
+    LinkProfelPage
   ],
   imports: [
     BrowserModule,
@@ -80,7 +82,8 @@ export const firebaseConfig = {
     SignUpPage,
     MapPage,
     FilterPage,
-    NotificationPage
+    NotificationPage,
+    LinkProfelPage
   ],
   providers: [
     StatusBar,
