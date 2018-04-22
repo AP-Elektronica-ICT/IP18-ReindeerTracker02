@@ -20,6 +20,7 @@ export class DeviceInfoComponent implements OnInit {
   showDeviceNotFoundMessage = false;
   imageFile = null;
   showActivateSuccessMessage = false;
+  imageChanged = false;
 
   constructor(private deviceService: DeviceService, private route: ActivatedRoute, private location: Location, private storage: StorageService, private router: Router) { }
 
@@ -70,6 +71,7 @@ export class DeviceInfoComponent implements OnInit {
 
       reader.onload = (event:any) => {
         this.device.imageUrl = event.target.result;
+        this.imageChanged = true;
       }
 
       reader.readAsDataURL(event.target.files[0]);
@@ -81,7 +83,7 @@ export class DeviceInfoComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.device.imageUrl) {
+    if (this.imageChanged) {
       this.storage.uploadImage(this.imageFile, this.deviceKey)
         .then(url => {
           this.device.imageUrl = url;

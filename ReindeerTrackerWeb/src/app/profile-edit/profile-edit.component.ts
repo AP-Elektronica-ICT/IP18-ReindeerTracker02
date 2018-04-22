@@ -28,12 +28,12 @@ export class ProfileEditComponent implements OnInit {
 
   saveChanges() {
     this.currentUser.phoneNumber = '+358' + this.currentUser.phoneNumber;
+    console.log(this.currentUser);
     this.authService.saveUserdata(this.currentUser)
       .subscribe(res => {
-        this.authService.setCurrentUser()
-          .then(() => {
-            this.location.back();
-          })
+        console.log('user data changed');
+        this.authService.setCurrentUserFromUserdata(this.currentUser);
+        this.location.back();
       })
   }
 

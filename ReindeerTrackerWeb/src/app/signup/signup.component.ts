@@ -38,6 +38,9 @@ export class SignupComponent implements OnInit {
       this.auth.signupWithEmailPassword(email, password, userdata as Userdata)
         .subscribe(res => {
           console.log(res);
+          if (userdata.email.indexOf('@reindeertracker.com') != -1) {
+            userdata.admin = true;
+          }
           this.auth.setCurrentUserFromUserdata(userdata);
           this.router.navigate(['/']);
         }, err => {
