@@ -279,43 +279,51 @@ router.get('/testnot', function (req, res) {
 
 router.put('/devices/:deviceKey/invite', function (req, res) {
     const deviceKey = req.params.deviceKey;
-    const uid = req.body.uid;
+    const email = req.body.email;
     console.log(uid);
-    Device.update(
-        {deviceKey: deviceKey},
-        {$push: {invites: uid}}
-    )
-        .then(function () {
-            console.log('Invite added');
-            addNotification(uid, {
-                title: 'Device invite',
-                message: 'You have been invited to add ' + deviceKey + ' to your devices.'
-            })
+    User.findOne({email: email})
+        .then(function (user) {
+            const uid = user.uid;
+            Device.update(
+                {deviceKey: deviceKey},
+                {$push: {invites: uid}}
+            )
                 .then(function () {
-                    console.log('notification added')
+                    console.log('Invite added');
+                    addNotification(uid, {
+                        title: 'Device invite',
+                        message: 'You have been invited to add ' + deviceKey + ' to your devices.'
+                    })
+                        .then(function () {
+                            console.log('notification added')
+                        })
+                        .catch(function (reason) {
+                            console.log(reason);
+                        })
+                    User.findOne({uid: uid})
+                        .then(function (user) {
+                            console.log(user.deviceToken, 'deviceToken')
+                            if (user.deviceToken) {
+                                var message = {
+                                    notification: {
+                                        title: 'Device invite.',
+                                        body: 'You have been invited to add ' + deviceKey + ' to your devices.'
+                                    },
+                                    token: user.deviceToken
+                                };
+                                sendNotification(message);
+                            }
+                        })
+                    res.status(200).json('User invited: ' + uid);
                 })
                 .catch(function (reason) {
-                    console.log(reason);
+                    res.status(500).json('Could not invite user');
                 })
-            User.findOne({uid: uid})
-                .then(function (user) {
-                    console.log(user.deviceToken, 'deviceToken')
-                    if (user.deviceToken) {
-                        var message = {
-                            notification: {
-                                title: 'Device invite.',
-                                body: 'You have been invited to add ' + deviceKey + ' to your devices.'
-                            },
-                            token: user.deviceToken
-                        };
-                        sendNotification(message);
-                    }
-                })
-            res.status(200).json('User invited: ' + uid);
         })
         .catch(function (reason) {
-            res.status(500).json('Could not invite user');
+            res.status(404).json('Could not find user');
         })
+
 });
 
 /////////////////////////////////////////////////////////////////
