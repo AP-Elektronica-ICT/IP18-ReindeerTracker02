@@ -6,6 +6,7 @@
       <a class="notification" (click)="deleteNotification(i)"><i class="fas fa-times"></i></a>
       <h4>{{notification.title}}</h4>
       <p>{{notification.message}}</p>
+      <a [routerLink]="'/' + getRouterlink(notification.link)" [queryParams]="getQueryParams(notification.link)" *ngIf="notification.link">{{notification.link}}</a>
     </li>
   </ul>
   <p style="color: gray; text-align: center" *ngIf="notifications.length == 0">No notifications to display.</p>

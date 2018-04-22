@@ -4,7 +4,7 @@ import { HttpClient } from 'selenium-webdriver/http';
 import { element } from 'protractor';
 import {AuthService} from "../shared/auth.service";
 import {DeviceService} from "../shared/device.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {Device} from "../shared/classes/device";
 import {AliveState, BatteryState, FilterOptions} from "../shared/classes/filteroptions";
 import {KeysService} from "../shared/keys.service";
@@ -33,11 +33,18 @@ export class SensorDataComponent implements OnInit {
   aliveState = AliveState;
   batteryState = BatteryState;
 
-  constructor(private server: SensorDataService, private deviceService: DeviceService, private router: Router, public authService: AuthService, private keyService: KeysService, private inviteService: InviteService) {
+  constructor(private server: SensorDataService, private deviceService: DeviceService, private router: Router, public authService: AuthService, private keyService: KeysService, private inviteService: InviteService, private activatedRoute: ActivatedRoute) {
     this.filterOptions = {
       alive: AliveState.all,
       battery: BatteryState.all
-    }
+    };
+    this.activatedRoute.queryParams.subscribe((params: Params) => {
+      let deviceKey = params['deviceKey'];
+      if (deviceKey) {
+        this.newDevice = deviceKey;
+        this.openNewDeviceModal();
+      }
+    });
   }
 
   getDevices() {

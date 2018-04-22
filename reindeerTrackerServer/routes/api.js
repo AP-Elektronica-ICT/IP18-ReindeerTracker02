@@ -116,7 +116,8 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
                                     };
                                     var dbNotification = {
                                         title: device.name + ' (' + device.deviceKey + ') has died.',
-                                        message: device.name + ' has unfortunatly died, check his details to find his last location.'
+                                        message: device.name + ' has unfortunatly died, check his details to find his last location.',
+                                        link: 'detail?deviceKey=' + device.deviceKey
                                     }
                                 } else {
                                     var baseMessage = {
@@ -127,7 +128,8 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
                                     };
                                     var dbNotification = {
                                         title: device.name + ' (' + device.deviceKey + ') battery is low.',
-                                        message: device.name + "'s battery is low. Please check the device to replace the battery."
+                                        message: device.name + "'s battery is low. Please check the device to replace the battery.",
+                                        link: 'detail?deviceKey=' + device.deviceKey
                                     }
                                 }
                                 for (var i=0; i< deviceTokens.length; i++) {
@@ -291,7 +293,8 @@ router.put('/devices/:deviceKey/invite', function (req, res) {
                     console.log('Invite added');
                     addNotification(uid, {
                         title: 'Device invite',
-                        message: 'You have been invited to add ' + deviceKey + ' to your devices.'
+                        message: 'You have been invited to add ' + deviceKey + ' to your devices.',
+                        link: 'user?deviceKey=' + deviceKey
                     })
                         .then(function () {
                             console.log('notification added')
@@ -387,7 +390,7 @@ router.put('/users/:userID/devices', function (req, res) {
     const deviceKey = req.body.deviceKey;
     Device.findOne({deviceKey: deviceKey})
         .then(function (device) {
-             if (device.userIDs.length == 0) {
+             if (device.userIDs.length == 0 || device.invites.indexOf(userID) != -1) {
                  if (device.logs.length <= 0) {
                      const newLog = {
                          battery: 100,

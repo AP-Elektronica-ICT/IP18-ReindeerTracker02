@@ -18,8 +18,9 @@ export class NotificationComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    console.log('destroy');
-    this.authSerivce.markAllNotificationsAsSeen();
+    if (this.authSerivce.isAuthenticated()) {
+      this.authSerivce.markAllNotificationsAsSeen();
+    }
   }
 
   getNotificationClass(seen: boolean) {
@@ -35,6 +36,19 @@ export class NotificationComponent implements OnInit {
       .then((notifications: Notification[]) => {
         this.notifications = notifications;
       });
+  }
+
+  getRouterlink(url: string) {
+    return url.split('?')[0];
+  }
+
+  getQueryParams(url: string) {
+    console.log(url.split('?')[1], 'query');
+    let fromUrl = url.split('?')[1];
+    let name = fromUrl.split('=')[0];
+    let value = fromUrl.split('=')[1];
+    let jsonString = '{"'+name+'":'+value+'}';
+    return JSON.parse(jsonString)
   }
 
 }
