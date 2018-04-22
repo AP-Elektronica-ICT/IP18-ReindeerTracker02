@@ -15,7 +15,7 @@ import {AuthProvider} from "../auth/auth";
 export class FcmProvider {
   api = AppSettings.API_ENDPOINT;
 
-  constructor(public firebase: Firebase, private platform: Platform, private httpClient: HttpClient, private auth: AuthProvider) {
+  constructor(public firebase: Firebase, private platform: Platform, private httpClient: HttpClient, private auth: AuthProvider, private toastCtrl: ToastController) {
 
   }
 
@@ -61,6 +61,20 @@ export class FcmProvider {
 
   listenToNotifications() {
     return this.firebase.onNotificationOpen();
+  }
+
+  showToats(message: string) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 3000,
+      position: 'top'
+    });
+
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+
+    toast.present();
   }
 
 }

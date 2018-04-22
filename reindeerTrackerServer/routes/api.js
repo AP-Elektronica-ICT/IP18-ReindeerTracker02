@@ -174,7 +174,7 @@ router.get('/test', function (req, res) {
             title: 'battery is low.',
             body: 'Battery at ' + 50 + '%. Please check the device to replace the battery.'
         },
-        token: "d0SWH8LIv80:APA91bGa-PndencaYzhvJd1gYIKIcpUsueSpCRFr82dGN8ILdSr_V_Vv_eoVZWOEeaVofStYIuvfnSuo04gccg7TAID6-KEblcMFWuQI-8j8B9sqjoc7RDAb6thubJHwiR46_ACHe7jn"
+        token: "f_yaii5N6fk:APA91bHv5CYUe1MgjplhLapjbl45UH2o85RIUvIyQrLcpRSg_0vg-mnDqGy83t3AZ4zsKkwRB0OQIsrn4kREsUqR6iNsVTen7r-J-BGajbK0_CNkeS1q0C_WV_e0pf__Dy4C33XUaOvT"
     };
     sendNotification(baseMessage);
     res.json('ok');
@@ -211,7 +211,7 @@ function getDeviceTokens(users) {
 function sendNotification(message) {
     admin.messaging().send(message)
         .then(function (response) {
-            console.log('notification sent');
+            console.log('notification sent to: ' + message.token);
         })
         .catch(function (reason) {
             console.log(reason, 'error');
@@ -481,10 +481,12 @@ router.delete('/users/:userID/devices', function (req, res) {
 
 router.put('/users/:userID/devicetoken', function (req, res) {
     const userID = req.params.userID;
+    console.log(userID);
     const deviceToken = req.body.deviceToken;
-    User.update( {deviceToken: deviceToken})
+    console.log(deviceToken);
+    User.update({uid: userID}, {deviceToken: deviceToken})
         .then(function (value) {
-            res.status(200).json('Token saved');
+            res.status(200).json('Token saved: ' + deviceToken);
         })
         .catch(function (reason) {
             res.status(500).send('could not save token');

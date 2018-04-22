@@ -51,5 +51,13 @@ export class DetailPage {
     this.navCtrl.push(LinkProfelPage, {deviceKey: this.deviceKey});
   }
 
-  //TODO: refresh devices after delete
+  deleteDevice() {
+    this.deviceProvider.removeDeviceFromUser(this.device.deviceKey)
+      .subscribe(res => {
+        this.deviceProvider.loadUserDevices()
+          .then(() => {
+            this.navCtrl.pop();
+          })
+      })
+  }
 }

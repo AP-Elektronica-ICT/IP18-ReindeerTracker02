@@ -24,7 +24,7 @@ export class HomePage {
   displayingDevices: Device[] = [];
   devices: Device[] = [];
   message = '';
-  filter: FilterOptions = null;
+  filterOptions: FilterOptions = null;
   filterStrings: String[] = [];
 
   constructor(public navCtrl: NavController, private deviceProvider: DeviceProvider, private alert: AlertController, public barcodeScanner: BarcodeScanner, private auth: AuthProvider, private loading: LoadingProvider, private filterProvider: FilterProvider, private fcm: FcmProvider) {
@@ -49,16 +49,6 @@ export class HomePage {
   }
 
   getDevices() {
-    /*this.deviceProvider.getUserDevices()
-      .subscribe(res => {
-        this.devices = res;
-        this.displayingDevices = res;
-        console.log(this.devices);
-        this.loading.dismissDeviceLoading();
-        this.filter = this.filterProvider.getFilterOptions();
-        this.addFilter();
-
-      })*/
     this.deviceProvider.getUserDevicesFromStorage()
       .then(devices => {
         this.afterDevicesLoaded(devices);
@@ -69,7 +59,7 @@ export class HomePage {
     this.devices = devices;
     this.resetList();
     this.loading.dismissDeviceLoading();
-    this.filter = this.filterProvider.getFilterOptions();
+    this.filterOptions = this.filterProvider.getFilterOptions();
     this.addFilter();
   }
 
@@ -175,49 +165,51 @@ export class HomePage {
 
   loadLogOut(){
     this.navCtrl.setRoot(LogInPage);
-    this.fcm.removeToken();
+    //this.fcm.removeToken();
     this.auth.signOut();
     this.navCtrl.popToRoot();
   }
 
   openFilterModal() {
-    this.navCtrl.push(FilterPage, this.filter);
+    this.navCtrl.push(FilterPage, this.filterOptions);
   }
 
   addFilter() {
-    if (this.filter.alive === AliveState.all && this.filter.battery === BatteryState.all) {
-      console.log('reset filter');
+    this.displayingDevices = [];
+    if (this.filterOptions.alive == AliveState.all && this.filterOptions.battery == BatteryState.all) {
       this.resetList();
     } else {
-      console.log('applying filter');
-      this.displayingDevices = [];
-      if (this.filter.alive == AliveState.alive) {
+      let temp: Device[] = [];
+      if (this.filterOptions.alive == AliveState.alive) {
         for (let i=0; i<this.devices.length; i++) {
           if (this.devices[i].isAlive) {
-            console.log('adding: ' + this.devices[i]);
-            this.displayingDevices.push(this.devices[i]);
+            temp.push(this.devices[i]);
           }
         }
-      } else if (this.filter.alive == AliveState.dead) {
+      } else if (this.filterOptions.alive == AliveState.dead) {
         for (let i=0; i<this.devices.length; i++) {
           if (!this.devices[i].isAlive) {
-            this.displayingDevices.push(this.devices[i]);
+            temp.push(this.devices[i]);
           }
         }
       } else {
-        this.resetList();
+        console.log('reset');
+        temp = this.devices.slice();
       }
-      console.log(this.displayingDevices);
-      for (let i=0; i<this.displayingDevices.length; i++) {
-        if (this.filter.battery !== BatteryState.all) {
-          for (let i=0; i<this.displayingDevices.length; i++) {
-            if (this.filter.battery === BatteryState.high && this.displayingDevices[i].lastLog.battery <= 20) {
-              this.displayingDevices.splice(i, 1);
-            } else if (this.filter.battery === BatteryState.low && this.displayingDevices[i].lastLog.battery > 20) {
-              this.displayingDevices.splice(i, 1);
-            }
+      if (this.filterOptions.battery == BatteryState.high) {
+        for (let i=0; i<temp.length; i++) {
+          if (temp[i].lastLog.battery > 20) {
+            this.displayingDevices.push(temp[i]);
           }
         }
+      } else if (this.filterOptions.battery == BatteryState.low) {
+        for (let i=0; i<temp.length; i++) {
+          if (temp[i].lastLog.battery <= 20) {
+            this.displayingDevices.push(temp[i]);
+          }
+        }
+      } else {
+        this.displayingDevices = temp.slice();
       }
     }
     this.setFilterList();
@@ -225,27 +217,27 @@ export class HomePage {
 
   setFilterList() {
     this.filterStrings = [];
-    if (this.filter.alive === AliveState.alive) {
+    if (this.filterOptions.alive === AliveState.alive) {
       this.filterStrings.push('Alive')
     }
-    if (this.filter.alive === AliveState.dead) {
+    if (this.filterOptions.alive === AliveState.dead) {
       this.filterStrings.push('Dead')
     }
-    if (this.filter.battery === BatteryState.high) {
+    if (this.filterOptions.battery === BatteryState.high) {
       this.filterStrings.push('High battery')
     }
-    if (this.filter.battery === BatteryState.low) {
+    if (this.filterOptions.battery === BatteryState.low) {
       this.filterStrings.push('Low battery')
     }
   }
 
   removeFilter(alive: Boolean) {
     if (alive) {
-      this.filter.alive = AliveState.all;
+      this.filterOptions.alive = AliveState.all;
     } else {
-      this.filter.battery = BatteryState.all;
+      this.filterOptions.battery = BatteryState.all;
     }
-    this.filterProvider.setFilterOptions(this.filter);
+    this.filterProvider.setFilterOptions(this.filterOptions);
     this.addFilter();
   }
 
