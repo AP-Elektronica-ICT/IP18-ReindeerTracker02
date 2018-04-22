@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {DeviceService} from "../shared/device.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Form, FormControl, FormGroup} from "@angular/forms";
 import {DeviceDetails} from "../shared/device-details";
 import {Location} from '@angular/common';
@@ -21,7 +21,7 @@ export class DeviceInfoComponent implements OnInit {
   imageFile = null;
   showActivateSuccessMessage = false;
 
-  constructor(private deviceService: DeviceService, private route: ActivatedRoute, private location: Location, private storage: StorageService) { }
+  constructor(private deviceService: DeviceService, private route: ActivatedRoute, private location: Location, private storage: StorageService, private router: Router) { }
 
   ngOnInit() {
     this.showDeviceNotFoundMessage = false;
@@ -92,7 +92,7 @@ export class DeviceInfoComponent implements OnInit {
                 .then(() => {
                   this.showChangesSavedMessage = true;
                   setTimeout(() => {
-                    this.location.back();
+                    this.toHome();
                   }, 2000);
                 })
             })
@@ -106,14 +106,18 @@ export class DeviceInfoComponent implements OnInit {
               if (this.detailForm.dirty) {
                 this.showChangesSavedMessage = true;
                 setTimeout(() => {
-                  this.location.back();
+                  this.toHome();
                 }, 2000);
               } else {
-                this.location.back();
+                this.toHome();
               }
             });
         })
     }
+  }
+
+  private toHome() {
+    this.router.navigate(['/user']);
   }
 
   updateDevice() {

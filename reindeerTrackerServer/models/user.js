@@ -38,6 +38,7 @@ var userSchema = new mongoose.Schema({
         title: String,
         message: String,
         link: String,
+        linkMessage: String,
         seen: {
             type: Boolean,
             default: false

@@ -43,7 +43,6 @@ export class NotificationComponent implements OnInit {
   }
 
   getQueryParams(url: string) {
-    console.log(url.split('?')[1], 'query');
     let fromUrl = url.split('?')[1];
     let name = fromUrl.split('=')[0];
     let value = fromUrl.split('=')[1];

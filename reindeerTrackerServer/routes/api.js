@@ -100,14 +100,17 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
         {deviceKey: deviceKey},
         {$push: {logs: { $each: [log], $position: 0}}, isAlive: log.isAlive})
         .then(function (status) {
-            res.status(200).json('log added');
             Device.findOne({deviceKey: deviceKey})
                 .then(function (device) {
                     updateDeviceAverage(device.logs, device.average, device.deviceKey);
                     if (!log.isAlive || log.battery < 20) {
+                        console.log('dead or battry low, getting deviceTokens');
                         getDeviceTokens(device.userIDs)
                             .then(function (deviceTokens) {
+                                console.log('got tokens');
+                                console.log(deviceTokens);
                                 if (!log.isAlive) {
+
                                     var baseMessage = {
                                         notification: {
                                             title: device.name + ' (' + device.deviceKey + ') has died.',
@@ -117,7 +120,8 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
                                     var dbNotification = {
                                         title: device.name + ' (' + device.deviceKey + ') has died.',
                                         message: device.name + ' has unfortunatly died, check his details to find his last location.',
-                                        link: 'detail?deviceKey=' + device.deviceKey
+                                        link: '/detail?deviceKey=' + device.deviceKey,
+                                        linkMessage: 'Check device.'
                                     }
                                 } else {
                                     var baseMessage = {
@@ -129,17 +133,32 @@ router.put('/devices/:deviceKey/logs', function (req, res) {
                                     var dbNotification = {
                                         title: device.name + ' (' + device.deviceKey + ') battery is low.',
                                         message: device.name + "'s battery is low. Please check the device to replace the battery.",
-                                        link: 'detail?deviceKey=' + device.deviceKey
+                                        link: '/detail?deviceKey=' + device.deviceKey,
+                                        linkMessage: 'Check device.'
                                     }
                                 }
+                                console.log('notifications set');
                                 for (var i=0; i< deviceTokens.length; i++) {
-                                    var message = baseMessage;
-                                    message.token = deviceTokens[i];
-                                    sendNotification(message);
+                                    if (deviceTokens[i] != undefined) {
+                                        var message = baseMessage;
+                                        message.token = deviceTokens[i];
+                                        sendNotification(message);
+                                    }
                                 }
-                                for (var i=0; i<device.userIDs.length; i++) {
-                                    addNotification(device.userIDs[i], dbNotification);
+                                console.log('adding notifications');
+                                console.log(device.userIDs[0]);
+                                for (var j=0; j<device.userIDs.length; j++) {
+                                    console.log('index: ' + j);
+                                    console.log(device.userIDs[j]);
+                                    addNotification(device.userIDs[j], dbNotification)
+                                        .then(function () {
+                                            console.log('added notification to: ' + device.userIDs[j]);
+                                        })
+                                        .catch(function (reason) {
+                                            console.log(reason);
+                                        })
                                 }
+                                res.status(200).json('log added');
                             });
                     }
                 })
@@ -294,7 +313,8 @@ router.put('/devices/:deviceKey/invite', function (req, res) {
                     addNotification(uid, {
                         title: 'Device invite',
                         message: 'You have been invited to add ' + deviceKey + ' to your devices.',
-                        link: 'user?deviceKey=' + deviceKey
+                        link: '/user?deviceKey=' + deviceKey,
+                        linkMessage: 'Add device to list'
                     })
                         .then(function () {
                             console.log('notification added')
@@ -519,6 +539,7 @@ router.put('/users/:userID/notifications', function (req, res) {
 });
 
 function addNotification(userId, notification) {
+    console.log('adding notification to: ' + userId, 'addNot function');
     return User.update(
         {uid: userId},
         {$push: {notifications: {$each: [notification], $position: 0}}}

@@ -3,5 +3,6 @@ export interface Notification {
   title: string,
   message: string,
   seen: boolean,
-  link?: string
+  link?: string,
+  linkMessage?: string
 }
