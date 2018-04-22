@@ -4,6 +4,7 @@ import { MapPage } from '../map/map';
 import {DeviceProvider} from "../../providers/device/device";
 import {Device} from "../../classes/device";
 import { AddPage } from '../add/add';
+import { LinkProfelPage } from '../link-profel/link-profel';
 
 /**
  * Generated class for the DetailPage page.
@@ -44,6 +45,10 @@ export class DetailPage {
     {
       this.navCtrl.push(AddPage, {deviceKey: this.deviceKey});
     }
+  }
+
+  goToLink(){
+    this.navCtrl.push(LinkProfelPage, {deviceKey: this.deviceKey});
   }
 
   //TODO: refresh devices after delete
