@@ -449,7 +449,10 @@ router.put('/users/:userID/devices', function (req, res) {
              } else {
                 res.status(404).json('could not find device');
             }
-        });
+        })
+        .catch(function (reason) {
+            res.status(404).json('could not find device');
+        })
 });
 
 router.get('/users/:userID/devices', function (req, res) {
