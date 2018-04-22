@@ -37,7 +37,10 @@ export class LinkProfelPage {
 
   sendInvite() {
     console.log(this.deviceKey + ':' + this.emailAdress, 'inviting');
-    this.deviceProvider.putInvite(this.deviceKey, this.emailAdress);
+    this.deviceProvider.putInvite(this.deviceKey, this.emailAdress)
+      .subscribe(res => {
+        console.log(res);
+      })
   }
 
 }
