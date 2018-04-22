@@ -42,6 +42,10 @@ export class DeviceService {
     })
   }
 
+  resetDevices() {
+    this.devices = null;
+  }
+
   activateDevice(deviceKey: string): Observable<object> {
     return this.httpClient.put(this.url + '/devices/' + deviceKey + '/activate', {})
   }

@@ -6,6 +6,7 @@ import {AppSettings} from "./AppSettings";
 import {Observable} from "rxjs/Observable";
 import {User} from "firebase/app";
 import {Notification} from "./classes/notification";
+import {DeviceService} from "./device.service";
 
 @Injectable()
 export class AuthService {
@@ -66,6 +67,7 @@ export class AuthService {
 
   signOut(): Promise<any> {
     this.currentUser = null;
+    //this.deviceService.resetDevices();
     return this.af.auth.signOut();
   }
 

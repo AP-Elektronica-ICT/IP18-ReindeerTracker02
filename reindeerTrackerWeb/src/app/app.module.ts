@@ -68,7 +68,7 @@ import {InviteService} from "./shared/invite.service";
       apiKey: 'AIzaSyCUwftTaruBNv0xSVOsRaAZRdIsJ6WQhSQ'
     })
   ],
-  providers: [AuthService, KeysService, DeviceService, StorageService, AuthService, Http, InviteService],
+  providers: [DeviceService, AuthService, KeysService, StorageService, AuthService, Http, InviteService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
