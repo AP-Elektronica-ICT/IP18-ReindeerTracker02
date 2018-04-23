@@ -14,9 +14,11 @@ lng: number = 4.070101;
 rad: number = 600;
 col: string = 'green';
 op: number = 0.3;
+mapType: string = 'hybrid';
 
-ft(){
-  return "terrain";
+ft(name:string){
+  this.mapType = name;
+  console.log(name);
 }
 // AGM static -----
   device = null;
@@ -34,7 +36,7 @@ ft(){
         this.device = res;
         console.log(res)
       })
-  }
+      }
 
   getAliveStatus() {
     if (this.device.isAlive) {

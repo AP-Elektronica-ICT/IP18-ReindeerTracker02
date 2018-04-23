@@ -1,5 +1,4 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import { SensorDataService } from './sensor-data.service';
 import { HttpClient } from 'selenium-webdriver/http';
 import { element } from 'protractor';
 import {AuthService} from "../shared/auth.service";
@@ -13,8 +12,7 @@ import {InviteService} from "../shared/invite.service";
 @Component({
   selector: 'app-sensor-data',
   templateUrl: './sensor-data.component.html',
-  styleUrls: ['./sensor-data.component.css'],
-  providers: [SensorDataService]
+  styleUrls: ['./sensor-data.component.css']
 })
 export class SensorDataComponent implements OnInit {
   showDeleteModal: boolean = false;
@@ -33,7 +31,7 @@ export class SensorDataComponent implements OnInit {
   aliveState = AliveState;
   batteryState = BatteryState;
 
-  constructor(private server: SensorDataService, private deviceService: DeviceService, private router: Router, public authService: AuthService, private keyService: KeysService, private inviteService: InviteService, private activatedRoute: ActivatedRoute) {
+  constructor(private deviceService: DeviceService, private router: Router, public authService: AuthService, private keyService: KeysService, private inviteService: InviteService, private activatedRoute: ActivatedRoute) {
     this.filterOptions = {
       alive: AliveState.all,
       battery: BatteryState.all

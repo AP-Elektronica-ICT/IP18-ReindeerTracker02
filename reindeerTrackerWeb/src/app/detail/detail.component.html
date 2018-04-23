@@ -39,14 +39,16 @@
           <div class="card">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
-                  <button (click)="ft()">terrain</button>
-                  <button>satelite</button>
-                  <button>hybrid</button>
+                  <button (click)="ft('terrain')">terrain</button>
+                  <button (click)="ft('satellite')">satellite</button>
+                  <button (click)="ft('hybrid')">hybrid</button>
+                  <button (click)="ft('roadmap')">roadmap</button>
                   <br>
                   <br>
-                  <agm-map [latitude]="lat" [longitude]="lng" [mapTypeId]="'hybrid'" [zoom]="14" style="width:550px; height:500px;">
-                    <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
-                    <agm-circle [latitude]="lat" [longitude]="lng" [radius]="rad" [fillColor]="col" [fillOpacity]="op"></agm-circle>
+                  <p *ngIf="device.lastLog.initialLog">Aww! No Coords available at this time.</p>
+                  <agm-map *ngIf="!device.lastLog.initialLog" [latitude]="device.lastLog.lat" [longitude]="device.lastLog.long" [mapTypeId]="mapType" [zoom]="14" style="width:550px; height:500px;">
+                    <agm-marker [latitude]="device.lastLog.lat" [longitude]="device.lastLog.long"></agm-marker>
+                    <agm-circle [latitude]="device.lastLog.lat" [longitude]="device.lastLog.long" [radius]="rad" [fillColor]="col" [fillOpacity]="op"></agm-circle>
                   </agm-map>
                 </li>
             </ul>
