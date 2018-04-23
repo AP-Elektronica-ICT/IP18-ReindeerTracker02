@@ -29,7 +29,7 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors({
-    origin: ['http://localhost:4200', 'http://localhost:8100', 'http://teunverhaert.ddns.net:3001'],
+    origin: ['http://localhost:4200', 'http://localhost:8100', 'http://81.82.11.181:3001:3001'],
     credentials: true
     }));
 
