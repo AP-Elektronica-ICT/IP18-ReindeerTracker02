@@ -1,56 +1,60 @@
-<div class="card card-body" *ngIf="device">
-  <h4 class="card-title">{{device.name}}</h4>
-</div>
-<div class="row" *ngIf="device">
-  <div class="col">
-    <div class="card card-body">
-      <h4 class="card-title">Battery percentage:</h4>
-    </div>
-      <div class="row">
-        <div class="col">
-          <div class="card">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">{{device.lastLog.battery}}%</li>
-            </ul>
-           </div>
-        </div>
-    </div>
+<div class="container">
+  <div class="card card-body" *ngIf="device">
+    <h4 class="card-title">{{device.name}}</h4>
   </div>
-  <div class="col">
-    <div class="card card-body">
-      <h4 class="card-title">Status of your reindeer:</h4>
-    </div>
+  <br>
+  <div class="row" *ngIf="device">
+    <div class="col">
+      <div class="card card-body">
+        <h4 class="card-title">Battery percentage:</h4>
+      </div>
       <div class="row">
         <div class="col">
           <div class="card">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">{{getAliveStatus()}}</li>
+              <li class="list-group-item">{{device.lastLog.battery}}%</li>
             </ul>
-           </div>
+          </div>
         </div>
+      </div>
     </div>
-  </div>
-  <div class="col">
-    <div class="card card-body">
-      <h4 class="card-title">Where was the reindeer last 24h:</h4>
-    </div>
+    <div class="col">
+      <div class="card card-body">
+        <h4 class="card-title">Status of your reindeer:</h4>
+      </div>
       <div class="row">
         <div class="col">
           <div class="card">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                  <button (click)="ft()">terrain</button>
-                  <button>satelite</button>
-                  <button>hybrid</button>
-                  <br>
-                  <br>
-                  <agm-map [latitude]="lat" [longitude]="lng" [mapTypeId]="'hybrid'" [zoom]="14" style="width:550px; height:500px;">
-                    <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
-                    <agm-circle [latitude]="lat" [longitude]="lng" [radius]="rad" [fillColor]="col" [fillOpacity]="op"></agm-circle>
-                  </agm-map>
-                </li>
+              <li class="list-group-item">{{getAliveStatus()}}</li>
             </ul>
-           </div>
+          </div>
         </div>
+      </div>
     </div>
+    <div class="col">
+      <div class="card card-body">
+        <h4 class="card-title">Where was the reindeer last 24h:</h4>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <button (click)="ft()">terrain</button>
+                <button>satelite</button>
+                <button>hybrid</button>
+                <br>
+                <br>
+                <agm-map [latitude]="lat" [longitude]="lng" [mapTypeId]="'hybrid'" [zoom]="14" style="width:550px; height:500px;">
+                  <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+                  <agm-circle [latitude]="lat" [longitude]="lng" [radius]="rad" [fillColor]="col" [fillOpacity]="op"></agm-circle>
+                </agm-map>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
