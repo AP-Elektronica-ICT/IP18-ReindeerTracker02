@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import {ImagePicker} from "@ionic-native/image-picker";
-import {AndroidPermissions} from "@ionic-native/android-permissions";
 import {StorageProvider} from "../../providers/storage/storage";
 import {ImageProvider} from "../../providers/image/image";
 import {DeviceDetails} from "../../classes/deviceDetails";

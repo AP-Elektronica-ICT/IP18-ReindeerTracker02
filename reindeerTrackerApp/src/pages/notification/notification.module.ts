@@ -4,7 +4,7 @@ import { NotificationPage } from './notification';
 
 @NgModule({
   declarations: [
-    NotificationPage,
+
   ],
   imports: [
     IonicPageModule.forChild(NotificationPage),

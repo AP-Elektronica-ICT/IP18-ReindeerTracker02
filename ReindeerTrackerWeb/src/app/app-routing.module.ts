@@ -14,6 +14,7 @@ import {DetailComponent} from "./detail/detail.component";
 import {ProfileComponent} from "./profile/profile.component";
 import {ProfileEditComponent} from "./profile-edit/profile-edit.component";
 import {NotificationComponent} from "./notification/notification.component";
+import {PrivacyComponent} from "./privacy/privacy.component";
 
 const appRoutes = [
   { path: '', component: HomeComponent},
@@ -27,6 +28,7 @@ const appRoutes = [
   { path: 'profile', component: ProfileComponent},
   { path: 'profile/edit', component: ProfileEditComponent},
   { path: 'reset-password', component: PasswordResetComponent},
+  { path: 'privacy', component: PrivacyComponent},
   { path: 'manifacturer', component: ManifacturerComponent, children: [
       { path: '', component: ManifacturerHomeComponent},
       { path: 'new-device', component: NewDeviceComponent}

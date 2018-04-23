@@ -4,7 +4,7 @@ import { FilterPage } from './filter';
 
 @NgModule({
   declarations: [
-    FilterPage,
+
   ],
   imports: [
     IonicPageModule.forChild(FilterPage),

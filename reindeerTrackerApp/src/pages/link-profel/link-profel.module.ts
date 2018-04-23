@@ -4,7 +4,7 @@ import { LinkProfelPage } from './link-profel';
 
 @NgModule({
   declarations: [
-    LinkProfelPage,
+
   ],
   imports: [
     IonicPageModule.forChild(LinkProfelPage),

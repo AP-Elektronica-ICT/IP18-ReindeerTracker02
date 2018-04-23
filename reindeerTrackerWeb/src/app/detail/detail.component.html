@@ -32,29 +32,28 @@
         </div>
       </div>
     </div>
-    <div>
-      <div class="card card-body">
-        <h4 class="card-title">Where was the reindeer last 24h:</h4>
-      </div>
+  </div>
+  <br>
+  <div>
+    <div class="card card-body">
+      <h4 class="card-title">Last logged location</h4>
       <div class="row">
         <div class="col">
-          <div class="card">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                  <button (click)="ft('terrain')">terrain</button>
-                  <button (click)="ft('satellite')">satellite</button>
-                  <button (click)="ft('hybrid')">hybrid</button>
-                  <button (click)="ft('roadmap')">roadmap</button>
-                  <br>
-                  <br>
-                  <p *ngIf="device.lastLog.initialLog">Aww! No Coords available at this time.</p>
-                  <agm-map *ngIf="!device.lastLog.initialLog" [latitude]="device.lastLog.lat" [longitude]="device.lastLog.long" [mapTypeId]="mapType" [zoom]="14" style="width:550px; height:500px;">
-                    <agm-marker [latitude]="device.lastLog.lat" [longitude]="device.lastLog.long"></agm-marker>
-                    <agm-circle [latitude]="device.lastLog.lat" [longitude]="device.lastLog.long" [radius]="rad" [fillColor]="col" [fillOpacity]="op"></agm-circle>
-                  </agm-map>
-                </li>
-            </ul>
-          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <button (click)="ft('terrain')">terrain</button>
+              <button (click)="ft('satellite')">satellite</button>
+              <button (click)="ft('hybrid')">hybrid</button>
+              <button (click)="ft('roadmap')">roadmap</button>
+              <br>
+              <br>
+              <p *ngIf="device.lastLog.initialLog">Aww! No Coords available at this time.</p>
+              <agm-map *ngIf="!device.lastLog.initialLog" [latitude]="device.lastLog.lat" [longitude]="device.lastLog.long" [mapTypeId]="mapType" [zoom]="14" style="width:1000px; height:600px;">
+                <agm-marker [latitude]="device.lastLog.lat" [longitude]="device.lastLog.long"></agm-marker>
+                <agm-circle [latitude]="device.lastLog.lat" [longitude]="device.lastLog.long" [radius]="rad" [fillColor]="col" [fillOpacity]="op"></agm-circle>
+              </agm-map>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
