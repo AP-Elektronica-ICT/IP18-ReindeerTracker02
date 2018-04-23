@@ -148,4 +148,30 @@ export class AuthService {
     });
   }
 
+  startNotificationRefresh() {
+    setInterval(() => {
+      this.getUserNotifications();
+      console.log('refresh not');
+    }, 5000);
+  }
+
+  private getUserNotifications() {
+    const uid = this.getCurrentUID();
+    this.http.get(this.url + '/users/' + uid + '/notifications')
+      .subscribe((notifications: Notification[]) => {
+        console.log('current not: ' + this.currentUser.notifications.length);
+        console.log('new not:' + notifications.length);
+        if (notifications.length > this.currentUser.notifications.length) {
+          this.currentUser.notifications = notifications;
+          let unseen = 0;
+          for (let i=0; i<notifications.length; i++) {
+            if (!notifications[i].seen) {
+              unseen++;
+            }
+          }
+          this.currentUser.unseen = unseen;
+        }
+      })
+  }
+
 }

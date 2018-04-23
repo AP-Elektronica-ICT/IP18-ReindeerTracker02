@@ -20,6 +20,7 @@ export class AppComponent {
         this.authh.setCurrentUser()
           .then(() => {
             this.loaded = true;
+            this.authh.startNotificationRefresh();
           });
       } else {
         this.loaded = true;
