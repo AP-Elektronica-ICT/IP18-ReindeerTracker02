@@ -33,6 +33,7 @@ import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { NotificationComponent } from './notification/notification.component';
 import {InviteService} from "./shared/invite.service";
 import { PrivacyComponent } from './privacy/privacy.component';
+import { FooterComponent } from './footer/footer.component';
 
 
 
@@ -55,7 +56,8 @@ import { PrivacyComponent } from './privacy/privacy.component';
     ProfileComponent,
     ProfileEditComponent,
     NotificationComponent,
-    PrivacyComponent
+    PrivacyComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
