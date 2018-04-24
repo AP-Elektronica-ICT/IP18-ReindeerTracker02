@@ -93,7 +93,7 @@ export class MapPage {
         '<h1 id="firstHeading" class="firstHeading">' + this.name + '</h1>'+
         '<div id="bodyContent">'+
           '<p><b>gender: </b>' + this.gender +
-          '<p><b>Last signal: </b>'+ this.lastSignal.toLocaleDateString +
+          '<p><b>Last signal: </b>'+ this.lastSignal +
           '<p><b>battery: </b>'+ this.battery + "%" +          
           '<p><b>death/alive: </b>'+ this.DA +
         '</div>'+
@@ -102,8 +102,6 @@ export class MapPage {
     var infowindow = new google.maps.InfoWindow({
       content: contentString
     });
-
-    console.log(this.lastSignal);
 
    var marker =  new google.maps.Marker({
       position,
