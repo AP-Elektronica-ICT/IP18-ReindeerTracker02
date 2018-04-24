@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {IonicPage, NavController, NavParams, ToastController} from 'ionic-angular';
 import {HttpClient} from "@angular/common/http";
 import { DeviceProvider } from '../../providers/device/device';
 import { Device } from '../../classes/device';
@@ -22,7 +22,7 @@ export class LinkProfelPage {
   deviceKey = '';
   emailAdress = '';
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private deviceProvider: DeviceProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private deviceProvider: DeviceProvider, private toastCtrl: ToastController) {
   }
 
   ionViewDidLoad() {
@@ -40,7 +40,17 @@ export class LinkProfelPage {
     this.deviceProvider.putInvite(this.deviceKey, this.emailAdress)
       .subscribe(res => {
         console.log(res);
+        this.openToast();
+        this.navCtrl.pop();
       })
+  }
+
+  openToast() {
+    let toast = this.toastCtrl.create({
+      message: 'Ivitation sent to ' + this.emailAdress,
+      duration: 3000
+    });
+    toast.present();
   }
 
 }
