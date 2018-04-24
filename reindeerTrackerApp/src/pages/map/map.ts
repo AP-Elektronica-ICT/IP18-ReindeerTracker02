@@ -23,6 +23,12 @@ export class MapPage {
   map: any;
   lat: number;
   long: number;
+  name: string;
+  gender: string;
+  lastSignal: Date;
+  battery: string;
+  DA: string;
+
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private launchNavigator: LaunchNavigator, private platform: Platform) {
 
@@ -31,11 +37,17 @@ export class MapPage {
   loadMaps() {
     this.lat = this.navParams.get('lat');
     this.long = this.navParams.get('long');
+    this.name = this.navParams.get('name');
+    this.gender = this.navParams.get('gender');
+    this.lastSignal = this.navParams.get('lastSignal');
+    this.battery = this.navParams.get('battery');
+    this.DA = this.navParams.get('DA');
+
 
     this.showMap();
     
     this.addRadius(new google.maps.LatLng(this.lat, this.long), this.map);
-    this.addMarker(new google.maps.LatLng(51.228938, 4.404151), this.map);
+    this.addMarker(new google.maps.LatLng(this.lat, this.long), this.map);
     
   }
 
@@ -72,10 +84,38 @@ export class MapPage {
   }
 
   addMarker(position, map){
-    return new google.maps.Marker({
+    var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/'
+
+    var contentString = 
+      '<div id="content">'+
+        '<div id="siteNotice">'+
+        '</div>'+
+        '<h1 id="firstHeading" class="firstHeading">' + this.name + '</h1>'+
+        '<div id="bodyContent">'+
+          '<p><b>gender: </b>' + this.gender +
+          '<p><b>Last signal: </b>'+ this.lastSignal.toLocaleDateString +
+          '<p><b>battery: </b>'+ this.battery + "%" +          
+          '<p><b>death/alive: </b>'+ this.DA +
+        '</div>'+
+      '</div>';
+
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+
+    console.log(this.lastSignal);
+
+   var marker =  new google.maps.Marker({
       position,
-      map
+      map,
+      icon: 'assets/imgs/reindeerMarker.png'
     })
+
+    marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
+
+    return marker;
   }
 
   navMe(){
