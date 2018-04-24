@@ -33,8 +33,10 @@ export class MapPage {
     this.long = this.navParams.get('long');
 
     this.showMap();
-
+    
     this.addRadius(new google.maps.LatLng(this.lat, this.long), this.map);
+    this.addMarker(new google.maps.LatLng(51.228938, 4.404151), this.map);
+    
   }
 
   ionViewDidLoad(){
@@ -67,6 +69,13 @@ export class MapPage {
       center: position,
       radius: 1000
     });
+  }
+
+  addMarker(position, map){
+    return new google.maps.Marker({
+      position,
+      map
+    })
   }
 
   navMe(){
