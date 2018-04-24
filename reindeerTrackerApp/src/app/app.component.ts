@@ -11,6 +11,7 @@ import {AngularFireAuth} from "angularfire2/auth";
 import {FcmProvider} from "../providers/fcm/fcm";
 import {HomePage} from "../pages/home/home";
 import {LoadingProvider} from "../providers/loading/loading";
+import {DateformatProvider} from "../providers/dateformat/dateformat";
 @Component({
   templateUrl: 'app.html'
 })

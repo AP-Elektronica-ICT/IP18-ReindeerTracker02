@@ -36,6 +36,7 @@ import { FilterProvider } from '../providers/filter/filter';
 import { NotificationProvider } from '../providers/notification/notification';
 import {NotificationPage} from "../pages/notification/notification";
 import { LinkProfelPage } from '../pages/link-profel/link-profel';
+import { DateformatProvider } from '../providers/dateformat/dateformat';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAud_cLzms8_U55nCkSKNmnRUhXei2pLQs",
@@ -103,7 +104,8 @@ export const firebaseConfig = {
     LaunchNavigator,
     LoadingProvider,
     FilterProvider,
-    NotificationProvider
+    NotificationProvider,
+    DateformatProvider
   ]
 })
 export class AppModule {}
